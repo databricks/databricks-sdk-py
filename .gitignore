@@ -1,0 +1,10 @@
+.venv
+*.
+build
+dist
+*.egg-info
+.eggs
+__pycache__
+.pytest_cache
+.idea
+databricks-sdk-py.iml

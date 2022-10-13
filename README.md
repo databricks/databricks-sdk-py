@@ -1,5 +1,8 @@
-# Databricks SDK
+# Databricks SDK for Python
 
-> **INTERNAL ONLY DURING DEVELOPMENT**
-
-Please get in touch with the Developer Ecosystem team via Slack ([#dev-ecosystem-discuss](https://databricks.slack.com/archives/C01KSAWFXG8)).
+```python
+from databricks.sdk.client import ApiClient, Config
+from databricks.sdk.service.clusters import ClustersAPI
+client = ApiClient(Config(profile="demo"))
+ClustersAPI(client).list()
+```

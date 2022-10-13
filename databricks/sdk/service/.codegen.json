@@ -1,0 +1,6 @@
+{
+    "formatter": "echo 1",
+    "packages": {
+      ".codegen/service.py.tmpl": "{{.Name}}.py"
+    }
+  }
