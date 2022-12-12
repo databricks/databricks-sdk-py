@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 # oauth implementation is modelled after golang.org/x/oauth2 (BSD) package from Go
 # Copyright 2014 The Go Authors
 
+
 @dataclass
 class Token:
     access_token: str
@@ -32,6 +33,7 @@ class Token:
     def valid(self):
         return self.access_token and not self.expired
 
+
 class TokenSource:
     @abstractmethod
     def token(self) -> Token:
@@ -43,34 +45,34 @@ class OAuthException(Exception):
         super().__init__(*args)
 
 
-def retrieve_token(client_id, client_secret, token_url, params,
-                   use_params=False, use_header=False) -> Token:
+def retrieve_token(
+    client_id, client_secret, token_url, params, use_params=False, use_header=False
+) -> Token:
     if use_params:
         if client_id:
-            params['client_id'] = client_id
+            params["client_id"] = client_id
         if client_secret:
-            params['client_secret'] = client_secret
+            params["client_secret"] = client_secret
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     resp = requests.post(token_url, params, auth=auth)
     if not resp.ok:
-        raise OAuthException(resp.content) # TODO: make it better
+        raise OAuthException(resp.content)  # TODO: make it better
     try:
         j = resp.json()
-        expires_in = int(j['expires_in'])
+        expires_in = int(j["expires_in"])
         expiry = datetime.datetime.now() + datetime.timedelta(seconds=expires_in)
         return Token(
-            access_token=j['access_token'],
-            token_type=j['token_type'],
-            expiry=expiry)
+            access_token=j["access_token"], token_type=j["token_type"], expiry=expiry
+        )
     except Exception as e:
-        raise OAuthException(f'Not supported yet: {e}')
+        raise OAuthException(f"Not supported yet: {e}")
 
 
 class Refreshable(TokenSource):
     def __init__(self):
-        self._lock = threading.Lock() # to guard _token
+        self._lock = threading.Lock()  # to guard _token
         self._token = None
 
     def token(self) -> Token:
@@ -87,6 +89,7 @@ class Refreshable(TokenSource):
     def refresh(self) -> Token:
         pass
 
+
 @dataclass
 class ClientCredentials(Refreshable):
     client_id: str
@@ -101,12 +104,17 @@ class ClientCredentials(Refreshable):
         super().__init__()
 
     def refresh(self) -> Token:
-        params = {'grant_type': 'client_credentials'}
+        params = {"grant_type": "client_credentials"}
         if self.scopes:
-            params['scope'] = ' '.join(self.scopes)
+            params["scope"] = " ".join(self.scopes)
         if self.endpoint_params:
-            for k,v in self.endpoint_params.items():
+            for k, v in self.endpoint_params.items():
                 params[k] = v
         return retrieve_token(
-            self.client_id, self.client_secret, self.token_url, params,
-            use_params=self.use_params, use_header=self.use_header)
+            self.client_id,
+            self.client_secret,
+            self.token_url,
+            params,
+            use_params=self.use_params,
+            use_header=self.use_header,
+        )

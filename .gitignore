@@ -8,3 +8,4 @@ __pycache__
 .pytest_cache
 .idea
 databricks-sdk-py.iml
+.databricks

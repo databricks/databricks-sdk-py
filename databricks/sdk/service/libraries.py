@@ -2,406 +2,408 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 
-__all__ = [
-    
-    'ClusterLibraryStatuses',
-    'InstallLibraries',
-    'Library',
-    'LibraryFullStatus',
-    'LibraryFullStatusStatus',
-    'ListAllClusterLibraryStatusesResponse',
-    'MavenLibrary',
-    'PythonPyPiLibrary',
-    'RCranLibrary',
-    'UninstallLibraries',
-    'ClusterStatusRequest',
-    
-    'Libraries',
-]
 
 # all definitions in this file are in alphabetical order
 
+
 @dataclass
 class ClusterLibraryStatuses:
-    
+
     # Unique identifier for the cluster.
-    cluster_id: str = None
+    cluster_id: str
     # Status of all libraries on the cluster.
-    library_statuses: 'List[LibraryFullStatus]' = None
+    library_statuses: "List[LibraryFullStatus]"
 
     def as_request(self) -> (dict, dict):
-        clusterLibraryStatuses_query, clusterLibraryStatuses_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        clusterLibraryStatuses_query, clusterLibraryStatuses_body = {}, {}
         if self.cluster_id:
-            clusterLibraryStatuses_body['cluster_id'] = self.cluster_id
+            clusterLibraryStatuses_body["cluster_id"] = self.cluster_id
         if self.library_statuses:
-            clusterLibraryStatuses_body['library_statuses'] = [v.as_request()[1] for v in self.library_statuses]
-        
+            clusterLibraryStatuses_body["library_statuses"] = [
+                v.as_request()[1] for v in self.library_statuses
+            ]
+
         return clusterLibraryStatuses_query, clusterLibraryStatuses_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ClusterLibraryStatuses':
+    def from_dict(cls, d: Dict[str, any]) -> "ClusterLibraryStatuses":
         return cls(
-            cluster_id=d.get('cluster_id', None),
-            library_statuses=[LibraryFullStatus.from_dict(v) for v in d['library_statuses']] if 'library_statuses' in d else None,
+            cluster_id=d.get("cluster_id", None),
+            library_statuses=[
+                LibraryFullStatus.from_dict(v) for v in d["library_statuses"]
+            ]
+            if "library_statuses" in d
+            else None,
         )
 
+
+@dataclass
+class ClusterStatus:
+    """Get status"""
+
+    # Unique identifier of the cluster whose status should be retrieved.
+    cluster_id: str  # query
+
+    def as_request(self) -> (dict, dict):
+        clusterStatus_query, clusterStatus_body = {}, {}
+        if self.cluster_id:
+            clusterStatus_query["cluster_id"] = self.cluster_id
+
+        return clusterStatus_query, clusterStatus_body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> "ClusterStatus":
+        return cls(
+            cluster_id=d.get("cluster_id", None),
+        )
 
 
 @dataclass
 class InstallLibraries:
-    
+
     # Unique identifier for the cluster on which to install these libraries.
     cluster_id: str
     # The libraries to install.
-    libraries: 'List[Library]' = None
+    libraries: "List[Library]"
 
     def as_request(self) -> (dict, dict):
-        installLibraries_query, installLibraries_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        installLibraries_query, installLibraries_body = {}, {}
         if self.cluster_id:
-            installLibraries_body['cluster_id'] = self.cluster_id
+            installLibraries_body["cluster_id"] = self.cluster_id
         if self.libraries:
-            installLibraries_body['libraries'] = [v.as_request()[1] for v in self.libraries]
-        
+            installLibraries_body["libraries"] = [
+                v.as_request()[1] for v in self.libraries
+            ]
+
         return installLibraries_query, installLibraries_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'InstallLibraries':
+    def from_dict(cls, d: Dict[str, any]) -> "InstallLibraries":
         return cls(
-            cluster_id=d.get('cluster_id', None),
-            libraries=[Library.from_dict(v) for v in d['libraries']] if 'libraries' in d else None,
+            cluster_id=d.get("cluster_id", None),
+            libraries=[Library.from_dict(v) for v in d["libraries"]]
+            if "libraries" in d
+            else None,
         )
-
 
 
 @dataclass
 class Library:
-    
+
     # Specification of a CRAN library to be installed as part of the library
-    cran: 'RCranLibrary' = None
+    cran: "RCranLibrary"
     # URI of the egg to be installed. Currently only DBFS and S3 URIs are
-    # supported. For example: ``{ "egg": "dbfs:/my/egg" }`` or ``{ "egg":
-    # "s3://my-bucket/egg" }``. If S3 is used, please make sure the cluster has
+    # supported. For example: `{ "egg": "dbfs:/my/egg" }` or `{ "egg":
+    # "s3://my-bucket/egg" }`. If S3 is used, please make sure the cluster has
     # read access on the library. You may need to launch the cluster with an IAM
     # role to access the S3 URI.
-    egg: str = None
+    egg: str
     # URI of the jar to be installed. Currently only DBFS and S3 URIs are
-    # supported. For example: ``{ "jar": "dbfs:/mnt/databricks/library.jar" }``
-    # or ``{ "jar": "s3://my-bucket/library.jar" }``. If S3 is used, please make
-    # sure the cluster has read access on the library. You may need to launch
-    # the cluster with an IAM role to access the S3 URI.
-    jar: str = None
-    # Specification of a maven library to be installed. For example: ``{
-    # "coordinates": "org.jsoup:jsoup:1.7.2" }``
-    maven: 'MavenLibrary' = None
-    # Specification of a PyPi library to be installed. For example: ``{
-    # "package": "simplejson" }``
-    pypi: 'PythonPyPiLibrary' = None
-    # URI of the wheel to be installed. For example: ``{ "whl": "dbfs:/my/whl"
-    # }`` or ``{ "whl": "s3://my-bucket/whl" }``. If S3 is used, please make
-    # sure the cluster has read access on the library. You may need to launch
-    # the cluster with an IAM role to access the S3 URI.
-    whl: str = None
+    # supported. For example: `{ "jar": "dbfs:/mnt/databricks/library.jar" }` or
+    # `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make sure
+    # the cluster has read access on the library. You may need to launch the
+    # cluster with an IAM role to access the S3 URI.
+    jar: str
+    # Specification of a maven library to be installed. For example: `{
+    # "coordinates": "org.jsoup:jsoup:1.7.2" }`
+    maven: "MavenLibrary"
+    # Specification of a PyPi library to be installed. For example: `{
+    # "package": "simplejson" }`
+    pypi: "PythonPyPiLibrary"
+    # URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl" }`
+    # or `{ "whl": "s3://my-bucket/whl" }`. If S3 is used, please make sure the
+    # cluster has read access on the library. You may need to launch the cluster
+    # with an IAM role to access the S3 URI.
+    whl: str
 
     def as_request(self) -> (dict, dict):
-        library_query, library_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        library_query, library_body = {}, {}
         if self.cran:
-            library_body['cran'] = self.cran.as_request()[1]
+            library_body["cran"] = self.cran.as_request()[1]
         if self.egg:
-            library_body['egg'] = self.egg
+            library_body["egg"] = self.egg
         if self.jar:
-            library_body['jar'] = self.jar
+            library_body["jar"] = self.jar
         if self.maven:
-            library_body['maven'] = self.maven.as_request()[1]
+            library_body["maven"] = self.maven.as_request()[1]
         if self.pypi:
-            library_body['pypi'] = self.pypi.as_request()[1]
+            library_body["pypi"] = self.pypi.as_request()[1]
         if self.whl:
-            library_body['whl'] = self.whl
-        
+            library_body["whl"] = self.whl
+
         return library_query, library_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Library':
+    def from_dict(cls, d: Dict[str, any]) -> "Library":
         return cls(
-            cran=RCranLibrary.from_dict(d['cran']) if 'cran' in d else None,
-            egg=d.get('egg', None),
-            jar=d.get('jar', None),
-            maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d else None,
-            pypi=PythonPyPiLibrary.from_dict(d['pypi']) if 'pypi' in d else None,
-            whl=d.get('whl', None),
+            cran=RCranLibrary.from_dict(d["cran"]) if "cran" in d else None,
+            egg=d.get("egg", None),
+            jar=d.get("jar", None),
+            maven=MavenLibrary.from_dict(d["maven"]) if "maven" in d else None,
+            pypi=PythonPyPiLibrary.from_dict(d["pypi"]) if "pypi" in d else None,
+            whl=d.get("whl", None),
         )
-
 
 
 @dataclass
 class LibraryFullStatus:
-    
+
     # Whether the library was set to be installed on all clusters via the
     # libraries UI.
-    is_library_for_all_clusters: bool = None
+    is_library_for_all_clusters: bool
     # Unique identifier for the library.
-    library: 'Library' = None
+    library: "Library"
     # All the info and warning messages that have occurred so far for this
     # library.
-    messages: 'List[str]' = None
+    messages: "List[str]"
     # Status of installing the library on the cluster.
-    status: 'LibraryFullStatusStatus' = None
+    status: "LibraryFullStatusStatus"
 
     def as_request(self) -> (dict, dict):
-        libraryFullStatus_query, libraryFullStatus_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        libraryFullStatus_query, libraryFullStatus_body = {}, {}
         if self.is_library_for_all_clusters:
-            libraryFullStatus_body['is_library_for_all_clusters'] = self.is_library_for_all_clusters
+            libraryFullStatus_body[
+                "is_library_for_all_clusters"
+            ] = self.is_library_for_all_clusters
         if self.library:
-            libraryFullStatus_body['library'] = self.library.as_request()[1]
+            libraryFullStatus_body["library"] = self.library.as_request()[1]
         if self.messages:
-            libraryFullStatus_body['messages'] = [v for v in self.messages]
+            libraryFullStatus_body["messages"] = [v for v in self.messages]
         if self.status:
-            libraryFullStatus_body['status'] = self.status.value
-        
+            libraryFullStatus_body["status"] = self.status.value
+
         return libraryFullStatus_query, libraryFullStatus_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LibraryFullStatus':
+    def from_dict(cls, d: Dict[str, any]) -> "LibraryFullStatus":
         return cls(
-            is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
-            library=Library.from_dict(d['library']) if 'library' in d else None,
-            messages=d.get('messages', None),
-            status=LibraryFullStatusStatus(d['status']) if 'status' in d else None,
+            is_library_for_all_clusters=d.get("is_library_for_all_clusters", None),
+            library=Library.from_dict(d["library"]) if "library" in d else None,
+            messages=d.get("messages", None),
+            status=LibraryFullStatusStatus(d["status"]) if "status" in d else None,
         )
-
 
 
 class LibraryFullStatusStatus(Enum):
     """Status of installing the library on the cluster."""
-    
-    FAILED = 'FAILED'
-    INSTALLED = 'INSTALLED'
-    INSTALLING = 'INSTALLING'
-    PENDING = 'PENDING'
-    RESOLVING = 'RESOLVING'
-    SKIPPED = 'SKIPPED'
-    UNINSTALL_ON_RESTART = 'UNINSTALL_ON_RESTART'
+
+    FAILED = "FAILED"
+    INSTALLED = "INSTALLED"
+    INSTALLING = "INSTALLING"
+    PENDING = "PENDING"
+    RESOLVING = "RESOLVING"
+    SKIPPED = "SKIPPED"
+    UNINSTALL_ON_RESTART = "UNINSTALL_ON_RESTART"
+
 
 @dataclass
 class ListAllClusterLibraryStatusesResponse:
-    
+
     # A list of cluster statuses.
-    statuses: 'List[ClusterLibraryStatuses]' = None
+    statuses: "List[ClusterLibraryStatuses]"
 
     def as_request(self) -> (dict, dict):
-        listAllClusterLibraryStatusesResponse_query, listAllClusterLibraryStatusesResponse_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        (
+            listAllClusterLibraryStatusesResponse_query,
+            listAllClusterLibraryStatusesResponse_body,
+        ) = ({}, {})
         if self.statuses:
-            listAllClusterLibraryStatusesResponse_body['statuses'] = [v.as_request()[1] for v in self.statuses]
-        
-        return listAllClusterLibraryStatusesResponse_query, listAllClusterLibraryStatusesResponse_body
+            listAllClusterLibraryStatusesResponse_body["statuses"] = [
+                v.as_request()[1] for v in self.statuses
+            ]
 
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListAllClusterLibraryStatusesResponse':
-        return cls(
-            statuses=[ClusterLibraryStatuses.from_dict(v) for v in d['statuses']] if 'statuses' in d else None,
+        return (
+            listAllClusterLibraryStatusesResponse_query,
+            listAllClusterLibraryStatusesResponse_body,
         )
 
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> "ListAllClusterLibraryStatusesResponse":
+        return cls(
+            statuses=[ClusterLibraryStatuses.from_dict(v) for v in d["statuses"]]
+            if "statuses" in d
+            else None,
+        )
 
 
 @dataclass
 class MavenLibrary:
-    
+
     # Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
     coordinates: str
-    # List of dependences to exclude. For example: ``["slf4j:slf4j",
-    # "*:hadoop-client"]``.
-    # 
+    # List of dependences to exclude. For example: `["slf4j:slf4j",
+    # "*:hadoop-client"]`.
+    #
     # Maven dependency exclusions:
     # https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
-    exclusions: 'List[str]' = None
+    exclusions: "List[str]"
     # Maven repo to install the Maven package from. If omitted, both Maven
     # Central Repository and Spark Packages are searched.
-    repo: str = None
+    repo: str
 
     def as_request(self) -> (dict, dict):
-        mavenLibrary_query, mavenLibrary_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        mavenLibrary_query, mavenLibrary_body = {}, {}
         if self.coordinates:
-            mavenLibrary_body['coordinates'] = self.coordinates
+            mavenLibrary_body["coordinates"] = self.coordinates
         if self.exclusions:
-            mavenLibrary_body['exclusions'] = [v for v in self.exclusions]
+            mavenLibrary_body["exclusions"] = [v for v in self.exclusions]
         if self.repo:
-            mavenLibrary_body['repo'] = self.repo
-        
+            mavenLibrary_body["repo"] = self.repo
+
         return mavenLibrary_query, mavenLibrary_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'MavenLibrary':
+    def from_dict(cls, d: Dict[str, any]) -> "MavenLibrary":
         return cls(
-            coordinates=d.get('coordinates', None),
-            exclusions=d.get('exclusions', None),
-            repo=d.get('repo', None),
+            coordinates=d.get("coordinates", None),
+            exclusions=d.get("exclusions", None),
+            repo=d.get("repo", None),
         )
-
 
 
 @dataclass
 class PythonPyPiLibrary:
-    
+
     # The name of the pypi package to install. An optional exact version
     # specification is also supported. Examples: "simplejson" and
     # "simplejson==3.8.0".
     package: str
     # The repository where the package can be found. If not specified, the
     # default pip index is used.
-    repo: str = None
+    repo: str
 
     def as_request(self) -> (dict, dict):
-        pythonPyPiLibrary_query, pythonPyPiLibrary_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        pythonPyPiLibrary_query, pythonPyPiLibrary_body = {}, {}
         if self.package:
-            pythonPyPiLibrary_body['package'] = self.package
+            pythonPyPiLibrary_body["package"] = self.package
         if self.repo:
-            pythonPyPiLibrary_body['repo'] = self.repo
-        
+            pythonPyPiLibrary_body["repo"] = self.repo
+
         return pythonPyPiLibrary_query, pythonPyPiLibrary_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PythonPyPiLibrary':
+    def from_dict(cls, d: Dict[str, any]) -> "PythonPyPiLibrary":
         return cls(
-            package=d.get('package', None),
-            repo=d.get('repo', None),
+            package=d.get("package", None),
+            repo=d.get("repo", None),
         )
-
 
 
 @dataclass
 class RCranLibrary:
-    
+
     # The name of the CRAN package to install.
     package: str
     # The repository where the package can be found. If not specified, the
     # default CRAN repo is used.
-    repo: str = None
+    repo: str
 
     def as_request(self) -> (dict, dict):
-        rCranLibrary_query, rCranLibrary_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        rCranLibrary_query, rCranLibrary_body = {}, {}
         if self.package:
-            rCranLibrary_body['package'] = self.package
+            rCranLibrary_body["package"] = self.package
         if self.repo:
-            rCranLibrary_body['repo'] = self.repo
-        
+            rCranLibrary_body["repo"] = self.repo
+
         return rCranLibrary_query, rCranLibrary_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RCranLibrary':
+    def from_dict(cls, d: Dict[str, any]) -> "RCranLibrary":
         return cls(
-            package=d.get('package', None),
-            repo=d.get('repo', None),
+            package=d.get("package", None),
+            repo=d.get("repo", None),
         )
-
 
 
 @dataclass
 class UninstallLibraries:
-    
+
     # Unique identifier for the cluster on which to uninstall these libraries.
     cluster_id: str
     # The libraries to uninstall.
-    libraries: 'List[Library]' = None
+    libraries: "List[Library]"
 
     def as_request(self) -> (dict, dict):
-        uninstallLibraries_query, uninstallLibraries_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        uninstallLibraries_query, uninstallLibraries_body = {}, {}
         if self.cluster_id:
-            uninstallLibraries_body['cluster_id'] = self.cluster_id
+            uninstallLibraries_body["cluster_id"] = self.cluster_id
         if self.libraries:
-            uninstallLibraries_body['libraries'] = [v.as_request()[1] for v in self.libraries]
-        
+            uninstallLibraries_body["libraries"] = [
+                v.as_request()[1] for v in self.libraries
+            ]
+
         return uninstallLibraries_query, uninstallLibraries_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UninstallLibraries':
+    def from_dict(cls, d: Dict[str, any]) -> "UninstallLibraries":
         return cls(
-            cluster_id=d.get('cluster_id', None),
-            libraries=[Library.from_dict(v) for v in d['libraries']] if 'libraries' in d else None,
+            cluster_id=d.get("cluster_id", None),
+            libraries=[Library.from_dict(v) for v in d["libraries"]]
+            if "libraries" in d
+            else None,
         )
-
-
-
-@dataclass
-class ClusterStatusRequest:
-    
-    # Unique identifier of the cluster whose status should be retrieved.
-    cluster_id: str # query
-
-    def as_request(self) -> (dict, dict):
-        clusterStatusRequest_query, clusterStatusRequest_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
-        if self.cluster_id:
-            clusterStatusRequest_query['cluster_id'] = self.cluster_id
-        
-        return clusterStatusRequest_query, clusterStatusRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ClusterStatusRequest':
-        return cls(
-            cluster_id=d.get('cluster_id', None),
-        )
-
 
 
 class LibrariesAPI:
     def __init__(self, api_client):
         self._api = api_client
-    
-    def allClusterStatuses(self) -> ListAllClusterLibraryStatusesResponse:
-        """Get all statuses
-        
+
+    def all_cluster_statuses(self) -> ListAllClusterLibraryStatusesResponse:
+        """Get all statuses.
+
         Get the status of all libraries on all clusters. A status will be
         available for all libraries installed on this cluster via the API or the
         libraries UI as well as libraries set to be installed on all clusters
         via the libraries UI."""
-        
-        json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses')
+
+        json = self._api.do("GET", "/api/2.0/libraries/all-cluster-statuses")
         return ListAllClusterLibraryStatusesResponse.from_dict(json)
-    
-    def clusterStatus(self, request: ClusterStatusRequest) -> ClusterLibraryStatuses:
-        """Get status
-        
+
+    def cluster_status(self, request: ClusterStatus) -> ClusterLibraryStatuses:
+        """Get status.
+
         Get the status of libraries on a cluster. A status will be available for
         all libraries installed on this cluster via the API or the libraries UI
         as well as libraries set to be installed on all clusters via the
         libraries UI. The order of returned libraries will be as follows.
-        
+
         1. Libraries set to be installed on this cluster will be returned first.
         Within this group, the final order will be order in which the libraries
         were added to the cluster.
-        
+
         2. Libraries set to be installed on all clusters are returned next.
         Within this group there is no order guarantee.
-        
+
         3. Libraries that were previously requested on this cluster or on all
         clusters, but now marked for removal. Within this group there is no
         order guarantee."""
         query, body = request.as_request()
-        json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, body=body)
+        json = self._api.do(
+            "GET", "/api/2.0/libraries/cluster-status", query=query, body=body
+        )
         return ClusterLibraryStatuses.from_dict(json)
-    
+
     def install(self, request: InstallLibraries):
-        """Add a library
-        
+        """Add a library.
+
         Add libraries to be installed on a cluster. The installation is
         asynchronous; it happens in the background after the completion of this
         request.
-        
+
         **Note**: The actual set of libraries to be installed on a cluster is
         the union of the libraries specified via this method and the libraries
         set to be installed on all clusters via the libraries UI."""
         query, body = request.as_request()
-        self._api.do('POST', '/api/2.0/libraries/install', query=query, body=body)
-        
-    
+        self._api.do("POST", "/api/2.0/libraries/install", query=query, body=body)
+
     def uninstall(self, request: UninstallLibraries):
-        """Uninstall libraries
-        
+        """Uninstall libraries.
+
         Set libraries to be uninstalled on a cluster. The libraries won't be
         uninstalled until the cluster is restarted. Uninstalling libraries that
         are not installed on the cluster will have no impact but is not an
         error."""
         query, body = request.as_request()
-        self._api.do('POST', '/api/2.0/libraries/uninstall', query=query, body=body)
-        
-    
+        self._api.do("POST", "/api/2.0/libraries/uninstall", query=query, body=body)

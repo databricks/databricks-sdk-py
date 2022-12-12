@@ -4,17 +4,10 @@ from .client import *
 from .service import clusters, tokens
 
 def test_profile_auth():
-    c = ApiClient(Config(profile="azure-deco"))
-    clusters_api = clusters.ClustersAPI(c)
+    from databricks.sdk import WorkspaceClient
+    w = WorkspaceClient()
+    w.clusters.list()
 
-
-    clusters_api.edit(clusters.EditCluster(
-        autoscale=clusters.AutoScale(max_workers=10)
-    ))
-
-    resp = clusters_api.list(clusters.ListRequest())
-
-    print(resp.clusters)
 
 def test_marshall_to_dict():
     c = ApiClient()
@@ -26,12 +19,8 @@ def test_marshall_to_dict():
         redact_sensitive=True,
     )
 
-    assert res == {
-        "token_info": {
-            "comment": "test"
-        },
-        "token_value": "*REDACTED*"
-    }
+    assert res == {"token_info": {"comment": "test"}, "token_value": "*REDACTED*"}
+
 
 def test_conversions():
     info = clusters.ClusterInfo(
@@ -44,6 +33,7 @@ def test_conversions():
 
     assert info == clusters.ClusterInfo.from_dict(info.as_dict())
 
+
 def test_unmarshall_to_dataclass():
     c = ApiClient()
     res = c.unmarshall(
@@ -54,10 +44,7 @@ def test_unmarshall_to_dataclass():
                 "foo": "bar",
             },
             "ssh_public_keys": ["abc", "bcd"],
-            "autoscale": {
-                "min_workers": 10,
-                "max_workers": 20
-            },
+            "autoscale": {"min_workers": 10, "max_workers": 20},
         },
         clusters.ClusterInfo,
     )

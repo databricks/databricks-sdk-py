@@ -14,11 +14,13 @@ setup(
     install_requires=[
         "requests>=2.28.1",
     ],
-    extras_require={"dev": [
-        "pytest",
-        "pytest-cov",
-        "black", # TODO: replace with YAPF
-    ]},
+    extras_require={
+        "dev": [
+            "pytest",
+            "pytest-cov",
+            "black",  # TODO: replace with YAPF
+        ]
+    },
     author="Databricks",
     description="Databricks SDK (Official) for Python",
     long_description=io.open("README.md", encoding="utf-8").read(),

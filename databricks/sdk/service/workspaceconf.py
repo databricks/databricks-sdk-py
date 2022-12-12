@@ -2,60 +2,51 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 
-__all__ = [
-    
-    'GetStatusRequest',
-    'WorkspaceConf',
-    
-    'WorkspaceConf',
-]
 
 # all definitions in this file are in alphabetical order
 
+
 @dataclass
-class GetStatusRequest:
-    
-    
-    keys: str # query
+class GetStatus:
+    """Check configuration status"""
+
+    keys: str  # query
 
     def as_request(self) -> (dict, dict):
-        getStatusRequest_query, getStatusRequest_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        getStatus_query, getStatus_body = {}, {}
         if self.keys:
-            getStatusRequest_query['keys'] = self.keys
-        
-        return getStatusRequest_query, getStatusRequest_body
+            getStatus_query["keys"] = self.keys
+
+        return getStatus_query, getStatus_body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetStatusRequest':
+    def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
         return cls(
-            keys=d.get('keys', None),
+            keys=d.get("keys", None),
         )
 
 
-
-type WorkspaceConf 'Dict[str,str]'
+WorkspaceConf = Dict[str, str]
 
 
 class WorkspaceConfAPI:
     def __init__(self, api_client):
         self._api = api_client
-    
-    def getStatus(self, request: GetStatusRequest) -> WorkspaceConf:
-        """Check configuration status
-        
+
+    def get_status(self, request: GetStatus) -> WorkspaceConf:
+        """Check configuration status.
+
         Gets the configuration status for a workspace."""
         query, body = request.as_request()
-        json = self._api.do('GET', '/api/2.0/workspace-conf', query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/workspace-conf", query=query, body=body)
         return WorkspaceConf.from_dict(json)
-    
-    def setStatus(self, request: WorkspaceConf):
-        """Enable/disable features
-        
+
+    def set_status(self, request: WorkspaceConf):
+        """Enable/disable features.
+
         Sets the configuration status for a workspace, including enabling or
         disabling it."""
         query, body = request.as_request()
-        self._api.do('PATCH', '/api/2.0/workspace-conf', query=query, body=body)
-        
-    
+        self._api.do("PATCH", "/api/2.0/workspace-conf", query=query, body=body)

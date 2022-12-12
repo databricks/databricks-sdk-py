@@ -2,29 +2,22 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 
-__all__ = [
-    {{range .Types}}
-    '{{.PascalName}}',{{end}}
-    {{range .Services}}
-    '{{.Name}}',{{end}}
-]
+{{range .ImportedEntities}}
+from .{{.Package.Name}} import {{.PascalName}}{{end}}
 
 # all definitions in this file are in alphabetical order
 {{range .Types}}
 {{if .Fields -}}@dataclass
 class {{.PascalName}}:
     {{if .Description}}"""{{.Comment "    " 80}}"""{{end}}
-    {{- range .Fields}}{{if .Required}}{{if ne .Name "$ref"}}
+    {{- range .Fields}}{{if ne .Name "$ref"}}
     {{.Comment "    # " 80}}
-    {{.Name}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}{{end}}{{end}}
-    {{- range .Fields}}{{if not .Required}}{{if ne .Name "$ref"}}
-    {{.Comment "    # " 80}}
-    {{.Name}}: {{template "type" .Entity}} = None{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}{{end}}{{end}}
+    {{.Name}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}{{end}}
 
     def as_request(self) -> (dict, dict):
-        {{.CamelName}}_query, {{.CamelName}}_body = {}, {} # TODO: add .HasQuery() and .HasBody() to code generator
+        {{.CamelName}}_query, {{.CamelName}}_body = {}, {}
         {{range .Fields}}{{if ne .Name "$ref"}}if self.{{.Name}}:
             {{.Of.CamelName}}{{if .IsQuery}}_query{{else}}_body{{end}}['{{.Name}}'] = {{template "as_request_type" .}}
         {{end}}{{end}}
@@ -37,16 +30,16 @@ class {{.PascalName}}:
         )
 
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
-{{else if .MapValue}}type {{.PascalName}} {{template "type" .}}
+{{else if .MapValue}}{{.PascalName}} = {{template "type-nq" .}}
 {{else if .Enum}}class {{.PascalName}}(Enum):
     {{if .Description}}"""{{.Comment "    " 80}}"""{{end}}
     {{range .Enum }}
-    {{.Content}} = '{{.Content}}'{{end}}{{end}}
+    {{.Content}}{{if eq .Content "None"}}_{{end}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}{{if .Entity.ArrayValue.IsObject}}[{{.Entity.ArrayValue.PascalName}}.from_dict(v) for v in d['{{.Name}}']] if '{{.Name}}' in d else None{{else}}d.get('{{.Name}}', None){{end}}
-	{{- else if .Entity.IsObject }}{{.Entity.PascalName}}.from_dict(d['{{.Name}}']) if '{{.Name}}' in d else None
+	{{- else if or .Entity.IsObject .Entity.IsExternal }}{{.Entity.PascalName}}.from_dict(d['{{.Name}}']) if '{{.Name}}' in d else None
 	{{- else if .Entity.Enum }}{{.Entity.PascalName}}(d['{{.Name}}']) if '{{.Name}}' in d else None
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
@@ -61,18 +54,23 @@ class {{.PascalName}}:
 	{{- if not . }}any # ERROR: No Type
 	{{- else if .ArrayValue }}'List[{{template "type-nq" .ArrayValue}}]'
 	{{- else if .MapValue }}'Dict[str,{{template "type-nq" .MapValue}}]'
+	{{- else if .IsExternal }}'{{.PascalName}}'
 	{{- else if .IsObject }}'{{.PascalName}}'
 	{{- else if .Enum }}'{{.PascalName}}'
 	{{- else}}{{template "type-nq" .}}{{- end -}}
 {{- end -}}
 {{- define "type-nq" -}}
 	{{- if .IsString}}str
+	{{- else if .IsEmpty}}Any
+  {{- else if .IsAny}}Any
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
+	{{- else if .IsExternal }}{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}
 	{{- else if .Enum }}{{.PascalName}}
+	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else}}any /* MISSING TYPE */
 	{{- end -}}
 {{- end -}}
@@ -82,7 +80,7 @@ class {{.Name}}API:
     def __init__(self, api_client):
         self._api = api_client
     {{range .Methods}}
-    def {{.CamelName}}(self{{if .Request}}, request: {{.Request.PascalName}}{{end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
+    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}, request: {{.Request.PascalName}}{{end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
         {{if .Description}}"""{{.Comment "        " 80}}"""{{end}}
         {{if .Request}}query, body = request.as_request(){{end}}
         {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{request.{{.Field.Name}}}{{end}}{{ end }}'
