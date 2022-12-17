@@ -19,12 +19,12 @@ class CancelAllRuns:
     # required.
     job_id: int
 
-    def as_request(self) -> (dict, dict):
-        cancelAllRuns_query, cancelAllRuns_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_id:
-            cancelAllRuns_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
 
-        return cancelAllRuns_query, cancelAllRuns_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CancelAllRuns":
@@ -39,12 +39,12 @@ class CancelRun:
     # This field is required.
     run_id: int
 
-    def as_request(self) -> (dict, dict):
-        cancelRun_query, cancelRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            cancelRun_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return cancelRun_query, cancelRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CancelRun":
@@ -75,14 +75,14 @@ class ClusterInstance:
     # yet.
     spark_context_id: str
 
-    def as_request(self) -> (dict, dict):
-        clusterInstance_query, clusterInstance_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            clusterInstance_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.spark_context_id:
-            clusterInstance_body["spark_context_id"] = self.spark_context_id
+            body["spark_context_id"] = self.spark_context_id
 
-        return clusterInstance_query, clusterInstance_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterInstance":
@@ -106,16 +106,16 @@ class ClusterSpec:
     # If new_cluster, a description of a cluster that is created for each run.
     new_cluster: "CreateCluster"
 
-    def as_request(self) -> (dict, dict):
-        clusterSpec_query, clusterSpec_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.existing_cluster_id:
-            clusterSpec_body["existing_cluster_id"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.libraries:
-            clusterSpec_body["libraries"] = [v for v in self.libraries]
+            body["libraries"] = [v for v in self.libraries]
         if self.new_cluster:
-            clusterSpec_body["new_cluster"] = self.new_cluster
+            body["new_cluster"] = self.new_cluster
 
-        return clusterSpec_query, clusterSpec_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterSpec":
@@ -184,42 +184,34 @@ class CreateJob:
     # completes. The default behavior is to not send any system notifications.
     webhook_notifications: "JobWebhookNotifications"
 
-    def as_request(self) -> (dict, dict):
-        createJob_query, createJob_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            createJob_body["access_control_list"] = [
-                v for v in self.access_control_list
-            ]
+            body["access_control_list"] = [v for v in self.access_control_list]
         if self.email_notifications:
-            createJob_body[
-                "email_notifications"
-            ] = self.email_notifications.as_request()[1]
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.format:
-            createJob_body["format"] = self.format.value
+            body["format"] = self.format.value
         if self.git_source:
-            createJob_body["git_source"] = self.git_source.as_request()[1]
+            body["git_source"] = self.git_source.as_dict()
         if self.job_clusters:
-            createJob_body["job_clusters"] = [
-                v.as_request()[1] for v in self.job_clusters
-            ]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs:
-            createJob_body["max_concurrent_runs"] = self.max_concurrent_runs
+            body["max_concurrent_runs"] = self.max_concurrent_runs
         if self.name:
-            createJob_body["name"] = self.name
+            body["name"] = self.name
         if self.schedule:
-            createJob_body["schedule"] = self.schedule.as_request()[1]
+            body["schedule"] = self.schedule.as_dict()
         if self.tags:
-            createJob_body["tags"] = self.tags
+            body["tags"] = self.tags
         if self.tasks:
-            createJob_body["tasks"] = [v.as_request()[1] for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds:
-            createJob_body["timeout_seconds"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            createJob_body[
-                "webhook_notifications"
-            ] = self.webhook_notifications.as_request()[1]
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
 
-        return createJob_query, createJob_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateJob":
@@ -268,12 +260,12 @@ class CreateResponse:
     # The canonical identifier for the newly created job.
     job_id: int
 
-    def as_request(self) -> (dict, dict):
-        createResponse_query, createResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_id:
-            createResponse_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
 
-        return createResponse_query, createResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateResponse":
@@ -298,16 +290,16 @@ class CronSchedule:
     # [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
     timezone_id: str
 
-    def as_request(self) -> (dict, dict):
-        cronSchedule_query, cronSchedule_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pause_status:
-            cronSchedule_body["pause_status"] = self.pause_status.value
+            body["pause_status"] = self.pause_status.value
         if self.quartz_cron_expression:
-            cronSchedule_body["quartz_cron_expression"] = self.quartz_cron_expression
+            body["quartz_cron_expression"] = self.quartz_cron_expression
         if self.timezone_id:
-            cronSchedule_body["timezone_id"] = self.timezone_id
+            body["timezone_id"] = self.timezone_id
 
-        return cronSchedule_query, cronSchedule_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CronSchedule":
@@ -338,14 +330,14 @@ class DbtOutput:
     # after the run has finished.
     artifacts_link: str
 
-    def as_request(self) -> (dict, dict):
-        dbtOutput_query, dbtOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.artifacts_headers:
-            dbtOutput_body["artifacts_headers"] = self.artifacts_headers
+            body["artifacts_headers"] = self.artifacts_headers
         if self.artifacts_link:
-            dbtOutput_body["artifacts_link"] = self.artifacts_link
+            body["artifacts_link"] = self.artifacts_link
 
-        return dbtOutput_query, dbtOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DbtOutput":
@@ -379,20 +371,20 @@ class DbtTask:
     # line argument.
     warehouse_id: str
 
-    def as_request(self) -> (dict, dict):
-        dbtTask_query, dbtTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.commands:
-            dbtTask_body["commands"] = [v for v in self.commands]
+            body["commands"] = [v for v in self.commands]
         if self.profiles_directory:
-            dbtTask_body["profiles_directory"] = self.profiles_directory
+            body["profiles_directory"] = self.profiles_directory
         if self.project_directory:
-            dbtTask_body["project_directory"] = self.project_directory
+            body["project_directory"] = self.project_directory
         if self.schema:
-            dbtTask_body["schema"] = self.schema
+            body["schema"] = self.schema
         if self.warehouse_id:
-            dbtTask_body["warehouse_id"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
 
-        return dbtTask_query, dbtTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DbtTask":
@@ -411,12 +403,12 @@ class DeleteJob:
     # The canonical identifier of the job to delete. This field is required.
     job_id: int
 
-    def as_request(self) -> (dict, dict):
-        deleteJob_query, deleteJob_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_id:
-            deleteJob_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
 
-        return deleteJob_query, deleteJob_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteJob":
@@ -431,12 +423,12 @@ class DeleteRun:
     # The canonical identifier of the run for which to retrieve the metadata.
     run_id: int
 
-    def as_request(self) -> (dict, dict):
-        deleteRun_query, deleteRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            deleteRun_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return deleteRun_query, deleteRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteRun":
@@ -454,14 +446,14 @@ class ExportRun:
     # Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
     views_to_export: "ViewsToExport"  # query
 
-    def as_request(self) -> (dict, dict):
-        exportRun_query, exportRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            exportRun_query["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.views_to_export:
-            exportRun_query["views_to_export"] = self.views_to_export.value
+            body["views_to_export"] = self.views_to_export.value
 
-        return exportRun_query, exportRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ExportRun":
@@ -479,12 +471,12 @@ class ExportRunOutput:
     # The exported content in HTML format (one for every view item).
     views: "List[ViewItem]"
 
-    def as_request(self) -> (dict, dict):
-        exportRunOutput_query, exportRunOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.views:
-            exportRunOutput_body["views"] = [v.as_request()[1] for v in self.views]
+            body["views"] = [v.as_dict() for v in self.views]
 
-        return exportRunOutput_query, exportRunOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ExportRunOutput":
@@ -501,12 +493,12 @@ class Get:
     # field is required.
     job_id: int  # query
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_id:
-            get_query["job_id"] = self.job_id
+            body["job_id"] = self.job_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -525,14 +517,14 @@ class GetRun:
     # This field is required.
     run_id: int  # query
 
-    def as_request(self) -> (dict, dict):
-        getRun_query, getRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.include_history:
-            getRun_query["include_history"] = self.include_history
+            body["include_history"] = self.include_history
         if self.run_id:
-            getRun_query["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return getRun_query, getRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetRun":
@@ -549,12 +541,12 @@ class GetRunOutput:
     # The canonical identifier for the run. This field is required.
     run_id: int  # query
 
-    def as_request(self) -> (dict, dict):
-        getRunOutput_query, getRunOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            getRunOutput_query["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return getRunOutput_query, getRunOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetRunOutput":
@@ -573,12 +565,12 @@ class GitSnapshot:
     # specified, this points to the commit the tag points to.
     used_commit: str
 
-    def as_request(self) -> (dict, dict):
-        gitSnapshot_query, gitSnapshot_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.used_commit:
-            gitSnapshot_body["used_commit"] = self.used_commit
+            body["used_commit"] = self.used_commit
 
-        return gitSnapshot_query, gitSnapshot_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GitSnapshot":
@@ -616,22 +608,22 @@ class GitSource:
     # characters.
     git_url: str
 
-    def as_request(self) -> (dict, dict):
-        gitSource_query, gitSource_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.git_branch:
-            gitSource_body["git_branch"] = self.git_branch
+            body["git_branch"] = self.git_branch
         if self.git_commit:
-            gitSource_body["git_commit"] = self.git_commit
+            body["git_commit"] = self.git_commit
         if self.git_provider:
-            gitSource_body["git_provider"] = self.git_provider.value
+            body["git_provider"] = self.git_provider.value
         if self.git_snapshot:
-            gitSource_body["git_snapshot"] = self.git_snapshot.as_request()[1]
+            body["git_snapshot"] = self.git_snapshot.as_dict()
         if self.git_tag:
-            gitSource_body["git_tag"] = self.git_tag
+            body["git_tag"] = self.git_tag
         if self.git_url:
-            gitSource_body["git_url"] = self.git_url
+            body["git_url"] = self.git_url
 
-        return gitSource_query, gitSource_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GitSource":
@@ -683,20 +675,20 @@ class Job:
     # using the `resetJob` method.
     settings: "JobSettings"
 
-    def as_request(self) -> (dict, dict):
-        job_query, job_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_time:
-            job_body["created_time"] = self.created_time
+            body["created_time"] = self.created_time
         if self.creator_user_name:
-            job_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.job_id:
-            job_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.run_as_user_name:
-            job_body["run_as_user_name"] = self.run_as_user_name
+            body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
-            job_body["settings"] = self.settings.as_request()[1]
+            body["settings"] = self.settings.as_dict()
 
-        return job_query, job_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Job":
@@ -719,14 +711,14 @@ class JobCluster:
 
     new_cluster: "CreateCluster"
 
-    def as_request(self) -> (dict, dict):
-        jobCluster_query, jobCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_cluster_key:
-            jobCluster_body["job_cluster_key"] = self.job_cluster_key
+            body["job_cluster_key"] = self.job_cluster_key
         if self.new_cluster:
-            jobCluster_body["new_cluster"] = self.new_cluster
+            body["new_cluster"] = self.new_cluster
 
-        return jobCluster_query, jobCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobCluster":
@@ -761,20 +753,18 @@ class JobEmailNotifications:
     # notifications are not sent.
     on_success: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        jobEmailNotifications_query, jobEmailNotifications_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.no_alert_for_skipped_runs:
-            jobEmailNotifications_body[
-                "no_alert_for_skipped_runs"
-            ] = self.no_alert_for_skipped_runs
+            body["no_alert_for_skipped_runs"] = self.no_alert_for_skipped_runs
         if self.on_failure:
-            jobEmailNotifications_body["on_failure"] = [v for v in self.on_failure]
+            body["on_failure"] = [v for v in self.on_failure]
         if self.on_start:
-            jobEmailNotifications_body["on_start"] = [v for v in self.on_start]
+            body["on_start"] = [v for v in self.on_start]
         if self.on_success:
-            jobEmailNotifications_body["on_success"] = [v for v in self.on_success]
+            body["on_success"] = [v for v in self.on_success]
 
-        return jobEmailNotifications_query, jobEmailNotifications_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobEmailNotifications":
@@ -840,38 +830,32 @@ class JobSettings:
     # completes. The default behavior is to not send any system notifications.
     webhook_notifications: "JobWebhookNotifications"
 
-    def as_request(self) -> (dict, dict):
-        jobSettings_query, jobSettings_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.email_notifications:
-            jobSettings_body[
-                "email_notifications"
-            ] = self.email_notifications.as_request()[1]
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.format:
-            jobSettings_body["format"] = self.format.value
+            body["format"] = self.format.value
         if self.git_source:
-            jobSettings_body["git_source"] = self.git_source.as_request()[1]
+            body["git_source"] = self.git_source.as_dict()
         if self.job_clusters:
-            jobSettings_body["job_clusters"] = [
-                v.as_request()[1] for v in self.job_clusters
-            ]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs:
-            jobSettings_body["max_concurrent_runs"] = self.max_concurrent_runs
+            body["max_concurrent_runs"] = self.max_concurrent_runs
         if self.name:
-            jobSettings_body["name"] = self.name
+            body["name"] = self.name
         if self.schedule:
-            jobSettings_body["schedule"] = self.schedule.as_request()[1]
+            body["schedule"] = self.schedule.as_dict()
         if self.tags:
-            jobSettings_body["tags"] = self.tags
+            body["tags"] = self.tags
         if self.tasks:
-            jobSettings_body["tasks"] = [v.as_request()[1] for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds:
-            jobSettings_body["timeout_seconds"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            jobSettings_body[
-                "webhook_notifications"
-            ] = self.webhook_notifications.as_request()[1]
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
 
-        return jobSettings_query, jobSettings_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobSettings":
@@ -982,62 +966,50 @@ class JobTaskSettings:
     # behavior is to have no timeout.
     timeout_seconds: int
 
-    def as_request(self) -> (dict, dict):
-        jobTaskSettings_query, jobTaskSettings_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbt_task:
-            jobTaskSettings_body["dbt_task"] = self.dbt_task.as_request()[1]
+            body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
-            jobTaskSettings_body["depends_on"] = [
-                v.as_request()[1] for v in self.depends_on
-            ]
+            body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description:
-            jobTaskSettings_body["description"] = self.description
+            body["description"] = self.description
         if self.email_notifications:
-            jobTaskSettings_body[
-                "email_notifications"
-            ] = self.email_notifications.as_request()[1]
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.existing_cluster_id:
-            jobTaskSettings_body["existing_cluster_id"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.job_cluster_key:
-            jobTaskSettings_body["job_cluster_key"] = self.job_cluster_key
+            body["job_cluster_key"] = self.job_cluster_key
         if self.libraries:
-            jobTaskSettings_body["libraries"] = [v for v in self.libraries]
+            body["libraries"] = [v for v in self.libraries]
         if self.max_retries:
-            jobTaskSettings_body["max_retries"] = self.max_retries
+            body["max_retries"] = self.max_retries
         if self.min_retry_interval_millis:
-            jobTaskSettings_body[
-                "min_retry_interval_millis"
-            ] = self.min_retry_interval_millis
+            body["min_retry_interval_millis"] = self.min_retry_interval_millis
         if self.new_cluster:
-            jobTaskSettings_body["new_cluster"] = self.new_cluster
+            body["new_cluster"] = self.new_cluster
         if self.notebook_task:
-            jobTaskSettings_body["notebook_task"] = self.notebook_task.as_request()[1]
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.pipeline_task:
-            jobTaskSettings_body["pipeline_task"] = self.pipeline_task.as_request()[1]
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
-            jobTaskSettings_body[
-                "python_wheel_task"
-            ] = self.python_wheel_task.as_request()[1]
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.retry_on_timeout:
-            jobTaskSettings_body["retry_on_timeout"] = self.retry_on_timeout
+            body["retry_on_timeout"] = self.retry_on_timeout
         if self.spark_jar_task:
-            jobTaskSettings_body["spark_jar_task"] = self.spark_jar_task.as_request()[1]
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            jobTaskSettings_body[
-                "spark_python_task"
-            ] = self.spark_python_task.as_request()[1]
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            jobTaskSettings_body[
-                "spark_submit_task"
-            ] = self.spark_submit_task.as_request()[1]
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.sql_task:
-            jobTaskSettings_body["sql_task"] = self.sql_task.as_request()[1]
+            body["sql_task"] = self.sql_task.as_dict()
         if self.task_key:
-            jobTaskSettings_body["task_key"] = self.task_key
+            body["task_key"] = self.task_key
         if self.timeout_seconds:
-            jobTaskSettings_body["timeout_seconds"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
 
-        return jobTaskSettings_query, jobTaskSettings_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobTaskSettings":
@@ -1099,22 +1071,16 @@ class JobWebhookNotifications:
     # `on_success` property.
     on_success: "List[JobWebhookNotificationsOnSuccessItem]"
 
-    def as_request(self) -> (dict, dict):
-        jobWebhookNotifications_query, jobWebhookNotifications_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.on_failure:
-            jobWebhookNotifications_body["on_failure"] = [
-                v.as_request()[1] for v in self.on_failure
-            ]
+            body["on_failure"] = [v.as_dict() for v in self.on_failure]
         if self.on_start:
-            jobWebhookNotifications_body["on_start"] = [
-                v.as_request()[1] for v in self.on_start
-            ]
+            body["on_start"] = [v.as_dict() for v in self.on_start]
         if self.on_success:
-            jobWebhookNotifications_body["on_success"] = [
-                v.as_request()[1] for v in self.on_success
-            ]
+            body["on_success"] = [v.as_dict() for v in self.on_success]
 
-        return jobWebhookNotifications_query, jobWebhookNotifications_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobWebhookNotifications":
@@ -1144,18 +1110,12 @@ class JobWebhookNotificationsOnFailureItem:
 
     id: str
 
-    def as_request(self) -> (dict, dict):
-        (
-            jobWebhookNotificationsOnFailureItem_query,
-            jobWebhookNotificationsOnFailureItem_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            jobWebhookNotificationsOnFailureItem_body["id"] = self.id
+            body["id"] = self.id
 
-        return (
-            jobWebhookNotificationsOnFailureItem_query,
-            jobWebhookNotificationsOnFailureItem_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobWebhookNotificationsOnFailureItem":
@@ -1169,18 +1129,12 @@ class JobWebhookNotificationsOnStartItem:
 
     id: str
 
-    def as_request(self) -> (dict, dict):
-        (
-            jobWebhookNotificationsOnStartItem_query,
-            jobWebhookNotificationsOnStartItem_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            jobWebhookNotificationsOnStartItem_body["id"] = self.id
+            body["id"] = self.id
 
-        return (
-            jobWebhookNotificationsOnStartItem_query,
-            jobWebhookNotificationsOnStartItem_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobWebhookNotificationsOnStartItem":
@@ -1194,18 +1148,12 @@ class JobWebhookNotificationsOnSuccessItem:
 
     id: str
 
-    def as_request(self) -> (dict, dict):
-        (
-            jobWebhookNotificationsOnSuccessItem_query,
-            jobWebhookNotificationsOnSuccessItem_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            jobWebhookNotificationsOnSuccessItem_body["id"] = self.id
+            body["id"] = self.id
 
-        return (
-            jobWebhookNotificationsOnSuccessItem_query,
-            jobWebhookNotificationsOnSuccessItem_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobWebhookNotificationsOnSuccessItem":
@@ -1229,18 +1177,18 @@ class List:
     # created job.
     offset: int  # query
 
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.expand_tasks:
-            list_query["expand_tasks"] = self.expand_tasks
+            body["expand_tasks"] = self.expand_tasks
         if self.limit:
-            list_query["limit"] = self.limit
+            body["limit"] = self.limit
         if self.name:
-            list_query["name"] = self.name
+            body["name"] = self.name
         if self.offset:
-            list_query["offset"] = self.offset
+            body["offset"] = self.offset
 
-        return list_query, list_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "List":
@@ -1259,14 +1207,14 @@ class ListJobsResponse:
     # The list of jobs.
     jobs: "List[Job]"
 
-    def as_request(self) -> (dict, dict):
-        listJobsResponse_query, listJobsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.has_more:
-            listJobsResponse_body["has_more"] = self.has_more
+            body["has_more"] = self.has_more
         if self.jobs:
-            listJobsResponse_body["jobs"] = [v.as_request()[1] for v in self.jobs]
+            body["jobs"] = [v.as_dict() for v in self.jobs]
 
-        return listJobsResponse_query, listJobsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListJobsResponse":
@@ -1312,28 +1260,28 @@ class ListRuns:
     # filter by a time range.
     start_time_to: int  # query
 
-    def as_request(self) -> (dict, dict):
-        listRuns_query, listRuns_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.active_only:
-            listRuns_query["active_only"] = self.active_only
+            body["active_only"] = self.active_only
         if self.completed_only:
-            listRuns_query["completed_only"] = self.completed_only
+            body["completed_only"] = self.completed_only
         if self.expand_tasks:
-            listRuns_query["expand_tasks"] = self.expand_tasks
+            body["expand_tasks"] = self.expand_tasks
         if self.job_id:
-            listRuns_query["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.limit:
-            listRuns_query["limit"] = self.limit
+            body["limit"] = self.limit
         if self.offset:
-            listRuns_query["offset"] = self.offset
+            body["offset"] = self.offset
         if self.run_type:
-            listRuns_query["run_type"] = self.run_type.value
+            body["run_type"] = self.run_type.value
         if self.start_time_from:
-            listRuns_query["start_time_from"] = self.start_time_from
+            body["start_time_from"] = self.start_time_from
         if self.start_time_to:
-            listRuns_query["start_time_to"] = self.start_time_to
+            body["start_time_to"] = self.start_time_to
 
-        return listRuns_query, listRuns_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListRuns":
@@ -1359,14 +1307,14 @@ class ListRunsResponse:
     # A list of runs, from most recently started to least.
     runs: "List[Run]"
 
-    def as_request(self) -> (dict, dict):
-        listRunsResponse_query, listRunsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.has_more:
-            listRunsResponse_body["has_more"] = self.has_more
+            body["has_more"] = self.has_more
         if self.runs:
-            listRunsResponse_body["runs"] = [v.as_request()[1] for v in self.runs]
+            body["runs"] = [v.as_dict() for v in self.runs]
 
-        return listRunsResponse_query, listRunsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListRunsResponse":
@@ -1396,14 +1344,14 @@ class NotebookOutput:
     # Whether or not the result was truncated.
     truncated: bool
 
-    def as_request(self) -> (dict, dict):
-        notebookOutput_query, notebookOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.result:
-            notebookOutput_body["result"] = self.result
+            body["result"] = self.result
         if self.truncated:
-            notebookOutput_body["truncated"] = self.truncated
+            body["truncated"] = self.truncated
 
-        return notebookOutput_query, notebookOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NotebookOutput":
@@ -1441,16 +1389,16 @@ class NotebookTask:
     # This describes an enum
     source: "NotebookTaskSource"
 
-    def as_request(self) -> (dict, dict):
-        notebookTask_query, notebookTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.base_parameters:
-            notebookTask_body["base_parameters"] = self.base_parameters
+            body["base_parameters"] = self.base_parameters
         if self.notebook_path:
-            notebookTask_body["notebook_path"] = self.notebook_path
+            body["notebook_path"] = self.notebook_path
         if self.source:
-            notebookTask_body["source"] = self.source.value
+            body["source"] = self.source.value
 
-        return notebookTask_query, notebookTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NotebookTask":
@@ -1474,12 +1422,12 @@ class PipelineParams:
     # If true, triggers a full refresh on the delta live table.
     full_refresh: bool
 
-    def as_request(self) -> (dict, dict):
-        pipelineParams_query, pipelineParams_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.full_refresh:
-            pipelineParams_body["full_refresh"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
 
-        return pipelineParams_query, pipelineParams_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineParams":
@@ -1496,14 +1444,14 @@ class PipelineTask:
     # The full name of the pipeline task to execute.
     pipeline_id: str
 
-    def as_request(self) -> (dict, dict):
-        pipelineTask_query, pipelineTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.full_refresh:
-            pipelineTask_body["full_refresh"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         if self.pipeline_id:
-            pipelineTask_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
 
-        return pipelineTask_query, pipelineTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineTask":
@@ -1530,18 +1478,18 @@ class PythonWheelTask:
     # `named_parameters` is not null.
     parameters: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        pythonWheelTask_query, pythonWheelTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.entry_point:
-            pythonWheelTask_body["entry_point"] = self.entry_point
+            body["entry_point"] = self.entry_point
         if self.named_parameters:
-            pythonWheelTask_body["named_parameters"] = self.named_parameters
+            body["named_parameters"] = self.named_parameters
         if self.package_name:
-            pythonWheelTask_body["package_name"] = self.package_name
+            body["package_name"] = self.package_name
         if self.parameters:
-            pythonWheelTask_body["parameters"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
 
-        return pythonWheelTask_query, pythonWheelTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PythonWheelTask":
@@ -1571,22 +1519,22 @@ class RepairHistoryItem:
     # or a repair run.
     type: "RepairHistoryItemType"
 
-    def as_request(self) -> (dict, dict):
-        repairHistoryItem_query, repairHistoryItem_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.end_time:
-            repairHistoryItem_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.id:
-            repairHistoryItem_body["id"] = self.id
+            body["id"] = self.id
         if self.start_time:
-            repairHistoryItem_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            repairHistoryItem_body["state"] = self.state.as_request()[1]
+            body["state"] = self.state.as_dict()
         if self.task_run_ids:
-            repairHistoryItem_body["task_run_ids"] = [v for v in self.task_run_ids]
+            body["task_run_ids"] = [v for v in self.task_run_ids]
         if self.type:
-            repairHistoryItem_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return repairHistoryItem_query, repairHistoryItem_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RepairHistoryItem":
@@ -1704,36 +1652,34 @@ class RepairRun:
     # not support custom parameters.
     sql_params: "Dict[str,str]"
 
-    def as_request(self) -> (dict, dict):
-        repairRun_query, repairRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbt_commands:
-            repairRun_body["dbt_commands"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.jar_params:
-            repairRun_body["jar_params"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.latest_repair_id:
-            repairRun_body["latest_repair_id"] = self.latest_repair_id
+            body["latest_repair_id"] = self.latest_repair_id
         if self.notebook_params:
-            repairRun_body["notebook_params"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.pipeline_params:
-            repairRun_body["pipeline_params"] = self.pipeline_params.as_request()[1]
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            repairRun_body["python_named_params"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            repairRun_body["python_params"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.rerun_all_failed_tasks:
-            repairRun_body["rerun_all_failed_tasks"] = self.rerun_all_failed_tasks
+            body["rerun_all_failed_tasks"] = self.rerun_all_failed_tasks
         if self.rerun_tasks:
-            repairRun_body["rerun_tasks"] = [v for v in self.rerun_tasks]
+            body["rerun_tasks"] = [v for v in self.rerun_tasks]
         if self.run_id:
-            repairRun_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.spark_submit_params:
-            repairRun_body["spark_submit_params"] = [
-                v for v in self.spark_submit_params
-            ]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            repairRun_body["sql_params"] = self.sql_params
+            body["sql_params"] = self.sql_params
 
-        return repairRun_query, repairRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RepairRun":
@@ -1761,12 +1707,12 @@ class RepairRunResponse:
     # The ID of the repair.
     repair_id: int
 
-    def as_request(self) -> (dict, dict):
-        repairRunResponse_query, repairRunResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.repair_id:
-            repairRunResponse_body["repair_id"] = self.repair_id
+            body["repair_id"] = self.repair_id
 
-        return repairRunResponse_query, repairRunResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RepairRunResponse":
@@ -1787,14 +1733,14 @@ class ResetJob:
     # runs. Changes to other fields are applied to future runs only.
     new_settings: "JobSettings"
 
-    def as_request(self) -> (dict, dict):
-        resetJob_query, resetJob_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_id:
-            resetJob_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.new_settings:
-            resetJob_body["new_settings"] = self.new_settings.as_request()[1]
+            body["new_settings"] = self.new_settings.as_dict()
 
-        return resetJob_query, resetJob_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ResetJob":
@@ -1818,8 +1764,10 @@ class Run:
     # same as the `max_retries` value for the job.
     attempt_number: int
     # The time in milliseconds it took to terminate the cluster and clean up any
-    # associated artifacts. The total duration of the run is the sum of the
-    # setup_duration, the execution_duration, and the cleanup_duration.
+    # associated artifacts. The duration of a task run is the sum of the
+    # `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
+    # `cleanup_duration` field is set to 0 for multitask job runs. The total
+    # duration of a multitask job run is the value of the `run_duration` field.
     cleanup_duration: int
     # The cluster used for this run. If the run is specified to use a new
     # cluster, this field is set once the Jobs service has requested a cluster
@@ -1835,7 +1783,11 @@ class Run:
     end_time: int
     # The time in milliseconds it took to execute the commands in the JAR or
     # notebook until they completed, failed, timed out, were cancelled, or
-    # encountered an unexpected error.
+    # encountered an unexpected error. The duration of a task run is the sum of
+    # the `setup_duration`, `execution_duration`, and the `cleanup_duration`.
+    # The `execution_duration` field is set to 0 for multitask job runs. The
+    # total duration of a multitask job run is the value of the `run_duration`
+    # field.
     execution_duration: int
     # An optional specification for a remote repository containing the notebooks
     # used by this job's notebook tasks.
@@ -1856,6 +1808,9 @@ class Run:
     overriding_parameters: "RunParameters"
     # The repair history of the run.
     repair_history: "List[RepairHistoryItem]"
+    # The time in milliseconds it took the job run and all of its repairs to
+    # finish.
+    run_duration: int
     # The canonical identifier of the run. This ID is unique across all runs of
     # all jobs.
     run_id: int
@@ -1869,9 +1824,13 @@ class Run:
     # The cron schedule that triggered this run if it was triggered by the
     # periodic scheduler.
     schedule: "CronSchedule"
-    # The time it took to set up the cluster in milliseconds. For runs that run
+    # The time in milliseconds it took to set up the cluster. For runs that run
     # on new clusters this is the cluster creation time, for runs that run on
-    # existing clusters this time should be very short.
+    # existing clusters this time should be very short. The duration of a task
+    # run is the sum of the `setup_duration`, `execution_duration`, and the
+    # `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
+    # job runs. The total duration of a multitask job run is the value of the
+    # `run_duration` field.
     setup_duration: int
     # The time at which this run was started in epoch milliseconds (milliseconds
     # since 1/1/1970 UTC). This may not be the time when the job task starts
@@ -1886,62 +1845,60 @@ class Run:
     # The type of trigger that fired this run.
     trigger: "TriggerType"
 
-    def as_request(self) -> (dict, dict):
-        run_query, run_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attempt_number:
-            run_body["attempt_number"] = self.attempt_number
+            body["attempt_number"] = self.attempt_number
         if self.cleanup_duration:
-            run_body["cleanup_duration"] = self.cleanup_duration
+            body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
-            run_body["cluster_instance"] = self.cluster_instance.as_request()[1]
+            body["cluster_instance"] = self.cluster_instance.as_dict()
         if self.cluster_spec:
-            run_body["cluster_spec"] = self.cluster_spec.as_request()[1]
+            body["cluster_spec"] = self.cluster_spec.as_dict()
         if self.creator_user_name:
-            run_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.end_time:
-            run_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.execution_duration:
-            run_body["execution_duration"] = self.execution_duration
+            body["execution_duration"] = self.execution_duration
         if self.git_source:
-            run_body["git_source"] = self.git_source.as_request()[1]
+            body["git_source"] = self.git_source.as_dict()
         if self.job_clusters:
-            run_body["job_clusters"] = [v.as_request()[1] for v in self.job_clusters]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.job_id:
-            run_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.number_in_job:
-            run_body["number_in_job"] = self.number_in_job
+            body["number_in_job"] = self.number_in_job
         if self.original_attempt_run_id:
-            run_body["original_attempt_run_id"] = self.original_attempt_run_id
+            body["original_attempt_run_id"] = self.original_attempt_run_id
         if self.overriding_parameters:
-            run_body["overriding_parameters"] = self.overriding_parameters.as_request()[
-                1
-            ]
+            body["overriding_parameters"] = self.overriding_parameters.as_dict()
         if self.repair_history:
-            run_body["repair_history"] = [
-                v.as_request()[1] for v in self.repair_history
-            ]
+            body["repair_history"] = [v.as_dict() for v in self.repair_history]
+        if self.run_duration:
+            body["run_duration"] = self.run_duration
         if self.run_id:
-            run_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_name:
-            run_body["run_name"] = self.run_name
+            body["run_name"] = self.run_name
         if self.run_page_url:
-            run_body["run_page_url"] = self.run_page_url
+            body["run_page_url"] = self.run_page_url
         if self.run_type:
-            run_body["run_type"] = self.run_type.value
+            body["run_type"] = self.run_type.value
         if self.schedule:
-            run_body["schedule"] = self.schedule.as_request()[1]
+            body["schedule"] = self.schedule.as_dict()
         if self.setup_duration:
-            run_body["setup_duration"] = self.setup_duration
+            body["setup_duration"] = self.setup_duration
         if self.start_time:
-            run_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            run_body["state"] = self.state.as_request()[1]
+            body["state"] = self.state.as_dict()
         if self.tasks:
-            run_body["tasks"] = [v.as_request()[1] for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.trigger:
-            run_body["trigger"] = self.trigger.value
+            body["trigger"] = self.trigger.value
 
-        return run_query, run_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Run":
@@ -1972,6 +1929,7 @@ class Run:
             repair_history=[RepairHistoryItem.from_dict(v) for v in d["repair_history"]]
             if "repair_history" in d
             else None,
+            run_duration=d.get("run_duration", None),
             run_id=d.get("run_id", None),
             run_name=d.get("run_name", None),
             run_page_url=d.get("run_page_url", None),
@@ -2100,30 +2058,30 @@ class RunNow:
     # not support custom parameters.
     sql_params: "Dict[str,str]"
 
-    def as_request(self) -> (dict, dict):
-        runNow_query, runNow_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbt_commands:
-            runNow_body["dbt_commands"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.idempotency_token:
-            runNow_body["idempotency_token"] = self.idempotency_token
+            body["idempotency_token"] = self.idempotency_token
         if self.jar_params:
-            runNow_body["jar_params"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.job_id:
-            runNow_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.notebook_params:
-            runNow_body["notebook_params"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.pipeline_params:
-            runNow_body["pipeline_params"] = self.pipeline_params.as_request()[1]
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            runNow_body["python_named_params"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            runNow_body["python_params"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.spark_submit_params:
-            runNow_body["spark_submit_params"] = [v for v in self.spark_submit_params]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            runNow_body["sql_params"] = self.sql_params
+            body["sql_params"] = self.sql_params
 
-        return runNow_query, runNow_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunNow":
@@ -2152,14 +2110,14 @@ class RunNowResponse:
     # The globally unique ID of the newly triggered run.
     run_id: int
 
-    def as_request(self) -> (dict, dict):
-        runNowResponse_query, runNowResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.number_in_job:
-            runNowResponse_body["number_in_job"] = self.number_in_job
+            body["number_in_job"] = self.number_in_job
         if self.run_id:
-            runNowResponse_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return runNowResponse_query, runNowResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunNowResponse":
@@ -2204,26 +2162,26 @@ class RunOutput:
     # The output of a SQL task, if available.
     sql_output: "SqlOutput"
 
-    def as_request(self) -> (dict, dict):
-        runOutput_query, runOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbt_output:
-            runOutput_body["dbt_output"] = self.dbt_output.as_request()[1]
+            body["dbt_output"] = self.dbt_output.as_dict()
         if self.error:
-            runOutput_body["error"] = self.error
+            body["error"] = self.error
         if self.error_trace:
-            runOutput_body["error_trace"] = self.error_trace
+            body["error_trace"] = self.error_trace
         if self.logs:
-            runOutput_body["logs"] = self.logs
+            body["logs"] = self.logs
         if self.logs_truncated:
-            runOutput_body["logs_truncated"] = self.logs_truncated
+            body["logs_truncated"] = self.logs_truncated
         if self.metadata:
-            runOutput_body["metadata"] = self.metadata.as_request()[1]
+            body["metadata"] = self.metadata.as_dict()
         if self.notebook_output:
-            runOutput_body["notebook_output"] = self.notebook_output.as_request()[1]
+            body["notebook_output"] = self.notebook_output.as_dict()
         if self.sql_output:
-            runOutput_body["sql_output"] = self.sql_output.as_request()[1]
+            body["sql_output"] = self.sql_output.as_dict()
 
-        return runOutput_query, runOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunOutput":
@@ -2330,28 +2288,26 @@ class RunParameters:
     # not support custom parameters.
     sql_params: "Dict[str,str]"
 
-    def as_request(self) -> (dict, dict):
-        runParameters_query, runParameters_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbt_commands:
-            runParameters_body["dbt_commands"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.jar_params:
-            runParameters_body["jar_params"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.notebook_params:
-            runParameters_body["notebook_params"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.pipeline_params:
-            runParameters_body["pipeline_params"] = self.pipeline_params.as_request()[1]
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            runParameters_body["python_named_params"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            runParameters_body["python_params"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.spark_submit_params:
-            runParameters_body["spark_submit_params"] = [
-                v for v in self.spark_submit_params
-            ]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            runParameters_body["sql_params"] = self.sql_params
+            body["sql_params"] = self.sql_params
 
-        return runParameters_query, runParameters_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunParameters":
@@ -2394,20 +2350,18 @@ class RunState:
     # the run timed out.
     user_cancelled_or_timedout: bool
 
-    def as_request(self) -> (dict, dict):
-        runState_query, runState_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.life_cycle_state:
-            runState_body["life_cycle_state"] = self.life_cycle_state.value
+            body["life_cycle_state"] = self.life_cycle_state.value
         if self.result_state:
-            runState_body["result_state"] = self.result_state.value
+            body["result_state"] = self.result_state.value
         if self.state_message:
-            runState_body["state_message"] = self.state_message
+            body["state_message"] = self.state_message
         if self.user_cancelled_or_timedout:
-            runState_body[
-                "user_cancelled_or_timedout"
-            ] = self.user_cancelled_or_timedout
+            body["user_cancelled_or_timedout"] = self.user_cancelled_or_timedout
 
-        return runState_query, runState_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunState":
@@ -2465,48 +2419,34 @@ class RunSubmitTaskSettings:
     # behavior is to have no timeout.
     timeout_seconds: int
 
-    def as_request(self) -> (dict, dict):
-        runSubmitTaskSettings_query, runSubmitTaskSettings_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.depends_on:
-            runSubmitTaskSettings_body["depends_on"] = [
-                v.as_request()[1] for v in self.depends_on
-            ]
+            body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.existing_cluster_id:
-            runSubmitTaskSettings_body["existing_cluster_id"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.libraries:
-            runSubmitTaskSettings_body["libraries"] = [v for v in self.libraries]
+            body["libraries"] = [v for v in self.libraries]
         if self.new_cluster:
-            runSubmitTaskSettings_body["new_cluster"] = self.new_cluster
+            body["new_cluster"] = self.new_cluster
         if self.notebook_task:
-            runSubmitTaskSettings_body[
-                "notebook_task"
-            ] = self.notebook_task.as_request()[1]
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.pipeline_task:
-            runSubmitTaskSettings_body[
-                "pipeline_task"
-            ] = self.pipeline_task.as_request()[1]
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
-            runSubmitTaskSettings_body[
-                "python_wheel_task"
-            ] = self.python_wheel_task.as_request()[1]
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.spark_jar_task:
-            runSubmitTaskSettings_body[
-                "spark_jar_task"
-            ] = self.spark_jar_task.as_request()[1]
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            runSubmitTaskSettings_body[
-                "spark_python_task"
-            ] = self.spark_python_task.as_request()[1]
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            runSubmitTaskSettings_body[
-                "spark_submit_task"
-            ] = self.spark_submit_task.as_request()[1]
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.task_key:
-            runSubmitTaskSettings_body["task_key"] = self.task_key
+            body["task_key"] = self.task_key
         if self.timeout_seconds:
-            runSubmitTaskSettings_body["timeout_seconds"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
 
-        return runSubmitTaskSettings_query, runSubmitTaskSettings_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunSubmitTaskSettings":
@@ -2554,8 +2494,10 @@ class RunTask:
     # same as the `max_retries` value for the job.
     attempt_number: int
     # The time in milliseconds it took to terminate the cluster and clean up any
-    # associated artifacts. The total duration of the run is the sum of the
-    # setup_duration, the execution_duration, and the cleanup_duration.
+    # associated artifacts. The duration of a task run is the sum of the
+    # `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
+    # `cleanup_duration` field is set to 0 for multitask job runs. The total
+    # duration of a multitask job run is the value of the `run_duration` field.
     cleanup_duration: int
     # The cluster used for this run. If the run is specified to use a new
     # cluster, this field is set once the Jobs service has requested a cluster
@@ -2577,7 +2519,11 @@ class RunTask:
     end_time: int
     # The time in milliseconds it took to execute the commands in the JAR or
     # notebook until they completed, failed, timed out, were cancelled, or
-    # encountered an unexpected error.
+    # encountered an unexpected error. The duration of a task run is the sum of
+    # the `setup_duration`, `execution_duration`, and the `cleanup_duration`.
+    # The `execution_duration` field is set to 0 for multitask job runs. The
+    # total duration of a multitask job run is the value of the `run_duration`
+    # field.
     execution_duration: int
     # If existing_cluster_id, the ID of an existing cluster that is used for all
     # runs of this job. When running jobs on an existing cluster, you may need
@@ -2601,9 +2547,13 @@ class RunTask:
     python_wheel_task: "PythonWheelTask"
     # The ID of the task run.
     run_id: int
-    # The time it took to set up the cluster in milliseconds. For runs that run
+    # The time in milliseconds it took to set up the cluster. For runs that run
     # on new clusters this is the cluster creation time, for runs that run on
-    # existing clusters this time should be very short.
+    # existing clusters this time should be very short. The duration of a task
+    # run is the sum of the `setup_duration`, `execution_duration`, and the
+    # `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
+    # job runs. The total duration of a multitask job run is the value of the
+    # `run_duration` field.
     setup_duration: int
     # If spark_jar_task, indicates that this job must run a JAR.
     spark_jar_task: "SparkJarTask"
@@ -2627,58 +2577,58 @@ class RunTask:
     # updated or reset. The maximum length is 100 characters.
     task_key: str
 
-    def as_request(self) -> (dict, dict):
-        runTask_query, runTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attempt_number:
-            runTask_body["attempt_number"] = self.attempt_number
+            body["attempt_number"] = self.attempt_number
         if self.cleanup_duration:
-            runTask_body["cleanup_duration"] = self.cleanup_duration
+            body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
-            runTask_body["cluster_instance"] = self.cluster_instance.as_request()[1]
+            body["cluster_instance"] = self.cluster_instance.as_dict()
         if self.dbt_task:
-            runTask_body["dbt_task"] = self.dbt_task.as_request()[1]
+            body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
-            runTask_body["depends_on"] = [v.as_request()[1] for v in self.depends_on]
+            body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description:
-            runTask_body["description"] = self.description
+            body["description"] = self.description
         if self.end_time:
-            runTask_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.execution_duration:
-            runTask_body["execution_duration"] = self.execution_duration
+            body["execution_duration"] = self.execution_duration
         if self.existing_cluster_id:
-            runTask_body["existing_cluster_id"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.git_source:
-            runTask_body["git_source"] = self.git_source.as_request()[1]
+            body["git_source"] = self.git_source.as_dict()
         if self.libraries:
-            runTask_body["libraries"] = [v for v in self.libraries]
+            body["libraries"] = [v for v in self.libraries]
         if self.new_cluster:
-            runTask_body["new_cluster"] = self.new_cluster
+            body["new_cluster"] = self.new_cluster
         if self.notebook_task:
-            runTask_body["notebook_task"] = self.notebook_task.as_request()[1]
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.pipeline_task:
-            runTask_body["pipeline_task"] = self.pipeline_task.as_request()[1]
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
-            runTask_body["python_wheel_task"] = self.python_wheel_task.as_request()[1]
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.run_id:
-            runTask_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.setup_duration:
-            runTask_body["setup_duration"] = self.setup_duration
+            body["setup_duration"] = self.setup_duration
         if self.spark_jar_task:
-            runTask_body["spark_jar_task"] = self.spark_jar_task.as_request()[1]
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            runTask_body["spark_python_task"] = self.spark_python_task.as_request()[1]
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            runTask_body["spark_submit_task"] = self.spark_submit_task.as_request()[1]
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.sql_task:
-            runTask_body["sql_task"] = self.sql_task.as_request()[1]
+            body["sql_task"] = self.sql_task.as_dict()
         if self.start_time:
-            runTask_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            runTask_body["state"] = self.state.as_request()[1]
+            body["state"] = self.state.as_dict()
         if self.task_key:
-            runTask_body["task_key"] = self.task_key
+            body["task_key"] = self.task_key
 
-        return runTask_query, runTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunTask":
@@ -2758,16 +2708,16 @@ class SparkJarTask:
     # [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
     parameters: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        sparkJarTask_query, sparkJarTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.jar_uri:
-            sparkJarTask_body["jar_uri"] = self.jar_uri
+            body["jar_uri"] = self.jar_uri
         if self.main_class_name:
-            sparkJarTask_body["main_class_name"] = self.main_class_name
+            body["main_class_name"] = self.main_class_name
         if self.parameters:
-            sparkJarTask_body["parameters"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
 
-        return sparkJarTask_query, sparkJarTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkJarTask":
@@ -2791,14 +2741,14 @@ class SparkPythonTask:
 
     python_file: str
 
-    def as_request(self) -> (dict, dict):
-        sparkPythonTask_query, sparkPythonTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.parameters:
-            sparkPythonTask_body["parameters"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         if self.python_file:
-            sparkPythonTask_body["python_file"] = self.python_file
+            body["python_file"] = self.python_file
 
-        return sparkPythonTask_query, sparkPythonTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkPythonTask":
@@ -2819,12 +2769,12 @@ class SparkSubmitTask:
     # [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
     parameters: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        sparkSubmitTask_query, sparkSubmitTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.parameters:
-            sparkSubmitTask_body["parameters"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
 
-        return sparkSubmitTask_query, sparkSubmitTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkSubmitTask":
@@ -2846,18 +2796,18 @@ class SqlAlertOutput:
     # The canonical identifier of the SQL warehouse.
     warehouse_id: str
 
-    def as_request(self) -> (dict, dict):
-        sqlAlertOutput_query, sqlAlertOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.output_link:
-            sqlAlertOutput_body["output_link"] = self.output_link
+            body["output_link"] = self.output_link
         if self.query_text:
-            sqlAlertOutput_body["query_text"] = self.query_text
+            body["query_text"] = self.query_text
         if self.sql_statements:
-            sqlAlertOutput_body["sql_statements"] = self.sql_statements.as_request()[1]
+            body["sql_statements"] = self.sql_statements.as_dict()
         if self.warehouse_id:
-            sqlAlertOutput_body["warehouse_id"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
 
-        return sqlAlertOutput_query, sqlAlertOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlAlertOutput":
@@ -2877,12 +2827,12 @@ class SqlDashboardOutput:
     # Widgets executed in the run. Only SQL query based widgets are listed.
     widgets: "SqlDashboardWidgetOutput"
 
-    def as_request(self) -> (dict, dict):
-        sqlDashboardOutput_query, sqlDashboardOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.widgets:
-            sqlDashboardOutput_body["widgets"] = self.widgets.as_request()[1]
+            body["widgets"] = self.widgets.as_dict()
 
-        return sqlDashboardOutput_query, sqlDashboardOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlDashboardOutput":
@@ -2911,24 +2861,24 @@ class SqlDashboardWidgetOutput:
     # The title of the SQL widget.
     widget_title: str
 
-    def as_request(self) -> (dict, dict):
-        sqlDashboardWidgetOutput_query, sqlDashboardWidgetOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.end_time:
-            sqlDashboardWidgetOutput_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.error:
-            sqlDashboardWidgetOutput_body["error"] = self.error.as_request()[1]
+            body["error"] = self.error.as_dict()
         if self.output_link:
-            sqlDashboardWidgetOutput_body["output_link"] = self.output_link
+            body["output_link"] = self.output_link
         if self.start_time:
-            sqlDashboardWidgetOutput_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.status:
-            sqlDashboardWidgetOutput_body["status"] = self.status.value
+            body["status"] = self.status.value
         if self.widget_id:
-            sqlDashboardWidgetOutput_body["widget_id"] = self.widget_id
+            body["widget_id"] = self.widget_id
         if self.widget_title:
-            sqlDashboardWidgetOutput_body["widget_title"] = self.widget_title
+            body["widget_title"] = self.widget_title
 
-        return sqlDashboardWidgetOutput_query, sqlDashboardWidgetOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlDashboardWidgetOutput":
@@ -2965,16 +2915,16 @@ class SqlOutput:
     # The output of a SQL query task, if available.
     query_output: "SqlQueryOutput"
 
-    def as_request(self) -> (dict, dict):
-        sqlOutput_query, sqlOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert_output:
-            sqlOutput_body["alert_output"] = self.alert_output.as_request()[1]
+            body["alert_output"] = self.alert_output.as_dict()
         if self.dashboard_output:
-            sqlOutput_body["dashboard_output"] = self.dashboard_output.as_request()[1]
+            body["dashboard_output"] = self.dashboard_output.as_dict()
         if self.query_output:
-            sqlOutput_body["query_output"] = self.query_output.as_request()[1]
+            body["query_output"] = self.query_output.as_dict()
 
-        return sqlOutput_query, sqlOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlOutput":
@@ -2997,12 +2947,12 @@ class SqlOutputError:
     # The error message when execution fails.
     message: str
 
-    def as_request(self) -> (dict, dict):
-        sqlOutputError_query, sqlOutputError_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.message:
-            sqlOutputError_body["message"] = self.message
+            body["message"] = self.message
 
-        return sqlOutputError_query, sqlOutputError_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlOutputError":
@@ -3024,18 +2974,18 @@ class SqlQueryOutput:
     # The canonical identifier of the SQL warehouse.
     warehouse_id: str
 
-    def as_request(self) -> (dict, dict):
-        sqlQueryOutput_query, sqlQueryOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.output_link:
-            sqlQueryOutput_body["output_link"] = self.output_link
+            body["output_link"] = self.output_link
         if self.query_text:
-            sqlQueryOutput_body["query_text"] = self.query_text
+            body["query_text"] = self.query_text
         if self.sql_statements:
-            sqlQueryOutput_body["sql_statements"] = self.sql_statements.as_request()[1]
+            body["sql_statements"] = self.sql_statements.as_dict()
         if self.warehouse_id:
-            sqlQueryOutput_body["warehouse_id"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
 
-        return sqlQueryOutput_query, sqlQueryOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlQueryOutput":
@@ -3055,12 +3005,12 @@ class SqlStatementOutput:
     # A key that can be used to look up query details.
     lookup_key: str
 
-    def as_request(self) -> (dict, dict):
-        sqlStatementOutput_query, sqlStatementOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.lookup_key:
-            sqlStatementOutput_body["lookup_key"] = self.lookup_key
+            body["lookup_key"] = self.lookup_key
 
-        return sqlStatementOutput_query, sqlStatementOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlStatementOutput":
@@ -3085,20 +3035,20 @@ class SqlTask:
     # warehouses are supported.
     warehouse_id: str
 
-    def as_request(self) -> (dict, dict):
-        sqlTask_query, sqlTask_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert:
-            sqlTask_body["alert"] = self.alert.as_request()[1]
+            body["alert"] = self.alert.as_dict()
         if self.dashboard:
-            sqlTask_body["dashboard"] = self.dashboard.as_request()[1]
+            body["dashboard"] = self.dashboard.as_dict()
         if self.parameters:
-            sqlTask_body["parameters"] = self.parameters
+            body["parameters"] = self.parameters
         if self.query:
-            sqlTask_body["query"] = self.query.as_request()[1]
+            body["query"] = self.query.as_dict()
         if self.warehouse_id:
-            sqlTask_body["warehouse_id"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
 
-        return sqlTask_query, sqlTask_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlTask":
@@ -3119,12 +3069,12 @@ class SqlTaskAlert:
     # The canonical identifier of the SQL alert.
     alert_id: str
 
-    def as_request(self) -> (dict, dict):
-        sqlTaskAlert_query, sqlTaskAlert_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert_id:
-            sqlTaskAlert_body["alert_id"] = self.alert_id
+            body["alert_id"] = self.alert_id
 
-        return sqlTaskAlert_query, sqlTaskAlert_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlTaskAlert":
@@ -3139,12 +3089,12 @@ class SqlTaskDashboard:
     # The canonical identifier of the SQL dashboard.
     dashboard_id: str
 
-    def as_request(self) -> (dict, dict):
-        sqlTaskDashboard_query, sqlTaskDashboard_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dashboard_id:
-            sqlTaskDashboard_body["dashboard_id"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
 
-        return sqlTaskDashboard_query, sqlTaskDashboard_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlTaskDashboard":
@@ -3159,12 +3109,12 @@ class SqlTaskQuery:
     # The canonical identifier of the SQL query.
     query_id: str
 
-    def as_request(self) -> (dict, dict):
-        sqlTaskQuery_query, sqlTaskQuery_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.query_id:
-            sqlTaskQuery_body["query_id"] = self.query_id
+            body["query_id"] = self.query_id
 
-        return sqlTaskQuery_query, sqlTaskQuery_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SqlTaskQuery":
@@ -3207,28 +3157,24 @@ class SubmitRun:
     # completes. The default behavior is to not send any system notifications.
     webhook_notifications: "JobWebhookNotifications"
 
-    def as_request(self) -> (dict, dict):
-        submitRun_query, submitRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            submitRun_body["access_control_list"] = [
-                v for v in self.access_control_list
-            ]
+            body["access_control_list"] = [v for v in self.access_control_list]
         if self.git_source:
-            submitRun_body["git_source"] = self.git_source.as_request()[1]
+            body["git_source"] = self.git_source.as_dict()
         if self.idempotency_token:
-            submitRun_body["idempotency_token"] = self.idempotency_token
+            body["idempotency_token"] = self.idempotency_token
         if self.run_name:
-            submitRun_body["run_name"] = self.run_name
+            body["run_name"] = self.run_name
         if self.tasks:
-            submitRun_body["tasks"] = [v.as_request()[1] for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds:
-            submitRun_body["timeout_seconds"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            submitRun_body[
-                "webhook_notifications"
-            ] = self.webhook_notifications.as_request()[1]
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
 
-        return submitRun_query, submitRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SubmitRun":
@@ -3257,12 +3203,12 @@ class SubmitRunResponse:
     # The canonical identifier for the newly submitted run.
     run_id: int
 
-    def as_request(self) -> (dict, dict):
-        submitRunResponse_query, submitRunResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            submitRunResponse_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return submitRunResponse_query, submitRunResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SubmitRunResponse":
@@ -3276,12 +3222,12 @@ class TaskDependenciesItem:
 
     task_key: str
 
-    def as_request(self) -> (dict, dict):
-        taskDependenciesItem_query, taskDependenciesItem_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.task_key:
-            taskDependenciesItem_body["task_key"] = self.task_key
+            body["task_key"] = self.task_key
 
-        return taskDependenciesItem_query, taskDependenciesItem_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TaskDependenciesItem":
@@ -3314,16 +3260,16 @@ class UpdateJob:
     # runs. Changes to other fields are applied to future runs only.
     new_settings: "JobSettings"
 
-    def as_request(self) -> (dict, dict):
-        updateJob_query, updateJob_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.fields_to_remove:
-            updateJob_body["fields_to_remove"] = [v for v in self.fields_to_remove]
+            body["fields_to_remove"] = [v for v in self.fields_to_remove]
         if self.job_id:
-            updateJob_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.new_settings:
-            updateJob_body["new_settings"] = self.new_settings.as_request()[1]
+            body["new_settings"] = self.new_settings.as_dict()
 
-        return updateJob_query, updateJob_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateJob":
@@ -3348,16 +3294,16 @@ class ViewItem:
     # Type of the view item.
     type: "ViewType"
 
-    def as_request(self) -> (dict, dict):
-        viewItem_query, viewItem_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.content:
-            viewItem_body["content"] = self.content
+            body["content"] = self.content
         if self.name:
-            viewItem_body["name"] = self.name
+            body["name"] = self.name
         if self.type:
-            viewItem_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return viewItem_query, viewItem_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ViewItem":
@@ -3387,69 +3333,158 @@ class JobsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel_all_runs(self, request: CancelAllRuns):
+    def cancel_all_runs(self, job_id: int, **kwargs):
         """Cancel all runs of a job.
 
         Cancels all active runs of a job. The runs are canceled asynchronously,
         so it doesn't prevent new runs from being started."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CancelAllRuns(job_id=job_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.1/jobs/runs/cancel-all", query=query, body=body)
 
-    def cancel_run(self, request: CancelRun):
+    def cancel_run(self, run_id: int, **kwargs):
         """Cancel a job run.
 
         Cancels a job run. The run is canceled asynchronously, so it may still
         be running when this request completes."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CancelRun(run_id=run_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.1/jobs/runs/cancel", query=query, body=body)
 
-    def create(self, request: CreateJob) -> CreateResponse:
+    def create(
+        self,
+        *,
+        access_control_list: List[AccessControlRequest] = None,
+        email_notifications: JobEmailNotifications = None,
+        format: CreateJobFormat = None,
+        git_source: GitSource = None,
+        job_clusters: List[JobCluster] = None,
+        max_concurrent_runs: int = None,
+        name: str = None,
+        schedule: CronSchedule = None,
+        tags: Dict[str, str] = None,
+        tasks: List[JobTaskSettings] = None,
+        timeout_seconds: int = None,
+        webhook_notifications: JobWebhookNotifications = None,
+        **kwargs
+    ) -> CreateResponse:
         """Create a new job.
 
         Create a new job."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateJob(
+                access_control_list=access_control_list,
+                email_notifications=email_notifications,
+                format=format,
+                git_source=git_source,
+                job_clusters=job_clusters,
+                max_concurrent_runs=max_concurrent_runs,
+                name=name,
+                schedule=schedule,
+                tags=tags,
+                tasks=tasks,
+                timeout_seconds=timeout_seconds,
+                webhook_notifications=webhook_notifications,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.1/jobs/create", query=query, body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, request: DeleteJob):
+    def delete(self, job_id: int, **kwargs):
         """Delete a job.
 
         Deletes a job."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteJob(job_id=job_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.1/jobs/delete", query=query, body=body)
 
-    def delete_run(self, request: DeleteRun):
+    def delete_run(self, run_id: int, **kwargs):
         """Delete a job run.
 
         Deletes a non-active run. Returns an error if the run is active."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteRun(run_id=run_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.1/jobs/runs/delete", query=query, body=body)
 
-    def export_run(self, request: ExportRun) -> ExportRunOutput:
+    def export_run(
+        self, run_id: int, *, views_to_export: ViewsToExport = None, **kwargs
+    ) -> ExportRunOutput:
         """Export and retrieve a job run.
 
         Export and retrieve the job run task."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ExportRun(run_id=run_id, views_to_export=views_to_export)
+        body = request.as_dict()
+        query = {}
+        if run_id:
+            query["run_id"] = run_id
+        if views_to_export:
+            query["views_to_export"] = views_to_export.value
+
         json = self._api.do("GET", "/api/2.1/jobs/runs/export", query=query, body=body)
         return ExportRunOutput.from_dict(json)
 
-    def get(self, request: Get) -> Job:
+    def get(self, job_id: int, **kwargs) -> Job:
         """Get a single job.
 
         Retrieves the details for a single job."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(job_id=job_id)
+        body = request.as_dict()
+        query = {}
+        if job_id:
+            query["job_id"] = job_id
+
         json = self._api.do("GET", "/api/2.1/jobs/get", query=query, body=body)
         return Job.from_dict(json)
 
-    def get_run(self, request: GetRun) -> Run:
+    def get_run(self, run_id: int, *, include_history: bool = None, **kwargs) -> Run:
         """Get a single job run.
 
         Retrieve the metadata of a run."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetRun(include_history=include_history, run_id=run_id)
+        body = request.as_dict()
+        query = {}
+        if include_history:
+            query["include_history"] = include_history
+        if run_id:
+            query["run_id"] = run_id
+
         json = self._api.do("GET", "/api/2.1/jobs/runs/get", query=query, body=body)
         return Run.from_dict(json)
 
-    def get_run_output(self, request: GetRunOutput) -> RunOutput:
+    def get_run_output(self, run_id: int, **kwargs) -> RunOutput:
         """Get the output for a single run.
 
         Retrieve the output and metadata of a single task run. When a notebook
@@ -3463,69 +3498,262 @@ class JobsAPI:
         Runs are automatically removed after 60 days. If you to want to
         reference them beyond 60 days, you must save old run results before they
         expire."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetRunOutput(run_id=run_id)
+        body = request.as_dict()
+        query = {}
+        if run_id:
+            query["run_id"] = run_id
+
         json = self._api.do(
             "GET", "/api/2.1/jobs/runs/get-output", query=query, body=body
         )
         return RunOutput.from_dict(json)
 
-    def list(self, request: List) -> ListJobsResponse:
+    def list(
+        self,
+        *,
+        expand_tasks: bool = None,
+        limit: int = None,
+        name: str = None,
+        offset: int = None,
+        **kwargs
+    ) -> ListJobsResponse:
         """List all jobs.
 
         Retrieves a list of jobs."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = List(
+                expand_tasks=expand_tasks, limit=limit, name=name, offset=offset
+            )
+        body = request.as_dict()
+        query = {}
+        if expand_tasks:
+            query["expand_tasks"] = expand_tasks
+        if limit:
+            query["limit"] = limit
+        if name:
+            query["name"] = name
+        if offset:
+            query["offset"] = offset
+
         json = self._api.do("GET", "/api/2.1/jobs/list", query=query, body=body)
         return ListJobsResponse.from_dict(json)
 
-    def list_runs(self, request: ListRuns) -> ListRunsResponse:
+    def list_runs(
+        self,
+        *,
+        active_only: bool = None,
+        completed_only: bool = None,
+        expand_tasks: bool = None,
+        job_id: int = None,
+        limit: int = None,
+        offset: int = None,
+        run_type: ListRunsRunType = None,
+        start_time_from: int = None,
+        start_time_to: int = None,
+        **kwargs
+    ) -> ListRunsResponse:
         """List runs for a job.
 
         List runs in descending order by start time."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListRuns(
+                active_only=active_only,
+                completed_only=completed_only,
+                expand_tasks=expand_tasks,
+                job_id=job_id,
+                limit=limit,
+                offset=offset,
+                run_type=run_type,
+                start_time_from=start_time_from,
+                start_time_to=start_time_to,
+            )
+        body = request.as_dict()
+        query = {}
+        if active_only:
+            query["active_only"] = active_only
+        if completed_only:
+            query["completed_only"] = completed_only
+        if expand_tasks:
+            query["expand_tasks"] = expand_tasks
+        if job_id:
+            query["job_id"] = job_id
+        if limit:
+            query["limit"] = limit
+        if offset:
+            query["offset"] = offset
+        if run_type:
+            query["run_type"] = run_type.value
+        if start_time_from:
+            query["start_time_from"] = start_time_from
+        if start_time_to:
+            query["start_time_to"] = start_time_to
+
         json = self._api.do("GET", "/api/2.1/jobs/runs/list", query=query, body=body)
         return ListRunsResponse.from_dict(json)
 
-    def repair_run(self, request: RepairRun) -> RepairRunResponse:
+    def repair_run(
+        self,
+        run_id: int,
+        *,
+        dbt_commands: List[str] = None,
+        jar_params: List[str] = None,
+        latest_repair_id: int = None,
+        notebook_params: Dict[str, str] = None,
+        pipeline_params: PipelineParams = None,
+        python_named_params: Dict[str, str] = None,
+        python_params: List[str] = None,
+        rerun_all_failed_tasks: bool = None,
+        rerun_tasks: List[str] = None,
+        spark_submit_params: List[str] = None,
+        sql_params: Dict[str, str] = None,
+        **kwargs
+    ) -> RepairRunResponse:
         """Repair a job run.
 
         Re-run one or more tasks. Tasks are re-run as part of the original job
         run. They use the current job and task settings, and can be viewed in
         the history for the original job run."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RepairRun(
+                dbt_commands=dbt_commands,
+                jar_params=jar_params,
+                latest_repair_id=latest_repair_id,
+                notebook_params=notebook_params,
+                pipeline_params=pipeline_params,
+                python_named_params=python_named_params,
+                python_params=python_params,
+                rerun_all_failed_tasks=rerun_all_failed_tasks,
+                rerun_tasks=rerun_tasks,
+                run_id=run_id,
+                spark_submit_params=spark_submit_params,
+                sql_params=sql_params,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.1/jobs/runs/repair", query=query, body=body)
         return RepairRunResponse.from_dict(json)
 
-    def reset(self, request: ResetJob):
+    def reset(self, job_id: int, new_settings: JobSettings, **kwargs):
         """Overwrites all settings for a job.
 
         Overwrites all the settings for a specific job. Use the Update endpoint
         to update job settings partially."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ResetJob(job_id=job_id, new_settings=new_settings)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.1/jobs/reset", query=query, body=body)
 
-    def run_now(self, request: RunNow) -> RunNowResponse:
+    def run_now(
+        self,
+        job_id: int,
+        *,
+        dbt_commands: List[str] = None,
+        idempotency_token: str = None,
+        jar_params: List[str] = None,
+        notebook_params: Dict[str, str] = None,
+        pipeline_params: PipelineParams = None,
+        python_named_params: Dict[str, str] = None,
+        python_params: List[str] = None,
+        spark_submit_params: List[str] = None,
+        sql_params: Dict[str, str] = None,
+        **kwargs
+    ) -> RunNowResponse:
         """Trigger a new job run.
 
         Run a job and return the `run_id` of the triggered run."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RunNow(
+                dbt_commands=dbt_commands,
+                idempotency_token=idempotency_token,
+                jar_params=jar_params,
+                job_id=job_id,
+                notebook_params=notebook_params,
+                pipeline_params=pipeline_params,
+                python_named_params=python_named_params,
+                python_params=python_params,
+                spark_submit_params=spark_submit_params,
+                sql_params=sql_params,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.1/jobs/run-now", query=query, body=body)
         return RunNowResponse.from_dict(json)
 
-    def submit(self, request: SubmitRun) -> SubmitRunResponse:
+    def submit(
+        self,
+        *,
+        access_control_list: List[AccessControlRequest] = None,
+        git_source: GitSource = None,
+        idempotency_token: str = None,
+        run_name: str = None,
+        tasks: List[RunSubmitTaskSettings] = None,
+        timeout_seconds: int = None,
+        webhook_notifications: JobWebhookNotifications = None,
+        **kwargs
+    ) -> SubmitRunResponse:
         """Create and trigger a one-time run.
 
         Submit a one-time run. This endpoint allows you to submit a workload
         directly without creating a job. Runs submitted using this endpoint
         don’t display in the UI. Use the `jobs/runs/get` API to check the run
         state after the job is submitted."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SubmitRun(
+                access_control_list=access_control_list,
+                git_source=git_source,
+                idempotency_token=idempotency_token,
+                run_name=run_name,
+                tasks=tasks,
+                timeout_seconds=timeout_seconds,
+                webhook_notifications=webhook_notifications,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.1/jobs/runs/submit", query=query, body=body)
         return SubmitRunResponse.from_dict(json)
 
-    def update(self, request: UpdateJob):
+    def update(
+        self,
+        job_id: int,
+        *,
+        fields_to_remove: List[str] = None,
+        new_settings: JobSettings = None,
+        **kwargs
+    ):
         """Partially updates a job.
 
         Add, update, or remove specific settings of an existing job. Use the
         ResetJob to overwrite all job settings."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateJob(
+                fields_to_remove=fields_to_remove,
+                job_id=job_id,
+                new_settings=new_settings,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.1/jobs/update", query=query, body=body)

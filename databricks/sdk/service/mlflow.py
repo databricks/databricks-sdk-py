@@ -52,28 +52,28 @@ class Activity:
     # The username of the user that created the object.
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        activity_query, activity_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.activity_type:
-            activity_body["activity_type"] = self.activity_type.value
+            body["activity_type"] = self.activity_type.value
         if self.comment:
-            activity_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.creation_timestamp:
-            activity_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.from_stage:
-            activity_body["from_stage"] = self.from_stage.value
+            body["from_stage"] = self.from_stage.value
         if self.id:
-            activity_body["id"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp:
-            activity_body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.system_comment:
-            activity_body["system_comment"] = self.system_comment
+            body["system_comment"] = self.system_comment
         if self.to_stage:
-            activity_body["to_stage"] = self.to_stage.value
+            body["to_stage"] = self.to_stage.value
         if self.user_id:
-            activity_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return activity_query, activity_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Activity":
@@ -118,12 +118,12 @@ class ApproveResponse:
     # Activity recorded for the action.
     activity: "Activity"
 
-    def as_request(self) -> (dict, dict):
-        approveResponse_query, approveResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.activity:
-            approveResponse_body["activity"] = self.activity.as_request()[1]
+            body["activity"] = self.activity.as_dict()
 
-        return approveResponse_query, approveResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ApproveResponse":
@@ -155,22 +155,20 @@ class ApproveTransitionRequest:
     # Version of the model.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        approveTransitionRequest_query, approveTransitionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.archive_existing_versions:
-            approveTransitionRequest_body[
-                "archive_existing_versions"
-            ] = self.archive_existing_versions
+            body["archive_existing_versions"] = self.archive_existing_versions
         if self.comment:
-            approveTransitionRequest_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.name:
-            approveTransitionRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.stage:
-            approveTransitionRequest_body["stage"] = self.stage.value
+            body["stage"] = self.stage.value
         if self.version:
-            approveTransitionRequest_body["version"] = self.version
+            body["version"] = self.version
 
-        return approveTransitionRequest_query, approveTransitionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ApproveTransitionRequest":
@@ -205,22 +203,20 @@ class CommentObject:
     # The username of the user that created the object.
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        commentObject_query, commentObject_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.available_actions:
-            commentObject_body["available_actions"] = [
-                v for v in self.available_actions
-            ]
+            body["available_actions"] = [v for v in self.available_actions]
         if self.comment:
-            commentObject_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.creation_timestamp:
-            commentObject_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.last_updated_timestamp:
-            commentObject_body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.user_id:
-            commentObject_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return commentObject_query, commentObject_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CommentObject":
@@ -243,16 +239,16 @@ class CreateComment:
     # Version of the model.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        createComment_query, createComment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            createComment_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.name:
-            createComment_body["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            createComment_body["version"] = self.version
+            body["version"] = self.version
 
-        return createComment_query, createComment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateComment":
@@ -278,16 +274,16 @@ class CreateExperiment:
     # support up to 20 tags per request.
     tags: "List[ExperimentTag]"
 
-    def as_request(self) -> (dict, dict):
-        createExperiment_query, createExperiment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.artifact_location:
-            createExperiment_body["artifact_location"] = self.artifact_location
+            body["artifact_location"] = self.artifact_location
         if self.name:
-            createExperiment_body["name"] = self.name
+            body["name"] = self.name
         if self.tags:
-            createExperiment_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
 
-        return createExperiment_query, createExperiment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateExperiment":
@@ -306,12 +302,12 @@ class CreateExperimentResponse:
     # Unique identifier for the experiment.
     experiment_id: str
 
-    def as_request(self) -> (dict, dict):
-        createExperimentResponse_query, createExperimentResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            createExperimentResponse_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
 
-        return createExperimentResponse_query, createExperimentResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateExperimentResponse":
@@ -338,24 +334,22 @@ class CreateModelVersionRequest:
     # Additional metadata for model version.
     tags: "List[ModelVersionTag]"
 
-    def as_request(self) -> (dict, dict):
-        createModelVersionRequest_query, createModelVersionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            createModelVersionRequest_body["description"] = self.description
+            body["description"] = self.description
         if self.name:
-            createModelVersionRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.run_id:
-            createModelVersionRequest_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_link:
-            createModelVersionRequest_body["run_link"] = self.run_link
+            body["run_link"] = self.run_link
         if self.source:
-            createModelVersionRequest_body["source"] = self.source
+            body["source"] = self.source
         if self.tags:
-            createModelVersionRequest_body["tags"] = [
-                v.as_request()[1] for v in self.tags
-            ]
+            body["tags"] = [v.as_dict() for v in self.tags]
 
-        return createModelVersionRequest_query, createModelVersionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateModelVersionRequest":
@@ -377,14 +371,12 @@ class CreateModelVersionResponse:
     # Return new version number generated for this model in registry.
     model_version: "ModelVersion"
 
-    def as_request(self) -> (dict, dict):
-        createModelVersionResponse_query, createModelVersionResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_version:
-            createModelVersionResponse_body[
-                "model_version"
-            ] = self.model_version.as_request()[1]
+            body["model_version"] = self.model_version.as_dict()
 
-        return createModelVersionResponse_query, createModelVersionResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateModelVersionResponse":
@@ -405,18 +397,16 @@ class CreateRegisteredModelRequest:
     # Additional metadata for registered model.
     tags: "List[RegisteredModelTag]"
 
-    def as_request(self) -> (dict, dict):
-        createRegisteredModelRequest_query, createRegisteredModelRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            createRegisteredModelRequest_body["description"] = self.description
+            body["description"] = self.description
         if self.name:
-            createRegisteredModelRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.tags:
-            createRegisteredModelRequest_body["tags"] = [
-                v.as_request()[1] for v in self.tags
-            ]
+            body["tags"] = [v.as_dict() for v in self.tags]
 
-        return createRegisteredModelRequest_query, createRegisteredModelRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRegisteredModelRequest":
@@ -434,14 +424,12 @@ class CreateRegisteredModelResponse:
 
     registered_model: "RegisteredModel"
 
-    def as_request(self) -> (dict, dict):
-        createRegisteredModelResponse_query, createRegisteredModelResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.registered_model:
-            createRegisteredModelResponse_body[
-                "registered_model"
-            ] = self.registered_model.as_request()[1]
+            body["registered_model"] = self.registered_model.as_dict()
 
-        return createRegisteredModelResponse_query, createRegisteredModelResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRegisteredModelResponse":
@@ -500,24 +488,22 @@ class CreateRegistryWebhook:
     # This describes an enum
     status: "RegistryWebhookStatus"
 
-    def as_request(self) -> (dict, dict):
-        createRegistryWebhook_query, createRegistryWebhook_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            createRegistryWebhook_body["description"] = self.description
+            body["description"] = self.description
         if self.events:
-            createRegistryWebhook_body["events"] = [v for v in self.events]
+            body["events"] = [v for v in self.events]
         if self.http_url_spec:
-            createRegistryWebhook_body[
-                "http_url_spec"
-            ] = self.http_url_spec.as_request()[1]
+            body["http_url_spec"] = self.http_url_spec.as_dict()
         if self.job_spec:
-            createRegistryWebhook_body["job_spec"] = self.job_spec.as_request()[1]
+            body["job_spec"] = self.job_spec.as_dict()
         if self.model_name:
-            createRegistryWebhook_body["model_name"] = self.model_name
+            body["model_name"] = self.model_name
         if self.status:
-            createRegistryWebhook_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return createRegistryWebhook_query, createRegistryWebhook_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRegistryWebhook":
@@ -539,12 +525,12 @@ class CreateResponse:
     # Comment details.
     comment: "CommentObject"
 
-    def as_request(self) -> (dict, dict):
-        createResponse_query, createResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            createResponse_body["comment"] = self.comment.as_request()[1]
+            body["comment"] = self.comment.as_dict()
 
-        return createResponse_query, createResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateResponse":
@@ -567,18 +553,18 @@ class CreateRun:
     # instead.
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        createRun_query, createRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            createRun_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
         if self.start_time:
-            createRun_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.tags:
-            createRun_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.user_id:
-            createRun_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return createRun_query, createRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRun":
@@ -596,12 +582,12 @@ class CreateRunResponse:
     # The newly created run.
     run: "Run"
 
-    def as_request(self) -> (dict, dict):
-        createRunResponse_query, createRunResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run:
-            createRunResponse_body["run"] = self.run.as_request()[1]
+            body["run"] = self.run.as_dict()
 
-        return createRunResponse_query, createRunResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRunResponse":
@@ -630,18 +616,18 @@ class CreateTransitionRequest:
     # Version of the model.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        createTransitionRequest_query, createTransitionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            createTransitionRequest_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.name:
-            createTransitionRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.stage:
-            createTransitionRequest_body["stage"] = self.stage.value
+            body["stage"] = self.stage.value
         if self.version:
-            createTransitionRequest_body["version"] = self.version
+            body["version"] = self.version
 
-        return createTransitionRequest_query, createTransitionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateTransitionRequest":
@@ -659,12 +645,12 @@ class DeleteExperiment:
     # ID of the associated experiment.
     experiment_id: str
 
-    def as_request(self) -> (dict, dict):
-        deleteExperiment_query, deleteExperiment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            deleteExperiment_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
 
-        return deleteExperiment_query, deleteExperiment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteExperiment":
@@ -679,18 +665,12 @@ class DeleteModelVersionCommentRequest:
 
     id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        (
-            deleteModelVersionCommentRequest_query,
-            deleteModelVersionCommentRequest_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            deleteModelVersionCommentRequest_query["id"] = self.id
+            body["id"] = self.id
 
-        return (
-            deleteModelVersionCommentRequest_query,
-            deleteModelVersionCommentRequest_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteModelVersionCommentRequest":
@@ -708,14 +688,14 @@ class DeleteModelVersionRequest:
     # Model version number
     version: str  # query
 
-    def as_request(self) -> (dict, dict):
-        deleteModelVersionRequest_query, deleteModelVersionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            deleteModelVersionRequest_query["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            deleteModelVersionRequest_query["version"] = self.version
+            body["version"] = self.version
 
-        return deleteModelVersionRequest_query, deleteModelVersionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteModelVersionRequest":
@@ -737,16 +717,16 @@ class DeleteModelVersionTagRequest:
     # Model version number that the tag was logged under.
     version: str  # query
 
-    def as_request(self) -> (dict, dict):
-        deleteModelVersionTagRequest_query, deleteModelVersionTagRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            deleteModelVersionTagRequest_query["key"] = self.key
+            body["key"] = self.key
         if self.name:
-            deleteModelVersionTagRequest_query["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            deleteModelVersionTagRequest_query["version"] = self.version
+            body["version"] = self.version
 
-        return deleteModelVersionTagRequest_query, deleteModelVersionTagRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteModelVersionTagRequest":
@@ -764,12 +744,12 @@ class DeleteRegisteredModelRequest:
     # Registered model unique name identifier.
     name: str  # query
 
-    def as_request(self) -> (dict, dict):
-        deleteRegisteredModelRequest_query, deleteRegisteredModelRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            deleteRegisteredModelRequest_query["name"] = self.name
+            body["name"] = self.name
 
-        return deleteRegisteredModelRequest_query, deleteRegisteredModelRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteRegisteredModelRequest":
@@ -788,20 +768,14 @@ class DeleteRegisteredModelTagRequest:
     # Name of the registered model that the tag was logged under.
     name: str  # query
 
-    def as_request(self) -> (dict, dict):
-        deleteRegisteredModelTagRequest_query, deleteRegisteredModelTagRequest_body = (
-            {},
-            {},
-        )
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            deleteRegisteredModelTagRequest_query["key"] = self.key
+            body["key"] = self.key
         if self.name:
-            deleteRegisteredModelTagRequest_query["name"] = self.name
+            body["name"] = self.name
 
-        return (
-            deleteRegisteredModelTagRequest_query,
-            deleteRegisteredModelTagRequest_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteRegisteredModelTagRequest":
@@ -818,12 +792,12 @@ class DeleteRegistryWebhookRequest:
     # Webhook ID required to delete a registry webhook.
     id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        deleteRegistryWebhookRequest_query, deleteRegistryWebhookRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            deleteRegistryWebhookRequest_query["id"] = self.id
+            body["id"] = self.id
 
-        return deleteRegistryWebhookRequest_query, deleteRegistryWebhookRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteRegistryWebhookRequest":
@@ -838,12 +812,12 @@ class DeleteRun:
     # ID of the run to delete.
     run_id: str
 
-    def as_request(self) -> (dict, dict):
-        deleteRun_query, deleteRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            deleteRun_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return deleteRun_query, deleteRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteRun":
@@ -860,14 +834,14 @@ class DeleteTag:
     # ID of the run that the tag was logged under. Must be provided.
     run_id: str
 
-    def as_request(self) -> (dict, dict):
-        deleteTag_query, deleteTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            deleteTag_body["key"] = self.key
+            body["key"] = self.key
         if self.run_id:
-            deleteTag_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return deleteTag_query, deleteTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteTag":
@@ -902,23 +876,20 @@ class DeleteTransitionRequestRequest:
     # Version of the model.
     version: str  # query
 
-    def as_request(self) -> (dict, dict):
-        deleteTransitionRequestRequest_query, deleteTransitionRequestRequest_body = (
-            {},
-            {},
-        )
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            deleteTransitionRequestRequest_query["comment"] = self.comment
+            body["comment"] = self.comment
         if self.creator:
-            deleteTransitionRequestRequest_query["creator"] = self.creator
+            body["creator"] = self.creator
         if self.name:
-            deleteTransitionRequestRequest_query["name"] = self.name
+            body["name"] = self.name
         if self.stage:
-            deleteTransitionRequestRequest_query["stage"] = self.stage
+            body["stage"] = self.stage
         if self.version:
-            deleteTransitionRequestRequest_query["version"] = self.version
+            body["version"] = self.version
 
-        return deleteTransitionRequestRequest_query, deleteTransitionRequestRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteTransitionRequestRequest":
@@ -950,24 +921,24 @@ class Experiment:
     # Tags: Additional metadata key-value pairs.
     tags: "List[ExperimentTag]"
 
-    def as_request(self) -> (dict, dict):
-        experiment_query, experiment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.artifact_location:
-            experiment_body["artifact_location"] = self.artifact_location
+            body["artifact_location"] = self.artifact_location
         if self.creation_time:
-            experiment_body["creation_time"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.experiment_id:
-            experiment_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
         if self.last_update_time:
-            experiment_body["last_update_time"] = self.last_update_time
+            body["last_update_time"] = self.last_update_time
         if self.lifecycle_stage:
-            experiment_body["lifecycle_stage"] = self.lifecycle_stage
+            body["lifecycle_stage"] = self.lifecycle_stage
         if self.name:
-            experiment_body["name"] = self.name
+            body["name"] = self.name
         if self.tags:
-            experiment_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
 
-        return experiment_query, experiment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Experiment":
@@ -992,14 +963,14 @@ class ExperimentTag:
     # The tag value.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        experimentTag_query, experimentTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            experimentTag_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            experimentTag_body["value"] = self.value
+            body["value"] = self.value
 
-        return experimentTag_query, experimentTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ExperimentTag":
@@ -1019,16 +990,16 @@ class FileInfo:
     # Path relative to the root artifact directory run.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        fileInfo_query, fileInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.file_size:
-            fileInfo_body["file_size"] = self.file_size
+            body["file_size"] = self.file_size
         if self.is_dir:
-            fileInfo_body["is_dir"] = self.is_dir
+            body["is_dir"] = self.is_dir
         if self.path:
-            fileInfo_body["path"] = self.path
+            body["path"] = self.path
 
-        return fileInfo_query, fileInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "FileInfo":
@@ -1046,12 +1017,12 @@ class GetByNameRequest:
     # Name of the associated experiment.
     experiment_name: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getByNameRequest_query, getByNameRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_name:
-            getByNameRequest_query["experiment_name"] = self.experiment_name
+            body["experiment_name"] = self.experiment_name
 
-        return getByNameRequest_query, getByNameRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetByNameRequest":
@@ -1066,14 +1037,12 @@ class GetExperimentByNameResponse:
     # Experiment details.
     experiment: "Experiment"
 
-    def as_request(self) -> (dict, dict):
-        getExperimentByNameResponse_query, getExperimentByNameResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment:
-            getExperimentByNameResponse_body[
-                "experiment"
-            ] = self.experiment.as_request()[1]
+            body["experiment"] = self.experiment.as_dict()
 
-        return getExperimentByNameResponse_query, getExperimentByNameResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetExperimentByNameResponse":
@@ -1091,12 +1060,12 @@ class GetExperimentRequest:
     # ID of the associated experiment.
     experiment_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getExperimentRequest_query, getExperimentRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            getExperimentRequest_query["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
 
-        return getExperimentRequest_query, getExperimentRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetExperimentRequest":
@@ -1117,16 +1086,16 @@ class GetHistoryRequest:
     # values. This field will be removed in a future MLflow version.
     run_uuid: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getHistoryRequest_query, getHistoryRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.metric_key:
-            getHistoryRequest_query["metric_key"] = self.metric_key
+            body["metric_key"] = self.metric_key
         if self.run_id:
-            getHistoryRequest_query["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            getHistoryRequest_query["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
 
-        return getHistoryRequest_query, getHistoryRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetHistoryRequest":
@@ -1145,14 +1114,14 @@ class GetLatestVersionsRequest:
     # List of stages.
     stages: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        getLatestVersionsRequest_query, getLatestVersionsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            getLatestVersionsRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.stages:
-            getLatestVersionsRequest_body["stages"] = [v for v in self.stages]
+            body["stages"] = [v for v in self.stages]
 
-        return getLatestVersionsRequest_query, getLatestVersionsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetLatestVersionsRequest":
@@ -1170,14 +1139,12 @@ class GetLatestVersionsResponse:
     # version for each stage, including `"None"`.
     model_versions: "List[ModelVersion]"
 
-    def as_request(self) -> (dict, dict):
-        getLatestVersionsResponse_query, getLatestVersionsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_versions:
-            getLatestVersionsResponse_body["model_versions"] = [
-                v.as_request()[1] for v in self.model_versions
-            ]
+            body["model_versions"] = [v.as_dict() for v in self.model_versions]
 
-        return getLatestVersionsResponse_query, getLatestVersionsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetLatestVersionsResponse":
@@ -1195,12 +1162,12 @@ class GetMLflowDatabrickRequest:
     # Name of the model.
     name: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getMLflowDatabrickRequest_query, getMLflowDatabrickRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            getMLflowDatabrickRequest_query["name"] = self.name
+            body["name"] = self.name
 
-        return getMLflowDatabrickRequest_query, getMLflowDatabrickRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetMLflowDatabrickRequest":
@@ -1215,14 +1182,12 @@ class GetMetricHistoryResponse:
     # All logged values for this metric.
     metrics: "List[Metric]"
 
-    def as_request(self) -> (dict, dict):
-        getMetricHistoryResponse_query, getMetricHistoryResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.metrics:
-            getMetricHistoryResponse_body["metrics"] = [
-                v.as_request()[1] for v in self.metrics
-            ]
+            body["metrics"] = [v.as_dict() for v in self.metrics]
 
-        return getMetricHistoryResponse_query, getMetricHistoryResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetMetricHistoryResponse":
@@ -1242,20 +1207,14 @@ class GetModelVersionDownloadUriRequest:
     # Model version number
     version: str  # query
 
-    def as_request(self) -> (dict, dict):
-        (
-            getModelVersionDownloadUriRequest_query,
-            getModelVersionDownloadUriRequest_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            getModelVersionDownloadUriRequest_query["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            getModelVersionDownloadUriRequest_query["version"] = self.version
+            body["version"] = self.version
 
-        return (
-            getModelVersionDownloadUriRequest_query,
-            getModelVersionDownloadUriRequest_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetModelVersionDownloadUriRequest":
@@ -1271,18 +1230,12 @@ class GetModelVersionDownloadUriResponse:
     # URI corresponding to where artifacts for this model version are stored.
     artifact_uri: str
 
-    def as_request(self) -> (dict, dict):
-        (
-            getModelVersionDownloadUriResponse_query,
-            getModelVersionDownloadUriResponse_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.artifact_uri:
-            getModelVersionDownloadUriResponse_body["artifact_uri"] = self.artifact_uri
+            body["artifact_uri"] = self.artifact_uri
 
-        return (
-            getModelVersionDownloadUriResponse_query,
-            getModelVersionDownloadUriResponse_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetModelVersionDownloadUriResponse":
@@ -1300,14 +1253,14 @@ class GetModelVersionRequest:
     # Model version number
     version: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getModelVersionRequest_query, getModelVersionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            getModelVersionRequest_query["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            getModelVersionRequest_query["version"] = self.version
+            body["version"] = self.version
 
-        return getModelVersionRequest_query, getModelVersionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetModelVersionRequest":
@@ -1322,14 +1275,12 @@ class GetModelVersionResponse:
 
     model_version: "ModelVersion"
 
-    def as_request(self) -> (dict, dict):
-        getModelVersionResponse_query, getModelVersionResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_version:
-            getModelVersionResponse_body[
-                "model_version"
-            ] = self.model_version.as_request()[1]
+            body["model_version"] = self.model_version.as_dict()
 
-        return getModelVersionResponse_query, getModelVersionResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetModelVersionResponse":
@@ -1347,12 +1298,12 @@ class GetRegisteredModelRequest:
     # Registered model unique name identifier.
     name: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getRegisteredModelRequest_query, getRegisteredModelRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            getRegisteredModelRequest_query["name"] = self.name
+            body["name"] = self.name
 
-        return getRegisteredModelRequest_query, getRegisteredModelRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetRegisteredModelRequest":
@@ -1366,14 +1317,12 @@ class GetRegisteredModelResponse:
 
     registered_model: "RegisteredModel"
 
-    def as_request(self) -> (dict, dict):
-        getRegisteredModelResponse_query, getRegisteredModelResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.registered_model:
-            getRegisteredModelResponse_body[
-                "registered_model"
-            ] = self.registered_model.as_request()[1]
+            body["registered_model"] = self.registered_model.as_dict()
 
-        return getRegisteredModelResponse_query, getRegisteredModelResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetRegisteredModelResponse":
@@ -1389,12 +1338,12 @@ class GetResponse:
 
     registered_model: "RegisteredModelDatabricks"
 
-    def as_request(self) -> (dict, dict):
-        getResponse_query, getResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.registered_model:
-            getResponse_body["registered_model"] = self.registered_model.as_request()[1]
+            body["registered_model"] = self.registered_model.as_dict()
 
-        return getResponse_query, getResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetResponse":
@@ -1415,14 +1364,14 @@ class GetRunRequest:
     # be removed in a future MLflow version.
     run_uuid: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getRunRequest_query, getRunRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            getRunRequest_query["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            getRunRequest_query["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
 
-        return getRunRequest_query, getRunRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetRunRequest":
@@ -1438,12 +1387,12 @@ class GetRunResponse:
     # Run metadata (name, start time, etc) and data (metrics, params, and tags).
     run: "Run"
 
-    def as_request(self) -> (dict, dict):
-        getRunResponse_query, getRunResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run:
-            getRunResponse_body["run"] = self.run.as_request()[1]
+            body["run"] = self.run.as_dict()
 
-        return getRunResponse_query, getRunResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetRunResponse":
@@ -1475,18 +1424,18 @@ class HttpUrlSpec:
     # External HTTPS URL called on event trigger (by using a POST request).
     url: str
 
-    def as_request(self) -> (dict, dict):
-        httpUrlSpec_query, httpUrlSpec_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.authorization:
-            httpUrlSpec_body["authorization"] = self.authorization
+            body["authorization"] = self.authorization
         if self.enable_ssl_verification:
-            httpUrlSpec_body["enable_ssl_verification"] = self.enable_ssl_verification
+            body["enable_ssl_verification"] = self.enable_ssl_verification
         if self.secret:
-            httpUrlSpec_body["secret"] = self.secret
+            body["secret"] = self.secret
         if self.url:
-            httpUrlSpec_body["url"] = self.url
+            body["url"] = self.url
 
-        return httpUrlSpec_query, httpUrlSpec_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "HttpUrlSpec":
@@ -1512,16 +1461,14 @@ class HttpUrlSpecWithoutSecret:
     # External HTTPS URL called on event trigger (by using a POST request).
     url: str
 
-    def as_request(self) -> (dict, dict):
-        httpUrlSpecWithoutSecret_query, httpUrlSpecWithoutSecret_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.enable_ssl_verification:
-            httpUrlSpecWithoutSecret_body[
-                "enable_ssl_verification"
-            ] = self.enable_ssl_verification
+            body["enable_ssl_verification"] = self.enable_ssl_verification
         if self.url:
-            httpUrlSpecWithoutSecret_body["url"] = self.url
+            body["url"] = self.url
 
-        return httpUrlSpecWithoutSecret_query, httpUrlSpecWithoutSecret_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "HttpUrlSpecWithoutSecret":
@@ -1543,16 +1490,16 @@ class JobSpec:
     # workspace where the webhook is created.
     workspace_url: str
 
-    def as_request(self) -> (dict, dict):
-        jobSpec_query, jobSpec_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_token:
-            jobSpec_body["access_token"] = self.access_token
+            body["access_token"] = self.access_token
         if self.job_id:
-            jobSpec_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.workspace_url:
-            jobSpec_body["workspace_url"] = self.workspace_url
+            body["workspace_url"] = self.workspace_url
 
-        return jobSpec_query, jobSpec_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobSpec":
@@ -1573,14 +1520,14 @@ class JobSpecWithoutSecret:
     # the job’s workspace is assumed to be the same as the webhook’s.
     workspace_url: str
 
-    def as_request(self) -> (dict, dict):
-        jobSpecWithoutSecret_query, jobSpecWithoutSecret_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.job_id:
-            jobSpecWithoutSecret_body["job_id"] = self.job_id
+            body["job_id"] = self.job_id
         if self.workspace_url:
-            jobSpecWithoutSecret_body["workspace_url"] = self.workspace_url
+            body["workspace_url"] = self.workspace_url
 
-        return jobSpecWithoutSecret_query, jobSpecWithoutSecret_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "JobSpecWithoutSecret":
@@ -1605,18 +1552,18 @@ class ListArtifactsRequest:
     # This field will be removed in a future MLflow version.
     run_uuid: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listArtifactsRequest_query, listArtifactsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.page_token:
-            listArtifactsRequest_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
         if self.path:
-            listArtifactsRequest_query["path"] = self.path
+            body["path"] = self.path
         if self.run_id:
-            listArtifactsRequest_query["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            listArtifactsRequest_query["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
 
-        return listArtifactsRequest_query, listArtifactsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListArtifactsRequest":
@@ -1638,18 +1585,16 @@ class ListArtifactsResponse:
     # Root artifact directory for the run.
     root_uri: str
 
-    def as_request(self) -> (dict, dict):
-        listArtifactsResponse_query, listArtifactsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.files:
-            listArtifactsResponse_body["files"] = [
-                v.as_request()[1] for v in self.files
-            ]
+            body["files"] = [v.as_dict() for v in self.files]
         if self.next_page_token:
-            listArtifactsResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.root_uri:
-            listArtifactsResponse_body["root_uri"] = self.root_uri
+            body["root_uri"] = self.root_uri
 
-        return listArtifactsResponse_query, listArtifactsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListArtifactsResponse":
@@ -1676,16 +1621,16 @@ class ListExperimentsRequest:
     # only active experiments.
     view_type: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listExperimentsRequest_query, listExperimentsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.max_results:
-            listExperimentsRequest_query["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.page_token:
-            listExperimentsRequest_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
         if self.view_type:
-            listExperimentsRequest_query["view_type"] = self.view_type
+            body["view_type"] = self.view_type
 
-        return listExperimentsRequest_query, listExperimentsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListExperimentsRequest":
@@ -1705,16 +1650,14 @@ class ListExperimentsResponse:
     # token means no more experiment is available for retrieval.
     next_page_token: str
 
-    def as_request(self) -> (dict, dict):
-        listExperimentsResponse_query, listExperimentsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiments:
-            listExperimentsResponse_body["experiments"] = [
-                v.as_request()[1] for v in self.experiments
-            ]
+            body["experiments"] = [v.as_dict() for v in self.experiments]
         if self.next_page_token:
-            listExperimentsResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
 
-        return listExperimentsResponse_query, listExperimentsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListExperimentsResponse":
@@ -1735,14 +1678,14 @@ class ListRegisteredModelsRequest:
     # Pagination token to go to the next page based on a previous query.
     page_token: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listRegisteredModelsRequest_query, listRegisteredModelsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.max_results:
-            listRegisteredModelsRequest_query["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.page_token:
-            listRegisteredModelsRequest_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
 
-        return listRegisteredModelsRequest_query, listRegisteredModelsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListRegisteredModelsRequest":
@@ -1760,16 +1703,14 @@ class ListRegisteredModelsResponse:
 
     registered_models: "List[RegisteredModel]"
 
-    def as_request(self) -> (dict, dict):
-        listRegisteredModelsResponse_query, listRegisteredModelsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            listRegisteredModelsResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.registered_models:
-            listRegisteredModelsResponse_body["registered_models"] = [
-                v.as_request()[1] for v in self.registered_models
-            ]
+            body["registered_models"] = [v.as_dict() for v in self.registered_models]
 
-        return listRegisteredModelsResponse_query, listRegisteredModelsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListRegisteredModelsResponse":
@@ -1791,16 +1732,14 @@ class ListRegistryWebhooks:
     # Array of registry webhooks.
     webhooks: "List[RegistryWebhook]"
 
-    def as_request(self) -> (dict, dict):
-        listRegistryWebhooks_query, listRegistryWebhooks_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            listRegistryWebhooks_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.webhooks:
-            listRegistryWebhooks_body["webhooks"] = [
-                v.as_request()[1] for v in self.webhooks
-            ]
+            body["webhooks"] = [v.as_dict() for v in self.webhooks]
 
-        return listRegistryWebhooks_query, listRegistryWebhooks_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListRegistryWebhooks":
@@ -1826,16 +1765,16 @@ class ListRegistryWebhooksRequest:
     # Token indicating the page of artifact results to fetch
     page_token: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listRegistryWebhooksRequest_query, listRegistryWebhooksRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.events:
-            listRegistryWebhooksRequest_query["events"] = [v for v in self.events]
+            body["events"] = [v for v in self.events]
         if self.model_name:
-            listRegistryWebhooksRequest_query["model_name"] = self.model_name
+            body["model_name"] = self.model_name
         if self.page_token:
-            listRegistryWebhooksRequest_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
 
-        return listRegistryWebhooksRequest_query, listRegistryWebhooksRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListRegistryWebhooksRequest":
@@ -1852,12 +1791,12 @@ class ListResponse:
     # Array of open transition requests.
     requests: "List[Activity]"
 
-    def as_request(self) -> (dict, dict):
-        listResponse_query, listResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.requests:
-            listResponse_body["requests"] = [v.as_request()[1] for v in self.requests]
+            body["requests"] = [v.as_dict() for v in self.requests]
 
-        return listResponse_query, listResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListResponse":
@@ -1877,14 +1816,14 @@ class ListTransitionRequestsRequest:
     # Version of the model.
     version: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listTransitionRequestsRequest_query, listTransitionRequestsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            listTransitionRequestsRequest_query["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            listTransitionRequestsRequest_query["version"] = self.version
+            body["version"] = self.version
 
-        return listTransitionRequestsRequest_query, listTransitionRequestsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListTransitionRequestsRequest":
@@ -1909,18 +1848,18 @@ class LogBatch:
     # metrics, params, and tags in total.
     tags: "List[RunTag]"
 
-    def as_request(self) -> (dict, dict):
-        logBatch_query, logBatch_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.metrics:
-            logBatch_body["metrics"] = [v.as_request()[1] for v in self.metrics]
+            body["metrics"] = [v.as_dict() for v in self.metrics]
         if self.params:
-            logBatch_body["params"] = [v.as_request()[1] for v in self.params]
+            body["params"] = [v.as_dict() for v in self.params]
         if self.run_id:
-            logBatch_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.tags:
-            logBatch_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
 
-        return logBatch_query, logBatch_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogBatch":
@@ -1951,22 +1890,22 @@ class LogMetric:
     # Double value of the metric being logged.
     value: float
 
-    def as_request(self) -> (dict, dict):
-        logMetric_query, logMetric_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            logMetric_body["key"] = self.key
+            body["key"] = self.key
         if self.run_id:
-            logMetric_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            logMetric_body["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
         if self.step:
-            logMetric_body["step"] = self.step
+            body["step"] = self.step
         if self.timestamp:
-            logMetric_body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp
         if self.value:
-            logMetric_body["value"] = self.value
+            body["value"] = self.value
 
-        return logMetric_query, logMetric_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogMetric":
@@ -1988,14 +1927,14 @@ class LogModel:
     # ID of the run to log under
     run_id: str
 
-    def as_request(self) -> (dict, dict):
-        logModel_query, logModel_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_json:
-            logModel_body["model_json"] = self.model_json
+            body["model_json"] = self.model_json
         if self.run_id:
-            logModel_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return logModel_query, logModel_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogModel":
@@ -2018,18 +1957,18 @@ class LogParam:
     # String value of the param being logged. Maximum size is 500 bytes.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        logParam_query, logParam_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            logParam_body["key"] = self.key
+            body["key"] = self.key
         if self.run_id:
-            logParam_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            logParam_body["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
         if self.value:
-            logParam_body["value"] = self.value
+            body["value"] = self.value
 
-        return logParam_query, logParam_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogParam":
@@ -2053,18 +1992,18 @@ class Metric:
     # Value associated with this metric.
     value: float
 
-    def as_request(self) -> (dict, dict):
-        metric_query, metric_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            metric_body["key"] = self.key
+            body["key"] = self.key
         if self.step:
-            metric_body["step"] = self.step
+            body["step"] = self.step
         if self.timestamp:
-            metric_body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp
         if self.value:
-            metric_body["value"] = self.value
+            body["value"] = self.value
 
-        return metric_query, metric_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Metric":
@@ -2109,36 +2048,36 @@ class ModelVersion:
     # Model's version number.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        modelVersion_query, modelVersion_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.creation_timestamp:
-            modelVersion_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.current_stage:
-            modelVersion_body["current_stage"] = self.current_stage
+            body["current_stage"] = self.current_stage
         if self.description:
-            modelVersion_body["description"] = self.description
+            body["description"] = self.description
         if self.last_updated_timestamp:
-            modelVersion_body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.name:
-            modelVersion_body["name"] = self.name
+            body["name"] = self.name
         if self.run_id:
-            modelVersion_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_link:
-            modelVersion_body["run_link"] = self.run_link
+            body["run_link"] = self.run_link
         if self.source:
-            modelVersion_body["source"] = self.source
+            body["source"] = self.source
         if self.status:
-            modelVersion_body["status"] = self.status.value
+            body["status"] = self.status.value
         if self.status_message:
-            modelVersion_body["status_message"] = self.status_message
+            body["status_message"] = self.status_message
         if self.tags:
-            modelVersion_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.user_id:
-            modelVersion_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
         if self.version:
-            modelVersion_body["version"] = self.version
+            body["version"] = self.version
 
-        return modelVersion_query, modelVersion_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ModelVersion":
@@ -2198,42 +2137,38 @@ class ModelVersionDatabricks:
     # Version of the model.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        modelVersionDatabricks_query, modelVersionDatabricks_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.creation_timestamp:
-            modelVersionDatabricks_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.current_stage:
-            modelVersionDatabricks_body["current_stage"] = self.current_stage.value
+            body["current_stage"] = self.current_stage.value
         if self.description:
-            modelVersionDatabricks_body["description"] = self.description
+            body["description"] = self.description
         if self.last_updated_timestamp:
-            modelVersionDatabricks_body[
-                "last_updated_timestamp"
-            ] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.name:
-            modelVersionDatabricks_body["name"] = self.name
+            body["name"] = self.name
         if self.permission_level:
-            modelVersionDatabricks_body[
-                "permission_level"
-            ] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.run_id:
-            modelVersionDatabricks_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_link:
-            modelVersionDatabricks_body["run_link"] = self.run_link
+            body["run_link"] = self.run_link
         if self.source:
-            modelVersionDatabricks_body["source"] = self.source
+            body["source"] = self.source
         if self.status:
-            modelVersionDatabricks_body["status"] = self.status.value
+            body["status"] = self.status.value
         if self.status_message:
-            modelVersionDatabricks_body["status_message"] = self.status_message
+            body["status_message"] = self.status_message
         if self.tags:
-            modelVersionDatabricks_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.user_id:
-            modelVersionDatabricks_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
         if self.version:
-            modelVersionDatabricks_body["version"] = self.version
+            body["version"] = self.version
 
-        return modelVersionDatabricks_query, modelVersionDatabricks_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ModelVersionDatabricks":
@@ -2275,14 +2210,14 @@ class ModelVersionTag:
     # The tag value.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        modelVersionTag_query, modelVersionTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            modelVersionTag_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            modelVersionTag_body["value"] = self.value
+            body["value"] = self.value
 
-        return modelVersionTag_query, modelVersionTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ModelVersionTag":
@@ -2300,14 +2235,14 @@ class Param:
     # Value associated with this param.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        param_query, param_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            param_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            param_body["value"] = self.value
+            body["value"] = self.value
 
-        return param_query, param_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Param":
@@ -2348,26 +2283,24 @@ class RegisteredModel:
     # User that created this `registered_model`
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        registeredModel_query, registeredModel_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.creation_timestamp:
-            registeredModel_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.description:
-            registeredModel_body["description"] = self.description
+            body["description"] = self.description
         if self.last_updated_timestamp:
-            registeredModel_body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.latest_versions:
-            registeredModel_body["latest_versions"] = [
-                v.as_request()[1] for v in self.latest_versions
-            ]
+            body["latest_versions"] = [v.as_dict() for v in self.latest_versions]
         if self.name:
-            registeredModel_body["name"] = self.name
+            body["name"] = self.name
         if self.tags:
-            registeredModel_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.user_id:
-            registeredModel_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return registeredModel_query, registeredModel_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RegisteredModel":
@@ -2409,38 +2342,28 @@ class RegisteredModelDatabricks:
     # The username of the user that created the object.
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        registeredModelDatabricks_query, registeredModelDatabricks_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.creation_timestamp:
-            registeredModelDatabricks_body[
-                "creation_timestamp"
-            ] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.description:
-            registeredModelDatabricks_body["description"] = self.description
+            body["description"] = self.description
         if self.id:
-            registeredModelDatabricks_body["id"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp:
-            registeredModelDatabricks_body[
-                "last_updated_timestamp"
-            ] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.latest_versions:
-            registeredModelDatabricks_body["latest_versions"] = [
-                v.as_request()[1] for v in self.latest_versions
-            ]
+            body["latest_versions"] = [v.as_dict() for v in self.latest_versions]
         if self.name:
-            registeredModelDatabricks_body["name"] = self.name
+            body["name"] = self.name
         if self.permission_level:
-            registeredModelDatabricks_body[
-                "permission_level"
-            ] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.tags:
-            registeredModelDatabricks_body["tags"] = [
-                v.as_request()[1] for v in self.tags
-            ]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.user_id:
-            registeredModelDatabricks_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return registeredModelDatabricks_query, registeredModelDatabricks_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RegisteredModelDatabricks":
@@ -2471,14 +2394,14 @@ class RegisteredModelTag:
     # The tag value.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        registeredModelTag_query, registeredModelTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            registeredModelTag_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            registeredModelTag_body["value"] = self.value
+            body["value"] = self.value
 
-        return registeredModelTag_query, registeredModelTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RegisteredModelTag":
@@ -2542,28 +2465,28 @@ class RegistryWebhook:
     # This describes an enum
     status: "RegistryWebhookStatus"
 
-    def as_request(self) -> (dict, dict):
-        registryWebhook_query, registryWebhook_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.creation_timestamp:
-            registryWebhook_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.description:
-            registryWebhook_body["description"] = self.description
+            body["description"] = self.description
         if self.events:
-            registryWebhook_body["events"] = [v for v in self.events]
+            body["events"] = [v for v in self.events]
         if self.http_url_spec:
-            registryWebhook_body["http_url_spec"] = self.http_url_spec.as_request()[1]
+            body["http_url_spec"] = self.http_url_spec.as_dict()
         if self.id:
-            registryWebhook_body["id"] = self.id
+            body["id"] = self.id
         if self.job_spec:
-            registryWebhook_body["job_spec"] = self.job_spec.as_request()[1]
+            body["job_spec"] = self.job_spec.as_dict()
         if self.last_updated_timestamp:
-            registryWebhook_body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.model_name:
-            registryWebhook_body["model_name"] = self.model_name
+            body["model_name"] = self.model_name
         if self.status:
-            registryWebhook_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return registryWebhook_query, registryWebhook_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RegistryWebhook":
@@ -2618,12 +2541,12 @@ class RejectResponse:
     # Activity recorded for the action.
     activity: "Activity"
 
-    def as_request(self) -> (dict, dict):
-        rejectResponse_query, rejectResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.activity:
-            rejectResponse_body["activity"] = self.activity.as_request()[1]
+            body["activity"] = self.activity.as_dict()
 
-        return rejectResponse_query, rejectResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RejectResponse":
@@ -2652,18 +2575,18 @@ class RejectTransitionRequest:
     # Version of the model.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        rejectTransitionRequest_query, rejectTransitionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            rejectTransitionRequest_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.name:
-            rejectTransitionRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.stage:
-            rejectTransitionRequest_body["stage"] = self.stage.value
+            body["stage"] = self.stage.value
         if self.version:
-            rejectTransitionRequest_body["version"] = self.version
+            body["version"] = self.version
 
-        return rejectTransitionRequest_query, rejectTransitionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RejectTransitionRequest":
@@ -2683,14 +2606,14 @@ class RenameRegisteredModelRequest:
     # If provided, updates the name for this `registered_model`.
     new_name: str
 
-    def as_request(self) -> (dict, dict):
-        renameRegisteredModelRequest_query, renameRegisteredModelRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            renameRegisteredModelRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.new_name:
-            renameRegisteredModelRequest_body["new_name"] = self.new_name
+            body["new_name"] = self.new_name
 
-        return renameRegisteredModelRequest_query, renameRegisteredModelRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RenameRegisteredModelRequest":
@@ -2705,14 +2628,12 @@ class RenameRegisteredModelResponse:
 
     registered_model: "RegisteredModel"
 
-    def as_request(self) -> (dict, dict):
-        renameRegisteredModelResponse_query, renameRegisteredModelResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.registered_model:
-            renameRegisteredModelResponse_body[
-                "registered_model"
-            ] = self.registered_model.as_request()[1]
+            body["registered_model"] = self.registered_model.as_dict()
 
-        return renameRegisteredModelResponse_query, renameRegisteredModelResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RenameRegisteredModelResponse":
@@ -2729,12 +2650,12 @@ class RestoreExperiment:
     # ID of the associated experiment.
     experiment_id: str
 
-    def as_request(self) -> (dict, dict):
-        restoreExperiment_query, restoreExperiment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            restoreExperiment_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
 
-        return restoreExperiment_query, restoreExperiment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RestoreExperiment":
@@ -2749,12 +2670,12 @@ class RestoreRun:
     # ID of the run to restore.
     run_id: str
 
-    def as_request(self) -> (dict, dict):
-        restoreRun_query, restoreRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_id:
-            restoreRun_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
 
-        return restoreRun_query, restoreRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RestoreRun":
@@ -2771,14 +2692,14 @@ class Run:
     # Run metadata.
     info: "RunInfo"
 
-    def as_request(self) -> (dict, dict):
-        run_query, run_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.data:
-            run_body["data"] = self.data.as_request()[1]
+            body["data"] = self.data.as_dict()
         if self.info:
-            run_body["info"] = self.info.as_request()[1]
+            body["info"] = self.info.as_dict()
 
-        return run_query, run_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Run":
@@ -2798,16 +2719,16 @@ class RunData:
     # Additional metadata key-value pairs.
     tags: "List[RunTag]"
 
-    def as_request(self) -> (dict, dict):
-        runData_query, runData_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.metrics:
-            runData_body["metrics"] = [v.as_request()[1] for v in self.metrics]
+            body["metrics"] = [v.as_dict() for v in self.metrics]
         if self.params:
-            runData_body["params"] = [v.as_request()[1] for v in self.params]
+            body["params"] = [v.as_dict() for v in self.params]
         if self.tags:
-            runData_body["tags"] = [v.as_request()[1] for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
 
-        return runData_query, runData_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunData":
@@ -2847,28 +2768,28 @@ class RunInfo:
     # will be removed in a future MLflow release. Use 'mlflow.user' tag instead.
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        runInfo_query, runInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.artifact_uri:
-            runInfo_body["artifact_uri"] = self.artifact_uri
+            body["artifact_uri"] = self.artifact_uri
         if self.end_time:
-            runInfo_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.experiment_id:
-            runInfo_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
         if self.lifecycle_stage:
-            runInfo_body["lifecycle_stage"] = self.lifecycle_stage
+            body["lifecycle_stage"] = self.lifecycle_stage
         if self.run_id:
-            runInfo_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            runInfo_body["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
         if self.start_time:
-            runInfo_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.status:
-            runInfo_body["status"] = self.status.value
+            body["status"] = self.status.value
         if self.user_id:
-            runInfo_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return runInfo_query, runInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunInfo":
@@ -2903,14 +2824,14 @@ class RunTag:
     # The tag value.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        runTag_query, runTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            runTag_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            runTag_body["value"] = self.value
+            body["value"] = self.value
 
-        return runTag_query, runTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RunTag":
@@ -2939,20 +2860,20 @@ class SearchExperiments:
     # only active experiments.
     view_type: "SearchExperimentsViewType"
 
-    def as_request(self) -> (dict, dict):
-        searchExperiments_query, searchExperiments_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.filter:
-            searchExperiments_body["filter"] = self.filter
+            body["filter"] = self.filter
         if self.max_results:
-            searchExperiments_body["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.order_by:
-            searchExperiments_body["order_by"] = [v for v in self.order_by]
+            body["order_by"] = [v for v in self.order_by]
         if self.page_token:
-            searchExperiments_body["page_token"] = self.page_token
+            body["page_token"] = self.page_token
         if self.view_type:
-            searchExperiments_body["view_type"] = self.view_type.value
+            body["view_type"] = self.view_type.value
 
-        return searchExperiments_query, searchExperiments_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchExperiments":
@@ -2976,16 +2897,14 @@ class SearchExperimentsResponse:
     # token means that no more experiments are available for retrieval.
     next_page_token: str
 
-    def as_request(self) -> (dict, dict):
-        searchExperimentsResponse_query, searchExperimentsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiments:
-            searchExperimentsResponse_body["experiments"] = [
-                v.as_request()[1] for v in self.experiments
-            ]
+            body["experiments"] = [v.as_dict() for v in self.experiments]
         if self.next_page_token:
-            searchExperimentsResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
 
-        return searchExperimentsResponse_query, searchExperimentsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchExperimentsResponse":
@@ -3023,18 +2942,18 @@ class SearchModelVersionsRequest:
     # Pagination token to go to next page based on previous search query.
     page_token: str  # query
 
-    def as_request(self) -> (dict, dict):
-        searchModelVersionsRequest_query, searchModelVersionsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.filter:
-            searchModelVersionsRequest_query["filter"] = self.filter
+            body["filter"] = self.filter
         if self.max_results:
-            searchModelVersionsRequest_query["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.order_by:
-            searchModelVersionsRequest_query["order_by"] = [v for v in self.order_by]
+            body["order_by"] = [v for v in self.order_by]
         if self.page_token:
-            searchModelVersionsRequest_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
 
-        return searchModelVersionsRequest_query, searchModelVersionsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchModelVersionsRequest":
@@ -3054,16 +2973,14 @@ class SearchModelVersionsResponse:
     # Pagination token to request next page of models for the same search query.
     next_page_token: str
 
-    def as_request(self) -> (dict, dict):
-        searchModelVersionsResponse_query, searchModelVersionsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_versions:
-            searchModelVersionsResponse_body["model_versions"] = [
-                v.as_request()[1] for v in self.model_versions
-            ]
+            body["model_versions"] = [v.as_dict() for v in self.model_versions]
         if self.next_page_token:
-            searchModelVersionsResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
 
-        return searchModelVersionsResponse_query, searchModelVersionsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchModelVersionsResponse":
@@ -3092,18 +3009,18 @@ class SearchRegisteredModelsRequest:
     # Pagination token to go to the next page based on a previous search query.
     page_token: str  # query
 
-    def as_request(self) -> (dict, dict):
-        searchRegisteredModelsRequest_query, searchRegisteredModelsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.filter:
-            searchRegisteredModelsRequest_query["filter"] = self.filter
+            body["filter"] = self.filter
         if self.max_results:
-            searchRegisteredModelsRequest_query["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.order_by:
-            searchRegisteredModelsRequest_query["order_by"] = [v for v in self.order_by]
+            body["order_by"] = [v for v in self.order_by]
         if self.page_token:
-            searchRegisteredModelsRequest_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
 
-        return searchRegisteredModelsRequest_query, searchRegisteredModelsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchRegisteredModelsRequest":
@@ -3123,21 +3040,14 @@ class SearchRegisteredModelsResponse:
     # Registered Models that match the search criteria.
     registered_models: "List[RegisteredModel]"
 
-    def as_request(self) -> (dict, dict):
-        searchRegisteredModelsResponse_query, searchRegisteredModelsResponse_body = (
-            {},
-            {},
-        )
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            searchRegisteredModelsResponse_body[
-                "next_page_token"
-            ] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.registered_models:
-            searchRegisteredModelsResponse_body["registered_models"] = [
-                v.as_request()[1] for v in self.registered_models
-            ]
+            body["registered_models"] = [v.as_dict() for v in self.registered_models]
 
-        return searchRegisteredModelsResponse_query, searchRegisteredModelsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchRegisteredModelsResponse":
@@ -3183,22 +3093,22 @@ class SearchRuns:
     # only active runs.
     run_view_type: "SearchRunsRunViewType"
 
-    def as_request(self) -> (dict, dict):
-        searchRuns_query, searchRuns_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_ids:
-            searchRuns_body["experiment_ids"] = [v for v in self.experiment_ids]
+            body["experiment_ids"] = [v for v in self.experiment_ids]
         if self.filter:
-            searchRuns_body["filter"] = self.filter
+            body["filter"] = self.filter
         if self.max_results:
-            searchRuns_body["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.order_by:
-            searchRuns_body["order_by"] = [v for v in self.order_by]
+            body["order_by"] = [v for v in self.order_by]
         if self.page_token:
-            searchRuns_body["page_token"] = self.page_token
+            body["page_token"] = self.page_token
         if self.run_view_type:
-            searchRuns_body["run_view_type"] = self.run_view_type.value
+            body["run_view_type"] = self.run_view_type.value
 
-        return searchRuns_query, searchRuns_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchRuns":
@@ -3222,14 +3132,14 @@ class SearchRunsResponse:
     # Runs that match the search criteria.
     runs: "List[Run]"
 
-    def as_request(self) -> (dict, dict):
-        searchRunsResponse_query, searchRunsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            searchRunsResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.runs:
-            searchRunsResponse_body["runs"] = [v.as_request()[1] for v in self.runs]
+            body["runs"] = [v.as_dict() for v in self.runs]
 
-        return searchRunsResponse_query, searchRunsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SearchRunsResponse":
@@ -3261,16 +3171,16 @@ class SetExperimentTag:
     # 5000 bytes in size.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        setExperimentTag_query, setExperimentTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            setExperimentTag_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
         if self.key:
-            setExperimentTag_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            setExperimentTag_body["value"] = self.value
+            body["value"] = self.value
 
-        return setExperimentTag_query, setExperimentTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetExperimentTag":
@@ -3298,18 +3208,18 @@ class SetModelVersionTagRequest:
     # Model version number.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        setModelVersionTagRequest_query, setModelVersionTagRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            setModelVersionTagRequest_body["key"] = self.key
+            body["key"] = self.key
         if self.name:
-            setModelVersionTagRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.value:
-            setModelVersionTagRequest_body["value"] = self.value
+            body["value"] = self.value
         if self.version:
-            setModelVersionTagRequest_body["version"] = self.version
+            body["version"] = self.version
 
-        return setModelVersionTagRequest_query, setModelVersionTagRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetModelVersionTagRequest":
@@ -3336,16 +3246,16 @@ class SetRegisteredModelTagRequest:
     # 5000 bytes in size.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        setRegisteredModelTagRequest_query, setRegisteredModelTagRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            setRegisteredModelTagRequest_body["key"] = self.key
+            body["key"] = self.key
         if self.name:
-            setRegisteredModelTagRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.value:
-            setRegisteredModelTagRequest_body["value"] = self.value
+            body["value"] = self.value
 
-        return setRegisteredModelTagRequest_query, setRegisteredModelTagRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetRegisteredModelTagRequest":
@@ -3372,18 +3282,18 @@ class SetTag:
     # 5000 bytes in size.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        setTag_query, setTag_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            setTag_body["key"] = self.key
+            body["key"] = self.key
         if self.run_id:
-            setTag_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            setTag_body["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
         if self.value:
-            setTag_body["value"] = self.value
+            body["value"] = self.value
 
-        return setTag_query, setTag_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetTag":
@@ -3421,14 +3331,14 @@ class TestRegistryWebhook:
     # Status code returned by the webhook URL
     status_code: int
 
-    def as_request(self) -> (dict, dict):
-        testRegistryWebhook_query, testRegistryWebhook_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.body:
-            testRegistryWebhook_body["body"] = self.body
+            body["body"] = self.body
         if self.status_code:
-            testRegistryWebhook_body["status_code"] = self.status_code
+            body["status_code"] = self.status_code
 
-        return testRegistryWebhook_query, testRegistryWebhook_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TestRegistryWebhook":
@@ -3448,14 +3358,14 @@ class TestRegistryWebhookRequest:
     # Webhook ID
     id: str
 
-    def as_request(self) -> (dict, dict):
-        testRegistryWebhookRequest_query, testRegistryWebhookRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.event:
-            testRegistryWebhookRequest_body["event"] = self.event.value
+            body["event"] = self.event.value
         if self.id:
-            testRegistryWebhookRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return testRegistryWebhookRequest_query, testRegistryWebhookRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TestRegistryWebhookRequest":
@@ -3471,12 +3381,12 @@ class TestRegistryWebhookResponse:
     # Test webhook response object.
     webhook: "TestRegistryWebhook"
 
-    def as_request(self) -> (dict, dict):
-        testRegistryWebhookResponse_query, testRegistryWebhookResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.webhook:
-            testRegistryWebhookResponse_body["webhook"] = self.webhook.as_request()[1]
+            body["webhook"] = self.webhook.as_dict()
 
-        return testRegistryWebhookResponse_query, testRegistryWebhookResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TestRegistryWebhookResponse":
@@ -3503,20 +3413,18 @@ class TransitionModelVersionStage:
     # Model version number
     version: str
 
-    def as_request(self) -> (dict, dict):
-        transitionModelVersionStage_query, transitionModelVersionStage_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.archive_existing_versions:
-            transitionModelVersionStage_body[
-                "archive_existing_versions"
-            ] = self.archive_existing_versions
+            body["archive_existing_versions"] = self.archive_existing_versions
         if self.name:
-            transitionModelVersionStage_body["name"] = self.name
+            body["name"] = self.name
         if self.stage:
-            transitionModelVersionStage_body["stage"] = self.stage
+            body["stage"] = self.stage
         if self.version:
-            transitionModelVersionStage_body["version"] = self.version
+            body["version"] = self.version
 
-        return transitionModelVersionStage_query, transitionModelVersionStage_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransitionModelVersionStage":
@@ -3551,28 +3459,20 @@ class TransitionModelVersionStageDatabricks:
     # Version of the model.
     version: str
 
-    def as_request(self) -> (dict, dict):
-        (
-            transitionModelVersionStageDatabricks_query,
-            transitionModelVersionStageDatabricks_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.archive_existing_versions:
-            transitionModelVersionStageDatabricks_body[
-                "archive_existing_versions"
-            ] = self.archive_existing_versions
+            body["archive_existing_versions"] = self.archive_existing_versions
         if self.comment:
-            transitionModelVersionStageDatabricks_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.name:
-            transitionModelVersionStageDatabricks_body["name"] = self.name
+            body["name"] = self.name
         if self.stage:
-            transitionModelVersionStageDatabricks_body["stage"] = self.stage.value
+            body["stage"] = self.stage.value
         if self.version:
-            transitionModelVersionStageDatabricks_body["version"] = self.version
+            body["version"] = self.version
 
-        return (
-            transitionModelVersionStageDatabricks_query,
-            transitionModelVersionStageDatabricks_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransitionModelVersionStageDatabricks":
@@ -3591,20 +3491,12 @@ class TransitionModelVersionStageResponse:
     # Updated model version
     model_version: "ModelVersion"
 
-    def as_request(self) -> (dict, dict):
-        (
-            transitionModelVersionStageResponse_query,
-            transitionModelVersionStageResponse_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_version:
-            transitionModelVersionStageResponse_body[
-                "model_version"
-            ] = self.model_version.as_request()[1]
+            body["model_version"] = self.model_version.as_dict()
 
-        return (
-            transitionModelVersionStageResponse_query,
-            transitionModelVersionStageResponse_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransitionModelVersionStageResponse":
@@ -3639,22 +3531,20 @@ class TransitionRequest:
     # The username of the user that created the object.
     user_id: str
 
-    def as_request(self) -> (dict, dict):
-        transitionRequest_query, transitionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.available_actions:
-            transitionRequest_body["available_actions"] = [
-                v for v in self.available_actions
-            ]
+            body["available_actions"] = [v for v in self.available_actions]
         if self.comment:
-            transitionRequest_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.creation_timestamp:
-            transitionRequest_body["creation_timestamp"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.to_stage:
-            transitionRequest_body["to_stage"] = self.to_stage.value
+            body["to_stage"] = self.to_stage.value
         if self.user_id:
-            transitionRequest_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return transitionRequest_query, transitionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransitionRequest":
@@ -3672,14 +3562,12 @@ class TransitionStageResponse:
 
     model_version: "ModelVersionDatabricks"
 
-    def as_request(self) -> (dict, dict):
-        transitionStageResponse_query, transitionStageResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.model_version:
-            transitionStageResponse_body[
-                "model_version"
-            ] = self.model_version.as_request()[1]
+            body["model_version"] = self.model_version.as_dict()
 
-        return transitionStageResponse_query, transitionStageResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransitionStageResponse":
@@ -3698,14 +3586,14 @@ class UpdateComment:
     # Unique identifier of an activity
     id: str
 
-    def as_request(self) -> (dict, dict):
-        updateComment_query, updateComment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            updateComment_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.id:
-            updateComment_body["id"] = self.id
+            body["id"] = self.id
 
-        return updateComment_query, updateComment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateComment":
@@ -3724,14 +3612,14 @@ class UpdateExperiment:
     # name must be unique.
     new_name: str
 
-    def as_request(self) -> (dict, dict):
-        updateExperiment_query, updateExperiment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.experiment_id:
-            updateExperiment_body["experiment_id"] = self.experiment_id
+            body["experiment_id"] = self.experiment_id
         if self.new_name:
-            updateExperiment_body["new_name"] = self.new_name
+            body["new_name"] = self.new_name
 
-        return updateExperiment_query, updateExperiment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateExperiment":
@@ -3751,16 +3639,16 @@ class UpdateModelVersionRequest:
     # Model version number
     version: str
 
-    def as_request(self) -> (dict, dict):
-        updateModelVersionRequest_query, updateModelVersionRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            updateModelVersionRequest_body["description"] = self.description
+            body["description"] = self.description
         if self.name:
-            updateModelVersionRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.version:
-            updateModelVersionRequest_body["version"] = self.version
+            body["version"] = self.version
 
-        return updateModelVersionRequest_query, updateModelVersionRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateModelVersionRequest":
@@ -3779,14 +3667,14 @@ class UpdateRegisteredModelRequest:
     # Registered model unique name identifier.
     name: str
 
-    def as_request(self) -> (dict, dict):
-        updateRegisteredModelRequest_query, updateRegisteredModelRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            updateRegisteredModelRequest_body["description"] = self.description
+            body["description"] = self.description
         if self.name:
-            updateRegisteredModelRequest_body["name"] = self.name
+            body["name"] = self.name
 
-        return updateRegisteredModelRequest_query, updateRegisteredModelRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateRegisteredModelRequest":
@@ -3844,24 +3732,22 @@ class UpdateRegistryWebhook:
     # This describes an enum
     status: "RegistryWebhookStatus"
 
-    def as_request(self) -> (dict, dict):
-        updateRegistryWebhook_query, updateRegistryWebhook_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            updateRegistryWebhook_body["description"] = self.description
+            body["description"] = self.description
         if self.events:
-            updateRegistryWebhook_body["events"] = [v for v in self.events]
+            body["events"] = [v for v in self.events]
         if self.http_url_spec:
-            updateRegistryWebhook_body[
-                "http_url_spec"
-            ] = self.http_url_spec.as_request()[1]
+            body["http_url_spec"] = self.http_url_spec.as_dict()
         if self.id:
-            updateRegistryWebhook_body["id"] = self.id
+            body["id"] = self.id
         if self.job_spec:
-            updateRegistryWebhook_body["job_spec"] = self.job_spec.as_request()[1]
+            body["job_spec"] = self.job_spec.as_dict()
         if self.status:
-            updateRegistryWebhook_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return updateRegistryWebhook_query, updateRegistryWebhook_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateRegistryWebhook":
@@ -3883,12 +3769,12 @@ class UpdateResponse:
     # Comment details.
     comment: "CommentObject"
 
-    def as_request(self) -> (dict, dict):
-        updateResponse_query, updateResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            updateResponse_body["comment"] = self.comment.as_request()[1]
+            body["comment"] = self.comment.as_dict()
 
-        return updateResponse_query, updateResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateResponse":
@@ -3910,18 +3796,18 @@ class UpdateRun:
     # Updated status of the run.
     status: "UpdateRunStatus"
 
-    def as_request(self) -> (dict, dict):
-        updateRun_query, updateRun_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.end_time:
-            updateRun_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.run_id:
-            updateRun_body["run_id"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_uuid:
-            updateRun_body["run_uuid"] = self.run_uuid
+            body["run_uuid"] = self.run_uuid
         if self.status:
-            updateRun_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return updateRun_query, updateRun_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateRun":
@@ -3939,12 +3825,12 @@ class UpdateRunResponse:
     # Updated metadata of the run.
     run_info: "RunInfo"
 
-    def as_request(self) -> (dict, dict):
-        updateRunResponse_query, updateRunResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.run_info:
-            updateRunResponse_body["run_info"] = self.run_info.as_request()[1]
+            body["run_info"] = self.run_info.as_dict()
 
-        return updateRunResponse_query, updateRunResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateRunResponse":
@@ -3967,7 +3853,14 @@ class ExperimentsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateExperiment) -> CreateExperimentResponse:
+    def create(
+        self,
+        name: str,
+        *,
+        artifact_location: str = None,
+        tags: List[ExperimentTag] = None,
+        **kwargs
+    ) -> CreateExperimentResponse:
         """Create experiment.
 
         Creates an experiment with a name. Returns the ID of the newly created
@@ -3977,35 +3870,59 @@ class ExperimentsAPI:
 
         Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name
         exists."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateExperiment(
+                artifact_location=artifact_location, name=name, tags=tags
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/experiments/create", query=query, body=body
         )
         return CreateExperimentResponse.from_dict(json)
 
-    def delete(self, request: DeleteExperiment):
+    def delete(self, experiment_id: str, **kwargs):
         """Delete an experiment.
 
         Marks an experiment and associated metadata, runs, metrics, params, and
         tags for deletion. If the experiment uses FileStore, artifacts
         associated with experiment are also deleted."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteExperiment(experiment_id=experiment_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/mlflow/experiments/delete", query=query, body=body
         )
 
-    def get(self, request: GetExperimentRequest) -> Experiment:
+    def get(self, experiment_id: str, **kwargs) -> Experiment:
         """Get an experiment.
 
         Gets metadata for an experiment. This method works on deleted
         experiments."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetExperimentRequest(experiment_id=experiment_id)
+        body = request.as_dict()
+        query = {}
+        if experiment_id:
+            query["experiment_id"] = experiment_id
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/experiments/get", query=query, body=body
         )
         return Experiment.from_dict(json)
 
-    def get_by_name(self, request: GetByNameRequest) -> GetExperimentByNameResponse:
+    def get_by_name(
+        self, experiment_name: str, **kwargs
+    ) -> GetExperimentByNameResponse:
         """Get metadata.
 
         "Gets metadata for an experiment.
@@ -4017,23 +3934,52 @@ class ExperimentsAPI:
 
         Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified
         name exists.S"""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetByNameRequest(experiment_name=experiment_name)
+        body = request.as_dict()
+        query = {}
+        if experiment_name:
+            query["experiment_name"] = experiment_name
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, body=body
         )
         return GetExperimentByNameResponse.from_dict(json)
 
-    def list(self, request: ListExperimentsRequest) -> ListExperimentsResponse:
+    def list(
+        self,
+        *,
+        max_results: int = None,
+        page_token: str = None,
+        view_type: str = None,
+        **kwargs
+    ) -> ListExperimentsResponse:
         """List experiments.
 
         Gets a list of all experiments."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListExperimentsRequest(
+                max_results=max_results, page_token=page_token, view_type=view_type
+            )
+        body = request.as_dict()
+        query = {}
+        if max_results:
+            query["max_results"] = max_results
+        if page_token:
+            query["page_token"] = page_token
+        if view_type:
+            query["view_type"] = view_type
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/experiments/list", query=query, body=body
         )
         return ListExperimentsResponse.from_dict(json)
 
-    def restore(self, request: RestoreExperiment):
+    def restore(self, experiment_id: str, **kwargs):
         """Restores an experiment.
 
         "Restore an experiment marked for deletion. This also
@@ -4041,27 +3987,62 @@ class ExperimentsAPI:
         experiment uses FileStore, underlying\nartifacts associated with
         experiment are also restored.\n\nThrows `RESOURCE_DOES_NOT_EXIST` if
         experiment was never created or was permanently deleted.","""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RestoreExperiment(experiment_id=experiment_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/mlflow/experiments/restore", query=query, body=body
         )
 
-    def search(self, request: SearchExperiments) -> SearchExperimentsResponse:
+    def search(
+        self,
+        *,
+        filter: str = None,
+        max_results: int = None,
+        order_by: List[str] = None,
+        page_token: str = None,
+        view_type: SearchExperimentsViewType = None,
+        **kwargs
+    ) -> SearchExperimentsResponse:
         """Search experiments.
 
         Searches for experiments that satisfy specified search criteria."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SearchExperiments(
+                filter=filter,
+                max_results=max_results,
+                order_by=order_by,
+                page_token=page_token,
+                view_type=view_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/experiments/search", query=query, body=body
         )
         return SearchExperimentsResponse.from_dict(json)
 
-    def set_experiment_tag(self, request: SetExperimentTag):
+    def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
         """Set a tag.
 
         Sets a tag on an experiment. Experiment tags are metadata that can be
         updated."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SetExperimentTag(
+                experiment_id=experiment_id, key=key, value=value
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST",
             "/api/2.0/mlflow/experiments/set-experiment-tag",
@@ -4069,11 +4050,17 @@ class ExperimentsAPI:
             body=body,
         )
 
-    def update(self, request: UpdateExperiment):
+    def update(self, experiment_id: str, *, new_name: str = None, **kwargs):
         """Update an experiment.
 
         Updates experiment metadata."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateExperiment(experiment_id=experiment_id, new_name=new_name)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/mlflow/experiments/update", query=query, body=body
         )
@@ -4083,13 +4070,37 @@ class MLflowArtifactsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def list(self, request: ListArtifactsRequest) -> ListArtifactsResponse:
+    def list(
+        self,
+        *,
+        page_token: str = None,
+        path: str = None,
+        run_id: str = None,
+        run_uuid: str = None,
+        **kwargs
+    ) -> ListArtifactsResponse:
         """Get all artifacts.
 
         List artifacts for a run. Takes an optional `artifact_path` prefix. If
         it is specified, the response contains only artifacts with the specified
         prefix.","""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListArtifactsRequest(
+                page_token=page_token, path=path, run_id=run_id, run_uuid=run_uuid
+            )
+        body = request.as_dict()
+        query = {}
+        if page_token:
+            query["page_token"] = page_token
+        if path:
+            query["path"] = path
+        if run_id:
+            query["run_id"] = run_id
+        if run_uuid:
+            query["run_uuid"] = run_uuid
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/artifacts/list", query=query, body=body
         )
@@ -4100,7 +4111,7 @@ class MLflowDatabricksAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, request: GetMLflowDatabrickRequest) -> GetResponse:
+    def get(self, name: str, **kwargs) -> GetResponse:
         """Get model.
 
         Get the details of a model. This is a Databricks Workspace version of
@@ -4108,7 +4119,15 @@ class MLflowDatabricksAPI:
         ID and the permission level of the requesting user on the model.
 
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel"""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetMLflowDatabrickRequest(name=name)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+
         json = self._api.do(
             "GET",
             "/api/2.0/mlflow/databricks/registered-models/get",
@@ -4118,7 +4137,14 @@ class MLflowDatabricksAPI:
         return GetResponse.from_dict(json)
 
     def transition_stage(
-        self, request: TransitionModelVersionStageDatabricks
+        self,
+        name: str,
+        version: str,
+        stage: Stage,
+        archive_existing_versions: bool,
+        *,
+        comment: str = None,
+        **kwargs
     ) -> TransitionStageResponse:
         """Transition a stage.
 
@@ -4127,7 +4153,19 @@ class MLflowDatabricksAPI:
         with the transition to be recorded.",
 
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage"""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = TransitionModelVersionStageDatabricks(
+                archive_existing_versions=archive_existing_versions,
+                comment=comment,
+                name=name,
+                stage=stage,
+                version=version,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
             "/api/2.0/mlflow/databricks/model-versions/transition-stage",
@@ -4141,11 +4179,27 @@ class MLflowMetricsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_history(self, request: GetHistoryRequest) -> GetMetricHistoryResponse:
+    def get_history(
+        self, metric_key: str, *, run_id: str = None, run_uuid: str = None, **kwargs
+    ) -> GetMetricHistoryResponse:
         """Get all history.
 
         Gets a list of all values for the specified metric for a given run."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetHistoryRequest(
+                metric_key=metric_key, run_id=run_id, run_uuid=run_uuid
+            )
+        body = request.as_dict()
+        query = {}
+        if metric_key:
+            query["metric_key"] = metric_key
+        if run_id:
+            query["run_id"] = run_id
+        if run_uuid:
+            query["run_uuid"] = run_uuid
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/metrics/get-history", query=query, body=body
         )
@@ -4156,35 +4210,66 @@ class MLflowRunsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateRun) -> CreateRunResponse:
+    def create(
+        self,
+        *,
+        experiment_id: str = None,
+        start_time: int = None,
+        tags: List[RunTag] = None,
+        user_id: str = None,
+        **kwargs
+    ) -> CreateRunResponse:
         """Create a run.
 
         Creates a new run within an experiment. A run is usually a single
         execution of a machine learning or data ETL pipeline. MLflow uses runs
         to track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag` associated
         with a single execution."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateRun(
+                experiment_id=experiment_id,
+                start_time=start_time,
+                tags=tags,
+                user_id=user_id,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/runs/create", query=query, body=body
         )
         return CreateRunResponse.from_dict(json)
 
-    def delete(self, request: DeleteRun):
+    def delete(self, run_id: str, **kwargs):
         """Delete a run.
 
         Marks a run for deletion."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteRun(run_id=run_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/delete", query=query, body=body)
 
-    def delete_tag(self, request: DeleteTag):
+    def delete_tag(self, run_id: str, key: str, **kwargs):
         """Delete a tag.
 
         Deletes a tag on a run. Tags are run metadata that can be updated during
         a run and after a run completes."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteTag(key=key, run_id=run_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", query=query, body=body)
 
-    def get(self, request: GetRunRequest) -> GetRunResponse:
+    def get(self, run_id: str, *, run_uuid: str = None, **kwargs) -> GetRunResponse:
         """Get a run.
 
         "Gets the metadata, metrics, params, and tags for a run. In the case
@@ -4193,11 +4278,29 @@ class MLflowRunsAPI:
 
         If there are multiple values with the latest timestamp, return the
         maximum of these values."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetRunRequest(run_id=run_id, run_uuid=run_uuid)
+        body = request.as_dict()
+        query = {}
+        if run_id:
+            query["run_id"] = run_id
+        if run_uuid:
+            query["run_uuid"] = run_uuid
+
         json = self._api.do("GET", "/api/2.0/mlflow/runs/get", query=query, body=body)
         return GetRunResponse.from_dict(json)
 
-    def log_batch(self, request: LogBatch):
+    def log_batch(
+        self,
+        *,
+        metrics: List[Metric] = None,
+        params: List[Param] = None,
+        run_id: str = None,
+        tags: List[RunTag] = None,
+        **kwargs
+    ):
         """Log a batch.
 
         Logs a batch of metrics, params, and tags for a run. If any data failed
@@ -4242,71 +4345,179 @@ class MLflowRunsAPI:
 
         * Metric keyes, param keys, and tag keys can be up to 250 characters in
         length * Parameter and tag values can be up to 250 characters in length"""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = LogBatch(metrics=metrics, params=params, run_id=run_id, tags=tags)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", query=query, body=body)
 
-    def log_metric(self, request: LogMetric):
+    def log_metric(
+        self,
+        key: str,
+        value: float,
+        timestamp: int,
+        *,
+        run_id: str = None,
+        run_uuid: str = None,
+        step: int = None,
+        **kwargs
+    ):
         """Log a metric.
 
         Logs a metric for a run. A metric is a key-value pair (string key, float
         value) with an associated timestamp. Examples include the various
         metrics that represent ML model accuracy. A metric can be logged
         multiple times."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = LogMetric(
+                key=key,
+                run_id=run_id,
+                run_uuid=run_uuid,
+                step=step,
+                timestamp=timestamp,
+                value=value,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", query=query, body=body)
 
-    def log_model(self, request: LogModel):
+    def log_model(self, *, model_json: str = None, run_id: str = None, **kwargs):
         """Log a model.
 
         **NOTE:** Experimental: This API may change or be removed in a future
         release without warning."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = LogModel(model_json=model_json, run_id=run_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", query=query, body=body)
 
-    def log_parameter(self, request: LogParam):
+    def log_parameter(
+        self,
+        key: str,
+        value: str,
+        *,
+        run_id: str = None,
+        run_uuid: str = None,
+        **kwargs
+    ):
         """Log a param.
 
         Logs a param used for a run. A param is a key-value pair (string key,
         string value). Examples include hyperparameters used for ML model
         training and constant dates and values used in an ETL pipeline. A param
         can be logged only once for a run."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = LogParam(key=key, run_id=run_id, run_uuid=run_uuid, value=value)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/mlflow/runs/log-parameter", query=query, body=body
         )
 
-    def restore(self, request: RestoreRun):
+    def restore(self, run_id: str, **kwargs):
         """Restore a run.
 
         Restores a deleted run."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RestoreRun(run_id=run_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/restore", query=query, body=body)
 
-    def search(self, request: SearchRuns) -> SearchRunsResponse:
+    def search(
+        self,
+        *,
+        experiment_ids: List[str] = None,
+        filter: str = None,
+        max_results: int = None,
+        order_by: List[str] = None,
+        page_token: str = None,
+        run_view_type: SearchRunsRunViewType = None,
+        **kwargs
+    ) -> SearchRunsResponse:
         """Search for runs.
 
         Searches for runs that satisfy expressions.
 
         Search expressions can use `mlflowMetric` and `mlflowParam` keys.","""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SearchRuns(
+                experiment_ids=experiment_ids,
+                filter=filter,
+                max_results=max_results,
+                order_by=order_by,
+                page_token=page_token,
+                run_view_type=run_view_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/runs/search", query=query, body=body
         )
         return SearchRunsResponse.from_dict(json)
 
-    def set_tag(self, request: SetTag):
+    def set_tag(
+        self,
+        key: str,
+        value: str,
+        *,
+        run_id: str = None,
+        run_uuid: str = None,
+        **kwargs
+    ):
         """Set a tag.
 
         Sets a tag on a run. Tags are run metadata that can be updated during a
         run and after a run completes."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SetTag(key=key, run_id=run_id, run_uuid=run_uuid, value=value)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", query=query, body=body)
 
-    def update(self, request: UpdateRun) -> UpdateRunResponse:
+    def update(
+        self,
+        *,
+        end_time: int = None,
+        run_id: str = None,
+        run_uuid: str = None,
+        status: UpdateRunStatus = None,
+        **kwargs
+    ) -> UpdateRunResponse:
         """Update a run.
 
         Updates run metadata."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateRun(
+                end_time=end_time, run_id=run_id, run_uuid=run_uuid, status=status
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/runs/update", query=query, body=body
         )
@@ -4317,32 +4528,52 @@ class ModelVersionCommentsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateComment) -> CreateResponse:
+    def create(self, name: str, version: str, comment: str, **kwargs) -> CreateResponse:
         """Post a comment.
 
         Posts a comment on a model version. A comment can be submitted either by
         a user or programmatically to display relevant information about the
         model. For example, test results or deployment errors."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateComment(comment=comment, name=name, version=version)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/comments/create", query=query, body=body
         )
         return CreateResponse.from_dict(json)
 
-    def delete(self, request: DeleteModelVersionCommentRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a comment.
 
         Deletes a comment on a model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteModelVersionCommentRequest(id=id)
+        body = request.as_dict()
+        query = {}
+        if id:
+            query["id"] = id
+
         self._api.do(
             "DELETE", "/api/2.0/mlflow/comments/delete", query=query, body=body
         )
 
-    def update(self, request: UpdateComment) -> UpdateResponse:
+    def update(self, id: str, comment: str, **kwargs) -> UpdateResponse:
         """Update a comment.
 
         Post an edit to a comment on a model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateComment(comment=comment, id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/comments/update", query=query, body=body
         )
@@ -4353,30 +4584,75 @@ class ModelVersionsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateModelVersionRequest) -> CreateModelVersionResponse:
+    def create(
+        self,
+        name: str,
+        source: str,
+        *,
+        description: str = None,
+        run_id: str = None,
+        run_link: str = None,
+        tags: List[ModelVersionTag] = None,
+        **kwargs
+    ) -> CreateModelVersionResponse:
         """Create a model version.
 
         Creates a model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateModelVersionRequest(
+                description=description,
+                name=name,
+                run_id=run_id,
+                run_link=run_link,
+                source=source,
+                tags=tags,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/model-versions/create", query=query, body=body
         )
         return CreateModelVersionResponse.from_dict(json)
 
-    def delete(self, request: DeleteModelVersionRequest):
+    def delete(self, name: str, version: str, **kwargs):
         """Delete a model version.
 
         Deletes a model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteModelVersionRequest(name=name, version=version)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+        if version:
+            query["version"] = version
+
         self._api.do(
             "DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, body=body
         )
 
-    def delete_tag(self, request: DeleteModelVersionTagRequest):
+    def delete_tag(self, name: str, version: str, key: str, **kwargs):
         """Delete a model version tag.
 
         Deletes a model version tag."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteModelVersionTagRequest(key=key, name=name, version=version)
+        body = request.as_dict()
+        query = {}
+        if key:
+            query["key"] = key
+        if name:
+            query["name"] = name
+        if version:
+            query["version"] = version
+
         self._api.do(
             "DELETE",
             "/api/2.0/mlflow/model-versions/delete-tag",
@@ -4384,23 +4660,43 @@ class ModelVersionsAPI:
             body=body,
         )
 
-    def get(self, request: GetModelVersionRequest) -> GetModelVersionResponse:
+    def get(self, name: str, version: str, **kwargs) -> GetModelVersionResponse:
         """Get a model version.
 
         Get a model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetModelVersionRequest(name=name, version=version)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+        if version:
+            query["version"] = version
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/model-versions/get", query=query, body=body
         )
         return GetModelVersionResponse.from_dict(json)
 
     def get_download_uri(
-        self, request: GetModelVersionDownloadUriRequest
+        self, name: str, version: str, **kwargs
     ) -> GetModelVersionDownloadUriResponse:
         """Get a model version URI.
 
         Gets a URI to download the model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetModelVersionDownloadUriRequest(name=name, version=version)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+        if version:
+            query["version"] = version
+
         json = self._api.do(
             "GET",
             "/api/2.0/mlflow/model-versions/get-download-uri",
@@ -4410,33 +4706,82 @@ class ModelVersionsAPI:
         return GetModelVersionDownloadUriResponse.from_dict(json)
 
     def search(
-        self, request: SearchModelVersionsRequest
+        self,
+        *,
+        filter: str = None,
+        max_results: int = None,
+        order_by: List[str] = None,
+        page_token: str = None,
+        **kwargs
     ) -> SearchModelVersionsResponse:
         """Searches model versions.
 
         Searches for specific model versions based on the supplied __filter__."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SearchModelVersionsRequest(
+                filter=filter,
+                max_results=max_results,
+                order_by=order_by,
+                page_token=page_token,
+            )
+        body = request.as_dict()
+        query = {}
+        if filter:
+            query["filter"] = filter
+        if max_results:
+            query["max_results"] = max_results
+        if order_by:
+            query["order_by"] = [v for v in order_by]
+        if page_token:
+            query["page_token"] = page_token
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/model-versions/search", query=query, body=body
         )
         return SearchModelVersionsResponse.from_dict(json)
 
-    def set_tag(self, request: SetModelVersionTagRequest):
+    def set_tag(self, name: str, version: str, key: str, value: str, **kwargs):
         """Set a version tag.
 
         Sets a model version tag."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SetModelVersionTagRequest(
+                key=key, name=name, value=value, version=version
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/mlflow/model-versions/set-tag", query=query, body=body
         )
 
     def transition_stage(
-        self, request: TransitionModelVersionStage
+        self,
+        name: str,
+        version: str,
+        stage: str,
+        archive_existing_versions: bool,
+        **kwargs
     ) -> TransitionModelVersionStageResponse:
         """Transition a stage.
 
         Transition to the next model stage."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = TransitionModelVersionStage(
+                archive_existing_versions=archive_existing_versions,
+                name=name,
+                stage=stage,
+                version=version,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
             "/api/2.0/mlflow/model-versions/transition-stage",
@@ -4445,11 +4790,19 @@ class ModelVersionsAPI:
         )
         return TransitionModelVersionStageResponse.from_dict(json)
 
-    def update(self, request: UpdateModelVersionRequest):
+    def update(self, name: str, version: str, *, description: str = None, **kwargs):
         """Update model version.
 
         Updates the model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateModelVersionRequest(
+                description=description, name=name, version=version
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH", "/api/2.0/mlflow/model-versions/update", query=query, body=body
         )
@@ -4460,7 +4813,12 @@ class RegisteredModelsAPI:
         self._api = api_client
 
     def create(
-        self, request: CreateRegisteredModelRequest
+        self,
+        name: str,
+        *,
+        description: str = None,
+        tags: List[RegisteredModelTag] = None,
+        **kwargs
     ) -> CreateRegisteredModelResponse:
         """Create a model.
 
@@ -4469,26 +4827,52 @@ class RegisteredModelsAPI:
 
         Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given
         name exists."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateRegisteredModelRequest(
+                description=description, name=name, tags=tags
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/registered-models/create", query=query, body=body
         )
         return CreateRegisteredModelResponse.from_dict(json)
 
-    def delete(self, request: DeleteRegisteredModelRequest):
+    def delete(self, name: str, **kwargs):
         """Delete a model.
 
         Deletes a registered model."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteRegisteredModelRequest(name=name)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+
         self._api.do(
             "DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, body=body
         )
 
-    def delete_tag(self, request: DeleteRegisteredModelTagRequest):
+    def delete_tag(self, name: str, key: str, **kwargs):
         """Delete a model tag.
 
         Deletes the tag for a registered model."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteRegisteredModelTagRequest(key=key, name=name)
+        body = request.as_dict()
+        query = {}
+        if key:
+            query["key"] = key
+        if name:
+            query["name"] = name
+
         self._api.do(
             "DELETE",
             "/api/2.0/mlflow/registered-models/delete-tag",
@@ -4496,23 +4880,37 @@ class RegisteredModelsAPI:
             body=body,
         )
 
-    def get(self, request: GetRegisteredModelRequest) -> GetRegisteredModelResponse:
+    def get(self, name: str, **kwargs) -> GetRegisteredModelResponse:
         """Get a model.
 
         Gets the registered model that matches the specified ID."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetRegisteredModelRequest(name=name)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/registered-models/get", query=query, body=body
         )
         return GetRegisteredModelResponse.from_dict(json)
 
     def get_latest_versions(
-        self, request: GetLatestVersionsRequest
+        self, name: str, *, stages: List[str] = None, **kwargs
     ) -> GetLatestVersionsResponse:
         """Get the latest version.
 
         Gets the latest version of a registered model."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetLatestVersionsRequest(name=name, stages=stages)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
             "/api/2.0/mlflow/registered-models/get-latest-versions",
@@ -4522,56 +4920,111 @@ class RegisteredModelsAPI:
         return GetLatestVersionsResponse.from_dict(json)
 
     def list(
-        self, request: ListRegisteredModelsRequest
+        self, *, max_results: int = None, page_token: str = None, **kwargs
     ) -> ListRegisteredModelsResponse:
         """List models.
 
         Lists all available registered models, up to the limit specified in
         __max_results__."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListRegisteredModelsRequest(
+                max_results=max_results, page_token=page_token
+            )
+        body = request.as_dict()
+        query = {}
+        if max_results:
+            query["max_results"] = max_results
+        if page_token:
+            query["page_token"] = page_token
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/registered-models/list", query=query, body=body
         )
         return ListRegisteredModelsResponse.from_dict(json)
 
     def rename(
-        self, request: RenameRegisteredModelRequest
+        self, name: str, *, new_name: str = None, **kwargs
     ) -> RenameRegisteredModelResponse:
         """Rename a model.
 
         Renames a registered model."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RenameRegisteredModelRequest(name=name, new_name=new_name)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/registered-models/rename", query=query, body=body
         )
         return RenameRegisteredModelResponse.from_dict(json)
 
     def search(
-        self, request: SearchRegisteredModelsRequest
+        self,
+        *,
+        filter: str = None,
+        max_results: int = None,
+        order_by: List[str] = None,
+        page_token: str = None,
+        **kwargs
     ) -> SearchRegisteredModelsResponse:
         """Search models.
 
         Search for registered models based on the specified __filter__."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SearchRegisteredModelsRequest(
+                filter=filter,
+                max_results=max_results,
+                order_by=order_by,
+                page_token=page_token,
+            )
+        body = request.as_dict()
+        query = {}
+        if filter:
+            query["filter"] = filter
+        if max_results:
+            query["max_results"] = max_results
+        if order_by:
+            query["order_by"] = [v for v in order_by]
+        if page_token:
+            query["page_token"] = page_token
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/registered-models/search", query=query, body=body
         )
         return SearchRegisteredModelsResponse.from_dict(json)
 
-    def set_tag(self, request: SetRegisteredModelTagRequest):
+    def set_tag(self, name: str, key: str, value: str, **kwargs):
         """Set a tag.
 
         Sets a tag on a registered model."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = SetRegisteredModelTagRequest(key=key, name=name, value=value)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/mlflow/registered-models/set-tag", query=query, body=body
         )
 
-    def update(self, request: UpdateRegisteredModelRequest):
+    def update(self, name: str, *, description: str = None, **kwargs):
         """Update model.
 
         Updates a registered model."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateRegisteredModelRequest(description=description, name=name)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH", "/api/2.0/mlflow/registered-models/update", query=query, body=body
         )
@@ -4581,60 +5034,143 @@ class RegistryWebhooksAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateRegistryWebhook) -> CreateResponse:
+    def create(
+        self,
+        events: List[RegistryWebhookEvent],
+        *,
+        description: str = None,
+        http_url_spec: HttpUrlSpec = None,
+        job_spec: JobSpec = None,
+        model_name: str = None,
+        status: RegistryWebhookStatus = None,
+        **kwargs
+    ) -> CreateResponse:
         """Create a webhook.
 
         **NOTE**: This endpoint is in Public Preview.
 
         Creates a registry webhook."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateRegistryWebhook(
+                description=description,
+                events=events,
+                http_url_spec=http_url_spec,
+                job_spec=job_spec,
+                model_name=model_name,
+                status=status,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/registry-webhooks/create", query=query, body=body
         )
         return CreateResponse.from_dict(json)
 
-    def delete(self, request: DeleteRegistryWebhookRequest):
+    def delete(self, *, id: str = None, **kwargs):
         """Delete a webhook.
 
         **NOTE:** This endpoint is in Public Preview.
 
         Deletes a registry webhook."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteRegistryWebhookRequest(id=id)
+        body = request.as_dict()
+        query = {}
+        if id:
+            query["id"] = id
+
         self._api.do(
             "DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, body=body
         )
 
-    def list(self, request: ListRegistryWebhooksRequest) -> ListRegistryWebhooks:
+    def list(
+        self,
+        *,
+        events: List[RegistryWebhookEvent] = None,
+        model_name: str = None,
+        page_token: str = None,
+        **kwargs
+    ) -> ListRegistryWebhooks:
         """List registry webhooks.
 
         **NOTE:** This endpoint is in Public Preview.
 
         Lists all registry webhooks."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListRegistryWebhooksRequest(
+                events=events, model_name=model_name, page_token=page_token
+            )
+        body = request.as_dict()
+        query = {}
+        if events:
+            query["events"] = [v for v in events]
+        if model_name:
+            query["model_name"] = model_name
+        if page_token:
+            query["page_token"] = page_token
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/registry-webhooks/list", query=query, body=body
         )
         return ListRegistryWebhooks.from_dict(json)
 
-    def test(self, request: TestRegistryWebhookRequest) -> TestRegistryWebhookResponse:
+    def test(
+        self, id: str, *, event: RegistryWebhookEvent = None, **kwargs
+    ) -> TestRegistryWebhookResponse:
         """Test a webhook.
 
         **NOTE:** This endpoint is in Public Preview.
 
         Tests a registry webhook."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = TestRegistryWebhookRequest(event=event, id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/registry-webhooks/test", query=query, body=body
         )
         return TestRegistryWebhookResponse.from_dict(json)
 
-    def update(self, request: UpdateRegistryWebhook):
+    def update(
+        self,
+        id: str,
+        *,
+        description: str = None,
+        events: List[RegistryWebhookEvent] = None,
+        http_url_spec: HttpUrlSpec = None,
+        job_spec: JobSpec = None,
+        status: RegistryWebhookStatus = None,
+        **kwargs
+    ):
         """Update a webhook.
 
         **NOTE:** This endpoint is in Public Preview.
 
         Updates a registry webhook."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateRegistryWebhook(
+                description=description,
+                events=events,
+                http_url_spec=http_url_spec,
+                id=id,
+                job_spec=job_spec,
+                status=status,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH", "/api/2.0/mlflow/registry-webhooks/update", query=query, body=body
         )
@@ -4644,11 +5180,32 @@ class TransitionRequestsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def approve(self, request: ApproveTransitionRequest) -> ApproveResponse:
+    def approve(
+        self,
+        name: str,
+        version: str,
+        stage: Stage,
+        archive_existing_versions: bool,
+        *,
+        comment: str = None,
+        **kwargs
+    ) -> ApproveResponse:
         """Approve transition requests.
 
         Approves a model version stage transition request."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ApproveTransitionRequest(
+                archive_existing_versions=archive_existing_versions,
+                comment=comment,
+                name=name,
+                stage=stage,
+                version=version,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
             "/api/2.0/mlflow/transition-requests/approve",
@@ -4657,21 +5214,62 @@ class TransitionRequestsAPI:
         )
         return ApproveResponse.from_dict(json)
 
-    def create(self, request: CreateTransitionRequest) -> CreateResponse:
+    def create(
+        self, name: str, version: str, stage: Stage, *, comment: str = None, **kwargs
+    ) -> CreateResponse:
         """Make a transition request.
 
         Creates a model version stage transition request."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateTransitionRequest(
+                comment=comment, name=name, stage=stage, version=version
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/transition-requests/create", query=query, body=body
         )
         return CreateResponse.from_dict(json)
 
-    def delete(self, request: DeleteTransitionRequestRequest):
+    def delete(
+        self,
+        name: str,
+        version: str,
+        stage: str,
+        creator: str,
+        *,
+        comment: str = None,
+        **kwargs
+    ):
         """Delete a ransition request.
 
         Cancels a model version stage transition request."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteTransitionRequestRequest(
+                comment=comment,
+                creator=creator,
+                name=name,
+                stage=stage,
+                version=version,
+            )
+        body = request.as_dict()
+        query = {}
+        if comment:
+            query["comment"] = comment
+        if creator:
+            query["creator"] = creator
+        if name:
+            query["name"] = name
+        if stage:
+            query["stage"] = stage
+        if version:
+            query["version"] = version
+
         self._api.do(
             "DELETE",
             "/api/2.0/mlflow/transition-requests/delete",
@@ -4679,21 +5277,41 @@ class TransitionRequestsAPI:
             body=body,
         )
 
-    def list(self, request: ListTransitionRequestsRequest) -> ListResponse:
+    def list(self, name: str, version: str, **kwargs) -> ListResponse:
         """List transition requests.
 
         Gets a list of all open stage transition requests for the model version."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListTransitionRequestsRequest(name=name, version=version)
+        body = request.as_dict()
+        query = {}
+        if name:
+            query["name"] = name
+        if version:
+            query["version"] = version
+
         json = self._api.do(
             "GET", "/api/2.0/mlflow/transition-requests/list", query=query, body=body
         )
         return ListResponse.from_dict(json)
 
-    def reject(self, request: RejectTransitionRequest) -> RejectResponse:
+    def reject(
+        self, name: str, version: str, stage: Stage, *, comment: str = None, **kwargs
+    ) -> RejectResponse:
         """Reject a transition request.
 
         Rejects a model version stage transition request."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RejectTransitionRequest(
+                comment=comment, name=name, stage=stage, version=version
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/mlflow/transition-requests/reject", query=query, body=body
         )

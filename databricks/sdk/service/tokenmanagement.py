@@ -18,16 +18,16 @@ class CreateOboTokenRequest:
     # The number of seconds before the token expires.
     lifetime_seconds: int
 
-    def as_request(self) -> (dict, dict):
-        createOboTokenRequest_query, createOboTokenRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.application_id:
-            createOboTokenRequest_body["application_id"] = self.application_id
+            body["application_id"] = self.application_id
         if self.comment:
-            createOboTokenRequest_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.lifetime_seconds:
-            createOboTokenRequest_body["lifetime_seconds"] = self.lifetime_seconds
+            body["lifetime_seconds"] = self.lifetime_seconds
 
-        return createOboTokenRequest_query, createOboTokenRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateOboTokenRequest":
@@ -45,14 +45,14 @@ class CreateOboTokenResponse:
     # Value of the token.
     token_value: str
 
-    def as_request(self) -> (dict, dict):
-        createOboTokenResponse_query, createOboTokenResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.token_info:
-            createOboTokenResponse_body["token_info"] = self.token_info.as_request()[1]
+            body["token_info"] = self.token_info.as_dict()
         if self.token_value:
-            createOboTokenResponse_body["token_value"] = self.token_value
+            body["token_value"] = self.token_value
 
-        return createOboTokenResponse_query, createOboTokenResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateOboTokenResponse":
@@ -71,12 +71,12 @@ class Delete:
     # The ID of the token to get.
     token_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.token_id:
-            delete_body["token_id"] = self.token_id
+            body["token_id"] = self.token_id
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -92,12 +92,12 @@ class Get:
     # The ID of the token to get.
     token_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.token_id:
-            get_body["token_id"] = self.token_id
+            body["token_id"] = self.token_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -115,14 +115,14 @@ class List:
     # Username of the user that created the token.
     created_by_username: str  # query
 
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_by_id:
-            list_query["created_by_id"] = self.created_by_id
+            body["created_by_id"] = self.created_by_id
         if self.created_by_username:
-            list_query["created_by_username"] = self.created_by_username
+            body["created_by_username"] = self.created_by_username
 
-        return list_query, list_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "List":
@@ -137,14 +137,12 @@ class ListTokensResponse:
 
     token_infos: "List[TokenInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listTokensResponse_query, listTokensResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.token_infos:
-            listTokensResponse_body["token_infos"] = [
-                v.as_request()[1] for v in self.token_infos
-            ]
+            body["token_infos"] = [v.as_dict() for v in self.token_infos]
 
-        return listTokensResponse_query, listTokensResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListTokensResponse":
@@ -174,24 +172,24 @@ class TokenInfo:
     # ID of the token.
     token_id: str
 
-    def as_request(self) -> (dict, dict):
-        tokenInfo_query, tokenInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.comment:
-            tokenInfo_body["comment"] = self.comment
+            body["comment"] = self.comment
         if self.created_by_id:
-            tokenInfo_body["created_by_id"] = self.created_by_id
+            body["created_by_id"] = self.created_by_id
         if self.created_by_username:
-            tokenInfo_body["created_by_username"] = self.created_by_username
+            body["created_by_username"] = self.created_by_username
         if self.creation_time:
-            tokenInfo_body["creation_time"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.expiry_time:
-            tokenInfo_body["expiry_time"] = self.expiry_time
+            body["expiry_time"] = self.expiry_time
         if self.owner_id:
-            tokenInfo_body["owner_id"] = self.owner_id
+            body["owner_id"] = self.owner_id
         if self.token_id:
-            tokenInfo_body["token_id"] = self.token_id
+            body["token_id"] = self.token_id
 
-        return tokenInfo_query, tokenInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TokenInfo":
@@ -211,12 +209,27 @@ class TokenManagementAPI:
         self._api = api_client
 
     def create_obo_token(
-        self, request: CreateOboTokenRequest
+        self,
+        application_id: str,
+        lifetime_seconds: int,
+        *,
+        comment: str = None,
+        **kwargs,
     ) -> CreateOboTokenResponse:
         """Create on-behalf token.
 
         Creates a token on behalf of a service principal."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateOboTokenRequest(
+                application_id=application_id,
+                comment=comment,
+                lifetime_seconds=lifetime_seconds,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
             "/api/2.0/token-management/on-behalf-of/tokens",
@@ -225,36 +238,62 @@ class TokenManagementAPI:
         )
         return CreateOboTokenResponse.from_dict(json)
 
-    def delete(self, request: Delete):
+    def delete(self, token_id: str, **kwargs):
         """Delete a token.
 
         Deletes a token, specified by its ID."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(token_id=token_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "DELETE",
-            f"/api/2.0/token-management/tokens/{request.token_id}",
+            f"/api/2.0/token-management/tokens/{token_id}",
             query=query,
             body=body,
         )
 
-    def get(self, request: Get) -> TokenInfo:
+    def get(self, token_id: str, **kwargs) -> TokenInfo:
         """Get token info.
 
         Gets information about a token, specified by its ID."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(token_id=token_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/token-management/tokens/{request.token_id}",
+            f"/api/2.0/token-management/tokens/{token_id}",
             query=query,
             body=body,
         )
         return TokenInfo.from_dict(json)
 
-    def list(self, request: List) -> ListTokensResponse:
+    def list(
+        self, *, created_by_id: str = None, created_by_username: str = None, **kwargs
+    ) -> ListTokensResponse:
         """List all tokens.
 
         Lists all tokens associated with the specified workspace or user."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = List(
+                created_by_id=created_by_id, created_by_username=created_by_username
+            )
+        body = request.as_dict()
+        query = {}
+        if created_by_id:
+            query["created_by_id"] = created_by_id
+        if created_by_username:
+            query["created_by_username"] = created_by_username
+
         json = self._api.do(
             "GET", "/api/2.0/token-management/tokens", query=query, body=body
         )

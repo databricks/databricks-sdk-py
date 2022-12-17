@@ -19,14 +19,14 @@ class Delete:
     # deleted and cannot be undone.
     recursive: bool
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            delete_body["path"] = self.path
+            body["path"] = self.path
         if self.recursive:
-            delete_body["recursive"] = self.recursive
+            body["recursive"] = self.recursive
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -53,16 +53,16 @@ class Export:
     # only support for `DBC` format.
     path: str  # query
 
-    def as_request(self) -> (dict, dict):
-        export_query, export_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.direct_download:
-            export_query["direct_download"] = self.direct_download
+            body["direct_download"] = self.direct_download
         if self.format:
-            export_query["format"] = self.format.value
+            body["format"] = self.format.value
         if self.path:
-            export_query["path"] = self.path
+            body["path"] = self.path
 
-        return export_query, export_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Export":
@@ -92,12 +92,12 @@ class ExportResponse:
     # with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
     content: str
 
-    def as_request(self) -> (dict, dict):
-        exportResponse_query, exportResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.content:
-            exportResponse_body["content"] = self.content
+            body["content"] = self.content
 
-        return exportResponse_query, exportResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ExportResponse":
@@ -113,12 +113,12 @@ class GetStatus:
     # The absolute path of the notebook or directory.
     path: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getStatus_query, getStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            getStatus_query["path"] = self.path
+            body["path"] = self.path
 
-        return getStatus_query, getStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
@@ -151,20 +151,20 @@ class Import:
     # only support for `DBC` format.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        import_query, import_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.content:
-            import_body["content"] = self.content
+            body["content"] = self.content
         if self.format:
-            import_body["format"] = self.format.value
+            body["format"] = self.format.value
         if self.language:
-            import_body["language"] = self.language.value
+            body["language"] = self.language.value
         if self.overwrite:
-            import_body["overwrite"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path:
-            import_body["path"] = self.path
+            body["path"] = self.path
 
-        return import_query, import_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Import":
@@ -196,14 +196,14 @@ class List:
     # The absolute path of the notebook or directory.
     path: str  # query
 
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.notebooks_modified_after:
-            list_query["notebooks_modified_after"] = self.notebooks_modified_after
+            body["notebooks_modified_after"] = self.notebooks_modified_after
         if self.path:
-            list_query["path"] = self.path
+            body["path"] = self.path
 
-        return list_query, list_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "List":
@@ -219,12 +219,12 @@ class ListResponse:
     # List of objects.
     objects: "List[ObjectInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listResponse_query, listResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.objects:
-            listResponse_body["objects"] = [v.as_request()[1] for v in self.objects]
+            body["objects"] = [v.as_dict() for v in self.objects]
 
-        return listResponse_query, listResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListResponse":
@@ -243,12 +243,12 @@ class Mkdirs:
     # command will do nothing and succeed.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        mkdirs_query, mkdirs_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            mkdirs_body["path"] = self.path
+            body["path"] = self.path
 
-        return mkdirs_query, mkdirs_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Mkdirs":
@@ -276,24 +276,24 @@ class ObjectInfo:
     # <content needed>
     size: int
 
-    def as_request(self) -> (dict, dict):
-        objectInfo_query, objectInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at:
-            objectInfo_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.language:
-            objectInfo_body["language"] = self.language.value
+            body["language"] = self.language.value
         if self.modified_at:
-            objectInfo_body["modified_at"] = self.modified_at
+            body["modified_at"] = self.modified_at
         if self.object_id:
-            objectInfo_body["object_id"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type:
-            objectInfo_body["object_type"] = self.object_type.value
+            body["object_type"] = self.object_type.value
         if self.path:
-            objectInfo_body["path"] = self.path
+            body["path"] = self.path
         if self.size:
-            objectInfo_body["size"] = self.size
+            body["size"] = self.size
 
-        return objectInfo_query, objectInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ObjectInfo":
@@ -322,7 +322,7 @@ class WorkspaceAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, request: Delete):
+    def delete(self, path: str, *, recursive: bool = None, **kwargs):
         """Delete a workspace object.
 
         Deletes an object or a directory (and optionally recursively deletes all
@@ -333,10 +333,23 @@ class WorkspaceAPI:
 
         Object deletion cannot be undone and deleting a directory recursively is
         not atomic."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(path=path, recursive=recursive)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/workspace/delete", query=query, body=body)
 
-    def export(self, request: Export) -> ExportResponse:
+    def export(
+        self,
+        path: str,
+        *,
+        direct_download: bool = None,
+        format: ExportFormat = None,
+        **kwargs
+    ) -> ExportResponse:
         """Export a notebook.
 
         Exports a notebook or the contents of an entire directory.
@@ -347,42 +360,95 @@ class WorkspaceAPI:
         One can only export a directory in `DBC` format. If the exported data
         would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
         Currently, this API does not support exporting a library."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Export(direct_download=direct_download, format=format, path=path)
+        body = request.as_dict()
+        query = {}
+        if direct_download:
+            query["direct_download"] = direct_download
+        if format:
+            query["format"] = format.value
+        if path:
+            query["path"] = path
+
         json = self._api.do("GET", "/api/2.0/workspace/export", query=query, body=body)
         return ExportResponse.from_dict(json)
 
-    def get_status(self, request: GetStatus) -> ObjectInfo:
+    def get_status(self, path: str, **kwargs) -> ObjectInfo:
         """Get status.
 
         Gets the status of an object or a directory. If `path` does not exist,
         this call returns an error `RESOURCE_DOES_NOT_EXIST`."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetStatus(path=path)
+        body = request.as_dict()
+        query = {}
+        if path:
+            query["path"] = path
+
         json = self._api.do(
             "GET", "/api/2.0/workspace/get-status", query=query, body=body
         )
         return ObjectInfo.from_dict(json)
 
-    def import_(self, request: Import):
+    def import_(
+        self,
+        path: str,
+        *,
+        content: str = None,
+        format: ExportFormat = None,
+        language: Language = None,
+        overwrite: bool = None,
+        **kwargs
+    ):
         """Import a notebook.
 
         Imports a notebook or the contents of an entire directory. If `path`
         already exists and `overwrite` is set to `false`, this call returns an
         error `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import
         a directory."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Import(
+                content=content,
+                format=format,
+                language=language,
+                overwrite=overwrite,
+                path=path,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/workspace/import", query=query, body=body)
 
-    def list(self, request: List) -> ListResponse:
+    def list(
+        self, path: str, *, notebooks_modified_after: int = None, **kwargs
+    ) -> ListResponse:
         """List contents.
 
         Lists the contents of a directory, or the object if it is not a
         directory.If the input path does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = List(notebooks_modified_after=notebooks_modified_after, path=path)
+        body = request.as_dict()
+        query = {}
+        if notebooks_modified_after:
+            query["notebooks_modified_after"] = notebooks_modified_after
+        if path:
+            query["path"] = path
+
         json = self._api.do("GET", "/api/2.0/workspace/list", query=query, body=body)
         return ListResponse.from_dict(json)
 
-    def mkdirs(self, request: Mkdirs):
+    def mkdirs(self, path: str, **kwargs):
         """Create a directory.
 
         Creates the specified directory (and necessary parent directories if
@@ -392,5 +458,11 @@ class WorkspaceAPI:
 
         Note that if this operation fails it may have succeeded in creating some
         of the necessary\nparrent directories."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Mkdirs(path=path)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/workspace/mkdirs", query=query, body=body)

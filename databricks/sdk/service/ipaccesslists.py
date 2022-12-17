@@ -18,16 +18,16 @@ class CreateIpAccessList:
     # This describes an enum
     list_type: "ListType"
 
-    def as_request(self) -> (dict, dict):
-        createIpAccessList_query, createIpAccessList_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.ip_addresses:
-            createIpAccessList_body["ip_addresses"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label:
-            createIpAccessList_body["label"] = self.label
+            body["label"] = self.label
         if self.list_type:
-            createIpAccessList_body["list_type"] = self.list_type.value
+            body["list_type"] = self.list_type.value
 
-        return createIpAccessList_query, createIpAccessList_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateIpAccessList":
@@ -43,14 +43,12 @@ class CreateIpAccessListResponse:
 
     ip_access_list: "IpAccessListInfo"
 
-    def as_request(self) -> (dict, dict):
-        createIpAccessListResponse_query, createIpAccessListResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.ip_access_list:
-            createIpAccessListResponse_body[
-                "ip_access_list"
-            ] = self.ip_access_list.as_request()[1]
+            body["ip_access_list"] = self.ip_access_list.as_dict()
 
-        return createIpAccessListResponse_query, createIpAccessListResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateIpAccessListResponse":
@@ -68,12 +66,12 @@ class Delete:
     # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.ip_access_list_id:
-            delete_body["ip_access_list_id"] = self.ip_access_list_id
+            body["ip_access_list_id"] = self.ip_access_list_id
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -87,14 +85,12 @@ class FetchIpAccessListResponse:
 
     ip_access_list: "IpAccessListInfo"
 
-    def as_request(self) -> (dict, dict):
-        fetchIpAccessListResponse_query, fetchIpAccessListResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.ip_access_list:
-            fetchIpAccessListResponse_body[
-                "ip_access_list"
-            ] = self.ip_access_list.as_request()[1]
+            body["ip_access_list"] = self.ip_access_list.as_dict()
 
-        return fetchIpAccessListResponse_query, fetchIpAccessListResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "FetchIpAccessListResponse":
@@ -112,12 +108,12 @@ class Get:
     # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.ip_access_list_id:
-            get_body["ip_access_list_id"] = self.ip_access_list_id
+            body["ip_access_list_id"] = self.ip_access_list_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -131,14 +127,12 @@ class GetIpAccessListResponse:
 
     ip_access_lists: "List[IpAccessListInfo]"
 
-    def as_request(self) -> (dict, dict):
-        getIpAccessListResponse_query, getIpAccessListResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.ip_access_lists:
-            getIpAccessListResponse_body["ip_access_lists"] = [
-                v.as_request()[1] for v in self.ip_access_lists
-            ]
+            body["ip_access_lists"] = [v.as_dict() for v in self.ip_access_lists]
 
-        return getIpAccessListResponse_query, getIpAccessListResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetIpAccessListResponse":
@@ -175,30 +169,30 @@ class IpAccessListInfo:
     # User ID of the user who updated this list.
     updated_by: int
 
-    def as_request(self) -> (dict, dict):
-        ipAccessListInfo_query, ipAccessListInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.address_count:
-            ipAccessListInfo_body["address_count"] = self.address_count
+            body["address_count"] = self.address_count
         if self.created_at:
-            ipAccessListInfo_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by:
-            ipAccessListInfo_body["created_by"] = self.created_by
+            body["created_by"] = self.created_by
         if self.enabled:
-            ipAccessListInfo_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.ip_addresses:
-            ipAccessListInfo_body["ip_addresses"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label:
-            ipAccessListInfo_body["label"] = self.label
+            body["label"] = self.label
         if self.list_id:
-            ipAccessListInfo_body["list_id"] = self.list_id
+            body["list_id"] = self.list_id
         if self.list_type:
-            ipAccessListInfo_body["list_type"] = self.list_type.value
+            body["list_type"] = self.list_type.value
         if self.updated_at:
-            ipAccessListInfo_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by:
-            ipAccessListInfo_body["updated_by"] = self.updated_by
+            body["updated_by"] = self.updated_by
 
-        return ipAccessListInfo_query, ipAccessListInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "IpAccessListInfo":
@@ -239,22 +233,22 @@ class ReplaceIpAccessList:
     # This describes an enum
     list_type: "ListType"
 
-    def as_request(self) -> (dict, dict):
-        replaceIpAccessList_query, replaceIpAccessList_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.enabled:
-            replaceIpAccessList_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.ip_access_list_id:
-            replaceIpAccessList_body["ip_access_list_id"] = self.ip_access_list_id
+            body["ip_access_list_id"] = self.ip_access_list_id
         if self.ip_addresses:
-            replaceIpAccessList_body["ip_addresses"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label:
-            replaceIpAccessList_body["label"] = self.label
+            body["label"] = self.label
         if self.list_id:
-            replaceIpAccessList_body["list_id"] = self.list_id
+            body["list_id"] = self.list_id
         if self.list_type:
-            replaceIpAccessList_body["list_type"] = self.list_type.value
+            body["list_type"] = self.list_type.value
 
-        return replaceIpAccessList_query, replaceIpAccessList_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ReplaceIpAccessList":
@@ -284,22 +278,22 @@ class UpdateIpAccessList:
     # This describes an enum
     list_type: "ListType"
 
-    def as_request(self) -> (dict, dict):
-        updateIpAccessList_query, updateIpAccessList_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.enabled:
-            updateIpAccessList_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.ip_access_list_id:
-            updateIpAccessList_body["ip_access_list_id"] = self.ip_access_list_id
+            body["ip_access_list_id"] = self.ip_access_list_id
         if self.ip_addresses:
-            updateIpAccessList_body["ip_addresses"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label:
-            updateIpAccessList_body["label"] = self.label
+            body["label"] = self.label
         if self.list_id:
-            updateIpAccessList_body["list_id"] = self.list_id
+            body["list_id"] = self.list_id
         if self.list_type:
-            updateIpAccessList_body["list_type"] = self.list_type.value
+            body["list_type"] = self.list_type.value
 
-        return updateIpAccessList_query, updateIpAccessList_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateIpAccessList":
@@ -317,7 +311,9 @@ class IpAccessListsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateIpAccessList) -> CreateIpAccessListResponse:
+    def create(
+        self, label: str, list_type: ListType, ip_addresses: List[str], **kwargs
+    ) -> CreateIpAccessListResponse:
         """Create access list.
 
         Creates an IP access list for this workspace. A list can be an allow
@@ -336,30 +332,50 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. **Note**: Your
         new IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus"""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateIpAccessList(
+                ip_addresses=ip_addresses, label=label, list_type=list_type
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.0/ip-access-lists", query=query, body=body)
         return CreateIpAccessListResponse.from_dict(json)
 
-    def delete(self, request: Delete):
+    def delete(self, ip_access_list_id: str, **kwargs):
         """Delete access list.
 
         Deletes an IP access list, specified by its list ID."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(ip_access_list_id=ip_access_list_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "DELETE",
-            f"/api/2.0/ip-access-lists/{request.ip_access_list_id}",
+            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
             query=query,
             body=body,
         )
 
-    def get(self, request: Get) -> FetchIpAccessListResponse:
+    def get(self, ip_access_list_id: str, **kwargs) -> FetchIpAccessListResponse:
         """Get access list.
 
         Gets an IP access list, specified by its list ID."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(ip_access_list_id=ip_access_list_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/ip-access-lists/{request.ip_access_list_id}",
+            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
             query=query,
             body=body,
         )
@@ -373,7 +389,17 @@ class IpAccessListsAPI:
         json = self._api.do("GET", "/api/2.0/ip-access-lists")
         return GetIpAccessListResponse.from_dict(json)
 
-    def replace(self, request: ReplaceIpAccessList):
+    def replace(
+        self,
+        label: str,
+        list_type: ListType,
+        ip_addresses: List[str],
+        enabled: bool,
+        ip_access_list_id: str,
+        *,
+        list_id: str = None,
+        **kwargs,
+    ):
         """Replace access list.
 
         Replaces an IP access list, specified by its ID. A list can include
@@ -388,15 +414,38 @@ class IpAccessListsAPI:
         the changes to take effect. Note that your resulting IP access list has
         no effect until you enable the feature. See
         :method:workspaceconf/setStatus."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ReplaceIpAccessList(
+                enabled=enabled,
+                ip_access_list_id=ip_access_list_id,
+                ip_addresses=ip_addresses,
+                label=label,
+                list_id=list_id,
+                list_type=list_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PUT",
-            f"/api/2.0/ip-access-lists/{request.ip_access_list_id}",
+            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
             query=query,
             body=body,
         )
 
-    def update(self, request: UpdateIpAccessList):
+    def update(
+        self,
+        label: str,
+        list_type: ListType,
+        ip_addresses: List[str],
+        enabled: bool,
+        ip_access_list_id: str,
+        *,
+        list_id: str = None,
+        **kwargs,
+    ):
         """Update access list.
 
         Updates an existing IP access list, specified by its ID. A list can
@@ -416,10 +465,23 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. Note that your
         resulting IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateIpAccessList(
+                enabled=enabled,
+                ip_access_list_id=ip_access_list_id,
+                ip_addresses=ip_addresses,
+                label=label,
+                list_id=list_id,
+                list_type=list_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH",
-            f"/api/2.0/ip-access-lists/{request.ip_access_list_id}",
+            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
             query=query,
             body=body,
         )

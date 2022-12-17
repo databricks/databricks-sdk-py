@@ -56,46 +56,44 @@ class CreatePipeline:
     # Which pipeline trigger to use. Deprecated: Use `continuous` instead.
     trigger: "PipelineTrigger"
 
-    def as_request(self) -> (dict, dict):
-        createPipeline_query, createPipeline_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.allow_duplicate_names:
-            createPipeline_body["allow_duplicate_names"] = self.allow_duplicate_names
+            body["allow_duplicate_names"] = self.allow_duplicate_names
         if self.catalog:
-            createPipeline_body["catalog"] = self.catalog
+            body["catalog"] = self.catalog
         if self.channel:
-            createPipeline_body["channel"] = self.channel
+            body["channel"] = self.channel
         if self.clusters:
-            createPipeline_body["clusters"] = [v.as_request()[1] for v in self.clusters]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
         if self.configuration:
-            createPipeline_body["configuration"] = self.configuration
+            body["configuration"] = self.configuration
         if self.continuous:
-            createPipeline_body["continuous"] = self.continuous
+            body["continuous"] = self.continuous
         if self.development:
-            createPipeline_body["development"] = self.development
+            body["development"] = self.development
         if self.dry_run:
-            createPipeline_body["dry_run"] = self.dry_run
+            body["dry_run"] = self.dry_run
         if self.edition:
-            createPipeline_body["edition"] = self.edition
+            body["edition"] = self.edition
         if self.filters:
-            createPipeline_body["filters"] = self.filters.as_request()[1]
+            body["filters"] = self.filters.as_dict()
         if self.id:
-            createPipeline_body["id"] = self.id
+            body["id"] = self.id
         if self.libraries:
-            createPipeline_body["libraries"] = [
-                v.as_request()[1] for v in self.libraries
-            ]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.name:
-            createPipeline_body["name"] = self.name
+            body["name"] = self.name
         if self.photon:
-            createPipeline_body["photon"] = self.photon
+            body["photon"] = self.photon
         if self.storage:
-            createPipeline_body["storage"] = self.storage
+            body["storage"] = self.storage
         if self.target:
-            createPipeline_body["target"] = self.target
+            body["target"] = self.target
         if self.trigger:
-            createPipeline_body["trigger"] = self.trigger.as_request()[1]
+            body["trigger"] = self.trigger.as_dict()
 
-        return createPipeline_query, createPipeline_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreatePipeline":
@@ -132,16 +130,14 @@ class CreatePipelineResponse:
     # Only returned when dry_run is false
     pipeline_id: str
 
-    def as_request(self) -> (dict, dict):
-        createPipelineResponse_query, createPipelineResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.effective_settings:
-            createPipelineResponse_body[
-                "effective_settings"
-            ] = self.effective_settings.as_request()[1]
+            body["effective_settings"] = self.effective_settings.as_dict()
         if self.pipeline_id:
-            createPipelineResponse_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
 
-        return createPipelineResponse_query, createPipelineResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreatePipelineResponse":
@@ -160,14 +156,14 @@ class CronTrigger:
 
     timezone_id: str
 
-    def as_request(self) -> (dict, dict):
-        cronTrigger_query, cronTrigger_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.quartz_cron_schedule:
-            cronTrigger_body["quartz_cron_schedule"] = self.quartz_cron_schedule
+            body["quartz_cron_schedule"] = self.quartz_cron_schedule
         if self.timezone_id:
-            cronTrigger_body["timezone_id"] = self.timezone_id
+            body["timezone_id"] = self.timezone_id
 
-        return cronTrigger_query, cronTrigger_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CronTrigger":
@@ -183,12 +179,12 @@ class Delete:
 
     pipeline_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pipeline_id:
-            delete_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -242,46 +238,46 @@ class EditPipeline:
     # Which pipeline trigger to use. Deprecated: Use `continuous` instead.
     trigger: "PipelineTrigger"
 
-    def as_request(self) -> (dict, dict):
-        editPipeline_query, editPipeline_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.allow_duplicate_names:
-            editPipeline_body["allow_duplicate_names"] = self.allow_duplicate_names
+            body["allow_duplicate_names"] = self.allow_duplicate_names
         if self.catalog:
-            editPipeline_body["catalog"] = self.catalog
+            body["catalog"] = self.catalog
         if self.channel:
-            editPipeline_body["channel"] = self.channel
+            body["channel"] = self.channel
         if self.clusters:
-            editPipeline_body["clusters"] = [v.as_request()[1] for v in self.clusters]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
         if self.configuration:
-            editPipeline_body["configuration"] = self.configuration
+            body["configuration"] = self.configuration
         if self.continuous:
-            editPipeline_body["continuous"] = self.continuous
+            body["continuous"] = self.continuous
         if self.development:
-            editPipeline_body["development"] = self.development
+            body["development"] = self.development
         if self.edition:
-            editPipeline_body["edition"] = self.edition
+            body["edition"] = self.edition
         if self.expected_last_modified:
-            editPipeline_body["expected_last_modified"] = self.expected_last_modified
+            body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
-            editPipeline_body["filters"] = self.filters.as_request()[1]
+            body["filters"] = self.filters.as_dict()
         if self.id:
-            editPipeline_body["id"] = self.id
+            body["id"] = self.id
         if self.libraries:
-            editPipeline_body["libraries"] = [v.as_request()[1] for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.name:
-            editPipeline_body["name"] = self.name
+            body["name"] = self.name
         if self.photon:
-            editPipeline_body["photon"] = self.photon
+            body["photon"] = self.photon
         if self.pipeline_id:
-            editPipeline_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.storage:
-            editPipeline_body["storage"] = self.storage
+            body["storage"] = self.storage
         if self.target:
-            editPipeline_body["target"] = self.target
+            body["target"] = self.target
         if self.trigger:
-            editPipeline_body["trigger"] = self.trigger.as_request()[1]
+            body["trigger"] = self.trigger.as_dict()
 
-        return editPipeline_query, editPipeline_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditPipeline":
@@ -319,14 +315,14 @@ class Filters:
     # Paths to include.
     include: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        filters_query, filters_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.exclude:
-            filters_body["exclude"] = [v for v in self.exclude]
+            body["exclude"] = [v for v in self.exclude]
         if self.include:
-            filters_body["include"] = [v for v in self.include]
+            body["include"] = [v for v in self.include]
 
-        return filters_query, filters_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Filters":
@@ -342,12 +338,12 @@ class Get:
 
     pipeline_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pipeline_id:
-            get_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -384,34 +380,32 @@ class GetPipelineResponse:
     # The pipeline state.
     state: "PipelineState"
 
-    def as_request(self) -> (dict, dict):
-        getPipelineResponse_query, getPipelineResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cause:
-            getPipelineResponse_body["cause"] = self.cause
+            body["cause"] = self.cause
         if self.cluster_id:
-            getPipelineResponse_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.creator_user_name:
-            getPipelineResponse_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.health:
-            getPipelineResponse_body["health"] = self.health.value
+            body["health"] = self.health.value
         if self.last_modified:
-            getPipelineResponse_body["last_modified"] = self.last_modified
+            body["last_modified"] = self.last_modified
         if self.latest_updates:
-            getPipelineResponse_body["latest_updates"] = [
-                v.as_request()[1] for v in self.latest_updates
-            ]
+            body["latest_updates"] = [v.as_dict() for v in self.latest_updates]
         if self.name:
-            getPipelineResponse_body["name"] = self.name
+            body["name"] = self.name
         if self.pipeline_id:
-            getPipelineResponse_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.run_as_user_name:
-            getPipelineResponse_body["run_as_user_name"] = self.run_as_user_name
+            body["run_as_user_name"] = self.run_as_user_name
         if self.spec:
-            getPipelineResponse_body["spec"] = self.spec.as_request()[1]
+            body["spec"] = self.spec.as_dict()
         if self.state:
-            getPipelineResponse_body["state"] = self.state.value
+            body["state"] = self.state.value
 
-        return getPipelineResponse_query, getPipelineResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetPipelineResponse":
@@ -448,14 +442,14 @@ class GetUpdate:
     # The ID of the update.
     update_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getUpdate_query, getUpdate_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pipeline_id:
-            getUpdate_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.update_id:
-            getUpdate_body["update_id"] = self.update_id
+            body["update_id"] = self.update_id
 
-        return getUpdate_query, getUpdate_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetUpdate":
@@ -471,12 +465,12 @@ class GetUpdateResponse:
     # The current update info.
     update: "UpdateInfo"
 
-    def as_request(self) -> (dict, dict):
-        getUpdateResponse_query, getUpdateResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.update:
-            getUpdateResponse_body["update"] = self.update.as_request()[1]
+            body["update"] = self.update.as_dict()
 
-        return getUpdateResponse_query, getUpdateResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetUpdateResponse":
@@ -511,18 +505,18 @@ class ListPipelines:
     # Page token returned by previous call
     page_token: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listPipelines_query, listPipelines_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.filter:
-            listPipelines_query["filter"] = self.filter
+            body["filter"] = self.filter
         if self.max_results:
-            listPipelines_query["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.order_by:
-            listPipelines_query["order_by"] = [v for v in self.order_by]
+            body["order_by"] = [v for v in self.order_by]
         if self.page_token:
-            listPipelines_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
 
-        return listPipelines_query, listPipelines_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListPipelines":
@@ -542,16 +536,14 @@ class ListPipelinesResponse:
     # The list of events matching the request criteria.
     statuses: "List[PipelineStateInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listPipelinesResponse_query, listPipelinesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            listPipelinesResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.statuses:
-            listPipelinesResponse_body["statuses"] = [
-                v.as_request()[1] for v in self.statuses
-            ]
+            body["statuses"] = [v.as_dict() for v in self.statuses]
 
-        return listPipelinesResponse_query, listPipelinesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListPipelinesResponse":
@@ -576,18 +568,18 @@ class ListUpdates:
     # If present, returns updates until and including this update_id.
     until_update_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listUpdates_query, listUpdates_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.max_results:
-            listUpdates_query["max_results"] = self.max_results
+            body["max_results"] = self.max_results
         if self.page_token:
-            listUpdates_query["page_token"] = self.page_token
+            body["page_token"] = self.page_token
         if self.pipeline_id:
-            listUpdates_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.until_update_id:
-            listUpdates_query["until_update_id"] = self.until_update_id
+            body["until_update_id"] = self.until_update_id
 
-        return listUpdates_query, listUpdates_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListUpdates":
@@ -611,18 +603,16 @@ class ListUpdatesResponse:
 
     updates: "List[UpdateInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listUpdatesResponse_query, listUpdatesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            listUpdatesResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token:
-            listUpdatesResponse_body["prev_page_token"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         if self.updates:
-            listUpdatesResponse_body["updates"] = [
-                v.as_request()[1] for v in self.updates
-            ]
+            body["updates"] = [v.as_dict() for v in self.updates]
 
-        return listUpdatesResponse_query, listUpdatesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListUpdatesResponse":
@@ -641,12 +631,12 @@ class NotebookLibrary:
     # The absolute path of the notebook.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        notebookLibrary_query, notebookLibrary_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            notebookLibrary_body["path"] = self.path
+            body["path"] = self.path
 
-        return notebookLibrary_query, notebookLibrary_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NotebookLibrary":
@@ -742,48 +732,44 @@ class PipelineCluster:
     # name `ubuntu` on port `2200`. Up to 10 keys can be specified.
     ssh_public_keys: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        pipelineCluster_query, pipelineCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.apply_policy_default_values:
-            pipelineCluster_body[
-                "apply_policy_default_values"
-            ] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            pipelineCluster_body["autoscale"] = self.autoscale
+            body["autoscale"] = self.autoscale
         if self.aws_attributes:
-            pipelineCluster_body["aws_attributes"] = self.aws_attributes
+            body["aws_attributes"] = self.aws_attributes
         if self.azure_attributes:
-            pipelineCluster_body["azure_attributes"] = self.azure_attributes
+            body["azure_attributes"] = self.azure_attributes
         if self.cluster_log_conf:
-            pipelineCluster_body["cluster_log_conf"] = self.cluster_log_conf
+            body["cluster_log_conf"] = self.cluster_log_conf
         if self.custom_tags:
-            pipelineCluster_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            pipelineCluster_body[
-                "driver_instance_pool_id"
-            ] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            pipelineCluster_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.gcp_attributes:
-            pipelineCluster_body["gcp_attributes"] = self.gcp_attributes
+            body["gcp_attributes"] = self.gcp_attributes
         if self.instance_pool_id:
-            pipelineCluster_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.label:
-            pipelineCluster_body["label"] = self.label
+            body["label"] = self.label
         if self.node_type_id:
-            pipelineCluster_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            pipelineCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            pipelineCluster_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.spark_conf:
-            pipelineCluster_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            pipelineCluster_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.ssh_public_keys:
-            pipelineCluster_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
 
-        return pipelineCluster_query, pipelineCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineCluster":
@@ -839,18 +825,18 @@ class PipelineLibrary:
     # with an IAM role to access the S3 URI.
     whl: str
 
-    def as_request(self) -> (dict, dict):
-        pipelineLibrary_query, pipelineLibrary_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.jar:
-            pipelineLibrary_body["jar"] = self.jar
+            body["jar"] = self.jar
         if self.maven:
-            pipelineLibrary_body["maven"] = self.maven
+            body["maven"] = self.maven
         if self.notebook:
-            pipelineLibrary_body["notebook"] = self.notebook.as_request()[1]
+            body["notebook"] = self.notebook.as_dict()
         if self.whl:
-            pipelineLibrary_body["whl"] = self.whl
+            body["whl"] = self.whl
 
-        return pipelineLibrary_query, pipelineLibrary_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineLibrary":
@@ -900,40 +886,40 @@ class PipelineSpec:
     # Which pipeline trigger to use. Deprecated: Use `continuous` instead.
     trigger: "PipelineTrigger"
 
-    def as_request(self) -> (dict, dict):
-        pipelineSpec_query, pipelineSpec_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.catalog:
-            pipelineSpec_body["catalog"] = self.catalog
+            body["catalog"] = self.catalog
         if self.channel:
-            pipelineSpec_body["channel"] = self.channel
+            body["channel"] = self.channel
         if self.clusters:
-            pipelineSpec_body["clusters"] = [v.as_request()[1] for v in self.clusters]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
         if self.configuration:
-            pipelineSpec_body["configuration"] = self.configuration
+            body["configuration"] = self.configuration
         if self.continuous:
-            pipelineSpec_body["continuous"] = self.continuous
+            body["continuous"] = self.continuous
         if self.development:
-            pipelineSpec_body["development"] = self.development
+            body["development"] = self.development
         if self.edition:
-            pipelineSpec_body["edition"] = self.edition
+            body["edition"] = self.edition
         if self.filters:
-            pipelineSpec_body["filters"] = self.filters.as_request()[1]
+            body["filters"] = self.filters.as_dict()
         if self.id:
-            pipelineSpec_body["id"] = self.id
+            body["id"] = self.id
         if self.libraries:
-            pipelineSpec_body["libraries"] = [v.as_request()[1] for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.name:
-            pipelineSpec_body["name"] = self.name
+            body["name"] = self.name
         if self.photon:
-            pipelineSpec_body["photon"] = self.photon
+            body["photon"] = self.photon
         if self.storage:
-            pipelineSpec_body["storage"] = self.storage
+            body["storage"] = self.storage
         if self.target:
-            pipelineSpec_body["target"] = self.target
+            body["target"] = self.target
         if self.trigger:
-            pipelineSpec_body["trigger"] = self.trigger.as_request()[1]
+            body["trigger"] = self.trigger.as_dict()
 
-        return pipelineSpec_query, pipelineSpec_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineSpec":
@@ -994,26 +980,24 @@ class PipelineStateInfo:
     # The pipeline state.
     state: "PipelineState"
 
-    def as_request(self) -> (dict, dict):
-        pipelineStateInfo_query, pipelineStateInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            pipelineStateInfo_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.creator_user_name:
-            pipelineStateInfo_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.latest_updates:
-            pipelineStateInfo_body["latest_updates"] = [
-                v.as_request()[1] for v in self.latest_updates
-            ]
+            body["latest_updates"] = [v.as_dict() for v in self.latest_updates]
         if self.name:
-            pipelineStateInfo_body["name"] = self.name
+            body["name"] = self.name
         if self.pipeline_id:
-            pipelineStateInfo_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.run_as_user_name:
-            pipelineStateInfo_body["run_as_user_name"] = self.run_as_user_name
+            body["run_as_user_name"] = self.run_as_user_name
         if self.state:
-            pipelineStateInfo_body["state"] = self.state.value
+            body["state"] = self.state.value
 
-        return pipelineStateInfo_query, pipelineStateInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineStateInfo":
@@ -1037,14 +1021,14 @@ class PipelineTrigger:
 
     manual: Any
 
-    def as_request(self) -> (dict, dict):
-        pipelineTrigger_query, pipelineTrigger_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cron:
-            pipelineTrigger_body["cron"] = self.cron.as_request()[1]
+            body["cron"] = self.cron.as_dict()
         if self.manual:
-            pipelineTrigger_body["manual"] = self.manual
+            body["manual"] = self.manual
 
-        return pipelineTrigger_query, pipelineTrigger_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PipelineTrigger":
@@ -1060,12 +1044,12 @@ class Reset:
 
     pipeline_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        reset_query, reset_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pipeline_id:
-            reset_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
 
-        return reset_query, reset_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Reset":
@@ -1093,22 +1077,20 @@ class StartUpdate:
     # the refresh.
     refresh_selection: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        startUpdate_query, startUpdate_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cause:
-            startUpdate_body["cause"] = self.cause.value
+            body["cause"] = self.cause.value
         if self.full_refresh:
-            startUpdate_body["full_refresh"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
-            startUpdate_body["full_refresh_selection"] = [
-                v for v in self.full_refresh_selection
-            ]
+            body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
         if self.pipeline_id:
-            startUpdate_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
-            startUpdate_body["refresh_selection"] = [v for v in self.refresh_selection]
+            body["refresh_selection"] = [v for v in self.refresh_selection]
 
-        return startUpdate_query, startUpdate_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "StartUpdate":
@@ -1136,12 +1118,12 @@ class StartUpdateResponse:
 
     update_id: str
 
-    def as_request(self) -> (dict, dict):
-        startUpdateResponse_query, startUpdateResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.update_id:
-            startUpdateResponse_body["update_id"] = self.update_id
+            body["update_id"] = self.update_id
 
-        return startUpdateResponse_query, startUpdateResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "StartUpdateResponse":
@@ -1156,12 +1138,12 @@ class Stop:
 
     pipeline_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        stop_query, stop_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pipeline_id:
-            stop_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
 
-        return stop_query, stop_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Stop":
@@ -1201,32 +1183,30 @@ class UpdateInfo:
     # The ID of this update.
     update_id: str
 
-    def as_request(self) -> (dict, dict):
-        updateInfo_query, updateInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cause:
-            updateInfo_body["cause"] = self.cause.value
+            body["cause"] = self.cause.value
         if self.cluster_id:
-            updateInfo_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.config:
-            updateInfo_body["config"] = self.config.as_request()[1]
+            body["config"] = self.config.as_dict()
         if self.creation_time:
-            updateInfo_body["creation_time"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.full_refresh:
-            updateInfo_body["full_refresh"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
-            updateInfo_body["full_refresh_selection"] = [
-                v for v in self.full_refresh_selection
-            ]
+            body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
         if self.pipeline_id:
-            updateInfo_body["pipeline_id"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
-            updateInfo_body["refresh_selection"] = [v for v in self.refresh_selection]
+            body["refresh_selection"] = [v for v in self.refresh_selection]
         if self.state:
-            updateInfo_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.update_id:
-            updateInfo_body["update_id"] = self.update_id
+            body["update_id"] = self.update_id
 
-        return updateInfo_query, updateInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateInfo":
@@ -1280,16 +1260,16 @@ class UpdateStateInfo:
 
     update_id: str
 
-    def as_request(self) -> (dict, dict):
-        updateStateInfo_query, updateStateInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.creation_time:
-            updateStateInfo_body["creation_time"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.state:
-            updateStateInfo_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.update_id:
-            updateStateInfo_body["update_id"] = self.update_id
+            body["update_id"] = self.update_id
 
-        return updateStateInfo_query, updateStateInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateStateInfo":
@@ -1319,112 +1299,292 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreatePipeline) -> CreatePipelineResponse:
+    def create(
+        self,
+        *,
+        allow_duplicate_names: bool = None,
+        catalog: str = None,
+        channel: str = None,
+        clusters: List[PipelineCluster] = None,
+        configuration: Dict[str, str] = None,
+        continuous: bool = None,
+        development: bool = None,
+        dry_run: bool = None,
+        edition: str = None,
+        filters: Filters = None,
+        id: str = None,
+        libraries: List[PipelineLibrary] = None,
+        name: str = None,
+        photon: bool = None,
+        storage: str = None,
+        target: str = None,
+        trigger: PipelineTrigger = None,
+        **kwargs,
+    ) -> CreatePipelineResponse:
         """Create a pipeline.
 
         Creates a new data processing pipeline based on the requested
         configuration. If successful, this method returns the ID of the new
         pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreatePipeline(
+                allow_duplicate_names=allow_duplicate_names,
+                catalog=catalog,
+                channel=channel,
+                clusters=clusters,
+                configuration=configuration,
+                continuous=continuous,
+                development=development,
+                dry_run=dry_run,
+                edition=edition,
+                filters=filters,
+                id=id,
+                libraries=libraries,
+                name=name,
+                photon=photon,
+                storage=storage,
+                target=target,
+                trigger=trigger,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.0/pipelines", query=query, body=body)
         return CreatePipelineResponse.from_dict(json)
 
-    def delete(self, request: Delete):
+    def delete(self, pipeline_id: str, **kwargs):
         """Delete a pipeline.
 
         Deletes a pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(pipeline_id=pipeline_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "DELETE",
-            f"/api/2.0/pipelines/{request.pipeline_id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, body=body
         )
 
-    def get(self, request: Get) -> GetPipelineResponse:
+    def get(self, pipeline_id: str, **kwargs) -> GetPipelineResponse:
         """Get a pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(pipeline_id=pipeline_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "GET", f"/api/2.0/pipelines/{request.pipeline_id}", query=query, body=body
+            "GET", f"/api/2.0/pipelines/{pipeline_id}", query=query, body=body
         )
         return GetPipelineResponse.from_dict(json)
 
-    def get_update(self, request: GetUpdate) -> GetUpdateResponse:
+    def get_update(
+        self, pipeline_id: str, update_id: str, **kwargs
+    ) -> GetUpdateResponse:
         """Get a pipeline update.
 
         Gets an update from an active pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetUpdate(pipeline_id=pipeline_id, update_id=update_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/pipelines/{request.pipeline_id}/updates/{request.update_id}",
+            f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}",
             query=query,
             body=body,
         )
         return GetUpdateResponse.from_dict(json)
 
-    def list_pipelines(self, request: ListPipelines) -> ListPipelinesResponse:
+    def list_pipelines(
+        self,
+        *,
+        filter: str = None,
+        max_results: int = None,
+        order_by: List[str] = None,
+        page_token: str = None,
+        **kwargs,
+    ) -> ListPipelinesResponse:
         """List pipelines.
 
         Lists pipelines defined in the Delta Live Tables system."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListPipelines(
+                filter=filter,
+                max_results=max_results,
+                order_by=order_by,
+                page_token=page_token,
+            )
+        body = request.as_dict()
+        query = {}
+        if filter:
+            query["filter"] = filter
+        if max_results:
+            query["max_results"] = max_results
+        if order_by:
+            query["order_by"] = [v for v in order_by]
+        if page_token:
+            query["page_token"] = page_token
+
         json = self._api.do("GET", "/api/2.0/pipelines", query=query, body=body)
         return ListPipelinesResponse.from_dict(json)
 
-    def list_updates(self, request: ListUpdates) -> ListUpdatesResponse:
+    def list_updates(
+        self,
+        pipeline_id: str,
+        *,
+        max_results: int = None,
+        page_token: str = None,
+        until_update_id: str = None,
+        **kwargs,
+    ) -> ListUpdatesResponse:
         """List pipeline updates.
 
         List updates for an active pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListUpdates(
+                max_results=max_results,
+                page_token=page_token,
+                pipeline_id=pipeline_id,
+                until_update_id=until_update_id,
+            )
+        body = request.as_dict()
+        query = {}
+        if max_results:
+            query["max_results"] = max_results
+        if page_token:
+            query["page_token"] = page_token
+        if until_update_id:
+            query["until_update_id"] = until_update_id
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/pipelines/{request.pipeline_id}/updates",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, body=body
         )
         return ListUpdatesResponse.from_dict(json)
 
-    def reset(self, request: Reset):
+    def reset(self, pipeline_id: str, **kwargs):
         """Reset a pipeline.
 
         Resets a pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Reset(pipeline_id=pipeline_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "POST",
-            f"/api/2.0/pipelines/{request.pipeline_id}/reset",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/pipelines/{pipeline_id}/reset", query=query, body=body
         )
 
-    def start_update(self, request: StartUpdate) -> StartUpdateResponse:
+    def start_update(
+        self,
+        pipeline_id: str,
+        *,
+        cause: StartUpdateCause = None,
+        full_refresh: bool = None,
+        full_refresh_selection: List[str] = None,
+        refresh_selection: List[str] = None,
+        **kwargs,
+    ) -> StartUpdateResponse:
         """Queue a pipeline update.
 
         Starts or queues a pipeline update."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = StartUpdate(
+                cause=cause,
+                full_refresh=full_refresh,
+                full_refresh_selection=full_refresh_selection,
+                pipeline_id=pipeline_id,
+                refresh_selection=refresh_selection,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "POST",
-            f"/api/2.0/pipelines/{request.pipeline_id}/updates",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, body=body
         )
         return StartUpdateResponse.from_dict(json)
 
-    def stop(self, request: Stop):
+    def stop(self, pipeline_id: str, **kwargs):
         """Stop a pipeline.
 
         Stops a pipeline."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Stop(pipeline_id=pipeline_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "POST",
-            f"/api/2.0/pipelines/{request.pipeline_id}/stop",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/pipelines/{pipeline_id}/stop", query=query, body=body
         )
 
-    def update(self, request: EditPipeline):
+    def update(
+        self,
+        pipeline_id: str,
+        *,
+        allow_duplicate_names: bool = None,
+        catalog: str = None,
+        channel: str = None,
+        clusters: List[PipelineCluster] = None,
+        configuration: Dict[str, str] = None,
+        continuous: bool = None,
+        development: bool = None,
+        edition: str = None,
+        expected_last_modified: int = None,
+        filters: Filters = None,
+        id: str = None,
+        libraries: List[PipelineLibrary] = None,
+        name: str = None,
+        photon: bool = None,
+        storage: str = None,
+        target: str = None,
+        trigger: PipelineTrigger = None,
+        **kwargs,
+    ):
         """Edit a pipeline.
 
         Updates a pipeline with the supplied configuration."""
-        query, body = request.as_request()
-        self._api.do(
-            "PUT", f"/api/2.0/pipelines/{request.pipeline_id}", query=query, body=body
-        )
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = EditPipeline(
+                allow_duplicate_names=allow_duplicate_names,
+                catalog=catalog,
+                channel=channel,
+                clusters=clusters,
+                configuration=configuration,
+                continuous=continuous,
+                development=development,
+                edition=edition,
+                expected_last_modified=expected_last_modified,
+                filters=filters,
+                id=id,
+                libraries=libraries,
+                name=name,
+                photon=photon,
+                pipeline_id=pipeline_id,
+                storage=storage,
+                target=target,
+                trigger=trigger,
+            )
+        body = request.as_dict()
+        query = {}
+
+        self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", query=query, body=body)

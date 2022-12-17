@@ -14,12 +14,12 @@ class GetStatus:
 
     keys: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getStatus_query, getStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.keys:
-            getStatus_query["keys"] = self.keys
+            body["keys"] = self.keys
 
-        return getStatus_query, getStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
@@ -35,18 +35,32 @@ class WorkspaceConfAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_status(self, request: GetStatus) -> WorkspaceConf:
+    def get_status(self, keys: str, **kwargs) -> WorkspaceConf:
         """Check configuration status.
 
         Gets the configuration status for a workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetStatus(keys=keys)
+        body = request.as_dict()
+        query = {}
+        if keys:
+            query["keys"] = keys
+
         json = self._api.do("GET", "/api/2.0/workspace-conf", query=query, body=body)
         return WorkspaceConf.from_dict(json)
 
-    def set_status(self, request: WorkspaceConf):
+    def set_status(self, **kwargs):
         """Enable/disable features.
 
         Sets the configuration status for a workspace, including enabling or
         disabling it."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Dict[str, str]()
+        body = request.as_dict()
+        query = {}
+
         self._api.do("PATCH", "/api/2.0/workspace-conf", query=query, body=body)

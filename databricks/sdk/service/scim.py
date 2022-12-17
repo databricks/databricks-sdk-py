@@ -19,18 +19,18 @@ class ComplexValue:
 
     value: str
 
-    def as_request(self) -> (dict, dict):
-        complexValue_query, complexValue_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.display:
-            complexValue_body["display"] = self.display
+            body["display"] = self.display
         if self.primary:
-            complexValue_body["primary"] = self.primary
+            body["primary"] = self.primary
         if self.type:
-            complexValue_body["type"] = self.type
+            body["type"] = self.type
         if self.value:
-            complexValue_body["value"] = self.value
+            body["value"] = self.value
 
-        return complexValue_query, complexValue_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ComplexValue":
@@ -49,12 +49,12 @@ class DeleteGroupRequest:
     # Unique ID for a group in the Databricks Account.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        deleteGroupRequest_query, deleteGroupRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            deleteGroupRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return deleteGroupRequest_query, deleteGroupRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteGroupRequest":
@@ -70,12 +70,12 @@ class DeleteServicePrincipalRequest:
     # Unique ID for a service principal in the Databricks Account.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        deleteServicePrincipalRequest_query, deleteServicePrincipalRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            deleteServicePrincipalRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return deleteServicePrincipalRequest_query, deleteServicePrincipalRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteServicePrincipalRequest":
@@ -91,12 +91,12 @@ class DeleteUserRequest:
     # Unique ID for a user in the Databricks Account.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        deleteUserRequest_query, deleteUserRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            deleteUserRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return deleteUserRequest_query, deleteUserRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteUserRequest":
@@ -112,12 +112,12 @@ class GetGroupRequest:
     # Unique ID for a group in the Databricks Account.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getGroupRequest_query, getGroupRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            getGroupRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return getGroupRequest_query, getGroupRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetGroupRequest":
@@ -133,12 +133,12 @@ class GetServicePrincipalRequest:
     # Unique ID for a service principal in the Databricks Account.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getServicePrincipalRequest_query, getServicePrincipalRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            getServicePrincipalRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return getServicePrincipalRequest_query, getServicePrincipalRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetServicePrincipalRequest":
@@ -154,12 +154,12 @@ class GetUserRequest:
     # Unique ID for a user in the Databricks Account.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getUserRequest_query, getUserRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            getUserRequest_body["id"] = self.id
+            body["id"] = self.id
 
-        return getUserRequest_query, getUserRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetUserRequest":
@@ -186,24 +186,24 @@ class Group:
 
     roles: "List[ComplexValue]"
 
-    def as_request(self) -> (dict, dict):
-        group_query, group_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.displayName:
-            group_body["displayName"] = self.displayName
+            body["displayName"] = self.displayName
         if self.entitlements:
-            group_body["entitlements"] = [v.as_request()[1] for v in self.entitlements]
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
         if self.externalId:
-            group_body["externalId"] = self.externalId
+            body["externalId"] = self.externalId
         if self.groups:
-            group_body["groups"] = [v.as_request()[1] for v in self.groups]
+            body["groups"] = [v.as_dict() for v in self.groups]
         if self.id:
-            group_body["id"] = self.id
+            body["id"] = self.id
         if self.members:
-            group_body["members"] = [v.as_request()[1] for v in self.members]
+            body["members"] = [v.as_dict() for v in self.members]
         if self.roles:
-            group_body["roles"] = [v.as_request()[1] for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
 
-        return group_query, group_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Group":
@@ -251,24 +251,24 @@ class ListGroupsRequest:
     # Specifies the index of the first result. First item is number 1.
     startIndex: int  # query
 
-    def as_request(self) -> (dict, dict):
-        listGroupsRequest_query, listGroupsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attributes:
-            listGroupsRequest_query["attributes"] = self.attributes
+            body["attributes"] = self.attributes
         if self.count:
-            listGroupsRequest_query["count"] = self.count
+            body["count"] = self.count
         if self.excludedAttributes:
-            listGroupsRequest_query["excludedAttributes"] = self.excludedAttributes
+            body["excludedAttributes"] = self.excludedAttributes
         if self.filter:
-            listGroupsRequest_query["filter"] = self.filter
+            body["filter"] = self.filter
         if self.sortBy:
-            listGroupsRequest_query["sortBy"] = self.sortBy
+            body["sortBy"] = self.sortBy
         if self.sortOrder:
-            listGroupsRequest_query["sortOrder"] = self.sortOrder.value
+            body["sortOrder"] = self.sortOrder.value
         if self.startIndex:
-            listGroupsRequest_query["startIndex"] = self.startIndex
+            body["startIndex"] = self.startIndex
 
-        return listGroupsRequest_query, listGroupsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListGroupsRequest":
@@ -296,20 +296,18 @@ class ListGroupsResponse:
     # Total results that match the request filters.
     totalResults: int
 
-    def as_request(self) -> (dict, dict):
-        listGroupsResponse_query, listGroupsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.itemsPerPage:
-            listGroupsResponse_body["itemsPerPage"] = self.itemsPerPage
+            body["itemsPerPage"] = self.itemsPerPage
         if self.Resources:
-            listGroupsResponse_body["Resources"] = [
-                v.as_request()[1] for v in self.Resources
-            ]
+            body["Resources"] = [v.as_dict() for v in self.Resources]
         if self.startIndex:
-            listGroupsResponse_body["startIndex"] = self.startIndex
+            body["startIndex"] = self.startIndex
         if self.totalResults:
-            listGroupsResponse_body["totalResults"] = self.totalResults
+            body["totalResults"] = self.totalResults
 
-        return listGroupsResponse_query, listGroupsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListGroupsResponse":
@@ -336,20 +334,18 @@ class ListServicePrincipalResponse:
     # Total results that match the request filters.
     totalResults: int
 
-    def as_request(self) -> (dict, dict):
-        listServicePrincipalResponse_query, listServicePrincipalResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.itemsPerPage:
-            listServicePrincipalResponse_body["itemsPerPage"] = self.itemsPerPage
+            body["itemsPerPage"] = self.itemsPerPage
         if self.Resources:
-            listServicePrincipalResponse_body["Resources"] = [
-                v.as_request()[1] for v in self.Resources
-            ]
+            body["Resources"] = [v.as_dict() for v in self.Resources]
         if self.startIndex:
-            listServicePrincipalResponse_body["startIndex"] = self.startIndex
+            body["startIndex"] = self.startIndex
         if self.totalResults:
-            listServicePrincipalResponse_body["totalResults"] = self.totalResults
+            body["totalResults"] = self.totalResults
 
-        return listServicePrincipalResponse_query, listServicePrincipalResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListServicePrincipalResponse":
@@ -388,26 +384,24 @@ class ListServicePrincipalsRequest:
     # Specifies the index of the first result. First item is number 1.
     startIndex: int  # query
 
-    def as_request(self) -> (dict, dict):
-        listServicePrincipalsRequest_query, listServicePrincipalsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attributes:
-            listServicePrincipalsRequest_query["attributes"] = self.attributes
+            body["attributes"] = self.attributes
         if self.count:
-            listServicePrincipalsRequest_query["count"] = self.count
+            body["count"] = self.count
         if self.excludedAttributes:
-            listServicePrincipalsRequest_query[
-                "excludedAttributes"
-            ] = self.excludedAttributes
+            body["excludedAttributes"] = self.excludedAttributes
         if self.filter:
-            listServicePrincipalsRequest_query["filter"] = self.filter
+            body["filter"] = self.filter
         if self.sortBy:
-            listServicePrincipalsRequest_query["sortBy"] = self.sortBy
+            body["sortBy"] = self.sortBy
         if self.sortOrder:
-            listServicePrincipalsRequest_query["sortOrder"] = self.sortOrder.value
+            body["sortOrder"] = self.sortOrder.value
         if self.startIndex:
-            listServicePrincipalsRequest_query["startIndex"] = self.startIndex
+            body["startIndex"] = self.startIndex
 
-        return listServicePrincipalsRequest_query, listServicePrincipalsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListServicePrincipalsRequest":
@@ -454,24 +448,24 @@ class ListUsersRequest:
     # Specifies the index of the first result. First item is number 1.
     startIndex: int  # query
 
-    def as_request(self) -> (dict, dict):
-        listUsersRequest_query, listUsersRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attributes:
-            listUsersRequest_query["attributes"] = self.attributes
+            body["attributes"] = self.attributes
         if self.count:
-            listUsersRequest_query["count"] = self.count
+            body["count"] = self.count
         if self.excludedAttributes:
-            listUsersRequest_query["excludedAttributes"] = self.excludedAttributes
+            body["excludedAttributes"] = self.excludedAttributes
         if self.filter:
-            listUsersRequest_query["filter"] = self.filter
+            body["filter"] = self.filter
         if self.sortBy:
-            listUsersRequest_query["sortBy"] = self.sortBy
+            body["sortBy"] = self.sortBy
         if self.sortOrder:
-            listUsersRequest_query["sortOrder"] = self.sortOrder.value
+            body["sortOrder"] = self.sortOrder.value
         if self.startIndex:
-            listUsersRequest_query["startIndex"] = self.startIndex
+            body["startIndex"] = self.startIndex
 
-        return listUsersRequest_query, listUsersRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListUsersRequest":
@@ -499,20 +493,18 @@ class ListUsersResponse:
     # Total results that match the request filters.
     totalResults: int
 
-    def as_request(self) -> (dict, dict):
-        listUsersResponse_query, listUsersResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.itemsPerPage:
-            listUsersResponse_body["itemsPerPage"] = self.itemsPerPage
+            body["itemsPerPage"] = self.itemsPerPage
         if self.Resources:
-            listUsersResponse_body["Resources"] = [
-                v.as_request()[1] for v in self.Resources
-            ]
+            body["Resources"] = [v.as_dict() for v in self.Resources]
         if self.startIndex:
-            listUsersResponse_body["startIndex"] = self.startIndex
+            body["startIndex"] = self.startIndex
         if self.totalResults:
-            listUsersResponse_body["totalResults"] = self.totalResults
+            body["totalResults"] = self.totalResults
 
-        return listUsersResponse_query, listUsersResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListUsersResponse":
@@ -534,14 +526,14 @@ class Name:
     # Given name of the Databricks user.
     givenName: str
 
-    def as_request(self) -> (dict, dict):
-        name_query, name_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.familyName:
-            name_body["familyName"] = self.familyName
+            body["familyName"] = self.familyName
         if self.givenName:
-            name_body["givenName"] = self.givenName
+            body["givenName"] = self.givenName
 
-        return name_query, name_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Name":
@@ -559,16 +551,14 @@ class PartialUpdate:
 
     operations: "List[Patch]"
 
-    def as_request(self) -> (dict, dict):
-        partialUpdate_query, partialUpdate_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            partialUpdate_body["id"] = self.id
+            body["id"] = self.id
         if self.operations:
-            partialUpdate_body["operations"] = [
-                v.as_request()[1] for v in self.operations
-            ]
+            body["operations"] = [v.as_dict() for v in self.operations]
 
-        return partialUpdate_query, partialUpdate_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PartialUpdate":
@@ -590,16 +580,16 @@ class Patch:
     # Value to modify
     value: str
 
-    def as_request(self) -> (dict, dict):
-        patch_query, patch_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.op:
-            patch_body["op"] = self.op.value
+            body["op"] = self.op.value
         if self.path:
-            patch_body["path"] = self.path
+            body["path"] = self.path
         if self.value:
-            patch_body["value"] = self.value
+            body["value"] = self.value
 
-        return patch_query, patch_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Patch":
@@ -638,28 +628,26 @@ class ServicePrincipal:
 
     roles: "List[ComplexValue]"
 
-    def as_request(self) -> (dict, dict):
-        servicePrincipal_query, servicePrincipal_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.active:
-            servicePrincipal_body["active"] = self.active
+            body["active"] = self.active
         if self.applicationId:
-            servicePrincipal_body["applicationId"] = self.applicationId
+            body["applicationId"] = self.applicationId
         if self.displayName:
-            servicePrincipal_body["displayName"] = self.displayName
+            body["displayName"] = self.displayName
         if self.entitlements:
-            servicePrincipal_body["entitlements"] = [
-                v.as_request()[1] for v in self.entitlements
-            ]
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
         if self.externalId:
-            servicePrincipal_body["externalId"] = self.externalId
+            body["externalId"] = self.externalId
         if self.groups:
-            servicePrincipal_body["groups"] = [v.as_request()[1] for v in self.groups]
+            body["groups"] = [v.as_dict() for v in self.groups]
         if self.id:
-            servicePrincipal_body["id"] = self.id
+            body["id"] = self.id
         if self.roles:
-            servicePrincipal_body["roles"] = [v.as_request()[1] for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
 
-        return servicePrincipal_query, servicePrincipal_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ServicePrincipal":
@@ -706,30 +694,30 @@ class User:
     # Email address of the Databricks user.
     userName: str
 
-    def as_request(self) -> (dict, dict):
-        user_query, user_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.active:
-            user_body["active"] = self.active
+            body["active"] = self.active
         if self.displayName:
-            user_body["displayName"] = self.displayName
+            body["displayName"] = self.displayName
         if self.emails:
-            user_body["emails"] = [v.as_request()[1] for v in self.emails]
+            body["emails"] = [v.as_dict() for v in self.emails]
         if self.entitlements:
-            user_body["entitlements"] = [v.as_request()[1] for v in self.entitlements]
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
         if self.externalId:
-            user_body["externalId"] = self.externalId
+            body["externalId"] = self.externalId
         if self.groups:
-            user_body["groups"] = [v.as_request()[1] for v in self.groups]
+            body["groups"] = [v.as_dict() for v in self.groups]
         if self.id:
-            user_body["id"] = self.id
+            body["id"] = self.id
         if self.name:
-            user_body["name"] = self.name.as_request()[1]
+            body["name"] = self.name.as_dict()
         if self.roles:
-            user_body["roles"] = [v.as_request()[1] for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
         if self.userName:
-            user_body["userName"] = self.userName
+            body["userName"] = self.userName
 
-        return user_query, user_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "User":
@@ -759,74 +747,182 @@ class AccountGroupsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: Group) -> Group:
+    def create(
+        self,
+        id: str,
+        id: str,
+        *,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        members: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ) -> Group:
         """Create a new group.
 
         Creates a group in the Databricks Account with a unique name, using the
         supplied group details."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Group(
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                members=members,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", f"/api/2.0/accounts//scim/v2/Groups", query=query, body=body
         )
         return Group.from_dict(json)
 
-    def delete(self, request: DeleteGroupRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a group.
 
         Deletes a group from the Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteGroupRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts//scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
         )
 
-    def get(self, request: GetGroupRequest) -> Group:
+    def get(self, id: str, **kwargs) -> Group:
         """Get group details.
 
         Gets the information for a specific group in the Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetGroupRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts//scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
         )
         return Group.from_dict(json)
 
-    def list(self, request: ListGroupsRequest) -> ListGroupsResponse:
+    def list(
+        self,
+        *,
+        attributes: str = None,
+        count: int = None,
+        excluded_attributes: str = None,
+        filter: str = None,
+        sort_by: str = None,
+        sort_order: ListSortOrder = None,
+        start_index: int = None,
+        **kwargs,
+    ) -> ListGroupsResponse:
         """List group details.
 
         Gets all details of the groups associated with the Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListGroupsRequest(
+                attributes=attributes,
+                count=count,
+                excluded_attributes=excluded_attributes,
+                filter=filter,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                start_index=start_index,
+            )
+        body = request.as_dict()
+        query = {}
+        if attributes:
+            query["attributes"] = attributes
+        if count:
+            query["count"] = count
+        if excluded_attributes:
+            query["excludedAttributes"] = excluded_attributes
+        if filter:
+            query["filter"] = filter
+        if sort_by:
+            query["sortBy"] = sort_by
+        if sort_order:
+            query["sortOrder"] = sort_order.value
+        if start_index:
+            query["startIndex"] = start_index
+
         json = self._api.do(
             "GET", f"/api/2.0/accounts//scim/v2/Groups", query=query, body=body
         )
         return ListGroupsResponse.from_dict(json)
 
-    def patch(self, request: PartialUpdate):
+    def patch(
+        self,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        *,
+        operations: List[Patch] = None,
+        **kwargs,
+    ):
         """Update group details.
 
         Partially updates the details of a group."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PartialUpdate(id=id, operations=operations)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PATCH",
-            f"/api/2.0/accounts//scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
         )
 
-    def update(self, request: Group):
+    def update(
+        self,
+        id: str,
+        id: str,
+        *,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        members: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ):
         """Replace a group.
 
         Updates the details of a group by replacing the entire group entity."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Group(
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                members=members,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PUT",
-            f"/api/2.0/accounts//scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
         )
 
 
@@ -834,11 +930,39 @@ class AccountServicePrincipalsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: ServicePrincipal) -> ServicePrincipal:
+    def create(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        application_id: str = None,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ) -> ServicePrincipal:
         """Create a service principal.
 
         Creates a new service principal in the Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ServicePrincipal(
+                active=active,
+                application_id=application_id,
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
             f"/api/2.0/accounts//scim/v2/ServicePrincipals",
@@ -847,39 +971,88 @@ class AccountServicePrincipalsAPI:
         )
         return ServicePrincipal.from_dict(json)
 
-    def delete(self, request: DeleteServicePrincipalRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a service principal.
 
         Delete a single service principal in the Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteServicePrincipalRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
 
-    def get(self, request: GetServicePrincipalRequest) -> ServicePrincipal:
+    def get(self, id: str, **kwargs) -> ServicePrincipal:
         """Get service principal details.
 
         Gets the details for a single service principal define in the Databricks
         Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetServicePrincipalRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
         return ServicePrincipal.from_dict(json)
 
     def list(
-        self, request: ListServicePrincipalsRequest
+        self,
+        *,
+        attributes: str = None,
+        count: int = None,
+        excluded_attributes: str = None,
+        filter: str = None,
+        sort_by: str = None,
+        sort_order: ListSortOrder = None,
+        start_index: int = None,
+        **kwargs,
     ) -> ListServicePrincipalResponse:
         """List service principals.
 
         Gets the set of service principals associated with a Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListServicePrincipalsRequest(
+                attributes=attributes,
+                count=count,
+                excluded_attributes=excluded_attributes,
+                filter=filter,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                start_index=start_index,
+            )
+        body = request.as_dict()
+        query = {}
+        if attributes:
+            query["attributes"] = attributes
+        if count:
+            query["count"] = count
+        if excluded_attributes:
+            query["excludedAttributes"] = excluded_attributes
+        if filter:
+            query["filter"] = filter
+        if sort_by:
+            query["sortBy"] = sort_by
+        if sort_order:
+            query["sortOrder"] = sort_order.value
+        if start_index:
+            query["startIndex"] = start_index
+
         json = self._api.do(
             "GET",
             f"/api/2.0/accounts//scim/v2/ServicePrincipals",
@@ -888,29 +1061,74 @@ class AccountServicePrincipalsAPI:
         )
         return ListServicePrincipalResponse.from_dict(json)
 
-    def patch(self, request: PartialUpdate):
+    def patch(
+        self,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        *,
+        operations: List[Patch] = None,
+        **kwargs,
+    ):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the
         Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PartialUpdate(id=id, operations=operations)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
 
-    def update(self, request: ServicePrincipal):
+    def update(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        application_id: str = None,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ):
         """Replace service principal.
 
         Updates the details of a single service principal.
 
         This action replaces the existing service principal with the same name."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ServicePrincipal(
+                active=active,
+                application_id=application_id,
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PUT",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
@@ -920,76 +1138,196 @@ class AccountUsersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: User) -> User:
+    def create(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        display_name: str = None,
+        emails: List[ComplexValue] = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        name: Name = None,
+        roles: List[ComplexValue] = None,
+        user_name: str = None,
+        **kwargs,
+    ) -> User:
         """Create a new user.
 
         Creates a new user in the Databricks Account. This new user will also be
         added to the Databricks account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = User(
+                active=active,
+                display_name=display_name,
+                emails=emails,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                name=name,
+                roles=roles,
+                user_name=user_name,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", f"/api/2.0/accounts//scim/v2/Users", query=query, body=body
         )
         return User.from_dict(json)
 
-    def delete(self, request: DeleteUserRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a user.
 
         Deletes a user. Deleting a user from a Databricks Account also removes
         objects associated with the user."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteUserRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts//scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
         )
 
-    def get(self, request: GetUserRequest) -> User:
+    def get(self, id: str, **kwargs) -> User:
         """Get user details.
 
         Gets information for a specific user in Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetUserRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts//scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
         )
         return User.from_dict(json)
 
-    def list(self, request: ListUsersRequest) -> ListUsersResponse:
+    def list(
+        self,
+        *,
+        attributes: str = None,
+        count: int = None,
+        excluded_attributes: str = None,
+        filter: str = None,
+        sort_by: str = None,
+        sort_order: ListSortOrder = None,
+        start_index: int = None,
+        **kwargs,
+    ) -> ListUsersResponse:
         """List users.
 
         Gets details for all the users associated with a Databricks Account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListUsersRequest(
+                attributes=attributes,
+                count=count,
+                excluded_attributes=excluded_attributes,
+                filter=filter,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                start_index=start_index,
+            )
+        body = request.as_dict()
+        query = {}
+        if attributes:
+            query["attributes"] = attributes
+        if count:
+            query["count"] = count
+        if excluded_attributes:
+            query["excludedAttributes"] = excluded_attributes
+        if filter:
+            query["filter"] = filter
+        if sort_by:
+            query["sortBy"] = sort_by
+        if sort_order:
+            query["sortOrder"] = sort_order.value
+        if start_index:
+            query["startIndex"] = start_index
+
         json = self._api.do(
             "GET", f"/api/2.0/accounts//scim/v2/Users", query=query, body=body
         )
         return ListUsersResponse.from_dict(json)
 
-    def patch(self, request: PartialUpdate):
+    def patch(
+        self,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        *,
+        operations: List[Patch] = None,
+        **kwargs,
+    ):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on
         specific user attributes."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PartialUpdate(id=id, operations=operations)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PATCH",
-            f"/api/2.0/accounts//scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
         )
 
-    def update(self, request: User):
+    def update(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        display_name: str = None,
+        emails: List[ComplexValue] = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        name: Name = None,
+        roles: List[ComplexValue] = None,
+        user_name: str = None,
+        **kwargs,
+    ):
         """Replace a user.
 
         Replaces a user's information with the data supplied in request."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = User(
+                active=active,
+                display_name=display_name,
+                emails=emails,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                name=name,
+                roles=roles,
+                user_name=user_name,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PUT",
-            f"/api/2.0/accounts//scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
         )
 
 
@@ -1010,74 +1348,182 @@ class GroupsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: Group) -> Group:
+    def create(
+        self,
+        id: str,
+        id: str,
+        *,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        members: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ) -> Group:
         """Create a new group.
 
         Creates a group in the Databricks Workspace with a unique name, using
         the supplied group details."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Group(
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                members=members,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/preview/scim/v2/Groups", query=query, body=body
         )
         return Group.from_dict(json)
 
-    def delete(self, request: DeleteGroupRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a group.
 
         Deletes a group from the Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteGroupRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
         )
 
-    def get(self, request: GetGroupRequest) -> Group:
+    def get(self, id: str, **kwargs) -> Group:
         """Get group details.
 
         Gets the information for a specific group in the Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetGroupRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
         )
         return Group.from_dict(json)
 
-    def list(self, request: ListGroupsRequest) -> ListGroupsResponse:
+    def list(
+        self,
+        *,
+        attributes: str = None,
+        count: int = None,
+        excluded_attributes: str = None,
+        filter: str = None,
+        sort_by: str = None,
+        sort_order: ListSortOrder = None,
+        start_index: int = None,
+        **kwargs,
+    ) -> ListGroupsResponse:
         """List group details.
 
         Gets all details of the groups associated with the Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListGroupsRequest(
+                attributes=attributes,
+                count=count,
+                excluded_attributes=excluded_attributes,
+                filter=filter,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                start_index=start_index,
+            )
+        body = request.as_dict()
+        query = {}
+        if attributes:
+            query["attributes"] = attributes
+        if count:
+            query["count"] = count
+        if excluded_attributes:
+            query["excludedAttributes"] = excluded_attributes
+        if filter:
+            query["filter"] = filter
+        if sort_by:
+            query["sortBy"] = sort_by
+        if sort_order:
+            query["sortOrder"] = sort_order.value
+        if start_index:
+            query["startIndex"] = start_index
+
         json = self._api.do(
             "GET", "/api/2.0/preview/scim/v2/Groups", query=query, body=body
         )
         return ListGroupsResponse.from_dict(json)
 
-    def patch(self, request: PartialUpdate):
+    def patch(
+        self,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        *,
+        operations: List[Patch] = None,
+        **kwargs,
+    ):
         """Update group details.
 
         Partially updates the details of a group."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PartialUpdate(id=id, operations=operations)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PATCH",
-            f"/api/2.0/preview/scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
         )
 
-    def update(self, request: Group):
+    def update(
+        self,
+        id: str,
+        id: str,
+        *,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        members: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ):
         """Replace a group.
 
         Updates the details of a group by replacing the entire group entity."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Group(
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                members=members,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PUT",
-            f"/api/2.0/preview/scim/v2/Groups/{request.id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
         )
 
 
@@ -1085,78 +1531,200 @@ class ServicePrincipalsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: ServicePrincipal) -> ServicePrincipal:
+    def create(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        application_id: str = None,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ) -> ServicePrincipal:
         """Create a service principal.
 
         Creates a new service principal in the Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ServicePrincipal(
+                active=active,
+                application_id=application_id,
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, body=body
         )
         return ServicePrincipal.from_dict(json)
 
-    def delete(self, request: DeleteServicePrincipalRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a service principal.
 
         Delete a single service principal in the Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteServicePrincipalRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "DELETE",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
 
-    def get(self, request: GetServicePrincipalRequest) -> ServicePrincipal:
+    def get(self, id: str, **kwargs) -> ServicePrincipal:
         """Get service principal details.
 
         Gets the details for a single service principal define in the Databricks
         Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetServicePrincipalRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
         return ServicePrincipal.from_dict(json)
 
     def list(
-        self, request: ListServicePrincipalsRequest
+        self,
+        *,
+        attributes: str = None,
+        count: int = None,
+        excluded_attributes: str = None,
+        filter: str = None,
+        sort_by: str = None,
+        sort_order: ListSortOrder = None,
+        start_index: int = None,
+        **kwargs,
     ) -> ListServicePrincipalResponse:
         """List service principals.
 
         Gets the set of service principals associated with a Databricks
         Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListServicePrincipalsRequest(
+                attributes=attributes,
+                count=count,
+                excluded_attributes=excluded_attributes,
+                filter=filter,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                start_index=start_index,
+            )
+        body = request.as_dict()
+        query = {}
+        if attributes:
+            query["attributes"] = attributes
+        if count:
+            query["count"] = count
+        if excluded_attributes:
+            query["excludedAttributes"] = excluded_attributes
+        if filter:
+            query["filter"] = filter
+        if sort_by:
+            query["sortBy"] = sort_by
+        if sort_order:
+            query["sortOrder"] = sort_order.value
+        if start_index:
+            query["startIndex"] = start_index
+
         json = self._api.do(
             "GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, body=body
         )
         return ListServicePrincipalResponse.from_dict(json)
 
-    def patch(self, request: PartialUpdate):
+    def patch(
+        self,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        *,
+        operations: List[Patch] = None,
+        **kwargs,
+    ):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the
         Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PartialUpdate(id=id, operations=operations)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
 
-    def update(self, request: ServicePrincipal):
+    def update(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        application_id: str = None,
+        display_name: str = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        roles: List[ComplexValue] = None,
+        **kwargs,
+    ):
         """Replace service principal.
 
         Updates the details of a single service principal.
 
         This action replaces the existing service principal with the same name."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ServicePrincipal(
+                active=active,
+                application_id=application_id,
+                display_name=display_name,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                roles=roles,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PUT",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
             query=query,
             body=body,
         )
@@ -1166,74 +1734,194 @@ class UsersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: User) -> User:
+    def create(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        display_name: str = None,
+        emails: List[ComplexValue] = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        name: Name = None,
+        roles: List[ComplexValue] = None,
+        user_name: str = None,
+        **kwargs,
+    ) -> User:
         """Create a new user.
 
         Creates a new user in the Databricks Workspace. This new user will also
         be added to the Databricks account."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = User(
+                active=active,
+                display_name=display_name,
+                emails=emails,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                name=name,
+                roles=roles,
+                user_name=user_name,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/preview/scim/v2/Users", query=query, body=body
         )
         return User.from_dict(json)
 
-    def delete(self, request: DeleteUserRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a user.
 
         Deletes a user. Deleting a user from a Databricks Workspace also removes
         objects associated with the user."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteUserRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
         )
 
-    def get(self, request: GetUserRequest) -> User:
+    def get(self, id: str, **kwargs) -> User:
         """Get user details.
 
         Gets information for a specific user in Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetUserRequest(id=id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
         )
         return User.from_dict(json)
 
-    def list(self, request: ListUsersRequest) -> ListUsersResponse:
+    def list(
+        self,
+        *,
+        attributes: str = None,
+        count: int = None,
+        excluded_attributes: str = None,
+        filter: str = None,
+        sort_by: str = None,
+        sort_order: ListSortOrder = None,
+        start_index: int = None,
+        **kwargs,
+    ) -> ListUsersResponse:
         """List users.
 
         Gets details for all the users associated with a Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListUsersRequest(
+                attributes=attributes,
+                count=count,
+                excluded_attributes=excluded_attributes,
+                filter=filter,
+                sort_by=sort_by,
+                sort_order=sort_order,
+                start_index=start_index,
+            )
+        body = request.as_dict()
+        query = {}
+        if attributes:
+            query["attributes"] = attributes
+        if count:
+            query["count"] = count
+        if excluded_attributes:
+            query["excludedAttributes"] = excluded_attributes
+        if filter:
+            query["filter"] = filter
+        if sort_by:
+            query["sortBy"] = sort_by
+        if sort_order:
+            query["sortOrder"] = sort_order.value
+        if start_index:
+            query["startIndex"] = start_index
+
         json = self._api.do(
             "GET", "/api/2.0/preview/scim/v2/Users", query=query, body=body
         )
         return ListUsersResponse.from_dict(json)
 
-    def patch(self, request: PartialUpdate):
+    def patch(
+        self,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        id: str,
+        *,
+        operations: List[Patch] = None,
+        **kwargs,
+    ):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on
         specific user attributes."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PartialUpdate(id=id, operations=operations)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PATCH",
-            f"/api/2.0/preview/scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
         )
 
-    def update(self, request: User):
+    def update(
+        self,
+        id: str,
+        id: str,
+        *,
+        active: bool = None,
+        display_name: str = None,
+        emails: List[ComplexValue] = None,
+        entitlements: List[ComplexValue] = None,
+        external_id: str = None,
+        groups: List[ComplexValue] = None,
+        name: Name = None,
+        roles: List[ComplexValue] = None,
+        user_name: str = None,
+        **kwargs,
+    ):
         """Replace a user.
 
         Replaces a user's information with the data supplied in request."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = User(
+                active=active,
+                display_name=display_name,
+                emails=emails,
+                entitlements=entitlements,
+                external_id=external_id,
+                groups=groups,
+                id=id,
+                name=name,
+                roles=roles,
+                user_name=user_name,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PUT",
-            f"/api/2.0/preview/scim/v2/Users/{request.id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
         )

@@ -16,12 +16,12 @@ class {{.PascalName}}:
     {{.Comment "    # " 80}}
     {{.Name}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}{{end}}
 
-    def as_request(self) -> (dict, dict):
-        {{.CamelName}}_query, {{.CamelName}}_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         {{range .Fields}}{{if ne .Name "$ref"}}if self.{{.Name}}:
-            {{.Of.CamelName}}{{if .IsQuery}}_query{{else}}_body{{end}}['{{.Name}}'] = {{template "as_request_type" .}}
+            body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end}}{{end}}
-        return {{.CamelName}}_query, {{.CamelName}}_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}':
@@ -45,8 +45,8 @@ class {{.PascalName}}:
 {{- end -}}
 {{- define "as_request_type" -}}
 	{{- if not .Entity }}None # ERROR: No Type
-	{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_request()[1]{{else}}v{{end}} for v in self.{{.Name}}]
-	{{- else if .Entity.IsObject }}self.{{.Name}}.as_request()[1]
+	{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in self.{{.Name}}]
+	{{- else if .Entity.IsObject }}self.{{.Name}}.as_dict()
 	{{- else if .Entity.Enum }}self.{{.Name}}.value
 	{{- else}}self.{{.Name}}{{- end -}}
 {{- end -}}
@@ -67,6 +67,8 @@ class {{.PascalName}}:
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
+	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
+  {{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}
 	{{- else if .Enum }}{{.PascalName}}
@@ -80,11 +82,33 @@ class {{.Name}}API:
     def __init__(self, api_client):
         self._api = api_client
     {{range .Methods}}
-    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}, request: {{.Request.PascalName}}{{end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
+    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}{{if .Request.RequiredFields}}
+      {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}{{end}}
+      {{if .Request.NonRequiredFields}}, *
+        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
+      {{- end}}, **kwargs
+    {{- end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
         {{if .Description}}"""{{.Comment "        " 80}}"""{{end}}
-        {{if .Request}}query, body = request.as_request(){{end}}
-        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{request.{{.Field.Name}}}{{end}}{{ end }}'
+        {{if .Request}}
+        request = kwargs.get('request', None)
+        if not request:
+          request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})
+        body = request.as_dict()
+        query = {}
+        {{range .Request.Fields}}{{if .IsQuery -}}
+          if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}
+        {{end}}{{end}}
+        {{end}}
+        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.Name}}{{"}"}}{{end}}{{ end }}'
         {{- else}}'{{.Path}}'{{end}}{{if .Request}}, query=query, body=body{{end}})
         {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
     {{end -}}
 {{- end}}
+
+{{- define "method-param-bind" -}}
+{{- if not .Entity }}None # ERROR: No Type
+{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in {{.SnakeName}}]
+{{- else if .Entity.IsObject }}{{.SnakeName}}.as_dict()
+{{- else if .Entity.Enum }}{{.SnakeName}}.value
+{{- else}}{{.SnakeName}}{{- end -}}
+{{- end -}}

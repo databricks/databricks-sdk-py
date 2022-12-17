@@ -65,48 +65,44 @@ class CreateInstancePool:
     # :method:clusters/sparkVersions API call.
     preloaded_spark_versions: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        createInstancePool_query, createInstancePool_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.aws_attributes:
-            createInstancePool_body[
-                "aws_attributes"
-            ] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            createInstancePool_body[
-                "azure_attributes"
-            ] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            createInstancePool_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.disk_spec:
-            createInstancePool_body["disk_spec"] = self.disk_spec.as_request()[1]
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk:
-            createInstancePool_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.idle_instance_autotermination_minutes:
-            createInstancePool_body[
+            body[
                 "idle_instance_autotermination_minutes"
             ] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
-            createInstancePool_body[
+            body[
                 "instance_pool_fleet_attributes"
-            ] = self.instance_pool_fleet_attributes.as_request()[1]
+            ] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_name:
-            createInstancePool_body["instance_pool_name"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity:
-            createInstancePool_body["max_capacity"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances:
-            createInstancePool_body["min_idle_instances"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id:
-            createInstancePool_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            createInstancePool_body["preloaded_docker_images"] = [
-                v.as_request()[1] for v in self.preloaded_docker_images
+            body["preloaded_docker_images"] = [
+                v.as_dict() for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            createInstancePool_body["preloaded_spark_versions"] = [
+            body["preloaded_spark_versions"] = [
                 v for v in self.preloaded_spark_versions
             ]
 
-        return createInstancePool_query, createInstancePool_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateInstancePool":
@@ -149,12 +145,12 @@ class CreateInstancePoolResponse:
     # The ID of the created instance pool.
     instance_pool_id: str
 
-    def as_request(self) -> (dict, dict):
-        createInstancePoolResponse_query, createInstancePoolResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_pool_id:
-            createInstancePoolResponse_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
 
-        return createInstancePoolResponse_query, createInstancePoolResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateInstancePoolResponse":
@@ -169,12 +165,12 @@ class DeleteInstancePool:
     # The instance pool to be terminated.
     instance_pool_id: str
 
-    def as_request(self) -> (dict, dict):
-        deleteInstancePool_query, deleteInstancePool_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_pool_id:
-            deleteInstancePool_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
 
-        return deleteInstancePool_query, deleteInstancePool_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteInstancePool":
@@ -218,20 +214,20 @@ class DiskSpec:
     # The type of disks that will be launched with this cluster.
     disk_type: "DiskType"
 
-    def as_request(self) -> (dict, dict):
-        diskSpec_query, diskSpec_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.disk_count:
-            diskSpec_body["disk_count"] = self.disk_count
+            body["disk_count"] = self.disk_count
         if self.disk_iops:
-            diskSpec_body["disk_iops"] = self.disk_iops
+            body["disk_iops"] = self.disk_iops
         if self.disk_size:
-            diskSpec_body["disk_size"] = self.disk_size
+            body["disk_size"] = self.disk_size
         if self.disk_throughput:
-            diskSpec_body["disk_throughput"] = self.disk_throughput
+            body["disk_throughput"] = self.disk_throughput
         if self.disk_type:
-            diskSpec_body["disk_type"] = self.disk_type.as_request()[1]
+            body["disk_type"] = self.disk_type.as_dict()
 
-        return diskSpec_query, diskSpec_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DiskSpec":
@@ -251,14 +247,14 @@ class DiskType:
 
     ebs_volume_type: "DiskTypeEbsVolumeType"
 
-    def as_request(self) -> (dict, dict):
-        diskType_query, diskType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.azure_disk_volume_type:
-            diskType_body["azure_disk_volume_type"] = self.azure_disk_volume_type.value
+            body["azure_disk_volume_type"] = self.azure_disk_volume_type.value
         if self.ebs_volume_type:
-            diskType_body["ebs_volume_type"] = self.ebs_volume_type.value
+            body["ebs_volume_type"] = self.ebs_volume_type.value
 
-        return diskType_query, diskType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DiskType":
@@ -293,14 +289,14 @@ class DockerBasicAuth:
 
     username: str
 
-    def as_request(self) -> (dict, dict):
-        dockerBasicAuth_query, dockerBasicAuth_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.password:
-            dockerBasicAuth_body["password"] = self.password
+            body["password"] = self.password
         if self.username:
-            dockerBasicAuth_body["username"] = self.username
+            body["username"] = self.username
 
-        return dockerBasicAuth_query, dockerBasicAuth_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DockerBasicAuth":
@@ -317,14 +313,14 @@ class DockerImage:
     # URL of the docker image.
     url: str
 
-    def as_request(self) -> (dict, dict):
-        dockerImage_query, dockerImage_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.basic_auth:
-            dockerImage_body["basic_auth"] = self.basic_auth.as_request()[1]
+            body["basic_auth"] = self.basic_auth.as_dict()
         if self.url:
-            dockerImage_body["url"] = self.url
+            body["url"] = self.url
 
-        return dockerImage_query, dockerImage_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DockerImage":
@@ -395,50 +391,46 @@ class EditInstancePool:
     # :method:clusters/sparkVersions API call.
     preloaded_spark_versions: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        editInstancePool_query, editInstancePool_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.aws_attributes:
-            editInstancePool_body["aws_attributes"] = self.aws_attributes.as_request()[
-                1
-            ]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            editInstancePool_body[
-                "azure_attributes"
-            ] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            editInstancePool_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.disk_spec:
-            editInstancePool_body["disk_spec"] = self.disk_spec.as_request()[1]
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk:
-            editInstancePool_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.idle_instance_autotermination_minutes:
-            editInstancePool_body[
+            body[
                 "idle_instance_autotermination_minutes"
             ] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
-            editInstancePool_body[
+            body[
                 "instance_pool_fleet_attributes"
-            ] = self.instance_pool_fleet_attributes.as_request()[1]
+            ] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_id:
-            editInstancePool_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.instance_pool_name:
-            editInstancePool_body["instance_pool_name"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity:
-            editInstancePool_body["max_capacity"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances:
-            editInstancePool_body["min_idle_instances"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id:
-            editInstancePool_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            editInstancePool_body["preloaded_docker_images"] = [
-                v.as_request()[1] for v in self.preloaded_docker_images
+            body["preloaded_docker_images"] = [
+                v.as_dict() for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            editInstancePool_body["preloaded_spark_versions"] = [
+            body["preloaded_spark_versions"] = [
                 v for v in self.preloaded_spark_versions
             ]
 
-        return editInstancePool_query, editInstancePool_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditInstancePool":
@@ -496,20 +488,18 @@ class FleetLaunchTemplateOverride:
     # is set, the launch template override has the lowest priority.
     priority: float
 
-    def as_request(self) -> (dict, dict):
-        fleetLaunchTemplateOverride_query, fleetLaunchTemplateOverride_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability_zone:
-            fleetLaunchTemplateOverride_body[
-                "availability_zone"
-            ] = self.availability_zone
+            body["availability_zone"] = self.availability_zone
         if self.instance_type:
-            fleetLaunchTemplateOverride_body["instance_type"] = self.instance_type
+            body["instance_type"] = self.instance_type
         if self.max_price:
-            fleetLaunchTemplateOverride_body["max_price"] = self.max_price
+            body["max_price"] = self.max_price
         if self.priority:
-            fleetLaunchTemplateOverride_body["priority"] = self.priority
+            body["priority"] = self.priority
 
-        return fleetLaunchTemplateOverride_query, fleetLaunchTemplateOverride_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "FleetLaunchTemplateOverride":
@@ -539,20 +529,18 @@ class FleetOnDemandOption:
     # (lowest-price or prioritized).
     use_capacity_reservations_first: bool
 
-    def as_request(self) -> (dict, dict):
-        fleetOnDemandOption_query, fleetOnDemandOption_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.allocation_strategy:
-            fleetOnDemandOption_body[
-                "allocation_strategy"
-            ] = self.allocation_strategy.value
+            body["allocation_strategy"] = self.allocation_strategy.value
         if self.max_total_price:
-            fleetOnDemandOption_body["max_total_price"] = self.max_total_price
+            body["max_total_price"] = self.max_total_price
         if self.use_capacity_reservations_first:
-            fleetOnDemandOption_body[
+            body[
                 "use_capacity_reservations_first"
             ] = self.use_capacity_reservations_first
 
-        return fleetOnDemandOption_query, fleetOnDemandOption_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "FleetOnDemandOption":
@@ -591,18 +579,16 @@ class FleetSpotOption:
     # The maximum amount per hour for Spot Instances that you're willing to pay.
     max_total_price: float
 
-    def as_request(self) -> (dict, dict):
-        fleetSpotOption_query, fleetSpotOption_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.allocation_strategy:
-            fleetSpotOption_body["allocation_strategy"] = self.allocation_strategy.value
+            body["allocation_strategy"] = self.allocation_strategy.value
         if self.instance_pools_to_use_count:
-            fleetSpotOption_body[
-                "instance_pools_to_use_count"
-            ] = self.instance_pools_to_use_count
+            body["instance_pools_to_use_count"] = self.instance_pools_to_use_count
         if self.max_total_price:
-            fleetSpotOption_body["max_total_price"] = self.max_total_price
+            body["max_total_price"] = self.max_total_price
 
-        return fleetSpotOption_query, fleetSpotOption_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "FleetSpotOption":
@@ -633,12 +619,12 @@ class Get:
     # The canonical unique identifier for the instance pool.
     instance_pool_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_pool_id:
-            get_query["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -723,56 +709,54 @@ class GetInstancePool:
     # Status of failed pending instances in the pool.
     status: "InstancePoolStatus"
 
-    def as_request(self) -> (dict, dict):
-        getInstancePool_query, getInstancePool_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.aws_attributes:
-            getInstancePool_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            getInstancePool_body[
-                "azure_attributes"
-            ] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            getInstancePool_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.default_tags:
-            getInstancePool_body["default_tags"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.disk_spec:
-            getInstancePool_body["disk_spec"] = self.disk_spec.as_request()[1]
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk:
-            getInstancePool_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.idle_instance_autotermination_minutes:
-            getInstancePool_body[
+            body[
                 "idle_instance_autotermination_minutes"
             ] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
-            getInstancePool_body[
+            body[
                 "instance_pool_fleet_attributes"
-            ] = self.instance_pool_fleet_attributes.as_request()[1]
+            ] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_id:
-            getInstancePool_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.instance_pool_name:
-            getInstancePool_body["instance_pool_name"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity:
-            getInstancePool_body["max_capacity"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances:
-            getInstancePool_body["min_idle_instances"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id:
-            getInstancePool_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            getInstancePool_body["preloaded_docker_images"] = [
-                v.as_request()[1] for v in self.preloaded_docker_images
+            body["preloaded_docker_images"] = [
+                v.as_dict() for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            getInstancePool_body["preloaded_spark_versions"] = [
+            body["preloaded_spark_versions"] = [
                 v for v in self.preloaded_spark_versions
             ]
         if self.state:
-            getInstancePool_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.stats:
-            getInstancePool_body["stats"] = self.stats.as_request()[1]
+            body["stats"] = self.stats.as_dict()
         if self.status:
-            getInstancePool_body["status"] = self.status.as_request()[1]
+            body["status"] = self.status.as_dict()
 
-        return getInstancePool_query, getInstancePool_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetInstancePool":
@@ -890,58 +874,54 @@ class InstancePoolAndStats:
     # Status of failed pending instances in the pool.
     status: "InstancePoolStatus"
 
-    def as_request(self) -> (dict, dict):
-        instancePoolAndStats_query, instancePoolAndStats_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.aws_attributes:
-            instancePoolAndStats_body[
-                "aws_attributes"
-            ] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            instancePoolAndStats_body[
-                "azure_attributes"
-            ] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            instancePoolAndStats_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.default_tags:
-            instancePoolAndStats_body["default_tags"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.disk_spec:
-            instancePoolAndStats_body["disk_spec"] = self.disk_spec.as_request()[1]
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk:
-            instancePoolAndStats_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.idle_instance_autotermination_minutes:
-            instancePoolAndStats_body[
+            body[
                 "idle_instance_autotermination_minutes"
             ] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
-            instancePoolAndStats_body[
+            body[
                 "instance_pool_fleet_attributes"
-            ] = self.instance_pool_fleet_attributes.as_request()[1]
+            ] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_id:
-            instancePoolAndStats_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.instance_pool_name:
-            instancePoolAndStats_body["instance_pool_name"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity:
-            instancePoolAndStats_body["max_capacity"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances:
-            instancePoolAndStats_body["min_idle_instances"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id:
-            instancePoolAndStats_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            instancePoolAndStats_body["preloaded_docker_images"] = [
-                v.as_request()[1] for v in self.preloaded_docker_images
+            body["preloaded_docker_images"] = [
+                v.as_dict() for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            instancePoolAndStats_body["preloaded_spark_versions"] = [
+            body["preloaded_spark_versions"] = [
                 v for v in self.preloaded_spark_versions
             ]
         if self.state:
-            instancePoolAndStats_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.stats:
-            instancePoolAndStats_body["stats"] = self.stats.as_request()[1]
+            body["stats"] = self.stats.as_dict()
         if self.status:
-            instancePoolAndStats_body["status"] = self.status.as_request()[1]
+            body["status"] = self.status.as_dict()
 
-        return instancePoolAndStats_query, instancePoolAndStats_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstancePoolAndStats":
@@ -1016,18 +996,16 @@ class InstancePoolAwsAttributes:
     # the `List Zones`_ method.
     zone_id: str
 
-    def as_request(self) -> (dict, dict):
-        instancePoolAwsAttributes_query, instancePoolAwsAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            instancePoolAwsAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.spot_bid_price_percent:
-            instancePoolAwsAttributes_body[
-                "spot_bid_price_percent"
-            ] = self.spot_bid_price_percent
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id:
-            instancePoolAwsAttributes_body["zone_id"] = self.zone_id
+            body["zone_id"] = self.zone_id
 
-        return instancePoolAwsAttributes_query, instancePoolAwsAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstancePoolAwsAttributes":
@@ -1063,16 +1041,14 @@ class InstancePoolAzureAttributes:
     # CommonConf.defaultSpotBidMaxPrice.
     spot_bid_max_price: float
 
-    def as_request(self) -> (dict, dict):
-        instancePoolAzureAttributes_query, instancePoolAzureAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            instancePoolAzureAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.spot_bid_max_price:
-            instancePoolAzureAttributes_body[
-                "spot_bid_max_price"
-            ] = self.spot_bid_max_price
+            body["spot_bid_max_price"] = self.spot_bid_max_price
 
-        return instancePoolAzureAttributes_query, instancePoolAzureAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstancePoolAzureAttributes":
@@ -1104,22 +1080,18 @@ class InstancePoolFleetAttributes:
 
     launch_template_overrides: "List[FleetLaunchTemplateOverride]"
 
-    def as_request(self) -> (dict, dict):
-        instancePoolFleetAttributes_query, instancePoolFleetAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.fleet_on_demand_option:
-            instancePoolFleetAttributes_body[
-                "fleet_on_demand_option"
-            ] = self.fleet_on_demand_option.as_request()[1]
+            body["fleet_on_demand_option"] = self.fleet_on_demand_option.as_dict()
         if self.fleet_spot_option:
-            instancePoolFleetAttributes_body[
-                "fleet_spot_option"
-            ] = self.fleet_spot_option.as_request()[1]
+            body["fleet_spot_option"] = self.fleet_spot_option.as_dict()
         if self.launch_template_overrides:
-            instancePoolFleetAttributes_body["launch_template_overrides"] = [
-                v.as_request()[1] for v in self.launch_template_overrides
+            body["launch_template_overrides"] = [
+                v.as_dict() for v in self.launch_template_overrides
             ]
 
-        return instancePoolFleetAttributes_query, instancePoolFleetAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstancePoolFleetAttributes":
@@ -1161,18 +1133,18 @@ class InstancePoolStats:
     # Number of active instances in the pool that are part of a cluster.
     used_count: int
 
-    def as_request(self) -> (dict, dict):
-        instancePoolStats_query, instancePoolStats_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.idle_count:
-            instancePoolStats_body["idle_count"] = self.idle_count
+            body["idle_count"] = self.idle_count
         if self.pending_idle_count:
-            instancePoolStats_body["pending_idle_count"] = self.pending_idle_count
+            body["pending_idle_count"] = self.pending_idle_count
         if self.pending_used_count:
-            instancePoolStats_body["pending_used_count"] = self.pending_used_count
+            body["pending_used_count"] = self.pending_used_count
         if self.used_count:
-            instancePoolStats_body["used_count"] = self.used_count
+            body["used_count"] = self.used_count
 
-        return instancePoolStats_query, instancePoolStats_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstancePoolStats":
@@ -1193,14 +1165,14 @@ class InstancePoolStatus:
     # exiting available instances reaches the min_idle of the pool.
     pending_instance_errors: "List[PendingInstanceError]"
 
-    def as_request(self) -> (dict, dict):
-        instancePoolStatus_query, instancePoolStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.pending_instance_errors:
-            instancePoolStatus_body["pending_instance_errors"] = [
-                v.as_request()[1] for v in self.pending_instance_errors
+            body["pending_instance_errors"] = [
+                v.as_dict() for v in self.pending_instance_errors
             ]
 
-        return instancePoolStatus_query, instancePoolStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstancePoolStatus":
@@ -1218,14 +1190,12 @@ class ListInstancePools:
 
     instance_pools: "List[InstancePoolAndStats]"
 
-    def as_request(self) -> (dict, dict):
-        listInstancePools_query, listInstancePools_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_pools:
-            listInstancePools_body["instance_pools"] = [
-                v.as_request()[1] for v in self.instance_pools
-            ]
+            body["instance_pools"] = [v.as_dict() for v in self.instance_pools]
 
-        return listInstancePools_query, listInstancePools_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListInstancePools":
@@ -1245,14 +1215,14 @@ class PendingInstanceError:
 
     message: str
 
-    def as_request(self) -> (dict, dict):
-        pendingInstanceError_query, pendingInstanceError_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_id:
-            pendingInstanceError_body["instance_id"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.message:
-            pendingInstanceError_body["message"] = self.message
+            body["message"] = self.message
 
-        return pendingInstanceError_query, pendingInstanceError_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PendingInstanceError":
@@ -1266,36 +1236,126 @@ class InstancePoolsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateInstancePool) -> CreateInstancePoolResponse:
+    def create(
+        self,
+        instance_pool_name: str,
+        node_type_id: str,
+        *,
+        aws_attributes: InstancePoolAwsAttributes = None,
+        azure_attributes: InstancePoolAzureAttributes = None,
+        custom_tags: Dict[str, str] = None,
+        disk_spec: DiskSpec = None,
+        enable_elastic_disk: bool = None,
+        idle_instance_autotermination_minutes: int = None,
+        instance_pool_fleet_attributes: InstancePoolFleetAttributes = None,
+        max_capacity: int = None,
+        min_idle_instances: int = None,
+        preloaded_docker_images: List[DockerImage] = None,
+        preloaded_spark_versions: List[str] = None,
+        **kwargs
+    ) -> CreateInstancePoolResponse:
         """Create a new instance pool.
 
         Creates a new instance pool using idle and ready-to-use cloud instances."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateInstancePool(
+                aws_attributes=aws_attributes,
+                azure_attributes=azure_attributes,
+                custom_tags=custom_tags,
+                disk_spec=disk_spec,
+                enable_elastic_disk=enable_elastic_disk,
+                idle_instance_autotermination_minutes=idle_instance_autotermination_minutes,
+                instance_pool_fleet_attributes=instance_pool_fleet_attributes,
+                instance_pool_name=instance_pool_name,
+                max_capacity=max_capacity,
+                min_idle_instances=min_idle_instances,
+                node_type_id=node_type_id,
+                preloaded_docker_images=preloaded_docker_images,
+                preloaded_spark_versions=preloaded_spark_versions,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/instance-pools/create", query=query, body=body
         )
         return CreateInstancePoolResponse.from_dict(json)
 
-    def delete(self, request: DeleteInstancePool):
+    def delete(self, instance_pool_id: str, **kwargs):
         """Delete an instance pool.
 
         Deletes the instance pool permanently. The idle instances in the pool
         are terminated asynchronously."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteInstancePool(instance_pool_id=instance_pool_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/instance-pools/delete", query=query, body=body)
 
-    def edit(self, request: EditInstancePool):
+    def edit(
+        self,
+        instance_pool_id: str,
+        instance_pool_name: str,
+        node_type_id: str,
+        *,
+        aws_attributes: InstancePoolAwsAttributes = None,
+        azure_attributes: InstancePoolAzureAttributes = None,
+        custom_tags: Dict[str, str] = None,
+        disk_spec: DiskSpec = None,
+        enable_elastic_disk: bool = None,
+        idle_instance_autotermination_minutes: int = None,
+        instance_pool_fleet_attributes: InstancePoolFleetAttributes = None,
+        max_capacity: int = None,
+        min_idle_instances: int = None,
+        preloaded_docker_images: List[DockerImage] = None,
+        preloaded_spark_versions: List[str] = None,
+        **kwargs
+    ):
         """Edit an existing instance pool.
 
         Modifies the configuration of an existing instance pool."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = EditInstancePool(
+                aws_attributes=aws_attributes,
+                azure_attributes=azure_attributes,
+                custom_tags=custom_tags,
+                disk_spec=disk_spec,
+                enable_elastic_disk=enable_elastic_disk,
+                idle_instance_autotermination_minutes=idle_instance_autotermination_minutes,
+                instance_pool_fleet_attributes=instance_pool_fleet_attributes,
+                instance_pool_id=instance_pool_id,
+                instance_pool_name=instance_pool_name,
+                max_capacity=max_capacity,
+                min_idle_instances=min_idle_instances,
+                node_type_id=node_type_id,
+                preloaded_docker_images=preloaded_docker_images,
+                preloaded_spark_versions=preloaded_spark_versions,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/instance-pools/edit", query=query, body=body)
 
-    def get(self, request: Get) -> GetInstancePool:
+    def get(self, instance_pool_id: str, **kwargs) -> GetInstancePool:
         """Get instance pool information.
 
         Retrieve the information for an instance pool based on its identifier."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(instance_pool_id=instance_pool_id)
+        body = request.as_dict()
+        query = {}
+        if instance_pool_id:
+            query["instance_pool_id"] = instance_pool_id
+
         json = self._api.do(
             "GET", "/api/2.0/instance-pools/get", query=query, body=body
         )

@@ -16,14 +16,14 @@ class AddBlock:
     # The handle on an open stream.
     handle: int
 
-    def as_request(self) -> (dict, dict):
-        addBlock_query, addBlock_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.data:
-            addBlock_body["data"] = self.data
+            body["data"] = self.data
         if self.handle:
-            addBlock_body["handle"] = self.handle
+            body["handle"] = self.handle
 
-        return addBlock_query, addBlock_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AddBlock":
@@ -39,12 +39,12 @@ class Close:
     # The handle on an open stream.
     handle: int
 
-    def as_request(self) -> (dict, dict):
-        close_query, close_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.handle:
-            close_body["handle"] = self.handle
+            body["handle"] = self.handle
 
-        return close_query, close_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Close":
@@ -61,14 +61,14 @@ class Create:
     # The path of the new file. The path should be the absolute DBFS path.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        create_query, create_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.overwrite:
-            create_body["overwrite"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path:
-            create_body["path"] = self.path
+            body["path"] = self.path
 
-        return create_query, create_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Create":
@@ -85,12 +85,12 @@ class CreateResponse:
     # calls when writing to a file through a stream.
     handle: int
 
-    def as_request(self) -> (dict, dict):
-        createResponse_query, createResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.handle:
-            createResponse_body["handle"] = self.handle
+            body["handle"] = self.handle
 
-        return createResponse_query, createResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateResponse":
@@ -109,14 +109,14 @@ class Delete:
     # empty directories can be done without providing the recursive flag.
     recursive: bool
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            delete_body["path"] = self.path
+            body["path"] = self.path
         if self.recursive:
-            delete_body["recursive"] = self.recursive
+            body["recursive"] = self.recursive
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -138,18 +138,18 @@ class FileInfo:
     # The path of the file or directory.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        fileInfo_query, fileInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.file_size:
-            fileInfo_body["file_size"] = self.file_size
+            body["file_size"] = self.file_size
         if self.is_dir:
-            fileInfo_body["is_dir"] = self.is_dir
+            body["is_dir"] = self.is_dir
         if self.modification_time:
-            fileInfo_body["modification_time"] = self.modification_time
+            body["modification_time"] = self.modification_time
         if self.path:
-            fileInfo_body["path"] = self.path
+            body["path"] = self.path
 
-        return fileInfo_query, fileInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "FileInfo":
@@ -169,12 +169,12 @@ class GetStatus:
     # path.
     path: str  # query
 
-    def as_request(self) -> (dict, dict):
-        getStatus_query, getStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            getStatus_query["path"] = self.path
+            body["path"] = self.path
 
-        return getStatus_query, getStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
@@ -191,12 +191,12 @@ class List:
     # path.
     path: str  # query
 
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            list_query["path"] = self.path
+            body["path"] = self.path
 
-        return list_query, list_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "List":
@@ -212,12 +212,12 @@ class ListStatusResponse:
     # example above.
     files: "List[FileInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listStatusResponse_query, listStatusResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.files:
-            listStatusResponse_body["files"] = [v.as_request()[1] for v in self.files]
+            body["files"] = [v.as_dict() for v in self.files]
 
-        return listStatusResponse_query, listStatusResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListStatusResponse":
@@ -232,12 +232,12 @@ class MkDirs:
     # The path of the new directory. The path should be the absolute DBFS path.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        mkDirs_query, mkDirs_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            mkDirs_body["path"] = self.path
+            body["path"] = self.path
 
-        return mkDirs_query, mkDirs_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "MkDirs":
@@ -256,14 +256,14 @@ class Move:
     # DBFS path.
     source_path: str
 
-    def as_request(self) -> (dict, dict):
-        move_query, move_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.destination_path:
-            move_body["destination_path"] = self.destination_path
+            body["destination_path"] = self.destination_path
         if self.source_path:
-            move_body["source_path"] = self.source_path
+            body["source_path"] = self.source_path
 
-        return move_query, move_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Move":
@@ -283,16 +283,16 @@ class Put:
     # The path of the new file. The path should be the absolute DBFS path.
     path: str
 
-    def as_request(self) -> (dict, dict):
-        put_query, put_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.contents:
-            put_body["contents"] = self.contents
+            body["contents"] = self.contents
         if self.overwrite:
-            put_body["overwrite"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path:
-            put_body["path"] = self.path
+            body["path"] = self.path
 
-        return put_query, put_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Put":
@@ -315,16 +315,16 @@ class Read:
     # The path of the file to read. The path should be the absolute DBFS path.
     path: str  # query
 
-    def as_request(self) -> (dict, dict):
-        read_query, read_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.length:
-            read_query["length"] = self.length
+            body["length"] = self.length
         if self.offset:
-            read_query["offset"] = self.offset
+            body["offset"] = self.offset
         if self.path:
-            read_query["path"] = self.path
+            body["path"] = self.path
 
-        return read_query, read_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Read":
@@ -345,14 +345,14 @@ class ReadResponse:
     # The base64-encoded contents of the file read.
     data: str
 
-    def as_request(self) -> (dict, dict):
-        readResponse_query, readResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.bytes_read:
-            readResponse_body["bytes_read"] = self.bytes_read
+            body["bytes_read"] = self.bytes_read
         if self.data:
-            readResponse_body["data"] = self.data
+            body["data"] = self.data
 
-        return readResponse_query, readResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ReadResponse":
@@ -366,7 +366,7 @@ class DbfsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def add_block(self, request: AddBlock):
+    def add_block(self, handle: int, data: str, **kwargs):
         """Append data block.
 
         Appends a block of data to the stream specified by the input handle. If
@@ -375,18 +375,30 @@ class DbfsAPI:
 
         If the block of data exceeds 1 MB, this call will throw an exception
         with `MAX_BLOCK_SIZE_EXCEEDED`."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = AddBlock(data=data, handle=handle)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/dbfs/add-block", query=query, body=body)
 
-    def close(self, request: Close):
+    def close(self, handle: int, **kwargs):
         """Close the stream.
 
         Closes the stream specified by the input handle. If the handle does not
         exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Close(handle=handle)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/dbfs/close", query=query, body=body)
 
-    def create(self, request: Create) -> CreateResponse:
+    def create(self, path: str, *, overwrite: bool = None, **kwargs) -> CreateResponse:
         """Open a stream.
 
         "Opens a stream to write to a file and returns a handle to this stream.
@@ -399,11 +411,17 @@ class DbfsAPI:
         1. Issue a `create` call and get a handle. 2. Issue one or more
         `add-block` calls with the handle you have. 3. Issue a `close` call with
         the handle you have."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Create(overwrite=overwrite, path=path)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.0/dbfs/create", query=query, body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, request: Delete):
+    def delete(self, path: str, *, recursive: bool = None, **kwargs):
         """Delete a file/directory.
 
         Delete the file or directory (optionally recursively delete all files in
@@ -424,20 +442,34 @@ class DbfsAPI:
         Running such operations using notebooks provides better control and
         manageability, such as selective deletes, and the possibility to
         automate periodic delete jobs."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(path=path, recursive=recursive)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/dbfs/delete", query=query, body=body)
 
-    def get_status(self, request: GetStatus) -> FileInfo:
+    def get_status(self, path: str, **kwargs) -> FileInfo:
         """Get the information of a file or directory.
 
         Gets the file information for a file or directory. If the file or
         directory does not exist, this call throws an exception with
         `RESOURCE_DOES_NOT_EXIST`."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetStatus(path=path)
+        body = request.as_dict()
+        query = {}
+        if path:
+            query["path"] = path
+
         json = self._api.do("GET", "/api/2.0/dbfs/get-status", query=query, body=body)
         return FileInfo.from_dict(json)
 
-    def list(self, request: List) -> ListStatusResponse:
+    def list(self, path: str, **kwargs) -> ListStatusResponse:
         """List directory contents or file details.
 
         List the contents of a directory, or details of the file. If the file or
@@ -452,11 +484,19 @@ class DbfsAPI:
         using the [File system utility
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which
         provides the same functionality without timing out."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = List(path=path)
+        body = request.as_dict()
+        query = {}
+        if path:
+            query["path"] = path
+
         json = self._api.do("GET", "/api/2.0/dbfs/list", query=query, body=body)
         return ListStatusResponse.from_dict(json)
 
-    def mkdirs(self, request: MkDirs):
+    def mkdirs(self, path: str, **kwargs):
         """Create a directory.
 
         Creates the given directory and necessary parent directories if they do
@@ -464,10 +504,16 @@ class DbfsAPI:
         path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
         **Note**: If this operation fails, it might have succeeded in creating
         some of the necessary parent directories."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = MkDirs(path=path)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/dbfs/mkdirs", query=query, body=body)
 
-    def move(self, request: Move):
+    def move(self, source_path: str, destination_path: str, **kwargs):
         """Move a file.
 
         Moves a file from one location to another location within DBFS. If the
@@ -476,10 +522,16 @@ class DbfsAPI:
         path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If
         the given source path is a directory, this call always recursively moves
         all files.","""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Move(destination_path=destination_path, source_path=source_path)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/dbfs/move", query=query, body=body)
 
-    def put(self, request: Put):
+    def put(self, path: str, *, contents: str = None, overwrite: bool = None, **kwargs):
         """Upload a file.
 
         Uploads a file through the use of multipart form post. It is mainly used
@@ -494,10 +546,18 @@ class DbfsAPI:
 
         If you want to upload large files, use the streaming upload. For
         details, see :method:create, :method:addBlock, :method:close."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Put(contents=contents, overwrite=overwrite, path=path)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/dbfs/put", query=query, body=body)
 
-    def read(self, request: Read) -> ReadResponse:
+    def read(
+        self, path: str, *, length: int = None, offset: int = None, **kwargs
+    ) -> ReadResponse:
         """Get the contents of a file.
 
         "Returns the contents of a file. If the file does not exist, this call
@@ -509,6 +569,18 @@ class DbfsAPI:
 
         If `offset + length` exceeds the number of bytes in a file, it reads the
         contents until the end of file.","""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Read(length=length, offset=offset, path=path)
+        body = request.as_dict()
+        query = {}
+        if length:
+            query["length"] = length
+        if offset:
+            query["offset"] = offset
+        if path:
+            query["path"] = path
+
         json = self._api.do("GET", "/api/2.0/dbfs/read", query=query, body=body)
         return ReadResponse.from_dict(json)

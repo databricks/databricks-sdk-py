@@ -40,20 +40,18 @@ class AddInstanceProfile:
     # forcibly add the instance profile.
     skip_validation: bool
 
-    def as_request(self) -> (dict, dict):
-        addInstanceProfile_query, addInstanceProfile_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.iam_role_arn:
-            addInstanceProfile_body["iam_role_arn"] = self.iam_role_arn
+            body["iam_role_arn"] = self.iam_role_arn
         if self.instance_profile_arn:
-            addInstanceProfile_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.is_meta_instance_profile:
-            addInstanceProfile_body[
-                "is_meta_instance_profile"
-            ] = self.is_meta_instance_profile
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
         if self.skip_validation:
-            addInstanceProfile_body["skip_validation"] = self.skip_validation
+            body["skip_validation"] = self.skip_validation
 
-        return addInstanceProfile_query, addInstanceProfile_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AddInstanceProfile":
@@ -77,14 +75,14 @@ class AutoScale:
     # have after creation.
     min_workers: int
 
-    def as_request(self) -> (dict, dict):
-        autoScale_query, autoScale_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.max_workers:
-            autoScale_body["max_workers"] = self.max_workers
+            body["max_workers"] = self.max_workers
         if self.min_workers:
-            autoScale_body["min_workers"] = self.min_workers
+            body["min_workers"] = self.min_workers
 
-        return autoScale_query, autoScale_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AutoScale":
@@ -177,30 +175,30 @@ class AwsAttributes:
     # `List Zones`_ method.
     zone_id: str
 
-    def as_request(self) -> (dict, dict):
-        awsAttributes_query, awsAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            awsAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.ebs_volume_count:
-            awsAttributes_body["ebs_volume_count"] = self.ebs_volume_count
+            body["ebs_volume_count"] = self.ebs_volume_count
         if self.ebs_volume_iops:
-            awsAttributes_body["ebs_volume_iops"] = self.ebs_volume_iops
+            body["ebs_volume_iops"] = self.ebs_volume_iops
         if self.ebs_volume_size:
-            awsAttributes_body["ebs_volume_size"] = self.ebs_volume_size
+            body["ebs_volume_size"] = self.ebs_volume_size
         if self.ebs_volume_throughput:
-            awsAttributes_body["ebs_volume_throughput"] = self.ebs_volume_throughput
+            body["ebs_volume_throughput"] = self.ebs_volume_throughput
         if self.ebs_volume_type:
-            awsAttributes_body["ebs_volume_type"] = self.ebs_volume_type.value
+            body["ebs_volume_type"] = self.ebs_volume_type.value
         if self.first_on_demand:
-            awsAttributes_body["first_on_demand"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.instance_profile_arn:
-            awsAttributes_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent:
-            awsAttributes_body["spot_bid_price_percent"] = self.spot_bid_price_percent
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id:
-            awsAttributes_body["zone_id"] = self.zone_id
+            body["zone_id"] = self.zone_id
 
-        return awsAttributes_query, awsAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AwsAttributes":
@@ -260,20 +258,18 @@ class AzureAttributes:
     # availability. Further, the value should > 0 or -1.
     spot_bid_max_price: float
 
-    def as_request(self) -> (dict, dict):
-        azureAttributes_query, azureAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            azureAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.first_on_demand:
-            azureAttributes_body["first_on_demand"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.log_analytics_info:
-            azureAttributes_body[
-                "log_analytics_info"
-            ] = self.log_analytics_info.as_request()[1]
+            body["log_analytics_info"] = self.log_analytics_info.as_dict()
         if self.spot_bid_max_price:
-            azureAttributes_body["spot_bid_max_price"] = self.spot_bid_max_price
+            body["spot_bid_max_price"] = self.spot_bid_max_price
 
-        return azureAttributes_query, azureAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AzureAttributes":
@@ -307,14 +303,14 @@ class ChangeClusterOwner:
     # New owner of the cluster_id after this RPC.
     owner_username: str
 
-    def as_request(self) -> (dict, dict):
-        changeClusterOwner_query, changeClusterOwner_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            changeClusterOwner_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.owner_username:
-            changeClusterOwner_body["owner_username"] = self.owner_username
+            body["owner_username"] = self.owner_username
 
-        return changeClusterOwner_query, changeClusterOwner_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ChangeClusterOwner":
@@ -332,14 +328,14 @@ class ClientsTypes:
     # With notebooks set, this cluster can be used for notebooks
     notebooks: bool
 
-    def as_request(self) -> (dict, dict):
-        clientsTypes_query, clientsTypes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.jobs:
-            clientsTypes_body["jobs"] = self.jobs
+            body["jobs"] = self.jobs
         if self.notebooks:
-            clientsTypes_body["notebooks"] = self.notebooks
+            body["notebooks"] = self.notebooks
 
-        return clientsTypes_query, clientsTypes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClientsTypes":
@@ -354,12 +350,12 @@ class CloudProviderNodeInfo:
 
     status: "List[CloudProviderNodeStatus]"
 
-    def as_request(self) -> (dict, dict):
-        cloudProviderNodeInfo_query, cloudProviderNodeInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.status:
-            cloudProviderNodeInfo_body["status"] = [v for v in self.status]
+            body["status"] = [v for v in self.status]
 
-        return cloudProviderNodeInfo_query, cloudProviderNodeInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CloudProviderNodeInfo":
@@ -472,68 +468,52 @@ class ClusterAttributes:
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        clusterAttributes_query, clusterAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autotermination_minutes:
-            clusterAttributes_body[
-                "autotermination_minutes"
-            ] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            clusterAttributes_body["aws_attributes"] = self.aws_attributes.as_request()[
-                1
-            ]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            clusterAttributes_body[
-                "azure_attributes"
-            ] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            clusterAttributes_body[
-                "cluster_log_conf"
-            ] = self.cluster_log_conf.as_request()[1]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name:
-            clusterAttributes_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            clusterAttributes_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.custom_tags:
-            clusterAttributes_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            clusterAttributes_body[
-                "driver_instance_pool_id"
-            ] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            clusterAttributes_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            clusterAttributes_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            clusterAttributes_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            clusterAttributes_body["gcp_attributes"] = self.gcp_attributes.as_request()[
-                1
-            ]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            clusterAttributes_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.node_type_id:
-            clusterAttributes_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.policy_id:
-            clusterAttributes_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            clusterAttributes_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.spark_conf:
-            clusterAttributes_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            clusterAttributes_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            clusterAttributes_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            clusterAttributes_body["ssh_public_keys"] = [
-                v for v in self.ssh_public_keys
-            ]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.workload_type:
-            clusterAttributes_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return clusterAttributes_query, clusterAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterAttributes":
@@ -592,22 +572,20 @@ class ClusterEvent:
 
     type: "EventType"
 
-    def as_request(self) -> (dict, dict):
-        clusterEvent_query, clusterEvent_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            clusterEvent_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.data_plane_event_details:
-            clusterEvent_body[
-                "data_plane_event_details"
-            ] = self.data_plane_event_details.as_request()[1]
+            body["data_plane_event_details"] = self.data_plane_event_details.as_dict()
         if self.details:
-            clusterEvent_body["details"] = self.details.as_request()[1]
+            body["details"] = self.details.as_dict()
         if self.timestamp:
-            clusterEvent_body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp
         if self.type:
-            clusterEvent_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return clusterEvent_query, clusterEvent_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterEvent":
@@ -800,100 +778,94 @@ class ClusterInfo:
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        clusterInfo_query, clusterInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autoscale:
-            clusterInfo_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes:
-            clusterInfo_body["autotermination_minutes"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            clusterInfo_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            clusterInfo_body["azure_attributes"] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_cores:
-            clusterInfo_body["cluster_cores"] = self.cluster_cores
+            body["cluster_cores"] = self.cluster_cores
         if self.cluster_id:
-            clusterInfo_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.cluster_log_conf:
-            clusterInfo_body["cluster_log_conf"] = self.cluster_log_conf.as_request()[1]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_log_status:
-            clusterInfo_body[
-                "cluster_log_status"
-            ] = self.cluster_log_status.as_request()[1]
+            body["cluster_log_status"] = self.cluster_log_status.as_dict()
         if self.cluster_memory_mb:
-            clusterInfo_body["cluster_memory_mb"] = self.cluster_memory_mb
+            body["cluster_memory_mb"] = self.cluster_memory_mb
         if self.cluster_name:
-            clusterInfo_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            clusterInfo_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.creator_user_name:
-            clusterInfo_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.custom_tags:
-            clusterInfo_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode:
-            clusterInfo_body["data_security_mode"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.default_tags:
-            clusterInfo_body["default_tags"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.driver:
-            clusterInfo_body["driver"] = self.driver.as_request()[1]
+            body["driver"] = self.driver.as_dict()
         if self.driver_instance_pool_id:
-            clusterInfo_body["driver_instance_pool_id"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            clusterInfo_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            clusterInfo_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            clusterInfo_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.executors:
-            clusterInfo_body["executors"] = [v.as_request()[1] for v in self.executors]
+            body["executors"] = [v.as_dict() for v in self.executors]
         if self.gcp_attributes:
-            clusterInfo_body["gcp_attributes"] = self.gcp_attributes.as_request()[1]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            clusterInfo_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.jdbc_port:
-            clusterInfo_body["jdbc_port"] = self.jdbc_port
+            body["jdbc_port"] = self.jdbc_port
         if self.last_restarted_time:
-            clusterInfo_body["last_restarted_time"] = self.last_restarted_time
+            body["last_restarted_time"] = self.last_restarted_time
         if self.last_state_loss_time:
-            clusterInfo_body["last_state_loss_time"] = self.last_state_loss_time
+            body["last_state_loss_time"] = self.last_state_loss_time
         if self.node_type_id:
-            clusterInfo_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            clusterInfo_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            clusterInfo_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            clusterInfo_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name:
-            clusterInfo_body["single_user_name"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            clusterInfo_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_context_id:
-            clusterInfo_body["spark_context_id"] = self.spark_context_id
+            body["spark_context_id"] = self.spark_context_id
         if self.spark_env_vars:
-            clusterInfo_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            clusterInfo_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            clusterInfo_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.start_time:
-            clusterInfo_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            clusterInfo_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.state_message:
-            clusterInfo_body["state_message"] = self.state_message
+            body["state_message"] = self.state_message
         if self.terminated_time:
-            clusterInfo_body["terminated_time"] = self.terminated_time
+            body["terminated_time"] = self.terminated_time
         if self.termination_reason:
-            clusterInfo_body[
-                "termination_reason"
-            ] = self.termination_reason.as_request()[1]
+            body["termination_reason"] = self.termination_reason.as_dict()
         if self.workload_type:
-            clusterInfo_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return clusterInfo_query, clusterInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterInfo":
@@ -978,14 +950,14 @@ class ClusterLogConf:
     # data to the s3 destination.
     s3: "S3StorageInfo"
 
-    def as_request(self) -> (dict, dict):
-        clusterLogConf_query, clusterLogConf_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbfs:
-            clusterLogConf_body["dbfs"] = self.dbfs.as_request()[1]
+            body["dbfs"] = self.dbfs.as_dict()
         if self.s3:
-            clusterLogConf_body["s3"] = self.s3.as_request()[1]
+            body["s3"] = self.s3.as_dict()
 
-        return clusterLogConf_query, clusterLogConf_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterLogConf":
@@ -1014,14 +986,14 @@ class ClusterSize:
     # increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
 
-    def as_request(self) -> (dict, dict):
-        clusterSize_query, clusterSize_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autoscale:
-            clusterSize_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.num_workers:
-            clusterSize_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
 
-        return clusterSize_query, clusterSize_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterSize":
@@ -1161,66 +1133,58 @@ class CreateCluster:
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        createCluster_query, createCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.apply_policy_default_values:
-            createCluster_body[
-                "apply_policy_default_values"
-            ] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            createCluster_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes:
-            createCluster_body["autotermination_minutes"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            createCluster_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            createCluster_body["azure_attributes"] = self.azure_attributes.as_request()[
-                1
-            ]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            createCluster_body["cluster_log_conf"] = self.cluster_log_conf.as_request()[
-                1
-            ]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name:
-            createCluster_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            createCluster_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.custom_tags:
-            createCluster_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            createCluster_body["driver_instance_pool_id"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            createCluster_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            createCluster_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            createCluster_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            createCluster_body["gcp_attributes"] = self.gcp_attributes.as_request()[1]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            createCluster_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.node_type_id:
-            createCluster_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            createCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            createCluster_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            createCluster_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.spark_conf:
-            createCluster_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            createCluster_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            createCluster_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            createCluster_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.workload_type:
-            createCluster_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return createCluster_query, createCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateCluster":
@@ -1271,12 +1235,12 @@ class CreateClusterResponse:
 
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        createClusterResponse_query, createClusterResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            createClusterResponse_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return createClusterResponse_query, createClusterResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateClusterResponse":
@@ -1297,18 +1261,18 @@ class DataPlaneEventDetails:
     # <needs content added>
     timestamp: int
 
-    def as_request(self) -> (dict, dict):
-        dataPlaneEventDetails_query, dataPlaneEventDetails_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.event_type:
-            dataPlaneEventDetails_body["event_type"] = self.event_type.value
+            body["event_type"] = self.event_type.value
         if self.executor_failures:
-            dataPlaneEventDetails_body["executor_failures"] = self.executor_failures
+            body["executor_failures"] = self.executor_failures
         if self.host_id:
-            dataPlaneEventDetails_body["host_id"] = self.host_id
+            body["host_id"] = self.host_id
         if self.timestamp:
-            dataPlaneEventDetails_body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp
 
-        return dataPlaneEventDetails_query, dataPlaneEventDetails_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DataPlaneEventDetails":
@@ -1346,12 +1310,12 @@ class DbfsStorageInfo:
     # dbfs destination, e.g. `dbfs:/my/path`
     destination: str
 
-    def as_request(self) -> (dict, dict):
-        dbfsStorageInfo_query, dbfsStorageInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.destination:
-            dbfsStorageInfo_body["destination"] = self.destination
+            body["destination"] = self.destination
 
-        return dbfsStorageInfo_query, dbfsStorageInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DbfsStorageInfo":
@@ -1366,12 +1330,12 @@ class DeleteCluster:
     # The cluster to be terminated.
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        deleteCluster_query, deleteCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            deleteCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return deleteCluster_query, deleteCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteCluster":
@@ -1505,64 +1469,60 @@ class EditCluster:
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        editCluster_query, editCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.apply_policy_default_values:
-            editCluster_body[
-                "apply_policy_default_values"
-            ] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            editCluster_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes:
-            editCluster_body["autotermination_minutes"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            editCluster_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            editCluster_body["azure_attributes"] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_id:
-            editCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.cluster_log_conf:
-            editCluster_body["cluster_log_conf"] = self.cluster_log_conf.as_request()[1]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name:
-            editCluster_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            editCluster_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.custom_tags:
-            editCluster_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            editCluster_body["driver_instance_pool_id"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            editCluster_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            editCluster_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            editCluster_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            editCluster_body["gcp_attributes"] = self.gcp_attributes.as_request()[1]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            editCluster_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.node_type_id:
-            editCluster_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            editCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            editCluster_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            editCluster_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.spark_conf:
-            editCluster_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            editCluster_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            editCluster_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            editCluster_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.workload_type:
-            editCluster_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return editCluster_query, editCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditCluster":
@@ -1658,54 +1618,50 @@ class EventDetails:
     # control plane.)
     user: str
 
-    def as_request(self) -> (dict, dict):
-        eventDetails_query, eventDetails_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attributes:
-            eventDetails_body["attributes"] = self.attributes.as_request()[1]
+            body["attributes"] = self.attributes.as_dict()
         if self.cause:
-            eventDetails_body["cause"] = self.cause.value
+            body["cause"] = self.cause.value
         if self.cluster_size:
-            eventDetails_body["cluster_size"] = self.cluster_size.as_request()[1]
+            body["cluster_size"] = self.cluster_size.as_dict()
         if self.current_num_vcpus:
-            eventDetails_body["current_num_vcpus"] = self.current_num_vcpus
+            body["current_num_vcpus"] = self.current_num_vcpus
         if self.current_num_workers:
-            eventDetails_body["current_num_workers"] = self.current_num_workers
+            body["current_num_workers"] = self.current_num_workers
         if self.did_not_expand_reason:
-            eventDetails_body["did_not_expand_reason"] = self.did_not_expand_reason
+            body["did_not_expand_reason"] = self.did_not_expand_reason
         if self.disk_size:
-            eventDetails_body["disk_size"] = self.disk_size
+            body["disk_size"] = self.disk_size
         if self.driver_state_message:
-            eventDetails_body["driver_state_message"] = self.driver_state_message
+            body["driver_state_message"] = self.driver_state_message
         if self.enable_termination_for_node_blocklisted:
-            eventDetails_body[
+            body[
                 "enable_termination_for_node_blocklisted"
             ] = self.enable_termination_for_node_blocklisted
         if self.free_space:
-            eventDetails_body["free_space"] = self.free_space
+            body["free_space"] = self.free_space
         if self.instance_id:
-            eventDetails_body["instance_id"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.job_run_name:
-            eventDetails_body["job_run_name"] = self.job_run_name
+            body["job_run_name"] = self.job_run_name
         if self.previous_attributes:
-            eventDetails_body[
-                "previous_attributes"
-            ] = self.previous_attributes.as_request()[1]
+            body["previous_attributes"] = self.previous_attributes.as_dict()
         if self.previous_cluster_size:
-            eventDetails_body[
-                "previous_cluster_size"
-            ] = self.previous_cluster_size.as_request()[1]
+            body["previous_cluster_size"] = self.previous_cluster_size.as_dict()
         if self.previous_disk_size:
-            eventDetails_body["previous_disk_size"] = self.previous_disk_size
+            body["previous_disk_size"] = self.previous_disk_size
         if self.reason:
-            eventDetails_body["reason"] = self.reason.as_request()[1]
+            body["reason"] = self.reason.as_dict()
         if self.target_num_vcpus:
-            eventDetails_body["target_num_vcpus"] = self.target_num_vcpus
+            body["target_num_vcpus"] = self.target_num_vcpus
         if self.target_num_workers:
-            eventDetails_body["target_num_workers"] = self.target_num_workers
+            body["target_num_workers"] = self.target_num_workers
         if self.user:
-            eventDetails_body["user"] = self.user
+            body["user"] = self.user
 
-        return eventDetails_query, eventDetails_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EventDetails":
@@ -1795,16 +1751,16 @@ class GcpAttributes:
     # administrator.
     google_service_account: str
 
-    def as_request(self) -> (dict, dict):
-        gcpAttributes_query, gcpAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            gcpAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.boot_disk_size:
-            gcpAttributes_body["boot_disk_size"] = self.boot_disk_size
+            body["boot_disk_size"] = self.boot_disk_size
         if self.google_service_account:
-            gcpAttributes_body["google_service_account"] = self.google_service_account
+            body["google_service_account"] = self.google_service_account
 
-        return gcpAttributes_query, gcpAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GcpAttributes":
@@ -1834,12 +1790,12 @@ class Get:
     # The cluster about which to retrieve information.
     cluster_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            get_query["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -1872,24 +1828,24 @@ class GetEvents:
     # from the beginning of time.
     start_time: int
 
-    def as_request(self) -> (dict, dict):
-        getEvents_query, getEvents_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            getEvents_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.end_time:
-            getEvents_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.event_types:
-            getEvents_body["event_types"] = [v for v in self.event_types]
+            body["event_types"] = [v for v in self.event_types]
         if self.limit:
-            getEvents_body["limit"] = self.limit
+            body["limit"] = self.limit
         if self.offset:
-            getEvents_body["offset"] = self.offset
+            body["offset"] = self.offset
         if self.order:
-            getEvents_body["order"] = self.order.value
+            body["order"] = self.order.value
         if self.start_time:
-            getEvents_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
 
-        return getEvents_query, getEvents_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetEvents":
@@ -1923,16 +1879,16 @@ class GetEventsResponse:
     # event_types.
     total_count: int
 
-    def as_request(self) -> (dict, dict):
-        getEventsResponse_query, getEventsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.events:
-            getEventsResponse_body["events"] = [v.as_request()[1] for v in self.events]
+            body["events"] = [v.as_dict() for v in self.events]
         if self.next_page:
-            getEventsResponse_body["next_page"] = self.next_page.as_request()[1]
+            body["next_page"] = self.next_page.as_dict()
         if self.total_count:
-            getEventsResponse_body["total_count"] = self.total_count
+            body["total_count"] = self.total_count
 
-        return getEventsResponse_query, getEventsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetEventsResponse":
@@ -1951,14 +1907,12 @@ class GetSparkVersionsResponse:
     # All the available Spark versions.
     versions: "List[SparkVersion]"
 
-    def as_request(self) -> (dict, dict):
-        getSparkVersionsResponse_query, getSparkVersionsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.versions:
-            getSparkVersionsResponse_body["versions"] = [
-                v.as_request()[1] for v in self.versions
-            ]
+            body["versions"] = [v.as_dict() for v in self.versions]
 
-        return getSparkVersionsResponse_query, getSparkVersionsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetSparkVersionsResponse":
@@ -1993,18 +1947,16 @@ class InstanceProfile:
     # forcibly add the instance profile.
     is_meta_instance_profile: bool
 
-    def as_request(self) -> (dict, dict):
-        instanceProfile_query, instanceProfile_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.iam_role_arn:
-            instanceProfile_body["iam_role_arn"] = self.iam_role_arn
+            body["iam_role_arn"] = self.iam_role_arn
         if self.instance_profile_arn:
-            instanceProfile_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.is_meta_instance_profile:
-            instanceProfile_body[
-                "is_meta_instance_profile"
-            ] = self.is_meta_instance_profile
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
 
-        return instanceProfile_query, instanceProfile_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstanceProfile":
@@ -2024,12 +1976,12 @@ class List:
     # the workspace without filtering on its supported client
     can_use_client: str  # query
 
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.can_use_client:
-            list_query["can_use_client"] = self.can_use_client
+            body["can_use_client"] = self.can_use_client
 
-        return list_query, list_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "List":
@@ -2047,14 +1999,14 @@ class ListAvailableZonesResponse:
     # The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
     zones: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        listAvailableZonesResponse_query, listAvailableZonesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.default_zone:
-            listAvailableZonesResponse_body["default_zone"] = self.default_zone
+            body["default_zone"] = self.default_zone
         if self.zones:
-            listAvailableZonesResponse_body["zones"] = [v for v in self.zones]
+            body["zones"] = [v for v in self.zones]
 
-        return listAvailableZonesResponse_query, listAvailableZonesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListAvailableZonesResponse":
@@ -2070,14 +2022,12 @@ class ListClustersResponse:
     # <needs content added>
     clusters: "List[ClusterInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listClustersResponse_query, listClustersResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.clusters:
-            listClustersResponse_body["clusters"] = [
-                v.as_request()[1] for v in self.clusters
-            ]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
 
-        return listClustersResponse_query, listClustersResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListClustersResponse":
@@ -2094,14 +2044,12 @@ class ListInstanceProfilesResponse:
     # A list of instance profiles that the user can access.
     instance_profiles: "List[InstanceProfile]"
 
-    def as_request(self) -> (dict, dict):
-        listInstanceProfilesResponse_query, listInstanceProfilesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_profiles:
-            listInstanceProfilesResponse_body["instance_profiles"] = [
-                v.as_request()[1] for v in self.instance_profiles
-            ]
+            body["instance_profiles"] = [v.as_dict() for v in self.instance_profiles]
 
-        return listInstanceProfilesResponse_query, listInstanceProfilesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListInstanceProfilesResponse":
@@ -2120,14 +2068,12 @@ class ListNodeTypesResponse:
     # The list of available Spark node types.
     node_types: "List[NodeType]"
 
-    def as_request(self) -> (dict, dict):
-        listNodeTypesResponse_query, listNodeTypesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.node_types:
-            listNodeTypesResponse_body["node_types"] = [
-                v.as_request()[1] for v in self.node_types
-            ]
+            body["node_types"] = [v.as_dict() for v in self.node_types]
 
-        return listNodeTypesResponse_query, listNodeTypesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListNodeTypesResponse":
@@ -2146,18 +2092,14 @@ class LogAnalyticsInfo:
     # <needs content added>
     log_analytics_workspace_id: str
 
-    def as_request(self) -> (dict, dict):
-        logAnalyticsInfo_query, logAnalyticsInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.log_analytics_primary_key:
-            logAnalyticsInfo_body[
-                "log_analytics_primary_key"
-            ] = self.log_analytics_primary_key
+            body["log_analytics_primary_key"] = self.log_analytics_primary_key
         if self.log_analytics_workspace_id:
-            logAnalyticsInfo_body[
-                "log_analytics_workspace_id"
-            ] = self.log_analytics_workspace_id
+            body["log_analytics_workspace_id"] = self.log_analytics_workspace_id
 
-        return logAnalyticsInfo_query, logAnalyticsInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogAnalyticsInfo":
@@ -2177,14 +2119,14 @@ class LogSyncStatus:
     # response) if there is no exception in last attempted.
     last_exception: str
 
-    def as_request(self) -> (dict, dict):
-        logSyncStatus_query, logSyncStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.last_attempted:
-            logSyncStatus_body["last_attempted"] = self.last_attempted
+            body["last_attempted"] = self.last_attempted
         if self.last_exception:
-            logSyncStatus_body["last_exception"] = self.last_exception
+            body["last_exception"] = self.last_exception
 
-        return logSyncStatus_query, logSyncStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogSyncStatus":
@@ -2207,22 +2149,20 @@ class NodeInstanceType:
 
     local_nvme_disks: int
 
-    def as_request(self) -> (dict, dict):
-        nodeInstanceType_query, nodeInstanceType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_type_id:
-            nodeInstanceType_body["instance_type_id"] = self.instance_type_id
+            body["instance_type_id"] = self.instance_type_id
         if self.local_disk_size_gb:
-            nodeInstanceType_body["local_disk_size_gb"] = self.local_disk_size_gb
+            body["local_disk_size_gb"] = self.local_disk_size_gb
         if self.local_disks:
-            nodeInstanceType_body["local_disks"] = self.local_disks
+            body["local_disks"] = self.local_disks
         if self.local_nvme_disk_size_gb:
-            nodeInstanceType_body[
-                "local_nvme_disk_size_gb"
-            ] = self.local_nvme_disk_size_gb
+            body["local_nvme_disk_size_gb"] = self.local_nvme_disk_size_gb
         if self.local_nvme_disks:
-            nodeInstanceType_body["local_nvme_disks"] = self.local_nvme_disks
+            body["local_nvme_disks"] = self.local_nvme_disks
 
-        return nodeInstanceType_query, nodeInstanceType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NodeInstanceType":
@@ -2283,52 +2223,50 @@ class NodeType:
 
     support_port_forwarding: bool
 
-    def as_request(self) -> (dict, dict):
-        nodeType_query, nodeType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.category:
-            nodeType_body["category"] = self.category
+            body["category"] = self.category
         if self.description:
-            nodeType_body["description"] = self.description
+            body["description"] = self.description
         if self.display_order:
-            nodeType_body["display_order"] = self.display_order
+            body["display_order"] = self.display_order
         if self.instance_type_id:
-            nodeType_body["instance_type_id"] = self.instance_type_id
+            body["instance_type_id"] = self.instance_type_id
         if self.is_deprecated:
-            nodeType_body["is_deprecated"] = self.is_deprecated
+            body["is_deprecated"] = self.is_deprecated
         if self.is_encrypted_in_transit:
-            nodeType_body["is_encrypted_in_transit"] = self.is_encrypted_in_transit
+            body["is_encrypted_in_transit"] = self.is_encrypted_in_transit
         if self.is_graviton:
-            nodeType_body["is_graviton"] = self.is_graviton
+            body["is_graviton"] = self.is_graviton
         if self.is_hidden:
-            nodeType_body["is_hidden"] = self.is_hidden
+            body["is_hidden"] = self.is_hidden
         if self.is_io_cache_enabled:
-            nodeType_body["is_io_cache_enabled"] = self.is_io_cache_enabled
+            body["is_io_cache_enabled"] = self.is_io_cache_enabled
         if self.memory_mb:
-            nodeType_body["memory_mb"] = self.memory_mb
+            body["memory_mb"] = self.memory_mb
         if self.node_info:
-            nodeType_body["node_info"] = self.node_info.as_request()[1]
+            body["node_info"] = self.node_info.as_dict()
         if self.node_instance_type:
-            nodeType_body["node_instance_type"] = self.node_instance_type.as_request()[
-                1
-            ]
+            body["node_instance_type"] = self.node_instance_type.as_dict()
         if self.node_type_id:
-            nodeType_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_cores:
-            nodeType_body["num_cores"] = self.num_cores
+            body["num_cores"] = self.num_cores
         if self.num_gpus:
-            nodeType_body["num_gpus"] = self.num_gpus
+            body["num_gpus"] = self.num_gpus
         if self.photon_driver_capable:
-            nodeType_body["photon_driver_capable"] = self.photon_driver_capable
+            body["photon_driver_capable"] = self.photon_driver_capable
         if self.photon_worker_capable:
-            nodeType_body["photon_worker_capable"] = self.photon_worker_capable
+            body["photon_worker_capable"] = self.photon_worker_capable
         if self.support_cluster_tags:
-            nodeType_body["support_cluster_tags"] = self.support_cluster_tags
+            body["support_cluster_tags"] = self.support_cluster_tags
         if self.support_ebs_volumes:
-            nodeType_body["support_ebs_volumes"] = self.support_ebs_volumes
+            body["support_ebs_volumes"] = self.support_ebs_volumes
         if self.support_port_forwarding:
-            nodeType_body["support_port_forwarding"] = self.support_port_forwarding
+            body["support_port_forwarding"] = self.support_port_forwarding
 
-        return nodeType_query, nodeType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NodeType":
@@ -2366,12 +2304,12 @@ class PermanentDeleteCluster:
     # The cluster to be deleted.
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        permanentDeleteCluster_query, permanentDeleteCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            permanentDeleteCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return permanentDeleteCluster_query, permanentDeleteCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermanentDeleteCluster":
@@ -2386,12 +2324,12 @@ class PinCluster:
     # <needs content added>
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        pinCluster_query, pinCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            pinCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return pinCluster_query, pinCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PinCluster":
@@ -2406,14 +2344,12 @@ class RemoveInstanceProfile:
     # The ARN of the instance profile to remove. This field is required.
     instance_profile_arn: str
 
-    def as_request(self) -> (dict, dict):
-        removeInstanceProfile_query, removeInstanceProfile_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_profile_arn:
-            removeInstanceProfile_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
 
-        return removeInstanceProfile_query, removeInstanceProfile_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RemoveInstanceProfile":
@@ -2443,16 +2379,16 @@ class ResizeCluster:
     # increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
 
-    def as_request(self) -> (dict, dict):
-        resizeCluster_query, resizeCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autoscale:
-            resizeCluster_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.cluster_id:
-            resizeCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.num_workers:
-            resizeCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
 
-        return resizeCluster_query, resizeCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ResizeCluster":
@@ -2471,14 +2407,14 @@ class RestartCluster:
     # <needs content added>
     restart_user: str
 
-    def as_request(self) -> (dict, dict):
-        restartCluster_query, restartCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            restartCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.restart_user:
-            restartCluster_body["restart_user"] = self.restart_user
+            body["restart_user"] = self.restart_user
 
-        return restartCluster_query, restartCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RestartCluster":
@@ -2529,24 +2465,24 @@ class S3StorageInfo:
     # both are set, endpoint will be used.
     region: str
 
-    def as_request(self) -> (dict, dict):
-        s3StorageInfo_query, s3StorageInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.canned_acl:
-            s3StorageInfo_body["canned_acl"] = self.canned_acl
+            body["canned_acl"] = self.canned_acl
         if self.destination:
-            s3StorageInfo_body["destination"] = self.destination
+            body["destination"] = self.destination
         if self.enable_encryption:
-            s3StorageInfo_body["enable_encryption"] = self.enable_encryption
+            body["enable_encryption"] = self.enable_encryption
         if self.encryption_type:
-            s3StorageInfo_body["encryption_type"] = self.encryption_type
+            body["encryption_type"] = self.encryption_type
         if self.endpoint:
-            s3StorageInfo_body["endpoint"] = self.endpoint
+            body["endpoint"] = self.endpoint
         if self.kms_key:
-            s3StorageInfo_body["kms_key"] = self.kms_key
+            body["kms_key"] = self.kms_key
         if self.region:
-            s3StorageInfo_body["region"] = self.region
+            body["region"] = self.region
 
-        return s3StorageInfo_query, s3StorageInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "S3StorageInfo":
@@ -2590,26 +2526,24 @@ class SparkNode:
     # creation timestamp in the database.
     start_timestamp: int
 
-    def as_request(self) -> (dict, dict):
-        sparkNode_query, sparkNode_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.host_private_ip:
-            sparkNode_body["host_private_ip"] = self.host_private_ip
+            body["host_private_ip"] = self.host_private_ip
         if self.instance_id:
-            sparkNode_body["instance_id"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.node_aws_attributes:
-            sparkNode_body[
-                "node_aws_attributes"
-            ] = self.node_aws_attributes.as_request()[1]
+            body["node_aws_attributes"] = self.node_aws_attributes.as_dict()
         if self.node_id:
-            sparkNode_body["node_id"] = self.node_id
+            body["node_id"] = self.node_id
         if self.private_ip:
-            sparkNode_body["private_ip"] = self.private_ip
+            body["private_ip"] = self.private_ip
         if self.public_dns:
-            sparkNode_body["public_dns"] = self.public_dns
+            body["public_dns"] = self.public_dns
         if self.start_timestamp:
-            sparkNode_body["start_timestamp"] = self.start_timestamp
+            body["start_timestamp"] = self.start_timestamp
 
-        return sparkNode_query, sparkNode_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkNode":
@@ -2634,12 +2568,12 @@ class SparkNodeAwsAttributes:
     # Whether this node is on an Amazon spot instance.
     is_spot: bool
 
-    def as_request(self) -> (dict, dict):
-        sparkNodeAwsAttributes_query, sparkNodeAwsAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.is_spot:
-            sparkNodeAwsAttributes_body["is_spot"] = self.is_spot
+            body["is_spot"] = self.is_spot
 
-        return sparkNodeAwsAttributes_query, sparkNodeAwsAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkNodeAwsAttributes":
@@ -2660,14 +2594,14 @@ class SparkVersion:
     # A descriptive name for this Spark version, for example "Spark 2.1".
     name: str
 
-    def as_request(self) -> (dict, dict):
-        sparkVersion_query, sparkVersion_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            sparkVersion_body["key"] = self.key
+            body["key"] = self.key
         if self.name:
-            sparkVersion_body["name"] = self.name
+            body["name"] = self.name
 
-        return sparkVersion_query, sparkVersion_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkVersion":
@@ -2683,12 +2617,12 @@ class StartCluster:
     # The cluster to be started.
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        startCluster_query, startCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            startCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return startCluster_query, startCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "StartCluster":
@@ -2721,16 +2655,16 @@ class TerminationReason:
     # type of the termination
     type: "TerminationReasonType"
 
-    def as_request(self) -> (dict, dict):
-        terminationReason_query, terminationReason_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.code:
-            terminationReason_body["code"] = self.code.value
+            body["code"] = self.code.value
         if self.parameters:
-            terminationReason_body["parameters"] = self.parameters
+            body["parameters"] = self.parameters
         if self.type:
-            terminationReason_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return terminationReason_query, terminationReason_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TerminationReason":
@@ -2850,12 +2784,12 @@ class UnpinCluster:
     # <needs content added>
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        unpinCluster_query, unpinCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            unpinCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return unpinCluster_query, unpinCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UnpinCluster":
@@ -2870,12 +2804,12 @@ class WorkloadType:
     # defined what type of clients can use the cluster. E.g. Notebooks, Jobs
     clients: "ClientsTypes"
 
-    def as_request(self) -> (dict, dict):
-        workloadType_query, workloadType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.clients:
-            workloadType_body["clients"] = self.clients.as_request()[1]
+            body["clients"] = self.clients.as_dict()
 
-        return workloadType_query, workloadType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "WorkloadType":
@@ -2888,15 +2822,51 @@ class ClustersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def change_owner(self, request: ChangeClusterOwner):
+    def change_owner(self, cluster_id: str, owner_username: str, **kwargs):
         """Change cluster owner.
 
         Change the owner of the cluster. You must be an admin to perform this
         operation."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ChangeClusterOwner(
+                cluster_id=cluster_id, owner_username=owner_username
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/change-owner", query=query, body=body)
 
-    def create(self, request: CreateCluster) -> CreateClusterResponse:
+    def create(
+        self,
+        spark_version: str,
+        *,
+        apply_policy_default_values: bool = None,
+        autoscale: AutoScale = None,
+        autotermination_minutes: int = None,
+        aws_attributes: AwsAttributes = None,
+        azure_attributes: AzureAttributes = None,
+        cluster_log_conf: ClusterLogConf = None,
+        cluster_name: str = None,
+        cluster_source: ClusterSource = None,
+        custom_tags: Dict[str, str] = None,
+        driver_instance_pool_id: str = None,
+        driver_node_type_id: str = None,
+        enable_elastic_disk: bool = None,
+        enable_local_disk_encryption: bool = None,
+        gcp_attributes: GcpAttributes = None,
+        instance_pool_id: str = None,
+        node_type_id: str = None,
+        num_workers: int = None,
+        policy_id: str = None,
+        runtime_engine: RuntimeEngine = None,
+        spark_conf: Dict[str, str] = None,
+        spark_env_vars: Dict[str, str] = None,
+        ssh_public_keys: List[str] = None,
+        workload_type: WorkloadType = None,
+        **kwargs
+    ) -> CreateClusterResponse:
         """Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from
@@ -2912,21 +2882,87 @@ class ClustersAPI:
         If Databricks acquires at least 85% of the requested on-demand nodes,
         cluster creation will succeed. Otherwise the cluster will terminate with
         an informative error message."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateCluster(
+                apply_policy_default_values=apply_policy_default_values,
+                autoscale=autoscale,
+                autotermination_minutes=autotermination_minutes,
+                aws_attributes=aws_attributes,
+                azure_attributes=azure_attributes,
+                cluster_log_conf=cluster_log_conf,
+                cluster_name=cluster_name,
+                cluster_source=cluster_source,
+                custom_tags=custom_tags,
+                driver_instance_pool_id=driver_instance_pool_id,
+                driver_node_type_id=driver_node_type_id,
+                enable_elastic_disk=enable_elastic_disk,
+                enable_local_disk_encryption=enable_local_disk_encryption,
+                gcp_attributes=gcp_attributes,
+                instance_pool_id=instance_pool_id,
+                node_type_id=node_type_id,
+                num_workers=num_workers,
+                policy_id=policy_id,
+                runtime_engine=runtime_engine,
+                spark_conf=spark_conf,
+                spark_env_vars=spark_env_vars,
+                spark_version=spark_version,
+                ssh_public_keys=ssh_public_keys,
+                workload_type=workload_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.0/clusters/create", query=query, body=body)
         return CreateClusterResponse.from_dict(json)
 
-    def delete(self, request: DeleteCluster):
+    def delete(self, cluster_id: str, **kwargs):
         """Terminate cluster.
 
         Terminates the Spark cluster with the specified ID. The cluster is
         removed asynchronously. Once the termination has completed, the cluster
         will be in a `TERMINATED` state. If the cluster is already in a
         `TERMINATING` or `TERMINATED` state, nothing will happen."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteCluster(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/delete", query=query, body=body)
 
-    def edit(self, request: EditCluster):
+    def edit(
+        self,
+        cluster_id: str,
+        spark_version: str,
+        *,
+        apply_policy_default_values: bool = None,
+        autoscale: AutoScale = None,
+        autotermination_minutes: int = None,
+        aws_attributes: AwsAttributes = None,
+        azure_attributes: AzureAttributes = None,
+        cluster_log_conf: ClusterLogConf = None,
+        cluster_name: str = None,
+        cluster_source: ClusterSource = None,
+        custom_tags: Dict[str, str] = None,
+        driver_instance_pool_id: str = None,
+        driver_node_type_id: str = None,
+        enable_elastic_disk: bool = None,
+        enable_local_disk_encryption: bool = None,
+        gcp_attributes: GcpAttributes = None,
+        instance_pool_id: str = None,
+        node_type_id: str = None,
+        num_workers: int = None,
+        policy_id: str = None,
+        runtime_engine: RuntimeEngine = None,
+        spark_conf: Dict[str, str] = None,
+        spark_env_vars: Dict[str, str] = None,
+        ssh_public_keys: List[str] = None,
+        workload_type: WorkloadType = None,
+        **kwargs
+    ):
         """Update cluster configuration.
 
         Updates the configuration of a cluster to match the provided attributes
@@ -2943,30 +2979,95 @@ class ClustersAPI:
         error code.
 
         Clusters created by the Databricks Jobs service cannot be edited."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = EditCluster(
+                apply_policy_default_values=apply_policy_default_values,
+                autoscale=autoscale,
+                autotermination_minutes=autotermination_minutes,
+                aws_attributes=aws_attributes,
+                azure_attributes=azure_attributes,
+                cluster_id=cluster_id,
+                cluster_log_conf=cluster_log_conf,
+                cluster_name=cluster_name,
+                cluster_source=cluster_source,
+                custom_tags=custom_tags,
+                driver_instance_pool_id=driver_instance_pool_id,
+                driver_node_type_id=driver_node_type_id,
+                enable_elastic_disk=enable_elastic_disk,
+                enable_local_disk_encryption=enable_local_disk_encryption,
+                gcp_attributes=gcp_attributes,
+                instance_pool_id=instance_pool_id,
+                node_type_id=node_type_id,
+                num_workers=num_workers,
+                policy_id=policy_id,
+                runtime_engine=runtime_engine,
+                spark_conf=spark_conf,
+                spark_env_vars=spark_env_vars,
+                spark_version=spark_version,
+                ssh_public_keys=ssh_public_keys,
+                workload_type=workload_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/edit", query=query, body=body)
 
-    def events(self, request: GetEvents) -> GetEventsResponse:
+    def events(
+        self,
+        cluster_id: str,
+        *,
+        end_time: int = None,
+        event_types: List[EventType] = None,
+        limit: int = None,
+        offset: int = None,
+        order: GetEventsOrder = None,
+        start_time: int = None,
+        **kwargs
+    ) -> GetEventsResponse:
         """List cluster activity events.
 
         Retrieves a list of events about the activity of a cluster. This API is
         paginated. If there are more events to read, the response includes all
         the nparameters necessary to request the next page of events."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetEvents(
+                cluster_id=cluster_id,
+                end_time=end_time,
+                event_types=event_types,
+                limit=limit,
+                offset=offset,
+                order=order,
+                start_time=start_time,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.0/clusters/events", query=query, body=body)
         return GetEventsResponse.from_dict(json)
 
-    def get(self, request: Get) -> ClusterInfo:
+    def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
         """Get cluster info.
 
         "Retrieves the information for a cluster given its identifier. Clusters
         can be described while they are running, or up to 60 days after they are
         terminated."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+        if cluster_id:
+            query["cluster_id"] = cluster_id
+
         json = self._api.do("GET", "/api/2.0/clusters/get", query=query, body=body)
         return ClusterInfo.from_dict(json)
 
-    def list(self, request: List) -> ListClustersResponse:
+    def list(self, *, can_use_client: str = None, **kwargs) -> ListClustersResponse:
         """List all clusters.
 
         Returns information about all pinned clusters, currently active
@@ -2979,7 +3080,15 @@ class ClustersAPI:
         job clusters\nin the past 7 days, then this API returns the 1 pinned
         cluster, 4 active clusters, all 45 terminated interactive clusters, and
         the 30 most recently terminated job clusters."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = List(can_use_client=can_use_client)
+        body = request.as_dict()
+        query = {}
+        if can_use_client:
+            query["can_use_client"] = can_use_client
+
         json = self._api.do("GET", "/api/2.0/clusters/list", query=query, body=body)
         return ListClustersResponse.from_dict(json)
 
@@ -3001,7 +3110,7 @@ class ClustersAPI:
         json = self._api.do("GET", "/api/2.0/clusters/list-zones")
         return ListAvailableZonesResponse.from_dict(json)
 
-    def permanent_delete(self, request: PermanentDeleteCluster):
+    def permanent_delete(self, cluster_id: str, **kwargs):
         """Permanently delete cluster.
 
         Permanently deletes a Spark cluster. This cluster is terminated and
@@ -3010,34 +3119,67 @@ class ClustersAPI:
         In addition, users will no longer see permanently deleted clusters in
         the cluster list, and API users can no longer perform any action on
         permanently deleted clusters."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PermanentDeleteCluster(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/clusters/permanent-delete", query=query, body=body
         )
 
-    def pin(self, request: PinCluster):
+    def pin(self, cluster_id: str, **kwargs):
         """Pin cluster.
 
         Pinning a cluster ensures that the cluster will always be returned by
         the ListClusters API. Pinning a cluster that is already pinned will have
         no effect. This API can only be called by workspace admins."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PinCluster(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/pin", query=query, body=body)
 
-    def resize(self, request: ResizeCluster):
+    def resize(
+        self,
+        cluster_id: str,
+        *,
+        autoscale: AutoScale = None,
+        num_workers: int = None,
+        **kwargs
+    ):
         """Resize cluster.
 
         Resizes a cluster to have a desired number of workers. This will fail
         unless the cluster is in a `RUNNING` state."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ResizeCluster(
+                autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/resize", query=query, body=body)
 
-    def restart(self, request: RestartCluster):
+    def restart(self, cluster_id: str, *, restart_user: str = None, **kwargs):
         """Restart cluster.
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not
         currently in a `RUNNING` state, nothing will happen."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/restart", query=query, body=body)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -3049,7 +3191,7 @@ class ClustersAPI:
         json = self._api.do("GET", "/api/2.0/clusters/spark-versions")
         return GetSparkVersionsResponse.from_dict(json)
 
-    def start(self, request: StartCluster):
+    def start(self, cluster_id: str, **kwargs):
         """Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works
@@ -3061,16 +3203,28 @@ class ClustersAPI:
         number of nodes. * If the cluster is not currently in a `TERMINATED`
         state, nothing will happen. * Clusters launched to run a job cannot be
         started."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = StartCluster(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/start", query=query, body=body)
 
-    def unpin(self, request: UnpinCluster):
+    def unpin(self, cluster_id: str, **kwargs):
         """Unpin cluster.
 
         Unpinning a cluster will allow the cluster to eventually be removed from
         the ListClusters API. Unpinning a cluster that is not pinned will have
         no effect. This API can only be called by workspace admins."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UnpinCluster(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/clusters/unpin", query=query, body=body)
 
 
@@ -3078,15 +3232,41 @@ class InstanceProfilesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def add(self, request: AddInstanceProfile):
+    def add(
+        self,
+        instance_profile_arn: str,
+        *,
+        iam_role_arn: str = None,
+        is_meta_instance_profile: bool = None,
+        skip_validation: bool = None,
+        **kwargs
+    ):
         """Register an instance profile.
 
         In the UI, you can select the instance profile when launching clusters.
         This API is only available to admin users."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = AddInstanceProfile(
+                iam_role_arn=iam_role_arn,
+                instance_profile_arn=instance_profile_arn,
+                is_meta_instance_profile=is_meta_instance_profile,
+                skip_validation=skip_validation,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/instance-profiles/add", query=query, body=body)
 
-    def edit(self, request: InstanceProfile):
+    def edit(
+        self,
+        instance_profile_arn: str,
+        *,
+        iam_role_arn: str = None,
+        is_meta_instance_profile: bool = None,
+        **kwargs
+    ):
         """Edit an instance profile.
 
         The only supported field to change is the optional IAM role ARN
@@ -3104,7 +3284,17 @@ class InstanceProfilesAPI:
 
         [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html"""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = InstanceProfile(
+                iam_role_arn=iam_role_arn,
+                instance_profile_arn=instance_profile_arn,
+                is_meta_instance_profile=is_meta_instance_profile,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/instance-profiles/edit", query=query, body=body)
 
     def list(self) -> ListInstanceProfilesResponse:
@@ -3118,14 +3308,20 @@ class InstanceProfilesAPI:
         json = self._api.do("GET", "/api/2.0/instance-profiles/list")
         return ListInstanceProfilesResponse.from_dict(json)
 
-    def remove(self, request: RemoveInstanceProfile):
+    def remove(self, instance_profile_arn: str, **kwargs):
         """Remove the instance profile.
 
         Remove the instance profile with the provided ARN. Existing clusters
         with this instance profile will continue to function.
 
         This API is only accessible to admin users."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = RemoveInstanceProfile(instance_profile_arn=instance_profile_arn)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/instance-profiles/remove", query=query, body=body
         )

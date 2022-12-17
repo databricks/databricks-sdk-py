@@ -21,16 +21,16 @@ class CreateRepo:
     # URL of the Git repository to be linked.
     url: str
 
-    def as_request(self) -> (dict, dict):
-        createRepo_query, createRepo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.path:
-            createRepo_body["path"] = self.path
+            body["path"] = self.path
         if self.provider:
-            createRepo_body["provider"] = self.provider
+            body["provider"] = self.provider
         if self.url:
-            createRepo_body["url"] = self.url
+            body["url"] = self.url
 
-        return createRepo_query, createRepo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRepo":
@@ -48,12 +48,12 @@ class Delete:
     # The ID for the corresponding repo to access.
     repo_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.repo_id:
-            delete_body["repo_id"] = self.repo_id
+            body["repo_id"] = self.repo_id
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -69,12 +69,12 @@ class Get:
     # The ID for the corresponding repo to access.
     repo_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.repo_id:
-            get_body["repo_id"] = self.repo_id
+            body["repo_id"] = self.repo_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -94,14 +94,14 @@ class List:
     # Filters repos that have paths starting with the given path prefix.
     path_prefix: str  # query
 
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            list_query["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.path_prefix:
-            list_query["path_prefix"] = self.path_prefix
+            body["path_prefix"] = self.path_prefix
 
-        return list_query, list_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "List":
@@ -120,14 +120,14 @@ class ListReposResponse:
 
     repos: "List[RepoInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listReposResponse_query, listReposResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.next_page_token:
-            listReposResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.repos:
-            listReposResponse_body["repos"] = [v.as_request()[1] for v in self.repos]
+            body["repos"] = [v.as_dict() for v in self.repos]
 
-        return listReposResponse_query, listReposResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListReposResponse":
@@ -156,22 +156,22 @@ class RepoInfo:
     # URL of the Git repository to be linked.
     url: str
 
-    def as_request(self) -> (dict, dict):
-        repoInfo_query, repoInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.branch:
-            repoInfo_body["branch"] = self.branch
+            body["branch"] = self.branch
         if self.head_commit_id:
-            repoInfo_body["head_commit_id"] = self.head_commit_id
+            body["head_commit_id"] = self.head_commit_id
         if self.id:
-            repoInfo_body["id"] = self.id
+            body["id"] = self.id
         if self.path:
-            repoInfo_body["path"] = self.path
+            body["path"] = self.path
         if self.provider:
-            repoInfo_body["provider"] = self.provider
+            body["provider"] = self.provider
         if self.url:
-            repoInfo_body["url"] = self.url
+            body["url"] = self.url
 
-        return repoInfo_query, repoInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RepoInfo":
@@ -198,16 +198,16 @@ class UpdateRepo:
     # HEAD.
     tag: str
 
-    def as_request(self) -> (dict, dict):
-        updateRepo_query, updateRepo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.branch:
-            updateRepo_body["branch"] = self.branch
+            body["branch"] = self.branch
         if self.repo_id:
-            updateRepo_body["repo_id"] = self.repo_id
+            body["repo_id"] = self.repo_id
         if self.tag:
-            updateRepo_body["tag"] = self.tag
+            body["tag"] = self.tag
 
-        return updateRepo_query, updateRepo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateRepo":
@@ -222,50 +222,82 @@ class ReposAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateRepo) -> RepoInfo:
+    def create(
+        self, url: str, provider: str, *, path: str = None, **kwargs
+    ) -> RepoInfo:
         """Create a repo.
 
         Creates a repo in the workspace and links it to the remote Git repo
         specified. Note that repos created programmatically must be linked to a
         remote Git repo, unlike repos created in the browser."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateRepo(path=path, provider=provider, url=url)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do("POST", "/api/2.0/repos", query=query, body=body)
         return RepoInfo.from_dict(json)
 
-    def delete(self, request: Delete):
+    def delete(self, repo_id: int, **kwargs):
         """Delete a repo.
 
         Deletes the specified repo."""
-        query, body = request.as_request()
-        self._api.do(
-            "DELETE", f"/api/2.0/repos/{request.repo_id}", query=query, body=body
-        )
 
-    def get(self, request: Get) -> RepoInfo:
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(repo_id=repo_id)
+        body = request.as_dict()
+        query = {}
+
+        self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", query=query, body=body)
+
+    def get(self, repo_id: int, **kwargs) -> RepoInfo:
         """Get a repo.
 
         Returns the repo with the given repo ID."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET", f"/api/2.0/repos/{request.repo_id}", query=query, body=body
-        )
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(repo_id=repo_id)
+        body = request.as_dict()
+        query = {}
+
+        json = self._api.do("GET", f"/api/2.0/repos/{repo_id}", query=query, body=body)
         return RepoInfo.from_dict(json)
 
-    def list(self, request: List) -> ListReposResponse:
+    def list(
+        self, *, next_page_token: str = None, path_prefix: str = None, **kwargs
+    ) -> ListReposResponse:
         """Get repos.
 
         Returns repos that the calling user has Manage permissions on. Results
         are paginated with each page containing twenty repos."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = List(next_page_token=next_page_token, path_prefix=path_prefix)
+        body = request.as_dict()
+        query = {}
+        if next_page_token:
+            query["next_page_token"] = next_page_token
+        if path_prefix:
+            query["path_prefix"] = path_prefix
+
         json = self._api.do("GET", "/api/2.0/repos", query=query, body=body)
         return ListReposResponse.from_dict(json)
 
-    def update(self, request: UpdateRepo):
+    def update(self, repo_id: int, *, branch: str = None, tag: str = None, **kwargs):
         """Update a repo.
 
         Updates the repo to a different branch or tag, or updates the repo to
         the latest commit on the same branch."""
-        query, body = request.as_request()
-        self._api.do(
-            "PATCH", f"/api/2.0/repos/{request.repo_id}", query=query, body=body
-        )
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateRepo(branch=branch, repo_id=repo_id, tag=tag)
+        body = request.as_dict()
+        query = {}
+
+        self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", query=query, body=body)

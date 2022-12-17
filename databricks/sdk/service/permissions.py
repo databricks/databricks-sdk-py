@@ -20,20 +20,18 @@ class AccessControlRequest:
     # name of the user
     user_name: str
 
-    def as_request(self) -> (dict, dict):
-        accessControlRequest_query, accessControlRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.group_name:
-            accessControlRequest_body["group_name"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level:
-            accessControlRequest_body["permission_level"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name:
-            accessControlRequest_body[
-                "service_principal_name"
-            ] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name:
-            accessControlRequest_body["user_name"] = self.user_name
+            body["user_name"] = self.user_name
 
-        return accessControlRequest_query, accessControlRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AccessControlRequest":
@@ -59,22 +57,18 @@ class AccessControlResponse:
     # name of the user
     user_name: str
 
-    def as_request(self) -> (dict, dict):
-        accessControlResponse_query, accessControlResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.all_permissions:
-            accessControlResponse_body["all_permissions"] = [
-                v.as_request()[1] for v in self.all_permissions
-            ]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.group_name:
-            accessControlResponse_body["group_name"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name:
-            accessControlResponse_body[
-                "service_principal_name"
-            ] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name:
-            accessControlResponse_body["user_name"] = self.user_name
+            body["user_name"] = self.user_name
 
-        return accessControlResponse_query, accessControlResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AccessControlResponse":
@@ -96,16 +90,16 @@ class CreateWorkspaceAssignments:
     # The workspace ID for the account.
     workspace_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        createWorkspaceAssignments_query, createWorkspaceAssignments_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.permission_assignments:
-            createWorkspaceAssignments_body["permission_assignments"] = [
-                v.as_request()[1] for v in self.permission_assignments
+            body["permission_assignments"] = [
+                v.as_dict() for v in self.permission_assignments
             ]
         if self.workspace_id:
-            createWorkspaceAssignments_body["workspace_id"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
 
-        return createWorkspaceAssignments_query, createWorkspaceAssignments_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateWorkspaceAssignments":
@@ -129,20 +123,14 @@ class DeleteWorkspaceAssignmentRequest:
     # The workspace ID.
     workspace_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        (
-            deleteWorkspaceAssignmentRequest_query,
-            deleteWorkspaceAssignmentRequest_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.principal_id:
-            deleteWorkspaceAssignmentRequest_body["principal_id"] = self.principal_id
+            body["principal_id"] = self.principal_id
         if self.workspace_id:
-            deleteWorkspaceAssignmentRequest_body["workspace_id"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
 
-        return (
-            deleteWorkspaceAssignmentRequest_query,
-            deleteWorkspaceAssignmentRequest_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteWorkspaceAssignmentRequest":
@@ -160,14 +148,14 @@ class Get:
     # <needs content>
     request_object_type: str  # path
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.request_object_id:
-            get_body["request_object_id"] = self.request_object_id
+            body["request_object_id"] = self.request_object_id
         if self.request_object_type:
-            get_body["request_object_type"] = self.request_object_type
+            body["request_object_type"] = self.request_object_type
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -186,14 +174,14 @@ class GetPermissionLevels:
     # <needs content>
     request_object_type: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getPermissionLevels_query, getPermissionLevels_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.request_object_id:
-            getPermissionLevels_body["request_object_id"] = self.request_object_id
+            body["request_object_id"] = self.request_object_id
         if self.request_object_type:
-            getPermissionLevels_body["request_object_type"] = self.request_object_type
+            body["request_object_type"] = self.request_object_type
 
-        return getPermissionLevels_query, getPermissionLevels_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetPermissionLevels":
@@ -209,14 +197,12 @@ class GetPermissionLevelsResponse:
     # Specific permission levels
     permission_levels: "List[PermissionsDescription]"
 
-    def as_request(self) -> (dict, dict):
-        getPermissionLevelsResponse_query, getPermissionLevelsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.permission_levels:
-            getPermissionLevelsResponse_body["permission_levels"] = [
-                v.as_request()[1] for v in self.permission_levels
-            ]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
 
-        return getPermissionLevelsResponse_query, getPermissionLevelsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetPermissionLevelsResponse":
@@ -236,12 +222,12 @@ class GetWorkspaceAssignmentRequest:
     # The workspace ID.
     workspace_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        getWorkspaceAssignmentRequest_query, getWorkspaceAssignmentRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.workspace_id:
-            getWorkspaceAssignmentRequest_body["workspace_id"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
 
-        return getWorkspaceAssignmentRequest_query, getWorkspaceAssignmentRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetWorkspaceAssignmentRequest":
@@ -257,15 +243,12 @@ class ListWorkspaceAssignmentRequest:
     # The workspace ID for the account.
     workspace_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        listWorkspaceAssignmentRequest_query, listWorkspaceAssignmentRequest_body = (
-            {},
-            {},
-        )
+    def as_dict(self) -> dict:
+        body = {}
         if self.workspace_id:
-            listWorkspaceAssignmentRequest_body["workspace_id"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
 
-        return listWorkspaceAssignmentRequest_query, listWorkspaceAssignmentRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListWorkspaceAssignmentRequest":
@@ -283,18 +266,18 @@ class ObjectPermissions:
 
     object_type: str
 
-    def as_request(self) -> (dict, dict):
-        objectPermissions_query, objectPermissions_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            objectPermissions_body["access_control_list"] = [
-                v.as_request()[1] for v in self.access_control_list
+            body["access_control_list"] = [
+                v.as_dict() for v in self.access_control_list
             ]
         if self.object_id:
-            objectPermissions_body["object_id"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type:
-            objectPermissions_body["object_type"] = self.object_type
+            body["object_type"] = self.object_type
 
-        return objectPermissions_query, objectPermissions_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ObjectPermissions":
@@ -318,18 +301,16 @@ class Permission:
     # Permission level
     permission_level: "PermissionLevel"
 
-    def as_request(self) -> (dict, dict):
-        permission_query, permission_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.inherited:
-            permission_body["inherited"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            permission_body["inherited_from_object"] = [
-                v for v in self.inherited_from_object
-            ]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level:
-            permission_body["permission_level"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
 
-        return permission_query, permission_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Permission":
@@ -352,16 +333,16 @@ class PermissionAssignment:
     # Information about the service principal assigned for the workspace.
     principal: "PrincipalOutput"
 
-    def as_request(self) -> (dict, dict):
-        permissionAssignment_query, permissionAssignment_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.error:
-            permissionAssignment_body["error"] = self.error
+            body["error"] = self.error
         if self.permissions:
-            permissionAssignment_body["permissions"] = [v for v in self.permissions]
+            body["permissions"] = [v for v in self.permissions]
         if self.principal:
-            permissionAssignment_body["principal"] = self.principal.as_request()[1]
+            body["principal"] = self.principal.as_dict()
 
-        return permissionAssignment_query, permissionAssignment_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermissionAssignment":
@@ -386,22 +367,18 @@ class PermissionAssignmentInput:
     # The username of the owner of the service principal.
     user_name: str
 
-    def as_request(self) -> (dict, dict):
-        permissionAssignmentInput_query, permissionAssignmentInput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.group_name:
-            permissionAssignmentInput_body["group_name"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permissions:
-            permissionAssignmentInput_body["permissions"] = [
-                v for v in self.permissions
-            ]
+            body["permissions"] = [v for v in self.permissions]
         if self.service_principal_name:
-            permissionAssignmentInput_body[
-                "service_principal_name"
-            ] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name:
-            permissionAssignmentInput_body["user_name"] = self.user_name
+            body["user_name"] = self.user_name
 
-        return permissionAssignmentInput_query, permissionAssignmentInput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermissionAssignmentInput":
@@ -419,14 +396,14 @@ class PermissionAssignments:
     # Array of permissions assignments defined for a workspace.
     permission_assignments: "List[PermissionAssignment]"
 
-    def as_request(self) -> (dict, dict):
-        permissionAssignments_query, permissionAssignments_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.permission_assignments:
-            permissionAssignments_body["permission_assignments"] = [
-                v.as_request()[1] for v in self.permission_assignments
+            body["permission_assignments"] = [
+                v.as_dict() for v in self.permission_assignments
             ]
 
-        return permissionAssignments_query, permissionAssignments_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermissionAssignments":
@@ -467,14 +444,14 @@ class PermissionOutput:
 
     permission_level: "WorkspacePermission"
 
-    def as_request(self) -> (dict, dict):
-        permissionOutput_query, permissionOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            permissionOutput_body["description"] = self.description
+            body["description"] = self.description
         if self.permission_level:
-            permissionOutput_body["permission_level"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
 
-        return permissionOutput_query, permissionOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermissionOutput":
@@ -493,16 +470,14 @@ class PermissionsDescription:
     # Permission level
     permission_level: "PermissionLevel"
 
-    def as_request(self) -> (dict, dict):
-        permissionsDescription_query, permissionsDescription_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.description:
-            permissionsDescription_body["description"] = self.description
+            body["description"] = self.description
         if self.permission_level:
-            permissionsDescription_body[
-                "permission_level"
-            ] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
 
-        return permissionsDescription_query, permissionsDescription_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermissionsDescription":
@@ -523,18 +498,18 @@ class PermissionsRequest:
     # <needs content>
     request_object_type: str  # path
 
-    def as_request(self) -> (dict, dict):
-        permissionsRequest_query, permissionsRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            permissionsRequest_body["access_control_list"] = [
-                v.as_request()[1] for v in self.access_control_list
+            body["access_control_list"] = [
+                v.as_dict() for v in self.access_control_list
             ]
         if self.request_object_id:
-            permissionsRequest_body["request_object_id"] = self.request_object_id
+            body["request_object_id"] = self.request_object_id
         if self.request_object_type:
-            permissionsRequest_body["request_object_type"] = self.request_object_type
+            body["request_object_type"] = self.request_object_type
 
-        return permissionsRequest_query, permissionsRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermissionsRequest":
@@ -563,20 +538,20 @@ class PrincipalOutput:
     # The username of the owner of the service principal.
     user_name: str
 
-    def as_request(self) -> (dict, dict):
-        principalOutput_query, principalOutput_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.display_name:
-            principalOutput_body["display_name"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name:
-            principalOutput_body["group_name"] = self.group_name
+            body["group_name"] = self.group_name
         if self.principal_id:
-            principalOutput_body["principal_id"] = self.principal_id
+            body["principal_id"] = self.principal_id
         if self.service_principal_name:
-            principalOutput_body["service_principal_name"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name:
-            principalOutput_body["user_name"] = self.user_name
+            body["user_name"] = self.user_name
 
-        return principalOutput_query, principalOutput_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PrincipalOutput":
@@ -599,18 +574,16 @@ class UpdateWorkspaceAssignments:
     # The workspace ID.
     workspace_id: int  # path
 
-    def as_request(self) -> (dict, dict):
-        updateWorkspaceAssignments_query, updateWorkspaceAssignments_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.permissions:
-            updateWorkspaceAssignments_body["permissions"] = [
-                v for v in self.permissions
-            ]
+            body["permissions"] = [v for v in self.permissions]
         if self.principal_id:
-            updateWorkspaceAssignments_body["principal_id"] = self.principal_id
+            body["principal_id"] = self.principal_id
         if self.workspace_id:
-            updateWorkspaceAssignments_body["workspace_id"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
 
-        return updateWorkspaceAssignments_query, updateWorkspaceAssignments_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UpdateWorkspaceAssignments":
@@ -627,14 +600,14 @@ class WorkspaceAssignmentsCreated:
     # Array of permissions assignments applied to a workspace.
     permission_assignments: "List[PermissionAssignment]"
 
-    def as_request(self) -> (dict, dict):
-        workspaceAssignmentsCreated_query, workspaceAssignmentsCreated_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.permission_assignments:
-            workspaceAssignmentsCreated_body["permission_assignments"] = [
-                v.as_request()[1] for v in self.permission_assignments
+            body["permission_assignments"] = [
+                v.as_dict() for v in self.permission_assignments
             ]
 
-        return workspaceAssignmentsCreated_query, workspaceAssignmentsCreated_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "WorkspaceAssignmentsCreated":
@@ -660,14 +633,12 @@ class WorkspacePermissions:
     # Array of permissions defined for a workspace.
     permissions: "List[PermissionOutput]"
 
-    def as_request(self) -> (dict, dict):
-        workspacePermissions_query, workspacePermissions_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.permissions:
-            workspacePermissions_body["permissions"] = [
-                v.as_request()[1] for v in self.permissions
-            ]
+            body["permissions"] = [v.as_dict() for v in self.permissions]
 
-        return workspacePermissions_query, workspacePermissions_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "WorkspacePermissions":
@@ -682,56 +653,114 @@ class PermissionsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, request: Get) -> ObjectPermissions:
+    def get(
+        self, request_object_type: str, request_object_id: str, **kwargs
+    ) -> ObjectPermissions:
         """Get object permissions.
 
         Gets the permission of an object. Objects can inherit permissions from
         their parent objects or root objects."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(
+                request_object_id=request_object_id,
+                request_object_type=request_object_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}",
+            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
             query=query,
             body=body,
         )
         return ObjectPermissions.from_dict(json)
 
     def get_permission_levels(
-        self, request: GetPermissionLevels
+        self, request_object_type: str, request_object_id: str, **kwargs
     ) -> GetPermissionLevelsResponse:
         """Get permission levels.
 
         Gets the permission levels that a user can have on an object."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetPermissionLevels(
+                request_object_id=request_object_id,
+                request_object_type=request_object_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}/permissionLevels",
+            f"/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels",
             query=query,
             body=body,
         )
         return GetPermissionLevelsResponse.from_dict(json)
 
-    def set(self, request: PermissionsRequest):
+    def set(
+        self,
+        request_object_type: str,
+        request_object_id: str,
+        request_object_type: str,
+        request_object_id: str,
+        *,
+        access_control_list: List[AccessControlRequest] = None,
+        **kwargs,
+    ):
         """Set permissions.
 
         Sets permissions on object. Objects can inherit permissions from their
         parent objects and root objects."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PermissionsRequest(
+                access_control_list=access_control_list,
+                request_object_id=request_object_id,
+                request_object_type=request_object_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PUT",
-            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}",
+            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
             query=query,
             body=body,
         )
 
-    def update(self, request: PermissionsRequest):
+    def update(
+        self,
+        request_object_type: str,
+        request_object_id: str,
+        request_object_type: str,
+        request_object_id: str,
+        *,
+        access_control_list: List[AccessControlRequest] = None,
+        **kwargs,
+    ):
         """Update permission.
 
         Updates the permissions on an object."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = PermissionsRequest(
+                access_control_list=access_control_list,
+                request_object_id=request_object_id,
+                request_object_type=request_object_type,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PATCH",
-            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}",
+            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
             query=query,
             body=body,
         )
@@ -742,71 +771,118 @@ class WorkspaceAssignmentAPI:
         self._api = api_client
 
     def create(
-        self, request: CreateWorkspaceAssignments
+        self,
+        permission_assignments: List[PermissionAssignmentInput],
+        workspace_id: int,
+        **kwargs,
     ) -> WorkspaceAssignmentsCreated:
         """Create permission assignments.
 
         Create new permission assignments for the specified account and
         workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreateWorkspaceAssignments(
+                permission_assignments=permission_assignments, workspace_id=workspace_id
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments",
+            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments",
             query=query,
             body=body,
         )
         return WorkspaceAssignmentsCreated.from_dict(json)
 
-    def delete(self, request: DeleteWorkspaceAssignmentRequest):
+    def delete(self, workspace_id: int, principal_id: int, **kwargs):
         """Delete permissions assignment.
 
         Deletes the workspace permissions assignment for a given account and
         workspace using the specified service principal."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeleteWorkspaceAssignmentRequest(
+                principal_id=principal_id, workspace_id=workspace_id
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "DELETE",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
+            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
             query=query,
             body=body,
         )
 
-    def get(self, request: GetWorkspaceAssignmentRequest) -> WorkspacePermissions:
+    def get(self, workspace_id: int, **kwargs) -> WorkspacePermissions:
         """List workspace permissions.
 
         Get an array of workspace permissions for the specified account and
         workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GetWorkspaceAssignmentRequest(workspace_id=workspace_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/permissions",
+            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/permissions",
             query=query,
             body=body,
         )
         return WorkspacePermissions.from_dict(json)
 
-    def list(self, request: ListWorkspaceAssignmentRequest) -> PermissionAssignments:
+    def list(self, workspace_id: int, **kwargs) -> PermissionAssignments:
         """Get permission assignments.
 
         Get the permission assignments for the specified Databricks Account and
         Databricks Workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ListWorkspaceAssignmentRequest(workspace_id=workspace_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments",
+            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments",
             query=query,
             body=body,
         )
         return PermissionAssignments.from_dict(json)
 
-    def update(self, request: UpdateWorkspaceAssignments):
+    def update(
+        self,
+        permissions: List[WorkspacePermission],
+        workspace_id: int,
+        principal_id: int,
+        **kwargs,
+    ):
         """Update permissions assignment.
 
         Updates the workspace permissions assignment for a given account and
         workspace using the specified service principal."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UpdateWorkspaceAssignments(
+                permissions=permissions,
+                principal_id=principal_id,
+                workspace_id=workspace_id,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "PUT",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
+            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
             query=query,
             body=body,
         )

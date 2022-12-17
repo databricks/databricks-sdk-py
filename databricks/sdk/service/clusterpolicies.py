@@ -18,14 +18,14 @@ class CreatePolicy:
     # must be between 1 and 100 characters.
     name: str
 
-    def as_request(self) -> (dict, dict):
-        createPolicy_query, createPolicy_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.definition:
-            createPolicy_body["definition"] = self.definition
+            body["definition"] = self.definition
         if self.name:
-            createPolicy_body["name"] = self.name
+            body["name"] = self.name
 
-        return createPolicy_query, createPolicy_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreatePolicy":
@@ -41,12 +41,12 @@ class CreatePolicyResponse:
     # Canonical unique identifier for the cluster policy.
     policy_id: str
 
-    def as_request(self) -> (dict, dict):
-        createPolicyResponse_query, createPolicyResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.policy_id:
-            createPolicyResponse_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
 
-        return createPolicyResponse_query, createPolicyResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreatePolicyResponse":
@@ -61,12 +61,12 @@ class DeletePolicy:
     # The ID of the policy to delete.
     policy_id: str
 
-    def as_request(self) -> (dict, dict):
-        deletePolicy_query, deletePolicy_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.policy_id:
-            deletePolicy_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
 
-        return deletePolicy_query, deletePolicy_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeletePolicy":
@@ -87,16 +87,16 @@ class EditPolicy:
     # The ID of the policy to update.
     policy_id: str
 
-    def as_request(self) -> (dict, dict):
-        editPolicy_query, editPolicy_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.definition:
-            editPolicy_body["definition"] = self.definition
+            body["definition"] = self.definition
         if self.name:
-            editPolicy_body["name"] = self.name
+            body["name"] = self.name
         if self.policy_id:
-            editPolicy_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
 
-        return editPolicy_query, editPolicy_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditPolicy":
@@ -114,12 +114,12 @@ class Get:
     # Canonical unique identifier for the cluster policy.
     policy_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.policy_id:
-            get_query["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -134,14 +134,12 @@ class ListPoliciesResponse:
     # List of policies.
     policies: "List[Policy]"
 
-    def as_request(self) -> (dict, dict):
-        listPoliciesResponse_query, listPoliciesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.policies:
-            listPoliciesResponse_body["policies"] = [
-                v.as_request()[1] for v in self.policies
-            ]
+            body["policies"] = [v.as_dict() for v in self.policies]
 
-        return listPoliciesResponse_query, listPoliciesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListPoliciesResponse":
@@ -170,20 +168,20 @@ class Policy:
     # Canonical unique identifier for the Cluster Policy.
     policy_id: str
 
-    def as_request(self) -> (dict, dict):
-        policy_query, policy_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at_timestamp:
-            policy_body["created_at_timestamp"] = self.created_at_timestamp
+            body["created_at_timestamp"] = self.created_at_timestamp
         if self.creator_user_name:
-            policy_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.definition:
-            policy_body["definition"] = self.definition
+            body["definition"] = self.definition
         if self.name:
-            policy_body["name"] = self.name
+            body["name"] = self.name
         if self.policy_id:
-            policy_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
 
-        return policy_query, policy_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Policy":
@@ -200,40 +198,66 @@ class ClusterPoliciesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreatePolicy) -> CreatePolicyResponse:
+    def create(self, name: str, definition: str, **kwargs) -> CreatePolicyResponse:
         """Create a new policy.
 
         Creates a new policy with prescribed settings."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = CreatePolicy(definition=definition, name=name)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/policies/clusters/create", query=query, body=body
         )
         return CreatePolicyResponse.from_dict(json)
 
-    def delete(self, request: DeletePolicy):
+    def delete(self, policy_id: str, **kwargs):
         """Delete a cluster policy.
 
         Delete a policy for a cluster. Clusters governed by this policy can
         still run, but cannot be edited."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = DeletePolicy(policy_id=policy_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "POST", "/api/2.0/policies/clusters/delete", query=query, body=body
         )
 
-    def edit(self, request: EditPolicy):
+    def edit(self, policy_id: str, name: str, definition: str, **kwargs):
         """Update a cluster policy.
 
         Update an existing policy for cluster. This operation may make some
         clusters governed by the previous policy invalid."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = EditPolicy(definition=definition, name=name, policy_id=policy_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/policies/clusters/edit", query=query, body=body)
 
-    def get(self, request: Get) -> Policy:
+    def get(self, policy_id: str, **kwargs) -> Policy:
         """Get entity.
 
         Get a cluster policy entity. Creation and editing is available to admins
         only."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(policy_id=policy_id)
+        body = request.as_dict()
+        query = {}
+        if policy_id:
+            query["policy_id"] = policy_id
+
         json = self._api.do(
             "GET", "/api/2.0/policies/clusters/get", query=query, body=body
         )

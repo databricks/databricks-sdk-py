@@ -3,8 +3,10 @@ import typing
 from .client import *
 from .service import clusters, tokens
 
+
 def test_profile_auth():
     from databricks.sdk import WorkspaceClient
+
     w = WorkspaceClient()
     w.clusters.list()
 

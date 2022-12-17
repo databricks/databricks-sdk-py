@@ -14,12 +14,12 @@ class CreateResponse:
     # The global init script ID.
     script_id: str
 
-    def as_request(self) -> (dict, dict):
-        createResponse_query, createResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.script_id:
-            createResponse_body["script_id"] = self.script_id
+            body["script_id"] = self.script_id
 
-        return createResponse_query, createResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateResponse":
@@ -35,12 +35,12 @@ class Delete:
     # The ID of the global init script.
     script_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        delete_query, delete_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.script_id:
-            delete_body["script_id"] = self.script_id
+            body["script_id"] = self.script_id
 
-        return delete_query, delete_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Delete":
@@ -56,12 +56,12 @@ class Get:
     # The ID of the global init script.
     script_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.script_id:
-            get_body["script_id"] = self.script_id
+            body["script_id"] = self.script_id
 
-        return get_query, get_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Get":
@@ -92,18 +92,18 @@ class GlobalInitScriptCreateRequest:
     # The Base64-encoded content of the script.
     script: str
 
-    def as_request(self) -> (dict, dict):
-        globalInitScriptCreateRequest_query, globalInitScriptCreateRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.enabled:
-            globalInitScriptCreateRequest_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name:
-            globalInitScriptCreateRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.position:
-            globalInitScriptCreateRequest_body["position"] = self.position
+            body["position"] = self.position
         if self.script:
-            globalInitScriptCreateRequest_body["script"] = self.script
+            body["script"] = self.script
 
-        return globalInitScriptCreateRequest_query, globalInitScriptCreateRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GlobalInitScriptCreateRequest":
@@ -138,26 +138,26 @@ class GlobalInitScriptDetails:
     # The username of the user who last updated the script
     updated_by: str
 
-    def as_request(self) -> (dict, dict):
-        globalInitScriptDetails_query, globalInitScriptDetails_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at:
-            globalInitScriptDetails_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by:
-            globalInitScriptDetails_body["created_by"] = self.created_by
+            body["created_by"] = self.created_by
         if self.enabled:
-            globalInitScriptDetails_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name:
-            globalInitScriptDetails_body["name"] = self.name
+            body["name"] = self.name
         if self.position:
-            globalInitScriptDetails_body["position"] = self.position
+            body["position"] = self.position
         if self.script_id:
-            globalInitScriptDetails_body["script_id"] = self.script_id
+            body["script_id"] = self.script_id
         if self.updated_at:
-            globalInitScriptDetails_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by:
-            globalInitScriptDetails_body["updated_by"] = self.updated_by
+            body["updated_by"] = self.updated_by
 
-        return globalInitScriptDetails_query, globalInitScriptDetails_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GlobalInitScriptDetails":
@@ -198,34 +198,28 @@ class GlobalInitScriptDetailsWithContent:
     # The username of the user who last updated the script
     updated_by: str
 
-    def as_request(self) -> (dict, dict):
-        (
-            globalInitScriptDetailsWithContent_query,
-            globalInitScriptDetailsWithContent_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at:
-            globalInitScriptDetailsWithContent_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by:
-            globalInitScriptDetailsWithContent_body["created_by"] = self.created_by
+            body["created_by"] = self.created_by
         if self.enabled:
-            globalInitScriptDetailsWithContent_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name:
-            globalInitScriptDetailsWithContent_body["name"] = self.name
+            body["name"] = self.name
         if self.position:
-            globalInitScriptDetailsWithContent_body["position"] = self.position
+            body["position"] = self.position
         if self.script:
-            globalInitScriptDetailsWithContent_body["script"] = self.script
+            body["script"] = self.script
         if self.script_id:
-            globalInitScriptDetailsWithContent_body["script_id"] = self.script_id
+            body["script_id"] = self.script_id
         if self.updated_at:
-            globalInitScriptDetailsWithContent_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by:
-            globalInitScriptDetailsWithContent_body["updated_by"] = self.updated_by
+            body["updated_by"] = self.updated_by
 
-        return (
-            globalInitScriptDetailsWithContent_query,
-            globalInitScriptDetailsWithContent_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GlobalInitScriptDetailsWithContent":
@@ -267,20 +261,20 @@ class GlobalInitScriptUpdateRequest:
     # The ID of the global init script.
     script_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        globalInitScriptUpdateRequest_query, globalInitScriptUpdateRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.enabled:
-            globalInitScriptUpdateRequest_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name:
-            globalInitScriptUpdateRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.position:
-            globalInitScriptUpdateRequest_body["position"] = self.position
+            body["position"] = self.position
         if self.script:
-            globalInitScriptUpdateRequest_body["script"] = self.script
+            body["script"] = self.script
         if self.script_id:
-            globalInitScriptUpdateRequest_body["script_id"] = self.script_id
+            body["script_id"] = self.script_id
 
-        return globalInitScriptUpdateRequest_query, globalInitScriptUpdateRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GlobalInitScriptUpdateRequest":
@@ -298,14 +292,12 @@ class ListGlobalInitScriptsResponse:
 
     scripts: "List[GlobalInitScriptDetails]"
 
-    def as_request(self) -> (dict, dict):
-        listGlobalInitScriptsResponse_query, listGlobalInitScriptsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.scripts:
-            listGlobalInitScriptsResponse_body["scripts"] = [
-                v.as_request()[1] for v in self.scripts
-            ]
+            body["scripts"] = [v.as_dict() for v in self.scripts]
 
-        return listGlobalInitScriptsResponse_query, listGlobalInitScriptsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListGlobalInitScriptsResponse":
@@ -320,38 +312,63 @@ class GlobalInitScriptsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: GlobalInitScriptCreateRequest) -> CreateResponse:
+    def create(
+        self,
+        name: str,
+        script: str,
+        *,
+        enabled: bool = None,
+        position: int = None,
+        **kwargs,
+    ) -> CreateResponse:
         """Create init script.
 
         Creates a new global init script in this workspace."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GlobalInitScriptCreateRequest(
+                enabled=enabled, name=name, position=position, script=script
+            )
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
             "POST", "/api/2.0/global-init-scripts", query=query, body=body
         )
         return CreateResponse.from_dict(json)
 
-    def delete(self, request: Delete):
+    def delete(self, script_id: str, **kwargs):
         """Delete init script.
 
         Deletes a global init script."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Delete(script_id=script_id)
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
             "DELETE",
-            f"/api/2.0/global-init-scripts/{request.script_id}",
+            f"/api/2.0/global-init-scripts/{script_id}",
             query=query,
             body=body,
         )
 
-    def get(self, request: Get) -> GlobalInitScriptDetailsWithContent:
+    def get(self, script_id: str, **kwargs) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
 
         Gets all the details of a script, including its Base64-encoded contents."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = Get(script_id=script_id)
+        body = request.as_dict()
+        query = {}
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/global-init-scripts/{request.script_id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/global-init-scripts/{script_id}", query=query, body=body
         )
         return GlobalInitScriptDetailsWithContent.from_dict(json)
 
@@ -366,15 +383,33 @@ class GlobalInitScriptsAPI:
         json = self._api.do("GET", "/api/2.0/global-init-scripts")
         return ListGlobalInitScriptsResponse.from_dict(json)
 
-    def update(self, request: GlobalInitScriptUpdateRequest):
+    def update(
+        self,
+        name: str,
+        script: str,
+        script_id: str,
+        *,
+        enabled: bool = None,
+        position: int = None,
+        **kwargs,
+    ):
         """Update init script.
 
         Updates a global init script, specifying only the fields to change. All
         fields are optional. Unspecified fields retain their current value."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = GlobalInitScriptUpdateRequest(
+                enabled=enabled,
+                name=name,
+                position=position,
+                script=script,
+                script_id=script_id,
+            )
+        body = request.as_dict()
+        query = {}
+
         self._api.do(
-            "PATCH",
-            f"/api/2.0/global-init-scripts/{request.script_id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/global-init-scripts/{script_id}", query=query, body=body
         )

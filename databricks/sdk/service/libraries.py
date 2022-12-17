@@ -16,16 +16,14 @@ class ClusterLibraryStatuses:
     # Status of all libraries on the cluster.
     library_statuses: "List[LibraryFullStatus]"
 
-    def as_request(self) -> (dict, dict):
-        clusterLibraryStatuses_query, clusterLibraryStatuses_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            clusterLibraryStatuses_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.library_statuses:
-            clusterLibraryStatuses_body["library_statuses"] = [
-                v.as_request()[1] for v in self.library_statuses
-            ]
+            body["library_statuses"] = [v.as_dict() for v in self.library_statuses]
 
-        return clusterLibraryStatuses_query, clusterLibraryStatuses_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterLibraryStatuses":
@@ -46,12 +44,12 @@ class ClusterStatus:
     # Unique identifier of the cluster whose status should be retrieved.
     cluster_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        clusterStatus_query, clusterStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            clusterStatus_query["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return clusterStatus_query, clusterStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterStatus":
@@ -68,16 +66,14 @@ class InstallLibraries:
     # The libraries to install.
     libraries: "List[Library]"
 
-    def as_request(self) -> (dict, dict):
-        installLibraries_query, installLibraries_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            installLibraries_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.libraries:
-            installLibraries_body["libraries"] = [
-                v.as_request()[1] for v in self.libraries
-            ]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
 
-        return installLibraries_query, installLibraries_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstallLibraries":
@@ -118,22 +114,22 @@ class Library:
     # with an IAM role to access the S3 URI.
     whl: str
 
-    def as_request(self) -> (dict, dict):
-        library_query, library_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cran:
-            library_body["cran"] = self.cran.as_request()[1]
+            body["cran"] = self.cran.as_dict()
         if self.egg:
-            library_body["egg"] = self.egg
+            body["egg"] = self.egg
         if self.jar:
-            library_body["jar"] = self.jar
+            body["jar"] = self.jar
         if self.maven:
-            library_body["maven"] = self.maven.as_request()[1]
+            body["maven"] = self.maven.as_dict()
         if self.pypi:
-            library_body["pypi"] = self.pypi.as_request()[1]
+            body["pypi"] = self.pypi.as_dict()
         if self.whl:
-            library_body["whl"] = self.whl
+            body["whl"] = self.whl
 
-        return library_query, library_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Library":
@@ -161,20 +157,18 @@ class LibraryFullStatus:
     # Status of installing the library on the cluster.
     status: "LibraryFullStatusStatus"
 
-    def as_request(self) -> (dict, dict):
-        libraryFullStatus_query, libraryFullStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.is_library_for_all_clusters:
-            libraryFullStatus_body[
-                "is_library_for_all_clusters"
-            ] = self.is_library_for_all_clusters
+            body["is_library_for_all_clusters"] = self.is_library_for_all_clusters
         if self.library:
-            libraryFullStatus_body["library"] = self.library.as_request()[1]
+            body["library"] = self.library.as_dict()
         if self.messages:
-            libraryFullStatus_body["messages"] = [v for v in self.messages]
+            body["messages"] = [v for v in self.messages]
         if self.status:
-            libraryFullStatus_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return libraryFullStatus_query, libraryFullStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LibraryFullStatus":
@@ -204,20 +198,12 @@ class ListAllClusterLibraryStatusesResponse:
     # A list of cluster statuses.
     statuses: "List[ClusterLibraryStatuses]"
 
-    def as_request(self) -> (dict, dict):
-        (
-            listAllClusterLibraryStatusesResponse_query,
-            listAllClusterLibraryStatusesResponse_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.statuses:
-            listAllClusterLibraryStatusesResponse_body["statuses"] = [
-                v.as_request()[1] for v in self.statuses
-            ]
+            body["statuses"] = [v.as_dict() for v in self.statuses]
 
-        return (
-            listAllClusterLibraryStatusesResponse_query,
-            listAllClusterLibraryStatusesResponse_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListAllClusterLibraryStatusesResponse":
@@ -243,16 +229,16 @@ class MavenLibrary:
     # Central Repository and Spark Packages are searched.
     repo: str
 
-    def as_request(self) -> (dict, dict):
-        mavenLibrary_query, mavenLibrary_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.coordinates:
-            mavenLibrary_body["coordinates"] = self.coordinates
+            body["coordinates"] = self.coordinates
         if self.exclusions:
-            mavenLibrary_body["exclusions"] = [v for v in self.exclusions]
+            body["exclusions"] = [v for v in self.exclusions]
         if self.repo:
-            mavenLibrary_body["repo"] = self.repo
+            body["repo"] = self.repo
 
-        return mavenLibrary_query, mavenLibrary_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "MavenLibrary":
@@ -274,14 +260,14 @@ class PythonPyPiLibrary:
     # default pip index is used.
     repo: str
 
-    def as_request(self) -> (dict, dict):
-        pythonPyPiLibrary_query, pythonPyPiLibrary_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.package:
-            pythonPyPiLibrary_body["package"] = self.package
+            body["package"] = self.package
         if self.repo:
-            pythonPyPiLibrary_body["repo"] = self.repo
+            body["repo"] = self.repo
 
-        return pythonPyPiLibrary_query, pythonPyPiLibrary_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PythonPyPiLibrary":
@@ -300,14 +286,14 @@ class RCranLibrary:
     # default CRAN repo is used.
     repo: str
 
-    def as_request(self) -> (dict, dict):
-        rCranLibrary_query, rCranLibrary_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.package:
-            rCranLibrary_body["package"] = self.package
+            body["package"] = self.package
         if self.repo:
-            rCranLibrary_body["repo"] = self.repo
+            body["repo"] = self.repo
 
-        return rCranLibrary_query, rCranLibrary_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RCranLibrary":
@@ -325,16 +311,14 @@ class UninstallLibraries:
     # The libraries to uninstall.
     libraries: "List[Library]"
 
-    def as_request(self) -> (dict, dict):
-        uninstallLibraries_query, uninstallLibraries_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            uninstallLibraries_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.libraries:
-            uninstallLibraries_body["libraries"] = [
-                v.as_request()[1] for v in self.libraries
-            ]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
 
-        return uninstallLibraries_query, uninstallLibraries_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UninstallLibraries":
@@ -361,7 +345,7 @@ class LibrariesAPI:
         json = self._api.do("GET", "/api/2.0/libraries/all-cluster-statuses")
         return ListAllClusterLibraryStatusesResponse.from_dict(json)
 
-    def cluster_status(self, request: ClusterStatus) -> ClusterLibraryStatuses:
+    def cluster_status(self, cluster_id: str, **kwargs) -> ClusterLibraryStatuses:
         """Get status.
 
         Get the status of libraries on a cluster. A status will be available for
@@ -379,13 +363,21 @@ class LibrariesAPI:
         3. Libraries that were previously requested on this cluster or on all
         clusters, but now marked for removal. Within this group there is no
         order guarantee."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = ClusterStatus(cluster_id=cluster_id)
+        body = request.as_dict()
+        query = {}
+        if cluster_id:
+            query["cluster_id"] = cluster_id
+
         json = self._api.do(
             "GET", "/api/2.0/libraries/cluster-status", query=query, body=body
         )
         return ClusterLibraryStatuses.from_dict(json)
 
-    def install(self, request: InstallLibraries):
+    def install(self, cluster_id: str, libraries: List[Library], **kwargs):
         """Add a library.
 
         Add libraries to be installed on a cluster. The installation is
@@ -395,15 +387,27 @@ class LibrariesAPI:
         **Note**: The actual set of libraries to be installed on a cluster is
         the union of the libraries specified via this method and the libraries
         set to be installed on all clusters via the libraries UI."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = InstallLibraries(cluster_id=cluster_id, libraries=libraries)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/libraries/install", query=query, body=body)
 
-    def uninstall(self, request: UninstallLibraries):
+    def uninstall(self, cluster_id: str, libraries: List[Library], **kwargs):
         """Uninstall libraries.
 
         Set libraries to be uninstalled on a cluster. The libraries won't be
         uninstalled until the cluster is restarted. Uninstalling libraries that
         are not installed on the cluster will have no impact but is not an
         error."""
-        query, body = request.as_request()
+
+        request = kwargs.get("request", None)
+        if not request:
+            request = UninstallLibraries(cluster_id=cluster_id, libraries=libraries)
+        body = request.as_dict()
+        query = {}
+
         self._api.do("POST", "/api/2.0/libraries/uninstall", query=query, body=body)
