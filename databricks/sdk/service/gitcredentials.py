@@ -214,9 +214,8 @@ class GitCredentialsAPI:
         user is supported, so any attempts to create credentials if an entry
         already exists will fail. Use the PATCH endpoint to update existing
         credentials, or the DELETE endpoint to delete existing credentials."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateCredentials(
                 git_provider=git_provider,
                 git_username=git_username,
@@ -231,27 +230,21 @@ class GitCredentialsAPI:
         """Delete a credential.
 
         Deletes the specified Git credential."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(credential_id=credential_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/git-credentials/{request.credential_id}")
 
     def get(self, credential_id: int, **kwargs) -> CredentialInfo:
         """Get a credential entry.
 
         Gets the Git credential with the specified credential ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(credential_id=credential_id)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.0/git-credentials/{credential_id}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/git-credentials/{request.credential_id}")
         return CredentialInfo.from_dict(json)
 
     def list(self) -> GetCredentialsResponse:
@@ -275,9 +268,8 @@ class GitCredentialsAPI:
         """Update a credential.
 
         Updates the specified Git credential."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateCredentials(
                 credential_id=credential_id,
                 git_provider=git_provider,
@@ -286,4 +278,6 @@ class GitCredentialsAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.0/git-credentials/{request.credential_id}", body=body
+        )

@@ -3504,9 +3504,8 @@ class CatalogsAPI:
 
         Creates a new catalog instance in the parent Metastore if the caller is
         a Metastore admin or has the CREATE_CATALOG privilege."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateCatalog(
                 comment=comment,
                 name=name,
@@ -3525,18 +3524,16 @@ class CatalogsAPI:
 
         Deletes the catalog that matches the supplied name. The caller must be a
         Metastore admin or the owner of the catalog."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteCatalogRequest(force=force, name=name)
-        body = request.as_dict()
 
         query = {}
         if force:
             query["force"] = request.force
 
         self._api.do(
-            "DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, body=body
+            "DELETE", f"/api/2.1/unity-catalog/catalogs/{request.name}", query=query
         )
 
     def get(self, name: str, **kwargs) -> CatalogInfo:
@@ -3545,13 +3542,11 @@ class CatalogsAPI:
         Gets an array of all catalogs in the current Metastore for which the
         user is an admin or Catalog owner, or has the USE_CATALOG privilege set
         for their account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetCatalogRequest(name=name)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{name}", body=body)
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{request.name}")
         return CatalogInfo.from_dict(json)
 
     def list(self) -> ListCatalogsResponse:
@@ -3579,16 +3574,15 @@ class CatalogsAPI:
         Updates the catalog that matches the supplied name. The caller must be
         either the owner of the catalog, or a Metastore admin (when changing the
         owner field of the catalog)."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateCatalog(
                 comment=comment, name=name, owner=owner, properties=properties
             )
         body = request.as_dict()
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", body=body
+            "PATCH", f"/api/2.1/unity-catalog/catalogs/{request.name}", body=body
         )
         return CatalogInfo.from_dict(json)
 
@@ -3613,9 +3607,8 @@ class ExternalLocationsAPI:
         Creates a new External Location entry in the Metastore. The caller must
         be a Metastore admin or have the CREATE_EXTERNAL_LOCATION privilege on
         both the Metastore and the associated storage credential."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateExternalLocation(
                 comment=comment,
                 credential_name=credential_name,
@@ -3636,11 +3629,9 @@ class ExternalLocationsAPI:
 
         Deletes the specified external location from the Metastore. The caller
         must be the owner of the external location."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteExternalLocationRequest(force=force, name=name)
-        body = request.as_dict()
 
         query = {}
         if force:
@@ -3648,9 +3639,8 @@ class ExternalLocationsAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.1/unity-catalog/external-locations/{name}",
+            f"/api/2.1/unity-catalog/external-locations/{request.name}",
             query=query,
-            body=body,
         )
 
     def get(self, name: str, **kwargs) -> ExternalLocationInfo:
@@ -3659,14 +3649,12 @@ class ExternalLocationsAPI:
         Gets an external location from the Metastore. The caller must be either
         a Metastore admin, the owner of the external location, or has some
         privilege on the external location."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetExternalLocationRequest(name=name)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/external-locations/{name}", body=body
+            "GET", f"/api/2.1/unity-catalog/external-locations/{request.name}"
         )
         return ExternalLocationInfo.from_dict(json)
 
@@ -3698,9 +3686,8 @@ class ExternalLocationsAPI:
         Updates an external location in the Metastore. The caller must be the
         owner of the external location, or be a Metastore admin. In the second
         case, the admin can only update the name of the external location."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateExternalLocation(
                 comment=comment,
                 credential_name=credential_name,
@@ -3714,7 +3701,9 @@ class ExternalLocationsAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body
+            "PATCH",
+            f"/api/2.1/unity-catalog/external-locations/{request.name}",
+            body=body,
         )
         return ExternalLocationInfo.from_dict(json)
 
@@ -3729,13 +3718,11 @@ class GrantsAPI:
         """Get permissions.
 
         Gets the permissions for a Securable type."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetGrantRequest(
                 full_name=full_name, principal=principal, securable_type=securable_type
             )
-        body = request.as_dict()
 
         query = {}
         if principal:
@@ -3743,9 +3730,8 @@ class GrantsAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}",
+            f"/api/2.1/unity-catalog/permissions/{request.securable_type}/{request.full_name}",
             query=query,
-            body=body,
         )
         return GetPermissionsResponse.from_dict(json)
 
@@ -3761,9 +3747,8 @@ class GrantsAPI:
         """Update permissions.
 
         Updates the permissions for a Securable type."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdatePermissions(
                 changes=changes,
                 full_name=full_name,
@@ -3778,7 +3763,7 @@ class GrantsAPI:
 
         self._api.do(
             "PATCH",
-            f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}",
+            f"/api/2.1/unity-catalog/permissions/{request.securable_type}/{request.full_name}",
             query=query,
             body=body,
         )
@@ -3797,9 +3782,8 @@ class MetastoresAPI:
         __workspace_id__ exists, it will be overwritten by the new
         __metastore_id__ and __default_catalog_name__. The caller must be an
         account admin."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateMetastoreAssignment(
                 default_catalog_name=default_catalog_name,
                 metastore_id=metastore_id,
@@ -3809,7 +3793,7 @@ class MetastoresAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
+            f"/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore",
             body=body,
         )
 
@@ -3817,9 +3801,8 @@ class MetastoresAPI:
         """Create a Metastore.
 
         Creates a new Metastore based on a provided name and storage root path."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateMetastore(name=name, storage_root=storage_root)
         body = request.as_dict()
 
@@ -3830,18 +3813,16 @@ class MetastoresAPI:
         """Delete a Metastore.
 
         Deletes a Metastore. The caller must be a Metastore admin."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteMetastoreRequest(force=force, id=id)
-        body = request.as_dict()
 
         query = {}
         if force:
             query["force"] = request.force
 
         self._api.do(
-            "DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, body=body
+            "DELETE", f"/api/2.1/unity-catalog/metastores/{request.id}", query=query
         )
 
     def get(self, id: str, **kwargs) -> MetastoreInfo:
@@ -3849,13 +3830,11 @@ class MetastoresAPI:
 
         Gets a Metastore that matches the supplied ID. The caller must be a
         Metastore admin to retrieve this info."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetMetastoreRequest(id=id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{id}", body=body)
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{request.id}")
         return MetastoreInfo.from_dict(json)
 
     def list(self) -> ListMetastoresResponse:
@@ -3882,13 +3861,11 @@ class MetastoresAPI:
 
         Deletes a Metastore assignment. The caller must be an account
         administrator."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UnassignRequest(
                 metastore_id=metastore_id, workspace_id=workspace_id
             )
-        body = request.as_dict()
 
         query = {}
         if metastore_id:
@@ -3896,9 +3873,8 @@ class MetastoresAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
+            f"/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore",
             query=query,
-            body=body,
         )
 
     def update(
@@ -3917,9 +3893,8 @@ class MetastoresAPI:
 
         Updates information for a specific Metastore. The caller must be a
         Metastore admin."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateMetastore(
                 default_data_access_config_id=default_data_access_config_id,
                 delta_sharing_enabled=delta_sharing_enabled,
@@ -3932,7 +3907,7 @@ class MetastoresAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/metastores/{id}", body=body
+            "PATCH", f"/api/2.1/unity-catalog/metastores/{request.id}", body=body
         )
         return MetastoreInfo.from_dict(json)
 
@@ -3951,9 +3926,8 @@ class MetastoresAPI:
         if the Workspace is already assigned a Metastore. The caller must be an
         account admin to update __metastore_id__; otherwise, the caller can be a
         Workspace admin."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateMetastoreAssignment(
                 default_catalog_name=default_catalog_name,
                 metastore_id=metastore_id,
@@ -3963,7 +3937,7 @@ class MetastoresAPI:
 
         self._api.do(
             "PATCH",
-            f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
+            f"/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore",
             body=body,
         )
 
@@ -3986,9 +3960,8 @@ class ProvidersAPI:
 
         Creates a new authentication provider minimally based on a name and
         authentication type. The caller must be an admin on the Metastore."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateProvider(
                 authentication_type=authentication_type,
                 comment=comment,
@@ -4006,13 +3979,11 @@ class ProvidersAPI:
 
         Deletes an authentication provider, if the caller is a Metastore admin
         or is the owner of the provider."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteProviderRequest(name=name)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", body=body)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{request.name}")
 
     def get(self, name: str, **kwargs) -> ProviderInfo:
         """Get a provider.
@@ -4020,15 +3991,11 @@ class ProvidersAPI:
         Gets a specific authentication provider. The caller must supply the name
         of the provider, and must either be a Metastore admin or the owner of
         the provider."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetProviderRequest(name=name)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/providers/{name}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{request.name}")
         return ProviderInfo.from_dict(json)
 
     def list(
@@ -4039,13 +4006,11 @@ class ProvidersAPI:
         Gets an array of available authentication providers. The caller must
         either be a Metastore admin or the owner of the providers. Providers not
         owned by the caller are not included in the response."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListProvidersRequest(
                 data_provider_global_metastore_id=data_provider_global_metastore_id
             )
-        body = request.as_dict()
 
         query = {}
         if data_provider_global_metastore_id:
@@ -4053,9 +4018,7 @@ class ProvidersAPI:
                 "data_provider_global_metastore_id"
             ] = request.data_provider_global_metastore_id
 
-        json = self._api.do(
-            "GET", "/api/2.1/unity-catalog/providers", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.1/unity-catalog/providers", query=query)
         return ListProvidersResponse.from_dict(json)
 
     def list_shares(self, name: str, **kwargs) -> ListProviderSharesResponse:
@@ -4064,14 +4027,12 @@ class ProvidersAPI:
         Gets an array of all shares within the Metastore where:
 
         * the caller is a Metastore admin, or * the caller is the owner."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListSharesRequest(name=name)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/providers/{name}/shares", body=body
+            "GET", f"/api/2.1/unity-catalog/providers/{request.name}/shares"
         )
         return ListProviderSharesResponse.from_dict(json)
 
@@ -4090,9 +4051,8 @@ class ProvidersAPI:
         a Metastore admin or is the owner of the provider. If the update changes
         the provider name, the caller must be both a Metastore admin and the
         owner of the provider."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateProvider(
                 comment=comment,
                 name=name,
@@ -4102,7 +4062,7 @@ class ProvidersAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body
+            "PATCH", f"/api/2.1/unity-catalog/providers/{request.name}", body=body
         )
         return ProviderInfo.from_dict(json)
 
@@ -4115,16 +4075,13 @@ class RecipientActivationAPI:
         """Get a share activation URL.
 
         Gets information about an Activation URL."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetActivationUrlInfoRequest(activation_url=activation_url)
-        body = request.as_dict()
 
         self._api.do(
             "GET",
-            f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}",
-            body=body,
+            f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{request.activation_url}",
         )
 
     def retrieve_token(self, activation_url: str, **kwargs) -> RetrieveTokenResponse:
@@ -4132,16 +4089,13 @@ class RecipientActivationAPI:
 
         RPC to retrieve access token with an activation token. This is a public
         API without any authentication."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RetrieveTokenRequest(activation_url=activation_url)
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}",
-            body=body,
+            f"/api/2.1/unity-catalog/public/data_sharing_activation/{request.activation_url}",
         )
         return RetrieveTokenResponse.from_dict(json)
 
@@ -4166,9 +4120,8 @@ class RecipientsAPI:
         Creates a new recipient with the delta sharing authentication type in
         the Metastore. The caller must be a Metastore admin or has the
         CREATE_RECIPIENT privilege on the Metastore."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateRecipient(
                 authentication_type=authentication_type,
                 comment=comment,
@@ -4187,13 +4140,11 @@ class RecipientsAPI:
 
         Deletes the specified recipient from the Metastore. The caller must be
         the owner of the recipient."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteRecipientRequest(name=name)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", body=body)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{request.name}")
 
     def get(self, name: str, **kwargs) -> RecipientInfo:
         """Get a share recipient.
@@ -4202,15 +4153,11 @@ class RecipientsAPI:
 
         * the caller is the owner of the share recipient, or: * is a Metastore
         admin"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetRecipientRequest(name=name)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/recipients/{name}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/recipients/{request.name}")
         return RecipientInfo.from_dict(json)
 
     def list(
@@ -4222,13 +4169,11 @@ class RecipientsAPI:
         where:
 
         * the caller is a Metastore admin, or * the caller is the owner."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListRecipientsRequest(
                 data_recipient_global_metastore_id=data_recipient_global_metastore_id
             )
-        body = request.as_dict()
 
         query = {}
         if data_recipient_global_metastore_id:
@@ -4236,9 +4181,7 @@ class RecipientsAPI:
                 "data_recipient_global_metastore_id"
             ] = request.data_recipient_global_metastore_id
 
-        json = self._api.do(
-            "GET", "/api/2.1/unity-catalog/recipients", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.1/unity-catalog/recipients", query=query)
         return ListRecipientsResponse.from_dict(json)
 
     def rotate_token(
@@ -4249,9 +4192,8 @@ class RecipientsAPI:
         Refreshes the specified recipient's delta sharing authentication token
         with the provided token info. The caller must be the owner of the
         recipient."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RotateRecipientToken(
                 existing_token_expire_in_seconds=existing_token_expire_in_seconds,
                 name=name,
@@ -4259,7 +4201,9 @@ class RecipientsAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body
+            "POST",
+            f"/api/2.1/unity-catalog/recipients/{request.name}/rotate-token",
+            body=body,
         )
         return RecipientInfo.from_dict(json)
 
@@ -4270,16 +4214,12 @@ class RecipientsAPI:
 
         Gets the share permissions for the specified Recipient. The caller must
         be a Metastore admin or the owner of the Recipient."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = SharePermissionsRequest(name=name)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/recipients/{name}/share-permissions",
-            body=body,
+            "GET", f"/api/2.1/unity-catalog/recipients/{request.name}/share-permissions"
         )
         return GetRecipientSharePermissionsResponse.from_dict(json)
 
@@ -4297,15 +4237,16 @@ class RecipientsAPI:
         Metastore admin or the owner of the recipient. If the recipient name
         will be updated, the user must be both a Metastore admin and the owner
         of the recipient."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateRecipient(
                 comment=comment, ip_access_list=ip_access_list, name=name
             )
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.1/unity-catalog/recipients/{request.name}", body=body
+        )
 
 
 class SchemasAPI:
@@ -4326,9 +4267,8 @@ class SchemasAPI:
         Creates a new schema for catalog in the Metatastore. The caller must be
         a Metastore admin, or have the CREATE_SCHEMA privilege in the parent
         catalog."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateSchema(
                 catalog_name=catalog_name,
                 comment=comment,
@@ -4345,13 +4285,11 @@ class SchemasAPI:
 
         Deletes the specified schema from the parent catalog. The caller must be
         the owner of the schema or an owner of the parent catalog."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteSchemaRequest(full_name=full_name)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{request.full_name}")
 
     def get(self, full_name: str, **kwargs) -> SchemaInfo:
         """Get a schema.
@@ -4359,14 +4297,12 @@ class SchemasAPI:
         Gets the specified schema for a catalog in the Metastore. The caller
         must be a Metastore admin, the owner of the schema, or a user that has
         the USE_SCHEMA privilege on the schema."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetSchemaRequest(full_name=full_name)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body
+            "GET", f"/api/2.1/unity-catalog/schemas/{request.full_name}"
         )
         return SchemaInfo.from_dict(json)
 
@@ -4378,19 +4314,15 @@ class SchemasAPI:
         the catalog will be retrieved. Otherwise, only schemas owned by the
         caller (or for which the caller has the USE_SCHEMA privilege) will be
         retrieved."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListSchemasRequest(catalog_name=catalog_name)
-        body = request.as_dict()
 
         query = {}
         if catalog_name:
             query["catalog_name"] = request.catalog_name
 
-        json = self._api.do(
-            "GET", "/api/2.1/unity-catalog/schemas", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.1/unity-catalog/schemas", query=query)
         return ListSchemasResponse.from_dict(json)
 
     def update(
@@ -4412,9 +4344,8 @@ class SchemasAPI:
         be changed in the update. If the __name__ field must be updated, the
         caller must be a Metastore admin or have the CREATE_SCHEMA privilege on
         the parent catalog."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateSchema(
                 catalog_name=catalog_name,
                 comment=comment,
@@ -4427,7 +4358,7 @@ class SchemasAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body
+            "PATCH", f"/api/2.1/unity-catalog/schemas/{request.full_name}", body=body
         )
         return SchemaInfo.from_dict(json)
 
@@ -4442,9 +4373,8 @@ class SharesAPI:
         Creates a new share for data objects. Data objects can be added at this
         time or after creation with **update**. The caller must be a Metastore
         admin or have the CREATE_SHARE privilege on the Metastore."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateShare(comment=comment, name=name)
         body = request.as_dict()
 
@@ -4456,13 +4386,11 @@ class SharesAPI:
 
         Deletes a data object share from the Metastore. The caller must be an
         owner of the share."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteShareRequest(name=name)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", body=body)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{request.name}")
 
     def get(
         self, name: str, *, include_shared_data: bool = None, **kwargs
@@ -4471,20 +4399,18 @@ class SharesAPI:
 
         Gets a data object share from the Metastore. The caller must be a
         Metastore admin or the owner of the share."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetShareRequest(
                 include_shared_data=include_shared_data, name=name
             )
-        body = request.as_dict()
 
         query = {}
         if include_shared_data:
             query["include_shared_data"] = request.include_shared_data
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, body=body
+            "GET", f"/api/2.1/unity-catalog/shares/{request.name}", query=query
         )
         return ShareInfo.from_dict(json)
 
@@ -4502,14 +4428,12 @@ class SharesAPI:
 
         Gets the permissions for a data share from the Metastore. The caller
         must be a Metastore admin or the owner of the share."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = SharePermissionsRequest(name=name)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body
+            "GET", f"/api/2.1/unity-catalog/shares/{request.name}/permissions"
         )
         return GetSharePermissionsResponse.from_dict(json)
 
@@ -4539,15 +4463,16 @@ class SharesAPI:
         Typically, you should use a group as the share owner.
 
         Table removals through **update** do not require additional privileges."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateShare(
                 comment=comment, name=name, owner=owner, updates=updates
             )
         body = request.as_dict()
 
-        json = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body)
+        json = self._api.do(
+            "PATCH", f"/api/2.1/unity-catalog/shares/{request.name}", body=body
+        )
         return ShareInfo.from_dict(json)
 
     def update_permissions(
@@ -4560,14 +4485,15 @@ class SharesAPI:
 
         For new recipient grants, the user must also be the owner of the
         recipients. recipient revocations do not require additional privileges."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateSharePermissions(changes=changes, name=name)
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body
+            "PATCH",
+            f"/api/2.1/unity-catalog/shares/{request.name}/permissions",
+            body=body,
         )
 
 
@@ -4596,9 +4522,8 @@ class StorageCredentialsAPI:
 
         The caller must be a Metastore admin and have the
         CREATE_STORAGE_CREDENTIAL privilege on the Metastore."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateStorageCredential(
                 aws_iam_role=aws_iam_role,
                 azure_service_principal=azure_service_principal,
@@ -4619,11 +4544,9 @@ class StorageCredentialsAPI:
 
         Deletes a storage credential from the Metastore. The caller must be an
         owner of the storage credential."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteStorageCredentialRequest(force=force, name=name)
-        body = request.as_dict()
 
         query = {}
         if force:
@@ -4631,9 +4554,8 @@ class StorageCredentialsAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.1/unity-catalog/storage-credentials/{name}",
+            f"/api/2.1/unity-catalog/storage-credentials/{request.name}",
             query=query,
-            body=body,
         )
 
     def get(self, name: str, **kwargs) -> StorageCredentialInfo:
@@ -4642,14 +4564,12 @@ class StorageCredentialsAPI:
         Gets a storage credential from the Metastore. The caller must be a
         Metastore admin, the owner of the storage credential, or have a level of
         privilege on the storage credential."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetStorageCredentialRequest(name=name)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body
+            "GET", f"/api/2.1/unity-catalog/storage-credentials/{request.name}"
         )
         return StorageCredentialInfo.from_dict(json)
 
@@ -4680,9 +4600,8 @@ class StorageCredentialsAPI:
         Updates a storage credential on the Metastore. The caller must be the
         owner of the storage credential. If the caller is a Metastore admin,
         only the __owner__ credential can be changed."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateStorageCredential(
                 aws_iam_role=aws_iam_role,
                 azure_service_principal=azure_service_principal,
@@ -4694,7 +4613,9 @@ class StorageCredentialsAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body
+            "PATCH",
+            f"/api/2.1/unity-catalog/storage-credentials/{request.name}",
+            body=body,
         )
         return StorageCredentialInfo.from_dict(json)
 
@@ -4711,13 +4632,11 @@ class TablesAPI:
         on the parent catalog and be the owner of the parent schema, or be the
         owner of the table and have the USE_CATALOG privilege on the parent
         catalog and the USE_SCHEMA privilege on the parent schema."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteTableRequest(full_name=full_name)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", body=body)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{request.full_name}")
 
     def get(self, full_name: str, **kwargs) -> TableInfo:
         """Get a table.
@@ -4727,15 +4646,11 @@ class TablesAPI:
         USE_CATALOG privilege on the parent catalog and the USE_SCHEMA privilege
         on the parent schema, or be the owner of the table and have the SELECT
         privilege on it as well."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetTableRequest(full_name=full_name)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/tables/{full_name}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{request.full_name}")
         return TableInfo.from_dict(json)
 
     def list(
@@ -4748,13 +4663,11 @@ class TablesAPI:
         (or have the SELECT privilege on) the table. For the latter case, the
         caller must also be the owner or have the USE_CATALOG privilege on the
         parent catalog and the USE_SCHEMA privilege on the parent schema."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListTablesRequest(
                 catalog_name=catalog_name, schema_name=schema_name
             )
-        body = request.as_dict()
 
         query = {}
         if catalog_name:
@@ -4762,9 +4675,7 @@ class TablesAPI:
         if schema_name:
             query["schema_name"] = request.schema_name
 
-        json = self._api.do(
-            "GET", "/api/2.1/unity-catalog/tables", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.1/unity-catalog/tables", query=query)
         return ListTablesResponse.from_dict(json)
 
     def table_summaries(
@@ -4789,9 +4700,8 @@ class TablesAPI:
         Table and ownership or USE_SCHEMA privilege on the Schema, provided that
         the user also has ownership or the USE_CATALOG privilege on the parent
         Catalog"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = TableSummariesRequest(
                 catalog_name=catalog_name,
                 max_results=max_results,
@@ -4799,7 +4709,6 @@ class TablesAPI:
                 schema_name_pattern=schema_name_pattern,
                 table_name_pattern=table_name_pattern,
             )
-        body = request.as_dict()
 
         query = {}
         if catalog_name:
@@ -4814,6 +4723,6 @@ class TablesAPI:
             query["table_name_pattern"] = request.table_name_pattern
 
         json = self._api.do(
-            "GET", "/api/2.1/unity-catalog/table-summaries", query=query, body=body
+            "GET", "/api/2.1/unity-catalog/table-summaries", query=query
         )
         return ListTableSummariesResponse.from_dict(json)

@@ -152,9 +152,8 @@ class TokensAPI:
         token authentication, it creates a token with the same client ID as the
         authenticated token. If the user's token quota is exceeded, this call
         returns an error **QUOTA_EXCEEDED**."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateTokenRequest(
                 comment=comment, lifetime_seconds=lifetime_seconds
             )
@@ -170,9 +169,8 @@ class TokensAPI:
 
         If a token with the specified ID is not valid, this call returns an
         error **RESOURCE_DOES_NOT_EXIST**."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RevokeTokenRequest(token_id=token_id)
         body = request.as_dict()
 

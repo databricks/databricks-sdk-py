@@ -3129,9 +3129,8 @@ class JobsAPI:
 
         Cancels all active runs of a job. The runs are canceled asynchronously,
         so it doesn't prevent new runs from being started."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CancelAllRuns(job_id=job_id)
         body = request.as_dict()
 
@@ -3142,9 +3141,8 @@ class JobsAPI:
 
         Cancels a job run. The run is canceled asynchronously, so it may still
         be running when this request completes."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CancelRun(run_id=run_id)
         body = request.as_dict()
 
@@ -3170,9 +3168,8 @@ class JobsAPI:
         """Create a new job.
 
         Create a new job."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateJob(
                 access_control_list=access_control_list,
                 email_notifications=email_notifications,
@@ -3196,9 +3193,8 @@ class JobsAPI:
         """Delete a job.
 
         Deletes a job."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteJob(job_id=job_id)
         body = request.as_dict()
 
@@ -3208,9 +3204,8 @@ class JobsAPI:
         """Delete a job run.
 
         Deletes a non-active run. Returns an error if the run is active."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteRun(run_id=run_id)
         body = request.as_dict()
 
@@ -3222,11 +3217,9 @@ class JobsAPI:
         """Export and retrieve a job run.
 
         Export and retrieve the job run task."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ExportRun(run_id=run_id, views_to_export=views_to_export)
-        body = request.as_dict()
 
         query = {}
         if run_id:
@@ -3234,35 +3227,31 @@ class JobsAPI:
         if views_to_export:
             query["views_to_export"] = request.views_to_export.value
 
-        json = self._api.do("GET", "/api/2.1/jobs/runs/export", query=query, body=body)
+        json = self._api.do("GET", "/api/2.1/jobs/runs/export", query=query)
         return ExportRunOutput.from_dict(json)
 
     def get(self, job_id: int, **kwargs) -> Job:
         """Get a single job.
 
         Retrieves the details for a single job."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(job_id=job_id)
-        body = request.as_dict()
 
         query = {}
         if job_id:
             query["job_id"] = request.job_id
 
-        json = self._api.do("GET", "/api/2.1/jobs/get", query=query, body=body)
+        json = self._api.do("GET", "/api/2.1/jobs/get", query=query)
         return Job.from_dict(json)
 
     def get_run(self, run_id: int, *, include_history: bool = None, **kwargs) -> Run:
         """Get a single job run.
 
         Retrieve the metadata of a run."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetRun(include_history=include_history, run_id=run_id)
-        body = request.as_dict()
 
         query = {}
         if include_history:
@@ -3270,7 +3259,7 @@ class JobsAPI:
         if run_id:
             query["run_id"] = request.run_id
 
-        json = self._api.do("GET", "/api/2.1/jobs/runs/get", query=query, body=body)
+        json = self._api.do("GET", "/api/2.1/jobs/runs/get", query=query)
         return Run.from_dict(json)
 
     def get_run_output(self, run_id: int, **kwargs) -> RunOutput:
@@ -3287,19 +3276,15 @@ class JobsAPI:
         Runs are automatically removed after 60 days. If you to want to
         reference them beyond 60 days, you must save old run results before they
         expire."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetRunOutput(run_id=run_id)
-        body = request.as_dict()
 
         query = {}
         if run_id:
             query["run_id"] = request.run_id
 
-        json = self._api.do(
-            "GET", "/api/2.1/jobs/runs/get-output", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.1/jobs/runs/get-output", query=query)
         return RunOutput.from_dict(json)
 
     def list(
@@ -3314,13 +3299,11 @@ class JobsAPI:
         """List all jobs.
 
         Retrieves a list of jobs."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = List(
                 expand_tasks=expand_tasks, limit=limit, name=name, offset=offset
             )
-        body = request.as_dict()
 
         query = {}
         if expand_tasks:
@@ -3332,7 +3315,7 @@ class JobsAPI:
         if offset:
             query["offset"] = request.offset
 
-        json = self._api.do("GET", "/api/2.1/jobs/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.1/jobs/list", query=query)
         return ListJobsResponse.from_dict(json)
 
     def list_runs(
@@ -3352,9 +3335,8 @@ class JobsAPI:
         """List runs for a job.
 
         List runs in descending order by start time."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListRuns(
                 active_only=active_only,
                 completed_only=completed_only,
@@ -3366,7 +3348,6 @@ class JobsAPI:
                 start_time_from=start_time_from,
                 start_time_to=start_time_to,
             )
-        body = request.as_dict()
 
         query = {}
         if active_only:
@@ -3388,7 +3369,7 @@ class JobsAPI:
         if start_time_to:
             query["start_time_to"] = request.start_time_to
 
-        json = self._api.do("GET", "/api/2.1/jobs/runs/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.1/jobs/runs/list", query=query)
         return ListRunsResponse.from_dict(json)
 
     def repair_run(
@@ -3413,9 +3394,8 @@ class JobsAPI:
         Re-run one or more tasks. Tasks are re-run as part of the original job
         run. They use the current job and task settings, and can be viewed in
         the history for the original job run."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RepairRun(
                 dbt_commands=dbt_commands,
                 jar_params=jar_params,
@@ -3440,9 +3420,8 @@ class JobsAPI:
 
         Overwrites all the settings for a specific job. Use the Update endpoint
         to update job settings partially."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ResetJob(job_id=job_id, new_settings=new_settings)
         body = request.as_dict()
 
@@ -3466,9 +3445,8 @@ class JobsAPI:
         """Trigger a new job run.
 
         Run a job and return the `run_id` of the triggered run."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RunNow(
                 dbt_commands=dbt_commands,
                 idempotency_token=idempotency_token,
@@ -3504,9 +3482,8 @@ class JobsAPI:
         directly without creating a job. Runs submitted using this endpoint
         don’t display in the UI. Use the `jobs/runs/get` API to check the run
         state after the job is submitted."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = SubmitRun(
                 access_control_list=access_control_list,
                 git_source=git_source,
@@ -3533,9 +3510,8 @@ class JobsAPI:
 
         Add, update, or remove specific settings of an existing job. Use the
         ResetJob to overwrite all job settings."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateJob(
                 fields_to_remove=fields_to_remove,
                 job_id=job_id,

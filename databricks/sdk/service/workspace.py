@@ -321,9 +321,8 @@ class WorkspaceAPI:
 
         Object deletion cannot be undone and deleting a directory recursively is
         not atomic."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(path=path, recursive=recursive)
         body = request.as_dict()
 
@@ -347,11 +346,9 @@ class WorkspaceAPI:
         One can only export a directory in `DBC` format. If the exported data
         would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
         Currently, this API does not support exporting a library."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Export(direct_download=direct_download, format=format, path=path)
-        body = request.as_dict()
 
         query = {}
         if direct_download:
@@ -361,7 +358,7 @@ class WorkspaceAPI:
         if path:
             query["path"] = request.path
 
-        json = self._api.do("GET", "/api/2.0/workspace/export", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/workspace/export", query=query)
         return ExportResponse.from_dict(json)
 
     def get_status(self, path: str, **kwargs) -> ObjectInfo:
@@ -369,19 +366,15 @@ class WorkspaceAPI:
 
         Gets the status of an object or a directory. If `path` does not exist,
         this call returns an error `RESOURCE_DOES_NOT_EXIST`."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetStatus(path=path)
-        body = request.as_dict()
 
         query = {}
         if path:
             query["path"] = request.path
 
-        json = self._api.do(
-            "GET", "/api/2.0/workspace/get-status", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/workspace/get-status", query=query)
         return ObjectInfo.from_dict(json)
 
     def import_(
@@ -400,9 +393,8 @@ class WorkspaceAPI:
         already exists and `overwrite` is set to `false`, this call returns an
         error `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import
         a directory."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Import(
                 content=content,
                 format=format,
@@ -422,11 +414,9 @@ class WorkspaceAPI:
         Lists the contents of a directory, or the object if it is not a
         directory.If the input path does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = List(notebooks_modified_after=notebooks_modified_after, path=path)
-        body = request.as_dict()
 
         query = {}
         if notebooks_modified_after:
@@ -434,7 +424,7 @@ class WorkspaceAPI:
         if path:
             query["path"] = request.path
 
-        json = self._api.do("GET", "/api/2.0/workspace/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/workspace/list", query=query)
         return ListResponse.from_dict(json)
 
     def mkdirs(self, path: str, **kwargs):
@@ -447,9 +437,8 @@ class WorkspaceAPI:
 
         Note that if this operation fails it may have succeeded in creating some
         of the necessary\nparrent directories."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Mkdirs(path=path)
         body = request.as_dict()
 

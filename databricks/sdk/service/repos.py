@@ -222,9 +222,8 @@ class ReposAPI:
         Creates a repo in the workspace and links it to the remote Git repo
         specified. Note that repos created programmatically must be linked to a
         remote Git repo, unlike repos created in the browser."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateRepo(path=path, provider=provider, url=url)
         body = request.as_dict()
 
@@ -235,25 +234,21 @@ class ReposAPI:
         """Delete a repo.
 
         Deletes the specified repo."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(repo_id=repo_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/repos/{request.repo_id}")
 
     def get(self, repo_id: int, **kwargs) -> RepoInfo:
         """Get a repo.
 
         Returns the repo with the given repo ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(repo_id=repo_id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/repos/{repo_id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/repos/{request.repo_id}")
         return RepoInfo.from_dict(json)
 
     def list(
@@ -263,11 +258,9 @@ class ReposAPI:
 
         Returns repos that the calling user has Manage permissions on. Results
         are paginated with each page containing twenty repos."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = List(next_page_token=next_page_token, path_prefix=path_prefix)
-        body = request.as_dict()
 
         query = {}
         if next_page_token:
@@ -275,7 +268,7 @@ class ReposAPI:
         if path_prefix:
             query["path_prefix"] = request.path_prefix
 
-        json = self._api.do("GET", "/api/2.0/repos", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/repos", query=query)
         return ListReposResponse.from_dict(json)
 
     def update(self, repo_id: int, *, branch: str = None, tag: str = None, **kwargs):
@@ -283,10 +276,9 @@ class ReposAPI:
 
         Updates the repo to a different branch or tag, or updates the repo to
         the latest commit on the same branch."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateRepo(branch=branch, repo_id=repo_id, tag=tag)
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body)
+        self._api.do("PATCH", f"/api/2.0/repos/{request.repo_id}", body=body)

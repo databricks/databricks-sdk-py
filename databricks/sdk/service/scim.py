@@ -754,9 +754,8 @@ class AccountGroupsAPI:
 
         Creates a group in the Databricks Account with a unique name, using the
         supplied group details."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Group(
                 display_name=display_name,
                 entitlements=entitlements,
@@ -775,25 +774,21 @@ class AccountGroupsAPI:
         """Delete a group.
 
         Deletes a group from the Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteGroupRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Groups/{request.id}")
 
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
 
         Gets the information for a specific group in the Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetGroupRequest(id=id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups/{request.id}")
         return Group.from_dict(json)
 
     def list(
@@ -811,9 +806,8 @@ class AccountGroupsAPI:
         """List group details.
 
         Gets all details of the groups associated with the Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListGroupsRequest(
                 attributes=attributes,
                 count=count,
@@ -823,7 +817,6 @@ class AccountGroupsAPI:
                 sort_order=sort_order,
                 start_index=start_index,
             )
-        body = request.as_dict()
 
         query = {}
         if attributes:
@@ -841,9 +834,7 @@ class AccountGroupsAPI:
         if start_index:
             query["startIndex"] = request.start_index
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/Groups", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups", query=query)
         return ListGroupsResponse.from_dict(json)
 
     def patch(
@@ -861,13 +852,14 @@ class AccountGroupsAPI:
         """Update group details.
 
         Partially updates the details of a group."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.0/accounts//scim/v2/Groups/{request.id}", body=body
+        )
 
     def update(
         self,
@@ -885,9 +877,8 @@ class AccountGroupsAPI:
         """Replace a group.
 
         Updates the details of a group by replacing the entire group entity."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Group(
                 display_name=display_name,
                 entitlements=entitlements,
@@ -899,7 +890,9 @@ class AccountGroupsAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
+        self._api.do(
+            "PUT", f"/api/2.0/accounts//scim/v2/Groups/{request.id}", body=body
+        )
 
 
 class AccountServicePrincipalsAPI:
@@ -923,9 +916,8 @@ class AccountServicePrincipalsAPI:
         """Create a service principal.
 
         Creates a new service principal in the Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ServicePrincipal(
                 active=active,
                 application_id=application_id,
@@ -947,14 +939,12 @@ class AccountServicePrincipalsAPI:
         """Delete a service principal.
 
         Delete a single service principal in the Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteServicePrincipalRequest(id=id)
-        body = request.as_dict()
 
         self._api.do(
-            "DELETE", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
+            "DELETE", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}"
         )
 
     def get(self, id: str, **kwargs) -> ServicePrincipal:
@@ -962,14 +952,12 @@ class AccountServicePrincipalsAPI:
 
         Gets the details for a single service principal define in the Databricks
         Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetServicePrincipalRequest(id=id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
+            "GET", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}"
         )
         return ServicePrincipal.from_dict(json)
 
@@ -988,9 +976,8 @@ class AccountServicePrincipalsAPI:
         """List service principals.
 
         Gets the set of service principals associated with a Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListServicePrincipalsRequest(
                 attributes=attributes,
                 count=count,
@@ -1000,7 +987,6 @@ class AccountServicePrincipalsAPI:
                 sort_order=sort_order,
                 start_index=start_index,
             )
-        body = request.as_dict()
 
         query = {}
         if attributes:
@@ -1019,10 +1005,7 @@ class AccountServicePrincipalsAPI:
             query["startIndex"] = request.start_index
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/accounts//scim/v2/ServicePrincipals", query=query
         )
         return ListServicePrincipalResponse.from_dict(json)
 
@@ -1042,14 +1025,15 @@ class AccountServicePrincipalsAPI:
 
         Partially updates the details of a single service principal in the
         Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
+            "PATCH",
+            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            body=body,
         )
 
     def update(
@@ -1071,9 +1055,8 @@ class AccountServicePrincipalsAPI:
         Updates the details of a single service principal.
 
         This action replaces the existing service principal with the same name."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ServicePrincipal(
                 active=active,
                 application_id=application_id,
@@ -1087,7 +1070,9 @@ class AccountServicePrincipalsAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PUT", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
+            "PUT",
+            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            body=body,
         )
 
 
@@ -1115,9 +1100,8 @@ class AccountUsersAPI:
 
         Creates a new user in the Databricks Account. This new user will also be
         added to the Databricks account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = User(
                 active=active,
                 display_name=display_name,
@@ -1140,25 +1124,21 @@ class AccountUsersAPI:
 
         Deletes a user. Deleting a user from a Databricks Account also removes
         objects associated with the user."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteUserRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Users/{request.id}")
 
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
 
         Gets information for a specific user in Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetUserRequest(id=id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users/{request.id}")
         return User.from_dict(json)
 
     def list(
@@ -1176,9 +1156,8 @@ class AccountUsersAPI:
         """List users.
 
         Gets details for all the users associated with a Databricks Account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListUsersRequest(
                 attributes=attributes,
                 count=count,
@@ -1188,7 +1167,6 @@ class AccountUsersAPI:
                 sort_order=sort_order,
                 start_index=start_index,
             )
-        body = request.as_dict()
 
         query = {}
         if attributes:
@@ -1206,9 +1184,7 @@ class AccountUsersAPI:
         if start_index:
             query["startIndex"] = request.start_index
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/Users", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users", query=query)
         return ListUsersResponse.from_dict(json)
 
     def patch(
@@ -1227,13 +1203,14 @@ class AccountUsersAPI:
 
         Partially updates a user resource by applying the supplied operations on
         specific user attributes."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.0/accounts//scim/v2/Users/{request.id}", body=body
+        )
 
     def update(
         self,
@@ -1254,9 +1231,8 @@ class AccountUsersAPI:
         """Replace a user.
 
         Replaces a user's information with the data supplied in request."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = User(
                 active=active,
                 display_name=display_name,
@@ -1271,7 +1247,7 @@ class AccountUsersAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
+        self._api.do("PUT", f"/api/2.0/accounts//scim/v2/Users/{request.id}", body=body)
 
 
 class CurrentUserAPI:
@@ -1308,9 +1284,8 @@ class GroupsAPI:
 
         Creates a group in the Databricks Workspace with a unique name, using
         the supplied group details."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Group(
                 display_name=display_name,
                 entitlements=entitlements,
@@ -1329,25 +1304,21 @@ class GroupsAPI:
         """Delete a group.
 
         Deletes a group from the Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteGroupRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{request.id}")
 
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
 
         Gets the information for a specific group in the Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetGroupRequest(id=id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{request.id}")
         return Group.from_dict(json)
 
     def list(
@@ -1365,9 +1336,8 @@ class GroupsAPI:
         """List group details.
 
         Gets all details of the groups associated with the Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListGroupsRequest(
                 attributes=attributes,
                 count=count,
@@ -1377,7 +1347,6 @@ class GroupsAPI:
                 sort_order=sort_order,
                 start_index=start_index,
             )
-        body = request.as_dict()
 
         query = {}
         if attributes:
@@ -1395,9 +1364,7 @@ class GroupsAPI:
         if start_index:
             query["startIndex"] = request.start_index
 
-        json = self._api.do(
-            "GET", "/api/2.0/preview/scim/v2/Groups", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/preview/scim/v2/Groups", query=query)
         return ListGroupsResponse.from_dict(json)
 
     def patch(
@@ -1415,13 +1382,14 @@ class GroupsAPI:
         """Update group details.
 
         Partially updates the details of a group."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.0/preview/scim/v2/Groups/{request.id}", body=body
+        )
 
     def update(
         self,
@@ -1439,9 +1407,8 @@ class GroupsAPI:
         """Replace a group.
 
         Updates the details of a group by replacing the entire group entity."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Group(
                 display_name=display_name,
                 entitlements=entitlements,
@@ -1453,7 +1420,7 @@ class GroupsAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{request.id}", body=body)
 
 
 class ServicePrincipalsAPI:
@@ -1477,9 +1444,8 @@ class ServicePrincipalsAPI:
         """Create a service principal.
 
         Creates a new service principal in the Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ServicePrincipal(
                 active=active,
                 application_id=application_id,
@@ -1501,14 +1467,12 @@ class ServicePrincipalsAPI:
         """Delete a service principal.
 
         Delete a single service principal in the Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteServicePrincipalRequest(id=id)
-        body = request.as_dict()
 
         self._api.do(
-            "DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
+            "DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}"
         )
 
     def get(self, id: str, **kwargs) -> ServicePrincipal:
@@ -1516,14 +1480,12 @@ class ServicePrincipalsAPI:
 
         Gets the details for a single service principal define in the Databricks
         Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetServicePrincipalRequest(id=id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
+            "GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}"
         )
         return ServicePrincipal.from_dict(json)
 
@@ -1543,9 +1505,8 @@ class ServicePrincipalsAPI:
 
         Gets the set of service principals associated with a Databricks
         Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListServicePrincipalsRequest(
                 attributes=attributes,
                 count=count,
@@ -1555,7 +1516,6 @@ class ServicePrincipalsAPI:
                 sort_order=sort_order,
                 start_index=start_index,
             )
-        body = request.as_dict()
 
         query = {}
         if attributes:
@@ -1574,7 +1534,7 @@ class ServicePrincipalsAPI:
             query["startIndex"] = request.start_index
 
         json = self._api.do(
-            "GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, body=body
+            "GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query
         )
         return ListServicePrincipalResponse.from_dict(json)
 
@@ -1594,14 +1554,15 @@ class ServicePrincipalsAPI:
 
         Partially updates the details of a single service principal in the
         Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
+            "PATCH",
+            f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}",
+            body=body,
         )
 
     def update(
@@ -1623,9 +1584,8 @@ class ServicePrincipalsAPI:
         Updates the details of a single service principal.
 
         This action replaces the existing service principal with the same name."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ServicePrincipal(
                 active=active,
                 application_id=application_id,
@@ -1639,7 +1599,7 @@ class ServicePrincipalsAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
+            "PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}", body=body
         )
 
 
@@ -1667,9 +1627,8 @@ class UsersAPI:
 
         Creates a new user in the Databricks Workspace. This new user will also
         be added to the Databricks account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = User(
                 active=active,
                 display_name=display_name,
@@ -1692,25 +1651,21 @@ class UsersAPI:
 
         Deletes a user. Deleting a user from a Databricks Workspace also removes
         objects associated with the user."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteUserRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Users/{request.id}")
 
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
 
         Gets information for a specific user in Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetUserRequest(id=id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{request.id}")
         return User.from_dict(json)
 
     def list(
@@ -1728,9 +1683,8 @@ class UsersAPI:
         """List users.
 
         Gets details for all the users associated with a Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListUsersRequest(
                 attributes=attributes,
                 count=count,
@@ -1740,7 +1694,6 @@ class UsersAPI:
                 sort_order=sort_order,
                 start_index=start_index,
             )
-        body = request.as_dict()
 
         query = {}
         if attributes:
@@ -1758,9 +1711,7 @@ class UsersAPI:
         if start_index:
             query["startIndex"] = request.start_index
 
-        json = self._api.do(
-            "GET", "/api/2.0/preview/scim/v2/Users", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/preview/scim/v2/Users", query=query)
         return ListUsersResponse.from_dict(json)
 
     def patch(
@@ -1779,13 +1730,12 @@ class UsersAPI:
 
         Partially updates a user resource by applying the supplied operations on
         specific user attributes."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
+        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{request.id}", body=body)
 
     def update(
         self,
@@ -1806,9 +1756,8 @@ class UsersAPI:
         """Replace a user.
 
         Replaces a user's information with the data supplied in request."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = User(
                 active=active,
                 display_name=display_name,
@@ -1823,4 +1772,4 @@ class UsersAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{request.id}", body=body)

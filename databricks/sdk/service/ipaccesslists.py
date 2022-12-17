@@ -332,9 +332,8 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. **Note**: Your
         new IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateIpAccessList(
                 ip_addresses=ip_addresses, label=label, list_type=list_type
             )
@@ -347,28 +346,22 @@ class IpAccessListsAPI:
         """Delete access list.
 
         Deletes an IP access list, specified by its list ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(ip_access_list_id=ip_access_list_id)
-        body = request.as_dict()
 
-        self._api.do(
-            "DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/ip-access-lists/{request.ip_access_list_id}")
 
     def get(self, ip_access_list_id: str, **kwargs) -> FetchIpAccessListResponse:
         """Get access list.
 
         Gets an IP access list, specified by its list ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(ip_access_list_id=ip_access_list_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body
+            "GET", f"/api/2.0/ip-access-lists/{request.ip_access_list_id}"
         )
         return FetchIpAccessListResponse.from_dict(json)
 
@@ -405,9 +398,8 @@ class IpAccessListsAPI:
         the changes to take effect. Note that your resulting IP access list has
         no effect until you enable the feature. See
         :method:workspaceconf/setStatus."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ReplaceIpAccessList(
                 enabled=enabled,
                 ip_access_list_id=ip_access_list_id,
@@ -418,7 +410,9 @@ class IpAccessListsAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body)
+        self._api.do(
+            "PUT", f"/api/2.0/ip-access-lists/{request.ip_access_list_id}", body=body
+        )
 
     def update(
         self,
@@ -450,9 +444,8 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. Note that your
         resulting IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateIpAccessList(
                 enabled=enabled,
                 ip_access_list_id=ip_access_list_id,
@@ -464,5 +457,5 @@ class IpAccessListsAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body
+            "PATCH", f"/api/2.0/ip-access-lists/{request.ip_access_list_id}", body=body
         )

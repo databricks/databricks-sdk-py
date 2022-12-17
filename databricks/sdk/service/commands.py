@@ -363,9 +363,8 @@ class CommandExecutionAPI:
         Cancels a currently running command within an execution context.
 
         The command ID is obtained from a prior successful call to __execute__."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CancelCommand(
                 cluster_id=cluster_id, command_id=command_id, context_id=context_id
             )
@@ -382,13 +381,11 @@ class CommandExecutionAPI:
         executing command.
 
         The command ID is obtained from a prior successful call to __execute__."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CommandStatusRequest(
                 cluster_id=cluster_id, command_id=command_id, context_id=context_id
             )
-        body = request.as_dict()
 
         query = {}
         if cluster_id:
@@ -398,7 +395,7 @@ class CommandExecutionAPI:
         if context_id:
             query["contextId"] = request.context_id
 
-        json = self._api.do("GET", "/api/1.2/commands/status", query=query, body=body)
+        json = self._api.do("GET", "/api/1.2/commands/status", query=query)
         return CommandStatusResponse.from_dict(json)
 
     def context_status(
@@ -407,11 +404,9 @@ class CommandExecutionAPI:
         """Get status.
 
         Gets the status for an execution context."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ContextStatusRequest(cluster_id=cluster_id, context_id=context_id)
-        body = request.as_dict()
 
         query = {}
         if cluster_id:
@@ -419,7 +414,7 @@ class CommandExecutionAPI:
         if context_id:
             query["contextId"] = request.context_id
 
-        json = self._api.do("GET", "/api/1.2/contexts/status", query=query, body=body)
+        json = self._api.do("GET", "/api/1.2/contexts/status", query=query)
         return ContextStatusResponse.from_dict(json)
 
     def create(
@@ -430,9 +425,8 @@ class CommandExecutionAPI:
         Creates an execution context for running cluster commands.
 
         If successful, this method returns the ID of the new execution context."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateContext(cluster_id=cluster_id, language=language)
         body = request.as_dict()
 
@@ -443,9 +437,8 @@ class CommandExecutionAPI:
         """Delete an execution context.
 
         Deletes an execution context."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DestroyContext(cluster_id=cluster_id, context_id=context_id)
         body = request.as_dict()
 
@@ -467,9 +460,8 @@ class CommandExecutionAPI:
 
         If successful, it returns an ID for tracking the status of the command's
         execution."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Command(
                 cluster_id=cluster_id,
                 command=command,

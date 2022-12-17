@@ -1286,9 +1286,8 @@ class PipelinesAPI:
         Creates a new data processing pipeline based on the requested
         configuration. If successful, this method returns the ID of the new
         pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreatePipeline(
                 allow_duplicate_names=allow_duplicate_names,
                 catalog=catalog,
@@ -1317,23 +1316,19 @@ class PipelinesAPI:
         """Delete a pipeline.
 
         Deletes a pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(pipeline_id=pipeline_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/pipelines/{request.pipeline_id}")
 
     def get(self, pipeline_id: str, **kwargs) -> GetPipelineResponse:
         """Get a pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(pipeline_id=pipeline_id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/pipelines/{request.pipeline_id}")
         return GetPipelineResponse.from_dict(json)
 
     def get_update(
@@ -1342,14 +1337,13 @@ class PipelinesAPI:
         """Get a pipeline update.
 
         Gets an update from an active pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetUpdate(pipeline_id=pipeline_id, update_id=update_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", body=body
+            "GET",
+            f"/api/2.0/pipelines/{request.pipeline_id}/updates/{request.update_id}",
         )
         return GetUpdateResponse.from_dict(json)
 
@@ -1365,16 +1359,14 @@ class PipelinesAPI:
         """List pipelines.
 
         Lists pipelines defined in the Delta Live Tables system."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListPipelines(
                 filter=filter,
                 max_results=max_results,
                 order_by=order_by,
                 page_token=page_token,
             )
-        body = request.as_dict()
 
         query = {}
         if filter:
@@ -1386,7 +1378,7 @@ class PipelinesAPI:
         if page_token:
             query["page_token"] = request.page_token
 
-        json = self._api.do("GET", "/api/2.0/pipelines", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/pipelines", query=query)
         return ListPipelinesResponse.from_dict(json)
 
     def list_updates(
@@ -1401,16 +1393,14 @@ class PipelinesAPI:
         """List pipeline updates.
 
         List updates for an active pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListUpdates(
                 max_results=max_results,
                 page_token=page_token,
                 pipeline_id=pipeline_id,
                 until_update_id=until_update_id,
             )
-        body = request.as_dict()
 
         query = {}
         if max_results:
@@ -1421,7 +1411,7 @@ class PipelinesAPI:
             query["until_update_id"] = request.until_update_id
 
         json = self._api.do(
-            "GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, body=body
+            "GET", f"/api/2.0/pipelines/{request.pipeline_id}/updates", query=query
         )
         return ListUpdatesResponse.from_dict(json)
 
@@ -1429,13 +1419,11 @@ class PipelinesAPI:
         """Reset a pipeline.
 
         Resets a pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Reset(pipeline_id=pipeline_id)
-        body = request.as_dict()
 
-        self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/reset", body=body)
+        self._api.do("POST", f"/api/2.0/pipelines/{request.pipeline_id}/reset")
 
     def start_update(
         self,
@@ -1450,9 +1438,8 @@ class PipelinesAPI:
         """Queue a pipeline update.
 
         Starts or queues a pipeline update."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = StartUpdate(
                 cause=cause,
                 full_refresh=full_refresh,
@@ -1463,7 +1450,7 @@ class PipelinesAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body
+            "POST", f"/api/2.0/pipelines/{request.pipeline_id}/updates", body=body
         )
         return StartUpdateResponse.from_dict(json)
 
@@ -1471,13 +1458,11 @@ class PipelinesAPI:
         """Stop a pipeline.
 
         Stops a pipeline."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Stop(pipeline_id=pipeline_id)
-        body = request.as_dict()
 
-        self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", body=body)
+        self._api.do("POST", f"/api/2.0/pipelines/{request.pipeline_id}/stop")
 
     def update(
         self,
@@ -1505,9 +1490,8 @@ class PipelinesAPI:
         """Edit a pipeline.
 
         Updates a pipeline with the supplied configuration."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditPipeline(
                 allow_duplicate_names=allow_duplicate_names,
                 catalog=catalog,
@@ -1530,4 +1514,4 @@ class PipelinesAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body)
+        self._api.do("PUT", f"/api/2.0/pipelines/{request.pipeline_id}", body=body)

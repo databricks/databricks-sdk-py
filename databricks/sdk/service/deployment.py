@@ -1861,9 +1861,8 @@ class CredentialsAPI:
         [Create a new workspace using the Account API]
 
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateCredentialRequest(
                 aws_credentials=aws_credentials, credentials_name=credentials_name
             )
@@ -1878,14 +1877,12 @@ class CredentialsAPI:
         Deletes a Databricks credential configuration object for an account,
         both specified by ID. You cannot delete a credential that is associated
         with any workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteCredentialRequest(credentials_id=credentials_id)
-        body = request.as_dict()
 
         self._api.do(
-            "DELETE", f"/api/2.0/accounts//credentials/{credentials_id}", body=body
+            "DELETE", f"/api/2.0/accounts//credentials/{request.credentials_id}"
         )
 
     def get(self, credentials_id: str, **kwargs) -> Credential:
@@ -1893,14 +1890,12 @@ class CredentialsAPI:
 
         Gets a Databricks credential configuration object for an account, both
         specified by ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetCredentialRequest(credentials_id=credentials_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//credentials/{credentials_id}", body=body
+            "GET", f"/api/2.0/accounts//credentials/{request.credentials_id}"
         )
         return Credential.from_dict(json)
 
@@ -1940,9 +1935,8 @@ class EncryptionKeysAPI:
         This operation is available only if your account is on the E2 version of
         the platform or on a select custom plan that allows multiple workspaces
         per account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateCustomerManagedKeyRequest(
                 aws_key_info=aws_key_info, use_cases=use_cases
             )
@@ -1959,18 +1953,15 @@ class EncryptionKeysAPI:
         Deletes a customer-managed key configuration object for an account. You
         cannot delete a configuration that is associated with a running
         workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteEncryptionKeyRequest(
                 customer_managed_key_id=customer_managed_key_id
             )
-        body = request.as_dict()
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//customer-managed-keys/{customer_managed_key_id}",
-            body=body,
+            f"/api/2.0/accounts//customer-managed-keys/{request.customer_managed_key_id}",
         )
 
     def get(self, customer_managed_key_id: str, **kwargs) -> CustomerManagedKey:
@@ -1991,18 +1982,15 @@ class EncryptionKeysAPI:
 
         This operation is available only if your account is on the E2 version of
         the platform."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetEncryptionKeyRequest(
                 customer_managed_key_id=customer_managed_key_id
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//customer-managed-keys/{customer_managed_key_id}",
-            body=body,
+            f"/api/2.0/accounts//customer-managed-keys/{request.customer_managed_key_id}",
         )
         return CustomerManagedKey.from_dict(json)
 
@@ -2066,9 +2054,8 @@ class NetworksAPI:
 
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
         [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateNetworkRequest(
                 gcp_network_info=gcp_network_info,
                 network_name=network_name,
@@ -2091,13 +2078,11 @@ class NetworksAPI:
 
         This operation is available only if your account is on the E2 version of
         the platform."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteNetworkRequest(network_id=network_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/accounts//networks/{network_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/accounts//networks/{request.network_id}")
 
     def get(self, network_id: str, **kwargs) -> Network:
         """Get a network configuration.
@@ -2110,15 +2095,11 @@ class NetworksAPI:
         the platform.
 
         [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetNetworkRequest(network_id=network_id)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//networks/{network_id}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//networks/{request.network_id}")
         return Network.from_dict(json)
 
     def list(self) -> NetworkList:
@@ -2171,9 +2152,8 @@ class PrivateAccessAPI:
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpsertPrivateAccessSettingsRequest(
                 allowed_vpc_endpoint_ids=allowed_vpc_endpoint_ids,
                 private_access_level=private_access_level,
@@ -2205,18 +2185,15 @@ class PrivateAccessAPI:
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeletePrivateAccesRequest(
                 private_access_settings_id=private_access_settings_id
             )
-        body = request.as_dict()
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//private-access-settings/{private_access_settings_id}",
-            body=body,
+            f"/api/2.0/accounts//private-access-settings/{request.private_access_settings_id}",
         )
 
     def get(self, private_access_settings_id: str, **kwargs) -> PrivateAccessSettings:
@@ -2235,18 +2212,15 @@ class PrivateAccessAPI:
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetPrivateAccesRequest(
                 private_access_settings_id=private_access_settings_id
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//private-access-settings/{private_access_settings_id}",
-            body=body,
+            f"/api/2.0/accounts//private-access-settings/{request.private_access_settings_id}",
         )
         return PrivateAccessSettings.from_dict(json)
 
@@ -2304,9 +2278,8 @@ class PrivateAccessAPI:
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpsertPrivateAccessSettingsRequest(
                 allowed_vpc_endpoint_ids=allowed_vpc_endpoint_ids,
                 private_access_level=private_access_level,
@@ -2319,7 +2292,7 @@ class PrivateAccessAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.0/accounts//private-access-settings/{private_access_settings_id}",
+            f"/api/2.0/accounts//private-access-settings/{request.private_access_settings_id}",
             body=body,
         )
 
@@ -2346,9 +2319,8 @@ class StorageAPI:
         [Create a new workspace using the Account API]
 
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateStorageConfigurationRequest(
                 root_bucket_info=root_bucket_info,
                 storage_configuration_name=storage_configuration_name,
@@ -2365,18 +2337,15 @@ class StorageAPI:
 
         Deletes a Databricks storage configuration. You cannot delete a storage
         configuration that is associated with any workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteStorageRequest(
                 storage_configuration_id=storage_configuration_id
             )
-        body = request.as_dict()
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//storage-configurations/{storage_configuration_id}",
-            body=body,
+            f"/api/2.0/accounts//storage-configurations/{request.storage_configuration_id}",
         )
 
     def get(self, storage_configuration_id: str, **kwargs) -> StorageConfiguration:
@@ -2384,18 +2353,15 @@ class StorageAPI:
 
         Gets a Databricks storage configuration for an account, both specified
         by ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetStorageRequest(
                 storage_configuration_id=storage_configuration_id
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//storage-configurations/{storage_configuration_id}",
-            body=body,
+            f"/api/2.0/accounts//storage-configurations/{request.storage_configuration_id}",
         )
         return StorageConfiguration.from_dict(json)
 
@@ -2448,9 +2414,8 @@ class VpcEndpointsAPI:
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
         [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
         [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateVpcEndpointRequest(
                 aws_vpc_endpoint_id=aws_vpc_endpoint_id,
                 region=region,
@@ -2483,14 +2448,12 @@ class VpcEndpointsAPI:
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
-        body = request.as_dict()
 
         self._api.do(
-            "DELETE", f"/api/2.0/accounts//vpc-endpoints/{vpc_endpoint_id}", body=body
+            "DELETE", f"/api/2.0/accounts//vpc-endpoints/{request.vpc_endpoint_id}"
         )
 
     def get(self, vpc_endpoint_id: str, **kwargs) -> VpcEndpoint:
@@ -2507,14 +2470,12 @@ class VpcEndpointsAPI:
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//vpc-endpoints/{vpc_endpoint_id}", body=body
+            "GET", f"/api/2.0/accounts//vpc-endpoints/{request.vpc_endpoint_id}"
         )
         return VpcEndpoint.from_dict(json)
 
@@ -2598,9 +2559,8 @@ class WorkspacesAPI:
         multiple workspaces per account.
 
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateWorkspaceRequest(
                 aws_region=aws_region,
                 cloud=cloud,
@@ -2633,15 +2593,11 @@ class WorkspacesAPI:
         This operation is available only if your account is on the E2 version of
         the platform or on a select custom plan that allows multiple workspaces
         per account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteWorkspaceRequest(workspace_id=workspace_id)
-        body = request.as_dict()
 
-        self._api.do(
-            "DELETE", f"/api/2.0/accounts//workspaces/{workspace_id}", body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts//workspaces/{request.workspace_id}")
 
     def get(self, workspace_id: int, **kwargs) -> Workspace:
         """Get workspace.
@@ -2662,14 +2618,12 @@ class WorkspacesAPI:
         per account.
 
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetWorkspaceRequest(workspace_id=workspace_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//workspaces/{workspace_id}", body=body
+            "GET", f"/api/2.0/accounts//workspaces/{request.workspace_id}"
         )
         return Workspace.from_dict(json)
 
@@ -2809,9 +2763,8 @@ class WorkspacesAPI:
 
         [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateWorkspaceRequest(
                 aws_region=aws_region,
                 credentials_id=credentials_id,
@@ -2824,5 +2777,5 @@ class WorkspacesAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/accounts//workspaces/{workspace_id}", body=body
+            "PATCH", f"/api/2.0/accounts//workspaces/{request.workspace_id}", body=body
         )

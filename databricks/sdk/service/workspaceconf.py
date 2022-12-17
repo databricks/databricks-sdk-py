@@ -39,17 +39,15 @@ class WorkspaceConfAPI:
         """Check configuration status.
 
         Gets the configuration status for a workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetStatus(keys=keys)
-        body = request.as_dict()
 
         query = {}
         if keys:
             query["keys"] = request.keys
 
-        json = self._api.do("GET", "/api/2.0/workspace-conf", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/workspace-conf", query=query)
         return WorkspaceConf.from_dict(json)
 
     def set_status(self, **kwargs):
@@ -57,10 +55,8 @@ class WorkspaceConfAPI:
 
         Sets the configuration status for a workspace, including enabling or
         disabling it."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Dict[str, str]()
-        body = request.as_dict()
 
-        self._api.do("PATCH", "/api/2.0/workspace-conf", body=body)
+        self._api.do("PATCH", "/api/2.0/workspace-conf")

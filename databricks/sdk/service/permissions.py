@@ -660,19 +660,16 @@ class PermissionsAPI:
 
         Gets the permission of an object. Objects can inherit permissions from
         their parent objects or root objects."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(
                 request_object_id=request_object_id,
                 request_object_type=request_object_type,
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            body=body,
+            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}",
         )
         return ObjectPermissions.from_dict(json)
 
@@ -682,19 +679,16 @@ class PermissionsAPI:
         """Get permission levels.
 
         Gets the permission levels that a user can have on an object."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetPermissionLevels(
                 request_object_id=request_object_id,
                 request_object_type=request_object_type,
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels",
-            body=body,
+            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}/permissionLevels",
         )
         return GetPermissionLevelsResponse.from_dict(json)
 
@@ -712,9 +706,8 @@ class PermissionsAPI:
 
         Sets permissions on object. Objects can inherit permissions from their
         parent objects and root objects."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PermissionsRequest(
                 access_control_list=access_control_list,
                 request_object_id=request_object_id,
@@ -724,7 +717,7 @@ class PermissionsAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
+            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}",
             body=body,
         )
 
@@ -741,9 +734,8 @@ class PermissionsAPI:
         """Update permission.
 
         Updates the permissions on an object."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PermissionsRequest(
                 access_control_list=access_control_list,
                 request_object_id=request_object_id,
@@ -753,7 +745,7 @@ class PermissionsAPI:
 
         self._api.do(
             "PATCH",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
+            f"/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}",
             body=body,
         )
 
@@ -772,9 +764,8 @@ class WorkspaceAssignmentAPI:
 
         Create new permission assignments for the specified account and
         workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateWorkspaceAssignments(
                 permission_assignments=permission_assignments, workspace_id=workspace_id
             )
@@ -782,7 +773,7 @@ class WorkspaceAssignmentAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments",
+            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments",
             body=body,
         )
         return WorkspaceAssignmentsCreated.from_dict(json)
@@ -792,18 +783,15 @@ class WorkspaceAssignmentAPI:
 
         Deletes the workspace permissions assignment for a given account and
         workspace using the specified service principal."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteWorkspaceAssignmentRequest(
                 principal_id=principal_id, workspace_id=workspace_id
             )
-        body = request.as_dict()
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
-            body=body,
+            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
         )
 
     def get(self, workspace_id: int, **kwargs) -> WorkspacePermissions:
@@ -811,16 +799,13 @@ class WorkspaceAssignmentAPI:
 
         Get an array of workspace permissions for the specified account and
         workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetWorkspaceAssignmentRequest(workspace_id=workspace_id)
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/permissions",
-            body=body,
+            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/permissions",
         )
         return WorkspacePermissions.from_dict(json)
 
@@ -829,16 +814,13 @@ class WorkspaceAssignmentAPI:
 
         Get the permission assignments for the specified Databricks Account and
         Databricks Workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListWorkspaceAssignmentRequest(workspace_id=workspace_id)
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments",
-            body=body,
+            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments",
         )
         return PermissionAssignments.from_dict(json)
 
@@ -853,9 +835,8 @@ class WorkspaceAssignmentAPI:
 
         Updates the workspace permissions assignment for a given account and
         workspace using the specified service principal."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateWorkspaceAssignments(
                 permissions=permissions,
                 principal_id=principal_id,
@@ -865,6 +846,6 @@ class WorkspaceAssignmentAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
+            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
             body=body,
         )

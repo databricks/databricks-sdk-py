@@ -218,9 +218,8 @@ class TokenManagementAPI:
         """Create on-behalf token.
 
         Creates a token on behalf of a service principal."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateOboTokenRequest(
                 application_id=application_id,
                 comment=comment,
@@ -237,28 +236,22 @@ class TokenManagementAPI:
         """Delete a token.
 
         Deletes a token, specified by its ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(token_id=token_id)
-        body = request.as_dict()
 
-        self._api.do(
-            "DELETE", f"/api/2.0/token-management/tokens/{token_id}", body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/token-management/tokens/{request.token_id}")
 
     def get(self, token_id: str, **kwargs) -> TokenInfo:
         """Get token info.
 
         Gets information about a token, specified by its ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(token_id=token_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/token-management/tokens/{token_id}", body=body
+            "GET", f"/api/2.0/token-management/tokens/{request.token_id}"
         )
         return TokenInfo.from_dict(json)
 
@@ -268,13 +261,11 @@ class TokenManagementAPI:
         """List all tokens.
 
         Lists all tokens associated with the specified workspace or user."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = List(
                 created_by_id=created_by_id, created_by_username=created_by_username
             )
-        body = request.as_dict()
 
         query = {}
         if created_by_id:
@@ -282,7 +273,5 @@ class TokenManagementAPI:
         if created_by_username:
             query["created_by_username"] = request.created_by_username
 
-        json = self._api.do(
-            "GET", "/api/2.0/token-management/tokens", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/token-management/tokens", query=query)
         return ListTokensResponse.from_dict(json)

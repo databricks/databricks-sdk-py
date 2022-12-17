@@ -89,19 +89,19 @@ class {{.Name}}API:
       {{- end}}, **kwargs
     {{- end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
         {{if .Description}}"""{{.Comment "        " 80}}"""{{end}}
-        {{if .Request}}
+        {{if .Request -}}
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
           request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})
-        body = request.as_dict()
+        {{if .Request.HasJsonField}}body = request.as_dict(){{end}}
         {{if .Request.HasQueryField}}
         query = {}
         {{- range .Request.Fields}}{{if .IsQuery}}
         if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{end -}}
-        {{end}}
-        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.Name}}{{"}"}}{{end}}{{ end }}'
-        {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}, body=body{{end}})
+        {{- end}}
+        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{request."}}{{.Field.Name}}{{"}"}}{{end}}{{ end }}'
+        {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
         {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
     {{end -}}
 {{- end}}

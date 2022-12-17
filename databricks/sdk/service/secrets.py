@@ -458,9 +458,8 @@ class SecretsAPI:
         The scope name must consist of alphanumeric characters, dashes,
         underscores, and periods, and may not exceed 128 characters. The maximum
         number of scopes in a workspace is 100."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateScope(
                 initial_manage_principal=initial_manage_principal,
                 keyvault_metadata=keyvault_metadata,
@@ -480,9 +479,8 @@ class SecretsAPI:
         `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or ACL
         exists. Throws `PERMISSION_DENIED` if the user does not have permission
         to make this API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteAcl(principal=principal, scope=scope)
         body = request.as_dict()
 
@@ -496,9 +494,8 @@ class SecretsAPI:
         Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
         `PERMISSION_DENIED` if the user does not have permission to make this
         API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteScope(scope=scope)
         body = request.as_dict()
 
@@ -513,9 +510,8 @@ class SecretsAPI:
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret
         exists. Throws `PERMISSION_DENIED` if the user does not have permission
         to make this API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteSecret(key=key, scope=scope)
         body = request.as_dict()
 
@@ -530,11 +526,9 @@ class SecretsAPI:
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
         `PERMISSION_DENIED` if the user does not have permission to make this
         API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetAcl(principal=principal, scope=scope)
-        body = request.as_dict()
 
         query = {}
         if principal:
@@ -542,7 +536,7 @@ class SecretsAPI:
         if scope:
             query["scope"] = request.scope
 
-        json = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query)
         return AclItem.from_dict(json)
 
     def list_acls(self, scope: str, **kwargs) -> ListAclsResponse:
@@ -554,17 +548,15 @@ class SecretsAPI:
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
         `PERMISSION_DENIED` if the user does not have permission to make this
         API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListAcls(scope=scope)
-        body = request.as_dict()
 
         query = {}
         if scope:
             query["scope"] = request.scope
 
-        json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query)
         return ListAclsResponse.from_dict(json)
 
     def list_scopes(self) -> ListScopesResponse:
@@ -589,17 +581,15 @@ class SecretsAPI:
         `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
         `PERMISSION_DENIED` if the user does not have permission to make this
         API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListSecrets(scope=scope)
-        body = request.as_dict()
 
         query = {}
         if scope:
             query["scope"] = request.scope
 
-        json = self._api.do("GET", "/api/2.0/secrets/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/secrets/list", query=query)
         return ListSecretsResponse.from_dict(json)
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission, **kwargs):
@@ -632,9 +622,8 @@ class SecretsAPI:
         exists. Throws `INVALID_PARAMETER_VALUE` if the permission is invalid.
         Throws `PERMISSION_DENIED` if the user does not have permission to make
         this API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PutAcl(permission=permission, principal=principal, scope=scope)
         body = request.as_dict()
 
@@ -671,9 +660,8 @@ class SecretsAPI:
         exceeded. Throws `INVALID_PARAMETER_VALUE` if the key name or value
         length is invalid. Throws `PERMISSION_DENIED` if the user does not have
         permission to make this API call."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PutSecret(
                 bytes_value=bytes_value, key=key, scope=scope, string_value=string_value
             )

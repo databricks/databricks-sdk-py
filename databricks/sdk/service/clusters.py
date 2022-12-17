@@ -2652,9 +2652,8 @@ class ClustersAPI:
 
         Change the owner of the cluster. You must be an admin to perform this
         operation."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ChangeClusterOwner(
                 cluster_id=cluster_id, owner_username=owner_username
             )
@@ -2706,9 +2705,8 @@ class ClustersAPI:
         If Databricks acquires at least 85% of the requested on-demand nodes,
         cluster creation will succeed. Otherwise the cluster will terminate with
         an informative error message."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateCluster(
                 apply_policy_default_values=apply_policy_default_values,
                 autoscale=autoscale,
@@ -2747,9 +2745,8 @@ class ClustersAPI:
         removed asynchronously. Once the termination has completed, the cluster
         will be in a `TERMINATED` state. If the cluster is already in a
         `TERMINATING` or `TERMINATED` state, nothing will happen."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteCluster(cluster_id=cluster_id)
         body = request.as_dict()
 
@@ -2801,9 +2798,8 @@ class ClustersAPI:
         error code.
 
         Clusters created by the Databricks Jobs service cannot be edited."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditCluster(
                 apply_policy_default_values=apply_policy_default_values,
                 autoscale=autoscale,
@@ -2852,9 +2848,8 @@ class ClustersAPI:
         Retrieves a list of events about the activity of a cluster. This API is
         paginated. If there are more events to read, the response includes all
         the nparameters necessary to request the next page of events."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetEvents(
                 cluster_id=cluster_id,
                 end_time=end_time,
@@ -2875,17 +2870,15 @@ class ClustersAPI:
         "Retrieves the information for a cluster given its identifier. Clusters
         can be described while they are running, or up to 60 days after they are
         terminated."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(cluster_id=cluster_id)
-        body = request.as_dict()
 
         query = {}
         if cluster_id:
             query["cluster_id"] = request.cluster_id
 
-        json = self._api.do("GET", "/api/2.0/clusters/get", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/clusters/get", query=query)
         return ClusterInfo.from_dict(json)
 
     def list(self, *, can_use_client: str = None, **kwargs) -> ListClustersResponse:
@@ -2901,17 +2894,15 @@ class ClustersAPI:
         job clusters\nin the past 7 days, then this API returns the 1 pinned
         cluster, 4 active clusters, all 45 terminated interactive clusters, and
         the 30 most recently terminated job clusters."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = List(can_use_client=can_use_client)
-        body = request.as_dict()
 
         query = {}
         if can_use_client:
             query["can_use_client"] = request.can_use_client
 
-        json = self._api.do("GET", "/api/2.0/clusters/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/clusters/list", query=query)
         return ListClustersResponse.from_dict(json)
 
     def list_node_types(self) -> ListNodeTypesResponse:
@@ -2941,9 +2932,8 @@ class ClustersAPI:
         In addition, users will no longer see permanently deleted clusters in
         the cluster list, and API users can no longer perform any action on
         permanently deleted clusters."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PermanentDeleteCluster(cluster_id=cluster_id)
         body = request.as_dict()
 
@@ -2955,9 +2945,8 @@ class ClustersAPI:
         Pinning a cluster ensures that the cluster will always be returned by
         the ListClusters API. Pinning a cluster that is already pinned will have
         no effect. This API can only be called by workspace admins."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = PinCluster(cluster_id=cluster_id)
         body = request.as_dict()
 
@@ -2975,9 +2964,8 @@ class ClustersAPI:
 
         Resizes a cluster to have a desired number of workers. This will fail
         unless the cluster is in a `RUNNING` state."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ResizeCluster(
                 autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers
             )
@@ -2990,9 +2978,8 @@ class ClustersAPI:
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not
         currently in a `RUNNING` state, nothing will happen."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
         body = request.as_dict()
 
@@ -3019,9 +3006,8 @@ class ClustersAPI:
         number of nodes. * If the cluster is not currently in a `TERMINATED`
         state, nothing will happen. * Clusters launched to run a job cannot be
         started."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = StartCluster(cluster_id=cluster_id)
         body = request.as_dict()
 
@@ -3033,9 +3019,8 @@ class ClustersAPI:
         Unpinning a cluster will allow the cluster to eventually be removed from
         the ListClusters API. Unpinning a cluster that is not pinned will have
         no effect. This API can only be called by workspace admins."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UnpinCluster(cluster_id=cluster_id)
         body = request.as_dict()
 
@@ -3059,9 +3044,8 @@ class InstanceProfilesAPI:
 
         In the UI, you can select the instance profile when launching clusters.
         This API is only available to admin users."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = AddInstanceProfile(
                 iam_role_arn=iam_role_arn,
                 instance_profile_arn=instance_profile_arn,
@@ -3097,9 +3081,8 @@ class InstanceProfilesAPI:
 
         [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = InstanceProfile(
                 iam_role_arn=iam_role_arn,
                 instance_profile_arn=instance_profile_arn,
@@ -3127,9 +3110,8 @@ class InstanceProfilesAPI:
         with this instance profile will continue to function.
 
         This API is only accessible to admin users."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RemoveInstanceProfile(instance_profile_arn=instance_profile_arn)
         body = request.as_dict()
 

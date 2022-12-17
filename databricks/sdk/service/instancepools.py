@@ -1179,9 +1179,8 @@ class InstancePoolsAPI:
         """Create a new instance pool.
 
         Creates a new instance pool using idle and ready-to-use cloud instances."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateInstancePool(
                 aws_attributes=aws_attributes,
                 azure_attributes=azure_attributes,
@@ -1207,9 +1206,8 @@ class InstancePoolsAPI:
 
         Deletes the instance pool permanently. The idle instances in the pool
         are terminated asynchronously."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteInstancePool(instance_pool_id=instance_pool_id)
         body = request.as_dict()
 
@@ -1237,9 +1235,8 @@ class InstancePoolsAPI:
         """Edit an existing instance pool.
 
         Modifies the configuration of an existing instance pool."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditInstancePool(
                 aws_attributes=aws_attributes,
                 azure_attributes=azure_attributes,
@@ -1264,19 +1261,15 @@ class InstancePoolsAPI:
         """Get instance pool information.
 
         Retrieve the information for an instance pool based on its identifier."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(instance_pool_id=instance_pool_id)
-        body = request.as_dict()
 
         query = {}
         if instance_pool_id:
             query["instance_pool_id"] = request.instance_pool_id
 
-        json = self._api.do(
-            "GET", "/api/2.0/instance-pools/get", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/instance-pools/get", query=query)
         return GetInstancePool.from_dict(json)
 
     def list(self) -> ListInstancePools:

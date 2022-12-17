@@ -351,19 +351,15 @@ class LibrariesAPI:
         3. Libraries that were previously requested on this cluster or on all
         clusters, but now marked for removal. Within this group there is no
         order guarantee."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ClusterStatus(cluster_id=cluster_id)
-        body = request.as_dict()
 
         query = {}
         if cluster_id:
             query["cluster_id"] = request.cluster_id
 
-        json = self._api.do(
-            "GET", "/api/2.0/libraries/cluster-status", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/libraries/cluster-status", query=query)
         return ClusterLibraryStatuses.from_dict(json)
 
     def install(self, cluster_id: str, libraries: List[Library], **kwargs):
@@ -376,9 +372,8 @@ class LibrariesAPI:
         **Note**: The actual set of libraries to be installed on a cluster is
         the union of the libraries specified via this method and the libraries
         set to be installed on all clusters via the libraries UI."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = InstallLibraries(cluster_id=cluster_id, libraries=libraries)
         body = request.as_dict()
 
@@ -391,9 +386,8 @@ class LibrariesAPI:
         uninstalled until the cluster is restarted. Uninstalling libraries that
         are not installed on the cluster will have no impact but is not an
         error."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UninstallLibraries(cluster_id=cluster_id, libraries=libraries)
         body = request.as_dict()
 

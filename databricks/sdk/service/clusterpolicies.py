@@ -194,9 +194,8 @@ class ClusterPoliciesAPI:
         """Create a new policy.
 
         Creates a new policy with prescribed settings."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreatePolicy(definition=definition, name=name)
         body = request.as_dict()
 
@@ -208,9 +207,8 @@ class ClusterPoliciesAPI:
 
         Delete a policy for a cluster. Clusters governed by this policy can
         still run, but cannot be edited."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeletePolicy(policy_id=policy_id)
         body = request.as_dict()
 
@@ -221,9 +219,8 @@ class ClusterPoliciesAPI:
 
         Update an existing policy for cluster. This operation may make some
         clusters governed by the previous policy invalid."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditPolicy(definition=definition, name=name, policy_id=policy_id)
         body = request.as_dict()
 
@@ -234,19 +231,15 @@ class ClusterPoliciesAPI:
 
         Get a cluster policy entity. Creation and editing is available to admins
         only."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(policy_id=policy_id)
-        body = request.as_dict()
 
         query = {}
         if policy_id:
             query["policy_id"] = request.policy_id
 
-        json = self._api.do(
-            "GET", "/api/2.0/policies/clusters/get", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/policies/clusters/get", query=query)
         return Policy.from_dict(json)
 
     def list(self) -> ListPoliciesResponse:

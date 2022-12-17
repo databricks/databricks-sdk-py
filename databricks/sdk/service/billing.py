@@ -833,15 +833,13 @@ class BillableUsageAPI:
         method might take multiple seconds to complete.
 
         [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DownloadRequest(
                 end_month=end_month,
                 personal_data=personal_data,
                 start_month=start_month,
             )
-        body = request.as_dict()
 
         query = {}
         if end_month:
@@ -851,9 +849,7 @@ class BillableUsageAPI:
         if start_month:
             query["start_month"] = request.start_month
 
-        self._api.do(
-            "GET", f"/api/2.0/accounts//usage/download", query=query, body=body
-        )
+        self._api.do("GET", f"/api/2.0/accounts//usage/download", query=query)
 
 
 class BudgetsAPI:
@@ -866,9 +862,8 @@ class BudgetsAPI:
         """Create a new budget.
 
         Creates a new budget in the specified account."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = WrappedBudget(budget=budget, budget_id=budget_id)
         body = request.as_dict()
 
@@ -879,26 +874,22 @@ class BudgetsAPI:
         """Delete budget.
 
         Deletes the budget specified by its UUID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteBudgetRequest(budget_id=budget_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/accounts//budget/{budget_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/accounts//budget/{request.budget_id}")
 
     def get(self, budget_id: str, **kwargs) -> WrappedBudgetWithStatus:
         """Get budget and its status.
 
         Gets the budget specified by its UUID, including noncumulative status
         for each day that the budget is configured to include."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetBudgetRequest(budget_id=budget_id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/accounts//budget/{budget_id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/accounts//budget/{request.budget_id}")
         return WrappedBudgetWithStatus.from_dict(json)
 
     def list(self) -> BudgetList:
@@ -915,13 +906,14 @@ class BudgetsAPI:
 
         Modifies a budget in this account. Budget properties are completely
         overwritten."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = WrappedBudget(budget=budget, budget_id=budget_id)
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/accounts//budget/{budget_id}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.0/accounts//budget/{request.budget_id}", body=body
+        )
 
 
 class LogDeliveryAPI:
@@ -964,9 +956,8 @@ class LogDeliveryAPI:
 
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
         [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = WrappedCreateLogDeliveryConfiguration(
                 log_delivery_configuration=log_delivery_configuration
             )
@@ -982,18 +973,15 @@ class LogDeliveryAPI:
 
         Gets a Databricks log delivery configuration object for an account, both
         specified by ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetLogDeliveryRequest(
                 log_delivery_configuration_id=log_delivery_configuration_id
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//log-delivery/{log_delivery_configuration_id}",
-            body=body,
+            f"/api/2.0/accounts//log-delivery/{request.log_delivery_configuration_id}",
         )
         return WrappedLogDeliveryConfiguration.from_dict(json)
 
@@ -1009,15 +997,13 @@ class LogDeliveryAPI:
 
         Gets all Databricks log delivery configurations associated with an
         account specified by ID."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListLogDeliveryRequest(
                 credentials_id=credentials_id,
                 status=status,
                 storage_configuration_id=storage_configuration_id,
             )
-        body = request.as_dict()
 
         query = {}
         if credentials_id:
@@ -1027,9 +1013,7 @@ class LogDeliveryAPI:
         if storage_configuration_id:
             query["storage_configuration_id"] = request.storage_configuration_id
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//log-delivery", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//log-delivery", query=query)
         return WrappedLogDeliveryConfigurations.from_dict(json)
 
     def patch_status(
@@ -1046,9 +1030,8 @@ class LogDeliveryAPI:
         configuration if this would violate the delivery configuration limits
         described under [Create log
         delivery](#operation/create-log-delivery-config)."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UpdateLogDeliveryConfigurationStatusRequest(
                 log_delivery_configuration_id=log_delivery_configuration_id,
                 status=status,
@@ -1057,6 +1040,6 @@ class LogDeliveryAPI:
 
         self._api.do(
             "PATCH",
-            f"/api/2.0/accounts//log-delivery/{log_delivery_configuration_id}",
+            f"/api/2.0/accounts//log-delivery/{request.log_delivery_configuration_id}",
             body=body,
         )

@@ -367,9 +367,8 @@ class DbfsAPI:
 
         If the block of data exceeds 1 MB, this call will throw an exception
         with `MAX_BLOCK_SIZE_EXCEEDED`."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = AddBlock(data=data, handle=handle)
         body = request.as_dict()
 
@@ -380,9 +379,8 @@ class DbfsAPI:
 
         Closes the stream specified by the input handle. If the handle does not
         exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Close(handle=handle)
         body = request.as_dict()
 
@@ -401,9 +399,8 @@ class DbfsAPI:
         1. Issue a `create` call and get a handle. 2. Issue one or more
         `add-block` calls with the handle you have. 3. Issue a `close` call with
         the handle you have."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Create(overwrite=overwrite, path=path)
         body = request.as_dict()
 
@@ -431,9 +428,8 @@ class DbfsAPI:
         Running such operations using notebooks provides better control and
         manageability, such as selective deletes, and the possibility to
         automate periodic delete jobs."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(path=path, recursive=recursive)
         body = request.as_dict()
 
@@ -445,17 +441,15 @@ class DbfsAPI:
         Gets the file information for a file or directory. If the file or
         directory does not exist, this call throws an exception with
         `RESOURCE_DOES_NOT_EXIST`."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetStatus(path=path)
-        body = request.as_dict()
 
         query = {}
         if path:
             query["path"] = request.path
 
-        json = self._api.do("GET", "/api/2.0/dbfs/get-status", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/dbfs/get-status", query=query)
         return FileInfo.from_dict(json)
 
     def list(self, path: str, **kwargs) -> ListStatusResponse:
@@ -473,17 +467,15 @@ class DbfsAPI:
         using the [File system utility
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which
         provides the same functionality without timing out."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = List(path=path)
-        body = request.as_dict()
 
         query = {}
         if path:
             query["path"] = request.path
 
-        json = self._api.do("GET", "/api/2.0/dbfs/list", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/dbfs/list", query=query)
         return ListStatusResponse.from_dict(json)
 
     def mkdirs(self, path: str, **kwargs):
@@ -494,9 +486,8 @@ class DbfsAPI:
         path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
         **Note**: If this operation fails, it might have succeeded in creating
         some of the necessary parent directories."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = MkDirs(path=path)
         body = request.as_dict()
 
@@ -511,9 +502,8 @@ class DbfsAPI:
         path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If
         the given source path is a directory, this call always recursively moves
         all files.","""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Move(destination_path=destination_path, source_path=source_path)
         body = request.as_dict()
 
@@ -534,9 +524,8 @@ class DbfsAPI:
 
         If you want to upload large files, use the streaming upload. For
         details, see :method:create, :method:addBlock, :method:close."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Put(contents=contents, overwrite=overwrite, path=path)
         body = request.as_dict()
 
@@ -556,11 +545,9 @@ class DbfsAPI:
 
         If `offset + length` exceeds the number of bytes in a file, it reads the
         contents until the end of file.","""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Read(length=length, offset=offset, path=path)
-        body = request.as_dict()
 
         query = {}
         if length:
@@ -570,5 +557,5 @@ class DbfsAPI:
         if path:
             query["path"] = request.path
 
-        json = self._api.do("GET", "/api/2.0/dbfs/read", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/dbfs/read", query=query)
         return ReadResponse.from_dict(json)

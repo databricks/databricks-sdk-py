@@ -314,9 +314,8 @@ class GlobalInitScriptsAPI:
         """Create init script.
 
         Creates a new global init script in this workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GlobalInitScriptCreateRequest(
                 enabled=enabled, name=name, position=position, script=script
             )
@@ -329,27 +328,21 @@ class GlobalInitScriptsAPI:
         """Delete init script.
 
         Deletes a global init script."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Delete(script_id=script_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/global-init-scripts/{request.script_id}")
 
     def get(self, script_id: str, **kwargs) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
 
         Gets all the details of a script, including its Base64-encoded contents."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = Get(script_id=script_id)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.0/global-init-scripts/{script_id}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/global-init-scripts/{request.script_id}")
         return GlobalInitScriptDetailsWithContent.from_dict(json)
 
     def list(self) -> ListGlobalInitScriptsResponse:
@@ -377,9 +370,8 @@ class GlobalInitScriptsAPI:
 
         Updates a global init script, specifying only the fields to change. All
         fields are optional. Unspecified fields retain their current value."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GlobalInitScriptUpdateRequest(
                 enabled=enabled,
                 name=name,
@@ -389,4 +381,6 @@ class GlobalInitScriptsAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PATCH", f"/api/2.0/global-init-scripts/{script_id}", body=body)
+        self._api.do(
+            "PATCH", f"/api/2.0/global-init-scripts/{request.script_id}", body=body
+        )

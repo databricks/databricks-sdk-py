@@ -3577,9 +3577,8 @@ class AlertsAPI:
         Creates an alert. An alert is a Databricks SQL object that periodically
         runs a query, evaluates a condition of its result, and notifies users or
         alert destinations if the condition was met."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditAlert(
                 alert_id=alert_id,
                 name=name,
@@ -3600,9 +3599,8 @@ class AlertsAPI:
         Creates a new refresh schedule for an alert.
 
         **Note:** The structure of refresh schedules is subject to change."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateRefreshSchedule(
                 alert_id=alert_id, cron=cron, data_source_id=data_source_id
             )
@@ -3610,7 +3608,7 @@ class AlertsAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/alerts/{alert_id}/refresh-schedules",
+            f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules",
             body=body,
         )
         return RefreshSchedule.from_dict(json)
@@ -3621,42 +3619,35 @@ class AlertsAPI:
         Deletes an alert. Deleted alerts are no longer accessible and cannot be
         restored. **Note:** Unlike queries and dashboards, alerts cannot be
         moved to the trash."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteAlertRequest(alert_id=alert_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{request.alert_id}")
 
     def delete_schedule(self, alert_id: str, schedule_id: str, **kwargs):
         """Delete a refresh schedule.
 
         Deletes an alert's refresh schedule. The refresh schedule specifies when
         to refresh and evaluate the associated query result."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteScheduleRequest(alert_id=alert_id, schedule_id=schedule_id)
-        body = request.as_dict()
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/preview/sql/alerts/{alert_id}/refresh-schedules/{schedule_id}",
-            body=body,
+            f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules/{request.schedule_id}",
         )
 
     def get(self, alert_id: str, **kwargs) -> Alert:
         """Get an alert.
 
         Gets an alert."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetAlertRequest(alert_id=alert_id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{request.alert_id}")
         return Alert.from_dict(json)
 
     def get_subscriptions(self, alert_id: str, **kwargs) -> SubscriptionList:
@@ -3667,14 +3658,12 @@ class AlertsAPI:
         The alert recipient is specified by either the `user` field or the
         `destination` field. The `user` field is ignored if `destination` is
         non-`null`."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetSubscriptionsRequest(alert_id=alert_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions", body=body
+            "GET", f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions"
         )
         return SubscriptionList.from_dict(json)
 
@@ -3696,16 +3685,12 @@ class AlertsAPI:
         **Note:** Although refresh schedules are returned in a list, only one
         refresh schedule per alert is currently supported. The structure of
         refresh schedules is subject to change."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListSchedulesRequest(alert_id=alert_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/alerts/{alert_id}/refresh-schedules",
-            body=body,
+            "GET", f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules"
         )
         return RefreshScheduleList.from_dict(json)
 
@@ -3719,16 +3704,17 @@ class AlertsAPI:
         **kwargs,
     ) -> Subscription:
         """Subscribe to an alert."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateSubscription(
                 alert_id=alert_id, destination_id=destination_id, user_id=user_id
             )
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions", body=body
+            "POST",
+            f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions",
+            body=body,
         )
         return Subscription.from_dict(json)
 
@@ -3736,18 +3722,15 @@ class AlertsAPI:
         """Unsubscribe to an alert.
 
         Unsubscribes a user or a destination to an alert."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = UnsubscribeRequest(
                 alert_id=alert_id, subscription_id=subscription_id
             )
-        body = request.as_dict()
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions/{subscription_id}",
-            body=body,
+            f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions/{request.subscription_id}",
         )
 
     def update(
@@ -3763,9 +3746,8 @@ class AlertsAPI:
         """Update an alert.
 
         Updates an alert."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditAlert(
                 alert_id=alert_id,
                 name=name,
@@ -3775,7 +3757,9 @@ class AlertsAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body)
+        self._api.do(
+            "PUT", f"/api/2.0/preview/sql/alerts/{request.alert_id}", body=body
+        )
 
 
 class DashboardsAPI:
@@ -3794,9 +3778,8 @@ class DashboardsAPI:
         **kwargs,
     ) -> Dashboard:
         """Create a dashboard object."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateDashboardRequest(
                 dashboard_filters_enabled=dashboard_filters_enabled,
                 is_draft=is_draft,
@@ -3815,14 +3798,12 @@ class DashboardsAPI:
 
         Moves a dashboard to the trash. Trashed dashboards do not appear in list
         views or searches, and cannot be shared."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteDashboardRequest(dashboard_id=dashboard_id)
-        body = request.as_dict()
 
         self._api.do(
-            "DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body
+            "DELETE", f"/api/2.0/preview/sql/dashboards/{request.dashboard_id}"
         )
 
     def get(self, dashboard_id: str, **kwargs) -> Dashboard:
@@ -3830,14 +3811,12 @@ class DashboardsAPI:
 
         Returns a JSON representation of a dashboard object, including its
         visualization and query objects."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetDashboardRequest(dashboard_id=dashboard_id)
-        body = request.as_dict()
 
         json = self._api.do(
-            "GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body
+            "GET", f"/api/2.0/preview/sql/dashboards/{request.dashboard_id}"
         )
         return Dashboard.from_dict(json)
 
@@ -3853,13 +3832,11 @@ class DashboardsAPI:
         """Get dashboard objects.
 
         Fetch a paginated list of dashboard objects."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListDashboardsRequest(
                 order=order, page=page, page_size=page_size, q=q
             )
-        body = request.as_dict()
 
         query = {}
         if order:
@@ -3871,9 +3848,7 @@ class DashboardsAPI:
         if q:
             query["q"] = request.q
 
-        json = self._api.do(
-            "GET", "/api/2.0/preview/sql/dashboards", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/preview/sql/dashboards", query=query)
         return ListResponse.from_dict(json)
 
     def restore(self, dashboard_id: str, **kwargs):
@@ -3881,14 +3856,12 @@ class DashboardsAPI:
 
         A restored dashboard appears in list views and searches and can be
         shared."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RestoreDashboardRequest(dashboard_id=dashboard_id)
-        body = request.as_dict()
 
         self._api.do(
-            "POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", body=body
+            "POST", f"/api/2.0/preview/sql/dashboards/trash/{request.dashboard_id}"
         )
 
 
@@ -3919,18 +3892,15 @@ class DbsqlPermissionsAPI:
 
         Gets a JSON representation of the access control list (ACL) for a
         specified object."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetDbsqlPermissionRequest(
                 object_id=object_id, object_type=object_type
             )
-        body = request.as_dict()
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/sql/permissions/{objectType}/{objectId}",
-            body=body,
+            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}",
         )
         return GetResponse.from_dict(json)
 
@@ -3946,9 +3916,8 @@ class DbsqlPermissionsAPI:
 
         Sets the access control list (ACL) for a specified object. This
         operation will complete rewrite the ACL."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = SetRequest(
                 access_control_list=access_control_list,
                 object_id=object_id,
@@ -3958,7 +3927,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/permissions/{objectType}/{objectId}",
+            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}",
             body=body,
         )
         return SetResponse.from_dict(json)
@@ -3975,9 +3944,8 @@ class DbsqlPermissionsAPI:
 
         Transfers ownership of a dashboard, query, or alert to an active user.
         Requires an admin API key."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = TransferOwnershipRequest(
                 new_owner=new_owner, object_id=object_id, object_type=object_type
             )
@@ -3985,7 +3953,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/permissions/{objectType}/{objectId}/transfer",
+            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}/transfer",
             body=body,
         )
         return Success.from_dict(json)
@@ -4018,9 +3986,8 @@ class QueriesAPI:
         from an existing query.
 
         **Note**: You cannot add a visualization until you create the query."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = QueryPostContent(
                 data_source_id=data_source_id,
                 description=description,
@@ -4041,28 +4008,22 @@ class QueriesAPI:
         Moves a query to the trash. Trashed queries immediately disappear from
         searches and list views, and they cannot be used for alerts. The trash
         is deleted after 30 days."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteQueryRequest(query_id=query_id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{request.query_id}")
 
     def get(self, query_id: str, **kwargs) -> Query:
         """Get a query definition.
 
         Retrieve a query object definition along with contextual permissions
         information about the currently authenticated user."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetQueryRequest(query_id=query_id)
-        body = request.as_dict()
 
-        json = self._api.do(
-            "GET", f"/api/2.0/preview/sql/queries/{query_id}", body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/preview/sql/queries/{request.query_id}")
         return Query.from_dict(json)
 
     def list(
@@ -4078,13 +4039,11 @@ class QueriesAPI:
 
         Gets a list of queries. Optionally, this list can be filtered by a
         search term."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListQueriesRequest(
                 order=order, page=page, page_size=page_size, q=q
             )
-        body = request.as_dict()
 
         query = {}
         if order:
@@ -4096,9 +4055,7 @@ class QueriesAPI:
         if q:
             query["q"] = request.q
 
-        json = self._api.do(
-            "GET", "/api/2.0/preview/sql/queries", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/preview/sql/queries", query=query)
         return QueryList.from_dict(json)
 
     def restore(self, query_id: str, **kwargs):
@@ -4107,15 +4064,11 @@ class QueriesAPI:
         Restore a query that has been moved to the trash. A restored query
         appears in list views and searches. You can use restored queries for
         alerts."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = RestoreQueryRequest(query_id=query_id)
-        body = request.as_dict()
 
-        self._api.do(
-            "POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", body=body
-        )
+        self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{request.query_id}")
 
     def update(
         self,
@@ -4134,9 +4087,8 @@ class QueriesAPI:
         Modify this query definition.
 
         **Note**: You cannot undo this operation."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = QueryPostContent(
                 data_source_id=data_source_id,
                 description=description,
@@ -4149,7 +4101,7 @@ class QueriesAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body
+            "POST", f"/api/2.0/preview/sql/queries/{request.query_id}", body=body
         )
         return Query.from_dict(json)
 
@@ -4172,16 +4124,14 @@ class QueryHistoryAPI:
         List the history of queries through SQL warehouses.
 
         You can filter by user ID, warehouse ID, status, and time range."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListQueryHistoryRequest(
                 filter_by=filter_by,
                 include_metrics=include_metrics,
                 max_results=max_results,
                 page_token=page_token,
             )
-        body = request.as_dict()
 
         query = {}
         if filter_by:
@@ -4193,9 +4143,7 @@ class QueryHistoryAPI:
         if page_token:
             query["page_token"] = request.page_token
 
-        json = self._api.do(
-            "GET", "/api/2.0/sql/history/queries", query=query, body=body
-        )
+        json = self._api.do("GET", "/api/2.0/sql/history/queries", query=query)
         return ListQueriesResponse.from_dict(json)
 
 
@@ -4224,9 +4172,8 @@ class WarehousesAPI:
         """Create a warehouse.
 
         Creates a new SQL warehouse."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = CreateWarehouseRequest(
                 auto_stop_mins=auto_stop_mins,
                 channel=channel,
@@ -4251,13 +4198,11 @@ class WarehousesAPI:
         """Delete a warehouse.
 
         Deletes a SQL warehouse."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = DeleteWarehouseRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", body=body)
+        self._api.do("DELETE", f"/api/2.0/sql/warehouses/{request.id}")
 
     def edit(
         self,
@@ -4282,9 +4227,8 @@ class WarehousesAPI:
         """Update a warehouse.
 
         Updates the configuration for a SQL warehouse."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = EditWarehouseRequest(
                 auto_stop_mins=auto_stop_mins,
                 channel=channel,
@@ -4304,19 +4248,17 @@ class WarehousesAPI:
             )
         body = request.as_dict()
 
-        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body)
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{request.id}/edit", body=body)
 
     def get(self, id: str, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
 
         Gets the information for a single SQL warehouse."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = GetWarehouseRequest(id=id)
-        body = request.as_dict()
 
-        json = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", body=body)
+        json = self._api.do("GET", f"/api/2.0/sql/warehouses/{request.id}")
         return GetWarehouseResponse.from_dict(json)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
@@ -4332,17 +4274,15 @@ class WarehousesAPI:
         """List warehouses.
 
         Lists all SQL warehouses that a user has manager permissions on."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = ListWarehousesRequest(run_as_user_id=run_as_user_id)
-        body = request.as_dict()
 
         query = {}
         if run_as_user_id:
             query["run_as_user_id"] = request.run_as_user_id
 
-        json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, body=body)
+        json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query)
         return ListWarehousesResponse.from_dict(json)
 
     def set_workspace_warehouse_config(
@@ -4366,9 +4306,8 @@ class WarehousesAPI:
 
         Sets the workspace level configuration that is shared by all SQL
         warehouses in a workspace."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = SetWorkspaceWarehouseConfigRequest(
                 channel=channel,
                 config_param=config_param,
@@ -4391,22 +4330,18 @@ class WarehousesAPI:
         """Start a warehouse.
 
         Starts a SQL warehouse."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = StartRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", body=body)
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{request.id}/start")
 
     def stop(self, id: str, **kwargs):
         """Stop a warehouse.
 
         Stops a SQL warehouse."""
-
         request = kwargs.get("request", None)
-        if not request:
+        if not request:  # request is not given through keyed args
             request = StopRequest(id=id)
-        body = request.as_dict()
 
-        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", body=body)
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{request.id}/stop")
