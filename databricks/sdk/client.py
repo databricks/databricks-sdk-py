@@ -132,8 +132,7 @@ class AzureServicePrincipal(DatabricksAuth):
     def __init__(self, cfg: 'Config'):
         if not cfg.is_azure:
             return
-        if (not cfg.azure_client_id or not cfg.azure_client_secret or not cfg.azure_tenant_id
-                or not cfg.azure_workspace_resource_id):
+        if not cfg.azure_client_id or not cfg.azure_client_secret or not cfg.azure_tenant_id or not cfg.azure_workspace_resource_id:
             return
         if not cfg.host:
             cfg.host = self._resolve_host(cfg)
@@ -317,7 +316,7 @@ class Config:
         env = self.azure_environment if self.azure_environment else "PUBLIC"
         try:
             return ENVIRONMENTS[env]
-        except:
+        except KeyError:
             raise DatabricksError(f"Cannot find Azure {env} Environment")
 
     def auth(self) -> DatabricksAuth:
@@ -369,8 +368,7 @@ class ApiClient(requests.Session):
             total=6,
             backoff_factor=1,
             status_forcelist=[429],
-            method_whitelist=set({"POST"})
-            | set(Retry.DEFAULT_METHOD_WHITELIST),
+            method_whitelist=set({"POST"}) | set(Retry.DEFAULT_METHOD_WHITELIST),
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )

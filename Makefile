@@ -5,3 +5,7 @@ dev-init:
 
 fmt:
 	yapf -pri databricks
+
+lint:
+	pycodestyle databricks
+
