@@ -1,8 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List
+
+from ..errors import OperationFailed, OperationTimeout
+
+_LOG = logging.getLogger('databricks.sdk.service.sql')
 
 # all definitions in this file are in alphabetical order
 
@@ -2654,7 +2661,9 @@ class WarehousesAPI:
                spot_instance_policy: SpotInstancePolicy = None,
                tags: EndpointTags = None,
                warehouse_type: WarehouseType = None,
-               **kwargs) -> CreateWarehouseResponse:
+               wait=True,
+               timeout=20,
+               **kwargs) -> GetWarehouseResponse:
         """Create a warehouse.
         
         Creates a new SQL warehouse."""
@@ -2674,11 +2683,36 @@ class WarehousesAPI:
                                              tags=tags,
                                              warehouse_type=warehouse_type)
         body = request.as_dict()
+        if wait:
+            op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.STOPPED, State.DELETED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(id=op_response['id'])
+                status = poll.state
+                status_message = f'current status: {status}'
+                if poll.health:
+                    status_message = poll.health.summary
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"warehouses.get(id={op_response['id']})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+        self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
 
-        json = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
-        return CreateWarehouseResponse.from_dict(json)
-
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str, wait=True, timeout=20, **kwargs) -> GetWarehouseResponse:
         """Delete a warehouse.
         
         Deletes a SQL warehouse."""
@@ -2686,6 +2720,29 @@ class WarehousesAPI:
         if not request: # request is not given through keyed args
             request = DeleteWarehouseRequest(id=id)
 
+        if wait:
+            self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
+            started = time.time()
+            target_states = (State.DELETED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(id=request.id)
+                status = poll.state
+                status_message = f'current status: {status}'
+                if poll.health:
+                    status_message = poll.health.summary
+                if status in target_states:
+                    return poll
+                prefix = f"warehouses.get(id={request.id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
 
     def edit(self,
@@ -2705,7 +2762,9 @@ class WarehousesAPI:
              spot_instance_policy: SpotInstancePolicy = None,
              tags: EndpointTags = None,
              warehouse_type: WarehouseType = None,
-             **kwargs):
+             wait=True,
+             timeout=20,
+             **kwargs) -> GetWarehouseResponse:
         """Update a warehouse.
         
         Updates the configuration for a SQL warehouse."""
@@ -2727,15 +2786,70 @@ class WarehousesAPI:
                                            tags=tags,
                                            warehouse_type=warehouse_type)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.STOPPED, State.DELETED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(id=request.id)
+                status = poll.state
+                status_message = f'current status: {status}'
+                if poll.health:
+                    status_message = poll.health.summary
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"warehouses.get(id={request.id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
 
-    def get(self, id: str, **kwargs) -> GetWarehouseResponse:
+    def get(self, id: str, wait=False, timeout=20, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
         
         Gets the information for a single SQL warehouse."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetWarehouseRequest(id=id)
+
+        if wait:
+            op_response = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.STOPPED, State.DELETED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(id=op_response['id'])
+                status = poll.state
+                status_message = f'current status: {status}'
+                if poll.health:
+                    status_message = poll.health.summary
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"warehouses.get(id={op_response['id']})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
         return GetWarehouseResponse.from_dict(json)
@@ -2799,7 +2913,7 @@ class WarehousesAPI:
         body = request.as_dict()
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)
 
-    def start(self, id: str, **kwargs):
+    def start(self, id: str, wait=True, timeout=20, **kwargs) -> GetWarehouseResponse:
         """Start a warehouse.
         
         Starts a SQL warehouse."""
@@ -2807,9 +2921,36 @@ class WarehousesAPI:
         if not request: # request is not given through keyed args
             request = StartRequest(id=id)
 
+        if wait:
+            self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.STOPPED, State.DELETED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(id=request.id)
+                status = poll.state
+                status_message = f'current status: {status}'
+                if poll.health:
+                    status_message = poll.health.summary
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"warehouses.get(id={request.id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
 
-    def stop(self, id: str, **kwargs):
+    def stop(self, id: str, wait=True, timeout=20, **kwargs) -> GetWarehouseResponse:
         """Stop a warehouse.
         
         Stops a SQL warehouse."""
@@ -2817,4 +2958,27 @@ class WarehousesAPI:
         if not request: # request is not given through keyed args
             request = StopRequest(id=id)
 
+        if wait:
+            self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
+            started = time.time()
+            target_states = (State.STOPPED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(id=request.id)
+                status = poll.state
+                status_message = f'current status: {status}'
+                if poll.health:
+                    status_message = poll.health.summary
+                if status in target_states:
+                    return poll
+                prefix = f"warehouses.get(id={request.id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
