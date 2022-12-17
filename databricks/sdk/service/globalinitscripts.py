@@ -35,19 +35,6 @@ class Delete:
     # The ID of the global init script.
     script_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.script_id:
-            body["script_id"] = self.script_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Delete":
-        return cls(
-            script_id=d.get("script_id", None),
-        )
-
 
 @dataclass
 class Get:
@@ -55,19 +42,6 @@ class Get:
 
     # The ID of the global init script.
     script_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.script_id:
-            body["script_id"] = self.script_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            script_id=d.get("script_id", None),
-        )
 
 
 @dataclass

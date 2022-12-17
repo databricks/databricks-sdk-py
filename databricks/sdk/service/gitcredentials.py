@@ -105,19 +105,6 @@ class Delete:
     # The ID for the corresponding credential to access.
     credential_id: int  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.credential_id:
-            body["credential_id"] = self.credential_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Delete":
-        return cls(
-            credential_id=d.get("credential_id", None),
-        )
-
 
 @dataclass
 class Get:
@@ -125,19 +112,6 @@ class Get:
 
     # The ID for the corresponding credential to access.
     credential_id: int  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.credential_id:
-            body["credential_id"] = self.credential_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            credential_id=d.get("credential_id", None),
-        )
 
 
 @dataclass

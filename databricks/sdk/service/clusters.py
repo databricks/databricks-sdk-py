@@ -1647,19 +1647,6 @@ class Get:
     # The cluster about which to retrieve information.
     cluster_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.cluster_id:
-            body["cluster_id"] = self.cluster_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-        )
-
 
 @dataclass
 class GetEvents:
@@ -1819,19 +1806,6 @@ class ListRequest:
     # Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS. No input for
     # this field will get all clusters in the workspace without filtering on its supported client
     can_use_client: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.can_use_client:
-            body["can_use_client"] = self.can_use_client
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
-        return cls(
-            can_use_client=d.get("can_use_client", None),
-        )
 
 
 @dataclass

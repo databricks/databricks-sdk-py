@@ -671,19 +671,6 @@ class DeleteAlertRequest:
 
     alert_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.alert_id:
-            body["alert_id"] = self.alert_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteAlertRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class DeleteDashboardRequest:
@@ -691,38 +678,12 @@ class DeleteDashboardRequest:
 
     dashboard_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.dashboard_id:
-            body["dashboard_id"] = self.dashboard_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteDashboardRequest":
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-        )
-
 
 @dataclass
 class DeleteQueryRequest:
     """Delete a query"""
 
     query_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.query_id:
-            body["query_id"] = self.query_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteQueryRequest":
-        return cls(
-            query_id=d.get("query_id", None),
-        )
 
 
 @dataclass
@@ -733,22 +694,6 @@ class DeleteScheduleRequest:
 
     schedule_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.alert_id:
-            body["alert_id"] = self.alert_id
-        if self.schedule_id:
-            body["schedule_id"] = self.schedule_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteScheduleRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-            schedule_id=d.get("schedule_id", None),
-        )
-
 
 @dataclass
 class DeleteWarehouseRequest:
@@ -756,19 +701,6 @@ class DeleteWarehouseRequest:
 
     # Required. Id of the SQL warehouse.
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteWarehouseRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -1253,38 +1185,12 @@ class GetAlertRequest:
 
     alert_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.alert_id:
-            body["alert_id"] = self.alert_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetAlertRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class GetDashboardRequest:
     """Retrieve a definition"""
 
     dashboard_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.dashboard_id:
-            body["dashboard_id"] = self.dashboard_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetDashboardRequest":
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-        )
 
 
 @dataclass
@@ -1296,41 +1202,12 @@ class GetDbsqlPermissionRequest:
     # The type of object permissions to check.
     objectType: "ObjectTypePlural"  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.objectId:
-            body["objectId"] = self.objectId
-        if self.objectType:
-            body["objectType"] = self.objectType.value
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetDbsqlPermissionRequest":
-        return cls(
-            objectId=d.get("objectId", None),
-            objectType=ObjectTypePlural(d["objectType"]) if "objectType" in d else None,
-        )
-
 
 @dataclass
 class GetQueryRequest:
     """Get a query definition."""
 
     query_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.query_id:
-            body["query_id"] = self.query_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetQueryRequest":
-        return cls(
-            query_id=d.get("query_id", None),
-        )
 
 
 @dataclass
@@ -1374,19 +1251,6 @@ class GetSubscriptionsRequest:
 
     alert_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.alert_id:
-            body["alert_id"] = self.alert_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetSubscriptionsRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class GetWarehouseRequest:
@@ -1394,19 +1258,6 @@ class GetWarehouseRequest:
 
     # Required. Id of the SQL warehouse.
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetWarehouseRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -1684,28 +1535,6 @@ class ListDashboardsRequest:
     # Full text search term.
     q: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.order:
-            body["order"] = self.order.value
-        if self.page:
-            body["page"] = self.page
-        if self.page_size:
-            body["page_size"] = self.page_size
-        if self.q:
-            body["q"] = self.q
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListDashboardsRequest":
-        return cls(
-            order=ListOrder(d["order"]) if "order" in d else None,
-            page=d.get("page", None),
-            page_size=d.get("page_size", None),
-            q=d.get("q", None),
-        )
-
 
 class ListOrder(Enum):
 
@@ -1740,28 +1569,6 @@ class ListQueriesRequest:
     page_size: int  # query
     # Full text search term
     q: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.order:
-            body["order"] = self.order
-        if self.page:
-            body["page"] = self.page
-        if self.page_size:
-            body["page_size"] = self.page_size
-        if self.q:
-            body["q"] = self.q
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListQueriesRequest":
-        return cls(
-            order=d.get("order", None),
-            page=d.get("page", None),
-            page_size=d.get("page_size", None),
-            q=d.get("q", None),
-        )
 
 
 @dataclass
@@ -1807,30 +1614,6 @@ class ListQueryHistoryRequest:
     # A token that can be used to get the next page of results.
     page_token: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.filter_by:
-            body["filter_by"] = self.filter_by.as_dict()
-        if self.include_metrics:
-            body["include_metrics"] = self.include_metrics
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.page_token:
-            body["page_token"] = self.page_token
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListQueryHistoryRequest":
-        return cls(
-            filter_by=QueryFilter.from_dict(d["filter_by"])
-            if "filter_by" in d
-            else None,
-            include_metrics=d.get("include_metrics", None),
-            max_results=d.get("max_results", None),
-            page_token=d.get("page_token", None),
-        )
-
 
 @dataclass
 class ListResponse:
@@ -1875,19 +1658,6 @@ class ListSchedulesRequest:
 
     alert_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.alert_id:
-            body["alert_id"] = self.alert_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListSchedulesRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class ListWarehousesRequest:
@@ -1896,19 +1666,6 @@ class ListWarehousesRequest:
     # Service Principal which will be used to fetch the list of endpoints. If not specified, the user from the session
     # header is used.
     run_as_user_id: int  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.run_as_user_id:
-            body["run_as_user_id"] = self.run_as_user_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListWarehousesRequest":
-        return cls(
-            run_as_user_id=d.get("run_as_user_id", None),
-        )
 
 
 @dataclass
@@ -2749,38 +2506,12 @@ class RestoreDashboardRequest:
 
     dashboard_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.dashboard_id:
-            body["dashboard_id"] = self.dashboard_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "RestoreDashboardRequest":
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-        )
-
 
 @dataclass
 class RestoreQueryRequest:
     """Restore a query"""
 
     query_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.query_id:
-            body["query_id"] = self.query_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "RestoreQueryRequest":
-        return cls(
-            query_id=d.get("query_id", None),
-        )
 
 
 @dataclass
@@ -2981,19 +2712,6 @@ class StartRequest:
     # Required. Id of the SQL warehouse.
     id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "StartRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 class State(Enum):
     """State of the warehouse"""
@@ -3021,19 +2739,6 @@ class StopRequest:
 
     # Required. Id of the SQL warehouse.
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "StopRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -3320,22 +3025,6 @@ class UnsubscribeRequest:
     alert_id: str  # path
 
     subscription_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.alert_id:
-            body["alert_id"] = self.alert_id
-        if self.subscription_id:
-            body["subscription_id"] = self.subscription_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "UnsubscribeRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-            subscription_id=d.get("subscription_id", None),
-        )
 
 
 @dataclass

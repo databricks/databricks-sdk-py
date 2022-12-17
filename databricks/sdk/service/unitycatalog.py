@@ -650,22 +650,6 @@ class DeleteCatalogRequest:
     # Required. The name of the catalog.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.force:
-            body["force"] = self.force
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteCatalogRequest":
-        return cls(
-            force=d.get("force", None),
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class DeleteExternalLocationRequest:
@@ -675,22 +659,6 @@ class DeleteExternalLocationRequest:
     force: bool  # query
     # Required. Name of the storage credential.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.force:
-            body["force"] = self.force
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteExternalLocationRequest":
-        return cls(
-            force=d.get("force", None),
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -702,22 +670,6 @@ class DeleteMetastoreRequest:
     # Required. Unique ID of the Metastore (from URL).
     id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.force:
-            body["force"] = self.force
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteMetastoreRequest":
-        return cls(
-            force=d.get("force", None),
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class DeleteProviderRequest:
@@ -725,19 +677,6 @@ class DeleteProviderRequest:
 
     # Required. Name of the provider.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteProviderRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -747,19 +686,6 @@ class DeleteRecipientRequest:
     # Required. Name of the recipient.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteRecipientRequest":
-        return cls(
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class DeleteSchemaRequest:
@@ -768,19 +694,6 @@ class DeleteSchemaRequest:
     # Required. Full name of the schema (from URL).
     full_name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name:
-            body["full_name"] = self.full_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteSchemaRequest":
-        return cls(
-            full_name=d.get("full_name", None),
-        )
-
 
 @dataclass
 class DeleteShareRequest:
@@ -788,19 +701,6 @@ class DeleteShareRequest:
 
     # The name of the share.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteShareRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -812,22 +712,6 @@ class DeleteStorageCredentialRequest:
     # Required. Name of the storage credential.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.force:
-            body["force"] = self.force
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteStorageCredentialRequest":
-        return cls(
-            force=d.get("force", None),
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class DeleteTableRequest:
@@ -835,19 +719,6 @@ class DeleteTableRequest:
 
     # Required. Full name of the Table (from URL).
     full_name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name:
-            body["full_name"] = self.full_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteTableRequest":
-        return cls(
-            full_name=d.get("full_name", None),
-        )
 
 
 @dataclass
@@ -962,19 +833,6 @@ class GetActivationUrlInfoRequest:
     # Required. The one time activation url. It also accepts activation token.
     activation_url: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.activation_url:
-            body["activation_url"] = self.activation_url
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetActivationUrlInfoRequest":
-        return cls(
-            activation_url=d.get("activation_url", None),
-        )
-
 
 @dataclass
 class GetCatalogRequest:
@@ -983,19 +841,6 @@ class GetCatalogRequest:
     # Required. The name of the catalog.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetCatalogRequest":
-        return cls(
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class GetExternalLocationRequest:
@@ -1003,19 +848,6 @@ class GetExternalLocationRequest:
 
     # Required. Name of the storage credential.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetExternalLocationRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -1029,25 +861,6 @@ class GetGrantRequest:
     # Required. Type of Securable (from URL).
     securable_type: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name:
-            body["full_name"] = self.full_name
-        if self.principal:
-            body["principal"] = self.principal
-        if self.securable_type:
-            body["securable_type"] = self.securable_type
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetGrantRequest":
-        return cls(
-            full_name=d.get("full_name", None),
-            principal=d.get("principal", None),
-            securable_type=d.get("securable_type", None),
-        )
-
 
 @dataclass
 class GetMetastoreRequest:
@@ -1055,19 +868,6 @@ class GetMetastoreRequest:
 
     # Required. Unique ID of the Metastore (from URL).
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetMetastoreRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -1227,19 +1027,6 @@ class GetProviderRequest:
     # Required. Name of the provider.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetProviderRequest":
-        return cls(
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class GetRecipientRequest:
@@ -1247,19 +1034,6 @@ class GetRecipientRequest:
 
     # Required. Name of the recipient.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetRecipientRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -1292,19 +1066,6 @@ class GetSchemaRequest:
 
     # Required. Full name of the schema (from URL).
     full_name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name:
-            body["full_name"] = self.full_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetSchemaRequest":
-        return cls(
-            full_name=d.get("full_name", None),
-        )
 
 
 @dataclass
@@ -1342,22 +1103,6 @@ class GetShareRequest:
     # The name of the share.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.include_shared_data:
-            body["include_shared_data"] = self.include_shared_data
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetShareRequest":
-        return cls(
-            include_shared_data=d.get("include_shared_data", None),
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class GetStorageCredentialRequest:
@@ -1366,19 +1111,6 @@ class GetStorageCredentialRequest:
     # Required. Name of the storage credential.
     name: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetStorageCredentialRequest":
-        return cls(
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class GetTableRequest:
@@ -1386,19 +1118,6 @@ class GetTableRequest:
 
     # Required. Full name of the Table (from URL).
     full_name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name:
-            body["full_name"] = self.full_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetTableRequest":
-        return cls(
-            full_name=d.get("full_name", None),
-        )
 
 
 @dataclass
@@ -1518,23 +1237,6 @@ class ListProvidersRequest:
     # If not provided, all providers will be returned. If no providers exist with this ID, no results will be returned.
     data_provider_global_metastore_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.data_provider_global_metastore_id:
-            body[
-                "data_provider_global_metastore_id"
-            ] = self.data_provider_global_metastore_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListProvidersRequest":
-        return cls(
-            data_provider_global_metastore_id=d.get(
-                "data_provider_global_metastore_id", None
-            ),
-        )
-
 
 @dataclass
 class ListProvidersResponse:
@@ -1566,23 +1268,6 @@ class ListRecipientsRequest:
     # returned.
     data_recipient_global_metastore_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.data_recipient_global_metastore_id:
-            body[
-                "data_recipient_global_metastore_id"
-            ] = self.data_recipient_global_metastore_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRecipientsRequest":
-        return cls(
-            data_recipient_global_metastore_id=d.get(
-                "data_recipient_global_metastore_id", None
-            ),
-        )
-
 
 @dataclass
 class ListRecipientsResponse:
@@ -1613,19 +1298,6 @@ class ListSchemasRequest:
     # Optional. Parent catalog for schemas of interest.
     catalog_name: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.catalog_name:
-            body["catalog_name"] = self.catalog_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListSchemasRequest":
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-        )
-
 
 @dataclass
 class ListSchemasResponse:
@@ -1655,19 +1327,6 @@ class ListSharesRequest:
 
     # Required. Name of the provider in which to list shares.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListSharesRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -1752,22 +1411,6 @@ class ListTablesRequest:
     catalog_name: str  # query
     # Required (for now -- may be optional for wildcard search in future). Parent schema of tables.
     schema_name: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.catalog_name:
-            body["catalog_name"] = self.catalog_name
-        if self.schema_name:
-            body["schema_name"] = self.schema_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListTablesRequest":
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            schema_name=d.get("schema_name", None),
-        )
 
 
 @dataclass
@@ -2344,19 +1987,6 @@ class RetrieveTokenRequest:
     # Required. The one time activation url. It also accepts activation token.
     activation_url: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.activation_url:
-            body["activation_url"] = self.activation_url
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "RetrieveTokenRequest":
-        return cls(
-            activation_url=d.get("activation_url", None),
-        )
-
 
 @dataclass
 class RetrieveTokenResponse:
@@ -2563,19 +2193,6 @@ class SharePermissionsRequest:
 
     # Required. The name of the Recipient.
     name: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "SharePermissionsRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -2952,31 +2569,6 @@ class TableSummariesRequest:
     # Optional. A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
     table_name_pattern: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.catalog_name:
-            body["catalog_name"] = self.catalog_name
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.page_token:
-            body["page_token"] = self.page_token
-        if self.schema_name_pattern:
-            body["schema_name_pattern"] = self.schema_name_pattern
-        if self.table_name_pattern:
-            body["table_name_pattern"] = self.table_name_pattern
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "TableSummariesRequest":
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            max_results=d.get("max_results", None),
-            page_token=d.get("page_token", None),
-            schema_name_pattern=d.get("schema_name_pattern", None),
-            table_name_pattern=d.get("table_name_pattern", None),
-        )
-
 
 @dataclass
 class TableSummary:
@@ -3020,22 +2612,6 @@ class UnassignRequest:
     metastore_id: str  # query
     # A workspace ID.
     workspace_id: int  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.metastore_id:
-            body["metastore_id"] = self.metastore_id
-        if self.workspace_id:
-            body["workspace_id"] = self.workspace_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "UnassignRequest":
-        return cls(
-            metastore_id=d.get("metastore_id", None),
-            workspace_id=d.get("workspace_id", None),
-        )
 
 
 @dataclass

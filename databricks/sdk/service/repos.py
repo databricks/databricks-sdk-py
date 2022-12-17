@@ -46,19 +46,6 @@ class Delete:
     # The ID for the corresponding repo to access.
     repo_id: int  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.repo_id:
-            body["repo_id"] = self.repo_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Delete":
-        return cls(
-            repo_id=d.get("repo_id", None),
-        )
-
 
 @dataclass
 class Get:
@@ -66,19 +53,6 @@ class Get:
 
     # The ID for the corresponding repo to access.
     repo_id: int  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.repo_id:
-            body["repo_id"] = self.repo_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            repo_id=d.get("repo_id", None),
-        )
 
 
 @dataclass
@@ -90,22 +64,6 @@ class ListRequest:
     next_page_token: str  # query
     # Filters repos that have paths starting with the given path prefix.
     path_prefix: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.next_page_token:
-            body["next_page_token"] = self.next_page_token
-        if self.path_prefix:
-            body["path_prefix"] = self.path_prefix
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            path_prefix=d.get("path_prefix", None),
-        )
 
 
 @dataclass

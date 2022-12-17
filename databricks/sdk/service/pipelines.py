@@ -177,19 +177,6 @@ class Delete:
 
     pipeline_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.pipeline_id:
-            body["pipeline_id"] = self.pipeline_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Delete":
-        return cls(
-            pipeline_id=d.get("pipeline_id", None),
-        )
-
 
 @dataclass
 class EditPipeline:
@@ -333,19 +320,6 @@ class Get:
 
     pipeline_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.pipeline_id:
-            body["pipeline_id"] = self.pipeline_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            pipeline_id=d.get("pipeline_id", None),
-        )
-
 
 @dataclass
 class GetPipelineResponse:
@@ -435,22 +409,6 @@ class GetUpdate:
     # The ID of the update.
     update_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.pipeline_id:
-            body["pipeline_id"] = self.pipeline_id
-        if self.update_id:
-            body["update_id"] = self.update_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetUpdate":
-        return cls(
-            pipeline_id=d.get("pipeline_id", None),
-            update_id=d.get("update_id", None),
-        )
-
 
 @dataclass
 class GetUpdateResponse:
@@ -493,28 +451,6 @@ class ListPipelines:
     # Page token returned by previous call
     page_token: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.order_by:
-            body["order_by"] = [v for v in self.order_by]
-        if self.page_token:
-            body["page_token"] = self.page_token
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListPipelines":
-        return cls(
-            filter=d.get("filter", None),
-            max_results=d.get("max_results", None),
-            order_by=d.get("order_by", None),
-            page_token=d.get("page_token", None),
-        )
-
 
 @dataclass
 class ListPipelinesResponse:
@@ -555,28 +491,6 @@ class ListUpdates:
     pipeline_id: str  # path
     # If present, returns updates until and including this update_id.
     until_update_id: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.page_token:
-            body["page_token"] = self.page_token
-        if self.pipeline_id:
-            body["pipeline_id"] = self.pipeline_id
-        if self.until_update_id:
-            body["until_update_id"] = self.until_update_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListUpdates":
-        return cls(
-            max_results=d.get("max_results", None),
-            page_token=d.get("page_token", None),
-            pipeline_id=d.get("pipeline_id", None),
-            until_update_id=d.get("until_update_id", None),
-        )
 
 
 @dataclass
@@ -1008,19 +922,6 @@ class Reset:
 
     pipeline_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.pipeline_id:
-            body["pipeline_id"] = self.pipeline_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Reset":
-        return cls(
-            pipeline_id=d.get("pipeline_id", None),
-        )
-
 
 @dataclass
 class StartUpdate:
@@ -1099,19 +1000,6 @@ class Stop:
     """Stop a pipeline"""
 
     pipeline_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.pipeline_id:
-            body["pipeline_id"] = self.pipeline_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Stop":
-        return cls(
-            pipeline_id=d.get("pipeline_id", None),
-        )
 
 
 @dataclass

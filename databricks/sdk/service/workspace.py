@@ -50,25 +50,6 @@ class Export:
     # The absolute path of the notebook or directory. Exporting directory is only support for `DBC` format.
     path: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.direct_download:
-            body["direct_download"] = self.direct_download
-        if self.format:
-            body["format"] = self.format.value
-        if self.path:
-            body["path"] = self.path
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Export":
-        return cls(
-            direct_download=d.get("direct_download", None),
-            format=ExportFormat(d["format"]) if "format" in d else None,
-            path=d.get("path", None),
-        )
-
 
 class ExportFormat(Enum):
     """This specifies the format of the file to be imported. By default, this is `SOURCE`. However it may be one of:
@@ -108,19 +89,6 @@ class GetStatus:
 
     # The absolute path of the notebook or directory.
     path: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.path:
-            body["path"] = self.path
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
-        return cls(
-            path=d.get("path", None),
-        )
 
 
 @dataclass
@@ -185,22 +153,6 @@ class ListRequest:
     notebooks_modified_after: int  # query
     # The absolute path of the notebook or directory.
     path: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.notebooks_modified_after:
-            body["notebooks_modified_after"] = self.notebooks_modified_after
-        if self.path:
-            body["path"] = self.path
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
-        return cls(
-            notebooks_modified_after=d.get("notebooks_modified_after", None),
-            path=d.get("path", None),
-        )
 
 
 @dataclass

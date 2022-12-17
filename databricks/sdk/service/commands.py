@@ -92,25 +92,6 @@ class CommandStatusRequest:
 
     contextId: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.clusterId:
-            body["clusterId"] = self.clusterId
-        if self.commandId:
-            body["commandId"] = self.commandId
-        if self.contextId:
-            body["contextId"] = self.contextId
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "CommandStatusRequest":
-        return cls(
-            clusterId=d.get("clusterId", None),
-            commandId=d.get("commandId", None),
-            contextId=d.get("contextId", None),
-        )
-
 
 @dataclass
 class CommandStatusResponse:
@@ -155,22 +136,6 @@ class ContextStatusRequest:
     clusterId: str  # query
 
     contextId: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.clusterId:
-            body["clusterId"] = self.clusterId
-        if self.contextId:
-            body["contextId"] = self.contextId
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ContextStatusRequest":
-        return cls(
-            clusterId=d.get("clusterId", None),
-            contextId=d.get("contextId", None),
-        )
 
 
 @dataclass

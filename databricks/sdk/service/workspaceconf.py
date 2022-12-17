@@ -14,19 +14,6 @@ class GetStatus:
 
     keys: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.keys:
-            body["keys"] = self.keys
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
-        return cls(
-            keys=d.get("keys", None),
-        )
-
 
 WorkspaceConf = Dict[str, str]
 

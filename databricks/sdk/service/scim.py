@@ -49,19 +49,6 @@ class DeleteGroupRequest:
     # Unique ID for a group in the Databricks Account.
     id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteGroupRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class DeleteServicePrincipalRequest:
@@ -69,19 +56,6 @@ class DeleteServicePrincipalRequest:
 
     # Unique ID for a service principal in the Databricks Account.
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteServicePrincipalRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -91,19 +65,6 @@ class DeleteUserRequest:
     # Unique ID for a user in the Databricks Account.
     id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteUserRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class GetGroupRequest:
@@ -111,19 +72,6 @@ class GetGroupRequest:
 
     # Unique ID for a group in the Databricks Account.
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetGroupRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -133,19 +81,6 @@ class GetServicePrincipalRequest:
     # Unique ID for a service principal in the Databricks Account.
     id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetServicePrincipalRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class GetUserRequest:
@@ -153,19 +88,6 @@ class GetUserRequest:
 
     # Unique ID for a user in the Databricks Account.
     id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetUserRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -248,37 +170,6 @@ class ListGroupsRequest:
     sortOrder: "ListSortOrder"  # query
     # Specifies the index of the first result. First item is number 1.
     startIndex: int  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.attributes:
-            body["attributes"] = self.attributes
-        if self.count:
-            body["count"] = self.count
-        if self.excludedAttributes:
-            body["excludedAttributes"] = self.excludedAttributes
-        if self.filter:
-            body["filter"] = self.filter
-        if self.sortBy:
-            body["sortBy"] = self.sortBy
-        if self.sortOrder:
-            body["sortOrder"] = self.sortOrder.value
-        if self.startIndex:
-            body["startIndex"] = self.startIndex
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListGroupsRequest":
-        return cls(
-            attributes=d.get("attributes", None),
-            count=d.get("count", None),
-            excludedAttributes=d.get("excludedAttributes", None),
-            filter=d.get("filter", None),
-            sortBy=d.get("sortBy", None),
-            sortOrder=ListSortOrder(d["sortOrder"]) if "sortOrder" in d else None,
-            startIndex=d.get("startIndex", None),
-        )
 
 
 @dataclass
@@ -378,37 +269,6 @@ class ListServicePrincipalsRequest:
     # Specifies the index of the first result. First item is number 1.
     startIndex: int  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.attributes:
-            body["attributes"] = self.attributes
-        if self.count:
-            body["count"] = self.count
-        if self.excludedAttributes:
-            body["excludedAttributes"] = self.excludedAttributes
-        if self.filter:
-            body["filter"] = self.filter
-        if self.sortBy:
-            body["sortBy"] = self.sortBy
-        if self.sortOrder:
-            body["sortOrder"] = self.sortOrder.value
-        if self.startIndex:
-            body["startIndex"] = self.startIndex
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListServicePrincipalsRequest":
-        return cls(
-            attributes=d.get("attributes", None),
-            count=d.get("count", None),
-            excludedAttributes=d.get("excludedAttributes", None),
-            filter=d.get("filter", None),
-            sortBy=d.get("sortBy", None),
-            sortOrder=ListSortOrder(d["sortOrder"]) if "sortOrder" in d else None,
-            startIndex=d.get("startIndex", None),
-        )
-
 
 class ListSortOrder(Enum):
 
@@ -439,37 +299,6 @@ class ListUsersRequest:
     sortOrder: "ListSortOrder"  # query
     # Specifies the index of the first result. First item is number 1.
     startIndex: int  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.attributes:
-            body["attributes"] = self.attributes
-        if self.count:
-            body["count"] = self.count
-        if self.excludedAttributes:
-            body["excludedAttributes"] = self.excludedAttributes
-        if self.filter:
-            body["filter"] = self.filter
-        if self.sortBy:
-            body["sortBy"] = self.sortBy
-        if self.sortOrder:
-            body["sortOrder"] = self.sortOrder.value
-        if self.startIndex:
-            body["startIndex"] = self.startIndex
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListUsersRequest":
-        return cls(
-            attributes=d.get("attributes", None),
-            count=d.get("count", None),
-            excludedAttributes=d.get("excludedAttributes", None),
-            filter=d.get("filter", None),
-            sortBy=d.get("sortBy", None),
-            sortOrder=ListSortOrder(d["sortOrder"]) if "sortOrder" in d else None,
-            startIndex=d.get("startIndex", None),
-        )
 
 
 @dataclass

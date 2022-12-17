@@ -339,19 +339,6 @@ class DeleteBudgetRequest:
     # Budget ID
     budget_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.budget_id:
-            body["budget_id"] = self.budget_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteBudgetRequest":
-        return cls(
-            budget_id=d.get("budget_id", None),
-        )
-
 
 class DeliveryStatus(Enum):
     """This describes an enum"""
@@ -375,25 +362,6 @@ class DownloadRequest:
     # Format: `YYYY-MM`. First month to return billable usage logs for. This field is required.
     start_month: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.end_month:
-            body["end_month"] = self.end_month
-        if self.personal_data:
-            body["personal_data"] = self.personal_data
-        if self.start_month:
-            body["start_month"] = self.start_month
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DownloadRequest":
-        return cls(
-            end_month=d.get("end_month", None),
-            personal_data=d.get("personal_data", None),
-            start_month=d.get("start_month", None),
-        )
-
 
 @dataclass
 class GetBudgetRequest:
@@ -402,19 +370,6 @@ class GetBudgetRequest:
     # Budget ID
     budget_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.budget_id:
-            body["budget_id"] = self.budget_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetBudgetRequest":
-        return cls(
-            budget_id=d.get("budget_id", None),
-        )
-
 
 @dataclass
 class GetLogDeliveryRequest:
@@ -422,19 +377,6 @@ class GetLogDeliveryRequest:
 
     # Databricks log delivery configuration ID
     log_delivery_configuration_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.log_delivery_configuration_id:
-            body["log_delivery_configuration_id"] = self.log_delivery_configuration_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetLogDeliveryRequest":
-        return cls(
-            log_delivery_configuration_id=d.get("log_delivery_configuration_id", None),
-        )
 
 
 @dataclass
@@ -447,25 +389,6 @@ class ListLogDeliveryRequest:
     status: "LogDeliveryConfigStatus"  # query
     # Filter by storage configuration ID.
     storage_configuration_id: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.credentials_id:
-            body["credentials_id"] = self.credentials_id
-        if self.status:
-            body["status"] = self.status.value
-        if self.storage_configuration_id:
-            body["storage_configuration_id"] = self.storage_configuration_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListLogDeliveryRequest":
-        return cls(
-            credentials_id=d.get("credentials_id", None),
-            status=LogDeliveryConfigStatus(d["status"]) if "status" in d else None,
-            storage_configuration_id=d.get("storage_configuration_id", None),
-        )
 
 
 class LogDeliveryConfigStatus(Enum):

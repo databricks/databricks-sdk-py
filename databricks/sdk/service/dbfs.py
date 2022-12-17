@@ -167,19 +167,6 @@ class GetStatus:
     # The path of the file or directory. The path should be the absolute DBFS path.
     path: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.path:
-            body["path"] = self.path
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetStatus":
-        return cls(
-            path=d.get("path", None),
-        )
-
 
 @dataclass
 class ListRequest:
@@ -187,19 +174,6 @@ class ListRequest:
 
     # The path of the file or directory. The path should be the absolute DBFS path.
     path: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.path:
-            body["path"] = self.path
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
-        return cls(
-            path=d.get("path", None),
-        )
 
 
 @dataclass
@@ -307,25 +281,6 @@ class Read:
     offset: int  # query
     # The path of the file to read. The path should be the absolute DBFS path.
     path: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.length:
-            body["length"] = self.length
-        if self.offset:
-            body["offset"] = self.offset
-        if self.path:
-            body["path"] = self.path
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Read":
-        return cls(
-            length=d.get("length", None),
-            offset=d.get("offset", None),
-            path=d.get("path", None),
-        )
 
 
 @dataclass

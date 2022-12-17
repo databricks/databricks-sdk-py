@@ -15,7 +15,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
     {{- range .Fields | alphanumOnly}}
     {{.Comment "    # " 120}}
     {{.Name}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}
-
+    {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}
         {{range .Fields | alphanumOnly}}if self.{{.Name}}:
@@ -28,6 +28,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
         return cls({{range .Fields | alphanumOnly}}
             {{.Name}}={{template "from_dict_type" .}},{{end}}
         )
+    {{end}}
 
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
 {{else if .MapValue}}{{.PascalName}} = {{template "type-nq" .}}

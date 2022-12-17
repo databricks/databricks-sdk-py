@@ -123,22 +123,6 @@ class DeleteWorkspaceAssignmentRequest:
     # The workspace ID.
     workspace_id: int  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.principal_id:
-            body["principal_id"] = self.principal_id
-        if self.workspace_id:
-            body["workspace_id"] = self.workspace_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteWorkspaceAssignmentRequest":
-        return cls(
-            principal_id=d.get("principal_id", None),
-            workspace_id=d.get("workspace_id", None),
-        )
-
 
 @dataclass
 class Get:
@@ -147,22 +131,6 @@ class Get:
     request_object_id: str  # path
     # <needs content>
     request_object_type: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.request_object_id:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type:
-            body["request_object_type"] = self.request_object_type
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            request_object_id=d.get("request_object_id", None),
-            request_object_type=d.get("request_object_type", None),
-        )
 
 
 @dataclass
@@ -173,22 +141,6 @@ class GetPermissionLevels:
     request_object_id: str  # path
     # <needs content>
     request_object_type: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.request_object_id:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type:
-            body["request_object_type"] = self.request_object_type
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetPermissionLevels":
-        return cls(
-            request_object_id=d.get("request_object_id", None),
-            request_object_type=d.get("request_object_type", None),
-        )
 
 
 @dataclass
@@ -222,19 +174,6 @@ class GetWorkspaceAssignmentRequest:
     # The workspace ID.
     workspace_id: int  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.workspace_id:
-            body["workspace_id"] = self.workspace_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetWorkspaceAssignmentRequest":
-        return cls(
-            workspace_id=d.get("workspace_id", None),
-        )
-
 
 @dataclass
 class ListWorkspaceAssignmentRequest:
@@ -242,19 +181,6 @@ class ListWorkspaceAssignmentRequest:
 
     # The workspace ID for the account.
     workspace_id: int  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.workspace_id:
-            body["workspace_id"] = self.workspace_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListWorkspaceAssignmentRequest":
-        return cls(
-            workspace_id=d.get("workspace_id", None),
-        )
 
 
 @dataclass

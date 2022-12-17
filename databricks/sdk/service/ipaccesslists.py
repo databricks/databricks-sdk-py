@@ -66,19 +66,6 @@ class Delete:
     # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.ip_access_list_id:
-            body["ip_access_list_id"] = self.ip_access_list_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Delete":
-        return cls(
-            ip_access_list_id=d.get("ip_access_list_id", None),
-        )
-
 
 @dataclass
 class FetchIpAccessListResponse:
@@ -107,19 +94,6 @@ class Get:
 
     # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.ip_access_list_id:
-            body["ip_access_list_id"] = self.ip_access_list_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            ip_access_list_id=d.get("ip_access_list_id", None),
-        )
 
 
 @dataclass

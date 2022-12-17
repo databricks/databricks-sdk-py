@@ -422,24 +422,6 @@ class ExportRun:
     # Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
     views_to_export: "ViewsToExport"  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.run_id:
-            body["run_id"] = self.run_id
-        if self.views_to_export:
-            body["views_to_export"] = self.views_to_export.value
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ExportRun":
-        return cls(
-            run_id=d.get("run_id", None),
-            views_to_export=ViewsToExport(d["views_to_export"])
-            if "views_to_export" in d
-            else None,
-        )
-
 
 @dataclass
 class ExportRunOutput:
@@ -468,19 +450,6 @@ class Get:
     # The canonical identifier of the job to retrieve information about. This field is required.
     job_id: int  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.job_id:
-            body["job_id"] = self.job_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            job_id=d.get("job_id", None),
-        )
-
 
 @dataclass
 class GetRun:
@@ -491,22 +460,6 @@ class GetRun:
     # The canonical identifier of the run for which to retrieve the metadata. This field is required.
     run_id: int  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.include_history:
-            body["include_history"] = self.include_history
-        if self.run_id:
-            body["run_id"] = self.run_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetRun":
-        return cls(
-            include_history=d.get("include_history", None),
-            run_id=d.get("run_id", None),
-        )
-
 
 @dataclass
 class GetRunOutput:
@@ -514,19 +467,6 @@ class GetRunOutput:
 
     # The canonical identifier for the run. This field is required.
     run_id: int  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.run_id:
-            body["run_id"] = self.run_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetRunOutput":
-        return cls(
-            run_id=d.get("run_id", None),
-        )
 
 
 @dataclass
@@ -1109,28 +1049,6 @@ class ListRequest:
     # The offset of the first job to return, relative to the most recently created job.
     offset: int  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.expand_tasks:
-            body["expand_tasks"] = self.expand_tasks
-        if self.limit:
-            body["limit"] = self.limit
-        if self.name:
-            body["name"] = self.name
-        if self.offset:
-            body["offset"] = self.offset
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
-        return cls(
-            expand_tasks=d.get("expand_tasks", None),
-            limit=d.get("limit", None),
-            name=d.get("name", None),
-            offset=d.get("offset", None),
-        )
-
 
 @dataclass
 class ListJobsResponse:
@@ -1184,43 +1102,6 @@ class ListRuns:
     # Show runs that started _at or before_ this value. The value must be a UTC timestamp in milliseconds. Can be
     # combined with _start_time_from_ to filter by a time range.
     start_time_to: int  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.active_only:
-            body["active_only"] = self.active_only
-        if self.completed_only:
-            body["completed_only"] = self.completed_only
-        if self.expand_tasks:
-            body["expand_tasks"] = self.expand_tasks
-        if self.job_id:
-            body["job_id"] = self.job_id
-        if self.limit:
-            body["limit"] = self.limit
-        if self.offset:
-            body["offset"] = self.offset
-        if self.run_type:
-            body["run_type"] = self.run_type.value
-        if self.start_time_from:
-            body["start_time_from"] = self.start_time_from
-        if self.start_time_to:
-            body["start_time_to"] = self.start_time_to
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRuns":
-        return cls(
-            active_only=d.get("active_only", None),
-            completed_only=d.get("completed_only", None),
-            expand_tasks=d.get("expand_tasks", None),
-            job_id=d.get("job_id", None),
-            limit=d.get("limit", None),
-            offset=d.get("offset", None),
-            run_type=ListRunsRunType(d["run_type"]) if "run_type" in d else None,
-            start_time_from=d.get("start_time_from", None),
-            start_time_to=d.get("start_time_to", None),
-        )
 
 
 @dataclass

@@ -185,22 +185,6 @@ class GetAcl:
     # The name of the scope to fetch ACL information from.
     scope: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.principal:
-            body["principal"] = self.principal
-        if self.scope:
-            body["scope"] = self.scope
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetAcl":
-        return cls(
-            principal=d.get("principal", None),
-            scope=d.get("scope", None),
-        )
-
 
 @dataclass
 class ListAcls:
@@ -208,19 +192,6 @@ class ListAcls:
 
     # The name of the scope to fetch ACL information from.
     scope: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.scope:
-            body["scope"] = self.scope
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListAcls":
-        return cls(
-            scope=d.get("scope", None),
-        )
 
 
 @dataclass
@@ -271,19 +242,6 @@ class ListSecrets:
 
     # The name of the scope to list secrets within.
     scope: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.scope:
-            body["scope"] = self.scope
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListSecrets":
-        return cls(
-            scope=d.get("scope", None),
-        )
 
 
 @dataclass

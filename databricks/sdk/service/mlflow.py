@@ -649,19 +649,6 @@ class DeleteModelVersionCommentRequest:
 
     id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteModelVersionCommentRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class DeleteModelVersionRequest:
@@ -671,22 +658,6 @@ class DeleteModelVersionRequest:
     name: str  # query
     # Model version number
     version: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-        if self.version:
-            body["version"] = self.version
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteModelVersionRequest":
-        return cls(
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
 
 
 @dataclass
@@ -700,25 +671,6 @@ class DeleteModelVersionTagRequest:
     # Model version number that the tag was logged under.
     version: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.key:
-            body["key"] = self.key
-        if self.name:
-            body["name"] = self.name
-        if self.version:
-            body["version"] = self.version
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteModelVersionTagRequest":
-        return cls(
-            key=d.get("key", None),
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
-
 
 @dataclass
 class DeleteRegisteredModelRequest:
@@ -726,19 +678,6 @@ class DeleteRegisteredModelRequest:
 
     # Registered model unique name identifier.
     name: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteRegisteredModelRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -750,22 +689,6 @@ class DeleteRegisteredModelTagRequest:
     # Name of the registered model that the tag was logged under.
     name: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.key:
-            body["key"] = self.key
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteRegisteredModelTagRequest":
-        return cls(
-            key=d.get("key", None),
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class DeleteRegistryWebhookRequest:
@@ -773,19 +696,6 @@ class DeleteRegistryWebhookRequest:
 
     # Webhook ID required to delete a registry webhook.
     id: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.id:
-            body["id"] = self.id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteRegistryWebhookRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -856,31 +766,6 @@ class DeleteTransitionRequestRequest:
     stage: str  # query
     # Version of the model.
     version: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.comment:
-            body["comment"] = self.comment
-        if self.creator:
-            body["creator"] = self.creator
-        if self.name:
-            body["name"] = self.name
-        if self.stage:
-            body["stage"] = self.stage
-        if self.version:
-            body["version"] = self.version
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteTransitionRequestRequest":
-        return cls(
-            comment=d.get("comment", None),
-            creator=d.get("creator", None),
-            name=d.get("name", None),
-            stage=d.get("stage", None),
-            version=d.get("version", None),
-        )
 
 
 @dataclass
@@ -997,19 +882,6 @@ class GetByNameRequest:
     # Name of the associated experiment.
     experiment_name: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.experiment_name:
-            body["experiment_name"] = self.experiment_name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetByNameRequest":
-        return cls(
-            experiment_name=d.get("experiment_name", None),
-        )
-
 
 @dataclass
 class GetExperimentByNameResponse:
@@ -1040,19 +912,6 @@ class GetExperimentRequest:
     # ID of the associated experiment.
     experiment_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.experiment_id:
-            body["experiment_id"] = self.experiment_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetExperimentRequest":
-        return cls(
-            experiment_id=d.get("experiment_id", None),
-        )
-
 
 @dataclass
 class GetHistoryRequest:
@@ -1065,25 +924,6 @@ class GetHistoryRequest:
     # [Deprecated, use run_id instead] ID of the run from which to fetch metric values. This field will be removed in a
     # future MLflow version.
     run_uuid: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.metric_key:
-            body["metric_key"] = self.metric_key
-        if self.run_id:
-            body["run_id"] = self.run_id
-        if self.run_uuid:
-            body["run_uuid"] = self.run_uuid
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetHistoryRequest":
-        return cls(
-            metric_key=d.get("metric_key", None),
-            run_id=d.get("run_id", None),
-            run_uuid=d.get("run_uuid", None),
-        )
 
 
 @dataclass
@@ -1141,19 +981,6 @@ class GetMLflowDatabrickRequest:
     # Name of the model.
     name: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetMLflowDatabrickRequest":
-        return cls(
-            name=d.get("name", None),
-        )
-
 
 @dataclass
 class GetMetricHistoryResponse:
@@ -1186,22 +1013,6 @@ class GetModelVersionDownloadUriRequest:
     # Model version number
     version: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-        if self.version:
-            body["version"] = self.version
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetModelVersionDownloadUriRequest":
-        return cls(
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
-
 
 @dataclass
 class GetModelVersionDownloadUriResponse:
@@ -1232,22 +1043,6 @@ class GetModelVersionRequest:
     # Model version number
     version: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-        if self.version:
-            body["version"] = self.version
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetModelVersionRequest":
-        return cls(
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
-
 
 @dataclass
 class GetModelVersionResponse:
@@ -1276,19 +1071,6 @@ class GetRegisteredModelRequest:
 
     # Registered model unique name identifier.
     name: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetRegisteredModelRequest":
-        return cls(
-            name=d.get("name", None),
-        )
 
 
 @dataclass
@@ -1341,22 +1123,6 @@ class GetRunRequest:
     run_id: str  # query
     # [Deprecated, use run_id instead] ID of the run to fetch. This field will be removed in a future MLflow version.
     run_uuid: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.run_id:
-            body["run_id"] = self.run_id
-        if self.run_uuid:
-            body["run_uuid"] = self.run_uuid
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetRunRequest":
-        return cls(
-            run_id=d.get("run_id", None),
-            run_uuid=d.get("run_uuid", None),
-        )
 
 
 @dataclass
@@ -1520,28 +1286,6 @@ class ListArtifactsRequest:
     # MLflow version.
     run_uuid: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.page_token:
-            body["page_token"] = self.page_token
-        if self.path:
-            body["path"] = self.path
-        if self.run_id:
-            body["run_id"] = self.run_id
-        if self.run_uuid:
-            body["run_uuid"] = self.run_uuid
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListArtifactsRequest":
-        return cls(
-            page_token=d.get("page_token", None),
-            path=d.get("path", None),
-            run_id=d.get("run_id", None),
-            run_uuid=d.get("run_uuid", None),
-        )
-
 
 @dataclass
 class ListArtifactsResponse:
@@ -1586,25 +1330,6 @@ class ListExperimentsRequest:
     # Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
     view_type: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.page_token:
-            body["page_token"] = self.page_token
-        if self.view_type:
-            body["view_type"] = self.view_type
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListExperimentsRequest":
-        return cls(
-            max_results=d.get("max_results", None),
-            page_token=d.get("page_token", None),
-            view_type=d.get("view_type", None),
-        )
-
 
 @dataclass
 class ListExperimentsResponse:
@@ -1642,22 +1367,6 @@ class ListRegisteredModelsRequest:
     max_results: int  # query
     # Pagination token to go to the next page based on a previous query.
     page_token: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.page_token:
-            body["page_token"] = self.page_token
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRegisteredModelsRequest":
-        return cls(
-            max_results=d.get("max_results", None),
-            page_token=d.get("page_token", None),
-        )
 
 
 @dataclass
@@ -1729,25 +1438,6 @@ class ListRegistryWebhooksRequest:
     # Token indicating the page of artifact results to fetch
     page_token: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.events:
-            body["events"] = [v for v in self.events]
-        if self.model_name:
-            body["model_name"] = self.model_name
-        if self.page_token:
-            body["page_token"] = self.page_token
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRegistryWebhooksRequest":
-        return cls(
-            events=d.get("events", None),
-            model_name=d.get("model_name", None),
-            page_token=d.get("page_token", None),
-        )
-
 
 @dataclass
 class ListResponse:
@@ -1779,22 +1469,6 @@ class ListTransitionRequestsRequest:
     name: str  # query
     # Version of the model.
     version: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.name:
-            body["name"] = self.name
-        if self.version:
-            body["version"] = self.version
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListTransitionRequestsRequest":
-        return cls(
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
 
 
 @dataclass
@@ -2882,28 +2556,6 @@ class SearchModelVersionsRequest:
     # Pagination token to go to next page based on previous search query.
     page_token: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.order_by:
-            body["order_by"] = [v for v in self.order_by]
-        if self.page_token:
-            body["page_token"] = self.page_token
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "SearchModelVersionsRequest":
-        return cls(
-            filter=d.get("filter", None),
-            max_results=d.get("max_results", None),
-            order_by=d.get("order_by", None),
-            page_token=d.get("page_token", None),
-        )
-
 
 @dataclass
 class SearchModelVersionsResponse:
@@ -2946,28 +2598,6 @@ class SearchRegisteredModelsRequest:
     order_by: "List[str]"  # query
     # Pagination token to go to the next page based on a previous search query.
     page_token: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter
-        if self.max_results:
-            body["max_results"] = self.max_results
-        if self.order_by:
-            body["order_by"] = [v for v in self.order_by]
-        if self.page_token:
-            body["page_token"] = self.page_token
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "SearchRegisteredModelsRequest":
-        return cls(
-            filter=d.get("filter", None),
-            max_results=d.get("max_results", None),
-            order_by=d.get("order_by", None),
-            page_token=d.get("page_token", None),
-        )
 
 
 @dataclass

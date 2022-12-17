@@ -581,19 +581,6 @@ class Get:
     # The canonical unique identifier for the instance pool.
     instance_pool_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.instance_pool_id:
-            body["instance_pool_id"] = self.instance_pool_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            instance_pool_id=d.get("instance_pool_id", None),
-        )
-
 
 @dataclass
 class GetInstancePool:

@@ -110,19 +110,6 @@ class Get:
     # Canonical unique identifier for the cluster policy.
     policy_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.policy_id:
-            body["policy_id"] = self.policy_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            policy_id=d.get("policy_id", None),
-        )
-
 
 @dataclass
 class ListPoliciesResponse:

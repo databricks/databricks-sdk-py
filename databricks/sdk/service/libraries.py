@@ -44,19 +44,6 @@ class ClusterStatus:
     # Unique identifier of the cluster whose status should be retrieved.
     cluster_id: str  # query
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.cluster_id:
-            body["cluster_id"] = self.cluster_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ClusterStatus":
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-        )
-
 
 @dataclass
 class InstallLibraries:

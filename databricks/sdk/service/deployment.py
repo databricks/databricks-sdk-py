@@ -600,19 +600,6 @@ class DeleteCredentialRequest:
     # Databricks Account API credential configuration ID
     credentials_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.credentials_id:
-            body["credentials_id"] = self.credentials_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteCredentialRequest":
-        return cls(
-            credentials_id=d.get("credentials_id", None),
-        )
-
 
 @dataclass
 class DeleteEncryptionKeyRequest:
@@ -620,19 +607,6 @@ class DeleteEncryptionKeyRequest:
 
     # Databricks encryption key configuration ID.
     customer_managed_key_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.customer_managed_key_id:
-            body["customer_managed_key_id"] = self.customer_managed_key_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteEncryptionKeyRequest":
-        return cls(
-            customer_managed_key_id=d.get("customer_managed_key_id", None),
-        )
 
 
 @dataclass
@@ -642,19 +616,6 @@ class DeleteNetworkRequest:
     # Databricks Account API network configuration ID.
     network_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.network_id:
-            body["network_id"] = self.network_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteNetworkRequest":
-        return cls(
-            network_id=d.get("network_id", None),
-        )
-
 
 @dataclass
 class DeletePrivateAccesRequest:
@@ -662,19 +623,6 @@ class DeletePrivateAccesRequest:
 
     # Databricks Account API private access settings ID.
     private_access_settings_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.private_access_settings_id:
-            body["private_access_settings_id"] = self.private_access_settings_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeletePrivateAccesRequest":
-        return cls(
-            private_access_settings_id=d.get("private_access_settings_id", None),
-        )
 
 
 @dataclass
@@ -684,19 +632,6 @@ class DeleteStorageRequest:
     # Databricks Account API storage configuration ID.
     storage_configuration_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.storage_configuration_id:
-            body["storage_configuration_id"] = self.storage_configuration_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteStorageRequest":
-        return cls(
-            storage_configuration_id=d.get("storage_configuration_id", None),
-        )
-
 
 @dataclass
 class DeleteVpcEndpointRequest:
@@ -705,19 +640,6 @@ class DeleteVpcEndpointRequest:
     # Databricks VPC endpoint ID.
     vpc_endpoint_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.vpc_endpoint_id:
-            body["vpc_endpoint_id"] = self.vpc_endpoint_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteVpcEndpointRequest":
-        return cls(
-            vpc_endpoint_id=d.get("vpc_endpoint_id", None),
-        )
-
 
 @dataclass
 class DeleteWorkspaceRequest:
@@ -725,19 +647,6 @@ class DeleteWorkspaceRequest:
 
     # Workspace ID.
     workspace_id: int  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.workspace_id:
-            body["workspace_id"] = self.workspace_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteWorkspaceRequest":
-        return cls(
-            workspace_id=d.get("workspace_id", None),
-        )
 
 
 class EndpointUseCase(Enum):
@@ -933,19 +842,6 @@ class GetCredentialRequest:
     # Databricks Account API credential configuration ID
     credentials_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.credentials_id:
-            body["credentials_id"] = self.credentials_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetCredentialRequest":
-        return cls(
-            credentials_id=d.get("credentials_id", None),
-        )
-
 
 @dataclass
 class GetEncryptionKeyRequest:
@@ -953,19 +849,6 @@ class GetEncryptionKeyRequest:
 
     # Databricks encryption key configuration ID.
     customer_managed_key_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.customer_managed_key_id:
-            body["customer_managed_key_id"] = self.customer_managed_key_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetEncryptionKeyRequest":
-        return cls(
-            customer_managed_key_id=d.get("customer_managed_key_id", None),
-        )
 
 
 @dataclass
@@ -975,19 +858,6 @@ class GetNetworkRequest:
     # Databricks Account API network configuration ID.
     network_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.network_id:
-            body["network_id"] = self.network_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetNetworkRequest":
-        return cls(
-            network_id=d.get("network_id", None),
-        )
-
 
 @dataclass
 class GetPrivateAccesRequest:
@@ -995,19 +865,6 @@ class GetPrivateAccesRequest:
 
     # Databricks Account API private access settings ID.
     private_access_settings_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.private_access_settings_id:
-            body["private_access_settings_id"] = self.private_access_settings_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetPrivateAccesRequest":
-        return cls(
-            private_access_settings_id=d.get("private_access_settings_id", None),
-        )
 
 
 @dataclass
@@ -1017,19 +874,6 @@ class GetStorageRequest:
     # Databricks Account API storage configuration ID.
     storage_configuration_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.storage_configuration_id:
-            body["storage_configuration_id"] = self.storage_configuration_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetStorageRequest":
-        return cls(
-            storage_configuration_id=d.get("storage_configuration_id", None),
-        )
-
 
 @dataclass
 class GetVpcEndpointRequest:
@@ -1038,19 +882,6 @@ class GetVpcEndpointRequest:
     # Databricks VPC endpoint ID.
     vpc_endpoint_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.vpc_endpoint_id:
-            body["vpc_endpoint_id"] = self.vpc_endpoint_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetVpcEndpointRequest":
-        return cls(
-            vpc_endpoint_id=d.get("vpc_endpoint_id", None),
-        )
-
 
 @dataclass
 class GetWorkspaceRequest:
@@ -1058,19 +889,6 @@ class GetWorkspaceRequest:
 
     # Workspace ID.
     workspace_id: int  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.workspace_id:
-            body["workspace_id"] = self.workspace_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetWorkspaceRequest":
-        return cls(
-            workspace_id=d.get("workspace_id", None),
-        )
 
 
 class GkeConnectivityType(Enum):

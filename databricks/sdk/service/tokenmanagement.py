@@ -71,19 +71,6 @@ class Delete:
     # The ID of the token to get.
     token_id: str  # path
 
-    def as_dict(self) -> dict:
-        body = {}
-        if self.token_id:
-            body["token_id"] = self.token_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Delete":
-        return cls(
-            token_id=d.get("token_id", None),
-        )
-
 
 @dataclass
 class Get:
@@ -91,19 +78,6 @@ class Get:
 
     # The ID of the token to get.
     token_id: str  # path
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.token_id:
-            body["token_id"] = self.token_id
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            token_id=d.get("token_id", None),
-        )
 
 
 @dataclass
@@ -114,22 +88,6 @@ class ListRequest:
     created_by_id: str  # query
     # Username of the user that created the token.
     created_by_username: str  # query
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.created_by_id:
-            body["created_by_id"] = self.created_by_id
-        if self.created_by_username:
-            body["created_by_username"] = self.created_by_username
-
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
-        return cls(
-            created_by_id=d.get("created_by_id", None),
-            created_by_username=d.get("created_by_username", None),
-        )
 
 
 @dataclass
