@@ -2,13 +2,10 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
-from .clusters import AutoScale
-from .clusters import AwsAttributes
-from .clusters import AzureAttributes
-from .clusters import ClusterLogConf
-from .clusters import GcpAttributes
+from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
+                       ClusterLogConf, GcpAttributes)
 from .libraries import MavenLibrary
 
 # all definitions in this file are in alphabetical order

@@ -1,3 +1,4 @@
+import databricks.sdk.client as client
 import databricks.sdk.service.billing as billing
 import databricks.sdk.service.clusterpolicies as clusterpolicies
 import databricks.sdk.service.clusters as clusters
@@ -22,7 +23,6 @@ import databricks.sdk.service.tokens as tokens
 import databricks.sdk.service.unitycatalog as unitycatalog
 import databricks.sdk.service.workspace as workspace
 import databricks.sdk.service.workspaceconf as workspaceconf
-import databricks.sdk.client as client
 
 
 class WorkspaceClient:

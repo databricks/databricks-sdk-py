@@ -1,21 +1,22 @@
+import configparser
 import dataclasses
+import logging
+import pathlib
+import platform
+import subprocess
+import threading
+import urllib.parse
+from abc import ABC, abstractmethod
+from os import getenv
+from typing import Dict, List
+
 import requests
 import requests.auth
 from requests.adapters import HTTPAdapter
-
 from urllib3.util.retry import Retry
-from typing import (Dict, List, )
-from abc import ABC, abstractmethod
-from os import getenv
-import threading
-import logging
-import pathlib
-import configparser
-import platform
-import urllib.parse
-import subprocess
+
+from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
 from .oauth import ClientCredentials, Refreshable, Token
-from .azure import ENVIRONMENTS, ARM_DATABRICKS_RESOURCE_ID, AzureEnvironment
 
 logger = logging.getLogger(__name__)
 
