@@ -10,10 +10,9 @@ from .{{.Package.Name}} import {{.PascalName}}{{end}}
 # all definitions in this file are in alphabetical order
 {{range .Types}}
 {{if .Fields -}}@dataclass
-class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
-    {{if .Description}}"""{{.Comment "    " 80}}"""{{end}}
-    {{- range .Fields | alphanumOnly}}
-    {{.Comment "    # " 120}}
+class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
+    """{{.Comment "    " 80}}"""
+    {{end}}{{- range .Fields | alphanumOnly}}
     {{.SnakeName}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:

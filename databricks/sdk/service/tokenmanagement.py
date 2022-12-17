@@ -10,12 +10,8 @@ from typing import Dict, List, Any
 
 @dataclass
 class CreateOboTokenRequest:
-
-    # Application ID of the service principal.
     application_id: str
-    # Comment that describes the purpose of the token.
     comment: str
-    # The number of seconds before the token expires.
     lifetime_seconds: int
 
     def as_dict(self) -> dict:
@@ -40,9 +36,7 @@ class CreateOboTokenRequest:
 
 @dataclass
 class CreateOboTokenResponse:
-
     token_info: "TokenInfo"
-    # Value of the token.
     token_value: str
 
     def as_dict(self) -> dict:
@@ -68,7 +62,6 @@ class CreateOboTokenResponse:
 class Delete:
     """Delete a token"""
 
-    # The ID of the token to get.
     token_id: str  # path
 
 
@@ -76,7 +69,6 @@ class Delete:
 class Get:
     """Get token info"""
 
-    # The ID of the token to get.
     token_id: str  # path
 
 
@@ -84,15 +76,12 @@ class Get:
 class ListRequest:
     """List all tokens"""
 
-    # User ID of the user that created the token.
     created_by_id: str  # query
-    # Username of the user that created the token.
     created_by_username: str  # query
 
 
 @dataclass
 class ListTokensResponse:
-
     token_infos: "List[TokenInfo]"
 
     def as_dict(self) -> dict:
@@ -113,20 +102,12 @@ class ListTokensResponse:
 
 @dataclass
 class TokenInfo:
-
-    # Comment that describes the purpose of the token, specified by the token creator.
     comment: str
-    # User ID of the user that created the token.
     created_by_id: int
-    # Username of the user that created the token.
     created_by_username: str
-    # Timestamp when the token was created.
     creation_time: int
-    # Timestamp when the token expires.
     expiry_time: int
-    # User ID of the user that owns the token.
     owner_id: int
-    # ID of the token.
     token_id: str
 
     def as_dict(self) -> dict:

@@ -10,14 +10,9 @@ from typing import Dict, List, Any
 
 @dataclass
 class AccessControlRequest:
-
-    # name of the group
     group_name: str
-    # Permission level
     permission_level: "PermissionLevel"
-    # name of the service principal
     service_principal_name: str
-    # name of the user
     user_name: str
 
     def as_dict(self) -> dict:
@@ -47,14 +42,9 @@ class AccessControlRequest:
 
 @dataclass
 class AccessControlResponse:
-
-    # All permissions.
     all_permissions: "List[Permission]"
-    # name of the group
     group_name: str
-    # name of the service principal
     service_principal_name: str
-    # name of the user
     user_name: str
 
     def as_dict(self) -> dict:
@@ -84,10 +74,7 @@ class AccessControlResponse:
 
 @dataclass
 class CreateWorkspaceAssignments:
-
-    # Array of permissions assignments to apply to a workspace.
     permission_assignments: "List[PermissionAssignmentInput]"
-    # The workspace ID for the account.
     workspace_id: int  # path
 
     def as_dict(self) -> dict:
@@ -118,9 +105,7 @@ class CreateWorkspaceAssignments:
 class DeleteWorkspaceAssignmentRequest:
     """Delete permissions assignment"""
 
-    # The ID of the service principal.
     principal_id: int  # path
-    # The workspace ID.
     workspace_id: int  # path
 
 
@@ -129,7 +114,6 @@ class Get:
     """Get object permissions"""
 
     request_object_id: str  # path
-    # <needs content>
     request_object_type: str  # path
 
 
@@ -137,16 +121,12 @@ class Get:
 class GetPermissionLevels:
     """Get permission levels"""
 
-    # <needs content>
     request_object_id: str  # path
-    # <needs content>
     request_object_type: str  # path
 
 
 @dataclass
 class GetPermissionLevelsResponse:
-
-    # Specific permission levels
     permission_levels: "List[PermissionsDescription]"
 
     def as_dict(self) -> dict:
@@ -171,7 +151,6 @@ class GetPermissionLevelsResponse:
 class GetWorkspaceAssignmentRequest:
     """List workspace permissions"""
 
-    # The workspace ID.
     workspace_id: int  # path
 
 
@@ -179,17 +158,13 @@ class GetWorkspaceAssignmentRequest:
 class ListWorkspaceAssignmentRequest:
     """Get permission assignments"""
 
-    # The workspace ID for the account.
     workspace_id: int  # path
 
 
 @dataclass
 class ObjectPermissions:
-
     access_control_list: "List[AccessControlResponse]"
-
     object_id: str
-
     object_type: str
 
     def as_dict(self) -> dict:
@@ -220,11 +195,8 @@ class ObjectPermissions:
 
 @dataclass
 class Permission:
-
     inherited: bool
-
     inherited_from_object: "List[str]"
-    # Permission level
     permission_level: "PermissionLevel"
 
     def as_dict(self) -> dict:
@@ -251,12 +223,8 @@ class Permission:
 
 @dataclass
 class PermissionAssignment:
-
-    # Error response associated with a workspace permission assignment, if any.
     error: str
-    # The permissions level of the service principal.
     permissions: "List[WorkspacePermission]"
-    # Information about the service principal assigned for the workspace.
     principal: "PrincipalOutput"
 
     def as_dict(self) -> dict:
@@ -283,14 +251,9 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignmentInput:
-
-    # The group name for the service principal.
     group_name: str
-    # Array of permissions to apply to the workspace for the service principal.
     permissions: "List[WorkspacePermission]"
-    # The name of the service principal.
     service_principal_name: str
-    # The username of the owner of the service principal.
     user_name: str
 
     def as_dict(self) -> dict:
@@ -318,8 +281,6 @@ class PermissionAssignmentInput:
 
 @dataclass
 class PermissionAssignments:
-
-    # Array of permissions assignments defined for a workspace.
     permission_assignments: "List[PermissionAssignment]"
 
     def as_dict(self) -> dict:
@@ -364,10 +325,7 @@ class PermissionLevel(Enum):
 
 @dataclass
 class PermissionOutput:
-
-    # The results of a permissions query.
     description: str
-
     permission_level: "WorkspacePermission"
 
     def as_dict(self) -> dict:
@@ -391,9 +349,7 @@ class PermissionOutput:
 
 @dataclass
 class PermissionsDescription:
-
     description: str
-    # Permission level
     permission_level: "PermissionLevel"
 
     def as_dict(self) -> dict:
@@ -417,11 +373,8 @@ class PermissionsDescription:
 
 @dataclass
 class PermissionsRequest:
-
     access_control_list: "List[AccessControlRequest]"
-
     request_object_id: str  # path
-    # <needs content>
     request_object_type: str  # path
 
     def as_dict(self) -> dict:
@@ -452,16 +405,10 @@ class PermissionsRequest:
 
 @dataclass
 class PrincipalOutput:
-
-    # The display name of the service principal.
     display_name: str
-    # The group name for the service principal.
     group_name: str
-    # The unique, opaque id of the principal.
     principal_id: int
-    # The name of the service principal.
     service_principal_name: str
-    # The username of the owner of the service principal.
     user_name: str
 
     def as_dict(self) -> dict:
@@ -492,12 +439,8 @@ class PrincipalOutput:
 
 @dataclass
 class UpdateWorkspaceAssignments:
-
-    # Array of permissions assignments to update on the workspace.
     permissions: "List[WorkspacePermission]"
-    # The ID of the service principal.
     principal_id: int  # path
-    # The workspace ID.
     workspace_id: int  # path
 
     def as_dict(self) -> dict:
@@ -522,8 +465,6 @@ class UpdateWorkspaceAssignments:
 
 @dataclass
 class WorkspaceAssignmentsCreated:
-
-    # Array of permissions assignments applied to a workspace.
     permission_assignments: "List[PermissionAssignment]"
 
     def as_dict(self) -> dict:
@@ -555,8 +496,6 @@ class WorkspacePermission(Enum):
 
 @dataclass
 class WorkspacePermissions:
-
-    # Array of permissions defined for a workspace.
     permissions: "List[PermissionOutput]"
 
     def as_dict(self) -> dict:

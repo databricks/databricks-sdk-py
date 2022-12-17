@@ -10,10 +10,7 @@ from typing import Dict, List, Any
 
 @dataclass
 class ClusterLibraryStatuses:
-
-    # Unique identifier for the cluster.
     cluster_id: str
-    # Status of all libraries on the cluster.
     library_statuses: "List[LibraryFullStatus]"
 
     def as_dict(self) -> dict:
@@ -41,16 +38,12 @@ class ClusterLibraryStatuses:
 class ClusterStatus:
     """Get status"""
 
-    # Unique identifier of the cluster whose status should be retrieved.
     cluster_id: str  # query
 
 
 @dataclass
 class InstallLibraries:
-
-    # Unique identifier for the cluster on which to install these libraries.
     cluster_id: str
-    # The libraries to install.
     libraries: "List[Library]"
 
     def as_dict(self) -> dict:
@@ -74,25 +67,11 @@ class InstallLibraries:
 
 @dataclass
 class Library:
-
-    # Specification of a CRAN library to be installed as part of the library
     cran: "RCranLibrary"
-    # URI of the egg to be installed. Currently only DBFS and S3 URIs are supported. For example: `{ "egg":
-    # "dbfs:/my/egg" }` or `{ "egg": "s3://my-bucket/egg" }`. If S3 is used, please make sure the cluster has read
-    # access on the library. You may need to launch the cluster with an IAM role to access the S3 URI.
     egg: str
-    # URI of the jar to be installed. Currently only DBFS and S3 URIs are supported. For example: `{ "jar":
-    # "dbfs:/mnt/databricks/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make
-    # sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the
-    # S3 URI.
     jar: str
-    # Specification of a maven library to be installed. For example: `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
     maven: "MavenLibrary"
-    # Specification of a PyPi library to be installed. For example: `{ "package": "simplejson" }`
     pypi: "PythonPyPiLibrary"
-    # URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl" }` or `{ "whl": "s3://my-bucket/whl" }`.
-    # If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster
-    # with an IAM role to access the S3 URI.
     whl: str
 
     def as_dict(self) -> dict:
@@ -126,14 +105,9 @@ class Library:
 
 @dataclass
 class LibraryFullStatus:
-
-    # Whether the library was set to be installed on all clusters via the libraries UI.
     is_library_for_all_clusters: bool
-    # Unique identifier for the library.
     library: "Library"
-    # All the info and warning messages that have occurred so far for this library.
     messages: "List[str]"
-    # Status of installing the library on the cluster.
     status: "LibraryFullStatusStatus"
 
     def as_dict(self) -> dict:
@@ -173,8 +147,6 @@ class LibraryFullStatusStatus(Enum):
 
 @dataclass
 class ListAllClusterLibraryStatusesResponse:
-
-    # A list of cluster statuses.
     statuses: "List[ClusterLibraryStatuses]"
 
     def as_dict(self) -> dict:
@@ -195,16 +167,8 @@ class ListAllClusterLibraryStatusesResponse:
 
 @dataclass
 class MavenLibrary:
-
-    # Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
     coordinates: str
-    # List of dependences to exclude. For example: `["slf4j:slf4j", "*:hadoop-client"]`.
-    #
-    # Maven dependency exclusions:
-    # https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
     exclusions: "List[str]"
-    # Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are
-    # searched.
     repo: str
 
     def as_dict(self) -> dict:
@@ -229,11 +193,7 @@ class MavenLibrary:
 
 @dataclass
 class PythonPyPiLibrary:
-
-    # The name of the pypi package to install. An optional exact version specification is also supported. Examples:
-    # "simplejson" and "simplejson==3.8.0".
     package: str
-    # The repository where the package can be found. If not specified, the default pip index is used.
     repo: str
 
     def as_dict(self) -> dict:
@@ -255,10 +215,7 @@ class PythonPyPiLibrary:
 
 @dataclass
 class RCranLibrary:
-
-    # The name of the CRAN package to install.
     package: str
-    # The repository where the package can be found. If not specified, the default CRAN repo is used.
     repo: str
 
     def as_dict(self) -> dict:
@@ -280,10 +237,7 @@ class RCranLibrary:
 
 @dataclass
 class UninstallLibraries:
-
-    # Unique identifier for the cluster on which to uninstall these libraries.
     cluster_id: str
-    # The libraries to uninstall.
     libraries: "List[Library]"
 
     def as_dict(self) -> dict:

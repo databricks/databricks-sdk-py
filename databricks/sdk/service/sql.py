@@ -10,11 +10,8 @@ from typing import Dict, List, Any
 
 @dataclass
 class AccessControl:
-
     group_name: str
-    # This describes an enum
     permission_level: "PermissionLevel"
-
     user_name: str
 
     def as_dict(self) -> dict:
@@ -41,28 +38,15 @@ class AccessControl:
 
 @dataclass
 class Alert:
-
-    # Timestamp when the alert was created.
     created_at: str
-    # ID of the alert.
     id: str
-    # Timestamp when the alert was last triggered.
     last_triggered_at: str
-    # Name of the alert.
     name: str
-    # Alert configuration options.
     options: "AlertOptions"
-
     query: "Query"
-    # Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`,
-    # alert will never be triggered again.
     rearm: int
-    # State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled
-    # trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
     state: "AlertState"
-    # Timestamp when the alert was last updated.
     updated_at: str
-
     user: "User"
 
     def as_dict(self) -> dict:
@@ -110,26 +94,12 @@ class Alert:
 class AlertOptions:
     """Alert configuration options."""
 
-    # Name of column in the query result to compare in alert evaluation.
     column: str
-    # Custom body of alert notification, if it exists. See [here] for custom templating instructions.
-    #
-    # [here]: https://docs.databricks.com/sql/user/alerts/index.html
     custom_body: str
-    # Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc.
-    # See [here] for custom templating instructions.
-    #
-    # [here]: https://docs.databricks.com/sql/user/alerts/index.html
     custom_subject: str
-    # Whether or not the alert is muted. If an alert is muted, it will not notify users and alert destinations when
-    # triggered.
     muted: bool
-    # Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`
     op: str
-    # Number of failures encountered during alert refresh. This counter is used for sending aggregated alert failure
-    # email notifications.
     schedule_failures: int
-    # Value used to compare in alert evaluation.
     value: str
 
     def as_dict(self) -> dict:
@@ -175,9 +145,7 @@ class AlertState(Enum):
 
 @dataclass
 class Channel:
-
     dbsql_version: str
-
     name: "ChannelName"
 
     def as_dict(self) -> dict:
@@ -201,9 +169,7 @@ class Channel:
 class ChannelInfo:
     """Channel information for the SQL warehouse at the time of query execution"""
 
-    # DBSQL Version the channel is mapped to
     dbsql_version: str
-    # Name of the channel
     name: "ChannelName"
 
     def as_dict(self) -> dict:
@@ -237,20 +203,11 @@ class ChannelName(Enum):
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    # In the web application, query filters that share a name are coupled to a single selection box if this value is
-    # true.
     dashboard_filters_enabled: bool
-    # Draft dashboards only appear in list views for their owners.
     is_draft: bool
-    # Indicates whether the dashboard is trashed. Trashed dashboards don't appear in list views.
     is_trashed: bool
-    # The title of this dashboard that appears in list views and at the top of the dashboard page.
     name: str
-
     tags: "List[str]"
-    # An array of widget objects. A complete description of widget objects can be found in the response to [Retrieve A
-    # Dashboard Definition](#operation/sql-analytics-fetch-dashboard). Databricks does not recommend creating new
-    # widgets via this API.
     widgets: "List[Widget]"
 
     def as_dict(self) -> dict:
@@ -286,11 +243,8 @@ class CreateDashboardRequest:
 
 @dataclass
 class CreateRefreshSchedule:
-
     alert_id: str  # path
-    # Cron string representing the refresh schedule.
     cron: str
-    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse will be used to refresh.
     data_source_id: str
 
     def as_dict(self) -> dict:
@@ -315,13 +269,8 @@ class CreateRefreshSchedule:
 
 @dataclass
 class CreateSubscription:
-
-    # ID of the alert.
     alert_id: str  # path
-    # ID of the alert subscriber (if subscribing an alert destination). Alert destinations can be configured by admins
-    # through the UI. See [here](/sql/admin/alert-destinations.html).
     destination_id: str
-    # ID of the alert subscriber (if subscribing a user).
     user_id: int
 
     def as_dict(self) -> dict:
@@ -346,59 +295,18 @@ class CreateSubscription:
 
 @dataclass
 class CreateWarehouseRequest:
-
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
-    # automatically stopped.
-    #
-    # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
-    #
-    # Defaults to 120 mins
     auto_stop_mins: int
-    # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
-    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
-    #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
-    # endpoint creator name
     creator_name: str
-    # Configures whether the endpoint should use Photon optimized clusters.
-    #
-    # Defaults to false.
     enable_photon: bool
-    # Configures whether the endpoint should use Serverless Compute (aka Nephos)
-    #
-    # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-    #
-    # Supported values: - Must be >= min_num_clusters - Must be <= 30.
-    #
-    # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
-    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
-    # This is similar to reserved vs. revocable cores in a resource manager.
-    #
-    # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-    #
-    # Defaults to 1
     min_num_clusters: int
-    # Logical name for the cluster.
-    #
-    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
-    # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
-    # with this SQL Endpoints.
-    #
-    # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
-
     warehouse_type: "WarehouseType"
 
     def as_dict(self) -> dict:
@@ -457,8 +365,6 @@ class CreateWarehouseRequest:
 
 @dataclass
 class CreateWarehouseResponse:
-
-    # Id for the SQL warehouse. This value is unique across all SQL warehouses.
     id: str
 
     def as_dict(self) -> dict:
@@ -480,41 +386,21 @@ class Dashboard:
     """A JSON representing a dashboard containing widgets of visualizations and
     text boxes."""
 
-    # Whether the authenticated user can edit the query definition.
     can_edit: bool
-    # Timestamp when this dashboard was created.
     created_at: str
-    # In the web application, query filters that share a name are coupled to a single selection box if this value is
-    # `true`.
     dashboard_filters_enabled: bool
-    # The ID for this dashboard.
     id: str
-    # Indicates whether a dashboard is trashed. Trashed dashboards won't appear in list views. If this boolean is
-    # `true`, the `options` property for this dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
-    # permanently deleted after 30 days.
     is_archived: bool
-    # Whether a dashboard is a draft. Draft dashboards only appear in list views for their owners.
     is_draft: bool
-    # Indicates whether this query object appears in the current user's favorites list. This flag determines whether the
-    # star icon for favorites is selected.
     is_favorite: bool
-    # The title of the dashboard that appears in list views and at the top of the dashboard page.
     name: str
-
     options: "DashboardOptions"
-    # This describes an enum
     permission_tier: "PermissionLevel"
-    # URL slug. Usually mirrors the query name with dashes (`-`) instead of spaces. Appears in the URL for this query.
     slug: str
-
     tags: "List[str]"
-    # Timestamp when this dashboard was last updated.
     updated_at: str
-
     user: "User"
-    # The ID of the user that created and owns this dashboard.
     user_id: int
-
     widgets: "List[Widget]"
 
     def as_dict(self) -> dict:
@@ -584,9 +470,6 @@ class Dashboard:
 
 @dataclass
 class DashboardOptions:
-
-    # The timestamp when this dashboard was moved to trash. Only present when the `is_archived` property is `true`.
-    # Trashed items are deleted after thirty days.
     moved_to_trash_at: str
 
     def as_dict(self) -> dict:
@@ -607,24 +490,14 @@ class DashboardOptions:
 class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
-    # The unique identifier for this data source / SQL warehouse. Can be used when creating / modifying queries and
-    # dashboards.
     id: str
-    # The string name of this data source / SQL warehouse as it appears in the Databricks SQL web application.
     name: str
-    # <needs content>
     pause_reason: str
-    # <needs content>
     paused: int
-    # <needs content>
     supports_auto_limit: bool
-    # <needs content>
     syntax: str
-    # <needs content>
     type: str
-    # <needs content>
     view_only: bool
-    # <needs content>
     warehouse_id: str
 
     def as_dict(self) -> dict:
@@ -691,7 +564,6 @@ class DeleteScheduleRequest:
     """Delete a refresh schedule"""
 
     alert_id: str  # path
-
     schedule_id: str  # path
 
 
@@ -699,7 +571,6 @@ class DeleteScheduleRequest:
 class DeleteWarehouseRequest:
     """Delete a warehouse"""
 
-    # Required. Id of the SQL warehouse.
     id: str  # path
 
 
@@ -710,11 +581,8 @@ class Destination:
 
     [here]: https://docs.databricks.com/sql/admin/alert-destinations.html"""
 
-    # ID of the alert destination.
     id: str
-    # Name of the alert destination.
     name: str
-    # Type of the alert destination.
     type: "DestinationType"
 
     def as_dict(self) -> dict:
@@ -751,16 +619,10 @@ class DestinationType(Enum):
 
 @dataclass
 class EditAlert:
-
     alert_id: str  # path
-    # Name of the alert.
     name: str
-    # Alert configuration options.
     options: "AlertOptions"
-    # ID of the query evaluated by the alert.
     query_id: str
-    # Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`,
-    # alert will never be triggered again.
     rearm: int
 
     def as_dict(self) -> dict:
@@ -791,65 +653,20 @@ class EditAlert:
 
 @dataclass
 class EditWarehouseRequest:
-
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
-    # automatically stopped.
-    #
-    # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
-    #
-    # Defaults to 120 mins
     auto_stop_mins: int
-    # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
-    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
-    #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
-    # endpoint creator name
     creator_name: str
-    # Configures whether the endpoint should use Databricks Compute (aka Nephos)
-    #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
-    # Configures whether the endpoint should use Photon optimized clusters.
-    #
-    # Defaults to false.
     enable_photon: bool
-    # Configures whether the endpoint should use Serverless Compute (aka Nephos)
-    #
-    # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Required. Id of the warehouse to configure.
     id: str  # path
-    # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-    #
-    # Supported values: - Must be >= min_num_clusters - Must be <= 30.
-    #
-    # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
-    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
-    # This is similar to reserved vs. revocable cores in a resource manager.
-    #
-    # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-    #
-    # Defaults to 1
     min_num_clusters: int
-    # Logical name for the cluster.
-    #
-    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
-    # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
-    # with this SQL Endpoints.
-    #
-    # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
-
     warehouse_type: "WarehouseType"
 
     def as_dict(self) -> dict:
@@ -914,9 +731,7 @@ class EditWarehouseRequest:
 
 @dataclass
 class EndpointConfPair:
-
     key: str
-
     value: str
 
     def as_dict(self) -> dict:
@@ -938,17 +753,10 @@ class EndpointConfPair:
 
 @dataclass
 class EndpointHealth:
-
-    # Details about errors that are causing current degraded/failed status.
     details: str
-    # The reason for failure to bring up clusters for this endpoint. This is available when status is 'FAILED' and
-    # sometimes when it is DEGRADED.
     failure_reason: "TerminationReason"
-    # Deprecated. split into summary and details for security
     message: str
-    # Health status of the endpoint.
     status: "Status"
-    # A short summary of the health status in case of degraded/failed endpoints.
     summary: str
 
     def as_dict(self) -> dict:
@@ -981,77 +789,26 @@ class EndpointHealth:
 
 @dataclass
 class EndpointInfo:
-
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
-    # automatically stopped.
-    #
-    # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
-    #
-    # Defaults to 120 mins
     auto_stop_mins: int
-    # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
-    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
-    #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
-    # endpoint creator name
     creator_name: str
-    # Configures whether the endpoint should use Databricks Compute (aka Nephos)
-    #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
-    # Configures whether the endpoint should use Photon optimized clusters.
-    #
-    # Defaults to false.
     enable_photon: bool
-    # Configures whether the endpoint should use Serverless Compute (aka Nephos)
-    #
-    # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Optional health status. Assume the endpoint is healthy if this field is not set.
     health: "EndpointHealth"
-    # unique identifier for endpoint
     id: str
-    # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # the jdbc connection string for this endpoint
     jdbc_url: str
-    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-    #
-    # Supported values: - Must be >= min_num_clusters - Must be <= 30.
-    #
-    # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
-    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
-    # This is similar to reserved vs. revocable cores in a resource manager.
-    #
-    # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-    #
-    # Defaults to 1
     min_num_clusters: int
-    # Logical name for the cluster.
-    #
-    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
-    # current number of active sessions for the endpoint
     num_active_sessions: int
-    # current number of clusters running for the service
     num_clusters: int
-    # ODBC parameters for the sql endpoint
     odbc_params: "OdbcParams"
-    # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # State of the warehouse
     state: "State"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
-    # with this SQL Endpoints.
-    #
-    # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
-
     warehouse_type: "WarehouseType"
 
     def as_dict(self) -> dict:
@@ -1136,9 +893,7 @@ class EndpointInfo:
 
 @dataclass
 class EndpointTagPair:
-
     key: str
-
     value: str
 
     def as_dict(self) -> dict:
@@ -1160,7 +915,6 @@ class EndpointTagPair:
 
 @dataclass
 class EndpointTags:
-
     custom_tags: "List[EndpointTagPair]"
 
     def as_dict(self) -> dict:
@@ -1197,9 +951,7 @@ class GetDashboardRequest:
 class GetDbsqlPermissionRequest:
     """Get object ACL"""
 
-    # Object ID. An ACL is returned for the object with this UUID.
     object_id: str  # path
-    # The type of object permissions to check.
     object_type: "ObjectTypePlural"  # path
 
 
@@ -1212,11 +964,8 @@ class GetQueryRequest:
 
 @dataclass
 class GetResponse:
-
     access_control_list: "List[AccessControl]"
-    # A singular noun object type.
     object_id: "ObjectType"
-    # An object's type and UUID, separated by a forward slash (/) character.
     object_type: str
 
     def as_dict(self) -> dict:
@@ -1256,83 +1005,31 @@ class GetSubscriptionsRequest:
 class GetWarehouseRequest:
     """Get warehouse info"""
 
-    # Required. Id of the SQL warehouse.
     id: str  # path
 
 
 @dataclass
 class GetWarehouseResponse:
-
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
-    # automatically stopped.
-    #
-    # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
-    #
-    # Defaults to 120 mins
     auto_stop_mins: int
-    # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
-    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
-    #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
-    # endpoint creator name
     creator_name: str
-    # Configures whether the endpoint should use Databricks Compute (aka Nephos)
-    #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
-    # Configures whether the endpoint should use Photon optimized clusters.
-    #
-    # Defaults to false.
     enable_photon: bool
-    # Configures whether the endpoint should use Serverless Compute (aka Nephos)
-    #
-    # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Optional health status. Assume the endpoint is healthy if this field is not set.
     health: "EndpointHealth"
-    # unique identifier for endpoint
     id: str
-    # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # the jdbc connection string for this endpoint
     jdbc_url: str
-    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-    #
-    # Supported values: - Must be >= min_num_clusters - Must be <= 30.
-    #
-    # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
-    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
-    # This is similar to reserved vs. revocable cores in a resource manager.
-    #
-    # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-    #
-    # Defaults to 1
     min_num_clusters: int
-    # Logical name for the cluster.
-    #
-    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
-    # current number of active sessions for the endpoint
     num_active_sessions: int
-    # current number of clusters running for the service
     num_clusters: int
-    # ODBC parameters for the sql endpoint
     odbc_params: "OdbcParams"
-    # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # State of the warehouse
     state: "State"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
-    # with this SQL Endpoints.
-    #
-    # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
-
     warehouse_type: "WarehouseType"
 
     def as_dict(self) -> dict:
@@ -1417,33 +1114,16 @@ class GetWarehouseResponse:
 
 @dataclass
 class GetWorkspaceWarehouseConfigResponse:
-
-    # Optional: Channel selection details
     channel: "Channel"
-    # Deprecated: Use sql_configuration_parameters
     config_param: "RepeatedEndpointConfPairs"
-    # Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
     data_access_config: "List[EndpointConfPair]"
-    # Enable Serverless compute for SQL Endpoints
-    #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
-    # Enable Serverless compute for SQL Endpoints
     enable_serverless_compute: bool
-    # List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and
-    # EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in
-    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type.
-    # Used by frontend to save specific type availability in the warehouse create and edit form UI.
     enabled_warehouse_types: "List[WarehouseTypePair]"
-    # Deprecated: Use sql_configuration_parameters
     global_param: "RepeatedEndpointConfPairs"
-    # GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
     google_service_account: str
-    # AWS Only: Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Security policy for endpoints
     security_policy: "GetWorkspaceWarehouseConfigResponseSecurityPolicy"
-    # SQL configuration parameters
     sql_configuration_parameters: "RepeatedEndpointConfPairs"
 
     def as_dict(self) -> dict:
@@ -1526,13 +1206,9 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
 class ListDashboardsRequest:
     """Get dashboard objects"""
 
-    # Name of dashboard attribute to order by.
     order: "ListOrder"  # query
-    # Page number to retrieve.
     page: int  # query
-    # Number of dashboards to return per page.
     page_size: int  # query
-    # Full text search term.
     q: str  # query
 
 
@@ -1546,39 +1222,16 @@ class ListOrder(Enum):
 class ListQueriesRequest:
     """Get a list of queries"""
 
-    # Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order descending
-    # instead.
-    #
-    # - `name`: The name of the query.
-    #
-    # - `created_at`: The timestamp the query was created.
-    #
-    # - `schedule`: The refresh interval for each query. For example: "Every 5 Hours" or "Every 5 Minutes". "Never" is
-    # treated as the highest value for sorting.
-    #
-    # - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank value is treated
-    # as the highest value for sorting.
-    #
-    # - `executed_at`: The timestamp when the query was last run.
-    #
-    # - `created_by`: The user name of the user that created the query.
     order: str  # query
-    # Page number to retrieve.
     page: int  # query
-    # Number of queries to return per page.
     page_size: int  # query
-    # Full text search term
     q: str  # query
 
 
 @dataclass
 class ListQueriesResponse:
-
-    # Whether there is another page of results.
     has_next_page: bool
-    # A token that can be used to get the next page of results.
     next_page_token: str
-
     res: "List[QueryInfo]"
 
     def as_dict(self) -> dict:
@@ -1605,26 +1258,17 @@ class ListQueriesResponse:
 class ListQueryHistoryRequest:
     """List Queries"""
 
-    # A filter to limit query history results. This field is optional.
     filter_by: "QueryFilter"  # query
-    # Whether to include metrics about query.
     include_metrics: bool  # query
-    # Limit the number of results returned in one page. The default is 100.
     max_results: int  # query
-    # A token that can be used to get the next page of results.
     page_token: str  # query
 
 
 @dataclass
 class ListResponse:
-
-    # The total number of dashboards.
     count: int
-    # The current page being displayed.
     page: int
-    # The number of dashboards per page.
     page_size: int
-    # List of dashboards returned.
     results: "List[Dashboard]"
 
     def as_dict(self) -> dict:
@@ -1663,15 +1307,11 @@ class ListSchedulesRequest:
 class ListWarehousesRequest:
     """List warehouses"""
 
-    # Service Principal which will be used to fetch the list of endpoints. If not specified, the user from the session
-    # header is used.
     run_as_user_id: int  # query
 
 
 @dataclass
 class ListWarehousesResponse:
-
-    # A list of warehouses and their configurations.
     warehouses: "List[EndpointInfo]"
 
     def as_dict(self) -> dict:
@@ -1710,13 +1350,9 @@ class ObjectTypePlural(Enum):
 
 @dataclass
 class OdbcParams:
-
     hostname: str
-
     path: str
-
     port: int
-
     protocol: str
 
     def as_dict(self) -> dict:
@@ -1752,14 +1388,9 @@ class OwnableObjectType(Enum):
 
 @dataclass
 class Parameter:
-
-    # The literal parameter marker that appears between double curly braces in the query text.
     name: str
-    # The text displayed in a parameter picking widget.
     title: str
-    # Parameters can have several different types.
     type: "ParameterType"
-    # The default value for this parameter.
     value: Any
 
     def as_dict(self) -> dict:
@@ -1814,59 +1445,28 @@ class PlansState(Enum):
 
 @dataclass
 class Query:
-
-    # Describes whether the authenticated user is allowed to edit the definition of this query.
     can_edit: bool
-    # The timestamp when this query was created.
     created_at: str
-    # Data Source ID. The UUID that uniquely identifies this data source / SQL warehouse across the API.
     data_source_id: str
-    # General description that conveys additional information about this query such as usage notes.
     description: str
-
     id: str
-    # Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear in search results.
-    # If this boolean is `true`, the `options` property for this query includes a `moved_to_trash_at` timestamp. Trashed
-    # queries are permanently deleted after 30 days.
     is_archived: bool
-    # Whether the query is a draft. Draft queries only appear in list views for their owners. Visualizations from draft
-    # queries cannot appear on dashboards.
     is_draft: bool
-    # Whether this query object appears in the current user's favorites list. This flag determines whether the star icon
-    # for favorites is selected.
     is_favorite: bool
-    # Text parameter types are not safe from SQL injection for all types of data source. Set this Boolean parameter to
-    # `true` if a query either does not use any text type parameters or uses a data source type where text type
-    # parameters are handled safely.
     is_safe: bool
-
     last_modified_by: "User"
-    # The ID of the user who last saved changes to this query.
     last_modified_by_id: int
-    # If there is a cached result for this query and user, this field includes the query result ID. If this query uses
-    # parameters, this field is always null.
     latest_query_data_id: str
-    # The title of this query that appears in list views, widget headings, and on the query page.
     name: str
-
     options: "QueryOptions"
-    # This describes an enum
     permission_tier: "PermissionLevel"
-    # The text of the query to be run.
     query: str
-    # A SHA-256 hash of the query text along with the authenticated user ID.
     query_hash: str
-
     schedule: "QueryInterval"
-
     tags: "List[str]"
-    # The timestamp at which this query was last updated.
     updated_at: str
-
     user: "User"
-    # The ID of the user who created this query.
     user_id: int
-
     visualizations: "List[Visualization]"
 
     def as_dict(self) -> dict:
@@ -1962,11 +1562,8 @@ class QueryFilter:
     """A filter to limit query history results. This field is optional."""
 
     query_start_time_range: "TimeRange"
-
     statuses: "List[QueryStatus]"
-    # A list of user IDs who ran the queries.
     user_ids: "List[int]"
-    # A list of warehouse IDs.
     warehouse_ids: "List[str]"
 
     def as_dict(self) -> dict:
@@ -1996,50 +1593,27 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
-
-    # Channel information for the SQL warehouse at the time of query execution
     channel_used: "ChannelInfo"
-    # Total execution time of the query from the client’s point of view, in milliseconds.
     duration: int
-    # Alias for `warehouse_id`.
     endpoint_id: str
-    # Message describing why the query could not complete.
     error_message: str
-    # The ID of the user whose credentials were used to run the query.
     executed_as_user_id: int
-    # The email address or username of the user whose credentials were used to run the query.
     executed_as_user_name: str
-    # The time execution of the query ended.
     execution_end_time_ms: int
-    # Whether more updates for the query are expected.
     is_final: bool
-    # A key that can be used to look up query details.
     lookup_key: str
-    # Metrics about query execution.
     metrics: "QueryMetrics"
-    # Whether plans exist for the execution, or the reason why they are missing
     plans_state: "PlansState"
-    # The time the query ended.
     query_end_time_ms: int
-    # The query ID.
     query_id: str
-    # The time the query started.
     query_start_time_ms: int
-    # The text of the query.
     query_text: str
-    # The number of results returned by the query.
     rows_produced: int
-    # URL to the query plan.
     spark_ui_url: str
-    # Type of statement for this query
     statement_type: "QueryStatementType"
-    # This describes an enum
     status: "QueryStatus"
-    # The ID of the user who ran the query.
     user_id: int
-    # The email address or username of the user who ran the query.
     user_name: str
-    # Warehouse ID.
     warehouse_id: str
 
     def as_dict(self) -> dict:
@@ -2125,14 +1699,9 @@ class QueryInfo:
 
 @dataclass
 class QueryInterval:
-
-    # For weekly runs, the day of the week to start the run.
     day_of_week: str
-    # Integer number of seconds between runs.
     interval: int
-    # For daily, weekly, and monthly runs, the time of day to start the run.
     time: str
-    # A date after which this schedule no longer applies.
     until: str
 
     def as_dict(self) -> dict:
@@ -2160,14 +1729,9 @@ class QueryInterval:
 
 @dataclass
 class QueryList:
-
-    # The total number of queries.
     count: int
-    # The page number that is currently displayed.
     page: int
-    # The number of queries per page.
     page_size: int
-    # List of queries returned.
     results: "List[Query]"
 
     def as_dict(self) -> dict:
@@ -2199,48 +1763,26 @@ class QueryList:
 class QueryMetrics:
     """Metrics about query execution."""
 
-    # Time spent loading metadata and optimizing the query, in milliseconds.
     compilation_time_ms: int
-    # Time spent executing the query, in milliseconds.
     execution_time_ms: int
-    # Total amount of data sent over the network, in bytes.
     network_sent_bytes: int
-    # Total execution time for all individual Photon query engine tasks in the query, in milliseconds.
     photon_total_time_ms: int
-    # Time spent waiting to execute the query because the SQL warehouse is already running the maximum number of
-    # concurrent queries, in milliseconds.
     queued_overload_time_ms: int
-    # Time waiting for compute resources to be provisioned for the SQL warehouse, in milliseconds.
     queued_provisioning_time_ms: int
-    # Total size of data read by the query, in bytes.
     read_bytes: int
-    # Size of persistent data read from the cache, in bytes.
     read_cache_bytes: int
-    # Number of files read after pruning.
     read_files_count: int
-    # Number of partitions read after pruning.
     read_partitions_count: int
-    # Size of persistent data read from cloud object storage on your cloud tenant, in bytes.
     read_remote_bytes: int
-    # Time spent fetching the query results after the execution finished, in milliseconds.
     result_fetch_time_ms: int
-    # true if the query result was fetched from cache, false otherwise.
     result_from_cache: bool
-    # Total number of rows returned by the query.
     rows_produced_count: int
-    # Total number of rows read by the query.
     rows_read_count: int
-    # Size of data temporarily written to disk while executing the query, in bytes.
     spill_to_disk_bytes: int
-    # Sum of execution time for all of the query’s tasks, in milliseconds.
     task_total_time_ms: int
-    # Number of files that would have been read without pruning.
     total_files_count: int
-    # Number of partitions that would have been read without pruning.
     total_partitions_count: int
-    # Total execution time of the query from the client’s point of view, in milliseconds.
     total_time_ms: int
-    # Size pf persistent data written to cloud object storage in your cloud tenant, in bytes.
     write_remote_bytes: int
 
     def as_dict(self) -> dict:
@@ -2319,11 +1861,7 @@ class QueryMetrics:
 
 @dataclass
 class QueryOptions:
-
-    # The timestamp when this query was moved to trash. Only present when the `is_archived` property is `true`. Trashed
-    # items are deleted after thirty days.
     moved_to_trash_at: str
-
     parameters: "List[Parameter]"
 
     def as_dict(self) -> dict:
@@ -2347,23 +1885,12 @@ class QueryOptions:
 
 @dataclass
 class QueryPostContent:
-
-    # The ID of the data source / SQL warehouse where this query will run.
     data_source_id: str
-    # General description that can convey additional information about this query such as usage notes.
     description: str
-    # The name or title of this query to display in list views.
     name: str
-    # Exclusively used for storing a list parameter definitions. A parameter is an object with `title`, `name`, `type`,
-    # and `value` properties. The `value` field here is the default value. It can be overridden at runtime.
     options: Any
-    # The text of the query.
     query: str
-
     query_id: str  # path
-    # JSON object that describes the scheduled execution frequency. A schedule object includes `interval`, `time`,
-    # `day_of_week`, and `until` fields. If a scheduled is supplied, then only `interval` is required. All other field
-    # can be `null`.
     schedule: "QueryInterval"
 
     def as_dict(self) -> dict:
@@ -2439,12 +1966,8 @@ class QueryStatus(Enum):
 
 @dataclass
 class RefreshSchedule:
-
-    # Cron string representing the refresh schedule.
     cron: str
-    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse will be used to refresh.
     data_source_id: str
-    # ID of the refresh schedule.
     id: str
 
     def as_dict(self) -> dict:
@@ -2469,10 +1992,7 @@ class RefreshSchedule:
 
 @dataclass
 class RepeatedEndpointConfPairs:
-
-    # Deprecated: Use configuration_pairs
     config_pair: "List[EndpointConfPair]"
-
     configuration_pairs: "List[EndpointConfPair]"
 
     def as_dict(self) -> dict:
@@ -2519,9 +2039,7 @@ class SetRequest:
     """Set object ACL"""
 
     access_control_list: "List[AccessControl]"
-    # Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.
     object_id: str  # path
-    # The type of object permission to set.
     object_type: "ObjectTypePlural"  # path
 
     def as_dict(self) -> dict:
@@ -2554,11 +2072,8 @@ class SetRequest:
 
 @dataclass
 class SetResponse:
-
     access_control_list: "List[AccessControl]"
-    # A singular noun object type.
     object_id: "ObjectType"
-    # An object's type and UUID, separated by a forward slash (/) character.
     object_type: str
 
     def as_dict(self) -> dict:
@@ -2589,35 +2104,17 @@ class SetResponse:
 
 @dataclass
 class SetWorkspaceWarehouseConfigRequest:
-
-    # Optional: Channel selection details
     channel: "Channel"
-    # Deprecated: Use sql_configuration_parameters
     config_param: "RepeatedEndpointConfPairs"
-    # Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
     data_access_config: "List[EndpointConfPair]"
-    # Enable Serverless compute for SQL Endpoints
-    #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
-    # Enable Serverless compute for SQL Endpoints
     enable_serverless_compute: bool
-    # List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and
-    # EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in
-    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type.
-    # Used by frontend to save specific type availability in the warehouse create and edit form UI.
     enabled_warehouse_types: "List[WarehouseTypePair]"
-    # Deprecated: Use sql_configuration_parameters
     global_param: "RepeatedEndpointConfPairs"
-    # GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
     google_service_account: str
-    # AWS Only: Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Security policy for endpoints
     security_policy: "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
-    # Internal. Used by frontend to save Serverless Compute agreement value.
     serverless_agreement: bool
-    # SQL configuration parameters
     sql_configuration_parameters: "RepeatedEndpointConfPairs"
 
     def as_dict(self) -> dict:
@@ -2711,7 +2208,6 @@ class SpotInstancePolicy(Enum):
 class StartRequest:
     """Start a warehouse"""
 
-    # Required. Id of the SQL warehouse.
     id: str  # path
 
 
@@ -2739,23 +2235,14 @@ class Status(Enum):
 class StopRequest:
     """Stop a warehouse"""
 
-    # Required. Id of the SQL warehouse.
     id: str  # path
 
 
 @dataclass
 class Subscription:
-
-    # ID of the alert.
     alert_id: str
-    # Alert destination subscribed to the alert, if it exists. Alert destinations can be configured by admins through
-    # the UI. See [here].
-    #
-    # [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
     destination: "Destination"
-    # ID of the alert subscription.
     id: str
-
     user: "User"
 
     def as_dict(self) -> dict:
@@ -2785,7 +2272,6 @@ class Subscription:
 
 @dataclass
 class Success:
-
     message: "SuccessMessage"
 
     def as_dict(self) -> dict:
@@ -2809,12 +2295,8 @@ class SuccessMessage(Enum):
 
 @dataclass
 class TerminationReason:
-
-    # status code indicating why the cluster was terminated
     code: "TerminationReasonCode"
-    # list of parameters that provide additional information about why the cluster was terminated
     parameters: "Dict[str,str]"
-    # type of the termination
     type: "TerminationReasonType"
 
     def as_dict(self) -> dict:
@@ -2942,10 +2424,7 @@ class TerminationReasonType(Enum):
 
 @dataclass
 class TimeRange:
-
-    # Limit results to queries that started before this time.
     end_time_ms: int
-    # Limit results to queries that started after this time.
     start_time_ms: int
 
     def as_dict(self) -> dict:
@@ -2967,8 +2446,6 @@ class TimeRange:
 
 @dataclass
 class TransferOwnershipObjectId:
-
-    # Email address for the new owner, who must exist in the workspace.
     new_owner: str
 
     def as_dict(self) -> dict:
@@ -2989,11 +2466,8 @@ class TransferOwnershipObjectId:
 class TransferOwnershipRequest:
     """Transfer object ownership"""
 
-    # Email address for the new owner, who must exist in the workspace.
     new_owner: str
-    # The ID of the object on which to change ownership.
     object_id: "TransferOwnershipObjectId"  # path
-    # The type of object on which to change ownership.
     object_type: "OwnableObjectType"  # path
 
     def as_dict(self) -> dict:
@@ -3025,21 +2499,15 @@ class UnsubscribeRequest:
     """Unsubscribe to an alert"""
 
     alert_id: str  # path
-
     subscription_id: str  # path
 
 
 @dataclass
 class User:
-
     email: str
-
     id: int
-    # Whether this user is an admin in the Databricks workspace.
     is_db_admin: bool
-
     name: str
-    # The URL for the gravatar profile picture tied to this user's email address.
     profile_image_url: str
 
     def as_dict(self) -> dict:
@@ -3077,18 +2545,11 @@ class Visualization:
     visualizations entirely in JSON."""
 
     created_at: str
-    # A short description of this visualization. This is not displayed in the UI.
     description: str
-    # The UUID for this visualization.
     id: str
-    # The name of the visualization that appears on dashboards and the query screen.
     name: str
-    # The options object varies widely from one visualization type to the next and is unsupported. Databricks does not
-    # recommend modifying visualization settings in JSON.
     options: Any
-    # The type of visualization: chart, table, pivot table, and so on.
     type: str
-
     updated_at: str
 
     def as_dict(self) -> dict:
@@ -3132,11 +2593,7 @@ class WarehouseType(Enum):
 
 @dataclass
 class WarehouseTypePair:
-
-    # If set to false the specific warehouse type will not be be allowed as a value for warehouse_type in
-    # CreateWarehouse and EditWarehouse
     enabled: bool
-
     warehouse_type: "WarehouseType"
 
     def as_dict(self) -> dict:
@@ -3160,16 +2617,9 @@ class WarehouseTypePair:
 
 @dataclass
 class Widget:
-
-    # The unique ID for this widget.
     id: int
-
     options: "WidgetOptions"
-    # The visualization description API changes frequently and is unsupported. You can duplicate a visualization by
-    # copying description objects received _from the API_ and then using them to create a new one with a POST request to
-    # the same endpoint. Databricks does not recommend constructing ad-hoc visualizations entirely in JSON.
     visualization: "Visualization"
-    # Unused field.
     width: int
 
     def as_dict(self) -> dict:
@@ -3199,22 +2649,12 @@ class Widget:
 
 @dataclass
 class WidgetOptions:
-
-    # Timestamp when this object was created
     created_at: str
-    # The dashboard ID to which this widget belongs. Each widget can belong to one dashboard.
     dashboard_id: str
-    # Whether this widget is hidden on the dashboard.
     is_hidden: bool
-    # How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does
-    # not recommend modifying this definition in JSON.
     parameter_mappings: Any
-    # Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.
     position: Any
-    # If this is a textbox widget, the application displays this text. This field is ignored if the widget contains a
-    # visualization in the `visualization` field.
     text: str
-    # Timestamp of the last time this object was updated.
     updated_at: str
 
     def as_dict(self) -> dict:

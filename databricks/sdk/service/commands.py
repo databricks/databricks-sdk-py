@@ -10,11 +10,8 @@ from typing import Dict, List, Any
 
 @dataclass
 class CancelCommand:
-
     cluster_id: str
-
     command_id: str
-
     context_id: str
 
     def as_dict(self) -> dict:
@@ -39,14 +36,9 @@ class CancelCommand:
 
 @dataclass
 class Command:
-
-    # Running cluster id
     cluster_id: str
-    # Executable code
     command: str
-    # Running context id
     context_id: str
-
     language: "Language"
 
     def as_dict(self) -> dict:
@@ -87,19 +79,14 @@ class CommandStatusRequest:
     """Get command info"""
 
     cluster_id: str  # query
-
     command_id: str  # query
-
     context_id: str  # query
 
 
 @dataclass
 class CommandStatusResponse:
-
     id: str
-
     results: "Results"
-
     status: "CommandStatus"
 
     def as_dict(self) -> dict:
@@ -134,15 +121,12 @@ class ContextStatusRequest:
     """Get status"""
 
     cluster_id: str  # query
-
     context_id: str  # query
 
 
 @dataclass
 class ContextStatusResponse:
-
     id: str
-
     status: "ContextStatus"
 
     def as_dict(self) -> dict:
@@ -164,10 +148,7 @@ class ContextStatusResponse:
 
 @dataclass
 class CreateContext:
-
-    # Running cluster id
     cluster_id: str
-
     language: "Language"
 
     def as_dict(self) -> dict:
@@ -189,7 +170,6 @@ class CreateContext:
 
 @dataclass
 class Created:
-
     id: str
 
     def as_dict(self) -> dict:
@@ -208,9 +188,7 @@ class Created:
 
 @dataclass
 class DestroyContext:
-
     cluster_id: str
-
     context_id: str
 
     def as_dict(self) -> dict:
@@ -248,26 +226,15 @@ class ResultType(Enum):
 
 @dataclass
 class Results:
-
-    # The cause of the error
     cause: str
-
     data: Any
-    # The image filename
     file_name: str
-
     file_names: "List[str]"
-    # true if a JSON schema is returned instead of a string representation of the Hive type.
     is_json_schema: bool
-    # internal field used by SDK
     pos: int
-
     result_type: "ResultType"
-    # The table schema
     schema: "List[List[Any]]"
-    # The summary of the error
     summary: str
-    # true if partial results are returned.
     truncated: bool
 
     def as_dict(self) -> dict:

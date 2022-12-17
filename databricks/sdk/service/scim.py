@@ -10,13 +10,9 @@ from typing import Dict, List, Any
 
 @dataclass
 class ComplexValue:
-
     display: str
-
     primary: bool
-
     type: str
-
     value: str
 
     def as_dict(self) -> dict:
@@ -46,7 +42,6 @@ class ComplexValue:
 class DeleteGroupRequest:
     """Delete a group"""
 
-    # Unique ID for a group in the Databricks Account.
     id: str  # path
 
 
@@ -54,7 +49,6 @@ class DeleteGroupRequest:
 class DeleteServicePrincipalRequest:
     """Delete a service principal"""
 
-    # Unique ID for a service principal in the Databricks Account.
     id: str  # path
 
 
@@ -62,7 +56,6 @@ class DeleteServicePrincipalRequest:
 class DeleteUserRequest:
     """Delete a user"""
 
-    # Unique ID for a user in the Databricks Account.
     id: str  # path
 
 
@@ -70,7 +63,6 @@ class DeleteUserRequest:
 class GetGroupRequest:
     """Get group details"""
 
-    # Unique ID for a group in the Databricks Account.
     id: str  # path
 
 
@@ -78,7 +70,6 @@ class GetGroupRequest:
 class GetServicePrincipalRequest:
     """Get service principal details"""
 
-    # Unique ID for a service principal in the Databricks Account.
     id: str  # path
 
 
@@ -86,26 +77,17 @@ class GetServicePrincipalRequest:
 class GetUserRequest:
     """Get user details"""
 
-    # Unique ID for a user in the Databricks Account.
     id: str  # path
 
 
 @dataclass
 class Group:
-
-    # String that represents a human-readable group name
     display_name: str
-
     entitlements: "List[ComplexValue]"
-
     external_id: str
-
     groups: "List[ComplexValue]"
-    # Databricks group ID
     id: str  # path
-
     members: "List[ComplexValue]"
-
     roles: "List[ComplexValue]"
 
     def as_dict(self) -> dict:
@@ -152,36 +134,20 @@ class Group:
 class ListGroupsRequest:
     """List group details"""
 
-    # Comma-separated list of attributes to return in response.
     attributes: str  # query
-    # Desired number of results per page.
     count: int  # query
-    # Comma-separated list of attributes to exclude in response.
     excluded_attributes: str  # query
-    # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
-    # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
-    # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
-    #
-    # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
-    # Attribute to sort the results.
     sort_by: str  # query
-    # The order to sort the results.
     sort_order: "ListSortOrder"  # query
-    # Specifies the index of the first result. First item is number 1.
     start_index: int  # query
 
 
 @dataclass
 class ListGroupsResponse:
-
-    # Total results returned in the response.
     items_per_page: int
-    # User objects returned in the response.
     resources: "List[Group]"
-    # Starting index of all the results that matched the request filters. First item is number 1.
     start_index: int
-    # Total results that match the request filters.
     total_results: int
 
     def as_dict(self) -> dict:
@@ -211,14 +177,9 @@ class ListGroupsResponse:
 
 @dataclass
 class ListServicePrincipalResponse:
-
-    # Total results returned in the response.
     items_per_page: int
-    # User objects returned in the response.
     resources: "List[ServicePrincipal]"
-    # Starting index of all the results that matched the request filters. First item is number 1.
     start_index: int
-    # Total results that match the request filters.
     total_results: int
 
     def as_dict(self) -> dict:
@@ -250,23 +211,12 @@ class ListServicePrincipalResponse:
 class ListServicePrincipalsRequest:
     """List service principals"""
 
-    # Comma-separated list of attributes to return in response.
     attributes: str  # query
-    # Desired number of results per page.
     count: int  # query
-    # Comma-separated list of attributes to exclude in response.
     excluded_attributes: str  # query
-    # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
-    # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
-    # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
-    #
-    # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
-    # Attribute to sort the results.
     sort_by: str  # query
-    # The order to sort the results.
     sort_order: "ListSortOrder"  # query
-    # Specifies the index of the first result. First item is number 1.
     start_index: int  # query
 
 
@@ -280,37 +230,20 @@ class ListSortOrder(Enum):
 class ListUsersRequest:
     """List users"""
 
-    # Comma-separated list of attributes to return in response.
     attributes: str  # query
-    # Desired number of results per page.
     count: int  # query
-    # Comma-separated list of attributes to exclude in response.
     excluded_attributes: str  # query
-    # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
-    # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
-    # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
-    #
-    # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
-    # Attribute to sort the results. Multi-part paths are supported. For example, `userName`, `name.givenName`, and
-    # `emails`.
     sort_by: str  # query
-    # The order to sort the results.
     sort_order: "ListSortOrder"  # query
-    # Specifies the index of the first result. First item is number 1.
     start_index: int  # query
 
 
 @dataclass
 class ListUsersResponse:
-
-    # Total results returned in the response.
     items_per_page: int
-    # User objects returned in the response.
     resources: "List[User]"
-    # Starting index of all the results that matched the request filters. First item is number 1.
     start_index: int
-    # Total results that match the request filters.
     total_results: int
 
     def as_dict(self) -> dict:
@@ -340,10 +273,7 @@ class ListUsersResponse:
 
 @dataclass
 class Name:
-
-    # Family name of the Databricks user.
     family_name: str
-    # Given name of the Databricks user.
     given_name: str
 
     def as_dict(self) -> dict:
@@ -365,10 +295,7 @@ class Name:
 
 @dataclass
 class PartialUpdate:
-
-    # Unique ID for a group in the Databricks Account.
     id: str  # path
-
     operations: "List[Patch]"
 
     def as_dict(self) -> dict:
@@ -392,12 +319,8 @@ class PartialUpdate:
 
 @dataclass
 class Patch:
-
-    # Type of patch operation.
     op: "PatchOp"
-    # Selection of patch operation
     path: str
-    # Value to modify
     value: str
 
     def as_dict(self) -> dict:
@@ -430,22 +353,13 @@ class PatchOp(Enum):
 
 @dataclass
 class ServicePrincipal:
-
-    # If this user is active
     active: bool
-    # UUID relating to the service principal
     application_id: str
-    # String that represents a concatenation of given and family names.
     display_name: str
-
     entitlements: "List[ComplexValue]"
-
     external_id: str
-
     groups: "List[ComplexValue]"
-    # Databricks service principal ID.
     id: str  # path
-
     roles: "List[ComplexValue]"
 
     def as_dict(self) -> dict:
@@ -491,26 +405,15 @@ class ServicePrincipal:
 
 @dataclass
 class User:
-
-    # If this user is active
     active: bool
-    # String that represents a concatenation of given and family names. For example `John Smith`.
     display_name: str
-    # All the emails associated with the Databricks user.
     emails: "List[ComplexValue]"
-
     entitlements: "List[ComplexValue]"
-
     external_id: str
-
     groups: "List[ComplexValue]"
-    # Databricks user ID.
     id: str  # path
-
     name: "Name"
-
     roles: "List[ComplexValue]"
-    # Email address of the Databricks user.
     user_name: str
 
     def as_dict(self) -> dict:

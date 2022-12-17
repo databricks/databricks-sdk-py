@@ -10,10 +10,7 @@ from typing import Dict, List, Any
 
 @dataclass
 class CreatePolicy:
-
-    # Policy definition document expressed in Databricks Cluster Policy Definition Language.
     definition: str
-    # Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     name: str
 
     def as_dict(self) -> dict:
@@ -35,8 +32,6 @@ class CreatePolicy:
 
 @dataclass
 class CreatePolicyResponse:
-
-    # Canonical unique identifier for the cluster policy.
     policy_id: str
 
     def as_dict(self) -> dict:
@@ -55,8 +50,6 @@ class CreatePolicyResponse:
 
 @dataclass
 class DeletePolicy:
-
-    # The ID of the policy to delete.
     policy_id: str
 
     def as_dict(self) -> dict:
@@ -75,12 +68,8 @@ class DeletePolicy:
 
 @dataclass
 class EditPolicy:
-
-    # Policy definition document expressed in Databricks Cluster Policy Definition Language.
     definition: str
-    # Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     name: str
-    # The ID of the policy to update.
     policy_id: str
 
     def as_dict(self) -> dict:
@@ -107,14 +96,11 @@ class EditPolicy:
 class Get:
     """Get entity"""
 
-    # Canonical unique identifier for the cluster policy.
     policy_id: str  # query
 
 
 @dataclass
 class ListPoliciesResponse:
-
-    # List of policies.
     policies: "List[Policy]"
 
     def as_dict(self) -> dict:
@@ -135,16 +121,10 @@ class ListPoliciesResponse:
 
 @dataclass
 class Policy:
-
-    # Creation time. The timestamp (in millisecond) when this Cluster Policy was created.
     created_at_timestamp: int
-    # Creator user name. The field won't be included in the response if the user has already been deleted.
     creator_user_name: str
-    # Policy definition document expressed in Databricks Cluster Policy Definition Language.
     definition: str
-    # Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     name: str
-    # Canonical unique identifier for the Cluster Policy.
     policy_id: str
 
     def as_dict(self) -> dict:

@@ -10,12 +10,8 @@ from typing import Dict, List, Any
 
 @dataclass
 class CreateIpAccessList:
-
-    # Array of IP addresses or CIDR values to be added to the IP access list.
     ip_addresses: "List[str]"
-    # Label for the IP access list. This **cannot** be empty.
     label: str
-    # This describes an enum
     list_type: "ListType"
 
     def as_dict(self) -> dict:
@@ -40,7 +36,6 @@ class CreateIpAccessList:
 
 @dataclass
 class CreateIpAccessListResponse:
-
     ip_access_list: "IpAccessListInfo"
 
     def as_dict(self) -> dict:
@@ -63,13 +58,11 @@ class CreateIpAccessListResponse:
 class Delete:
     """Delete access list"""
 
-    # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
 
 
 @dataclass
 class FetchIpAccessListResponse:
-
     ip_access_list: "IpAccessListInfo"
 
     def as_dict(self) -> dict:
@@ -92,13 +85,11 @@ class FetchIpAccessListResponse:
 class Get:
     """Get access list"""
 
-    # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
 
 
 @dataclass
 class GetIpAccessListResponse:
-
     ip_access_lists: "List[IpAccessListInfo]"
 
     def as_dict(self) -> dict:
@@ -121,26 +112,15 @@ class GetIpAccessListResponse:
 
 @dataclass
 class IpAccessListInfo:
-
-    # Total number of IP or CIDR values.
     address_count: int
-    # Creation timestamp in milliseconds.
     created_at: int
-    # User ID of the user who created this list.
     created_by: int
-    # Specifies whether this IP access list is enabled.
     enabled: bool
-    # Array of IP addresses or CIDR values to be added to the IP access list.
     ip_addresses: "List[str]"
-    # Label for the IP access list. This **cannot** be empty.
     label: str
-    # Universally unique identifier(UUID) of the IP access list.
     list_id: str
-    # This describes an enum
     list_type: "ListType"
-    # Update timestamp in milliseconds.
     updated_at: int
-    # User ID of the user who updated this list.
     updated_by: int
 
     def as_dict(self) -> dict:
@@ -193,18 +173,11 @@ class ListType(Enum):
 
 @dataclass
 class ReplaceIpAccessList:
-
-    # Specifies whether this IP access list is enabled.
     enabled: bool
-    # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
-    # Array of IP addresses or CIDR values to be added to the IP access list.
     ip_addresses: "List[str]"
-    # Label for the IP access list. This **cannot** be empty.
     label: str
-    # Universally unique identifier(UUID) of the IP access list.
     list_id: str
-    # This describes an enum
     list_type: "ListType"
 
     def as_dict(self) -> dict:
@@ -238,18 +211,11 @@ class ReplaceIpAccessList:
 
 @dataclass
 class UpdateIpAccessList:
-
-    # Specifies whether this IP access list is enabled.
     enabled: bool
-    # The ID for the corresponding IP access list to modify.
     ip_access_list_id: str  # path
-    # Array of IP addresses or CIDR values to be added to the IP access list.
     ip_addresses: "List[str]"
-    # Label for the IP access list. This **cannot** be empty.
     label: str
-    # Universally unique identifier(UUID) of the IP access list.
     list_id: str
-    # This describes an enum
     list_type: "ListType"
 
     def as_dict(self) -> dict:

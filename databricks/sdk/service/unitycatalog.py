@@ -18,13 +18,8 @@ class AuthenticationType(Enum):
 
 @dataclass
 class AwsIamRole:
-
-    # The external ID used in role assumption to prevent confused deputy problem..
     external_id: str
-    # The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
     role_arn: str
-    # The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity that is going to
-    # assume the AWS IAM role.
     unity_catalog_iam_arn: str
 
     def as_dict(self) -> dict:
@@ -49,12 +44,8 @@ class AwsIamRole:
 
 @dataclass
 class AzureServicePrincipal:
-
-    # The application ID of the application registration within the referenced AAD tenant.
     application_id: str
-    # The client secret generated for the above app ID in AAD.
     client_secret: str
-    # The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
     directory_id: str
 
     def as_dict(self) -> dict:
@@ -79,36 +70,19 @@ class AzureServicePrincipal:
 
 @dataclass
 class CatalogInfo:
-
-    # The type of the catalog.
     catalog_type: "CatalogType"
-    # User-provided free-form text description.
     comment: str
-    # Time at which this Catalog was created, in epoch milliseconds.
     created_at: int
-    # Username of Catalog creator.
     created_by: str
-    # Unique identifier of parent Metastore.
     metastore_id: str
-    # Name of Catalog.
     name: str
-    # Username of current owner of Catalog.
     owner: str
-
     properties: "Dict[str,str]"
-    # The name of delta sharing provider.
-    #
-    # A Delta Sharing Catalog is a catalog that is based on a Delta share on a remote sharing server.
     provider_name: str
-    # The name of the share under the share provider.
     share_name: str
-    # Storage Location URL (full path) for managed tables within Catalog.
     storage_location: str
-    # Storage root URL for managed tables within Catalog.
     storage_root: str
-    # Time at which this Catalog was last modified, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified Catalog.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -176,28 +150,16 @@ class CatalogType(Enum):
 
 @dataclass
 class ColumnInfo:
-
-    # [Create,Update:OPT] User-provided free-form text description.
     comment: str
-    # [Create:REQ Update:OPT] Name of Column.
     name: str
-    # [Create,Update:OPT] Whether field may be Null (default: True).
     nullable: bool
-    # [Create,Update:OPT] Partition index for column.
     partition_index: int
-    # [Create:REQ Update:OPT] Ordinal position of column (starting at position 0).
     position: int
-    # [Create: OPT, Update: OPT] Format of IntervalType.
     type_interval_type: str
-    # [Create:OPT Update:OPT] Full data type spec, JSON-serialized.
     type_json: str
-    # [Create: REQ Update: OPT] Name of type (INT, STRUCT, MAP, etc.)
     type_name: "ColumnInfoTypeName"
-    # [Create: OPT, Update: OPT] Digits of precision; required on Create for DecimalTypes.
     type_precision: int
-    # [Create: OPT, Update: OPT] Digits to right of decimal; Required on Create for DecimalTypes.
     type_scale: int
-    # [Create:REQ Update:OPT] Full data type spec, SQL/catalogString text.
     type_text: str
 
     def as_dict(self) -> dict:
@@ -270,20 +232,11 @@ class ColumnInfoTypeName(Enum):
 
 @dataclass
 class CreateCatalog:
-
-    # User-provided free-form text description.
     comment: str
-    # Name of Catalog.
     name: str
-
     properties: "Dict[str,str]"
-    # The name of delta sharing provider.
-    #
-    # A Delta Sharing Catalog is a catalog that is based on a Delta share on a remote sharing server.
     provider_name: str
-    # The name of the share under the share provider.
     share_name: str
-    # Storage root URL for managed tables within Catalog.
     storage_root: str
 
     def as_dict(self) -> dict:
@@ -317,18 +270,11 @@ class CreateCatalog:
 
 @dataclass
 class CreateExternalLocation:
-
-    # User-provided free-form text description.
     comment: str
-    # Current name of the Storage Credential this location uses.
     credential_name: str
-    # Name of the External Location.
     name: str
-    # Indicates whether the external location is read-only.
     read_only: bool
-    # Skips validation of the storage credential associated with the external location.
     skip_validation: bool
-    # Path URL of the External Location.
     url: str
 
     def as_dict(self) -> dict:
@@ -362,10 +308,7 @@ class CreateExternalLocation:
 
 @dataclass
 class CreateMetastore:
-
-    # Name of Metastore.
     name: str
-    # Storage root URL for Metastore
     storage_root: str
 
     def as_dict(self) -> dict:
@@ -387,12 +330,8 @@ class CreateMetastore:
 
 @dataclass
 class CreateMetastoreAssignment:
-
-    # The name of the default catalog in the Metastore.
     default_catalog_name: str
-    # The ID of the Metastore.
     metastore_id: str
-    # A workspace ID.
     workspace_id: int  # path
 
     def as_dict(self) -> dict:
@@ -417,16 +356,10 @@ class CreateMetastoreAssignment:
 
 @dataclass
 class CreateProvider:
-
-    # The delta sharing authentication type.
     authentication_type: "AuthenticationType"
-    # Description about the provider.
     comment: str
-    # The name of the Provider.
     name: str
-    # Username of Provider owner.
     owner: str
-    # This field is required when the authentication_type is `TOKEN` or not provided.
     recipient_profile_str: str
 
     def as_dict(self) -> dict:
@@ -459,20 +392,11 @@ class CreateProvider:
 
 @dataclass
 class CreateRecipient:
-
-    # The delta sharing authentication type.
     authentication_type: "AuthenticationType"
-    # Description about the recipient.
     comment: str
-    # The global Unity Catalog metastore id provided by the data recipient.\n This field is only present when the
-    # authentication type is `DATABRICKS`.\n The identifier is of format <cloud>:<region>:<metastore-uuid>.
     data_recipient_global_metastore_id: Any
-    # IP Access List
     ip_access_list: "IpAccessList"
-    # Name of Recipient.
     name: str
-    # The one-time sharing code provided by the data recipient. This field is only present when the authentication type
-    # is `DATABRICKS`.
     sharing_code: str
 
     def as_dict(self) -> dict:
@@ -514,14 +438,9 @@ class CreateRecipient:
 
 @dataclass
 class CreateSchema:
-
-    # Name of parent Catalog.
     catalog_name: str
-    # User-provided free-form text description.
     comment: str
-    # Name of Schema, relative to parent Catalog.
     name: str
-
     properties: "Dict[str,str]"
 
     def as_dict(self) -> dict:
@@ -549,10 +468,7 @@ class CreateSchema:
 
 @dataclass
 class CreateShare:
-
-    # User-provided free-form text description.
     comment: str
-    # Name of the Share.
     name: str
 
     def as_dict(self) -> dict:
@@ -574,18 +490,11 @@ class CreateShare:
 
 @dataclass
 class CreateStorageCredential:
-
-    # The AWS IAM role configuration.
     aws_iam_role: "AwsIamRole"
-    # The Azure service principal configuration.
     azure_service_principal: "AzureServicePrincipal"
-    # Comment associated with the credential.
     comment: str
-    # The GCP service account key configuration.
     gcp_service_account_key: "GcpServiceAccountKey"
-    # The credential name. The name MUST be unique within the Metastore.
     name: str
-    # Optional. Supplying true to this argument skips validation of the created set of credentials.
     skip_validation: bool
 
     def as_dict(self) -> dict:
@@ -645,9 +554,7 @@ class DataSourceFormat(Enum):
 class DeleteCatalogRequest:
     """Delete a catalog"""
 
-    # Force deletion even if the catalog is notempty.
     force: bool  # query
-    # Required. The name of the catalog.
     name: str  # path
 
 
@@ -655,9 +562,7 @@ class DeleteCatalogRequest:
 class DeleteExternalLocationRequest:
     """Delete an external location"""
 
-    # Force deletion even if there are dependent external tables or mounts.
     force: bool  # query
-    # Required. Name of the storage credential.
     name: str  # path
 
 
@@ -665,9 +570,7 @@ class DeleteExternalLocationRequest:
 class DeleteMetastoreRequest:
     """Delete a Metastore"""
 
-    # Force deletion even if the metastore is not empty. Default is false.
     force: bool  # query
-    # Required. Unique ID of the Metastore (from URL).
     id: str  # path
 
 
@@ -675,7 +578,6 @@ class DeleteMetastoreRequest:
 class DeleteProviderRequest:
     """Delete a provider"""
 
-    # Required. Name of the provider.
     name: str  # path
 
 
@@ -683,7 +585,6 @@ class DeleteProviderRequest:
 class DeleteRecipientRequest:
     """Delete a share recipient"""
 
-    # Required. Name of the recipient.
     name: str  # path
 
 
@@ -691,7 +592,6 @@ class DeleteRecipientRequest:
 class DeleteSchemaRequest:
     """Delete a schema"""
 
-    # Required. Full name of the schema (from URL).
     full_name: str  # path
 
 
@@ -699,7 +599,6 @@ class DeleteSchemaRequest:
 class DeleteShareRequest:
     """Delete a share"""
 
-    # The name of the share.
     name: str  # path
 
 
@@ -707,9 +606,7 @@ class DeleteShareRequest:
 class DeleteStorageCredentialRequest:
     """Delete a credential"""
 
-    # Force deletion even if there are dependent external locations or external tables.
     force: bool  # query
-    # Required. Name of the storage credential.
     name: str  # path
 
 
@@ -717,36 +614,22 @@ class DeleteStorageCredentialRequest:
 class DeleteTableRequest:
     """Delete a table"""
 
-    # Required. Full name of the Table (from URL).
     full_name: str  # path
 
 
 @dataclass
 class ExternalLocationInfo:
-
-    # User-provided free-form text description.
     comment: str
-    # Time at which this External Location was created, in epoch milliseconds.
     created_at: int
-    # Username of External Location creator.
     created_by: str
-    # Unique ID of the location's Storage Credential.
     credential_id: str
-    # Current name of the Storage Credential this location uses.
     credential_name: str
-    # Unique identifier of Metastore hosting the External Location.
     metastore_id: str
-    # Name of the External Location.
     name: str
-    # The owner of the External Location.
     owner: str
-    # Indicates whether the external location is read-only.
     read_only: bool
-    # Time at which External Location this was last modified, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified the External Location.
     updated_by: str
-    # Path URL of the External Location.
     url: str
 
     def as_dict(self) -> dict:
@@ -798,12 +681,8 @@ class ExternalLocationInfo:
 
 @dataclass
 class GcpServiceAccountKey:
-
-    # The email of the service account.
     email: str
-    # The service account's RSA private key.
     private_key: str
-    # The ID of the service account's private key.
     private_key_id: str
 
     def as_dict(self) -> dict:
@@ -830,7 +709,6 @@ class GcpServiceAccountKey:
 class GetActivationUrlInfoRequest:
     """Get a share activation URL"""
 
-    # Required. The one time activation url. It also accepts activation token.
     activation_url: str  # path
 
 
@@ -838,7 +716,6 @@ class GetActivationUrlInfoRequest:
 class GetCatalogRequest:
     """Get a catalog"""
 
-    # Required. The name of the catalog.
     name: str  # path
 
 
@@ -846,7 +723,6 @@ class GetCatalogRequest:
 class GetExternalLocationRequest:
     """Get an external location"""
 
-    # Required. Name of the storage credential.
     name: str  # path
 
 
@@ -854,11 +730,8 @@ class GetExternalLocationRequest:
 class GetGrantRequest:
     """Get permissions"""
 
-    # Required. Unique identifier (full name) of Securable (from URL).
     full_name: str  # path
-    # Optional. List permissions granted to this principal.
     principal: str  # query
-    # Required. Type of Securable (from URL).
     securable_type: str  # path
 
 
@@ -866,49 +739,28 @@ class GetGrantRequest:
 class GetMetastoreRequest:
     """Get a Metastore"""
 
-    # Required. Unique ID of the Metastore (from URL).
     id: str  # path
 
 
 @dataclass
 class GetMetastoreSummaryResponse:
-
-    # Cloud vendor of the Metastore home shard (e.g., `aws`, `azure`, `gcp`).
     cloud: str
-    # Time at which this Metastore was created, in epoch milliseconds.
     created_at: int
-    # Username of Metastore creator.
     created_by: str
-    # Unique identifier of the Metastore's (Default) Data Access Configuration.
     default_data_access_config_id: str
-    # The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta Sharing as the
-    # official name.
     delta_sharing_organization_name: str
-    # The lifetime of delta sharing recipient token in seconds.
     delta_sharing_recipient_token_lifetime_in_seconds: int
-    # The scope of Delta Sharing enabled for the Metastore
     delta_sharing_scope: "GetMetastoreSummaryResponseDeltaSharingScope"
-    # Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`.
     global_metastore_id: str
-    # The unique ID (UUID) of the Metastore.
     metastore_id: str
-    # The user-specified name of the Metastore.
     name: str
-    # The owner of the metastore.
     owner: str
-    # Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)
     privilege_model_version: str
-    # Cloud region of the Metastore home shard (e.g., `us-west-2`, `westus`).
     region: str
-    # The storage root URL for the Metastore.
     storage_root: str
-    # UUID of storage credential to access the metastore storage_root.
     storage_root_credential_id: str
-    # Name of the storage credential to access the metastore storage_root.
     storage_root_credential_name: str
-    # Time at which this Metastore was last modified, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified the External Location.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -997,7 +849,6 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
 
 @dataclass
 class GetPermissionsResponse:
-
     privilege_assignments: "List[PrivilegeAssignment]"
 
     def as_dict(self) -> dict:
@@ -1024,7 +875,6 @@ class GetPermissionsResponse:
 class GetProviderRequest:
     """Get a provider"""
 
-    # Required. Name of the provider.
     name: str  # path
 
 
@@ -1032,14 +882,11 @@ class GetProviderRequest:
 class GetRecipientRequest:
     """Get a share recipient"""
 
-    # Required. Name of the recipient.
     name: str  # path
 
 
 @dataclass
 class GetRecipientSharePermissionsResponse:
-
-    # An array of data share permissions for a recipient.
     permissions_out: "List[ShareToPrivilegeAssignment]"
 
     def as_dict(self) -> dict:
@@ -1064,14 +911,11 @@ class GetRecipientSharePermissionsResponse:
 class GetSchemaRequest:
     """Get a schema"""
 
-    # Required. Full name of the schema (from URL).
     full_name: str  # path
 
 
 @dataclass
 class GetSharePermissionsResponse:
-
-    # Note to self (acain): Unfortunately, neither json_inline nor json_map work here.
     privilege_assignments: "List[PrivilegeAssignment]"
 
     def as_dict(self) -> dict:
@@ -1098,9 +942,7 @@ class GetSharePermissionsResponse:
 class GetShareRequest:
     """Get a share"""
 
-    # Query for data to include in the share.
     include_shared_data: bool  # query
-    # The name of the share.
     name: str  # path
 
 
@@ -1108,7 +950,6 @@ class GetShareRequest:
 class GetStorageCredentialRequest:
     """Get a credential"""
 
-    # Required. Name of the storage credential.
     name: str  # path
 
 
@@ -1116,14 +957,11 @@ class GetStorageCredentialRequest:
 class GetTableRequest:
     """Get a table"""
 
-    # Required. Full name of the Table (from URL).
     full_name: str  # path
 
 
 @dataclass
 class IpAccessList:
-
-    # Allowed IP Addresses in CIDR notation. Limit of 100.
     allowed_ip_addresses: "List[str]"
 
     def as_dict(self) -> dict:
@@ -1142,8 +980,6 @@ class IpAccessList:
 
 @dataclass
 class ListCatalogsResponse:
-
-    # An array of catalog information objects.
     catalogs: "List[CatalogInfo]"
 
     def as_dict(self) -> dict:
@@ -1164,8 +1000,6 @@ class ListCatalogsResponse:
 
 @dataclass
 class ListExternalLocationsResponse:
-
-    # An array of external locations.
     external_locations: "List[ExternalLocationInfo]"
 
     def as_dict(self) -> dict:
@@ -1188,8 +1022,6 @@ class ListExternalLocationsResponse:
 
 @dataclass
 class ListMetastoresResponse:
-
-    # An array of Metastore information objects.
     metastores: "List[MetastoreInfo]"
 
     def as_dict(self) -> dict:
@@ -1210,8 +1042,6 @@ class ListMetastoresResponse:
 
 @dataclass
 class ListProviderSharesResponse:
-
-    # An array of provider shares.
     shares: "List[ProviderShare]"
 
     def as_dict(self) -> dict:
@@ -1234,14 +1064,11 @@ class ListProviderSharesResponse:
 class ListProvidersRequest:
     """List providers"""
 
-    # If not provided, all providers will be returned. If no providers exist with this ID, no results will be returned.
     data_provider_global_metastore_id: str  # query
 
 
 @dataclass
 class ListProvidersResponse:
-
-    # An array of provider information objects.
     providers: "List[ProviderInfo]"
 
     def as_dict(self) -> dict:
@@ -1264,15 +1091,11 @@ class ListProvidersResponse:
 class ListRecipientsRequest:
     """List share recipients"""
 
-    # If not provided, all recipients will be returned. If no recipients exist with this ID, no results will be
-    # returned.
     data_recipient_global_metastore_id: str  # query
 
 
 @dataclass
 class ListRecipientsResponse:
-
-    # An array of recipient information objects.
     recipients: "List[RecipientInfo]"
 
     def as_dict(self) -> dict:
@@ -1295,14 +1118,11 @@ class ListRecipientsResponse:
 class ListSchemasRequest:
     """List schemas"""
 
-    # Optional. Parent catalog for schemas of interest.
     catalog_name: str  # query
 
 
 @dataclass
 class ListSchemasResponse:
-
-    # An array of schema information objects.
     schemas: "List[SchemaInfo]"
 
     def as_dict(self) -> dict:
@@ -1325,14 +1145,11 @@ class ListSchemasResponse:
 class ListSharesRequest:
     """List shares"""
 
-    # Required. Name of the provider in which to list shares.
     name: str  # path
 
 
 @dataclass
 class ListSharesResponse:
-
-    # An array of data share information objects.
     shares: "List[ShareInfo]"
 
     def as_dict(self) -> dict:
@@ -1353,7 +1170,6 @@ class ListSharesResponse:
 
 @dataclass
 class ListStorageCredentialsResponse:
-
     storage_credentials: "List[StorageCredentialInfo]"
 
     def as_dict(self) -> dict:
@@ -1378,10 +1194,7 @@ class ListStorageCredentialsResponse:
 
 @dataclass
 class ListTableSummariesResponse:
-
-    # Optional. Opaque token for pagination. Empty if there's no more page.
     next_page_token: str
-    # Only name, catalog_name, schema_name, full_name and table_type will be set.
     tables: "List[TableSummary]"
 
     def as_dict(self) -> dict:
@@ -1407,16 +1220,12 @@ class ListTableSummariesResponse:
 class ListTablesRequest:
     """List tables"""
 
-    # Required. Name of parent catalog for tables of interest.
     catalog_name: str  # query
-    # Required (for now -- may be optional for wildcard search in future). Parent schema of tables.
     schema_name: str  # query
 
 
 @dataclass
 class ListTablesResponse:
-
-    # An array of table information objects.
     tables: "List[TableInfo]"
 
     def as_dict(self) -> dict:
@@ -1437,32 +1246,18 @@ class ListTablesResponse:
 
 @dataclass
 class MetastoreInfo:
-
-    # Time at which this Metastore was created, in epoch milliseconds.
     created_at: int
-    # Username of Metastore creator.
     created_by: str
-    # Unique identifier of (Default) Data Access Configuration
     default_data_access_config_id: str
-    # Whether Delta Sharing is enabled on this metastore.
     delta_sharing_enabled: bool
-    # The lifetime of delta sharing recipient token in seconds
     delta_sharing_recipient_token_lifetime_in_seconds: int
-    # Unique identifier of Metastore.
     metastore_id: str
-    # Name of Metastore.
     name: str
-    # The owner of the metastore.
     owner: str
-    # The region this metastore has an afinity to. This is used by accounts-manager. Ignored by Unity Catalog.
     region: str
-    # Storage root URL for Metastore
     storage_root: str
-    # UUID of storage credential to access storage_root
     storage_root_credential_id: str
-    # Time at which the Metastore was last modified, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified the Metastore.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -1521,8 +1316,6 @@ class MetastoreInfo:
 
 @dataclass
 class Partition:
-
-    # An array of partition values.
     values: "List[PartitionValue]"
 
     def as_dict(self) -> dict:
@@ -1543,16 +1336,9 @@ class Partition:
 
 @dataclass
 class PartitionValue:
-
-    # The name of the partition column.
     name: str
-    # The operator to apply for the value.
     op: "PartitionValueOp"
-    # The key of a Delta Sharing recipient's property. For example `databricks-account-id`. When this field is set,
-    # field `value` can not be set.
     recipient_property_key: str
-    # The value of the partition column. When this value is not set, it means `null` value. When this field is set,
-    # field `recipient_property_key` can not be set.
     value: str
 
     def as_dict(self) -> dict:
@@ -1587,12 +1373,8 @@ class PartitionValueOp(Enum):
 
 @dataclass
 class PermissionsChange:
-
-    # The set of privileges to add.
     add: "List[Privilege]"
-    # The principal whose privileges we are changing.
     principal: str
-    # The set of privileges to remove.
     remove: "List[Privilege]"
 
     def as_dict(self) -> dict:
@@ -1651,10 +1433,7 @@ class Privilege(Enum):
 
 @dataclass
 class PrivilegeAssignment:
-
-    # The principal (user email address or group name).
     principal: str
-    # The privileges assigned to the principal.
     privileges: "List[Privilege]"
 
     def as_dict(self) -> dict:
@@ -1676,37 +1455,19 @@ class PrivilegeAssignment:
 
 @dataclass
 class ProviderInfo:
-
-    # The delta sharing authentication type.
     authentication_type: "AuthenticationType"
-    # Cloud vendor of the provider's UC Metastore. This field is only present when the authentication_type is
-    # `DATABRICKS`.
     cloud: str
-    # Description about the provider.
     comment: str
-    # Time at which this Provider was created, in epoch milliseconds.
     created_at: int
-    # Username of Provider creator.
     created_by: str
-    # The global UC metastore id of the data provider. This field is only present when the authentication type is
-    # `DATABRICKS`. The identifier is of format <cloud>:<region>:<metastore-uuid>.
     data_provider_global_metastore_id: str
-    # UUID of the provider's UC Metastore. This field is only present when the authentication type is `DATABRICKS`.
     metastore_id: str
-    # The name of the Provider.
     name: str
-    # Username of Provider owner.
     owner: str
-    # The recipient profile. This field is only present when the authentication_type is `TOKEN`.
     recipient_profile: "RecipientProfile"
-    # This field is required when the authentication_type is `TOKEN` or not provided.
     recipient_profile_str: str
-    # Cloud region of the provider's UC Metastore. This field is only present when the authentication type is
-    # `DATABRICKS`.
     region: str
-    # Time at which this Provider was created, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified Share.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -1772,8 +1533,6 @@ class ProviderInfo:
 
 @dataclass
 class ProviderShare:
-
-    # The name of the Provider Share.
     name: str
 
     def as_dict(self) -> dict:
@@ -1792,43 +1551,21 @@ class ProviderShare:
 
 @dataclass
 class RecipientInfo:
-
-    # A boolean status field showing whether the Recipient's activation URL has been exercised or not.
     activated: bool
-    # Full activation url to retrieve the access token. It will be empty if the token is already retrieved.
     activation_url: str
-    # The delta sharing authentication type.
     authentication_type: "AuthenticationType"
-    # Cloud vendor of the recipient's Unity Catalog Metstore. This field is only present when the authentication type is
-    # `DATABRICKS`.
     cloud: str
-    # Description about the recipient.
     comment: str
-    # Time at which this recipient was created, in epoch milliseconds.
     created_at: int
-    # Username of recipient creator.
     created_by: str
-    # The global Unity Catalog metastore id provided by the data recipient.\n This field is only present when the
-    # authentication type is `DATABRICKS`.\n The identifier is of format <cloud>:<region>:<metastore-uuid>.
     data_recipient_global_metastore_id: Any
-    # IP Access List
     ip_access_list: "IpAccessList"
-    # Unique identifier of recipient's Unity Catalog Metastore. This field is only present when the authentication type
-    # is `DATABRICKS`
     metastore_id: str
-    # Name of Recipient.
     name: str
-    # Cloud region of the recipient's Unity Catalog Metstore. This field is only present when the authentication type is
-    # `DATABRICKS`.
     region: str
-    # The one-time sharing code provided by the data recipient. This field is only present when the authentication type
-    # is `DATABRICKS`.
     sharing_code: str
-    # This field is only present when the authentication type is `TOKEN`.
     tokens: "List[RecipientTokenInfo]"
-    # Time at which the recipient was updated, in epoch milliseconds.
     updated_at: int
-    # Username of recipient updater.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -1902,12 +1639,8 @@ class RecipientInfo:
 
 @dataclass
 class RecipientProfile:
-
-    # The token used to authorize the recipient.
     bearer_token: str
-    # The endpoint for the share to be used by the recipient.
     endpoint: str
-    # The version number of the recipient's credentials on a share.
     share_credentials_version: int
 
     def as_dict(self) -> dict:
@@ -1932,20 +1665,12 @@ class RecipientProfile:
 
 @dataclass
 class RecipientTokenInfo:
-
-    # Full activation URL to retrieve the access token. It will be empty if the token is already retrieved.
     activation_url: str
-    # Time at which this recipient Token was created, in epoch milliseconds.
     created_at: int
-    # Username of recipient token creator.
     created_by: str
-    # Expiration timestamp of the token in epoch milliseconds.
     expiration_time: int
-    # Unique ID of the recipient token.
     id: str
-    # Time at which this recipient Token was updated, in epoch milliseconds.
     updated_at: int
-    # Username of recipient Token updater.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -1984,20 +1709,14 @@ class RecipientTokenInfo:
 class RetrieveTokenRequest:
     """Get an access token"""
 
-    # Required. The one time activation url. It also accepts activation token.
     activation_url: str  # path
 
 
 @dataclass
 class RetrieveTokenResponse:
-
-    # The token used to authorize the recipient.
     bearer_token: str
-    # The endpoint for the share to be used by the recipient.
     endpoint: str
-    # Expiration timestamp of the token in epoch milliseconds.
     expiration_time: str
-    # These field names must follow the delta sharing protocol.
     share_credentials_version: int
 
     def as_dict(self) -> dict:
@@ -2025,11 +1744,7 @@ class RetrieveTokenResponse:
 
 @dataclass
 class RotateRecipientToken:
-
-    # Required. This will set the expiration_time of existing token only to a smaller timestamp, it cannot extend the
-    # expiration_time. Use 0 to expire the existing token immediately, negative number will return an error.
     existing_token_expire_in_seconds: int
-    # Required. The name of the recipient.
     name: str  # path
 
     def as_dict(self) -> dict:
@@ -2055,32 +1770,18 @@ class RotateRecipientToken:
 
 @dataclass
 class SchemaInfo:
-
-    # Name of parent Catalog.
     catalog_name: str
-    # User-provided free-form text description.
     comment: str
-    # Time at which this Schema was created, in epoch milliseconds.
     created_at: int
-    # Username of Schema creator.
     created_by: str
-    # Full name of Schema, in form of <catalog_name>.<schema_name>.
     full_name: str
-    # Unique identifier of parent Metastore.
     metastore_id: str
-    # Name of Schema, relative to parent Catalog.
     name: str
-    # Username of current owner of Schema.
     owner: str
-
     properties: "Dict[str,str]"
-    # Storage location for managed tables within schema.
     storage_location: str
-    # Storage root URL for managed tables within schema.
     storage_root: str
-    # Time at which this Schema was created, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified Schema.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -2135,20 +1836,12 @@ class SchemaInfo:
 
 @dataclass
 class ShareInfo:
-
-    # User-provided free-form text description.
     comment: str
-    # Time at which this Share was created, in epoch milliseconds.
     created_at: int
-    # Username of Share creator.
     created_by: str
-    # Name of the Share.
     name: str
-    # A list of shared data objects within the Share.
     objects: "List[SharedDataObject]"
-    # Username of current owner of Share.
     owner: str
-    # Array of shared data object updates.
     updates: "List[SharedDataObjectUpdate]"
 
     def as_dict(self) -> dict:
@@ -2191,16 +1884,12 @@ class ShareInfo:
 class SharePermissionsRequest:
     """Get share permissions"""
 
-    # Required. The name of the Recipient.
     name: str  # path
 
 
 @dataclass
 class ShareToPrivilegeAssignment:
-
-    # The privileges assigned to the principal.
     privilege_assignments: "List[PrivilegeAssignment]"
-    # The share name.
     share_name: str
 
     def as_dict(self) -> dict:
@@ -2228,35 +1917,15 @@ class ShareToPrivilegeAssignment:
 
 @dataclass
 class SharedDataObject:
-
-    # The time when this data object is added to the Share, in epoch milliseconds.
     added_at: int
-    # Username of the sharer.
     added_by: str
-    # Whether to enable cdf or indicate if cdf is enabled on the shared object.
     cdf_enabled: bool
-    # A user-provided comment when adding the data object to the share. [Update:OPT]
     comment: str
-    # The type of the data object.
     data_object_type: str
-    # A fully qualified name that uniquely identifies a data object.
-    #
-    # For example, a table's fully qualified name is in the format of `<catalog>.<schema>.<table>`.
     name: str
-    # Array of partitions for the shared data.
     partitions: "List[Partition]"
-    # A user-provided new name for the data object within the share. If this new name is not not provided, the object's
-    # original name will be used as the `shared_as` name. The `shared_as` name must be unique within a Share. For
-    # tables, the new name must follow the format of `<schema>.<table>`.
     shared_as: str
-    # The start version associated with the object. This allows data providers to control the lowest object version that
-    # is accessible by clients. If specified, clients can query snapshots or changes for versions >= start_version. If
-    # not specified, clients can only query starting from the version of the object at the time it was added to the
-    # share.
-    #
-    # NOTE: The start_version should be <= the `current` version of the object.
     start_version: int
-    # One of: **ACTIVE**, **PERMISSION_DENIED**.
     status: "SharedDataObjectStatus"
 
     def as_dict(self) -> dict:
@@ -2311,10 +1980,7 @@ class SharedDataObjectStatus(Enum):
 
 @dataclass
 class SharedDataObjectUpdate:
-
-    # One of: **ADD**, **REMOVE**, **UPDATE**.
     action: "SharedDataObjectUpdateAction"
-    # The data object that is being added, removed, or updated.
     data_object: "SharedDataObject"
 
     def as_dict(self) -> dict:
@@ -2346,30 +2012,17 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class StorageCredentialInfo:
-
-    # The AWS IAM role configuration.
     aws_iam_role: "AwsIamRole"
-    # The Azure service principal configuration.
     azure_service_principal: "AzureServicePrincipal"
-    # Comment associated with the credential.
     comment: str
-    # Time at which this Credential was created, in epoch milliseconds.
     created_at: int
-    # Username of credential creator.
     created_by: str
-    # The GCP service account key configuration.
     gcp_service_account_key: "GcpServiceAccountKey"
-    # The unique identifier of the credential.
     id: str
-    # Unique identifier of parent Metastore.
     metastore_id: str
-    # The credential name. The name MUST be unique within the Metastore.
     name: str
-    # Optional. Supplying true to this argument skips validation of the created set of credentials.
     skip_validation: bool
-    # Time at which this credential was last modified, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified the credential.
     updated_by: str
 
     def as_dict(self) -> dict:
@@ -2431,49 +2084,26 @@ class StorageCredentialInfo:
 
 @dataclass
 class TableInfo:
-
-    # Name of parent Catalog.
     catalog_name: str
-    # This name ('columns') is what the client actually sees as the field name in messages that include
-    # PropertiesKVPairs using 'json_inline' (e.g., TableInfo).
     columns: "List[ColumnInfo]"
-    # User-provided free-form text description.
     comment: str
-    # Time at which this Table was created, in epoch milliseconds.
     created_at: int
-    # Username of Table creator.
     created_by: str
-    # Unique ID of the data_access_configuration to use.
     data_access_configuration_id: str
-    # Data source format
     data_source_format: "DataSourceFormat"
-    # Full name of Table, in form of <catalog_name>.<schema_name>.<table_name>
     full_name: str
-    # Unique identifier of parent Metastore.
     metastore_id: str
-    # Name of Table, relative to parent Schema.
     name: str
-    # Username of current owner of Table.
     owner: str
-
     properties: "Dict[str,str]"
-    # Name of parent Schema relative to its parent Catalog.
     schema_name: str
-    # List of schemes whose objects can be referenced without qualification.
     sql_path: str
-    # Name of the storage credential this table used
     storage_credential_name: str
-    # Storage root URL for table (for MANAGED, EXTERNAL tables)
     storage_location: str
-    # Name of Table, relative to parent Schema.
     table_id: str
-
     table_type: "TableType"
-    # Time at which this Table was last modified, in epoch milliseconds.
     updated_at: int
-    # Username of user who last modified the Table.
     updated_by: str
-    # View definition SQL (when table_type == "VIEW")
     view_definition: str
 
     def as_dict(self) -> dict:
@@ -2558,24 +2188,16 @@ class TableInfo:
 class TableSummariesRequest:
     """List table summaries"""
 
-    # Required. Name of parent catalog for tables of interest.
     catalog_name: str  # query
-    # Optional. Maximum number of tables to return (page length). Defaults to 10000.
     max_results: int  # query
-    # Optional. Opaque token to send for the next page of results (pagination).
     page_token: str  # query
-    # Optional. A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
     schema_name_pattern: str  # query
-    # Optional. A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
     table_name_pattern: str  # query
 
 
 @dataclass
 class TableSummary:
-
-    # The full name of the table.
     full_name: str
-
     table_type: "TableType"
 
     def as_dict(self) -> dict:
@@ -2608,22 +2230,15 @@ class TableType(Enum):
 class UnassignRequest:
     """Delete an assignment"""
 
-    # Query for the ID of the Metastore to delete.
     metastore_id: str  # query
-    # A workspace ID.
     workspace_id: int  # path
 
 
 @dataclass
 class UpdateCatalog:
-
-    # User-provided free-form text description.
     comment: str
-    # Name of Catalog.
     name: str  # path
-    # Username of current owner of Catalog.
     owner: str
-
     properties: "Dict[str,str]"
 
     def as_dict(self) -> dict:
@@ -2651,22 +2266,13 @@ class UpdateCatalog:
 
 @dataclass
 class UpdateExternalLocation:
-
-    # User-provided free-form text description.
     comment: str
-    # Current name of the Storage Credential this location uses.
     credential_name: str
-    # Force update even if changing url invalidates dependent external tables or mounts.
     force: bool
-    # Name of the External Location.
     name: str  # path
-    # The owner of the External Location.
     owner: str
-    # Indicates whether the external location is read-only.
     read_only: bool
-    # Skips validation of the storage credential associated with the external location.
     skip_validation: bool
-    # Path URL of the External Location.
     url: str
 
     def as_dict(self) -> dict:
@@ -2706,20 +2312,12 @@ class UpdateExternalLocation:
 
 @dataclass
 class UpdateMetastore:
-
-    # Unique identifier of (Default) Data Access Configuration
     default_data_access_config_id: str
-    # Whether Delta Sharing is enabled on this metastore.
     delta_sharing_enabled: bool
-    # The lifetime of delta sharing recipient token in seconds
     delta_sharing_recipient_token_lifetime_in_seconds: int
-    # Required. Unique ID of the Metastore (from URL).
     id: str  # path
-    # Name of Metastore.
     name: str
-    # The owner of the metastore.
     owner: str
-    # UUID of storage credential to access storage_root
     storage_root_credential_id: str
 
     def as_dict(self) -> dict:
@@ -2760,12 +2358,8 @@ class UpdateMetastore:
 
 @dataclass
 class UpdateMetastoreAssignment:
-
-    # The name of the default catalog for the Metastore.
     default_catalog_name: str
-    # The unique ID of the Metastore.
     metastore_id: str
-    # A workspace ID.
     workspace_id: int  # path
 
     def as_dict(self) -> dict:
@@ -2790,14 +2384,9 @@ class UpdateMetastoreAssignment:
 
 @dataclass
 class UpdatePermissions:
-
-    # Array of permissions change objects.
     changes: "List[PermissionsChange]"
-    # Required. Unique identifier (full name) of Securable (from URL).
     full_name: str  # path
-    # Optional. List permissions granted to this principal.
     principal: str  # query
-    # Required. Type of Securable (from URL).
     securable_type: str  # path
 
     def as_dict(self) -> dict:
@@ -2827,14 +2416,9 @@ class UpdatePermissions:
 
 @dataclass
 class UpdateProvider:
-
-    # Description about the provider.
     comment: str
-    # The name of the Provider.
     name: str  # path
-    # Username of Provider owner.
     owner: str
-    # This field is required when the authentication_type is `TOKEN` or not provided.
     recipient_profile_str: str
 
     def as_dict(self) -> dict:
@@ -2862,12 +2446,8 @@ class UpdateProvider:
 
 @dataclass
 class UpdateRecipient:
-
-    # Description about the recipient.
     comment: str
-    # IP Access List
     ip_access_list: "IpAccessList"
-    # Name of Recipient.
     name: str  # path
 
     def as_dict(self) -> dict:
@@ -2894,20 +2474,12 @@ class UpdateRecipient:
 
 @dataclass
 class UpdateSchema:
-
-    # Name of parent Catalog.
     catalog_name: str
-    # User-provided free-form text description.
     comment: str
-    # Required. Full name of the schema (from URL).
     full_name: str  # path
-    # Name of Schema, relative to parent Catalog.
     name: str
-    # Username of current owner of Schema.
     owner: str
-
     properties: "Dict[str,str]"
-    # Storage root URL for managed tables within schema.
     storage_root: str
 
     def as_dict(self) -> dict:
@@ -2944,14 +2516,9 @@ class UpdateSchema:
 
 @dataclass
 class UpdateShare:
-
-    # User-provided free-form text description.
     comment: str
-    # Name of the Share.
     name: str  # path
-    # Username of current owner of Share.
     owner: str
-    # Array of shared data object updates.
     updates: "List[SharedDataObjectUpdate]"
 
     def as_dict(self) -> dict:
@@ -2981,10 +2548,7 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-
-    # Array of permission changes.
     changes: "List[PermissionsChange]"
-    # Required. The name of the share.
     name: str  # path
 
     def as_dict(self) -> dict:
@@ -3008,18 +2572,11 @@ class UpdateSharePermissions:
 
 @dataclass
 class UpdateStorageCredential:
-
-    # The AWS IAM role configuration.
     aws_iam_role: "AwsIamRole"
-    # The Azure service principal configuration.
     azure_service_principal: "AzureServicePrincipal"
-    # Comment associated with the credential.
     comment: str
-    # The GCP service account key configuration.
     gcp_service_account_key: "GcpServiceAccountKey"
-    # The credential name. The name MUST be unique within the Metastore.
     name: str  # path
-    # Username of current owner of credential.
     owner: str
 
     def as_dict(self) -> dict:

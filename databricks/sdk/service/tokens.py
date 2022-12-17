@@ -10,12 +10,7 @@ from typing import Dict, List, Any
 
 @dataclass
 class CreateTokenRequest:
-
-    # Optional description to attach to the token.
     comment: str
-    # The lifetime of the token, in seconds.
-    #
-    # If the ifetime is not specified, this token remains valid indefinitely.
     lifetime_seconds: int
 
     def as_dict(self) -> dict:
@@ -37,10 +32,7 @@ class CreateTokenRequest:
 
 @dataclass
 class CreateTokenResponse:
-
-    # The information for the new token.
     token_info: "PublicTokenInfo"
-    # The value of the new token.
     token_value: str
 
     def as_dict(self) -> dict:
@@ -64,8 +56,6 @@ class CreateTokenResponse:
 
 @dataclass
 class ListTokensResponse:
-
-    # The information for each token.
     token_infos: "List[PublicTokenInfo]"
 
     def as_dict(self) -> dict:
@@ -86,14 +76,9 @@ class ListTokensResponse:
 
 @dataclass
 class PublicTokenInfo:
-
-    # Comment the token was created with, if applicable.
     comment: str
-    # Server time (in epoch milliseconds) when the token was created.
     creation_time: int
-    # Server time (in epoch milliseconds) when the token will expire, or -1 if not applicable.
     expiry_time: int
-    # The ID of this token.
     token_id: str
 
     def as_dict(self) -> dict:
@@ -121,8 +106,6 @@ class PublicTokenInfo:
 
 @dataclass
 class RevokeTokenRequest:
-
-    # The ID of the token to be revoked.
     token_id: str
 
     def as_dict(self) -> dict:

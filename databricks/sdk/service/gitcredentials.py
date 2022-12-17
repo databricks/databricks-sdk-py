@@ -10,12 +10,8 @@ from typing import Dict, List, Any
 
 @dataclass
 class CreateCredentials:
-
-    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
-    # Git username.
     git_username: str
-    # The personal access token used to authenticate to the corresponding Git provider.
     personal_access_token: str
 
     def as_dict(self) -> dict:
@@ -40,12 +36,8 @@ class CreateCredentials:
 
 @dataclass
 class CreateCredentialsResponse:
-
-    # ID of the credential object in the workspace.
     credential_id: int
-    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
-    # Git username.
     git_username: str
 
     def as_dict(self) -> dict:
@@ -70,12 +62,8 @@ class CreateCredentialsResponse:
 
 @dataclass
 class CredentialInfo:
-
-    # ID of the credential object in the workspace.
     credential_id: int
-    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
-    # Git username.
     git_username: str
 
     def as_dict(self) -> dict:
@@ -102,7 +90,6 @@ class CredentialInfo:
 class Delete:
     """Delete a credential"""
 
-    # The ID for the corresponding credential to access.
     credential_id: int  # path
 
 
@@ -110,13 +97,11 @@ class Delete:
 class Get:
     """Get a credential entry"""
 
-    # The ID for the corresponding credential to access.
     credential_id: int  # path
 
 
 @dataclass
 class GetCredentialsResponse:
-
     credentials: "List[CredentialInfo]"
 
     def as_dict(self) -> dict:
@@ -137,14 +122,9 @@ class GetCredentialsResponse:
 
 @dataclass
 class UpdateCredentials:
-
-    # The ID for the corresponding credential to access.
     credential_id: int  # path
-    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
-    # Git username.
     git_username: str
-    # The personal access token used to authenticate to the corresponding Git provider.
     personal_access_token: str
 
     def as_dict(self) -> dict:

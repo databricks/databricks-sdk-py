@@ -10,10 +10,7 @@ from typing import Dict, List, Any
 
 @dataclass
 class AddBlock:
-
-    # The base64-encoded data to append to the stream. This has a limit of 1 MB.
     data: str
-    # The handle on an open stream.
     handle: int
 
     def as_dict(self) -> dict:
@@ -35,8 +32,6 @@ class AddBlock:
 
 @dataclass
 class Close:
-
-    # The handle on an open stream.
     handle: int
 
     def as_dict(self) -> dict:
@@ -55,10 +50,7 @@ class Close:
 
 @dataclass
 class Create:
-
-    # The flag that specifies whether to overwrite existing file/files.
     overwrite: bool
-    # The path of the new file. The path should be the absolute DBFS path.
     path: str
 
     def as_dict(self) -> dict:
@@ -80,9 +72,6 @@ class Create:
 
 @dataclass
 class CreateResponse:
-
-    # Handle which should subsequently be passed into the AddBlock and Close calls when writing to a file through a
-    # stream.
     handle: int
 
     def as_dict(self) -> dict:
@@ -101,11 +90,7 @@ class CreateResponse:
 
 @dataclass
 class Delete:
-
-    # The path of the file or directory to delete. The path should be the absolute DBFS path.
     path: str
-    # Whether or not to recursively delete the directory's contents. Deleting empty directories can be done without
-    # providing the recursive flag.
     recursive: bool
 
     def as_dict(self) -> dict:
@@ -127,14 +112,9 @@ class Delete:
 
 @dataclass
 class FileInfo:
-
-    # The length of the file in bytes or zero if the path is a directory.
     file_size: int
-    # True if the path is a directory.
     is_dir: bool
-    # Last modification time of given file/dir in milliseconds since Epoch.
     modification_time: int
-    # The path of the file or directory.
     path: str
 
     def as_dict(self) -> dict:
@@ -164,7 +144,6 @@ class FileInfo:
 class GetStatus:
     """Get the information of a file or directory"""
 
-    # The path of the file or directory. The path should be the absolute DBFS path.
     path: str  # query
 
 
@@ -172,14 +151,11 @@ class GetStatus:
 class ListRequest:
     """List directory contents or file details"""
 
-    # The path of the file or directory. The path should be the absolute DBFS path.
     path: str  # query
 
 
 @dataclass
 class ListStatusResponse:
-
-    # A list of FileInfo's that describe contents of directory or file. See example above.
     files: "List[FileInfo]"
 
     def as_dict(self) -> dict:
@@ -198,8 +174,6 @@ class ListStatusResponse:
 
 @dataclass
 class MkDirs:
-
-    # The path of the new directory. The path should be the absolute DBFS path.
     path: str
 
     def as_dict(self) -> dict:
@@ -218,10 +192,7 @@ class MkDirs:
 
 @dataclass
 class Move:
-
-    # The destination path of the file or directory. The path should be the absolute DBFS path.
     destination_path: str
-    # The source path of the file or directory. The path should be the absolute DBFS path.
     source_path: str
 
     def as_dict(self) -> dict:
@@ -243,12 +214,8 @@ class Move:
 
 @dataclass
 class Put:
-
-    # This parameter might be absent, and instead a posted file will be used.
     contents: str
-    # The flag that specifies whether to overwrite existing file/files.
     overwrite: bool
-    # The path of the new file. The path should be the absolute DBFS path.
     path: str
 
     def as_dict(self) -> dict:
@@ -275,21 +242,14 @@ class Put:
 class Read:
     """Get the contents of a file"""
 
-    # The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value of 0.5 MB.
     length: int  # query
-    # The offset to read from in bytes.
     offset: int  # query
-    # The path of the file to read. The path should be the absolute DBFS path.
     path: str  # query
 
 
 @dataclass
 class ReadResponse:
-
-    # The number of bytes read (could be less than `length` if we hit end of file). This refers to number of bytes read
-    # in unencoded version (response data is base64-encoded).
     bytes_read: int
-    # The base64-encoded contents of the file read.
     data: str
 
     def as_dict(self) -> dict:

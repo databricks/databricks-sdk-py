@@ -10,10 +10,7 @@ from typing import Dict, List, Any
 
 @dataclass
 class AclItem:
-
-    # The permission level applied to the principal.
     permission: "AclPermission"
-    # The principal in which the permission is applied.
     principal: str
 
     def as_dict(self) -> dict:
@@ -42,10 +39,7 @@ class AclPermission(Enum):
 
 @dataclass
 class AzureKeyVaultSecretScopeMetadata:
-
-    # The DNS of the KeyVault
     dns_name: str
-    # The resource id of the azure KeyVault that user wants to associate the scope with.
     resource_id: str
 
     def as_dict(self) -> dict:
@@ -67,14 +61,9 @@ class AzureKeyVaultSecretScopeMetadata:
 
 @dataclass
 class CreateScope:
-
-    # The principal that is initially granted `MANAGE` permission to the created scope.
     initial_manage_principal: str
-    # The metadata for the secret scope if the type is `AZURE_KEYVAULT`
     keyvault_metadata: "AzureKeyVaultSecretScopeMetadata"
-    # Scope name requested by the user. Scope names are unique.
     scope: str
-    # The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
     scope_backend_type: "ScopeBackendType"
 
     def as_dict(self) -> dict:
@@ -108,10 +97,7 @@ class CreateScope:
 
 @dataclass
 class DeleteAcl:
-
-    # The principal to remove an existing ACL from.
     principal: str
-    # The name of the scope to remove permissions from.
     scope: str
 
     def as_dict(self) -> dict:
@@ -133,8 +119,6 @@ class DeleteAcl:
 
 @dataclass
 class DeleteScope:
-
-    # Name of the scope to delete.
     scope: str
 
     def as_dict(self) -> dict:
@@ -153,10 +137,7 @@ class DeleteScope:
 
 @dataclass
 class DeleteSecret:
-
-    # Name of the secret to delete.
     key: str
-    # The name of the scope that contains the secret to delete.
     scope: str
 
     def as_dict(self) -> dict:
@@ -180,9 +161,7 @@ class DeleteSecret:
 class GetAcl:
     """Get secret ACL details"""
 
-    # The principal to fetch ACL information for.
     principal: str  # query
-    # The name of the scope to fetch ACL information from.
     scope: str  # query
 
 
@@ -190,14 +169,11 @@ class GetAcl:
 class ListAcls:
     """Lists ACLs"""
 
-    # The name of the scope to fetch ACL information from.
     scope: str  # query
 
 
 @dataclass
 class ListAclsResponse:
-
-    # The associated ACLs rule applied to principals in the given scope.
     items: "List[AclItem]"
 
     def as_dict(self) -> dict:
@@ -216,8 +192,6 @@ class ListAclsResponse:
 
 @dataclass
 class ListScopesResponse:
-
-    # The available secret scopes.
     scopes: "List[SecretScope]"
 
     def as_dict(self) -> dict:
@@ -240,14 +214,11 @@ class ListScopesResponse:
 class ListSecrets:
     """List secret keys"""
 
-    # The name of the scope to list secrets within.
     scope: str  # query
 
 
 @dataclass
 class ListSecretsResponse:
-
-    # Metadata information of all secrets contained within the given scope.
     secrets: "List[SecretMetadata]"
 
     def as_dict(self) -> dict:
@@ -268,12 +239,8 @@ class ListSecretsResponse:
 
 @dataclass
 class PutAcl:
-
-    # The permission level applied to the principal.
     permission: "AclPermission"
-    # The principal in which the permission is applied.
     principal: str
-    # The name of the scope to apply permissions to.
     scope: str
 
     def as_dict(self) -> dict:
@@ -298,14 +265,9 @@ class PutAcl:
 
 @dataclass
 class PutSecret:
-
-    # If specified, value will be stored as bytes.
     bytes_value: str
-    # A unique name to identify the secret.
     key: str
-    # The name of the scope to which the secret will be associated with.
     scope: str
-    # If specified, note that the value will be stored in UTF-8 (MB4) form.
     string_value: str
 
     def as_dict(self) -> dict:
@@ -339,10 +301,7 @@ class ScopeBackendType(Enum):
 
 @dataclass
 class SecretMetadata:
-
-    # A unique name to identify the secret.
     key: str
-    # The last updated timestamp (in milliseconds) for the secret.
     last_updated_timestamp: int
 
     def as_dict(self) -> dict:
@@ -364,12 +323,8 @@ class SecretMetadata:
 
 @dataclass
 class SecretScope:
-
-    # The type of secret scope backend.
     backend_type: "ScopeBackendType"
-    # The metadata for the secret scope if the type is `AZURE_KEYVAULT`
     keyvault_metadata: "AzureKeyVaultSecretScopeMetadata"
-    # A unique name to identify the secret scope.
     name: str
 
     def as_dict(self) -> dict:
