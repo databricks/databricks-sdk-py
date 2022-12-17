@@ -4,8 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List
 
-from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
-                       ClusterLogConf, GcpAttributes)
+from .clusters import (AutoScale, AwsAttributes, AzureAttributes, ClusterLogConf, GcpAttributes)
 from .libraries import MavenLibrary
 
 # all definitions in this file are in alphabetical order
