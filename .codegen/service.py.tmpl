@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Iterator
 
 {{range .ImportedEntities}}
 from .{{.Package.Name}} import {{.PascalName}}{{end}}
@@ -85,7 +85,7 @@ class {{.Name}}API:{{if .Description}}
       {{if .Request.NonRequiredFields}}, *
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
       {{- end}}, **kwargs
-    {{- end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
+    {{- end}}){{if .Response}} -> {{template "method-return-type" .}}{{end}}:
         {{if .Description}}"""{{.Comment "        " 110}}"""{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -98,8 +98,22 @@ class {{.Name}}API:{{if .Description}}
         {{end}}{{if .Response}}
         json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
         {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
-        {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
+        {{if .Response -}}
+          {{if .Response.ArrayValue -}}
+            return json
+          {{- else -}}
+            return {{.Response.PascalName}}.from_dict(json)
+          {{- end}}
+        {{- end}}
     {{end -}}
+{{- end}}
+
+{{define "method-return-type" -}}
+  {{if .Response.ArrayValue -}}
+    Iterator[{{.Response.ArrayValue.PascalName}}]
+  {{- else -}}
+    {{.Response.PascalName}}
+  {{- end}}
 {{- end}}
 
 {{- define "method-param-bind" -}}

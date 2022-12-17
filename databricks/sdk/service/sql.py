@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -2171,7 +2171,7 @@ class AlertsAPI:
         json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{request.alert_id}')
         return Alert.from_dict(json)
 
-    def get_subscriptions(self, alert_id: str, **kwargs) -> SubscriptionList:
+    def get_subscriptions(self, alert_id: str, **kwargs) -> Iterator[Subscription]:
         """Get an alert's subscriptions.
         
         Get the subscriptions for an alert. An alert subscription represents exactly one recipient being
@@ -2182,17 +2182,17 @@ class AlertsAPI:
             request = GetSubscriptionsRequest(alert_id=alert_id)
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions')
-        return SubscriptionList.from_dict(json)
+        return json
 
-    def list(self) -> AlertList:
+    def list(self) -> Iterator[Alert]:
         """Get alerts.
         
         Gets a list of alerts."""
 
         json = self._api.do('GET', '/api/2.0/preview/sql/alerts')
-        return AlertList.from_dict(json)
+        return json
 
-    def list_schedules(self, alert_id: str, **kwargs) -> RefreshScheduleList:
+    def list_schedules(self, alert_id: str, **kwargs) -> Iterator[RefreshSchedule]:
         """Get refresh schedules.
         
         Gets the refresh schedules for the specified alert. Alerts can have refresh schedules that specify
@@ -2205,7 +2205,7 @@ class AlertsAPI:
             request = ListSchedulesRequest(alert_id=alert_id)
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules')
-        return RefreshScheduleList.from_dict(json)
+        return json
 
     def subscribe(self,
                   alert_id: str,
@@ -2354,7 +2354,7 @@ class DataSourcesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def list(self) -> DataSourceList:
+    def list(self) -> Iterator[DataSource]:
         """Get a list of SQL warehouses.
         
         Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
@@ -2362,7 +2362,7 @@ class DataSourcesAPI:
         queries against it."""
 
         json = self._api.do('GET', '/api/2.0/preview/sql/data_sources')
-        return DataSourceList.from_dict(json)
+        return json
 
 
 class DbsqlPermissionsAPI:
