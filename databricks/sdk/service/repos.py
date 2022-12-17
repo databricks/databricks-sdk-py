@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -82,7 +82,7 @@ class Get:
 
 
 @dataclass
-class List:
+class ListRequest:
     """Get repos"""
 
     # Token used to get the next page of results. If not specified, returns the first page of results as well as a next
@@ -101,7 +101,7 @@ class List:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
+    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
         return cls(
             next_page_token=d.get("next_page_token", None),
             path_prefix=d.get("path_prefix", None),
@@ -260,7 +260,9 @@ class ReposAPI:
         are paginated with each page containing twenty repos."""
         request = kwargs.get("request", None)
         if not request:  # request is not given through keyed args
-            request = List(next_page_token=next_page_token, path_prefix=path_prefix)
+            request = ListRequest(
+                next_page_token=next_page_token, path_prefix=path_prefix
+            )
 
         query = {}
         if next_page_token:

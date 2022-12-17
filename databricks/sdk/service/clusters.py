@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -1813,7 +1813,7 @@ class InstanceProfile:
 
 
 @dataclass
-class List:
+class ListRequest:
     """List all clusters"""
 
     # Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS. No input for
@@ -1828,7 +1828,7 @@ class List:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
+    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
         return cls(
             can_use_client=d.get("can_use_client", None),
         )
@@ -2896,7 +2896,7 @@ class ClustersAPI:
         the 30 most recently terminated job clusters."""
         request = kwargs.get("request", None)
         if not request:  # request is not given through keyed args
-            request = List(can_use_client=can_use_client)
+            request = ListRequest(can_use_client=can_use_client)
 
         query = {}
         if can_use_client:

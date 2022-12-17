@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -182,7 +182,7 @@ class GetStatus:
 
 
 @dataclass
-class List:
+class ListRequest:
     """List directory contents or file details"""
 
     # The path of the file or directory. The path should be the absolute DBFS path.
@@ -196,7 +196,7 @@ class List:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
+    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
         return cls(
             path=d.get("path", None),
         )
@@ -469,7 +469,7 @@ class DbfsAPI:
         provides the same functionality without timing out."""
         request = kwargs.get("request", None)
         if not request:  # request is not given through keyed args
-            request = List(path=path)
+            request = ListRequest(path=path)
 
         query = {}
         if path:

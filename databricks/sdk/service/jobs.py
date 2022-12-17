@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 from .clusters import CreateCluster
@@ -1097,7 +1097,7 @@ class JobWebhookNotificationsOnSuccessItem:
 
 
 @dataclass
-class List:
+class ListRequest:
     """List all jobs"""
 
     # Whether to include task and cluster details in the response.
@@ -1123,7 +1123,7 @@ class List:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
+    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
         return cls(
             expand_tasks=d.get("expand_tasks", None),
             limit=d.get("limit", None),
@@ -3301,7 +3301,7 @@ class JobsAPI:
         Retrieves a list of jobs."""
         request = kwargs.get("request", None)
         if not request:  # request is not given through keyed args
-            request = List(
+            request = ListRequest(
                 expand_tasks=expand_tasks, limit=limit, name=name, offset=offset
             )
 

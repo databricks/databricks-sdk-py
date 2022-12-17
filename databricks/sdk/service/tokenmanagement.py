@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -107,7 +107,7 @@ class Get:
 
 
 @dataclass
-class List:
+class ListRequest:
     """List all tokens"""
 
     # User ID of the user that created the token.
@@ -125,7 +125,7 @@ class List:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
+    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
         return cls(
             created_by_id=d.get("created_by_id", None),
             created_by_username=d.get("created_by_username", None),
@@ -263,7 +263,7 @@ class TokenManagementAPI:
         Lists all tokens associated with the specified workspace or user."""
         request = kwargs.get("request", None)
         if not request:  # request is not given through keyed args
-            request = List(
+            request = ListRequest(
                 created_by_id=created_by_id, created_by_username=created_by_username
             )
 

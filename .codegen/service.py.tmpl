@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 {{range .ImportedEntities}}
 from .{{.Package.Name}} import {{.PascalName}}{{end}}
@@ -10,7 +10,7 @@ from .{{.Package.Name}} import {{.PascalName}}{{end}}
 # all definitions in this file are in alphabetical order
 {{range .Types}}
 {{if .Fields -}}@dataclass
-class {{.PascalName}}:
+class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
     {{if .Description}}"""{{.Comment "    " 80}}"""{{end}}
     {{- range .Fields | alphanumOnly}}
     {{.Comment "    # " 120}}
@@ -24,7 +24,7 @@ class {{.PascalName}}:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}':
+    def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
         return cls({{range .Fields | alphanumOnly}}
             {{.Name}}={{template "from_dict_type" .}},{{end}}
         )
@@ -55,7 +55,7 @@ class {{.PascalName}}:
 	{{- else if .ArrayValue }}'List[{{template "type-nq" .ArrayValue}}]'
 	{{- else if .MapValue }}'Dict[str,{{template "type-nq" .MapValue}}]'
 	{{- else if .IsExternal }}'{{.PascalName}}'
-	{{- else if .IsObject }}'{{.PascalName}}'
+	{{- else if .IsObject }}'{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}'
 	{{- else if .Enum }}'{{.PascalName}}'
 	{{- else}}{{template "type-nq" .}}{{- end -}}
 {{- end -}}
@@ -70,9 +70,8 @@ class {{.PascalName}}:
 	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
   {{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.PascalName}}
-	{{- else if .IsObject }}{{.PascalName}}
+	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
 	{{- else if .Enum }}{{.PascalName}}
-	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else}}any /* MISSING TYPE */
 	{{- end -}}
 {{- end -}}

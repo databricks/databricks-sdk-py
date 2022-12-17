@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -178,7 +178,7 @@ class Language(Enum):
 
 
 @dataclass
-class List:
+class ListRequest:
     """List contents"""
 
     # <content needed>
@@ -196,7 +196,7 @@ class List:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
+    def from_dict(cls, d: Dict[str, any]) -> "ListRequest":
         return cls(
             notebooks_modified_after=d.get("notebooks_modified_after", None),
             path=d.get("path", None),
@@ -416,7 +416,9 @@ class WorkspaceAPI:
         `RESOURCE_DOES_NOT_EXIST`."""
         request = kwargs.get("request", None)
         if not request:  # request is not given through keyed args
-            request = List(notebooks_modified_after=notebooks_modified_after, path=path)
+            request = ListRequest(
+                notebooks_modified_after=notebooks_modified_after, path=path
+            )
 
         query = {}
         if notebooks_modified_after:
