@@ -2182,7 +2182,7 @@ class AlertsAPI:
             request = GetSubscriptionsRequest(alert_id=alert_id)
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions')
-        return json
+        return [Subscription.from_dict(v) for v in json]
 
     def list(self) -> Iterator[Alert]:
         """Get alerts.
@@ -2190,7 +2190,7 @@ class AlertsAPI:
         Gets a list of alerts."""
 
         json = self._api.do('GET', '/api/2.0/preview/sql/alerts')
-        return json
+        return [Alert.from_dict(v) for v in json]
 
     def list_schedules(self, alert_id: str, **kwargs) -> Iterator[RefreshSchedule]:
         """Get refresh schedules.
@@ -2205,7 +2205,7 @@ class AlertsAPI:
             request = ListSchedulesRequest(alert_id=alert_id)
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules')
-        return json
+        return [RefreshSchedule.from_dict(v) for v in json]
 
     def subscribe(self,
                   alert_id: str,
@@ -2362,7 +2362,7 @@ class DataSourcesAPI:
         queries against it."""
 
         json = self._api.do('GET', '/api/2.0/preview/sql/data_sources')
-        return json
+        return [DataSource.from_dict(v) for v in json]
 
 
 class DbsqlPermissionsAPI:

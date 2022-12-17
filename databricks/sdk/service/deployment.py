@@ -1094,7 +1094,7 @@ class CredentialsAPI:
         Gets all Databricks credential configurations associated with an account specified by ID."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials')
-        return json
+        return [Credential.from_dict(v) for v in json]
 
 
 class EncryptionKeysAPI:
@@ -1196,7 +1196,7 @@ class EncryptionKeysAPI:
         This operation is available only if your account is on the E2 version of the platform."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys')
-        return json
+        return [CustomerManagedKey.from_dict(v) for v in json]
 
 
 class NetworksAPI:
@@ -1284,7 +1284,7 @@ class NetworksAPI:
         This operation is available only if your account is on the E2 version of the platform."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks')
-        return json
+        return [Network.from_dict(v) for v in json]
 
 
 class PrivateAccessAPI:
@@ -1399,7 +1399,7 @@ class PrivateAccessAPI:
         representative to enable your account for PrivateLink."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/private-access-settings')
-        return json
+        return [PrivateAccessSettings.from_dict(v) for v in json]
 
     def replace(self,
                 private_access_settings_name: str,
@@ -1515,7 +1515,7 @@ class StorageAPI:
         Gets a list of all Databricks storage configurations for your account, specified by ID."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/storage-configurations')
-        return json
+        return [StorageConfiguration.from_dict(v) for v in json]
 
 
 class VpcEndpointsAPI:
@@ -1627,7 +1627,7 @@ class VpcEndpointsAPI:
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints')
-        return json
+        return [VpcEndpoint.from_dict(v) for v in json]
 
 
 class WorkspacesAPI:
@@ -1756,7 +1756,7 @@ class WorkspacesAPI:
         custom plan that allows multiple workspaces per account."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces')
-        return json
+        return [Workspace.from_dict(v) for v in json]
 
     def update(self,
                workspace_id: int,

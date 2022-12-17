@@ -100,7 +100,7 @@ class {{.Name}}API:{{if .Description}}
         {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
         {{if .Response -}}
           {{if .Response.ArrayValue -}}
-            return json
+            return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in json]
           {{- else -}}
             return {{.Response.PascalName}}.from_dict(json)
           {{- end}}
