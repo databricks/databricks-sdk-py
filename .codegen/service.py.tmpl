@@ -100,7 +100,7 @@ class {{.Name}}API:
         if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{end -}}
         {{- end}}
-        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{request."}}{{.Field.SnakeName}}{{"}"}}{{end}}{{ end }}'
+        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
         {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
         {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
     {{end -}}

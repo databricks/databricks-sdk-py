@@ -595,7 +595,11 @@ class AccountGroupsAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//scim/v2/Groups", body=body)
+        json = self._api.do(
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups",
+            body=body,
+        )
         return Group.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -606,7 +610,10 @@ class AccountGroupsAPI:
         if not request:  # request is not given through keyed args
             request = DeleteGroupRequest(id=id)
 
-        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Groups/{request.id}")
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}",
+        )
 
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
@@ -616,7 +623,10 @@ class AccountGroupsAPI:
         if not request:  # request is not given through keyed args
             request = GetGroupRequest(id=id)
 
-        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups/{request.id}")
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}",
+        )
         return Group.from_dict(json)
 
     def list(
@@ -662,7 +672,11 @@ class AccountGroupsAPI:
         if start_index:
             query["startIndex"] = request.start_index
 
-        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups", query=query)
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups",
+            query=query,
+        )
         return ListGroupsResponse.from_dict(json)
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
@@ -675,7 +689,9 @@ class AccountGroupsAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/accounts//scim/v2/Groups/{request.id}", body=body
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}",
+            body=body,
         )
 
     def update(
@@ -707,7 +723,9 @@ class AccountGroupsAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PUT", f"/api/2.0/accounts//scim/v2/Groups/{request.id}", body=body
+            "PUT",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}",
+            body=body,
         )
 
 
@@ -746,7 +764,9 @@ class AccountServicePrincipalsAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/accounts//scim/v2/ServicePrincipals", body=body
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals",
+            body=body,
         )
         return ServicePrincipal.from_dict(json)
 
@@ -759,7 +779,8 @@ class AccountServicePrincipalsAPI:
             request = DeleteServicePrincipalRequest(id=id)
 
         self._api.do(
-            "DELETE", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}"
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}",
         )
 
     def get(self, id: str, **kwargs) -> ServicePrincipal:
@@ -772,7 +793,8 @@ class AccountServicePrincipalsAPI:
             request = GetServicePrincipalRequest(id=id)
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}"
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}",
         )
         return ServicePrincipal.from_dict(json)
 
@@ -820,7 +842,9 @@ class AccountServicePrincipalsAPI:
             query["startIndex"] = request.start_index
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/ServicePrincipals", query=query
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals",
+            query=query,
         )
         return ListServicePrincipalResponse.from_dict(json)
 
@@ -836,7 +860,7 @@ class AccountServicePrincipalsAPI:
 
         self._api.do(
             "PATCH",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}",
             body=body,
         )
 
@@ -874,7 +898,7 @@ class AccountServicePrincipalsAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{request.id}",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}",
             body=body,
         )
 
@@ -918,7 +942,9 @@ class AccountUsersAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//scim/v2/Users", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", body=body
+        )
         return User.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -930,7 +956,10 @@ class AccountUsersAPI:
         if not request:  # request is not given through keyed args
             request = DeleteUserRequest(id=id)
 
-        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Users/{request.id}")
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}",
+        )
 
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
@@ -940,7 +969,10 @@ class AccountUsersAPI:
         if not request:  # request is not given through keyed args
             request = GetUserRequest(id=id)
 
-        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users/{request.id}")
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}",
+        )
         return User.from_dict(json)
 
     def list(
@@ -986,7 +1018,11 @@ class AccountUsersAPI:
         if start_index:
             query["startIndex"] = request.start_index
 
-        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users", query=query)
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users",
+            query=query,
+        )
         return ListUsersResponse.from_dict(json)
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
@@ -1000,7 +1036,9 @@ class AccountUsersAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/accounts//scim/v2/Users/{request.id}", body=body
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}",
+            body=body,
         )
 
     def update(
@@ -1037,7 +1075,11 @@ class AccountUsersAPI:
             )
         body = request.as_dict()
 
-        self._api.do("PUT", f"/api/2.0/accounts//scim/v2/Users/{request.id}", body=body)
+        self._api.do(
+            "PUT",
+            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}",
+            body=body,
+        )
 
 
 class CurrentUserAPI:

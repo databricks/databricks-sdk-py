@@ -695,7 +695,7 @@ class WorkspaceAssignmentAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments",
+            f"/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments",
             body=body,
         )
         return WorkspaceAssignmentsCreated.from_dict(json)
@@ -713,7 +713,7 @@ class WorkspaceAssignmentAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
+            f"/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
         )
 
     def get(self, workspace_id: int, **kwargs) -> WorkspacePermissions:
@@ -727,7 +727,7 @@ class WorkspaceAssignmentAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/permissions",
+            f"/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/permissions",
         )
         return WorkspacePermissions.from_dict(json)
 
@@ -742,7 +742,7 @@ class WorkspaceAssignmentAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments",
+            f"/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments",
         )
         return PermissionAssignments.from_dict(json)
 
@@ -768,6 +768,6 @@ class WorkspaceAssignmentAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.0/preview/accounts//workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
+            f"/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}",
             body=body,
         )

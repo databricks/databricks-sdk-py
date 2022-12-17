@@ -772,7 +772,11 @@ class BillableUsageAPI:
         if start_month:
             query["start_month"] = request.start_month
 
-        self._api.do("GET", f"/api/2.0/accounts//usage/download", query=query)
+        self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/usage/download",
+            query=query,
+        )
 
 
 class BudgetsAPI:
@@ -790,7 +794,9 @@ class BudgetsAPI:
             request = WrappedBudget(budget=budget, budget_id=budget_id)
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//budget", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/budget", body=body
+        )
         return WrappedBudgetWithStatus.from_dict(json)
 
     def delete(self, budget_id: str, **kwargs):
@@ -801,7 +807,10 @@ class BudgetsAPI:
         if not request:  # request is not given through keyed args
             request = DeleteBudgetRequest(budget_id=budget_id)
 
-        self._api.do("DELETE", f"/api/2.0/accounts//budget/{request.budget_id}")
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}",
+        )
 
     def get(self, budget_id: str, **kwargs) -> WrappedBudgetWithStatus:
         """Get budget and its status.
@@ -812,7 +821,10 @@ class BudgetsAPI:
         if not request:  # request is not given through keyed args
             request = GetBudgetRequest(budget_id=budget_id)
 
-        json = self._api.do("GET", f"/api/2.0/accounts//budget/{request.budget_id}")
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}",
+        )
         return WrappedBudgetWithStatus.from_dict(json)
 
     def list(self) -> BudgetList:
@@ -821,7 +833,7 @@ class BudgetsAPI:
         Gets all budgets associated with this account, including noncumulative
         status for each day that the budget is configured to include."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//budget")
+        json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/budget")
         return BudgetList.from_dict(json)
 
     def update(self, budget: Budget, budget_id: str, **kwargs):
@@ -835,7 +847,9 @@ class BudgetsAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/accounts//budget/{request.budget_id}", body=body
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}",
+            body=body,
         )
 
 
@@ -886,7 +900,9 @@ class LogDeliveryAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//log-delivery", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", body=body
+        )
         return WrappedLogDeliveryConfiguration.from_dict(json)
 
     def get(
@@ -904,7 +920,7 @@ class LogDeliveryAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//log-delivery/{request.log_delivery_configuration_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/log-delivery/{request.log_delivery_configuration_id}",
         )
         return WrappedLogDeliveryConfiguration.from_dict(json)
 
@@ -936,7 +952,9 @@ class LogDeliveryAPI:
         if storage_configuration_id:
             query["storage_configuration_id"] = request.storage_configuration_id
 
-        json = self._api.do("GET", f"/api/2.0/accounts//log-delivery", query=query)
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", query=query
+        )
         return WrappedLogDeliveryConfigurations.from_dict(json)
 
     def patch_status(
@@ -963,6 +981,6 @@ class LogDeliveryAPI:
 
         self._api.do(
             "PATCH",
-            f"/api/2.0/accounts//log-delivery/{request.log_delivery_configuration_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/log-delivery/{request.log_delivery_configuration_id}",
             body=body,
         )

@@ -1686,7 +1686,9 @@ class CredentialsAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//credentials", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/credentials", body=body
+        )
         return Credential.from_dict(json)
 
     def delete(self, credentials_id: str, **kwargs):
@@ -1700,7 +1702,8 @@ class CredentialsAPI:
             request = DeleteCredentialRequest(credentials_id=credentials_id)
 
         self._api.do(
-            "DELETE", f"/api/2.0/accounts//credentials/{request.credentials_id}"
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/credentials/{request.credentials_id}",
         )
 
     def get(self, credentials_id: str, **kwargs) -> Credential:
@@ -1713,7 +1716,8 @@ class CredentialsAPI:
             request = GetCredentialRequest(credentials_id=credentials_id)
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//credentials/{request.credentials_id}"
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/credentials/{request.credentials_id}",
         )
         return Credential.from_dict(json)
 
@@ -1723,7 +1727,9 @@ class CredentialsAPI:
         Gets all Databricks credential configurations associated with an account
         specified by ID."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//credentials")
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/credentials"
+        )
         return CredentialList.from_dict(json)
 
 
@@ -1761,7 +1767,9 @@ class EncryptionKeysAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/accounts//customer-managed-keys", body=body
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys",
+            body=body,
         )
         return CustomerManagedKey.from_dict(json)
 
@@ -1779,7 +1787,7 @@ class EncryptionKeysAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//customer-managed-keys/{request.customer_managed_key_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{request.customer_managed_key_id}",
         )
 
     def get(self, customer_managed_key_id: str, **kwargs) -> CustomerManagedKey:
@@ -1808,7 +1816,7 @@ class EncryptionKeysAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//customer-managed-keys/{request.customer_managed_key_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{request.customer_managed_key_id}",
         )
         return CustomerManagedKey.from_dict(json)
 
@@ -1830,7 +1838,9 @@ class EncryptionKeysAPI:
         This operation is available only if your account is on the E2 version of
         the platform."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//customer-managed-keys")
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys"
+        )
         return CustomerManagedKeyList.from_dict(json)
 
 
@@ -1884,7 +1894,9 @@ class NetworksAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//networks", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/networks", body=body
+        )
         return Network.from_dict(json)
 
     def delete(self, network_id: str, **kwargs):
@@ -1900,7 +1912,10 @@ class NetworksAPI:
         if not request:  # request is not given through keyed args
             request = DeleteNetworkRequest(network_id=network_id)
 
-        self._api.do("DELETE", f"/api/2.0/accounts//networks/{request.network_id}")
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/networks/{request.network_id}",
+        )
 
     def get(self, network_id: str, **kwargs) -> Network:
         """Get a network configuration.
@@ -1917,7 +1932,10 @@ class NetworksAPI:
         if not request:  # request is not given through keyed args
             request = GetNetworkRequest(network_id=network_id)
 
-        json = self._api.do("GET", f"/api/2.0/accounts//networks/{request.network_id}")
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/networks/{request.network_id}",
+        )
         return Network.from_dict(json)
 
     def list(self) -> NetworkList:
@@ -1929,7 +1947,7 @@ class NetworksAPI:
         This operation is available only if your account is on the E2 version of
         the platform."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//networks")
+        json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/networks")
         return NetworkList.from_dict(json)
 
 
@@ -1983,7 +2001,9 @@ class PrivateAccessAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/accounts//private-access-settings", body=body
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/private-access-settings",
+            body=body,
         )
         return PrivateAccessSettings.from_dict(json)
 
@@ -2011,7 +2031,7 @@ class PrivateAccessAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//private-access-settings/{request.private_access_settings_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/private-access-settings/{request.private_access_settings_id}",
         )
 
     def get(self, private_access_settings_id: str, **kwargs) -> PrivateAccessSettings:
@@ -2038,7 +2058,7 @@ class PrivateAccessAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//private-access-settings/{request.private_access_settings_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/private-access-settings/{request.private_access_settings_id}",
         )
         return PrivateAccessSettings.from_dict(json)
 
@@ -2053,7 +2073,9 @@ class PrivateAccessAPI:
         (Public Preview). Contact your Databricks representative to enable your
         account for PrivateLink."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//private-access-settings")
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/private-access-settings"
+        )
         return PrivateAccessSettingsList.from_dict(json)
 
     def replace(
@@ -2110,7 +2132,7 @@ class PrivateAccessAPI:
 
         self._api.do(
             "PUT",
-            f"/api/2.0/accounts//private-access-settings/{request.private_access_settings_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/private-access-settings/{request.private_access_settings_id}",
             body=body,
         )
 
@@ -2146,7 +2168,9 @@ class StorageAPI:
         body = request.as_dict()
 
         json = self._api.do(
-            "POST", f"/api/2.0/accounts//storage-configurations", body=body
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/storage-configurations",
+            body=body,
         )
         return StorageConfiguration.from_dict(json)
 
@@ -2163,7 +2187,7 @@ class StorageAPI:
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/accounts//storage-configurations/{request.storage_configuration_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/storage-configurations/{request.storage_configuration_id}",
         )
 
     def get(self, storage_configuration_id: str, **kwargs) -> StorageConfiguration:
@@ -2179,7 +2203,7 @@ class StorageAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/accounts//storage-configurations/{request.storage_configuration_id}",
+            f"/api/2.0/accounts/{self._api.account_id}/storage-configurations/{request.storage_configuration_id}",
         )
         return StorageConfiguration.from_dict(json)
 
@@ -2189,7 +2213,9 @@ class StorageAPI:
         Gets a list of all Databricks storage configurations for your account,
         specified by ID."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//storage-configurations")
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/storage-configurations"
+        )
         return StorageConfigurationList.from_dict(json)
 
 
@@ -2241,7 +2267,9 @@ class VpcEndpointsAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//vpc-endpoints", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints", body=body
+        )
         return VpcEndpoint.from_dict(json)
 
     def delete(self, vpc_endpoint_id: str, **kwargs):
@@ -2271,7 +2299,8 @@ class VpcEndpointsAPI:
             request = DeleteVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
 
         self._api.do(
-            "DELETE", f"/api/2.0/accounts//vpc-endpoints/{request.vpc_endpoint_id}"
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{request.vpc_endpoint_id}",
         )
 
     def get(self, vpc_endpoint_id: str, **kwargs) -> VpcEndpoint:
@@ -2293,7 +2322,8 @@ class VpcEndpointsAPI:
             request = GetVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//vpc-endpoints/{request.vpc_endpoint_id}"
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{request.vpc_endpoint_id}",
         )
         return VpcEndpoint.from_dict(json)
 
@@ -2312,7 +2342,9 @@ class VpcEndpointsAPI:
 
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//vpc-endpoints")
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints"
+        )
         return VpcEndpointList.from_dict(json)
 
 
@@ -2397,7 +2429,9 @@ class WorkspacesAPI:
             )
         body = request.as_dict()
 
-        json = self._api.do("POST", f"/api/2.0/accounts//workspaces", body=body)
+        json = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body
+        )
         return Workspace.from_dict(json)
 
     def delete(self, workspace_id: int, **kwargs):
@@ -2415,7 +2449,10 @@ class WorkspacesAPI:
         if not request:  # request is not given through keyed args
             request = DeleteWorkspaceRequest(workspace_id=workspace_id)
 
-        self._api.do("DELETE", f"/api/2.0/accounts//workspaces/{request.workspace_id}")
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}",
+        )
 
     def get(self, workspace_id: int, **kwargs) -> Workspace:
         """Get workspace.
@@ -2441,7 +2478,8 @@ class WorkspacesAPI:
             request = GetWorkspaceRequest(workspace_id=workspace_id)
 
         json = self._api.do(
-            "GET", f"/api/2.0/accounts//workspaces/{request.workspace_id}"
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}",
         )
         return Workspace.from_dict(json)
 
@@ -2455,7 +2493,9 @@ class WorkspacesAPI:
         the platform or on a select custom plan that allows multiple workspaces
         per account."""
 
-        json = self._api.do("GET", f"/api/2.0/accounts//workspaces")
+        json = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces"
+        )
         return WorkspaceList.from_dict(json)
 
     def update(
@@ -2595,5 +2635,7 @@ class WorkspacesAPI:
         body = request.as_dict()
 
         self._api.do(
-            "PATCH", f"/api/2.0/accounts//workspaces/{request.workspace_id}", body=body
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}",
+            body=body,
         )
