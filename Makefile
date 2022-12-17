@@ -5,7 +5,9 @@ dev-init:
 
 fmt:
 	yapf -pri databricks
+	autoflake -ri databricks
 
 lint:
 	pycodestyle databricks
+	autoflake --check-diff --quiet --recursive databricks
 

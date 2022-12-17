@@ -1,17 +1,11 @@
 import dataclasses
-import enum
-import json
-import typing
-import os
 import requests
 import requests.auth
 from requests.adapters import HTTPAdapter
 
-from urllib3.poolmanager import PoolManager
-from urllib3 import exceptions
 from urllib3.util.retry import Retry
-from typing import (Any, Collection, Mapping, Union, get_type_hints, Tuple, TypeVar, Dict, List, )
-from abc import ABC, abstractmethod, abstractproperty
+from typing import (Dict, List, )
+from abc import ABC, abstractmethod
 from os import getenv
 import threading
 import logging
@@ -19,7 +13,6 @@ import pathlib
 import configparser
 import platform
 import urllib.parse
-import datetime
 import subprocess
 from .oauth import ClientCredentials, Refreshable, Token
 from .azure import ENVIRONMENTS, ARM_DATABRICKS_RESOURCE_ID, AzureEnvironment
@@ -192,7 +185,6 @@ class AzureCli(DatabricksAuth, Refreshable):
             stderr=subprocess.PIPE,
             universal_newlines=True)
         print(result.returncode, result.stdout, result.stderr)
-        pass
 
     def __call__(self, r):
         pass
