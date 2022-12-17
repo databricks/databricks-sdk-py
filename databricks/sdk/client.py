@@ -10,17 +10,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 from urllib3 import exceptions
 from urllib3.util.retry import Retry
-from typing import (
-    Any,
-    Collection,
-    Mapping,
-    Union,
-    get_type_hints,
-    Tuple,
-    TypeVar,
-    Dict,
-    List,
-)
+from typing import (Any, Collection, Mapping, Union, get_type_hints, Tuple, TypeVar, Dict, List, )
 from abc import ABC, abstractmethod, abstractproperty
 from os import getenv
 import threading
@@ -38,15 +28,14 @@ logger = logging.getLogger(__name__)
 
 
 class DatabricksError(Exception):
-    def __init__(
-        self,
-        message: str = None,
-        error_code: str = None,
-        detail: str = None,
-        status: str = None,
-        scimType: str = None,
-        error: str = None,
-    ):
+
+    def __init__(self,
+                 message: str = None,
+                 error_code: str = None,
+                 detail: str = None,
+                 status: str = None,
+                 scimType: str = None,
+                 error: str = None):
         if not message and error:
             # API 1.2 has different response format, let's adapt
             message = error
@@ -65,6 +54,7 @@ class DatabricksError(Exception):
 
 
 class DatabricksAuth(ABC, requests.auth.AuthBase):
+
     @abstractmethod
     def is_configured(self) -> bool:
         pass
@@ -76,7 +66,8 @@ class DatabricksAuth(ABC, requests.auth.AuthBase):
 
 
 class Basic(DatabricksAuth, requests.auth.HTTPBasicAuth):
-    def __init__(self, cfg: "Config"):
+
+    def __init__(self, cfg: 'Config'):
         super().__init__(cfg.username, cfg.password)
 
     @property
@@ -88,7 +79,8 @@ class Basic(DatabricksAuth, requests.auth.HTTPBasicAuth):
 
 
 class Pat(DatabricksAuth):
-    def __init__(self, cfg: "Config"):
+
+    def __init__(self, cfg: 'Config'):
         self.token = cfg.token
 
     @property
@@ -106,7 +98,7 @@ class Pat(DatabricksAuth):
 class OAuthM2M(DatabricksAuth):
     src: ClientCredentials = None
 
-    def __init__(self, cfg: "Config"):
+    def __init__(self, cfg: 'Config'):
         if not cfg.is_aws:
             return
         if not cfg.host or not cfg.client_id or not cfg.client_secret:
@@ -114,13 +106,11 @@ class OAuthM2M(DatabricksAuth):
         resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
         if not resp.ok:
             return
-        self.src = ClientCredentials(
-            client_id=cfg.client_id,
-            client_secret=cfg.client_secret,
-            token_url=resp.json()["token_endpoint"],
-            scopes=["all-apis"],
-            use_header=True,
-        )
+        self.src = ClientCredentials(client_id=cfg.client_id,
+                                     client_secret=cfg.client_secret,
+                                     token_url=resp.json()["token_endpoint"],
+                                     scopes=["all-apis"],
+                                     use_header=True)
 
     @property
     def name(self):
@@ -139,50 +129,36 @@ class AzureServicePrincipal(DatabricksAuth):
     inner: ClientCredentials = None
     cloud: ClientCredentials = None
 
-    def __init__(self, cfg: "Config"):
+    def __init__(self, cfg: 'Config'):
         if not cfg.is_azure:
             return
-        if (
-            not cfg.azure_client_id
-            or not cfg.azure_client_secret
-            or not cfg.azure_tenant_id
-            or not cfg.azure_workspace_resource_id
-        ):
+        if (not cfg.azure_client_id or not cfg.azure_client_secret or not cfg.azure_tenant_id
+                or not cfg.azure_workspace_resource_id):
             return
         if not cfg.host:
             cfg.host = self._resolve_host(cfg)
-        logger.info(
-            "Configured AAD token for Service Principal (%s)", cfg.azure_client_id
-        )
+        logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
         self.resource_id = cfg.azure_workspace_resource_id
         self.inner = self.token_source_for(cfg, ARM_DATABRICKS_RESOURCE_ID)
-        self.cloud = self.token_source_for(
-            cfg, cfg.arm_environment.service_management_endpoint
-        )
+        self.cloud = self.token_source_for(cfg, cfg.arm_environment.service_management_endpoint)
 
     def _resolve_host(self, cfg) -> str:
         arm = cfg.arm_environment.resource_manager_endpoint
         token = self.token_source_for(cfg, arm).token()
-        resp = requests.get(
-            f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
-            headers={"Authorization": f"Bearer {token.access_token}"},
-        )
+        resp = requests.get(f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
+                            headers={"Authorization": f"Bearer {token.access_token}"})
         if not resp.ok:
-            raise DatabricksError(
-                f"Cannot resolve Azure Databricks workspace: {resp.content}"
-            )
+            raise DatabricksError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
         return f"https://{resp.json()['properties']['workspaceUrl']}"
 
     @staticmethod
-    def token_source_for(cfg: "Config", resource: str):
+    def token_source_for(cfg: 'Config', resource: str):
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
-        return ClientCredentials(
-            client_id=cfg.azure_client_id,
-            client_secret=cfg.azure_client_secret,
-            token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
-            endpoint_params={"resource": resource},
-            use_params=True,
-        )
+        return ClientCredentials(client_id=cfg.azure_client_id,
+                                 client_secret=cfg.azure_client_secret,
+                                 token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
+                                 endpoint_params={"resource": resource},
+                                 use_params=True)
 
     @property
     def name(self):
@@ -193,15 +169,14 @@ class AzureServicePrincipal(DatabricksAuth):
 
     def __call__(self, r):
         r.headers["X-Databricks-Azure-Workspace-Resource-Id"] = self.resource_id
-        r.headers[
-            "X-Databricks-Azure-SP-Management-Token"
-        ] = self.cloud.token().access_token
+        r.headers["X-Databricks-Azure-SP-Management-Token"] = self.cloud.token().access_token
         r.headers["Authorization"] = f"Bearer {self.inner.token().access_token}"
         return r
 
 
 class AzureCli(DatabricksAuth, Refreshable):
-    def __init__(self, cfg: "Config"):
+
+    def __init__(self, cfg: 'Config'):
         pass
 
     def is_configured(self) -> bool:
@@ -213,19 +188,10 @@ class AzureCli(DatabricksAuth, Refreshable):
 
     def refresh(self) -> Token:
         result = subprocess.run(
-            [
-                "az",
-                "account",
-                "get-access-token",
-                "--resource",
-                self.resource,
-                "--output",
-                "json",
-            ],
+            ["az", "account", "get-access-token", "--resource", self.resource, "--output", "json", ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            universal_newlines=True,
-        )
+            universal_newlines=True)
         print(result.returncode, result.stdout, result.stderr)
         pass
 
@@ -237,7 +203,7 @@ class DefaultAuth(DatabricksAuth):
     classes: List[DatabricksAuth] = [Pat, Basic, OAuthM2M, AzureServicePrincipal]
     selected: DatabricksAuth = None
 
-    def __init__(self, cfg: "Config"):
+    def __init__(self, cfg: 'Config'):
         candidates = []
         for provider in self.classes:
             instance = provider(cfg)
@@ -261,7 +227,7 @@ class DefaultAuth(DatabricksAuth):
         return self.selected.__call__(r)
 
 
-def known_file_config_loader(cfg: "Config"):
+def known_file_config_loader(cfg: 'Config'):
     config_file = cfg.config_file
     if not config_file:
         config_file = "~/.databrickscfg"
@@ -280,7 +246,7 @@ def known_file_config_loader(cfg: "Config"):
         return
     logger.info("loading %s profile from %s", profile, config_path)
     for k, v in ini_file.items(profile):
-        cfg.__setattr__(k, v)  # TODO: fix setting of ints and bools
+        cfg.__setattr__(k, v) # TODO: fix setting of ints and bools
     cfg.profile = None
     cfg.config_file = None
 
@@ -403,17 +369,16 @@ class ApiClient(requests.Session):
             total=6,
             backoff_factor=1,
             status_forcelist=[429],
-            method_whitelist=set({"POST"}) | set(Retry.DEFAULT_METHOD_WHITELIST),
+            method_whitelist=set({"POST"})
+            | set(Retry.DEFAULT_METHOD_WHITELIST),
             respect_retry_after_header=True,
-            raise_on_status=False,  # return original response when retries have been exhausted
+            raise_on_status=False, # return original response when retries have been exhausted
         )
         self.auth = self._cfg.auth()
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()
-        self._user_agent_base = (
-            f"{product}/{product_version} databricks-sdk-py/{VERSION}"
-            f" python/{py_version} os/{os_name} auth/{self.auth.name}"
-        )
+        self._user_agent_base = (f"{product}/{product_version} databricks-sdk-py/{VERSION}"
+                                 f" python/{py_version} os/{os_name} auth/{self.auth.name}")
 
         self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
         # https://github.com/tomasbasham/ratelimit/blob/master/ratelimit/decorators.py
@@ -423,13 +388,11 @@ class ApiClient(requests.Session):
         return self._cfg.account_id
 
     def do(self, method: str, path, query: dict = None, body: dict = None) -> dict:
-        response = self.request(
-            method,
-            f"{self._cfg.host}{path}",
-            params=query,
-            json=body,
-            headers={"User-Agent": self._user_agent_base},
-        )
+        response = self.request(method,
+                                f"{self._cfg.host}{path}",
+                                params=query,
+                                json=body,
+                                headers={"User-Agent": self._user_agent_base})
         if not response.ok:
             raise DatabricksError(**response.json())
         return response.json()
