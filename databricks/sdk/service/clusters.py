@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -11,49 +11,40 @@ from typing import Optional, Dict, List, Any
 @dataclass
 class AddInstanceProfile:
 
-    # The AWS IAM role ARN of the role associated with the instance profile.
-    # This field is required if your role name and instance profile name do not
-    # match and you want to use the instance profile with [Databricks SQL
-    # Serverless].
+    # The AWS IAM role ARN of the role associated with the instance profile. This field is required if your role name
+    # and instance profile name do not match and you want to use the instance profile with [Databricks SQL Serverless].
     #
     # Otherwise, this field is optional.
     #
     # [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
     iam_role_arn: str
-    # The AWS ARN of the instance profile to register with Databricks. This
-    # field is required.
+    # The AWS ARN of the instance profile to register with Databricks. This field is required.
     instance_profile_arn: str
-    # By default, Databricks validates that it has sufficient permissions to
-    # launch instances with the instance profile. This validation uses AWS
-    # dry-run mode for the RunInstances API. If validation fails with an error
-    # message that does not indicate an IAM related permission issue, (e.g.
-    # `Your requested instance type is not supported in your requested
-    # availability zone`), you can pass this flag to skip the validation and
-    # forcibly add the instance profile.
+    # By default, Databricks validates that it has sufficient permissions to launch instances with the instance profile.
+    # This validation uses AWS dry-run mode for the RunInstances API. If validation fails with an error message that
+    # does not indicate an IAM related permission issue, (e.g. `Your requested instance type is not supported in your
+    # requested availability zone`), you can pass this flag to skip the validation and forcibly add the instance
+    # profile.
     is_meta_instance_profile: bool
-    # By default, Databricks validates that it has sufficient permissions to
-    # launch instances with the instance profile. This validation uses AWS
-    # dry-run mode for the RunInstances API. If validation fails with an error
-    # message that does not indicate an IAM related permission issue, (e.g.
-    # “Your requested instance type is not supported in your requested
-    # availability zone”), you can pass this flag to skip the validation and
-    # forcibly add the instance profile.
+    # By default, Databricks validates that it has sufficient permissions to launch instances with the instance profile.
+    # This validation uses AWS dry-run mode for the RunInstances API. If validation fails with an error message that
+    # does not indicate an IAM related permission issue, (e.g. “Your requested instance type is not supported in your
+    # requested availability zone”), you can pass this flag to skip the validation and forcibly add the instance
+    # profile.
     skip_validation: bool
 
-    def as_request(self) -> (dict, dict):
-        addInstanceProfile_query, addInstanceProfile_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.iam_role_arn:
-            addInstanceProfile_body["iam_role_arn"] = self.iam_role_arn
+            body["iam_role_arn"] = self.iam_role_arn
         if self.instance_profile_arn:
-            addInstanceProfile_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.is_meta_instance_profile:
-            addInstanceProfile_body[
-                "is_meta_instance_profile"
-            ] = self.is_meta_instance_profile
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
         if self.skip_validation:
-            addInstanceProfile_body["skip_validation"] = self.skip_validation
+            body["skip_validation"] = self.skip_validation
 
-        return addInstanceProfile_query, addInstanceProfile_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AddInstanceProfile":
@@ -68,23 +59,21 @@ class AddInstanceProfile:
 @dataclass
 class AutoScale:
 
-    # The maximum number of workers to which the cluster can scale up when
-    # overloaded. Note that `max_workers` must be strictly greater than
-    # `min_workers`.
+    # The maximum number of workers to which the cluster can scale up when overloaded. Note that `max_workers` must be
+    # strictly greater than `min_workers`.
     max_workers: int
-    # The minimum number of workers to which the cluster can scale down when
-    # underutilized. It is also the initial number of workers the cluster will
-    # have after creation.
+    # The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial
+    # number of workers the cluster will have after creation.
     min_workers: int
 
-    def as_request(self) -> (dict, dict):
-        autoScale_query, autoScale_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.max_workers:
-            autoScale_body["max_workers"] = self.max_workers
+            body["max_workers"] = self.max_workers
         if self.min_workers:
-            autoScale_body["min_workers"] = self.min_workers
+            body["min_workers"] = self.min_workers
 
-        return autoScale_query, autoScale_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AutoScale":
@@ -97,110 +86,90 @@ class AutoScale:
 @dataclass
 class AwsAttributes:
 
-    # Availability type used for all subsequent nodes past the `first_on_demand`
-    # ones.
+    # Availability type used for all subsequent nodes past the `first_on_demand` ones.
     #
-    # Note: If `first_on_demand` is zero, this availability type will be used
-    # for the entire cluster.
+    # Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
     availability: "AwsAvailability"
-    # The number of volumes launched for each instance. Users can choose up to
-    # 10 volumes. This feature is only enabled for supported node types. Legacy
-    # node types cannot specify custom EBS volumes. For node types with no
-    # instance store, at least one EBS volume needs to be specified; otherwise,
-    # cluster creation will fail.
+    # The number of volumes launched for each instance. Users can choose up to 10 volumes. This feature is only enabled
+    # for supported node types. Legacy node types cannot specify custom EBS volumes. For node types with no instance
+    # store, at least one EBS volume needs to be specified; otherwise, cluster creation will fail.
     #
-    # These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance
-    # store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc.
+    # These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be mounted at
+    # `/local_disk0`, `/local_disk1`, and etc.
     #
-    # If EBS volumes are attached, Databricks will configure Spark to use only
-    # the EBS volumes for scratch storage because heterogenously sized scratch
-    # devices can lead to inefficient disk utilization. If no EBS volumes are
+    # If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for scratch storage
+    # because heterogenously sized scratch devices can lead to inefficient disk utilization. If no EBS volumes are
     # attached, Databricks will configure Spark to use instance store volumes.
     #
-    # Please note that if EBS volumes are specified, then the Spark
-    # configuration `spark.local.dir` will be overridden.
+    # Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir` will be overridden.
     ebs_volume_count: int
     # <needs content added>
     ebs_volume_iops: int
-    # The size of each EBS volume (in GiB) launched for each instance. For
-    # general purpose SSD, this value must be within the range 100 - 4096. For
-    # throughput optimized HDD, this value must be within the range 500 - 4096.
+    # The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this value must be
+    # within the range 100 - 4096. For throughput optimized HDD, this value must be within the range 500 - 4096.
     ebs_volume_size: int
     # <needs content added>
     ebs_volume_throughput: int
     # The type of EBS volumes that will be launched with this cluster.
     ebs_volume_type: "EbsVolumeType"
-    # The first `first_on_demand` nodes of the cluster will be placed on
-    # on-demand instances. If this value is greater than 0, the cluster driver
-    # node in particular will be placed on an on-demand instance. If this value
-    # is greater than or equal to the current cluster size, all nodes will be
-    # placed on on-demand instances. If this value is less than the current
-    # cluster size, `first_on_demand` nodes will be placed on on-demand
-    # instances and the remainder will be placed on `availability` instances.
-    # Note that this value does not affect cluster size and cannot currently be
-    # mutated over the lifetime of a cluster.
+    # The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this value is greater
+    # than 0, the cluster driver node in particular will be placed on an on-demand instance. If this value is greater
+    # than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less
+    # than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder
+    # will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently
+    # be mutated over the lifetime of a cluster.
     first_on_demand: int
-    # Nodes for this cluster will only be placed on AWS instances with this
-    # instance profile. If ommitted, nodes will be placed on instances without
-    # an IAM instance profile. The instance profile must have previously been
-    # added to the Databricks environment by an account administrator.
+    # Nodes for this cluster will only be placed on AWS instances with this instance profile. If ommitted, nodes will be
+    # placed on instances without an IAM instance profile. The instance profile must have previously been added to the
+    # Databricks environment by an account administrator.
     #
     # This feature may only be available to certain customer plans.
     #
-    # If this field is ommitted, we will pull in the default from the conf if it
-    # exists.
+    # If this field is ommitted, we will pull in the default from the conf if it exists.
     instance_profile_arn: str
-    # The bid price for AWS spot instances, as a percentage of the corresponding
-    # instance type's on-demand price. For example, if this field is set to 50,
-    # and the cluster needs a new `r3.xlarge` spot instance, then the bid price
-    # is half of the price of on-demand `r3.xlarge` instances. Similarly, if
-    # this field is set to 200, the bid price is twice the price of on-demand
-    # `r3.xlarge` instances. If not specified, the default value is 100. When
-    # spot instances are requested for this cluster, only spot instances whose
-    # bid price percentage matches this field will be considered. Note that, for
-    # safety, we enforce this field to be no more than 10000.
+    # The bid price for AWS spot instances, as a percentage of the corresponding instance type's on-demand price. For
+    # example, if this field is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then the bid price is
+    # half of the price of on-demand `r3.xlarge` instances. Similarly, if this field is set to 200, the bid price is
+    # twice the price of on-demand `r3.xlarge` instances. If not specified, the default value is 100. When spot
+    # instances are requested for this cluster, only spot instances whose bid price percentage matches this field will
+    # be considered. Note that, for safety, we enforce this field to be no more than 10000.
     #
-    # The default value and documentation here should be kept consistent with
-    # CommonConf.defaultSpotBidPricePercent and
+    # The default value and documentation here should be kept consistent with CommonConf.defaultSpotBidPricePercent and
     # CommonConf.maxSpotBidPricePercent.
     spot_bid_price_percent: int
-    # Identifier for the availability zone/datacenter in which the cluster
-    # resides. This string will be of a form like "us-west-2a". The provided
-    # availability zone must be in the same region as the Databricks deployment.
-    # For example, "us-west-2a" is not a valid zone id if the Databricks
-    # deployment resides in the "us-east-1" region. This is an optional field at
-    # cluster creation, and if not specified, a default zone will be used. If
-    # the zone specified is "auto", will try to place cluster in a zone with
-    # high availability, and will retry placement in a different AZ if there is
-    # not enough capacity. See [[AutoAZHelper.scala]] for more details. The list
-    # of available zones as well as the default value can be found by using the
-    # `List Zones`_ method.
+    # Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like
+    # "us-west-2a". The provided availability zone must be in the same region as the Databricks deployment. For example,
+    # "us-west-2a" is not a valid zone id if the Databricks deployment resides in the "us-east-1" region. This is an
+    # optional field at cluster creation, and if not specified, a default zone will be used. If the zone specified is
+    # "auto", will try to place cluster in a zone with high availability, and will retry placement in a different AZ if
+    # there is not enough capacity. See [[AutoAZHelper.scala]] for more details. The list of available zones as well as
+    # the default value can be found by using the `List Zones`_ method.
     zone_id: str
 
-    def as_request(self) -> (dict, dict):
-        awsAttributes_query, awsAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            awsAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.ebs_volume_count:
-            awsAttributes_body["ebs_volume_count"] = self.ebs_volume_count
+            body["ebs_volume_count"] = self.ebs_volume_count
         if self.ebs_volume_iops:
-            awsAttributes_body["ebs_volume_iops"] = self.ebs_volume_iops
+            body["ebs_volume_iops"] = self.ebs_volume_iops
         if self.ebs_volume_size:
-            awsAttributes_body["ebs_volume_size"] = self.ebs_volume_size
+            body["ebs_volume_size"] = self.ebs_volume_size
         if self.ebs_volume_throughput:
-            awsAttributes_body["ebs_volume_throughput"] = self.ebs_volume_throughput
+            body["ebs_volume_throughput"] = self.ebs_volume_throughput
         if self.ebs_volume_type:
-            awsAttributes_body["ebs_volume_type"] = self.ebs_volume_type.value
+            body["ebs_volume_type"] = self.ebs_volume_type.value
         if self.first_on_demand:
-            awsAttributes_body["first_on_demand"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.instance_profile_arn:
-            awsAttributes_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent:
-            awsAttributes_body["spot_bid_price_percent"] = self.spot_bid_price_percent
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id:
-            awsAttributes_body["zone_id"] = self.zone_id
+            body["zone_id"] = self.zone_id
 
-        return awsAttributes_query, awsAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AwsAttributes":
@@ -223,11 +192,9 @@ class AwsAttributes:
 
 
 class AwsAvailability(Enum):
-    """Availability type used for all subsequent nodes past the `first_on_demand`
-    ones.
+    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
 
-    Note: If `first_on_demand` is zero, this availability type will be used for
-    the entire cluster."""
+    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
 
     ON_DEMAND = "ON_DEMAND"
     SPOT = "SPOT"
@@ -237,43 +204,36 @@ class AwsAvailability(Enum):
 @dataclass
 class AzureAttributes:
 
-    # Availability type used for all subsequent nodes past the `first_on_demand`
-    # ones. Note: If `first_on_demand` is zero (which only happens on pool
-    # clusters), this availability type will be used for the entire cluster.
+    # Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is
+    # zero (which only happens on pool clusters), this availability type will be used for the entire cluster.
     availability: "AzureAvailability"
-    # The first `first_on_demand` nodes of the cluster will be placed on
-    # on-demand instances. This value should be greater than 0, to make sure the
-    # cluster driver node is placed on an on-demand instance. If this value is
-    # greater than or equal to the current cluster size, all nodes will be
-    # placed on on-demand instances. If this value is less than the current
-    # cluster size, `first_on_demand` nodes will be placed on on-demand
-    # instances and the remainder will be placed on `availability` instances.
-    # Note that this value does not affect cluster size and cannot currently be
-    # mutated over the lifetime of a cluster.
+    # The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be
+    # greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater
+    # than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less
+    # than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder
+    # will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently
+    # be mutated over the lifetime of a cluster.
     first_on_demand: int
     # Defines values necessary to configure and run Azure Log Analytics agent
     log_analytics_info: "LogAnalyticsInfo"
-    # The max bid price to be used for Azure spot instances. The Max price for
-    # the bid cannot be higher than the on-demand price of the instance. If not
-    # specified, the default value is -1, which specifies that the instance
-    # cannot be evicted on the basis of price, and only on the basis of
-    # availability. Further, the value should > 0 or -1.
+    # The max bid price to be used for Azure spot instances. The Max price for the bid cannot be higher than the
+    # on-demand price of the instance. If not specified, the default value is -1, which specifies that the instance
+    # cannot be evicted on the basis of price, and only on the basis of availability. Further, the value should > 0 or
+    # -1.
     spot_bid_max_price: float
 
-    def as_request(self) -> (dict, dict):
-        azureAttributes_query, azureAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            azureAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.first_on_demand:
-            azureAttributes_body["first_on_demand"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.log_analytics_info:
-            azureAttributes_body[
-                "log_analytics_info"
-            ] = self.log_analytics_info.as_request()[1]
+            body["log_analytics_info"] = self.log_analytics_info.as_dict()
         if self.spot_bid_max_price:
-            azureAttributes_body["spot_bid_max_price"] = self.spot_bid_max_price
+            body["spot_bid_max_price"] = self.spot_bid_max_price
 
-        return azureAttributes_query, azureAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AzureAttributes":
@@ -290,9 +250,8 @@ class AzureAttributes:
 
 
 class AzureAvailability(Enum):
-    """Availability type used for all subsequent nodes past the `first_on_demand`
-    ones. Note: If `first_on_demand` is zero (which only happens on pool
-    clusters), this availability type will be used for the entire cluster."""
+    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero
+    (which only happens on pool clusters), this availability type will be used for the entire cluster."""
 
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
@@ -307,14 +266,14 @@ class ChangeClusterOwner:
     # New owner of the cluster_id after this RPC.
     owner_username: str
 
-    def as_request(self) -> (dict, dict):
-        changeClusterOwner_query, changeClusterOwner_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            changeClusterOwner_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.owner_username:
-            changeClusterOwner_body["owner_username"] = self.owner_username
+            body["owner_username"] = self.owner_username
 
-        return changeClusterOwner_query, changeClusterOwner_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ChangeClusterOwner":
@@ -332,14 +291,14 @@ class ClientsTypes:
     # With notebooks set, this cluster can be used for notebooks
     notebooks: bool
 
-    def as_request(self) -> (dict, dict):
-        clientsTypes_query, clientsTypes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.jobs:
-            clientsTypes_body["jobs"] = self.jobs
+            body["jobs"] = self.jobs
         if self.notebooks:
-            clientsTypes_body["notebooks"] = self.notebooks
+            body["notebooks"] = self.notebooks
 
-        return clientsTypes_query, clientsTypes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClientsTypes":
@@ -354,12 +313,12 @@ class CloudProviderNodeInfo:
 
     status: "List[CloudProviderNodeStatus]"
 
-    def as_request(self) -> (dict, dict):
-        cloudProviderNodeInfo_query, cloudProviderNodeInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.status:
-            cloudProviderNodeInfo_body["status"] = [v for v in self.status]
+            body["status"] = [v for v in self.status]
 
-        return cloudProviderNodeInfo_query, cloudProviderNodeInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CloudProviderNodeInfo":
@@ -377,163 +336,130 @@ class CloudProviderNodeStatus(Enum):
 @dataclass
 class ClusterAttributes:
 
-    # Automatically terminates the cluster after it is inactive for this time in
-    # minutes. If not set, this cluster will not be automatically terminated. If
-    # specified, the threshold must be between 10 and 10000 minutes. Users can
-    # also set this value to 0 to explicitly disable automatic termination.
+    # Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will
+    # not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also
+    # set this value to 0 to explicitly disable automatic termination.
     autotermination_minutes: int
-    # Attributes related to clusters running on Amazon Web Services. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of
+    # default values will be used.
     aws_attributes: "AwsAttributes"
-    # Attributes related to clusters running on Microsoft Azure. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default
+    # values will be used.
     azure_attributes: "AzureAttributes"
-    # The configuration for delivering spark logs to a long-term storage
-    # destination. Two kinds of destinations (dbfs and s3) are supported. Only
-    # one destination can be specified for one cluster. If the conf is given,
-    # the logs will be delivered to the destination every `5 mins`. The
-    # destination of driver logs is `$destination/$clusterId/driver`, while the
-    # destination of executor logs is `$destination/$clusterId/executor`.
+    # The configuration for delivering spark logs to a long-term storage destination. Two kinds of destinations (dbfs
+    # and s3) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will
+    # be delivered to the destination every `5 mins`. The destination of driver logs is
+    # `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
     cluster_log_conf: "ClusterLogConf"
-    # Cluster name requested by the user. This doesn't have to be unique. If not
-    # specified at creation, the cluster name will be an empty string.
+    # Cluster name requested by the user. This doesn't have to be unique. If not specified at creation, the cluster name
+    # will be an empty string.
     cluster_name: str
-    # Determines whether the cluster was created by a user through the UI,
-    # created by the Databricks Jobs Scheduler, or through an API request. This
-    # is the same as cluster_creator, but read only.
+    # Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or
+    # through an API request. This is the same as cluster_creator, but read only.
     cluster_source: "ClusterSource"
-    # Additional tags for cluster resources. Databricks will tag all cluster
-    # resources (e.g., AWS instances and EBS volumes) with these tags in
-    # addition to `default_tags`. Notes:
+    # Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS
+    # volumes) with these tags in addition to `default_tags`. Notes:
     #
     # - Currently, Databricks allows at most 45 custom tags
     #
-    # - Clusters can only reuse cloud resources if the resources' tags are a
-    # subset of the cluster tags
+    # - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
     custom_tags: "Dict[str,str]"
-    # The optional ID of the instance pool for the driver of the cluster
-    # belongs. The pool cluster uses the instance pool with id
-    # (instance_pool_id) if the driver pool is not assigned.
+    # The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance
+    # pool with id (instance_pool_id) if the driver pool is not assigned.
     driver_instance_pool_id: str
-    # The node type of the Spark driver. Note that this field is optional; if
-    # unset, the driver node type will be set as the same value as
-    # `node_type_id` defined above.
+    # The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as
+    # the same value as `node_type_id` defined above.
     driver_node_type_id: str
-    # Autoscaling Local Storage: when enabled, this cluster will dynamically
-    # acquire additional disk space when its Spark workers are running low on
-    # disk space. This feature requires specific AWS permissions to function
-    # correctly - refer to the User Guide for more details.
+    # Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its
+    # Spark workers are running low on disk space. This feature requires specific AWS permissions to function correctly
+    # - refer to the User Guide for more details.
     enable_elastic_disk: bool
     # Whether to enable LUKS on cluster VMs' local disks
     enable_local_disk_encryption: bool
-    # Attributes related to clusters running on Google Cloud Platform. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of
+    # default values will be used.
     gcp_attributes: "GcpAttributes"
     # The optional ID of the instance pool to which the cluster belongs.
     instance_pool_id: str
-    # This field encodes, through a single value, the resources available to
-    # each of the Spark nodes in this cluster. For example, the Spark nodes can
-    # be provisioned and optimized for memory or compute intensive workloads. A
-    # list of available node types can be retrieved by using the
-    # :method:listNodeTypes API call.
+    # This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster.
+    # For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of
+    # available node types can be retrieved by using the :method:listNodeTypes API call.
     node_type_id: str
     # The ID of the cluster policy used to create the cluster if applicable.
     policy_id: str
-    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-    # unspecified, the runtime engine is inferred from spark_version.
+    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred
+    # from spark_version.
     runtime_engine: "RuntimeEngine"
-    # An object containing a set of optional, user-specified Spark configuration
-    # key-value pairs. Users can also pass in a string of extra JVM options to
-    # the driver and the executors via `spark.driver.extraJavaOptions` and
+    # An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in
+    # a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and
     # `spark.executor.extraJavaOptions` respectively.
     spark_conf: "Dict[str,str]"
-    # An object containing a set of optional, user-specified environment
-    # variable key-value pairs. Please note that key-value pair of the form
-    # (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-    # driver and workers.
+    # An object containing a set of optional, user-specified environment variable key-value pairs. Please note that
+    # key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and
+    # workers.
     #
-    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-    # recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-    # example below. This ensures that all default databricks managed
+    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+    # `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed
     # environmental variables are included as well.
     #
-    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-    # "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-    # "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or
+    # `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
     spark_env_vars: "Dict[str,str]"
-    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
-    # available Spark versions can be retrieved by using the
-    # :method:sparkVersions API call.
+    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be retrieved by
+    # using the :method:sparkVersions API call.
     spark_version: str
-    # SSH public key contents that will be added to each Spark node in this
-    # cluster. The corresponding private keys can be used to login with the user
-    # name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+    # SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can
+    # be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
     ssh_public_keys: "List[str]"
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        clusterAttributes_query, clusterAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autotermination_minutes:
-            clusterAttributes_body[
-                "autotermination_minutes"
-            ] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            clusterAttributes_body["aws_attributes"] = self.aws_attributes.as_request()[
-                1
-            ]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            clusterAttributes_body[
-                "azure_attributes"
-            ] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            clusterAttributes_body[
-                "cluster_log_conf"
-            ] = self.cluster_log_conf.as_request()[1]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name:
-            clusterAttributes_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            clusterAttributes_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.custom_tags:
-            clusterAttributes_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            clusterAttributes_body[
-                "driver_instance_pool_id"
-            ] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            clusterAttributes_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            clusterAttributes_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            clusterAttributes_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            clusterAttributes_body["gcp_attributes"] = self.gcp_attributes.as_request()[
-                1
-            ]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            clusterAttributes_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.node_type_id:
-            clusterAttributes_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.policy_id:
-            clusterAttributes_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            clusterAttributes_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.spark_conf:
-            clusterAttributes_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            clusterAttributes_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            clusterAttributes_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            clusterAttributes_body["ssh_public_keys"] = [
-                v for v in self.ssh_public_keys
-            ]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.workload_type:
-            clusterAttributes_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return clusterAttributes_query, clusterAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterAttributes":
@@ -585,29 +511,26 @@ class ClusterEvent:
     data_plane_event_details: "DataPlaneEventDetails"
     # <needs content added>
     details: "EventDetails"
-    # The timestamp when the event occurred, stored as the number of
-    # milliseconds since the Unix epoch. If not provided, this will be assigned
-    # by the Timeline service.
+    # The timestamp when the event occurred, stored as the number of milliseconds since the Unix epoch. If not provided,
+    # this will be assigned by the Timeline service.
     timestamp: int
 
     type: "EventType"
 
-    def as_request(self) -> (dict, dict):
-        clusterEvent_query, clusterEvent_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            clusterEvent_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.data_plane_event_details:
-            clusterEvent_body[
-                "data_plane_event_details"
-            ] = self.data_plane_event_details.as_request()[1]
+            body["data_plane_event_details"] = self.data_plane_event_details.as_dict()
         if self.details:
-            clusterEvent_body["details"] = self.details.as_request()[1]
+            body["details"] = self.details.as_dict()
         if self.timestamp:
-            clusterEvent_body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp
         if self.type:
-            clusterEvent_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return clusterEvent_query, clusterEvent_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterEvent":
@@ -627,62 +550,52 @@ class ClusterEvent:
 @dataclass
 class ClusterInfo:
 
-    # Parameters needed in order to automatically scale clusters up and down
-    # based on load. Note: autoscaling works best with DB runtime versions 3.0
-    # or later.
+    # Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best
+    # with DB runtime versions 3.0 or later.
     autoscale: "AutoScale"
-    # Automatically terminates the cluster after it is inactive for this time in
-    # minutes. If not set, this cluster will not be automatically terminated. If
-    # specified, the threshold must be between 10 and 10000 minutes. Users can
-    # also set this value to 0 to explicitly disable automatic termination.
+    # Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will
+    # not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also
+    # set this value to 0 to explicitly disable automatic termination.
     autotermination_minutes: int
-    # Attributes related to clusters running on Amazon Web Services. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of
+    # default values will be used.
     aws_attributes: "AwsAttributes"
-    # Attributes related to clusters running on Microsoft Azure. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default
+    # values will be used.
     azure_attributes: "AzureAttributes"
-    # Number of CPU cores available for this cluster. Note that this can be
-    # fractional, e.g. 7.5 cores, since certain node types are configured to
-    # share cores between Spark nodes on the same instance.
+    # Number of CPU cores available for this cluster. Note that this can be fractional, e.g. 7.5 cores, since certain
+    # node types are configured to share cores between Spark nodes on the same instance.
     cluster_cores: float
-    # Canonical identifier for the cluster. This id is retained during cluster
-    # restarts and resizes, while each new cluster has a globally unique id.
+    # Canonical identifier for the cluster. This id is retained during cluster restarts and resizes, while each new
+    # cluster has a globally unique id.
     cluster_id: str
-    # The configuration for delivering spark logs to a long-term storage
-    # destination. Two kinds of destinations (dbfs and s3) are supported. Only
-    # one destination can be specified for one cluster. If the conf is given,
-    # the logs will be delivered to the destination every `5 mins`. The
-    # destination of driver logs is `$destination/$clusterId/driver`, while the
-    # destination of executor logs is `$destination/$clusterId/executor`.
+    # The configuration for delivering spark logs to a long-term storage destination. Two kinds of destinations (dbfs
+    # and s3) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will
+    # be delivered to the destination every `5 mins`. The destination of driver logs is
+    # `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
     cluster_log_conf: "ClusterLogConf"
     # Cluster log delivery status.
     cluster_log_status: "LogSyncStatus"
     # Total amount of cluster memory, in megabytes
     cluster_memory_mb: int
-    # Cluster name requested by the user. This doesn't have to be unique. If not
-    # specified at creation, the cluster name will be an empty string.
+    # Cluster name requested by the user. This doesn't have to be unique. If not specified at creation, the cluster name
+    # will be an empty string.
     cluster_name: str
-    # Determines whether the cluster was created by a user through the UI,
-    # created by the Databricks Jobs Scheduler, or through an API request. This
-    # is the same as cluster_creator, but read only.
+    # Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or
+    # through an API request. This is the same as cluster_creator, but read only.
     cluster_source: "ClusterSource"
-    # Creator user name. The field won't be included in the response if the user
-    # has already been deleted.
+    # Creator user name. The field won't be included in the response if the user has already been deleted.
     creator_user_name: str
-    # Additional tags for cluster resources. Databricks will tag all cluster
-    # resources (e.g., AWS instances and EBS volumes) with these tags in
-    # addition to `default_tags`. Notes:
+    # Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS
+    # volumes) with these tags in addition to `default_tags`. Notes:
     #
     # - Currently, Databricks allows at most 45 custom tags
     #
-    # - Clusters can only reuse cloud resources if the resources' tags are a
-    # subset of the cluster tags
+    # - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
     custom_tags: "Dict[str,str]"
     # This describes an enum
     data_security_mode: "DataSecurityMode"
-    # Tags that are added by Databricks regardless of any `custom_tags`,
-    # including:
+    # Tags that are added by Databricks regardless of any `custom_tags`, including:
     #
     # - Vendor: Databricks
     #
@@ -694,206 +607,182 @@ class ClusterInfo:
     #
     # - Name: <Databricks internal use>
     default_tags: "Dict[str,str]"
-    # Node on which the Spark driver resides. The driver node contains the Spark
-    # master and the Databricks application that manages the per-notebook Spark
-    # REPLs.
+    # Node on which the Spark driver resides. The driver node contains the Spark master and the Databricks application
+    # that manages the per-notebook Spark REPLs.
     driver: "SparkNode"
-    # The optional ID of the instance pool for the driver of the cluster
-    # belongs. The pool cluster uses the instance pool with id
-    # (instance_pool_id) if the driver pool is not assigned.
+    # The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance
+    # pool with id (instance_pool_id) if the driver pool is not assigned.
     driver_instance_pool_id: str
-    # The node type of the Spark driver. Note that this field is optional; if
-    # unset, the driver node type will be set as the same value as
-    # `node_type_id` defined above.
+    # The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as
+    # the same value as `node_type_id` defined above.
     driver_node_type_id: str
-    # Autoscaling Local Storage: when enabled, this cluster will dynamically
-    # acquire additional disk space when its Spark workers are running low on
-    # disk space. This feature requires specific AWS permissions to function
-    # correctly - refer to the User Guide for more details.
+    # Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its
+    # Spark workers are running low on disk space. This feature requires specific AWS permissions to function correctly
+    # - refer to the User Guide for more details.
     enable_elastic_disk: bool
     # Whether to enable LUKS on cluster VMs' local disks
     enable_local_disk_encryption: bool
     # Nodes on which the Spark executors reside.
     executors: "List[SparkNode]"
-    # Attributes related to clusters running on Google Cloud Platform. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of
+    # default values will be used.
     gcp_attributes: "GcpAttributes"
     # The optional ID of the instance pool to which the cluster belongs.
     instance_pool_id: str
-    # Port on which Spark JDBC server is listening, in the driver nod. No
-    # service will be listeningon on this port in executor nodes.
+    # Port on which Spark JDBC server is listening, in the driver nod. No service will be listeningon on this port in
+    # executor nodes.
     jdbc_port: int
     # the timestamp that the cluster was started/restarted
     last_restarted_time: int
-    # Time when the cluster driver last lost its state (due to a restart or
-    # driver failure).
+    # Time when the cluster driver last lost its state (due to a restart or driver failure).
     last_state_loss_time: int
-    # This field encodes, through a single value, the resources available to
-    # each of the Spark nodes in this cluster. For example, the Spark nodes can
-    # be provisioned and optimized for memory or compute intensive workloads. A
-    # list of available node types can be retrieved by using the
-    # :method:listNodeTypes API call.
+    # This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster.
+    # For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of
+    # available node types can be retrieved by using the :method:listNodeTypes API call.
     node_type_id: str
-    # Number of worker nodes that this cluster should have. A cluster has one
-    # Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-    # Spark nodes.
+    # Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors
+    # for a total of `num_workers` + 1 Spark nodes.
     #
-    # Note: When reading the properties of a cluster, this field reflects the
-    # desired number of workers rather than the actual current number of
-    # workers. For instance, if a cluster is resized from 5 to 10 workers, this
-    # field will immediately be updated to reflect the target size of 10
-    # workers, whereas the workers listed in `spark_info` will gradually
-    # increase from 5 to 10 as the new nodes are provisioned.
+    # Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the
+    # actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will
+    # immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will
+    # gradually increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
     # The ID of the cluster policy used to create the cluster if applicable.
     policy_id: str
-    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-    # unspecified, the runtime engine is inferred from spark_version.
+    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred
+    # from spark_version.
     runtime_engine: "RuntimeEngine"
     # Single user name if data_security_mode is `SINGLE_USER`
     single_user_name: str
-    # An object containing a set of optional, user-specified Spark configuration
-    # key-value pairs. Users can also pass in a string of extra JVM options to
-    # the driver and the executors via `spark.driver.extraJavaOptions` and
+    # An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in
+    # a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and
     # `spark.executor.extraJavaOptions` respectively.
     spark_conf: "Dict[str,str]"
-    # A canonical SparkContext identifier. This value *does* change when the
-    # Spark driver restarts. The pair `(cluster_id, spark_context_id)` is a
-    # globally unique identifier over all Spark contexts.
+    # A canonical SparkContext identifier. This value *does* change when the Spark driver restarts. The pair
+    # `(cluster_id, spark_context_id)` is a globally unique identifier over all Spark contexts.
     spark_context_id: int
-    # An object containing a set of optional, user-specified environment
-    # variable key-value pairs. Please note that key-value pair of the form
-    # (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-    # driver and workers.
+    # An object containing a set of optional, user-specified environment variable key-value pairs. Please note that
+    # key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and
+    # workers.
     #
-    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-    # recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-    # example below. This ensures that all default databricks managed
+    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+    # `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed
     # environmental variables are included as well.
     #
-    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-    # "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-    # "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or
+    # `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
     spark_env_vars: "Dict[str,str]"
-    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
-    # available Spark versions can be retrieved by using the
-    # :method:sparkVersions API call.
+    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be retrieved by
+    # using the :method:sparkVersions API call.
     spark_version: str
-    # SSH public key contents that will be added to each Spark node in this
-    # cluster. The corresponding private keys can be used to login with the user
-    # name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+    # SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can
+    # be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
     ssh_public_keys: "List[str]"
-    # Time (in epoch milliseconds) when the cluster creation request was
-    # received (when the cluster entered a `PENDING` state).
+    # Time (in epoch milliseconds) when the cluster creation request was received (when the cluster entered a `PENDING`
+    # state).
     start_time: int
     # Current state of the cluster.
     state: "State"
-    # A message associated with the most recent state transition (e.g., the
-    # reason why the cluster entered a `TERMINATED` state).
+    # A message associated with the most recent state transition (e.g., the reason why the cluster entered a
+    # `TERMINATED` state).
     state_message: str
-    # Time (in epoch milliseconds) when the cluster was terminated, if
-    # applicable.
+    # Time (in epoch milliseconds) when the cluster was terminated, if applicable.
     terminated_time: int
-    # Information about why the cluster was terminated. This field only appears
-    # when the cluster is in a `TERMINATING` or `TERMINATED` state.
+    # Information about why the cluster was terminated. This field only appears when the cluster is in a `TERMINATING`
+    # or `TERMINATED` state.
     termination_reason: "TerminationReason"
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        clusterInfo_query, clusterInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autoscale:
-            clusterInfo_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes:
-            clusterInfo_body["autotermination_minutes"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            clusterInfo_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            clusterInfo_body["azure_attributes"] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_cores:
-            clusterInfo_body["cluster_cores"] = self.cluster_cores
+            body["cluster_cores"] = self.cluster_cores
         if self.cluster_id:
-            clusterInfo_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.cluster_log_conf:
-            clusterInfo_body["cluster_log_conf"] = self.cluster_log_conf.as_request()[1]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_log_status:
-            clusterInfo_body[
-                "cluster_log_status"
-            ] = self.cluster_log_status.as_request()[1]
+            body["cluster_log_status"] = self.cluster_log_status.as_dict()
         if self.cluster_memory_mb:
-            clusterInfo_body["cluster_memory_mb"] = self.cluster_memory_mb
+            body["cluster_memory_mb"] = self.cluster_memory_mb
         if self.cluster_name:
-            clusterInfo_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            clusterInfo_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.creator_user_name:
-            clusterInfo_body["creator_user_name"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.custom_tags:
-            clusterInfo_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode:
-            clusterInfo_body["data_security_mode"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.default_tags:
-            clusterInfo_body["default_tags"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.driver:
-            clusterInfo_body["driver"] = self.driver.as_request()[1]
+            body["driver"] = self.driver.as_dict()
         if self.driver_instance_pool_id:
-            clusterInfo_body["driver_instance_pool_id"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            clusterInfo_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            clusterInfo_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            clusterInfo_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.executors:
-            clusterInfo_body["executors"] = [v.as_request()[1] for v in self.executors]
+            body["executors"] = [v.as_dict() for v in self.executors]
         if self.gcp_attributes:
-            clusterInfo_body["gcp_attributes"] = self.gcp_attributes.as_request()[1]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            clusterInfo_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.jdbc_port:
-            clusterInfo_body["jdbc_port"] = self.jdbc_port
+            body["jdbc_port"] = self.jdbc_port
         if self.last_restarted_time:
-            clusterInfo_body["last_restarted_time"] = self.last_restarted_time
+            body["last_restarted_time"] = self.last_restarted_time
         if self.last_state_loss_time:
-            clusterInfo_body["last_state_loss_time"] = self.last_state_loss_time
+            body["last_state_loss_time"] = self.last_state_loss_time
         if self.node_type_id:
-            clusterInfo_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            clusterInfo_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            clusterInfo_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            clusterInfo_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name:
-            clusterInfo_body["single_user_name"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            clusterInfo_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_context_id:
-            clusterInfo_body["spark_context_id"] = self.spark_context_id
+            body["spark_context_id"] = self.spark_context_id
         if self.spark_env_vars:
-            clusterInfo_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            clusterInfo_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            clusterInfo_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.start_time:
-            clusterInfo_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            clusterInfo_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.state_message:
-            clusterInfo_body["state_message"] = self.state_message
+            body["state_message"] = self.state_message
         if self.terminated_time:
-            clusterInfo_body["terminated_time"] = self.terminated_time
+            body["terminated_time"] = self.terminated_time
         if self.termination_reason:
-            clusterInfo_body[
-                "termination_reason"
-            ] = self.termination_reason.as_request()[1]
+            body["termination_reason"] = self.termination_reason.as_dict()
         if self.workload_type:
-            clusterInfo_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return clusterInfo_query, clusterInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterInfo":
@@ -968,24 +857,21 @@ class ClusterInfo:
 @dataclass
 class ClusterLogConf:
 
-    # destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
-    # "dbfs:/home/cluster_log" } }`
+    # destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" } }`
     dbfs: "DbfsStorageInfo"
-    # destination and either region or endpoint should also be provided. e.g. `{
-    # "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-    # "us-west-2" } }` Cluster iam role is used to access s3, please make sure
-    # the cluster iam role in `instance_profile_arn` has permission to write
-    # data to the s3 destination.
+    # destination and either region or endpoint should also be provided. e.g. `{ "s3": { "destination" :
+    # "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }` Cluster iam role is used to access s3, please make
+    # sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination.
     s3: "S3StorageInfo"
 
-    def as_request(self) -> (dict, dict):
-        clusterLogConf_query, clusterLogConf_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbfs:
-            clusterLogConf_body["dbfs"] = self.dbfs.as_request()[1]
+            body["dbfs"] = self.dbfs.as_dict()
         if self.s3:
-            clusterLogConf_body["s3"] = self.s3.as_request()[1]
+            body["s3"] = self.s3.as_dict()
 
-        return clusterLogConf_query, clusterLogConf_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterLogConf":
@@ -998,30 +884,26 @@ class ClusterLogConf:
 @dataclass
 class ClusterSize:
 
-    # Parameters needed in order to automatically scale clusters up and down
-    # based on load. Note: autoscaling works best with DB runtime versions 3.0
-    # or later.
+    # Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best
+    # with DB runtime versions 3.0 or later.
     autoscale: "AutoScale"
-    # Number of worker nodes that this cluster should have. A cluster has one
-    # Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-    # Spark nodes.
+    # Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors
+    # for a total of `num_workers` + 1 Spark nodes.
     #
-    # Note: When reading the properties of a cluster, this field reflects the
-    # desired number of workers rather than the actual current number of
-    # workers. For instance, if a cluster is resized from 5 to 10 workers, this
-    # field will immediately be updated to reflect the target size of 10
-    # workers, whereas the workers listed in `spark_info` will gradually
-    # increase from 5 to 10 as the new nodes are provisioned.
+    # Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the
+    # actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will
+    # immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will
+    # gradually increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
 
-    def as_request(self) -> (dict, dict):
-        clusterSize_query, clusterSize_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autoscale:
-            clusterSize_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.num_workers:
-            clusterSize_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
 
-        return clusterSize_query, clusterSize_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ClusterSize":
@@ -1032,9 +914,8 @@ class ClusterSize:
 
 
 class ClusterSource(Enum):
-    """Determines whether the cluster was created by a user through the UI, created
-    by the Databricks Jobs Scheduler, or through an API request. This is the
-    same as cluster_creator, but read only."""
+    """Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or
+    through an API request. This is the same as cluster_creator, but read only."""
 
     API = "API"
     JOB = "JOB"
@@ -1048,179 +929,149 @@ class ClusterSource(Enum):
 @dataclass
 class CreateCluster:
 
-    # Note: This field won't be true for webapp requests. Only API users will
-    # check this field.
+    # Note: This field won't be true for webapp requests. Only API users will check this field.
     apply_policy_default_values: bool
-    # Parameters needed in order to automatically scale clusters up and down
-    # based on load. Note: autoscaling works best with DB runtime versions 3.0
-    # or later.
+    # Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best
+    # with DB runtime versions 3.0 or later.
     autoscale: "AutoScale"
-    # Automatically terminates the cluster after it is inactive for this time in
-    # minutes. If not set, this cluster will not be automatically terminated. If
-    # specified, the threshold must be between 10 and 10000 minutes. Users can
-    # also set this value to 0 to explicitly disable automatic termination.
+    # Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will
+    # not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also
+    # set this value to 0 to explicitly disable automatic termination.
     autotermination_minutes: int
-    # Attributes related to clusters running on Amazon Web Services. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of
+    # default values will be used.
     aws_attributes: "AwsAttributes"
-    # Attributes related to clusters running on Microsoft Azure. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default
+    # values will be used.
     azure_attributes: "AzureAttributes"
-    # The configuration for delivering spark logs to a long-term storage
-    # destination. Two kinds of destinations (dbfs and s3) are supported. Only
-    # one destination can be specified for one cluster. If the conf is given,
-    # the logs will be delivered to the destination every `5 mins`. The
-    # destination of driver logs is `$destination/$clusterId/driver`, while the
-    # destination of executor logs is `$destination/$clusterId/executor`.
+    # The configuration for delivering spark logs to a long-term storage destination. Two kinds of destinations (dbfs
+    # and s3) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will
+    # be delivered to the destination every `5 mins`. The destination of driver logs is
+    # `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
     cluster_log_conf: "ClusterLogConf"
-    # Cluster name requested by the user. This doesn't have to be unique. If not
-    # specified at creation, the cluster name will be an empty string.
+    # Cluster name requested by the user. This doesn't have to be unique. If not specified at creation, the cluster name
+    # will be an empty string.
     cluster_name: str
-    # Determines whether the cluster was created by a user through the UI,
-    # created by the Databricks Jobs Scheduler, or through an API request. This
-    # is the same as cluster_creator, but read only.
+    # Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or
+    # through an API request. This is the same as cluster_creator, but read only.
     cluster_source: "ClusterSource"
-    # Additional tags for cluster resources. Databricks will tag all cluster
-    # resources (e.g., AWS instances and EBS volumes) with these tags in
-    # addition to `default_tags`. Notes:
+    # Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS
+    # volumes) with these tags in addition to `default_tags`. Notes:
     #
     # - Currently, Databricks allows at most 45 custom tags
     #
-    # - Clusters can only reuse cloud resources if the resources' tags are a
-    # subset of the cluster tags
+    # - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
     custom_tags: "Dict[str,str]"
-    # The optional ID of the instance pool for the driver of the cluster
-    # belongs. The pool cluster uses the instance pool with id
-    # (instance_pool_id) if the driver pool is not assigned.
+    # The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance
+    # pool with id (instance_pool_id) if the driver pool is not assigned.
     driver_instance_pool_id: str
-    # The node type of the Spark driver. Note that this field is optional; if
-    # unset, the driver node type will be set as the same value as
-    # `node_type_id` defined above.
+    # The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as
+    # the same value as `node_type_id` defined above.
     driver_node_type_id: str
-    # Autoscaling Local Storage: when enabled, this cluster will dynamically
-    # acquire additional disk space when its Spark workers are running low on
-    # disk space. This feature requires specific AWS permissions to function
-    # correctly - refer to the User Guide for more details.
+    # Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its
+    # Spark workers are running low on disk space. This feature requires specific AWS permissions to function correctly
+    # - refer to the User Guide for more details.
     enable_elastic_disk: bool
     # Whether to enable LUKS on cluster VMs' local disks
     enable_local_disk_encryption: bool
-    # Attributes related to clusters running on Google Cloud Platform. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of
+    # default values will be used.
     gcp_attributes: "GcpAttributes"
     # The optional ID of the instance pool to which the cluster belongs.
     instance_pool_id: str
-    # This field encodes, through a single value, the resources available to
-    # each of the Spark nodes in this cluster. For example, the Spark nodes can
-    # be provisioned and optimized for memory or compute intensive workloads. A
-    # list of available node types can be retrieved by using the
-    # :method:listNodeTypes API call.
+    # This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster.
+    # For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of
+    # available node types can be retrieved by using the :method:listNodeTypes API call.
     node_type_id: str
-    # Number of worker nodes that this cluster should have. A cluster has one
-    # Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-    # Spark nodes.
+    # Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors
+    # for a total of `num_workers` + 1 Spark nodes.
     #
-    # Note: When reading the properties of a cluster, this field reflects the
-    # desired number of workers rather than the actual current number of
-    # workers. For instance, if a cluster is resized from 5 to 10 workers, this
-    # field will immediately be updated to reflect the target size of 10
-    # workers, whereas the workers listed in `spark_info` will gradually
-    # increase from 5 to 10 as the new nodes are provisioned.
+    # Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the
+    # actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will
+    # immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will
+    # gradually increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
     # The ID of the cluster policy used to create the cluster if applicable.
     policy_id: str
-    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-    # unspecified, the runtime engine is inferred from spark_version.
+    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred
+    # from spark_version.
     runtime_engine: "RuntimeEngine"
-    # An object containing a set of optional, user-specified Spark configuration
-    # key-value pairs. Users can also pass in a string of extra JVM options to
-    # the driver and the executors via `spark.driver.extraJavaOptions` and
+    # An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in
+    # a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and
     # `spark.executor.extraJavaOptions` respectively.
     spark_conf: "Dict[str,str]"
-    # An object containing a set of optional, user-specified environment
-    # variable key-value pairs. Please note that key-value pair of the form
-    # (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-    # driver and workers.
+    # An object containing a set of optional, user-specified environment variable key-value pairs. Please note that
+    # key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and
+    # workers.
     #
-    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-    # recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-    # example below. This ensures that all default databricks managed
+    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+    # `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed
     # environmental variables are included as well.
     #
-    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-    # "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-    # "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or
+    # `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
     spark_env_vars: "Dict[str,str]"
-    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
-    # available Spark versions can be retrieved by using the
-    # :method:sparkVersions API call.
+    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be retrieved by
+    # using the :method:sparkVersions API call.
     spark_version: str
-    # SSH public key contents that will be added to each Spark node in this
-    # cluster. The corresponding private keys can be used to login with the user
-    # name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+    # SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can
+    # be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
     ssh_public_keys: "List[str]"
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        createCluster_query, createCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.apply_policy_default_values:
-            createCluster_body[
-                "apply_policy_default_values"
-            ] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            createCluster_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes:
-            createCluster_body["autotermination_minutes"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            createCluster_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            createCluster_body["azure_attributes"] = self.azure_attributes.as_request()[
-                1
-            ]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            createCluster_body["cluster_log_conf"] = self.cluster_log_conf.as_request()[
-                1
-            ]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name:
-            createCluster_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            createCluster_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.custom_tags:
-            createCluster_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            createCluster_body["driver_instance_pool_id"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            createCluster_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            createCluster_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            createCluster_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            createCluster_body["gcp_attributes"] = self.gcp_attributes.as_request()[1]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            createCluster_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.node_type_id:
-            createCluster_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            createCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            createCluster_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            createCluster_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.spark_conf:
-            createCluster_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            createCluster_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            createCluster_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            createCluster_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.workload_type:
-            createCluster_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return createCluster_query, createCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateCluster":
@@ -1271,12 +1122,12 @@ class CreateClusterResponse:
 
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        createClusterResponse_query, createClusterResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            createClusterResponse_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return createClusterResponse_query, createClusterResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateClusterResponse":
@@ -1297,18 +1148,18 @@ class DataPlaneEventDetails:
     # <needs content added>
     timestamp: int
 
-    def as_request(self) -> (dict, dict):
-        dataPlaneEventDetails_query, dataPlaneEventDetails_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.event_type:
-            dataPlaneEventDetails_body["event_type"] = self.event_type.value
+            body["event_type"] = self.event_type.value
         if self.executor_failures:
-            dataPlaneEventDetails_body["executor_failures"] = self.executor_failures
+            body["executor_failures"] = self.executor_failures
         if self.host_id:
-            dataPlaneEventDetails_body["host_id"] = self.host_id
+            body["host_id"] = self.host_id
         if self.timestamp:
-            dataPlaneEventDetails_body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp
 
-        return dataPlaneEventDetails_query, dataPlaneEventDetails_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DataPlaneEventDetails":
@@ -1346,12 +1197,12 @@ class DbfsStorageInfo:
     # dbfs destination, e.g. `dbfs:/my/path`
     destination: str
 
-    def as_request(self) -> (dict, dict):
-        dbfsStorageInfo_query, dbfsStorageInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.destination:
-            dbfsStorageInfo_body["destination"] = self.destination
+            body["destination"] = self.destination
 
-        return dbfsStorageInfo_query, dbfsStorageInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DbfsStorageInfo":
@@ -1366,12 +1217,12 @@ class DeleteCluster:
     # The cluster to be terminated.
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        deleteCluster_query, deleteCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            deleteCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return deleteCluster_query, deleteCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DeleteCluster":
@@ -1390,179 +1241,153 @@ class EbsVolumeType(Enum):
 @dataclass
 class EditCluster:
 
-    # Note: This field won't be true for webapp requests. Only API users will
-    # check this field.
+    # Note: This field won't be true for webapp requests. Only API users will check this field.
     apply_policy_default_values: bool
-    # Parameters needed in order to automatically scale clusters up and down
-    # based on load. Note: autoscaling works best with DB runtime versions 3.0
-    # or later.
+    # Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best
+    # with DB runtime versions 3.0 or later.
     autoscale: "AutoScale"
-    # Automatically terminates the cluster after it is inactive for this time in
-    # minutes. If not set, this cluster will not be automatically terminated. If
-    # specified, the threshold must be between 10 and 10000 minutes. Users can
-    # also set this value to 0 to explicitly disable automatic termination.
+    # Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will
+    # not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also
+    # set this value to 0 to explicitly disable automatic termination.
     autotermination_minutes: int
-    # Attributes related to clusters running on Amazon Web Services. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of
+    # default values will be used.
     aws_attributes: "AwsAttributes"
-    # Attributes related to clusters running on Microsoft Azure. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default
+    # values will be used.
     azure_attributes: "AzureAttributes"
     # ID of the cluser
     cluster_id: str
-    # The configuration for delivering spark logs to a long-term storage
-    # destination. Two kinds of destinations (dbfs and s3) are supported. Only
-    # one destination can be specified for one cluster. If the conf is given,
-    # the logs will be delivered to the destination every `5 mins`. The
-    # destination of driver logs is `$destination/$clusterId/driver`, while the
-    # destination of executor logs is `$destination/$clusterId/executor`.
+    # The configuration for delivering spark logs to a long-term storage destination. Two kinds of destinations (dbfs
+    # and s3) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will
+    # be delivered to the destination every `5 mins`. The destination of driver logs is
+    # `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
     cluster_log_conf: "ClusterLogConf"
-    # Cluster name requested by the user. This doesn't have to be unique. If not
-    # specified at creation, the cluster name will be an empty string.
+    # Cluster name requested by the user. This doesn't have to be unique. If not specified at creation, the cluster name
+    # will be an empty string.
     cluster_name: str
-    # Determines whether the cluster was created by a user through the UI,
-    # created by the Databricks Jobs Scheduler, or through an API request. This
-    # is the same as cluster_creator, but read only.
+    # Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or
+    # through an API request. This is the same as cluster_creator, but read only.
     cluster_source: "ClusterSource"
-    # Additional tags for cluster resources. Databricks will tag all cluster
-    # resources (e.g., AWS instances and EBS volumes) with these tags in
-    # addition to `default_tags`. Notes:
+    # Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS
+    # volumes) with these tags in addition to `default_tags`. Notes:
     #
     # - Currently, Databricks allows at most 45 custom tags
     #
-    # - Clusters can only reuse cloud resources if the resources' tags are a
-    # subset of the cluster tags
+    # - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
     custom_tags: "Dict[str,str]"
-    # The optional ID of the instance pool for the driver of the cluster
-    # belongs. The pool cluster uses the instance pool with id
-    # (instance_pool_id) if the driver pool is not assigned.
+    # The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance
+    # pool with id (instance_pool_id) if the driver pool is not assigned.
     driver_instance_pool_id: str
-    # The node type of the Spark driver. Note that this field is optional; if
-    # unset, the driver node type will be set as the same value as
-    # `node_type_id` defined above.
+    # The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as
+    # the same value as `node_type_id` defined above.
     driver_node_type_id: str
-    # Autoscaling Local Storage: when enabled, this cluster will dynamically
-    # acquire additional disk space when its Spark workers are running low on
-    # disk space. This feature requires specific AWS permissions to function
-    # correctly - refer to the User Guide for more details.
+    # Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its
+    # Spark workers are running low on disk space. This feature requires specific AWS permissions to function correctly
+    # - refer to the User Guide for more details.
     enable_elastic_disk: bool
     # Whether to enable LUKS on cluster VMs' local disks
     enable_local_disk_encryption: bool
-    # Attributes related to clusters running on Google Cloud Platform. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of
+    # default values will be used.
     gcp_attributes: "GcpAttributes"
     # The optional ID of the instance pool to which the cluster belongs.
     instance_pool_id: str
-    # This field encodes, through a single value, the resources available to
-    # each of the Spark nodes in this cluster. For example, the Spark nodes can
-    # be provisioned and optimized for memory or compute intensive workloads. A
-    # list of available node types can be retrieved by using the
-    # :method:listNodeTypes API call.
+    # This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster.
+    # For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of
+    # available node types can be retrieved by using the :method:listNodeTypes API call.
     node_type_id: str
-    # Number of worker nodes that this cluster should have. A cluster has one
-    # Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-    # Spark nodes.
+    # Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors
+    # for a total of `num_workers` + 1 Spark nodes.
     #
-    # Note: When reading the properties of a cluster, this field reflects the
-    # desired number of workers rather than the actual current number of
-    # workers. For instance, if a cluster is resized from 5 to 10 workers, this
-    # field will immediately be updated to reflect the target size of 10
-    # workers, whereas the workers listed in `spark_info` will gradually
-    # increase from 5 to 10 as the new nodes are provisioned.
+    # Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the
+    # actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will
+    # immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will
+    # gradually increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
     # The ID of the cluster policy used to create the cluster if applicable.
     policy_id: str
-    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-    # unspecified, the runtime engine is inferred from spark_version.
+    # Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred
+    # from spark_version.
     runtime_engine: "RuntimeEngine"
-    # An object containing a set of optional, user-specified Spark configuration
-    # key-value pairs. Users can also pass in a string of extra JVM options to
-    # the driver and the executors via `spark.driver.extraJavaOptions` and
+    # An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in
+    # a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and
     # `spark.executor.extraJavaOptions` respectively.
     spark_conf: "Dict[str,str]"
-    # An object containing a set of optional, user-specified environment
-    # variable key-value pairs. Please note that key-value pair of the form
-    # (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-    # driver and workers.
+    # An object containing a set of optional, user-specified environment variable key-value pairs. Please note that
+    # key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and
+    # workers.
     #
-    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-    # recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-    # example below. This ensures that all default databricks managed
+    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+    # `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed
     # environmental variables are included as well.
     #
-    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-    # "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-    # "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or
+    # `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
     spark_env_vars: "Dict[str,str]"
-    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
-    # available Spark versions can be retrieved by using the
-    # :method:sparkVersions API call.
+    # The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be retrieved by
+    # using the :method:sparkVersions API call.
     spark_version: str
-    # SSH public key contents that will be added to each Spark node in this
-    # cluster. The corresponding private keys can be used to login with the user
-    # name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+    # SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can
+    # be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
     ssh_public_keys: "List[str]"
 
     workload_type: "WorkloadType"
 
-    def as_request(self) -> (dict, dict):
-        editCluster_query, editCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.apply_policy_default_values:
-            editCluster_body[
-                "apply_policy_default_values"
-            ] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            editCluster_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes:
-            editCluster_body["autotermination_minutes"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            editCluster_body["aws_attributes"] = self.aws_attributes.as_request()[1]
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            editCluster_body["azure_attributes"] = self.azure_attributes.as_request()[1]
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_id:
-            editCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.cluster_log_conf:
-            editCluster_body["cluster_log_conf"] = self.cluster_log_conf.as_request()[1]
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name:
-            editCluster_body["cluster_name"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source:
-            editCluster_body["cluster_source"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.custom_tags:
-            editCluster_body["custom_tags"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id:
-            editCluster_body["driver_instance_pool_id"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id:
-            editCluster_body["driver_node_type_id"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk:
-            editCluster_body["enable_elastic_disk"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption:
-            editCluster_body[
-                "enable_local_disk_encryption"
-            ] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            editCluster_body["gcp_attributes"] = self.gcp_attributes.as_request()[1]
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.instance_pool_id:
-            editCluster_body["instance_pool_id"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.node_type_id:
-            editCluster_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers:
-            editCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id:
-            editCluster_body["policy_id"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine:
-            editCluster_body["runtime_engine"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.spark_conf:
-            editCluster_body["spark_conf"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            editCluster_body["spark_env_vars"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version:
-            editCluster_body["spark_version"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            editCluster_body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.workload_type:
-            editCluster_body["workload_type"] = self.workload_type.as_request()[1]
+            body["workload_type"] = self.workload_type.as_dict()
 
-        return editCluster_query, editCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditCluster":
@@ -1612,8 +1437,7 @@ class EditCluster:
 @dataclass
 class EventDetails:
 
-    # * For created clusters, the attributes of the cluster. * For edited
-    # clusters, the new attributes of the cluster.
+    # * For created clusters, the attributes of the cluster. * For edited clusters, the new attributes of the cluster.
     attributes: "ClusterAttributes"
     # The cause of a change in target size.
     cause: "EventDetailsCause"
@@ -1629,16 +1453,14 @@ class EventDetails:
     disk_size: int
     # More details about the change in driver's state
     driver_state_message: str
-    # Whether or not a blocklisted node should be terminated. For
-    # ClusterEventType NODE_BLACKLISTED.
+    # Whether or not a blocklisted node should be terminated. For ClusterEventType NODE_BLACKLISTED.
     enable_termination_for_node_blocklisted: bool
     # <needs content added>
     free_space: int
     # Instance Id where the event originated from
     instance_id: str
-    # Unique identifier of the specific job run associated with this cluster
-    # event * For clusters created for jobs, this will be the same as the
-    # cluster name
+    # Unique identifier of the specific job run associated with this cluster event * For clusters created for jobs, this
+    # will be the same as the cluster name
     job_run_name: str
     # The cluster attributes before a cluster was edited.
     previous_attributes: "ClusterAttributes"
@@ -1646,66 +1468,60 @@ class EventDetails:
     previous_cluster_size: "ClusterSize"
     # Previous disk size in bytes
     previous_disk_size: int
-    # A termination reason: * On a TERMINATED event, this is the reason of the
-    # termination. * On a RESIZE_COMPLETE event, this indicates the reason that
-    # we failed to acquire some nodes.
+    # A termination reason: * On a TERMINATED event, this is the reason of the termination. * On a RESIZE_COMPLETE
+    # event, this indicates the reason that we failed to acquire some nodes.
     reason: "TerminationReason"
     # The targeted number of vCPUs in the cluster.
     target_num_vcpus: int
     # The targeted number of nodes in the cluster.
     target_num_workers: int
-    # The user that caused the event to occur. (Empty if it was done by the
-    # control plane.)
+    # The user that caused the event to occur. (Empty if it was done by the control plane.)
     user: str
 
-    def as_request(self) -> (dict, dict):
-        eventDetails_query, eventDetails_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.attributes:
-            eventDetails_body["attributes"] = self.attributes.as_request()[1]
+            body["attributes"] = self.attributes.as_dict()
         if self.cause:
-            eventDetails_body["cause"] = self.cause.value
+            body["cause"] = self.cause.value
         if self.cluster_size:
-            eventDetails_body["cluster_size"] = self.cluster_size.as_request()[1]
+            body["cluster_size"] = self.cluster_size.as_dict()
         if self.current_num_vcpus:
-            eventDetails_body["current_num_vcpus"] = self.current_num_vcpus
+            body["current_num_vcpus"] = self.current_num_vcpus
         if self.current_num_workers:
-            eventDetails_body["current_num_workers"] = self.current_num_workers
+            body["current_num_workers"] = self.current_num_workers
         if self.did_not_expand_reason:
-            eventDetails_body["did_not_expand_reason"] = self.did_not_expand_reason
+            body["did_not_expand_reason"] = self.did_not_expand_reason
         if self.disk_size:
-            eventDetails_body["disk_size"] = self.disk_size
+            body["disk_size"] = self.disk_size
         if self.driver_state_message:
-            eventDetails_body["driver_state_message"] = self.driver_state_message
+            body["driver_state_message"] = self.driver_state_message
         if self.enable_termination_for_node_blocklisted:
-            eventDetails_body[
+            body[
                 "enable_termination_for_node_blocklisted"
             ] = self.enable_termination_for_node_blocklisted
         if self.free_space:
-            eventDetails_body["free_space"] = self.free_space
+            body["free_space"] = self.free_space
         if self.instance_id:
-            eventDetails_body["instance_id"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.job_run_name:
-            eventDetails_body["job_run_name"] = self.job_run_name
+            body["job_run_name"] = self.job_run_name
         if self.previous_attributes:
-            eventDetails_body[
-                "previous_attributes"
-            ] = self.previous_attributes.as_request()[1]
+            body["previous_attributes"] = self.previous_attributes.as_dict()
         if self.previous_cluster_size:
-            eventDetails_body[
-                "previous_cluster_size"
-            ] = self.previous_cluster_size.as_request()[1]
+            body["previous_cluster_size"] = self.previous_cluster_size.as_dict()
         if self.previous_disk_size:
-            eventDetails_body["previous_disk_size"] = self.previous_disk_size
+            body["previous_disk_size"] = self.previous_disk_size
         if self.reason:
-            eventDetails_body["reason"] = self.reason.as_request()[1]
+            body["reason"] = self.reason.as_dict()
         if self.target_num_vcpus:
-            eventDetails_body["target_num_vcpus"] = self.target_num_vcpus
+            body["target_num_vcpus"] = self.target_num_vcpus
         if self.target_num_workers:
-            eventDetails_body["target_num_workers"] = self.target_num_workers
+            body["target_num_workers"] = self.target_num_workers
         if self.user:
-            eventDetails_body["user"] = self.user
+            body["user"] = self.user
 
-        return eventDetails_query, eventDetails_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EventDetails":
@@ -1783,28 +1599,26 @@ class EventType(Enum):
 @dataclass
 class GcpAttributes:
 
-    # This field determines whether the spark executors will be scheduled to run
-    # on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
-    # on-demand VMs if the former is unavailable.
+    # This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or
+    # preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
     availability: "GcpAvailability"
     # boot disk size in GB
     boot_disk_size: int
-    # If provided, the cluster will impersonate the google service account when
-    # accessing gcloud services (like GCS). The google service account must have
-    # previously been added to the Databricks environment by an account
+    # If provided, the cluster will impersonate the google service account when accessing gcloud services (like GCS).
+    # The google service account must have previously been added to the Databricks environment by an account
     # administrator.
     google_service_account: str
 
-    def as_request(self) -> (dict, dict):
-        gcpAttributes_query, gcpAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.availability:
-            gcpAttributes_body["availability"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.boot_disk_size:
-            gcpAttributes_body["boot_disk_size"] = self.boot_disk_size
+            body["boot_disk_size"] = self.boot_disk_size
         if self.google_service_account:
-            gcpAttributes_body["google_service_account"] = self.google_service_account
+            body["google_service_account"] = self.google_service_account
 
-        return gcpAttributes_query, gcpAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GcpAttributes":
@@ -1818,9 +1632,8 @@ class GcpAttributes:
 
 
 class GcpAvailability(Enum):
-    """This field determines whether the spark executors will be scheduled to run
-    on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
-    on-demand VMs if the former is unavailable."""
+    """This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or
+    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
 
     ON_DEMAND_GCP = "ON_DEMAND_GCP"
     PREEMPTIBLE_GCP = "PREEMPTIBLE_GCP"
@@ -1834,62 +1647,44 @@ class Get:
     # The cluster about which to retrieve information.
     cluster_id: str  # query
 
-    def as_request(self) -> (dict, dict):
-        get_query, get_body = {}, {}
-        if self.cluster_id:
-            get_query["cluster_id"] = self.cluster_id
-
-        return get_query, get_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "Get":
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-        )
-
 
 @dataclass
 class GetEvents:
 
     # The ID of the cluster to retrieve events about.
     cluster_id: str
-    # The end time in epoch milliseconds. If empty, returns events up to the
-    # current time.
+    # The end time in epoch milliseconds. If empty, returns events up to the current time.
     end_time: int
-    # An optional set of event types to filter on. If empty, all event types are
-    # returned.
+    # An optional set of event types to filter on. If empty, all event types are returned.
     event_types: "List[EventType]"
-    # The maximum number of events to include in a page of events. Defaults to
-    # 50, and maximum allowed value is 500.
+    # The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed value is 500.
     limit: int
-    # The offset in the result set. Defaults to 0 (no offset). When an offset is
-    # specified and the results are requested in descending order, the end_time
-    # field is required.
+    # The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results are requested
+    # in descending order, the end_time field is required.
     offset: int
     # The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
     order: "GetEventsOrder"
-    # The start time in epoch milliseconds. If empty, returns events starting
-    # from the beginning of time.
+    # The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
     start_time: int
 
-    def as_request(self) -> (dict, dict):
-        getEvents_query, getEvents_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            getEvents_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.end_time:
-            getEvents_body["end_time"] = self.end_time
+            body["end_time"] = self.end_time
         if self.event_types:
-            getEvents_body["event_types"] = [v for v in self.event_types]
+            body["event_types"] = [v for v in self.event_types]
         if self.limit:
-            getEvents_body["limit"] = self.limit
+            body["limit"] = self.limit
         if self.offset:
-            getEvents_body["offset"] = self.offset
+            body["offset"] = self.offset
         if self.order:
-            getEvents_body["order"] = self.order.value
+            body["order"] = self.order.value
         if self.start_time:
-            getEvents_body["start_time"] = self.start_time
+            body["start_time"] = self.start_time
 
-        return getEvents_query, getEvents_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetEvents":
@@ -1916,23 +1711,21 @@ class GetEventsResponse:
 
     # <content needs to be added>
     events: "List[ClusterEvent]"
-    # The parameters required to retrieve the next page of events. Omitted if
-    # there are no more events to read.
+    # The parameters required to retrieve the next page of events. Omitted if there are no more events to read.
     next_page: "GetEvents"
-    # The total number of events filtered by the start_time, end_time, and
-    # event_types.
+    # The total number of events filtered by the start_time, end_time, and event_types.
     total_count: int
 
-    def as_request(self) -> (dict, dict):
-        getEventsResponse_query, getEventsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.events:
-            getEventsResponse_body["events"] = [v.as_request()[1] for v in self.events]
+            body["events"] = [v.as_dict() for v in self.events]
         if self.next_page:
-            getEventsResponse_body["next_page"] = self.next_page.as_request()[1]
+            body["next_page"] = self.next_page.as_dict()
         if self.total_count:
-            getEventsResponse_body["total_count"] = self.total_count
+            body["total_count"] = self.total_count
 
-        return getEventsResponse_query, getEventsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetEventsResponse":
@@ -1951,14 +1744,12 @@ class GetSparkVersionsResponse:
     # All the available Spark versions.
     versions: "List[SparkVersion]"
 
-    def as_request(self) -> (dict, dict):
-        getSparkVersionsResponse_query, getSparkVersionsResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.versions:
-            getSparkVersionsResponse_body["versions"] = [
-                v.as_request()[1] for v in self.versions
-            ]
+            body["versions"] = [v.as_dict() for v in self.versions]
 
-        return getSparkVersionsResponse_query, getSparkVersionsResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetSparkVersionsResponse":
@@ -1972,39 +1763,32 @@ class GetSparkVersionsResponse:
 @dataclass
 class InstanceProfile:
 
-    # The AWS IAM role ARN of the role associated with the instance profile.
-    # This field is required if your role name and instance profile name do not
-    # match and you want to use the instance profile with [Databricks SQL
-    # Serverless].
+    # The AWS IAM role ARN of the role associated with the instance profile. This field is required if your role name
+    # and instance profile name do not match and you want to use the instance profile with [Databricks SQL Serverless].
     #
     # Otherwise, this field is optional.
     #
     # [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
     iam_role_arn: str
-    # The AWS ARN of the instance profile to register with Databricks. This
-    # field is required.
+    # The AWS ARN of the instance profile to register with Databricks. This field is required.
     instance_profile_arn: str
-    # By default, Databricks validates that it has sufficient permissions to
-    # launch instances with the instance profile. This validation uses AWS
-    # dry-run mode for the RunInstances API. If validation fails with an error
-    # message that does not indicate an IAM related permission issue, (e.g.
-    # `Your requested instance type is not supported in your requested
-    # availability zone`), you can pass this flag to skip the validation and
-    # forcibly add the instance profile.
+    # By default, Databricks validates that it has sufficient permissions to launch instances with the instance profile.
+    # This validation uses AWS dry-run mode for the RunInstances API. If validation fails with an error message that
+    # does not indicate an IAM related permission issue, (e.g. `Your requested instance type is not supported in your
+    # requested availability zone`), you can pass this flag to skip the validation and forcibly add the instance
+    # profile.
     is_meta_instance_profile: bool
 
-    def as_request(self) -> (dict, dict):
-        instanceProfile_query, instanceProfile_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.iam_role_arn:
-            instanceProfile_body["iam_role_arn"] = self.iam_role_arn
+            body["iam_role_arn"] = self.iam_role_arn
         if self.instance_profile_arn:
-            instanceProfile_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.is_meta_instance_profile:
-            instanceProfile_body[
-                "is_meta_instance_profile"
-            ] = self.is_meta_instance_profile
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
 
-        return instanceProfile_query, instanceProfile_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "InstanceProfile":
@@ -2016,45 +1800,30 @@ class InstanceProfile:
 
 
 @dataclass
-class List:
+class ListRequest:
     """List all clusters"""
 
-    # Filter clusters based on what type of client it can be used for. Could be
-    # either NOTEBOOKS or JOBS. No input for this field will get all clusters in
-    # the workspace without filtering on its supported client
+    # Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS. No input for
+    # this field will get all clusters in the workspace without filtering on its supported client
     can_use_client: str  # query
-
-    def as_request(self) -> (dict, dict):
-        list_query, list_body = {}, {}
-        if self.can_use_client:
-            list_query["can_use_client"] = self.can_use_client
-
-        return list_query, list_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "List":
-        return cls(
-            can_use_client=d.get("can_use_client", None),
-        )
 
 
 @dataclass
 class ListAvailableZonesResponse:
 
-    # The availability zone if no `zone_id` is provided in the cluster creation
-    # request.
+    # The availability zone if no `zone_id` is provided in the cluster creation request.
     default_zone: str
     # The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
     zones: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        listAvailableZonesResponse_query, listAvailableZonesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.default_zone:
-            listAvailableZonesResponse_body["default_zone"] = self.default_zone
+            body["default_zone"] = self.default_zone
         if self.zones:
-            listAvailableZonesResponse_body["zones"] = [v for v in self.zones]
+            body["zones"] = [v for v in self.zones]
 
-        return listAvailableZonesResponse_query, listAvailableZonesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListAvailableZonesResponse":
@@ -2070,14 +1839,12 @@ class ListClustersResponse:
     # <needs content added>
     clusters: "List[ClusterInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listClustersResponse_query, listClustersResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.clusters:
-            listClustersResponse_body["clusters"] = [
-                v.as_request()[1] for v in self.clusters
-            ]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
 
-        return listClustersResponse_query, listClustersResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListClustersResponse":
@@ -2094,14 +1861,12 @@ class ListInstanceProfilesResponse:
     # A list of instance profiles that the user can access.
     instance_profiles: "List[InstanceProfile]"
 
-    def as_request(self) -> (dict, dict):
-        listInstanceProfilesResponse_query, listInstanceProfilesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_profiles:
-            listInstanceProfilesResponse_body["instance_profiles"] = [
-                v.as_request()[1] for v in self.instance_profiles
-            ]
+            body["instance_profiles"] = [v.as_dict() for v in self.instance_profiles]
 
-        return listInstanceProfilesResponse_query, listInstanceProfilesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListInstanceProfilesResponse":
@@ -2120,14 +1885,12 @@ class ListNodeTypesResponse:
     # The list of available Spark node types.
     node_types: "List[NodeType]"
 
-    def as_request(self) -> (dict, dict):
-        listNodeTypesResponse_query, listNodeTypesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.node_types:
-            listNodeTypesResponse_body["node_types"] = [
-                v.as_request()[1] for v in self.node_types
-            ]
+            body["node_types"] = [v.as_dict() for v in self.node_types]
 
-        return listNodeTypesResponse_query, listNodeTypesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListNodeTypesResponse":
@@ -2146,18 +1909,14 @@ class LogAnalyticsInfo:
     # <needs content added>
     log_analytics_workspace_id: str
 
-    def as_request(self) -> (dict, dict):
-        logAnalyticsInfo_query, logAnalyticsInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.log_analytics_primary_key:
-            logAnalyticsInfo_body[
-                "log_analytics_primary_key"
-            ] = self.log_analytics_primary_key
+            body["log_analytics_primary_key"] = self.log_analytics_primary_key
         if self.log_analytics_workspace_id:
-            logAnalyticsInfo_body[
-                "log_analytics_workspace_id"
-            ] = self.log_analytics_workspace_id
+            body["log_analytics_workspace_id"] = self.log_analytics_workspace_id
 
-        return logAnalyticsInfo_query, logAnalyticsInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogAnalyticsInfo":
@@ -2170,21 +1929,21 @@ class LogAnalyticsInfo:
 @dataclass
 class LogSyncStatus:
 
-    # The timestamp of last attempt. If the last attempt fails, `last_exception`
-    # will contain the exception in the last attempt.
+    # The timestamp of last attempt. If the last attempt fails, `last_exception` will contain the exception in the last
+    # attempt.
     last_attempted: int
-    # The exception thrown in the last attempt, it would be null (omitted in the
-    # response) if there is no exception in last attempted.
+    # The exception thrown in the last attempt, it would be null (omitted in the response) if there is no exception in
+    # last attempted.
     last_exception: str
 
-    def as_request(self) -> (dict, dict):
-        logSyncStatus_query, logSyncStatus_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.last_attempted:
-            logSyncStatus_body["last_attempted"] = self.last_attempted
+            body["last_attempted"] = self.last_attempted
         if self.last_exception:
-            logSyncStatus_body["last_exception"] = self.last_exception
+            body["last_exception"] = self.last_exception
 
-        return logSyncStatus_query, logSyncStatus_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "LogSyncStatus":
@@ -2207,22 +1966,20 @@ class NodeInstanceType:
 
     local_nvme_disks: int
 
-    def as_request(self) -> (dict, dict):
-        nodeInstanceType_query, nodeInstanceType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_type_id:
-            nodeInstanceType_body["instance_type_id"] = self.instance_type_id
+            body["instance_type_id"] = self.instance_type_id
         if self.local_disk_size_gb:
-            nodeInstanceType_body["local_disk_size_gb"] = self.local_disk_size_gb
+            body["local_disk_size_gb"] = self.local_disk_size_gb
         if self.local_disks:
-            nodeInstanceType_body["local_disks"] = self.local_disks
+            body["local_disks"] = self.local_disks
         if self.local_nvme_disk_size_gb:
-            nodeInstanceType_body[
-                "local_nvme_disk_size_gb"
-            ] = self.local_nvme_disk_size_gb
+            body["local_nvme_disk_size_gb"] = self.local_nvme_disk_size_gb
         if self.local_nvme_disks:
-            nodeInstanceType_body["local_nvme_disks"] = self.local_nvme_disks
+            body["local_nvme_disks"] = self.local_nvme_disks
 
-        return nodeInstanceType_query, nodeInstanceType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NodeInstanceType":
@@ -2243,14 +2000,11 @@ class NodeType:
     description: str
 
     display_order: int
-    # An identifier for the type of hardware that this node runs on, e.g.,
-    # "r3.2xlarge" in AWS.
+    # An identifier for the type of hardware that this node runs on, e.g., "r3.2xlarge" in AWS.
     instance_type_id: str
-    # Whether the node type is deprecated. Non-deprecated node types offer
-    # greater performance.
+    # Whether the node type is deprecated. Non-deprecated node types offer greater performance.
     is_deprecated: bool
-    # AWS specific, whether this instance supports encryption in transit, used
-    # for hipaa and pci workloads.
+    # AWS specific, whether this instance supports encryption in transit, used for hipaa and pci workloads.
     is_encrypted_in_transit: bool
 
     is_graviton: bool
@@ -2266,9 +2020,8 @@ class NodeType:
     node_instance_type: "NodeInstanceType"
     # Unique identifier for this node type.
     node_type_id: str
-    # Number of CPU cores available for this node type. Note that this can be
-    # fractional, e.g., 2.5 cores, if the the number of cores on a machine
-    # instance is not divisible by the number of Spark nodes on that machine.
+    # Number of CPU cores available for this node type. Note that this can be fractional, e.g., 2.5 cores, if the the
+    # number of cores on a machine instance is not divisible by the number of Spark nodes on that machine.
     num_cores: float
 
     num_gpus: int
@@ -2283,52 +2036,50 @@ class NodeType:
 
     support_port_forwarding: bool
 
-    def as_request(self) -> (dict, dict):
-        nodeType_query, nodeType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.category:
-            nodeType_body["category"] = self.category
+            body["category"] = self.category
         if self.description:
-            nodeType_body["description"] = self.description
+            body["description"] = self.description
         if self.display_order:
-            nodeType_body["display_order"] = self.display_order
+            body["display_order"] = self.display_order
         if self.instance_type_id:
-            nodeType_body["instance_type_id"] = self.instance_type_id
+            body["instance_type_id"] = self.instance_type_id
         if self.is_deprecated:
-            nodeType_body["is_deprecated"] = self.is_deprecated
+            body["is_deprecated"] = self.is_deprecated
         if self.is_encrypted_in_transit:
-            nodeType_body["is_encrypted_in_transit"] = self.is_encrypted_in_transit
+            body["is_encrypted_in_transit"] = self.is_encrypted_in_transit
         if self.is_graviton:
-            nodeType_body["is_graviton"] = self.is_graviton
+            body["is_graviton"] = self.is_graviton
         if self.is_hidden:
-            nodeType_body["is_hidden"] = self.is_hidden
+            body["is_hidden"] = self.is_hidden
         if self.is_io_cache_enabled:
-            nodeType_body["is_io_cache_enabled"] = self.is_io_cache_enabled
+            body["is_io_cache_enabled"] = self.is_io_cache_enabled
         if self.memory_mb:
-            nodeType_body["memory_mb"] = self.memory_mb
+            body["memory_mb"] = self.memory_mb
         if self.node_info:
-            nodeType_body["node_info"] = self.node_info.as_request()[1]
+            body["node_info"] = self.node_info.as_dict()
         if self.node_instance_type:
-            nodeType_body["node_instance_type"] = self.node_instance_type.as_request()[
-                1
-            ]
+            body["node_instance_type"] = self.node_instance_type.as_dict()
         if self.node_type_id:
-            nodeType_body["node_type_id"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_cores:
-            nodeType_body["num_cores"] = self.num_cores
+            body["num_cores"] = self.num_cores
         if self.num_gpus:
-            nodeType_body["num_gpus"] = self.num_gpus
+            body["num_gpus"] = self.num_gpus
         if self.photon_driver_capable:
-            nodeType_body["photon_driver_capable"] = self.photon_driver_capable
+            body["photon_driver_capable"] = self.photon_driver_capable
         if self.photon_worker_capable:
-            nodeType_body["photon_worker_capable"] = self.photon_worker_capable
+            body["photon_worker_capable"] = self.photon_worker_capable
         if self.support_cluster_tags:
-            nodeType_body["support_cluster_tags"] = self.support_cluster_tags
+            body["support_cluster_tags"] = self.support_cluster_tags
         if self.support_ebs_volumes:
-            nodeType_body["support_ebs_volumes"] = self.support_ebs_volumes
+            body["support_ebs_volumes"] = self.support_ebs_volumes
         if self.support_port_forwarding:
-            nodeType_body["support_port_forwarding"] = self.support_port_forwarding
+            body["support_port_forwarding"] = self.support_port_forwarding
 
-        return nodeType_query, nodeType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "NodeType":
@@ -2366,12 +2117,12 @@ class PermanentDeleteCluster:
     # The cluster to be deleted.
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        permanentDeleteCluster_query, permanentDeleteCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            permanentDeleteCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return permanentDeleteCluster_query, permanentDeleteCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PermanentDeleteCluster":
@@ -2386,12 +2137,12 @@ class PinCluster:
     # <needs content added>
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        pinCluster_query, pinCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            pinCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return pinCluster_query, pinCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "PinCluster":
@@ -2406,14 +2157,12 @@ class RemoveInstanceProfile:
     # The ARN of the instance profile to remove. This field is required.
     instance_profile_arn: str
 
-    def as_request(self) -> (dict, dict):
-        removeInstanceProfile_query, removeInstanceProfile_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.instance_profile_arn:
-            removeInstanceProfile_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
 
-        return removeInstanceProfile_query, removeInstanceProfile_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RemoveInstanceProfile":
@@ -2425,34 +2174,30 @@ class RemoveInstanceProfile:
 @dataclass
 class ResizeCluster:
 
-    # Parameters needed in order to automatically scale clusters up and down
-    # based on load. Note: autoscaling works best with DB runtime versions 3.0
-    # or later.
+    # Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best
+    # with DB runtime versions 3.0 or later.
     autoscale: "AutoScale"
     # The cluster to be resized.
     cluster_id: str
-    # Number of worker nodes that this cluster should have. A cluster has one
-    # Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-    # Spark nodes.
+    # Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors
+    # for a total of `num_workers` + 1 Spark nodes.
     #
-    # Note: When reading the properties of a cluster, this field reflects the
-    # desired number of workers rather than the actual current number of
-    # workers. For instance, if a cluster is resized from 5 to 10 workers, this
-    # field will immediately be updated to reflect the target size of 10
-    # workers, whereas the workers listed in `spark_info` will gradually
-    # increase from 5 to 10 as the new nodes are provisioned.
+    # Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the
+    # actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will
+    # immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will
+    # gradually increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
 
-    def as_request(self) -> (dict, dict):
-        resizeCluster_query, resizeCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.autoscale:
-            resizeCluster_body["autoscale"] = self.autoscale.as_request()[1]
+            body["autoscale"] = self.autoscale.as_dict()
         if self.cluster_id:
-            resizeCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.num_workers:
-            resizeCluster_body["num_workers"] = self.num_workers
+            body["num_workers"] = self.num_workers
 
-        return resizeCluster_query, resizeCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ResizeCluster":
@@ -2471,14 +2216,14 @@ class RestartCluster:
     # <needs content added>
     restart_user: str
 
-    def as_request(self) -> (dict, dict):
-        restartCluster_query, restartCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            restartCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.restart_user:
-            restartCluster_body["restart_user"] = self.restart_user
+            body["restart_user"] = self.restart_user
 
-        return restartCluster_query, restartCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RestartCluster":
@@ -2489,8 +2234,8 @@ class RestartCluster:
 
 
 class RuntimeEngine(Enum):
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-    unspecified, the runtime engine is inferred from spark_version."""
+    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred
+    from spark_version."""
 
     NULL = "NULL"
     PHOTON = "PHOTON"
@@ -2500,53 +2245,48 @@ class RuntimeEngine(Enum):
 @dataclass
 class S3StorageInfo:
 
-    # (Optional) Set canned access control list for the logs, e.g.
-    # `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
-    # cluster iam role has `s3:PutObjectAcl` permission on the destination
-    # bucket and prefix. The full list of possible canned acl can be found at
-    # http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl.
-    # Please also note that by default only the object owner gets full controls.
-    # If you are using cross account role for writing data, you may want to set
+    # (Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set,
+    # please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The
+    # full list of possible canned acl can be found at
+    # http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only
+    # the object owner gets full controls. If you are using cross account role for writing data, you may want to set
     # `bucket-owner-full-control` to make bucket owner able to read the logs.
     canned_acl: str
-    # S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be
-    # delivered using cluster iam role, please make sure you set cluster iam
-    # role and the role has write access to the destination. Please also note
-    # that you cannot use AWS keys to deliver logs.
+    # S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please
+    # make sure you set cluster iam role and the role has write access to the destination. Please also note that you
+    # cannot use AWS keys to deliver logs.
     destination: str
     # (Optional) Flag to enable server side encryption, `false` by default.
     enable_encryption: bool
-    # (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will
-    # be used only when encryption is enabled and the default type is `sse-s3`.
+    # (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled
+    # and the default type is `sse-s3`.
     encryption_type: str
-    # S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or
-    # endpoint needs to be set. If both are set, endpoint will be used.
+    # S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are
+    # set, endpoint will be used.
     endpoint: str
-    # (Optional) Kms key which will be used if encryption is enabled and
-    # encryption type is set to `sse-kms`.
+    # (Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`.
     kms_key: str
-    # S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If
-    # both are set, endpoint will be used.
+    # S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used.
     region: str
 
-    def as_request(self) -> (dict, dict):
-        s3StorageInfo_query, s3StorageInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.canned_acl:
-            s3StorageInfo_body["canned_acl"] = self.canned_acl
+            body["canned_acl"] = self.canned_acl
         if self.destination:
-            s3StorageInfo_body["destination"] = self.destination
+            body["destination"] = self.destination
         if self.enable_encryption:
-            s3StorageInfo_body["enable_encryption"] = self.enable_encryption
+            body["enable_encryption"] = self.enable_encryption
         if self.encryption_type:
-            s3StorageInfo_body["encryption_type"] = self.encryption_type
+            body["encryption_type"] = self.encryption_type
         if self.endpoint:
-            s3StorageInfo_body["endpoint"] = self.endpoint
+            body["endpoint"] = self.endpoint
         if self.kms_key:
-            s3StorageInfo_body["kms_key"] = self.kms_key
+            body["kms_key"] = self.kms_key
         if self.region:
-            s3StorageInfo_body["region"] = self.region
+            body["region"] = self.region
 
-        return s3StorageInfo_query, s3StorageInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "S3StorageInfo":
@@ -2572,44 +2312,40 @@ class SparkNode:
     node_aws_attributes: "SparkNodeAwsAttributes"
     # Globally unique identifier for this node.
     node_id: str
-    # Private IP address (typically a 10.x.x.x address) of the Spark node. Note
-    # that this is different from the private IP address of the host instance.
+    # Private IP address (typically a 10.x.x.x address) of the Spark node. Note that this is different from the private
+    # IP address of the host instance.
     private_ip: str
-    # Public DNS address of this node. This address can be used to access the
-    # Spark JDBC server on the driver node. To communicate with the JDBC server,
-    # traffic must be manually authorized by adding security group rules to the
+    # Public DNS address of this node. This address can be used to access the Spark JDBC server on the driver node. To
+    # communicate with the JDBC server, traffic must be manually authorized by adding security group rules to the
     # "worker-unmanaged" security group via the AWS console.
     #
     # Actually it's the public DNS address of the host instance.
     public_dns: str
     # The timestamp (in millisecond) when the Spark node is launched.
     #
-    # The start_timestamp is set right before the container is being launched.
-    # The timestamp when the container is placed on the ResourceManager, before
-    # its launch and setup by the NodeDaemon. This timestamp is the same as the
+    # The start_timestamp is set right before the container is being launched. The timestamp when the container is
+    # placed on the ResourceManager, before its launch and setup by the NodeDaemon. This timestamp is the same as the
     # creation timestamp in the database.
     start_timestamp: int
 
-    def as_request(self) -> (dict, dict):
-        sparkNode_query, sparkNode_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.host_private_ip:
-            sparkNode_body["host_private_ip"] = self.host_private_ip
+            body["host_private_ip"] = self.host_private_ip
         if self.instance_id:
-            sparkNode_body["instance_id"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.node_aws_attributes:
-            sparkNode_body[
-                "node_aws_attributes"
-            ] = self.node_aws_attributes.as_request()[1]
+            body["node_aws_attributes"] = self.node_aws_attributes.as_dict()
         if self.node_id:
-            sparkNode_body["node_id"] = self.node_id
+            body["node_id"] = self.node_id
         if self.private_ip:
-            sparkNode_body["private_ip"] = self.private_ip
+            body["private_ip"] = self.private_ip
         if self.public_dns:
-            sparkNode_body["public_dns"] = self.public_dns
+            body["public_dns"] = self.public_dns
         if self.start_timestamp:
-            sparkNode_body["start_timestamp"] = self.start_timestamp
+            body["start_timestamp"] = self.start_timestamp
 
-        return sparkNode_query, sparkNode_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkNode":
@@ -2634,12 +2370,12 @@ class SparkNodeAwsAttributes:
     # Whether this node is on an Amazon spot instance.
     is_spot: bool
 
-    def as_request(self) -> (dict, dict):
-        sparkNodeAwsAttributes_query, sparkNodeAwsAttributes_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.is_spot:
-            sparkNodeAwsAttributes_body["is_spot"] = self.is_spot
+            body["is_spot"] = self.is_spot
 
-        return sparkNodeAwsAttributes_query, sparkNodeAwsAttributes_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkNodeAwsAttributes":
@@ -2651,23 +2387,21 @@ class SparkNodeAwsAttributes:
 @dataclass
 class SparkVersion:
 
-    # Spark version key, for example "2.1.x-scala2.11". This is the value which
-    # should be provided as the "spark_version" when creating a new cluster.
-    # Note that the exact Spark version may change over time for a "wildcard"
-    # version (i.e., "2.1.x-scala2.11" is a "wildcard" version) with minor bug
-    # fixes.
+    # Spark version key, for example "2.1.x-scala2.11". This is the value which should be provided as the
+    # "spark_version" when creating a new cluster. Note that the exact Spark version may change over time for a
+    # "wildcard" version (i.e., "2.1.x-scala2.11" is a "wildcard" version) with minor bug fixes.
     key: str
     # A descriptive name for this Spark version, for example "Spark 2.1".
     name: str
 
-    def as_request(self) -> (dict, dict):
-        sparkVersion_query, sparkVersion_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            sparkVersion_body["key"] = self.key
+            body["key"] = self.key
         if self.name:
-            sparkVersion_body["name"] = self.name
+            body["name"] = self.name
 
-        return sparkVersion_query, sparkVersion_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SparkVersion":
@@ -2683,12 +2417,12 @@ class StartCluster:
     # The cluster to be started.
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        startCluster_query, startCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            startCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return startCluster_query, startCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "StartCluster":
@@ -2715,22 +2449,21 @@ class TerminationReason:
 
     # status code indicating why the cluster was terminated
     code: "TerminationReasonCode"
-    # list of parameters that provide additional information about why the
-    # cluster was terminated
+    # list of parameters that provide additional information about why the cluster was terminated
     parameters: "Dict[str,str]"
     # type of the termination
     type: "TerminationReasonType"
 
-    def as_request(self) -> (dict, dict):
-        terminationReason_query, terminationReason_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.code:
-            terminationReason_body["code"] = self.code.value
+            body["code"] = self.code.value
         if self.parameters:
-            terminationReason_body["parameters"] = self.parameters
+            body["parameters"] = self.parameters
         if self.type:
-            terminationReason_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return terminationReason_query, terminationReason_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TerminationReason":
@@ -2850,12 +2583,12 @@ class UnpinCluster:
     # <needs content added>
     cluster_id: str
 
-    def as_request(self) -> (dict, dict):
-        unpinCluster_query, unpinCluster_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cluster_id:
-            unpinCluster_body["cluster_id"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
 
-        return unpinCluster_query, unpinCluster_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "UnpinCluster":
@@ -2870,12 +2603,12 @@ class WorkloadType:
     # defined what type of clients can use the cluster. E.g. Notebooks, Jobs
     clients: "ClientsTypes"
 
-    def as_request(self) -> (dict, dict):
-        workloadType_query, workloadType_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.clients:
-            workloadType_body["clients"] = self.clients.as_request()[1]
+            body["clients"] = self.clients.as_dict()
 
-        return workloadType_query, workloadType_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "WorkloadType":
@@ -2888,15 +2621,49 @@ class ClustersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def change_owner(self, request: ChangeClusterOwner):
+    def change_owner(self, cluster_id: str, owner_username: str, **kwargs):
         """Change cluster owner.
 
         Change the owner of the cluster. You must be an admin to perform this
         operation."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/change-owner", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ChangeClusterOwner(
+                cluster_id=cluster_id, owner_username=owner_username
+            )
+        body = request.as_dict()
 
-    def create(self, request: CreateCluster) -> CreateClusterResponse:
+        self._api.do("POST", "/api/2.0/clusters/change-owner", body=body)
+
+    def create(
+        self,
+        spark_version: str,
+        *,
+        apply_policy_default_values: bool = None,
+        autoscale: AutoScale = None,
+        autotermination_minutes: int = None,
+        aws_attributes: AwsAttributes = None,
+        azure_attributes: AzureAttributes = None,
+        cluster_log_conf: ClusterLogConf = None,
+        cluster_name: str = None,
+        cluster_source: ClusterSource = None,
+        custom_tags: Dict[str, str] = None,
+        driver_instance_pool_id: str = None,
+        driver_node_type_id: str = None,
+        enable_elastic_disk: bool = None,
+        enable_local_disk_encryption: bool = None,
+        gcp_attributes: GcpAttributes = None,
+        instance_pool_id: str = None,
+        node_type_id: str = None,
+        num_workers: int = None,
+        policy_id: str = None,
+        runtime_engine: RuntimeEngine = None,
+        spark_conf: Dict[str, str] = None,
+        spark_env_vars: Dict[str, str] = None,
+        ssh_public_keys: List[str] = None,
+        workload_type: WorkloadType = None,
+        **kwargs
+    ) -> CreateClusterResponse:
         """Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from
@@ -2912,21 +2679,83 @@ class ClustersAPI:
         If Databricks acquires at least 85% of the requested on-demand nodes,
         cluster creation will succeed. Otherwise the cluster will terminate with
         an informative error message."""
-        query, body = request.as_request()
-        json = self._api.do("POST", "/api/2.0/clusters/create", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CreateCluster(
+                apply_policy_default_values=apply_policy_default_values,
+                autoscale=autoscale,
+                autotermination_minutes=autotermination_minutes,
+                aws_attributes=aws_attributes,
+                azure_attributes=azure_attributes,
+                cluster_log_conf=cluster_log_conf,
+                cluster_name=cluster_name,
+                cluster_source=cluster_source,
+                custom_tags=custom_tags,
+                driver_instance_pool_id=driver_instance_pool_id,
+                driver_node_type_id=driver_node_type_id,
+                enable_elastic_disk=enable_elastic_disk,
+                enable_local_disk_encryption=enable_local_disk_encryption,
+                gcp_attributes=gcp_attributes,
+                instance_pool_id=instance_pool_id,
+                node_type_id=node_type_id,
+                num_workers=num_workers,
+                policy_id=policy_id,
+                runtime_engine=runtime_engine,
+                spark_conf=spark_conf,
+                spark_env_vars=spark_env_vars,
+                spark_version=spark_version,
+                ssh_public_keys=ssh_public_keys,
+                workload_type=workload_type,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/2.0/clusters/create", body=body)
         return CreateClusterResponse.from_dict(json)
 
-    def delete(self, request: DeleteCluster):
+    def delete(self, cluster_id: str, **kwargs):
         """Terminate cluster.
 
         Terminates the Spark cluster with the specified ID. The cluster is
         removed asynchronously. Once the termination has completed, the cluster
         will be in a `TERMINATED` state. If the cluster is already in a
         `TERMINATING` or `TERMINATED` state, nothing will happen."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/delete", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DeleteCluster(cluster_id=cluster_id)
+        body = request.as_dict()
 
-    def edit(self, request: EditCluster):
+        self._api.do("POST", "/api/2.0/clusters/delete", body=body)
+
+    def edit(
+        self,
+        cluster_id: str,
+        spark_version: str,
+        *,
+        apply_policy_default_values: bool = None,
+        autoscale: AutoScale = None,
+        autotermination_minutes: int = None,
+        aws_attributes: AwsAttributes = None,
+        azure_attributes: AzureAttributes = None,
+        cluster_log_conf: ClusterLogConf = None,
+        cluster_name: str = None,
+        cluster_source: ClusterSource = None,
+        custom_tags: Dict[str, str] = None,
+        driver_instance_pool_id: str = None,
+        driver_node_type_id: str = None,
+        enable_elastic_disk: bool = None,
+        enable_local_disk_encryption: bool = None,
+        gcp_attributes: GcpAttributes = None,
+        instance_pool_id: str = None,
+        node_type_id: str = None,
+        num_workers: int = None,
+        policy_id: str = None,
+        runtime_engine: RuntimeEngine = None,
+        spark_conf: Dict[str, str] = None,
+        spark_env_vars: Dict[str, str] = None,
+        ssh_public_keys: List[str] = None,
+        workload_type: WorkloadType = None,
+        **kwargs
+    ):
         """Update cluster configuration.
 
         Updates the configuration of a cluster to match the provided attributes
@@ -2943,30 +2772,90 @@ class ClustersAPI:
         error code.
 
         Clusters created by the Databricks Jobs service cannot be edited."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/edit", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = EditCluster(
+                apply_policy_default_values=apply_policy_default_values,
+                autoscale=autoscale,
+                autotermination_minutes=autotermination_minutes,
+                aws_attributes=aws_attributes,
+                azure_attributes=azure_attributes,
+                cluster_id=cluster_id,
+                cluster_log_conf=cluster_log_conf,
+                cluster_name=cluster_name,
+                cluster_source=cluster_source,
+                custom_tags=custom_tags,
+                driver_instance_pool_id=driver_instance_pool_id,
+                driver_node_type_id=driver_node_type_id,
+                enable_elastic_disk=enable_elastic_disk,
+                enable_local_disk_encryption=enable_local_disk_encryption,
+                gcp_attributes=gcp_attributes,
+                instance_pool_id=instance_pool_id,
+                node_type_id=node_type_id,
+                num_workers=num_workers,
+                policy_id=policy_id,
+                runtime_engine=runtime_engine,
+                spark_conf=spark_conf,
+                spark_env_vars=spark_env_vars,
+                spark_version=spark_version,
+                ssh_public_keys=ssh_public_keys,
+                workload_type=workload_type,
+            )
+        body = request.as_dict()
 
-    def events(self, request: GetEvents) -> GetEventsResponse:
+        self._api.do("POST", "/api/2.0/clusters/edit", body=body)
+
+    def events(
+        self,
+        cluster_id: str,
+        *,
+        end_time: int = None,
+        event_types: List[EventType] = None,
+        limit: int = None,
+        offset: int = None,
+        order: GetEventsOrder = None,
+        start_time: int = None,
+        **kwargs
+    ) -> GetEventsResponse:
         """List cluster activity events.
 
         Retrieves a list of events about the activity of a cluster. This API is
         paginated. If there are more events to read, the response includes all
         the nparameters necessary to request the next page of events."""
-        query, body = request.as_request()
-        json = self._api.do("POST", "/api/2.0/clusters/events", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetEvents(
+                cluster_id=cluster_id,
+                end_time=end_time,
+                event_types=event_types,
+                limit=limit,
+                offset=offset,
+                order=order,
+                start_time=start_time,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/2.0/clusters/events", body=body)
         return GetEventsResponse.from_dict(json)
 
-    def get(self, request: Get) -> ClusterInfo:
+    def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
         """Get cluster info.
 
         "Retrieves the information for a cluster given its identifier. Clusters
         can be described while they are running, or up to 60 days after they are
         terminated."""
-        query, body = request.as_request()
-        json = self._api.do("GET", "/api/2.0/clusters/get", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = Get(cluster_id=cluster_id)
+
+        query = {}
+        if cluster_id:
+            query["cluster_id"] = request.cluster_id
+
+        json = self._api.do("GET", "/api/2.0/clusters/get", query=query)
         return ClusterInfo.from_dict(json)
 
-    def list(self, request: List) -> ListClustersResponse:
+    def list(self, *, can_use_client: str = None, **kwargs) -> ListClustersResponse:
         """List all clusters.
 
         Returns information about all pinned clusters, currently active
@@ -2979,8 +2868,15 @@ class ClustersAPI:
         job clusters\nin the past 7 days, then this API returns the 1 pinned
         cluster, 4 active clusters, all 45 terminated interactive clusters, and
         the 30 most recently terminated job clusters."""
-        query, body = request.as_request()
-        json = self._api.do("GET", "/api/2.0/clusters/list", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ListRequest(can_use_client=can_use_client)
+
+        query = {}
+        if can_use_client:
+            query["can_use_client"] = request.can_use_client
+
+        json = self._api.do("GET", "/api/2.0/clusters/list", query=query)
         return ListClustersResponse.from_dict(json)
 
     def list_node_types(self) -> ListNodeTypesResponse:
@@ -3001,7 +2897,7 @@ class ClustersAPI:
         json = self._api.do("GET", "/api/2.0/clusters/list-zones")
         return ListAvailableZonesResponse.from_dict(json)
 
-    def permanent_delete(self, request: PermanentDeleteCluster):
+    def permanent_delete(self, cluster_id: str, **kwargs):
         """Permanently delete cluster.
 
         Permanently deletes a Spark cluster. This cluster is terminated and
@@ -3010,35 +2906,58 @@ class ClustersAPI:
         In addition, users will no longer see permanently deleted clusters in
         the cluster list, and API users can no longer perform any action on
         permanently deleted clusters."""
-        query, body = request.as_request()
-        self._api.do(
-            "POST", "/api/2.0/clusters/permanent-delete", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = PermanentDeleteCluster(cluster_id=cluster_id)
+        body = request.as_dict()
 
-    def pin(self, request: PinCluster):
+        self._api.do("POST", "/api/2.0/clusters/permanent-delete", body=body)
+
+    def pin(self, cluster_id: str, **kwargs):
         """Pin cluster.
 
         Pinning a cluster ensures that the cluster will always be returned by
         the ListClusters API. Pinning a cluster that is already pinned will have
         no effect. This API can only be called by workspace admins."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/pin", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = PinCluster(cluster_id=cluster_id)
+        body = request.as_dict()
 
-    def resize(self, request: ResizeCluster):
+        self._api.do("POST", "/api/2.0/clusters/pin", body=body)
+
+    def resize(
+        self,
+        cluster_id: str,
+        *,
+        autoscale: AutoScale = None,
+        num_workers: int = None,
+        **kwargs
+    ):
         """Resize cluster.
 
         Resizes a cluster to have a desired number of workers. This will fail
         unless the cluster is in a `RUNNING` state."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/resize", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ResizeCluster(
+                autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers
+            )
+        body = request.as_dict()
 
-    def restart(self, request: RestartCluster):
+        self._api.do("POST", "/api/2.0/clusters/resize", body=body)
+
+    def restart(self, cluster_id: str, *, restart_user: str = None, **kwargs):
         """Restart cluster.
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not
         currently in a `RUNNING` state, nothing will happen."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/restart", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
+        body = request.as_dict()
+
+        self._api.do("POST", "/api/2.0/clusters/restart", body=body)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
         """List available Spark versions.
@@ -3049,7 +2968,7 @@ class ClustersAPI:
         json = self._api.do("GET", "/api/2.0/clusters/spark-versions")
         return GetSparkVersionsResponse.from_dict(json)
 
-    def start(self, request: StartCluster):
+    def start(self, cluster_id: str, **kwargs):
         """Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works
@@ -3061,32 +2980,64 @@ class ClustersAPI:
         number of nodes. * If the cluster is not currently in a `TERMINATED`
         state, nothing will happen. * Clusters launched to run a job cannot be
         started."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/start", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = StartCluster(cluster_id=cluster_id)
+        body = request.as_dict()
 
-    def unpin(self, request: UnpinCluster):
+        self._api.do("POST", "/api/2.0/clusters/start", body=body)
+
+    def unpin(self, cluster_id: str, **kwargs):
         """Unpin cluster.
 
         Unpinning a cluster will allow the cluster to eventually be removed from
         the ListClusters API. Unpinning a cluster that is not pinned will have
         no effect. This API can only be called by workspace admins."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/clusters/unpin", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = UnpinCluster(cluster_id=cluster_id)
+        body = request.as_dict()
+
+        self._api.do("POST", "/api/2.0/clusters/unpin", body=body)
 
 
 class InstanceProfilesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def add(self, request: AddInstanceProfile):
+    def add(
+        self,
+        instance_profile_arn: str,
+        *,
+        iam_role_arn: str = None,
+        is_meta_instance_profile: bool = None,
+        skip_validation: bool = None,
+        **kwargs
+    ):
         """Register an instance profile.
 
         In the UI, you can select the instance profile when launching clusters.
         This API is only available to admin users."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/instance-profiles/add", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = AddInstanceProfile(
+                iam_role_arn=iam_role_arn,
+                instance_profile_arn=instance_profile_arn,
+                is_meta_instance_profile=is_meta_instance_profile,
+                skip_validation=skip_validation,
+            )
+        body = request.as_dict()
 
-    def edit(self, request: InstanceProfile):
+        self._api.do("POST", "/api/2.0/instance-profiles/add", body=body)
+
+    def edit(
+        self,
+        instance_profile_arn: str,
+        *,
+        iam_role_arn: str = None,
+        is_meta_instance_profile: bool = None,
+        **kwargs
+    ):
         """Edit an instance profile.
 
         The only supported field to change is the optional IAM role ARN
@@ -3104,8 +3055,16 @@ class InstanceProfilesAPI:
 
         [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html"""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/2.0/instance-profiles/edit", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = InstanceProfile(
+                iam_role_arn=iam_role_arn,
+                instance_profile_arn=instance_profile_arn,
+                is_meta_instance_profile=is_meta_instance_profile,
+            )
+        body = request.as_dict()
+
+        self._api.do("POST", "/api/2.0/instance-profiles/edit", body=body)
 
     def list(self) -> ListInstanceProfilesResponse:
         """List available instance profiles.
@@ -3118,14 +3077,16 @@ class InstanceProfilesAPI:
         json = self._api.do("GET", "/api/2.0/instance-profiles/list")
         return ListInstanceProfilesResponse.from_dict(json)
 
-    def remove(self, request: RemoveInstanceProfile):
+    def remove(self, instance_profile_arn: str, **kwargs):
         """Remove the instance profile.
 
         Remove the instance profile with the provided ARN. Existing clusters
         with this instance profile will continue to function.
 
         This API is only accessible to admin users."""
-        query, body = request.as_request()
-        self._api.do(
-            "POST", "/api/2.0/instance-profiles/remove", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = RemoveInstanceProfile(instance_profile_arn=instance_profile_arn)
+        body = request.as_dict()
+
+        self._api.do("POST", "/api/2.0/instance-profiles/remove", body=body)

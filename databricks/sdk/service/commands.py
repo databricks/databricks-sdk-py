@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -11,29 +11,29 @@ from typing import Optional, Dict, List, Any
 @dataclass
 class CancelCommand:
 
-    clusterId: str
+    cluster_id: str
 
-    commandId: str
+    command_id: str
 
-    contextId: str
+    context_id: str
 
-    def as_request(self) -> (dict, dict):
-        cancelCommand_query, cancelCommand_body = {}, {}
-        if self.clusterId:
-            cancelCommand_body["clusterId"] = self.clusterId
-        if self.commandId:
-            cancelCommand_body["commandId"] = self.commandId
-        if self.contextId:
-            cancelCommand_body["contextId"] = self.contextId
+    def as_dict(self) -> dict:
+        body = {}
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
+        if self.command_id:
+            body["commandId"] = self.command_id
+        if self.context_id:
+            body["contextId"] = self.context_id
 
-        return cancelCommand_query, cancelCommand_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CancelCommand":
         return cls(
-            clusterId=d.get("clusterId", None),
-            commandId=d.get("commandId", None),
-            contextId=d.get("contextId", None),
+            cluster_id=d.get("clusterId", None),
+            command_id=d.get("commandId", None),
+            context_id=d.get("contextId", None),
         )
 
 
@@ -41,33 +41,33 @@ class CancelCommand:
 class Command:
 
     # Running cluster id
-    clusterId: str
+    cluster_id: str
     # Executable code
     command: str
     # Running context id
-    contextId: str
+    context_id: str
 
     language: "Language"
 
-    def as_request(self) -> (dict, dict):
-        command_query, command_body = {}, {}
-        if self.clusterId:
-            command_body["clusterId"] = self.clusterId
+    def as_dict(self) -> dict:
+        body = {}
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
         if self.command:
-            command_body["command"] = self.command
-        if self.contextId:
-            command_body["contextId"] = self.contextId
+            body["command"] = self.command
+        if self.context_id:
+            body["contextId"] = self.context_id
         if self.language:
-            command_body["language"] = self.language.value
+            body["language"] = self.language.value
 
-        return command_query, command_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Command":
         return cls(
-            clusterId=d.get("clusterId", None),
+            cluster_id=d.get("clusterId", None),
             command=d.get("command", None),
-            contextId=d.get("contextId", None),
+            context_id=d.get("contextId", None),
             language=Language(d["language"]) if "language" in d else None,
         )
 
@@ -86,30 +86,11 @@ class CommandStatus(Enum):
 class CommandStatusRequest:
     """Get command info"""
 
-    clusterId: str  # query
+    cluster_id: str  # query
 
-    commandId: str  # query
+    command_id: str  # query
 
-    contextId: str  # query
-
-    def as_request(self) -> (dict, dict):
-        commandStatusRequest_query, commandStatusRequest_body = {}, {}
-        if self.clusterId:
-            commandStatusRequest_query["clusterId"] = self.clusterId
-        if self.commandId:
-            commandStatusRequest_query["commandId"] = self.commandId
-        if self.contextId:
-            commandStatusRequest_query["contextId"] = self.contextId
-
-        return commandStatusRequest_query, commandStatusRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "CommandStatusRequest":
-        return cls(
-            clusterId=d.get("clusterId", None),
-            commandId=d.get("commandId", None),
-            contextId=d.get("contextId", None),
-        )
+    context_id: str  # query
 
 
 @dataclass
@@ -121,16 +102,16 @@ class CommandStatusResponse:
 
     status: "CommandStatus"
 
-    def as_request(self) -> (dict, dict):
-        commandStatusResponse_query, commandStatusResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            commandStatusResponse_body["id"] = self.id
+            body["id"] = self.id
         if self.results:
-            commandStatusResponse_body["results"] = self.results.as_request()[1]
+            body["results"] = self.results.as_dict()
         if self.status:
-            commandStatusResponse_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return commandStatusResponse_query, commandStatusResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CommandStatusResponse":
@@ -152,25 +133,9 @@ class ContextStatus(Enum):
 class ContextStatusRequest:
     """Get status"""
 
-    clusterId: str  # query
+    cluster_id: str  # query
 
-    contextId: str  # query
-
-    def as_request(self) -> (dict, dict):
-        contextStatusRequest_query, contextStatusRequest_body = {}, {}
-        if self.clusterId:
-            contextStatusRequest_query["clusterId"] = self.clusterId
-        if self.contextId:
-            contextStatusRequest_query["contextId"] = self.contextId
-
-        return contextStatusRequest_query, contextStatusRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ContextStatusRequest":
-        return cls(
-            clusterId=d.get("clusterId", None),
-            contextId=d.get("contextId", None),
-        )
+    context_id: str  # query
 
 
 @dataclass
@@ -180,14 +145,14 @@ class ContextStatusResponse:
 
     status: "ContextStatus"
 
-    def as_request(self) -> (dict, dict):
-        contextStatusResponse_query, contextStatusResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            contextStatusResponse_body["id"] = self.id
+            body["id"] = self.id
         if self.status:
-            contextStatusResponse_body["status"] = self.status.value
+            body["status"] = self.status.value
 
-        return contextStatusResponse_query, contextStatusResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ContextStatusResponse":
@@ -201,23 +166,23 @@ class ContextStatusResponse:
 class CreateContext:
 
     # Running cluster id
-    clusterId: str
+    cluster_id: str
 
     language: "Language"
 
-    def as_request(self) -> (dict, dict):
-        createContext_query, createContext_body = {}, {}
-        if self.clusterId:
-            createContext_body["clusterId"] = self.clusterId
+    def as_dict(self) -> dict:
+        body = {}
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
         if self.language:
-            createContext_body["language"] = self.language.value
+            body["language"] = self.language.value
 
-        return createContext_query, createContext_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateContext":
         return cls(
-            clusterId=d.get("clusterId", None),
+            cluster_id=d.get("clusterId", None),
             language=Language(d["language"]) if "language" in d else None,
         )
 
@@ -227,12 +192,12 @@ class Created:
 
     id: str
 
-    def as_request(self) -> (dict, dict):
-        created_query, created_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            created_body["id"] = self.id
+            body["id"] = self.id
 
-        return created_query, created_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Created":
@@ -244,24 +209,24 @@ class Created:
 @dataclass
 class DestroyContext:
 
-    clusterId: str
+    cluster_id: str
 
-    contextId: str
+    context_id: str
 
-    def as_request(self) -> (dict, dict):
-        destroyContext_query, destroyContext_body = {}, {}
-        if self.clusterId:
-            destroyContext_body["clusterId"] = self.clusterId
-        if self.contextId:
-            destroyContext_body["contextId"] = self.contextId
+    def as_dict(self) -> dict:
+        body = {}
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
+        if self.context_id:
+            body["contextId"] = self.context_id
 
-        return destroyContext_query, destroyContext_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DestroyContext":
         return cls(
-            clusterId=d.get("clusterId", None),
-            contextId=d.get("contextId", None),
+            cluster_id=d.get("clusterId", None),
+            context_id=d.get("contextId", None),
         )
 
 
@@ -289,58 +254,57 @@ class Results:
 
     data: Any
     # The image filename
-    fileName: str
+    file_name: str
 
-    fileNames: "List[str]"
-    # true if a JSON schema is returned instead of a string representation of
-    # the Hive type.
-    isJsonSchema: bool
+    file_names: "List[str]"
+    # true if a JSON schema is returned instead of a string representation of the Hive type.
+    is_json_schema: bool
     # internal field used by SDK
     pos: int
 
-    resultType: "ResultType"
+    result_type: "ResultType"
     # The table schema
-    schema: "List[any /* MISSING TYPE */]"
+    schema: "List[List[Any]]"
     # The summary of the error
     summary: str
     # true if partial results are returned.
     truncated: bool
 
-    def as_request(self) -> (dict, dict):
-        results_query, results_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cause:
-            results_body["cause"] = self.cause
+            body["cause"] = self.cause
         if self.data:
-            results_body["data"] = self.data
-        if self.fileName:
-            results_body["fileName"] = self.fileName
-        if self.fileNames:
-            results_body["fileNames"] = [v for v in self.fileNames]
-        if self.isJsonSchema:
-            results_body["isJsonSchema"] = self.isJsonSchema
+            body["data"] = self.data
+        if self.file_name:
+            body["fileName"] = self.file_name
+        if self.file_names:
+            body["fileNames"] = [v for v in self.file_names]
+        if self.is_json_schema:
+            body["isJsonSchema"] = self.is_json_schema
         if self.pos:
-            results_body["pos"] = self.pos
-        if self.resultType:
-            results_body["resultType"] = self.resultType.value
+            body["pos"] = self.pos
+        if self.result_type:
+            body["resultType"] = self.result_type.value
         if self.schema:
-            results_body["schema"] = [v for v in self.schema]
+            body["schema"] = [v for v in self.schema]
         if self.summary:
-            results_body["summary"] = self.summary
+            body["summary"] = self.summary
         if self.truncated:
-            results_body["truncated"] = self.truncated
+            body["truncated"] = self.truncated
 
-        return results_query, results_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Results":
         return cls(
             cause=d.get("cause", None),
             data=d.get("data", None),
-            fileName=d.get("fileName", None),
-            fileNames=d.get("fileNames", None),
-            isJsonSchema=d.get("isJsonSchema", None),
+            file_name=d.get("fileName", None),
+            file_names=d.get("fileNames", None),
+            is_json_schema=d.get("isJsonSchema", None),
             pos=d.get("pos", None),
-            resultType=ResultType(d["resultType"]) if "resultType" in d else None,
+            result_type=ResultType(d["resultType"]) if "resultType" in d else None,
             schema=d.get("schema", None),
             summary=d.get("summary", None),
             truncated=d.get("truncated", None),
@@ -351,52 +315,109 @@ class CommandExecutionAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel(self, request: CancelCommand):
+    def cancel(
+        self,
+        *,
+        cluster_id: str = None,
+        command_id: str = None,
+        context_id: str = None,
+        **kwargs
+    ):
         """Cancel a command.
 
         Cancels a currently running command within an execution context.
 
         The command ID is obtained from a prior successful call to __execute__."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/1.2/commands/cancel", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CancelCommand(
+                cluster_id=cluster_id, command_id=command_id, context_id=context_id
+            )
+        body = request.as_dict()
 
-    def command_status(self, request: CommandStatusRequest) -> CommandStatusResponse:
+        self._api.do("POST", "/api/1.2/commands/cancel", body=body)
+
+    def command_status(
+        self, cluster_id: str, context_id: str, command_id: str, **kwargs
+    ) -> CommandStatusResponse:
         """Get command info.
 
         Gets the status of and, if available, the results from a currently
         executing command.
 
         The command ID is obtained from a prior successful call to __execute__."""
-        query, body = request.as_request()
-        json = self._api.do("GET", "/api/1.2/commands/status", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CommandStatusRequest(
+                cluster_id=cluster_id, command_id=command_id, context_id=context_id
+            )
+
+        query = {}
+        if cluster_id:
+            query["clusterId"] = request.cluster_id
+        if command_id:
+            query["commandId"] = request.command_id
+        if context_id:
+            query["contextId"] = request.context_id
+
+        json = self._api.do("GET", "/api/1.2/commands/status", query=query)
         return CommandStatusResponse.from_dict(json)
 
-    def context_status(self, request: ContextStatusRequest) -> ContextStatusResponse:
+    def context_status(
+        self, cluster_id: str, context_id: str, **kwargs
+    ) -> ContextStatusResponse:
         """Get status.
 
         Gets the status for an execution context."""
-        query, body = request.as_request()
-        json = self._api.do("GET", "/api/1.2/contexts/status", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ContextStatusRequest(cluster_id=cluster_id, context_id=context_id)
+
+        query = {}
+        if cluster_id:
+            query["clusterId"] = request.cluster_id
+        if context_id:
+            query["contextId"] = request.context_id
+
+        json = self._api.do("GET", "/api/1.2/contexts/status", query=query)
         return ContextStatusResponse.from_dict(json)
 
-    def create(self, request: CreateContext) -> Created:
+    def create(
+        self, *, cluster_id: str = None, language: Language = None, **kwargs
+    ) -> Created:
         """Create an execution context.
 
         Creates an execution context for running cluster commands.
 
         If successful, this method returns the ID of the new execution context."""
-        query, body = request.as_request()
-        json = self._api.do("POST", "/api/1.2/contexts/create", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CreateContext(cluster_id=cluster_id, language=language)
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/1.2/contexts/create", body=body)
         return Created.from_dict(json)
 
-    def destroy(self, request: DestroyContext):
+    def destroy(self, cluster_id: str, context_id: str, **kwargs):
         """Delete an execution context.
 
         Deletes an execution context."""
-        query, body = request.as_request()
-        self._api.do("POST", "/api/1.2/contexts/destroy", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DestroyContext(cluster_id=cluster_id, context_id=context_id)
+        body = request.as_dict()
 
-    def execute(self, request: Command) -> Created:
+        self._api.do("POST", "/api/1.2/contexts/destroy", body=body)
+
+    def execute(
+        self,
+        *,
+        cluster_id: str = None,
+        command: str = None,
+        context_id: str = None,
+        language: Language = None,
+        **kwargs
+    ) -> Created:
         """Run a command.
 
         Runs a cluster command in the given execution context, using the
@@ -404,6 +425,15 @@ class CommandExecutionAPI:
 
         If successful, it returns an ID for tracking the status of the command's
         execution."""
-        query, body = request.as_request()
-        json = self._api.do("POST", "/api/1.2/commands/execute", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = Command(
+                cluster_id=cluster_id,
+                command=command,
+                context_id=context_id,
+                language=language,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/1.2/commands/execute", body=body)
         return Created.from_dict(json)

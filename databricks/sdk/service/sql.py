@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Dict, List, Any
 
 
 # all definitions in this file are in alphabetical order
@@ -17,16 +17,16 @@ class AccessControl:
 
     user_name: str
 
-    def as_request(self) -> (dict, dict):
-        accessControl_query, accessControl_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.group_name:
-            accessControl_body["group_name"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level:
-            accessControl_body["permission_level"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.user_name:
-            accessControl_body["user_name"] = self.user_name
+            body["user_name"] = self.user_name
 
-        return accessControl_query, accessControl_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AccessControl":
@@ -54,42 +54,41 @@ class Alert:
     options: "AlertOptions"
 
     query: "Query"
-    # Number of seconds after being triggered before the alert rearms itself and
-    # can be triggered again. If `null`, alert will never be triggered again.
+    # Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`,
+    # alert will never be triggered again.
     rearm: int
-    # State of the alert. Possible values are: `unknown` (yet to be evaluated),
-    # `triggered` (evaluated and fulfilled trigger conditions), or `ok`
-    # (evaluated and did not fulfill trigger conditions).
+    # State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled
+    # trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
     state: "AlertState"
     # Timestamp when the alert was last updated.
     updated_at: str
 
     user: "User"
 
-    def as_request(self) -> (dict, dict):
-        alert_query, alert_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at:
-            alert_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.id:
-            alert_body["id"] = self.id
+            body["id"] = self.id
         if self.last_triggered_at:
-            alert_body["last_triggered_at"] = self.last_triggered_at
+            body["last_triggered_at"] = self.last_triggered_at
         if self.name:
-            alert_body["name"] = self.name
+            body["name"] = self.name
         if self.options:
-            alert_body["options"] = self.options.as_request()[1]
+            body["options"] = self.options.as_dict()
         if self.query:
-            alert_body["query"] = self.query.as_request()[1]
+            body["query"] = self.query.as_dict()
         if self.rearm:
-            alert_body["rearm"] = self.rearm
+            body["rearm"] = self.rearm
         if self.state:
-            alert_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.updated_at:
-            alert_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.user:
-            alert_body["user"] = self.user.as_request()[1]
+            body["user"] = self.user.as_dict()
 
-        return alert_query, alert_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Alert":
@@ -113,47 +112,44 @@ class AlertOptions:
 
     # Name of column in the query result to compare in alert evaluation.
     column: str
-    # Custom body of alert notification, if it exists. See [here] for custom
-    # templating instructions.
+    # Custom body of alert notification, if it exists. See [here] for custom templating instructions.
     #
     # [here]: https://docs.databricks.com/sql/user/alerts/index.html
     custom_body: str
-    # Custom subject of alert notification, if it exists. This includes email
-    # subject, Slack notification header, etc. See [here] for custom templating
-    # instructions.
+    # Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc.
+    # See [here] for custom templating instructions.
     #
     # [here]: https://docs.databricks.com/sql/user/alerts/index.html
     custom_subject: str
-    # Whether or not the alert is muted. If an alert is muted, it will not
-    # notify users and alert destinations when triggered.
+    # Whether or not the alert is muted. If an alert is muted, it will not notify users and alert destinations when
+    # triggered.
     muted: bool
-    # Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`,
-    # `!=`
+    # Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`
     op: str
-    # Number of failures encountered during alert refresh. This counter is used
-    # for sending aggregated alert failure email notifications.
+    # Number of failures encountered during alert refresh. This counter is used for sending aggregated alert failure
+    # email notifications.
     schedule_failures: int
     # Value used to compare in alert evaluation.
     value: str
 
-    def as_request(self) -> (dict, dict):
-        alertOptions_query, alertOptions_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.column:
-            alertOptions_body["column"] = self.column
+            body["column"] = self.column
         if self.custom_body:
-            alertOptions_body["custom_body"] = self.custom_body
+            body["custom_body"] = self.custom_body
         if self.custom_subject:
-            alertOptions_body["custom_subject"] = self.custom_subject
+            body["custom_subject"] = self.custom_subject
         if self.muted:
-            alertOptions_body["muted"] = self.muted
+            body["muted"] = self.muted
         if self.op:
-            alertOptions_body["op"] = self.op
+            body["op"] = self.op
         if self.schedule_failures:
-            alertOptions_body["schedule_failures"] = self.schedule_failures
+            body["schedule_failures"] = self.schedule_failures
         if self.value:
-            alertOptions_body["value"] = self.value
+            body["value"] = self.value
 
-        return alertOptions_query, alertOptions_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "AlertOptions":
@@ -169,9 +165,8 @@ class AlertOptions:
 
 
 class AlertState(Enum):
-    """State of the alert. Possible values are: `unknown` (yet to be evaluated),
-    `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-    and did not fulfill trigger conditions)."""
+    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled
+    trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
 
     ok = "ok"
     triggered = "triggered"
@@ -185,14 +180,14 @@ class Channel:
 
     name: "ChannelName"
 
-    def as_request(self) -> (dict, dict):
-        channel_query, channel_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbsql_version:
-            channel_body["dbsql_version"] = self.dbsql_version
+            body["dbsql_version"] = self.dbsql_version
         if self.name:
-            channel_body["name"] = self.name.value
+            body["name"] = self.name.value
 
-        return channel_query, channel_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Channel":
@@ -211,14 +206,14 @@ class ChannelInfo:
     # Name of the channel
     name: "ChannelName"
 
-    def as_request(self) -> (dict, dict):
-        channelInfo_query, channelInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dbsql_version:
-            channelInfo_body["dbsql_version"] = self.dbsql_version
+            body["dbsql_version"] = self.dbsql_version
         if self.name:
-            channelInfo_body["name"] = self.name.value
+            body["name"] = self.name.value
 
-        return channelInfo_query, channelInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ChannelInfo":
@@ -242,45 +237,38 @@ class ChannelName(Enum):
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    # In the web application, query filters that share a name are coupled to a
-    # single selection box if this value is true.
+    # In the web application, query filters that share a name are coupled to a single selection box if this value is
+    # true.
     dashboard_filters_enabled: bool
     # Draft dashboards only appear in list views for their owners.
     is_draft: bool
-    # Indicates whether the dashboard is trashed. Trashed dashboards don't
-    # appear in list views.
+    # Indicates whether the dashboard is trashed. Trashed dashboards don't appear in list views.
     is_trashed: bool
-    # The title of this dashboard that appears in list views and at the top of
-    # the dashboard page.
+    # The title of this dashboard that appears in list views and at the top of the dashboard page.
     name: str
 
     tags: "List[str]"
-    # An array of widget objects. A complete description of widget objects can
-    # be found in the response to [Retrieve A Dashboard
-    # Definition](#operation/sql-analytics-fetch-dashboard). Databricks does not
-    # recommend creating new widgets via this API.
+    # An array of widget objects. A complete description of widget objects can be found in the response to [Retrieve A
+    # Dashboard Definition](#operation/sql-analytics-fetch-dashboard). Databricks does not recommend creating new
+    # widgets via this API.
     widgets: "List[Widget]"
 
-    def as_request(self) -> (dict, dict):
-        createDashboardRequest_query, createDashboardRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.dashboard_filters_enabled:
-            createDashboardRequest_body[
-                "dashboard_filters_enabled"
-            ] = self.dashboard_filters_enabled
+            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
         if self.is_draft:
-            createDashboardRequest_body["is_draft"] = self.is_draft
+            body["is_draft"] = self.is_draft
         if self.is_trashed:
-            createDashboardRequest_body["is_trashed"] = self.is_trashed
+            body["is_trashed"] = self.is_trashed
         if self.name:
-            createDashboardRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.tags:
-            createDashboardRequest_body["tags"] = [v for v in self.tags]
+            body["tags"] = [v for v in self.tags]
         if self.widgets:
-            createDashboardRequest_body["widgets"] = [
-                v.as_request()[1] for v in self.widgets
-            ]
+            body["widgets"] = [v.as_dict() for v in self.widgets]
 
-        return createDashboardRequest_query, createDashboardRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateDashboardRequest":
@@ -302,20 +290,19 @@ class CreateRefreshSchedule:
     alert_id: str  # path
     # Cron string representing the refresh schedule.
     cron: str
-    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-    # will be used to refresh.
+    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse will be used to refresh.
     data_source_id: str
 
-    def as_request(self) -> (dict, dict):
-        createRefreshSchedule_query, createRefreshSchedule_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert_id:
-            createRefreshSchedule_body["alert_id"] = self.alert_id
+            body["alert_id"] = self.alert_id
         if self.cron:
-            createRefreshSchedule_body["cron"] = self.cron
+            body["cron"] = self.cron
         if self.data_source_id:
-            createRefreshSchedule_body["data_source_id"] = self.data_source_id
+            body["data_source_id"] = self.data_source_id
 
-        return createRefreshSchedule_query, createRefreshSchedule_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateRefreshSchedule":
@@ -331,23 +318,22 @@ class CreateSubscription:
 
     # ID of the alert.
     alert_id: str  # path
-    # ID of the alert subscriber (if subscribing an alert destination). Alert
-    # destinations can be configured by admins through the UI. See
-    # [here](/sql/admin/alert-destinations.html).
+    # ID of the alert subscriber (if subscribing an alert destination). Alert destinations can be configured by admins
+    # through the UI. See [here](/sql/admin/alert-destinations.html).
     destination_id: str
     # ID of the alert subscriber (if subscribing a user).
     user_id: int
 
-    def as_request(self) -> (dict, dict):
-        createSubscription_query, createSubscription_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert_id:
-            createSubscription_body["alert_id"] = self.alert_id
+            body["alert_id"] = self.alert_id
         if self.destination_id:
-            createSubscription_body["destination_id"] = self.destination_id
+            body["destination_id"] = self.destination_id
         if self.user_id:
-            createSubscription_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
 
-        return createSubscription_query, createSubscription_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateSubscription":
@@ -361,8 +347,8 @@ class CreateSubscription:
 @dataclass
 class CreateWarehouseRequest:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -370,12 +356,10 @@ class CreateWarehouseRequest:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
@@ -389,18 +373,15 @@ class CreateWarehouseRequest:
     enable_serverless_compute: bool
     # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -408,55 +389,48 @@ class CreateWarehouseRequest:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
 
     warehouse_type: "WarehouseType"
 
-    def as_request(self) -> (dict, dict):
-        createWarehouseRequest_query, createWarehouseRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.auto_stop_mins:
-            createWarehouseRequest_body["auto_stop_mins"] = self.auto_stop_mins
+            body["auto_stop_mins"] = self.auto_stop_mins
         if self.channel:
-            createWarehouseRequest_body["channel"] = self.channel.as_request()[1]
+            body["channel"] = self.channel.as_dict()
         if self.cluster_size:
-            createWarehouseRequest_body["cluster_size"] = self.cluster_size
+            body["cluster_size"] = self.cluster_size
         if self.creator_name:
-            createWarehouseRequest_body["creator_name"] = self.creator_name
+            body["creator_name"] = self.creator_name
         if self.enable_photon:
-            createWarehouseRequest_body["enable_photon"] = self.enable_photon
+            body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute:
-            createWarehouseRequest_body[
-                "enable_serverless_compute"
-            ] = self.enable_serverless_compute
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.instance_profile_arn:
-            createWarehouseRequest_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.max_num_clusters:
-            createWarehouseRequest_body["max_num_clusters"] = self.max_num_clusters
+            body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters:
-            createWarehouseRequest_body["min_num_clusters"] = self.min_num_clusters
+            body["min_num_clusters"] = self.min_num_clusters
         if self.name:
-            createWarehouseRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.spot_instance_policy:
-            createWarehouseRequest_body[
-                "spot_instance_policy"
-            ] = self.spot_instance_policy.value
+            body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.tags:
-            createWarehouseRequest_body["tags"] = self.tags.as_request()[1]
+            body["tags"] = self.tags.as_dict()
         if self.warehouse_type:
-            createWarehouseRequest_body["warehouse_type"] = self.warehouse_type.value
+            body["warehouse_type"] = self.warehouse_type.value
 
-        return createWarehouseRequest_query, createWarehouseRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateWarehouseRequest":
@@ -487,12 +461,12 @@ class CreateWarehouseResponse:
     # Id for the SQL warehouse. This value is unique across all SQL warehouses.
     id: str
 
-    def as_request(self) -> (dict, dict):
-        createWarehouseResponse_query, createWarehouseResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            createWarehouseResponse_body["id"] = self.id
+            body["id"] = self.id
 
-        return createWarehouseResponse_query, createWarehouseResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateWarehouseResponse":
@@ -510,32 +484,27 @@ class Dashboard:
     can_edit: bool
     # Timestamp when this dashboard was created.
     created_at: str
-    # In the web application, query filters that share a name are coupled to a
-    # single selection box if this value is `true`.
+    # In the web application, query filters that share a name are coupled to a single selection box if this value is
+    # `true`.
     dashboard_filters_enabled: bool
     # The ID for this dashboard.
     id: str
-    # Indicates whether a dashboard is trashed. Trashed dashboards won't appear
-    # in list views. If this boolean is `true`, the `options` property for this
-    # dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
+    # Indicates whether a dashboard is trashed. Trashed dashboards won't appear in list views. If this boolean is
+    # `true`, the `options` property for this dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
     # permanently deleted after 30 days.
     is_archived: bool
-    # Whether a dashboard is a draft. Draft dashboards only appear in list views
-    # for their owners.
+    # Whether a dashboard is a draft. Draft dashboards only appear in list views for their owners.
     is_draft: bool
-    # Indicates whether this query object appears in the current user's
-    # favorites list. This flag determines whether the star icon for favorites
-    # is selected.
+    # Indicates whether this query object appears in the current user's favorites list. This flag determines whether the
+    # star icon for favorites is selected.
     is_favorite: bool
-    # The title of the dashboard that appears in list views and at the top of
-    # the dashboard page.
+    # The title of the dashboard that appears in list views and at the top of the dashboard page.
     name: str
 
     options: "DashboardOptions"
     # This describes an enum
     permission_tier: "PermissionLevel"
-    # URL slug. Usually mirrors the query name with dashes (`-`) instead of
-    # spaces. Appears in the URL for this query.
+    # URL slug. Usually mirrors the query name with dashes (`-`) instead of spaces. Appears in the URL for this query.
     slug: str
 
     tags: "List[str]"
@@ -548,42 +517,42 @@ class Dashboard:
 
     widgets: "List[Widget]"
 
-    def as_request(self) -> (dict, dict):
-        dashboard_query, dashboard_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.can_edit:
-            dashboard_body["can_edit"] = self.can_edit
+            body["can_edit"] = self.can_edit
         if self.created_at:
-            dashboard_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.dashboard_filters_enabled:
-            dashboard_body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
+            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
         if self.id:
-            dashboard_body["id"] = self.id
+            body["id"] = self.id
         if self.is_archived:
-            dashboard_body["is_archived"] = self.is_archived
+            body["is_archived"] = self.is_archived
         if self.is_draft:
-            dashboard_body["is_draft"] = self.is_draft
+            body["is_draft"] = self.is_draft
         if self.is_favorite:
-            dashboard_body["is_favorite"] = self.is_favorite
+            body["is_favorite"] = self.is_favorite
         if self.name:
-            dashboard_body["name"] = self.name
+            body["name"] = self.name
         if self.options:
-            dashboard_body["options"] = self.options.as_request()[1]
+            body["options"] = self.options.as_dict()
         if self.permission_tier:
-            dashboard_body["permission_tier"] = self.permission_tier.value
+            body["permission_tier"] = self.permission_tier.value
         if self.slug:
-            dashboard_body["slug"] = self.slug
+            body["slug"] = self.slug
         if self.tags:
-            dashboard_body["tags"] = [v for v in self.tags]
+            body["tags"] = [v for v in self.tags]
         if self.updated_at:
-            dashboard_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.user:
-            dashboard_body["user"] = self.user.as_request()[1]
+            body["user"] = self.user.as_dict()
         if self.user_id:
-            dashboard_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
         if self.widgets:
-            dashboard_body["widgets"] = [v.as_request()[1] for v in self.widgets]
+            body["widgets"] = [v.as_dict() for v in self.widgets]
 
-        return dashboard_query, dashboard_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Dashboard":
@@ -616,17 +585,16 @@ class Dashboard:
 @dataclass
 class DashboardOptions:
 
-    # The timestamp when this dashboard was moved to trash. Only present when
-    # the `is_archived` property is `true`. Trashed items are deleted after
-    # thirty days.
+    # The timestamp when this dashboard was moved to trash. Only present when the `is_archived` property is `true`.
+    # Trashed items are deleted after thirty days.
     moved_to_trash_at: str
 
-    def as_request(self) -> (dict, dict):
-        dashboardOptions_query, dashboardOptions_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.moved_to_trash_at:
-            dashboardOptions_body["moved_to_trash_at"] = self.moved_to_trash_at
+            body["moved_to_trash_at"] = self.moved_to_trash_at
 
-        return dashboardOptions_query, dashboardOptions_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DashboardOptions":
@@ -639,11 +607,10 @@ class DashboardOptions:
 class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
-    # The unique identifier for this data source / SQL warehouse. Can be used
-    # when creating / modifying queries and dashboards.
+    # The unique identifier for this data source / SQL warehouse. Can be used when creating / modifying queries and
+    # dashboards.
     id: str
-    # The string name of this data source / SQL warehouse as it appears in the
-    # Databricks SQL web application.
+    # The string name of this data source / SQL warehouse as it appears in the Databricks SQL web application.
     name: str
     # <needs content>
     pause_reason: str
@@ -660,28 +627,28 @@ class DataSource:
     # <needs content>
     warehouse_id: str
 
-    def as_request(self) -> (dict, dict):
-        dataSource_query, dataSource_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            dataSource_body["id"] = self.id
+            body["id"] = self.id
         if self.name:
-            dataSource_body["name"] = self.name
+            body["name"] = self.name
         if self.pause_reason:
-            dataSource_body["pause_reason"] = self.pause_reason
+            body["pause_reason"] = self.pause_reason
         if self.paused:
-            dataSource_body["paused"] = self.paused
+            body["paused"] = self.paused
         if self.supports_auto_limit:
-            dataSource_body["supports_auto_limit"] = self.supports_auto_limit
+            body["supports_auto_limit"] = self.supports_auto_limit
         if self.syntax:
-            dataSource_body["syntax"] = self.syntax
+            body["syntax"] = self.syntax
         if self.type:
-            dataSource_body["type"] = self.type
+            body["type"] = self.type
         if self.view_only:
-            dataSource_body["view_only"] = self.view_only
+            body["view_only"] = self.view_only
         if self.warehouse_id:
-            dataSource_body["warehouse_id"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
 
-        return dataSource_query, dataSource_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DataSource":
@@ -704,19 +671,6 @@ class DeleteAlertRequest:
 
     alert_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        deleteAlertRequest_query, deleteAlertRequest_body = {}, {}
-        if self.alert_id:
-            deleteAlertRequest_body["alert_id"] = self.alert_id
-
-        return deleteAlertRequest_query, deleteAlertRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteAlertRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class DeleteDashboardRequest:
@@ -724,38 +678,12 @@ class DeleteDashboardRequest:
 
     dashboard_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        deleteDashboardRequest_query, deleteDashboardRequest_body = {}, {}
-        if self.dashboard_id:
-            deleteDashboardRequest_body["dashboard_id"] = self.dashboard_id
-
-        return deleteDashboardRequest_query, deleteDashboardRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteDashboardRequest":
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-        )
-
 
 @dataclass
 class DeleteQueryRequest:
     """Delete a query"""
 
     query_id: str  # path
-
-    def as_request(self) -> (dict, dict):
-        deleteQueryRequest_query, deleteQueryRequest_body = {}, {}
-        if self.query_id:
-            deleteQueryRequest_body["query_id"] = self.query_id
-
-        return deleteQueryRequest_query, deleteQueryRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteQueryRequest":
-        return cls(
-            query_id=d.get("query_id", None),
-        )
 
 
 @dataclass
@@ -766,22 +694,6 @@ class DeleteScheduleRequest:
 
     schedule_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        deleteScheduleRequest_query, deleteScheduleRequest_body = {}, {}
-        if self.alert_id:
-            deleteScheduleRequest_body["alert_id"] = self.alert_id
-        if self.schedule_id:
-            deleteScheduleRequest_body["schedule_id"] = self.schedule_id
-
-        return deleteScheduleRequest_query, deleteScheduleRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteScheduleRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-            schedule_id=d.get("schedule_id", None),
-        )
-
 
 @dataclass
 class DeleteWarehouseRequest:
@@ -789,19 +701,6 @@ class DeleteWarehouseRequest:
 
     # Required. Id of the SQL warehouse.
     id: str  # path
-
-    def as_request(self) -> (dict, dict):
-        deleteWarehouseRequest_query, deleteWarehouseRequest_body = {}, {}
-        if self.id:
-            deleteWarehouseRequest_body["id"] = self.id
-
-        return deleteWarehouseRequest_query, deleteWarehouseRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "DeleteWarehouseRequest":
-        return cls(
-            id=d.get("id", None),
-        )
 
 
 @dataclass
@@ -818,16 +717,16 @@ class Destination:
     # Type of the alert destination.
     type: "DestinationType"
 
-    def as_request(self) -> (dict, dict):
-        destination_query, destination_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            destination_body["id"] = self.id
+            body["id"] = self.id
         if self.name:
-            destination_body["name"] = self.name
+            body["name"] = self.name
         if self.type:
-            destination_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return destination_query, destination_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Destination":
@@ -860,24 +759,24 @@ class EditAlert:
     options: "AlertOptions"
     # ID of the query evaluated by the alert.
     query_id: str
-    # Number of seconds after being triggered before the alert rearms itself and
-    # can be triggered again. If `null`, alert will never be triggered again.
+    # Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`,
+    # alert will never be triggered again.
     rearm: int
 
-    def as_request(self) -> (dict, dict):
-        editAlert_query, editAlert_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert_id:
-            editAlert_body["alert_id"] = self.alert_id
+            body["alert_id"] = self.alert_id
         if self.name:
-            editAlert_body["name"] = self.name
+            body["name"] = self.name
         if self.options:
-            editAlert_body["options"] = self.options.as_request()[1]
+            body["options"] = self.options.as_dict()
         if self.query_id:
-            editAlert_body["query_id"] = self.query_id
+            body["query_id"] = self.query_id
         if self.rearm:
-            editAlert_body["rearm"] = self.rearm
+            body["rearm"] = self.rearm
 
-        return editAlert_query, editAlert_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditAlert":
@@ -893,8 +792,8 @@ class EditAlert:
 @dataclass
 class EditWarehouseRequest:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -902,19 +801,16 @@ class EditWarehouseRequest:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
     # Configures whether the endpoint should use Databricks Compute (aka Nephos)
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Configures whether the endpoint should use Photon optimized clusters.
     #
@@ -928,18 +824,15 @@ class EditWarehouseRequest:
     id: str  # path
     # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -947,61 +840,52 @@ class EditWarehouseRequest:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
 
     warehouse_type: "WarehouseType"
 
-    def as_request(self) -> (dict, dict):
-        editWarehouseRequest_query, editWarehouseRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.auto_stop_mins:
-            editWarehouseRequest_body["auto_stop_mins"] = self.auto_stop_mins
+            body["auto_stop_mins"] = self.auto_stop_mins
         if self.channel:
-            editWarehouseRequest_body["channel"] = self.channel.as_request()[1]
+            body["channel"] = self.channel.as_dict()
         if self.cluster_size:
-            editWarehouseRequest_body["cluster_size"] = self.cluster_size
+            body["cluster_size"] = self.cluster_size
         if self.creator_name:
-            editWarehouseRequest_body["creator_name"] = self.creator_name
+            body["creator_name"] = self.creator_name
         if self.enable_databricks_compute:
-            editWarehouseRequest_body[
-                "enable_databricks_compute"
-            ] = self.enable_databricks_compute
+            body["enable_databricks_compute"] = self.enable_databricks_compute
         if self.enable_photon:
-            editWarehouseRequest_body["enable_photon"] = self.enable_photon
+            body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute:
-            editWarehouseRequest_body[
-                "enable_serverless_compute"
-            ] = self.enable_serverless_compute
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.id:
-            editWarehouseRequest_body["id"] = self.id
+            body["id"] = self.id
         if self.instance_profile_arn:
-            editWarehouseRequest_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.max_num_clusters:
-            editWarehouseRequest_body["max_num_clusters"] = self.max_num_clusters
+            body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters:
-            editWarehouseRequest_body["min_num_clusters"] = self.min_num_clusters
+            body["min_num_clusters"] = self.min_num_clusters
         if self.name:
-            editWarehouseRequest_body["name"] = self.name
+            body["name"] = self.name
         if self.spot_instance_policy:
-            editWarehouseRequest_body[
-                "spot_instance_policy"
-            ] = self.spot_instance_policy.value
+            body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.tags:
-            editWarehouseRequest_body["tags"] = self.tags.as_request()[1]
+            body["tags"] = self.tags.as_dict()
         if self.warehouse_type:
-            editWarehouseRequest_body["warehouse_type"] = self.warehouse_type.value
+            body["warehouse_type"] = self.warehouse_type.value
 
-        return editWarehouseRequest_query, editWarehouseRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EditWarehouseRequest":
@@ -1035,14 +919,14 @@ class EndpointConfPair:
 
     value: str
 
-    def as_request(self) -> (dict, dict):
-        endpointConfPair_query, endpointConfPair_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            endpointConfPair_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            endpointConfPair_body["value"] = self.value
+            body["value"] = self.value
 
-        return endpointConfPair_query, endpointConfPair_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EndpointConfPair":
@@ -1057,8 +941,8 @@ class EndpointHealth:
 
     # Details about errors that are causing current degraded/failed status.
     details: str
-    # The reason for failure to bring up clusters for this endpoint. This is
-    # available when status is 'FAILED' and sometimes when it is DEGRADED.
+    # The reason for failure to bring up clusters for this endpoint. This is available when status is 'FAILED' and
+    # sometimes when it is DEGRADED.
     failure_reason: "TerminationReason"
     # Deprecated. split into summary and details for security
     message: str
@@ -1067,20 +951,20 @@ class EndpointHealth:
     # A short summary of the health status in case of degraded/failed endpoints.
     summary: str
 
-    def as_request(self) -> (dict, dict):
-        endpointHealth_query, endpointHealth_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.details:
-            endpointHealth_body["details"] = self.details
+            body["details"] = self.details
         if self.failure_reason:
-            endpointHealth_body["failure_reason"] = self.failure_reason.as_request()[1]
+            body["failure_reason"] = self.failure_reason.as_dict()
         if self.message:
-            endpointHealth_body["message"] = self.message
+            body["message"] = self.message
         if self.status:
-            endpointHealth_body["status"] = self.status.value
+            body["status"] = self.status.value
         if self.summary:
-            endpointHealth_body["summary"] = self.summary
+            body["summary"] = self.summary
 
-        return endpointHealth_query, endpointHealth_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EndpointHealth":
@@ -1098,8 +982,8 @@ class EndpointHealth:
 @dataclass
 class EndpointInfo:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -1107,19 +991,16 @@ class EndpointInfo:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
     # Configures whether the endpoint should use Databricks Compute (aka Nephos)
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Configures whether the endpoint should use Photon optimized clusters.
     #
@@ -1129,8 +1010,7 @@ class EndpointInfo:
     #
     # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Optional health status. Assume the endpoint is healthy if this field is
-    # not set.
+    # Optional health status. Assume the endpoint is healthy if this field is not set.
     health: "EndpointHealth"
     # unique identifier for endpoint
     id: str
@@ -1138,18 +1018,15 @@ class EndpointInfo:
     instance_profile_arn: str
     # the jdbc connection string for this endpoint
     jdbc_url: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -1157,8 +1034,7 @@ class EndpointInfo:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # current number of active sessions for the endpoint
     num_active_sessions: int
@@ -1170,64 +1046,60 @@ class EndpointInfo:
     spot_instance_policy: "SpotInstancePolicy"
     # State of the warehouse
     state: "State"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
 
     warehouse_type: "WarehouseType"
 
-    def as_request(self) -> (dict, dict):
-        endpointInfo_query, endpointInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.auto_stop_mins:
-            endpointInfo_body["auto_stop_mins"] = self.auto_stop_mins
+            body["auto_stop_mins"] = self.auto_stop_mins
         if self.channel:
-            endpointInfo_body["channel"] = self.channel.as_request()[1]
+            body["channel"] = self.channel.as_dict()
         if self.cluster_size:
-            endpointInfo_body["cluster_size"] = self.cluster_size
+            body["cluster_size"] = self.cluster_size
         if self.creator_name:
-            endpointInfo_body["creator_name"] = self.creator_name
+            body["creator_name"] = self.creator_name
         if self.enable_databricks_compute:
-            endpointInfo_body[
-                "enable_databricks_compute"
-            ] = self.enable_databricks_compute
+            body["enable_databricks_compute"] = self.enable_databricks_compute
         if self.enable_photon:
-            endpointInfo_body["enable_photon"] = self.enable_photon
+            body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute:
-            endpointInfo_body[
-                "enable_serverless_compute"
-            ] = self.enable_serverless_compute
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.health:
-            endpointInfo_body["health"] = self.health.as_request()[1]
+            body["health"] = self.health.as_dict()
         if self.id:
-            endpointInfo_body["id"] = self.id
+            body["id"] = self.id
         if self.instance_profile_arn:
-            endpointInfo_body["instance_profile_arn"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url:
-            endpointInfo_body["jdbc_url"] = self.jdbc_url
+            body["jdbc_url"] = self.jdbc_url
         if self.max_num_clusters:
-            endpointInfo_body["max_num_clusters"] = self.max_num_clusters
+            body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters:
-            endpointInfo_body["min_num_clusters"] = self.min_num_clusters
+            body["min_num_clusters"] = self.min_num_clusters
         if self.name:
-            endpointInfo_body["name"] = self.name
+            body["name"] = self.name
         if self.num_active_sessions:
-            endpointInfo_body["num_active_sessions"] = self.num_active_sessions
+            body["num_active_sessions"] = self.num_active_sessions
         if self.num_clusters:
-            endpointInfo_body["num_clusters"] = self.num_clusters
+            body["num_clusters"] = self.num_clusters
         if self.odbc_params:
-            endpointInfo_body["odbc_params"] = self.odbc_params.as_request()[1]
+            body["odbc_params"] = self.odbc_params.as_dict()
         if self.spot_instance_policy:
-            endpointInfo_body["spot_instance_policy"] = self.spot_instance_policy.value
+            body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state:
-            endpointInfo_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.tags:
-            endpointInfo_body["tags"] = self.tags.as_request()[1]
+            body["tags"] = self.tags.as_dict()
         if self.warehouse_type:
-            endpointInfo_body["warehouse_type"] = self.warehouse_type.value
+            body["warehouse_type"] = self.warehouse_type.value
 
-        return endpointInfo_query, endpointInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EndpointInfo":
@@ -1269,14 +1141,14 @@ class EndpointTagPair:
 
     value: str
 
-    def as_request(self) -> (dict, dict):
-        endpointTagPair_query, endpointTagPair_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.key:
-            endpointTagPair_body["key"] = self.key
+            body["key"] = self.key
         if self.value:
-            endpointTagPair_body["value"] = self.value
+            body["value"] = self.value
 
-        return endpointTagPair_query, endpointTagPair_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EndpointTagPair":
@@ -1291,14 +1163,12 @@ class EndpointTags:
 
     custom_tags: "List[EndpointTagPair]"
 
-    def as_request(self) -> (dict, dict):
-        endpointTags_query, endpointTags_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.custom_tags:
-            endpointTags_body["custom_tags"] = [
-                v.as_request()[1] for v in self.custom_tags
-            ]
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
 
-        return endpointTags_query, endpointTags_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "EndpointTags":
@@ -1315,19 +1185,6 @@ class GetAlertRequest:
 
     alert_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getAlertRequest_query, getAlertRequest_body = {}, {}
-        if self.alert_id:
-            getAlertRequest_body["alert_id"] = self.alert_id
-
-        return getAlertRequest_query, getAlertRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetAlertRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class GetDashboardRequest:
@@ -1335,44 +1192,15 @@ class GetDashboardRequest:
 
     dashboard_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getDashboardRequest_query, getDashboardRequest_body = {}, {}
-        if self.dashboard_id:
-            getDashboardRequest_body["dashboard_id"] = self.dashboard_id
-
-        return getDashboardRequest_query, getDashboardRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetDashboardRequest":
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-        )
-
 
 @dataclass
 class GetDbsqlPermissionRequest:
     """Get object ACL"""
 
     # Object ID. An ACL is returned for the object with this UUID.
-    objectId: str  # path
+    object_id: str  # path
     # The type of object permissions to check.
-    objectType: "ObjectTypePlural"  # path
-
-    def as_request(self) -> (dict, dict):
-        getDbsqlPermissionRequest_query, getDbsqlPermissionRequest_body = {}, {}
-        if self.objectId:
-            getDbsqlPermissionRequest_body["objectId"] = self.objectId
-        if self.objectType:
-            getDbsqlPermissionRequest_body["objectType"] = self.objectType.value
-
-        return getDbsqlPermissionRequest_query, getDbsqlPermissionRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetDbsqlPermissionRequest":
-        return cls(
-            objectId=d.get("objectId", None),
-            objectType=ObjectTypePlural(d["objectType"]) if "objectType" in d else None,
-        )
+    object_type: "ObjectTypePlural"  # path
 
 
 @dataclass
@@ -1380,19 +1208,6 @@ class GetQueryRequest:
     """Get a query definition."""
 
     query_id: str  # path
-
-    def as_request(self) -> (dict, dict):
-        getQueryRequest_query, getQueryRequest_body = {}, {}
-        if self.query_id:
-            getQueryRequest_body["query_id"] = self.query_id
-
-        return getQueryRequest_query, getQueryRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetQueryRequest":
-        return cls(
-            query_id=d.get("query_id", None),
-        )
 
 
 @dataclass
@@ -1404,18 +1219,18 @@ class GetResponse:
     # An object's type and UUID, separated by a forward slash (/) character.
     object_type: str
 
-    def as_request(self) -> (dict, dict):
-        getResponse_query, getResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            getResponse_body["access_control_list"] = [
-                v.as_request()[1] for v in self.access_control_list
+            body["access_control_list"] = [
+                v.as_dict() for v in self.access_control_list
             ]
         if self.object_id:
-            getResponse_body["object_id"] = self.object_id.value
+            body["object_id"] = self.object_id.value
         if self.object_type:
-            getResponse_body["object_type"] = self.object_type
+            body["object_type"] = self.object_type
 
-        return getResponse_query, getResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetResponse":
@@ -1436,19 +1251,6 @@ class GetSubscriptionsRequest:
 
     alert_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getSubscriptionsRequest_query, getSubscriptionsRequest_body = {}, {}
-        if self.alert_id:
-            getSubscriptionsRequest_body["alert_id"] = self.alert_id
-
-        return getSubscriptionsRequest_query, getSubscriptionsRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetSubscriptionsRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class GetWarehouseRequest:
@@ -1457,25 +1259,12 @@ class GetWarehouseRequest:
     # Required. Id of the SQL warehouse.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        getWarehouseRequest_query, getWarehouseRequest_body = {}, {}
-        if self.id:
-            getWarehouseRequest_body["id"] = self.id
-
-        return getWarehouseRequest_query, getWarehouseRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "GetWarehouseRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class GetWarehouseResponse:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -1483,19 +1272,16 @@ class GetWarehouseResponse:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
     # Configures whether the endpoint should use Databricks Compute (aka Nephos)
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Configures whether the endpoint should use Photon optimized clusters.
     #
@@ -1505,8 +1291,7 @@ class GetWarehouseResponse:
     #
     # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Optional health status. Assume the endpoint is healthy if this field is
-    # not set.
+    # Optional health status. Assume the endpoint is healthy if this field is not set.
     health: "EndpointHealth"
     # unique identifier for endpoint
     id: str
@@ -1514,18 +1299,15 @@ class GetWarehouseResponse:
     instance_profile_arn: str
     # the jdbc connection string for this endpoint
     jdbc_url: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -1533,8 +1315,7 @@ class GetWarehouseResponse:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # current number of active sessions for the endpoint
     num_active_sessions: int
@@ -1546,68 +1327,60 @@ class GetWarehouseResponse:
     spot_instance_policy: "SpotInstancePolicy"
     # State of the warehouse
     state: "State"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
 
     warehouse_type: "WarehouseType"
 
-    def as_request(self) -> (dict, dict):
-        getWarehouseResponse_query, getWarehouseResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.auto_stop_mins:
-            getWarehouseResponse_body["auto_stop_mins"] = self.auto_stop_mins
+            body["auto_stop_mins"] = self.auto_stop_mins
         if self.channel:
-            getWarehouseResponse_body["channel"] = self.channel.as_request()[1]
+            body["channel"] = self.channel.as_dict()
         if self.cluster_size:
-            getWarehouseResponse_body["cluster_size"] = self.cluster_size
+            body["cluster_size"] = self.cluster_size
         if self.creator_name:
-            getWarehouseResponse_body["creator_name"] = self.creator_name
+            body["creator_name"] = self.creator_name
         if self.enable_databricks_compute:
-            getWarehouseResponse_body[
-                "enable_databricks_compute"
-            ] = self.enable_databricks_compute
+            body["enable_databricks_compute"] = self.enable_databricks_compute
         if self.enable_photon:
-            getWarehouseResponse_body["enable_photon"] = self.enable_photon
+            body["enable_photon"] = self.enable_photon
         if self.enable_serverless_compute:
-            getWarehouseResponse_body[
-                "enable_serverless_compute"
-            ] = self.enable_serverless_compute
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.health:
-            getWarehouseResponse_body["health"] = self.health.as_request()[1]
+            body["health"] = self.health.as_dict()
         if self.id:
-            getWarehouseResponse_body["id"] = self.id
+            body["id"] = self.id
         if self.instance_profile_arn:
-            getWarehouseResponse_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.jdbc_url:
-            getWarehouseResponse_body["jdbc_url"] = self.jdbc_url
+            body["jdbc_url"] = self.jdbc_url
         if self.max_num_clusters:
-            getWarehouseResponse_body["max_num_clusters"] = self.max_num_clusters
+            body["max_num_clusters"] = self.max_num_clusters
         if self.min_num_clusters:
-            getWarehouseResponse_body["min_num_clusters"] = self.min_num_clusters
+            body["min_num_clusters"] = self.min_num_clusters
         if self.name:
-            getWarehouseResponse_body["name"] = self.name
+            body["name"] = self.name
         if self.num_active_sessions:
-            getWarehouseResponse_body["num_active_sessions"] = self.num_active_sessions
+            body["num_active_sessions"] = self.num_active_sessions
         if self.num_clusters:
-            getWarehouseResponse_body["num_clusters"] = self.num_clusters
+            body["num_clusters"] = self.num_clusters
         if self.odbc_params:
-            getWarehouseResponse_body["odbc_params"] = self.odbc_params.as_request()[1]
+            body["odbc_params"] = self.odbc_params.as_dict()
         if self.spot_instance_policy:
-            getWarehouseResponse_body[
-                "spot_instance_policy"
-            ] = self.spot_instance_policy.value
+            body["spot_instance_policy"] = self.spot_instance_policy.value
         if self.state:
-            getWarehouseResponse_body["state"] = self.state.value
+            body["state"] = self.state.value
         if self.tags:
-            getWarehouseResponse_body["tags"] = self.tags.as_request()[1]
+            body["tags"] = self.tags.as_dict()
         if self.warehouse_type:
-            getWarehouseResponse_body["warehouse_type"] = self.warehouse_type.value
+            body["warehouse_type"] = self.warehouse_type.value
 
-        return getWarehouseResponse_query, getWarehouseResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetWarehouseResponse":
@@ -1649,27 +1422,22 @@ class GetWorkspaceWarehouseConfigResponse:
     channel: "Channel"
     # Deprecated: Use sql_configuration_parameters
     config_param: "RepeatedEndpointConfPairs"
-    # Spark confs for external hive metastore configuration JSON serialized size
-    # must be less than <= 512K
+    # Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
     data_access_config: "List[EndpointConfPair]"
     # Enable Serverless compute for SQL Endpoints
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Enable Serverless compute for SQL Endpoints
     enable_serverless_compute: bool
-    # List of Warehouse Types allowed in this workspace (limits allowed value of
-    # the type field in CreateWarehouse and EditWarehouse). Note: Some types
-    # cannot be disabled, they don't need to be specified in
-    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
-    # warehouses to be converted to another type. Used by frontend to save
-    # specific type availability in the warehouse create and edit form UI.
+    # List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and
+    # EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in
+    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type.
+    # Used by frontend to save specific type availability in the warehouse create and edit form UI.
     enabled_warehouse_types: "List[WarehouseTypePair]"
     # Deprecated: Use sql_configuration_parameters
     global_param: "RepeatedEndpointConfPairs"
-    # GCP only: Google Service Account used to pass to cluster to access Google
-    # Cloud Storage
+    # GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
     google_service_account: str
     # AWS Only: Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
@@ -1678,60 +1446,36 @@ class GetWorkspaceWarehouseConfigResponse:
     # SQL configuration parameters
     sql_configuration_parameters: "RepeatedEndpointConfPairs"
 
-    def as_request(self) -> (dict, dict):
-        (
-            getWorkspaceWarehouseConfigResponse_query,
-            getWorkspaceWarehouseConfigResponse_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.channel:
-            getWorkspaceWarehouseConfigResponse_body[
-                "channel"
-            ] = self.channel.as_request()[1]
+            body["channel"] = self.channel.as_dict()
         if self.config_param:
-            getWorkspaceWarehouseConfigResponse_body[
-                "config_param"
-            ] = self.config_param.as_request()[1]
+            body["config_param"] = self.config_param.as_dict()
         if self.data_access_config:
-            getWorkspaceWarehouseConfigResponse_body["data_access_config"] = [
-                v.as_request()[1] for v in self.data_access_config
-            ]
+            body["data_access_config"] = [v.as_dict() for v in self.data_access_config]
         if self.enable_databricks_compute:
-            getWorkspaceWarehouseConfigResponse_body[
-                "enable_databricks_compute"
-            ] = self.enable_databricks_compute
+            body["enable_databricks_compute"] = self.enable_databricks_compute
         if self.enable_serverless_compute:
-            getWorkspaceWarehouseConfigResponse_body[
-                "enable_serverless_compute"
-            ] = self.enable_serverless_compute
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.enabled_warehouse_types:
-            getWorkspaceWarehouseConfigResponse_body["enabled_warehouse_types"] = [
-                v.as_request()[1] for v in self.enabled_warehouse_types
+            body["enabled_warehouse_types"] = [
+                v.as_dict() for v in self.enabled_warehouse_types
             ]
         if self.global_param:
-            getWorkspaceWarehouseConfigResponse_body[
-                "global_param"
-            ] = self.global_param.as_request()[1]
+            body["global_param"] = self.global_param.as_dict()
         if self.google_service_account:
-            getWorkspaceWarehouseConfigResponse_body[
-                "google_service_account"
-            ] = self.google_service_account
+            body["google_service_account"] = self.google_service_account
         if self.instance_profile_arn:
-            getWorkspaceWarehouseConfigResponse_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.security_policy:
-            getWorkspaceWarehouseConfigResponse_body[
-                "security_policy"
-            ] = self.security_policy.value
+            body["security_policy"] = self.security_policy.value
         if self.sql_configuration_parameters:
-            getWorkspaceWarehouseConfigResponse_body[
+            body[
                 "sql_configuration_parameters"
-            ] = self.sql_configuration_parameters.as_request()[1]
+            ] = self.sql_configuration_parameters.as_dict()
 
-        return (
-            getWorkspaceWarehouseConfigResponse_query,
-            getWorkspaceWarehouseConfigResponse_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "GetWorkspaceWarehouseConfigResponse":
@@ -1791,28 +1535,6 @@ class ListDashboardsRequest:
     # Full text search term.
     q: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listDashboardsRequest_query, listDashboardsRequest_body = {}, {}
-        if self.order:
-            listDashboardsRequest_query["order"] = self.order.value
-        if self.page:
-            listDashboardsRequest_query["page"] = self.page
-        if self.page_size:
-            listDashboardsRequest_query["page_size"] = self.page_size
-        if self.q:
-            listDashboardsRequest_query["q"] = self.q
-
-        return listDashboardsRequest_query, listDashboardsRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListDashboardsRequest":
-        return cls(
-            order=ListOrder(d["order"]) if "order" in d else None,
-            page=d.get("page", None),
-            page_size=d.get("page_size", None),
-            q=d.get("q", None),
-        )
-
 
 class ListOrder(Enum):
 
@@ -1824,20 +1546,18 @@ class ListOrder(Enum):
 class ListQueriesRequest:
     """Get a list of queries"""
 
-    # Name of query attribute to order by. Default sort order is ascending.
-    # Append a dash (`-`) to order descending instead.
+    # Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order descending
+    # instead.
     #
     # - `name`: The name of the query.
     #
     # - `created_at`: The timestamp the query was created.
     #
-    # - `schedule`: The refresh interval for each query. For example: "Every 5
-    # Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
-    # sorting.
+    # - `schedule`: The refresh interval for each query. For example: "Every 5 Hours" or "Every 5 Minutes". "Never" is
+    # treated as the highest value for sorting.
     #
-    # - `runtime`: The time it took to run this query. This is blank for
-    # parameterized queries. A blank value is treated as the highest value for
-    # sorting.
+    # - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank value is treated
+    # as the highest value for sorting.
     #
     # - `executed_at`: The timestamp when the query was last run.
     #
@@ -1850,28 +1570,6 @@ class ListQueriesRequest:
     # Full text search term
     q: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listQueriesRequest_query, listQueriesRequest_body = {}, {}
-        if self.order:
-            listQueriesRequest_query["order"] = self.order
-        if self.page:
-            listQueriesRequest_query["page"] = self.page
-        if self.page_size:
-            listQueriesRequest_query["page_size"] = self.page_size
-        if self.q:
-            listQueriesRequest_query["q"] = self.q
-
-        return listQueriesRequest_query, listQueriesRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListQueriesRequest":
-        return cls(
-            order=d.get("order", None),
-            page=d.get("page", None),
-            page_size=d.get("page_size", None),
-            q=d.get("q", None),
-        )
-
 
 @dataclass
 class ListQueriesResponse:
@@ -1883,16 +1581,16 @@ class ListQueriesResponse:
 
     res: "List[QueryInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listQueriesResponse_query, listQueriesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.has_next_page:
-            listQueriesResponse_body["has_next_page"] = self.has_next_page
+            body["has_next_page"] = self.has_next_page
         if self.next_page_token:
-            listQueriesResponse_body["next_page_token"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.res:
-            listQueriesResponse_body["res"] = [v.as_request()[1] for v in self.res]
+            body["res"] = [v.as_dict() for v in self.res]
 
-        return listQueriesResponse_query, listQueriesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListQueriesResponse":
@@ -1916,30 +1614,6 @@ class ListQueryHistoryRequest:
     # A token that can be used to get the next page of results.
     page_token: str  # query
 
-    def as_request(self) -> (dict, dict):
-        listQueryHistoryRequest_query, listQueryHistoryRequest_body = {}, {}
-        if self.filter_by:
-            listQueryHistoryRequest_query["filter_by"] = self.filter_by.as_request()[1]
-        if self.include_metrics:
-            listQueryHistoryRequest_query["include_metrics"] = self.include_metrics
-        if self.max_results:
-            listQueryHistoryRequest_query["max_results"] = self.max_results
-        if self.page_token:
-            listQueryHistoryRequest_query["page_token"] = self.page_token
-
-        return listQueryHistoryRequest_query, listQueryHistoryRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListQueryHistoryRequest":
-        return cls(
-            filter_by=QueryFilter.from_dict(d["filter_by"])
-            if "filter_by" in d
-            else None,
-            include_metrics=d.get("include_metrics", None),
-            max_results=d.get("max_results", None),
-            page_token=d.get("page_token", None),
-        )
-
 
 @dataclass
 class ListResponse:
@@ -1953,18 +1627,18 @@ class ListResponse:
     # List of dashboards returned.
     results: "List[Dashboard]"
 
-    def as_request(self) -> (dict, dict):
-        listResponse_query, listResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.count:
-            listResponse_body["count"] = self.count
+            body["count"] = self.count
         if self.page:
-            listResponse_body["page"] = self.page
+            body["page"] = self.page
         if self.page_size:
-            listResponse_body["page_size"] = self.page_size
+            body["page_size"] = self.page_size
         if self.results:
-            listResponse_body["results"] = [v.as_request()[1] for v in self.results]
+            body["results"] = [v.as_dict() for v in self.results]
 
-        return listResponse_query, listResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListResponse":
@@ -1984,40 +1658,14 @@ class ListSchedulesRequest:
 
     alert_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        listSchedulesRequest_query, listSchedulesRequest_body = {}, {}
-        if self.alert_id:
-            listSchedulesRequest_body["alert_id"] = self.alert_id
-
-        return listSchedulesRequest_query, listSchedulesRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListSchedulesRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-        )
-
 
 @dataclass
 class ListWarehousesRequest:
     """List warehouses"""
 
-    # Service Principal which will be used to fetch the list of endpoints. If
-    # not specified, the user from the session header is used.
+    # Service Principal which will be used to fetch the list of endpoints. If not specified, the user from the session
+    # header is used.
     run_as_user_id: int  # query
-
-    def as_request(self) -> (dict, dict):
-        listWarehousesRequest_query, listWarehousesRequest_body = {}, {}
-        if self.run_as_user_id:
-            listWarehousesRequest_query["run_as_user_id"] = self.run_as_user_id
-
-        return listWarehousesRequest_query, listWarehousesRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ListWarehousesRequest":
-        return cls(
-            run_as_user_id=d.get("run_as_user_id", None),
-        )
 
 
 @dataclass
@@ -2026,14 +1674,12 @@ class ListWarehousesResponse:
     # A list of warehouses and their configurations.
     warehouses: "List[EndpointInfo]"
 
-    def as_request(self) -> (dict, dict):
-        listWarehousesResponse_query, listWarehousesResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.warehouses:
-            listWarehousesResponse_body["warehouses"] = [
-                v.as_request()[1] for v in self.warehouses
-            ]
+            body["warehouses"] = [v.as_dict() for v in self.warehouses]
 
-        return listWarehousesResponse_query, listWarehousesResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListWarehousesResponse":
@@ -2073,18 +1719,18 @@ class OdbcParams:
 
     protocol: str
 
-    def as_request(self) -> (dict, dict):
-        odbcParams_query, odbcParams_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.hostname:
-            odbcParams_body["hostname"] = self.hostname
+            body["hostname"] = self.hostname
         if self.path:
-            odbcParams_body["path"] = self.path
+            body["path"] = self.path
         if self.port:
-            odbcParams_body["port"] = self.port
+            body["port"] = self.port
         if self.protocol:
-            odbcParams_body["protocol"] = self.protocol
+            body["protocol"] = self.protocol
 
-        return odbcParams_query, odbcParams_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "OdbcParams":
@@ -2107,8 +1753,7 @@ class OwnableObjectType(Enum):
 @dataclass
 class Parameter:
 
-    # The literal parameter marker that appears between double curly braces in
-    # the query text.
+    # The literal parameter marker that appears between double curly braces in the query text.
     name: str
     # The text displayed in a parameter picking widget.
     title: str
@@ -2117,18 +1762,18 @@ class Parameter:
     # The default value for this parameter.
     value: Any
 
-    def as_request(self) -> (dict, dict):
-        parameter_query, parameter_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.name:
-            parameter_body["name"] = self.name
+            body["name"] = self.name
         if self.title:
-            parameter_body["title"] = self.title
+            body["title"] = self.title
         if self.type:
-            parameter_body["type"] = self.type.value
+            body["type"] = self.type.value
         if self.value:
-            parameter_body["value"] = self.value
+            body["value"] = self.value
 
-        return parameter_query, parameter_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Parameter":
@@ -2170,46 +1815,38 @@ class PlansState(Enum):
 @dataclass
 class Query:
 
-    # Describes whether the authenticated user is allowed to edit the definition
-    # of this query.
+    # Describes whether the authenticated user is allowed to edit the definition of this query.
     can_edit: bool
     # The timestamp when this query was created.
     created_at: str
-    # Data Source ID. The UUID that uniquely identifies this data source / SQL
-    # warehouse across the API.
+    # Data Source ID. The UUID that uniquely identifies this data source / SQL warehouse across the API.
     data_source_id: str
-    # General description that conveys additional information about this query
-    # such as usage notes.
+    # General description that conveys additional information about this query such as usage notes.
     description: str
 
     id: str
-    # Indicates whether the query is trashed. Trashed queries can't be used in
-    # dashboards, or appear in search results. If this boolean is `true`, the
-    # `options` property for this query includes a `moved_to_trash_at`
-    # timestamp. Trashed queries are permanently deleted after 30 days.
+    # Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear in search results.
+    # If this boolean is `true`, the `options` property for this query includes a `moved_to_trash_at` timestamp. Trashed
+    # queries are permanently deleted after 30 days.
     is_archived: bool
-    # Whether the query is a draft. Draft queries only appear in list views for
-    # their owners. Visualizations from draft queries cannot appear on
-    # dashboards.
+    # Whether the query is a draft. Draft queries only appear in list views for their owners. Visualizations from draft
+    # queries cannot appear on dashboards.
     is_draft: bool
-    # Whether this query object appears in the current user's favorites list.
-    # This flag determines whether the star icon for favorites is selected.
+    # Whether this query object appears in the current user's favorites list. This flag determines whether the star icon
+    # for favorites is selected.
     is_favorite: bool
-    # Text parameter types are not safe from SQL injection for all types of data
-    # source. Set this Boolean parameter to `true` if a query either does not
-    # use any text type parameters or uses a data source type where text type
+    # Text parameter types are not safe from SQL injection for all types of data source. Set this Boolean parameter to
+    # `true` if a query either does not use any text type parameters or uses a data source type where text type
     # parameters are handled safely.
     is_safe: bool
 
     last_modified_by: "User"
     # The ID of the user who last saved changes to this query.
     last_modified_by_id: int
-    # If there is a cached result for this query and user, this field includes
-    # the query result ID. If this query uses parameters, this field is always
-    # null.
+    # If there is a cached result for this query and user, this field includes the query result ID. If this query uses
+    # parameters, this field is always null.
     latest_query_data_id: str
-    # The title of this query that appears in list views, widget headings, and
-    # on the query page.
+    # The title of this query that appears in list views, widget headings, and on the query page.
     name: str
 
     options: "QueryOptions"
@@ -2232,58 +1869,56 @@ class Query:
 
     visualizations: "List[Visualization]"
 
-    def as_request(self) -> (dict, dict):
-        query_query, query_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.can_edit:
-            query_body["can_edit"] = self.can_edit
+            body["can_edit"] = self.can_edit
         if self.created_at:
-            query_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.data_source_id:
-            query_body["data_source_id"] = self.data_source_id
+            body["data_source_id"] = self.data_source_id
         if self.description:
-            query_body["description"] = self.description
+            body["description"] = self.description
         if self.id:
-            query_body["id"] = self.id
+            body["id"] = self.id
         if self.is_archived:
-            query_body["is_archived"] = self.is_archived
+            body["is_archived"] = self.is_archived
         if self.is_draft:
-            query_body["is_draft"] = self.is_draft
+            body["is_draft"] = self.is_draft
         if self.is_favorite:
-            query_body["is_favorite"] = self.is_favorite
+            body["is_favorite"] = self.is_favorite
         if self.is_safe:
-            query_body["is_safe"] = self.is_safe
+            body["is_safe"] = self.is_safe
         if self.last_modified_by:
-            query_body["last_modified_by"] = self.last_modified_by.as_request()[1]
+            body["last_modified_by"] = self.last_modified_by.as_dict()
         if self.last_modified_by_id:
-            query_body["last_modified_by_id"] = self.last_modified_by_id
+            body["last_modified_by_id"] = self.last_modified_by_id
         if self.latest_query_data_id:
-            query_body["latest_query_data_id"] = self.latest_query_data_id
+            body["latest_query_data_id"] = self.latest_query_data_id
         if self.name:
-            query_body["name"] = self.name
+            body["name"] = self.name
         if self.options:
-            query_body["options"] = self.options.as_request()[1]
+            body["options"] = self.options.as_dict()
         if self.permission_tier:
-            query_body["permission_tier"] = self.permission_tier.value
+            body["permission_tier"] = self.permission_tier.value
         if self.query:
-            query_body["query"] = self.query
+            body["query"] = self.query
         if self.query_hash:
-            query_body["query_hash"] = self.query_hash
+            body["query_hash"] = self.query_hash
         if self.schedule:
-            query_body["schedule"] = self.schedule.as_request()[1]
+            body["schedule"] = self.schedule.as_dict()
         if self.tags:
-            query_body["tags"] = [v for v in self.tags]
+            body["tags"] = [v for v in self.tags]
         if self.updated_at:
-            query_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.user:
-            query_body["user"] = self.user.as_request()[1]
+            body["user"] = self.user.as_dict()
         if self.user_id:
-            query_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
         if self.visualizations:
-            query_body["visualizations"] = [
-                v.as_request()[1] for v in self.visualizations
-            ]
+            body["visualizations"] = [v.as_dict() for v in self.visualizations]
 
-        return query_query, query_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Query":
@@ -2334,20 +1969,18 @@ class QueryFilter:
     # A list of warehouse IDs.
     warehouse_ids: "List[str]"
 
-    def as_request(self) -> (dict, dict):
-        queryFilter_query, queryFilter_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.query_start_time_range:
-            queryFilter_body[
-                "query_start_time_range"
-            ] = self.query_start_time_range.as_request()[1]
+            body["query_start_time_range"] = self.query_start_time_range.as_dict()
         if self.statuses:
-            queryFilter_body["statuses"] = [v for v in self.statuses]
+            body["statuses"] = [v for v in self.statuses]
         if self.user_ids:
-            queryFilter_body["user_ids"] = [v for v in self.user_ids]
+            body["user_ids"] = [v for v in self.user_ids]
         if self.warehouse_ids:
-            queryFilter_body["warehouse_ids"] = [v for v in self.warehouse_ids]
+            body["warehouse_ids"] = [v for v in self.warehouse_ids]
 
-        return queryFilter_query, queryFilter_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryFilter":
@@ -2366,8 +1999,7 @@ class QueryInfo:
 
     # Channel information for the SQL warehouse at the time of query execution
     channel_used: "ChannelInfo"
-    # Total execution time of the query from the client’s point of view, in
-    # milliseconds.
+    # Total execution time of the query from the client’s point of view, in milliseconds.
     duration: int
     # Alias for `warehouse_id`.
     endpoint_id: str
@@ -2375,8 +2007,7 @@ class QueryInfo:
     error_message: str
     # The ID of the user whose credentials were used to run the query.
     executed_as_user_id: int
-    # The email address or username of the user whose credentials were used to
-    # run the query.
+    # The email address or username of the user whose credentials were used to run the query.
     executed_as_user_name: str
     # The time execution of the query ended.
     execution_end_time_ms: int
@@ -2411,54 +2042,54 @@ class QueryInfo:
     # Warehouse ID.
     warehouse_id: str
 
-    def as_request(self) -> (dict, dict):
-        queryInfo_query, queryInfo_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.channel_used:
-            queryInfo_body["channel_used"] = self.channel_used.as_request()[1]
+            body["channel_used"] = self.channel_used.as_dict()
         if self.duration:
-            queryInfo_body["duration"] = self.duration
+            body["duration"] = self.duration
         if self.endpoint_id:
-            queryInfo_body["endpoint_id"] = self.endpoint_id
+            body["endpoint_id"] = self.endpoint_id
         if self.error_message:
-            queryInfo_body["error_message"] = self.error_message
+            body["error_message"] = self.error_message
         if self.executed_as_user_id:
-            queryInfo_body["executed_as_user_id"] = self.executed_as_user_id
+            body["executed_as_user_id"] = self.executed_as_user_id
         if self.executed_as_user_name:
-            queryInfo_body["executed_as_user_name"] = self.executed_as_user_name
+            body["executed_as_user_name"] = self.executed_as_user_name
         if self.execution_end_time_ms:
-            queryInfo_body["execution_end_time_ms"] = self.execution_end_time_ms
+            body["execution_end_time_ms"] = self.execution_end_time_ms
         if self.is_final:
-            queryInfo_body["is_final"] = self.is_final
+            body["is_final"] = self.is_final
         if self.lookup_key:
-            queryInfo_body["lookup_key"] = self.lookup_key
+            body["lookup_key"] = self.lookup_key
         if self.metrics:
-            queryInfo_body["metrics"] = self.metrics.as_request()[1]
+            body["metrics"] = self.metrics.as_dict()
         if self.plans_state:
-            queryInfo_body["plans_state"] = self.plans_state.value
+            body["plans_state"] = self.plans_state.value
         if self.query_end_time_ms:
-            queryInfo_body["query_end_time_ms"] = self.query_end_time_ms
+            body["query_end_time_ms"] = self.query_end_time_ms
         if self.query_id:
-            queryInfo_body["query_id"] = self.query_id
+            body["query_id"] = self.query_id
         if self.query_start_time_ms:
-            queryInfo_body["query_start_time_ms"] = self.query_start_time_ms
+            body["query_start_time_ms"] = self.query_start_time_ms
         if self.query_text:
-            queryInfo_body["query_text"] = self.query_text
+            body["query_text"] = self.query_text
         if self.rows_produced:
-            queryInfo_body["rows_produced"] = self.rows_produced
+            body["rows_produced"] = self.rows_produced
         if self.spark_ui_url:
-            queryInfo_body["spark_ui_url"] = self.spark_ui_url
+            body["spark_ui_url"] = self.spark_ui_url
         if self.statement_type:
-            queryInfo_body["statement_type"] = self.statement_type.value
+            body["statement_type"] = self.statement_type.value
         if self.status:
-            queryInfo_body["status"] = self.status.value
+            body["status"] = self.status.value
         if self.user_id:
-            queryInfo_body["user_id"] = self.user_id
+            body["user_id"] = self.user_id
         if self.user_name:
-            queryInfo_body["user_name"] = self.user_name
+            body["user_name"] = self.user_name
         if self.warehouse_id:
-            queryInfo_body["warehouse_id"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
 
-        return queryInfo_query, queryInfo_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryInfo":
@@ -2504,18 +2135,18 @@ class QueryInterval:
     # A date after which this schedule no longer applies.
     until: str
 
-    def as_request(self) -> (dict, dict):
-        queryInterval_query, queryInterval_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.day_of_week:
-            queryInterval_body["day_of_week"] = self.day_of_week
+            body["day_of_week"] = self.day_of_week
         if self.interval:
-            queryInterval_body["interval"] = self.interval
+            body["interval"] = self.interval
         if self.time:
-            queryInterval_body["time"] = self.time
+            body["time"] = self.time
         if self.until:
-            queryInterval_body["until"] = self.until
+            body["until"] = self.until
 
-        return queryInterval_query, queryInterval_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryInterval":
@@ -2539,18 +2170,18 @@ class QueryList:
     # List of queries returned.
     results: "List[Query]"
 
-    def as_request(self) -> (dict, dict):
-        queryList_query, queryList_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.count:
-            queryList_body["count"] = self.count
+            body["count"] = self.count
         if self.page:
-            queryList_body["page"] = self.page
+            body["page"] = self.page
         if self.page_size:
-            queryList_body["page_size"] = self.page_size
+            body["page_size"] = self.page_size
         if self.results:
-            queryList_body["results"] = [v.as_request()[1] for v in self.results]
+            body["results"] = [v.as_dict() for v in self.results]
 
-        return queryList_query, queryList_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryList":
@@ -2574,14 +2205,12 @@ class QueryMetrics:
     execution_time_ms: int
     # Total amount of data sent over the network, in bytes.
     network_sent_bytes: int
-    # Total execution time for all individual Photon query engine tasks in the
-    # query, in milliseconds.
+    # Total execution time for all individual Photon query engine tasks in the query, in milliseconds.
     photon_total_time_ms: int
-    # Time spent waiting to execute the query because the SQL warehouse is
-    # already running the maximum number of concurrent queries, in milliseconds.
+    # Time spent waiting to execute the query because the SQL warehouse is already running the maximum number of
+    # concurrent queries, in milliseconds.
     queued_overload_time_ms: int
-    # Time waiting for compute resources to be provisioned for the SQL
-    # warehouse, in milliseconds.
+    # Time waiting for compute resources to be provisioned for the SQL warehouse, in milliseconds.
     queued_provisioning_time_ms: int
     # Total size of data read by the query, in bytes.
     read_bytes: int
@@ -2591,11 +2220,9 @@ class QueryMetrics:
     read_files_count: int
     # Number of partitions read after pruning.
     read_partitions_count: int
-    # Size of persistent data read from cloud object storage on your cloud
-    # tenant, in bytes.
+    # Size of persistent data read from cloud object storage on your cloud tenant, in bytes.
     read_remote_bytes: int
-    # Time spent fetching the query results after the execution finished, in
-    # milliseconds.
+    # Time spent fetching the query results after the execution finished, in milliseconds.
     result_fetch_time_ms: int
     # true if the query result was fetched from cache, false otherwise.
     result_from_cache: bool
@@ -2603,8 +2230,7 @@ class QueryMetrics:
     rows_produced_count: int
     # Total number of rows read by the query.
     rows_read_count: int
-    # Size of data temporarily written to disk while executing the query, in
-    # bytes.
+    # Size of data temporarily written to disk while executing the query, in bytes.
     spill_to_disk_bytes: int
     # Sum of execution time for all of the query’s tasks, in milliseconds.
     task_total_time_ms: int
@@ -2612,61 +2238,57 @@ class QueryMetrics:
     total_files_count: int
     # Number of partitions that would have been read without pruning.
     total_partitions_count: int
-    # Total execution time of the query from the client’s point of view, in
-    # milliseconds.
+    # Total execution time of the query from the client’s point of view, in milliseconds.
     total_time_ms: int
-    # Size pf persistent data written to cloud object storage in your cloud
-    # tenant, in bytes.
+    # Size pf persistent data written to cloud object storage in your cloud tenant, in bytes.
     write_remote_bytes: int
 
-    def as_request(self) -> (dict, dict):
-        queryMetrics_query, queryMetrics_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.compilation_time_ms:
-            queryMetrics_body["compilation_time_ms"] = self.compilation_time_ms
+            body["compilation_time_ms"] = self.compilation_time_ms
         if self.execution_time_ms:
-            queryMetrics_body["execution_time_ms"] = self.execution_time_ms
+            body["execution_time_ms"] = self.execution_time_ms
         if self.network_sent_bytes:
-            queryMetrics_body["network_sent_bytes"] = self.network_sent_bytes
+            body["network_sent_bytes"] = self.network_sent_bytes
         if self.photon_total_time_ms:
-            queryMetrics_body["photon_total_time_ms"] = self.photon_total_time_ms
+            body["photon_total_time_ms"] = self.photon_total_time_ms
         if self.queued_overload_time_ms:
-            queryMetrics_body["queued_overload_time_ms"] = self.queued_overload_time_ms
+            body["queued_overload_time_ms"] = self.queued_overload_time_ms
         if self.queued_provisioning_time_ms:
-            queryMetrics_body[
-                "queued_provisioning_time_ms"
-            ] = self.queued_provisioning_time_ms
+            body["queued_provisioning_time_ms"] = self.queued_provisioning_time_ms
         if self.read_bytes:
-            queryMetrics_body["read_bytes"] = self.read_bytes
+            body["read_bytes"] = self.read_bytes
         if self.read_cache_bytes:
-            queryMetrics_body["read_cache_bytes"] = self.read_cache_bytes
+            body["read_cache_bytes"] = self.read_cache_bytes
         if self.read_files_count:
-            queryMetrics_body["read_files_count"] = self.read_files_count
+            body["read_files_count"] = self.read_files_count
         if self.read_partitions_count:
-            queryMetrics_body["read_partitions_count"] = self.read_partitions_count
+            body["read_partitions_count"] = self.read_partitions_count
         if self.read_remote_bytes:
-            queryMetrics_body["read_remote_bytes"] = self.read_remote_bytes
+            body["read_remote_bytes"] = self.read_remote_bytes
         if self.result_fetch_time_ms:
-            queryMetrics_body["result_fetch_time_ms"] = self.result_fetch_time_ms
+            body["result_fetch_time_ms"] = self.result_fetch_time_ms
         if self.result_from_cache:
-            queryMetrics_body["result_from_cache"] = self.result_from_cache
+            body["result_from_cache"] = self.result_from_cache
         if self.rows_produced_count:
-            queryMetrics_body["rows_produced_count"] = self.rows_produced_count
+            body["rows_produced_count"] = self.rows_produced_count
         if self.rows_read_count:
-            queryMetrics_body["rows_read_count"] = self.rows_read_count
+            body["rows_read_count"] = self.rows_read_count
         if self.spill_to_disk_bytes:
-            queryMetrics_body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+            body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
         if self.task_total_time_ms:
-            queryMetrics_body["task_total_time_ms"] = self.task_total_time_ms
+            body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_files_count:
-            queryMetrics_body["total_files_count"] = self.total_files_count
+            body["total_files_count"] = self.total_files_count
         if self.total_partitions_count:
-            queryMetrics_body["total_partitions_count"] = self.total_partitions_count
+            body["total_partitions_count"] = self.total_partitions_count
         if self.total_time_ms:
-            queryMetrics_body["total_time_ms"] = self.total_time_ms
+            body["total_time_ms"] = self.total_time_ms
         if self.write_remote_bytes:
-            queryMetrics_body["write_remote_bytes"] = self.write_remote_bytes
+            body["write_remote_bytes"] = self.write_remote_bytes
 
-        return queryMetrics_query, queryMetrics_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryMetrics":
@@ -2698,23 +2320,20 @@ class QueryMetrics:
 @dataclass
 class QueryOptions:
 
-    # The timestamp when this query was moved to trash. Only present when the
-    # `is_archived` property is `true`. Trashed items are deleted after thirty
-    # days.
+    # The timestamp when this query was moved to trash. Only present when the `is_archived` property is `true`. Trashed
+    # items are deleted after thirty days.
     moved_to_trash_at: str
 
     parameters: "List[Parameter]"
 
-    def as_request(self) -> (dict, dict):
-        queryOptions_query, queryOptions_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.moved_to_trash_at:
-            queryOptions_body["moved_to_trash_at"] = self.moved_to_trash_at
+            body["moved_to_trash_at"] = self.moved_to_trash_at
         if self.parameters:
-            queryOptions_body["parameters"] = [
-                v.as_request()[1] for v in self.parameters
-            ]
+            body["parameters"] = [v.as_dict() for v in self.parameters]
 
-        return queryOptions_query, queryOptions_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryOptions":
@@ -2731,43 +2350,40 @@ class QueryPostContent:
 
     # The ID of the data source / SQL warehouse where this query will run.
     data_source_id: str
-    # General description that can convey additional information about this
-    # query such as usage notes.
+    # General description that can convey additional information about this query such as usage notes.
     description: str
     # The name or title of this query to display in list views.
     name: str
-    # Exclusively used for storing a list parameter definitions. A parameter is
-    # an object with `title`, `name`, `type`, and `value` properties. The
-    # `value` field here is the default value. It can be overridden at runtime.
+    # Exclusively used for storing a list parameter definitions. A parameter is an object with `title`, `name`, `type`,
+    # and `value` properties. The `value` field here is the default value. It can be overridden at runtime.
     options: Any
     # The text of the query.
     query: str
 
     query_id: str  # path
-    # JSON object that describes the scheduled execution frequency. A schedule
-    # object includes `interval`, `time`, `day_of_week`, and `until` fields. If
-    # a scheduled is supplied, then only `interval` is required. All other field
+    # JSON object that describes the scheduled execution frequency. A schedule object includes `interval`, `time`,
+    # `day_of_week`, and `until` fields. If a scheduled is supplied, then only `interval` is required. All other field
     # can be `null`.
     schedule: "QueryInterval"
 
-    def as_request(self) -> (dict, dict):
-        queryPostContent_query, queryPostContent_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.data_source_id:
-            queryPostContent_body["data_source_id"] = self.data_source_id
+            body["data_source_id"] = self.data_source_id
         if self.description:
-            queryPostContent_body["description"] = self.description
+            body["description"] = self.description
         if self.name:
-            queryPostContent_body["name"] = self.name
+            body["name"] = self.name
         if self.options:
-            queryPostContent_body["options"] = self.options
+            body["options"] = self.options
         if self.query:
-            queryPostContent_body["query"] = self.query
+            body["query"] = self.query
         if self.query_id:
-            queryPostContent_body["query_id"] = self.query_id
+            body["query_id"] = self.query_id
         if self.schedule:
-            queryPostContent_body["schedule"] = self.schedule.as_request()[1]
+            body["schedule"] = self.schedule.as_dict()
 
-        return queryPostContent_query, queryPostContent_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "QueryPostContent":
@@ -2826,22 +2442,21 @@ class RefreshSchedule:
 
     # Cron string representing the refresh schedule.
     cron: str
-    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-    # will be used to refresh.
+    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse will be used to refresh.
     data_source_id: str
     # ID of the refresh schedule.
     id: str
 
-    def as_request(self) -> (dict, dict):
-        refreshSchedule_query, refreshSchedule_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.cron:
-            refreshSchedule_body["cron"] = self.cron
+            body["cron"] = self.cron
         if self.data_source_id:
-            refreshSchedule_body["data_source_id"] = self.data_source_id
+            body["data_source_id"] = self.data_source_id
         if self.id:
-            refreshSchedule_body["id"] = self.id
+            body["id"] = self.id
 
-        return refreshSchedule_query, refreshSchedule_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RefreshSchedule":
@@ -2860,18 +2475,16 @@ class RepeatedEndpointConfPairs:
 
     configuration_pairs: "List[EndpointConfPair]"
 
-    def as_request(self) -> (dict, dict):
-        repeatedEndpointConfPairs_query, repeatedEndpointConfPairs_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.config_pair:
-            repeatedEndpointConfPairs_body["config_pair"] = [
-                v.as_request()[1] for v in self.config_pair
-            ]
+            body["config_pair"] = [v.as_dict() for v in self.config_pair]
         if self.configuration_pairs:
-            repeatedEndpointConfPairs_body["configuration_pairs"] = [
-                v.as_request()[1] for v in self.configuration_pairs
+            body["configuration_pairs"] = [
+                v.as_dict() for v in self.configuration_pairs
             ]
 
-        return repeatedEndpointConfPairs_query, repeatedEndpointConfPairs_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RepeatedEndpointConfPairs":
@@ -2893,19 +2506,6 @@ class RestoreDashboardRequest:
 
     dashboard_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        restoreDashboardRequest_query, restoreDashboardRequest_body = {}, {}
-        if self.dashboard_id:
-            restoreDashboardRequest_body["dashboard_id"] = self.dashboard_id
-
-        return restoreDashboardRequest_query, restoreDashboardRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "RestoreDashboardRequest":
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-        )
-
 
 @dataclass
 class RestoreQueryRequest:
@@ -2913,43 +2513,29 @@ class RestoreQueryRequest:
 
     query_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        restoreQueryRequest_query, restoreQueryRequest_body = {}, {}
-        if self.query_id:
-            restoreQueryRequest_body["query_id"] = self.query_id
-
-        return restoreQueryRequest_query, restoreQueryRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "RestoreQueryRequest":
-        return cls(
-            query_id=d.get("query_id", None),
-        )
-
 
 @dataclass
 class SetRequest:
     """Set object ACL"""
 
     access_control_list: "List[AccessControl]"
-    # Object ID. The ACL for the object with this UUID is overwritten by this
-    # request's POST content.
-    objectId: str  # path
+    # Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.
+    object_id: str  # path
     # The type of object permission to set.
-    objectType: "ObjectTypePlural"  # path
+    object_type: "ObjectTypePlural"  # path
 
-    def as_request(self) -> (dict, dict):
-        setRequest_query, setRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            setRequest_body["access_control_list"] = [
-                v.as_request()[1] for v in self.access_control_list
+            body["access_control_list"] = [
+                v.as_dict() for v in self.access_control_list
             ]
-        if self.objectId:
-            setRequest_body["objectId"] = self.objectId
-        if self.objectType:
-            setRequest_body["objectType"] = self.objectType.value
+        if self.object_id:
+            body["objectId"] = self.object_id
+        if self.object_type:
+            body["objectType"] = self.object_type.value
 
-        return setRequest_query, setRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetRequest":
@@ -2959,8 +2545,10 @@ class SetRequest:
             ]
             if "access_control_list" in d
             else None,
-            objectId=d.get("objectId", None),
-            objectType=ObjectTypePlural(d["objectType"]) if "objectType" in d else None,
+            object_id=d.get("objectId", None),
+            object_type=ObjectTypePlural(d["objectType"])
+            if "objectType" in d
+            else None,
         )
 
 
@@ -2973,18 +2561,18 @@ class SetResponse:
     # An object's type and UUID, separated by a forward slash (/) character.
     object_type: str
 
-    def as_request(self) -> (dict, dict):
-        setResponse_query, setResponse_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.access_control_list:
-            setResponse_body["access_control_list"] = [
-                v.as_request()[1] for v in self.access_control_list
+            body["access_control_list"] = [
+                v.as_dict() for v in self.access_control_list
             ]
         if self.object_id:
-            setResponse_body["object_id"] = self.object_id.value
+            body["object_id"] = self.object_id.value
         if self.object_type:
-            setResponse_body["object_type"] = self.object_type
+            body["object_type"] = self.object_type
 
-        return setResponse_query, setResponse_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetResponse":
@@ -3006,27 +2594,22 @@ class SetWorkspaceWarehouseConfigRequest:
     channel: "Channel"
     # Deprecated: Use sql_configuration_parameters
     config_param: "RepeatedEndpointConfPairs"
-    # Spark confs for external hive metastore configuration JSON serialized size
-    # must be less than <= 512K
+    # Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
     data_access_config: "List[EndpointConfPair]"
     # Enable Serverless compute for SQL Endpoints
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Enable Serverless compute for SQL Endpoints
     enable_serverless_compute: bool
-    # List of Warehouse Types allowed in this workspace (limits allowed value of
-    # the type field in CreateWarehouse and EditWarehouse). Note: Some types
-    # cannot be disabled, they don't need to be specified in
-    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
-    # warehouses to be converted to another type. Used by frontend to save
-    # specific type availability in the warehouse create and edit form UI.
+    # List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and
+    # EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in
+    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type.
+    # Used by frontend to save specific type availability in the warehouse create and edit form UI.
     enabled_warehouse_types: "List[WarehouseTypePair]"
     # Deprecated: Use sql_configuration_parameters
     global_param: "RepeatedEndpointConfPairs"
-    # GCP only: Google Service Account used to pass to cluster to access Google
-    # Cloud Storage
+    # GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
     google_service_account: str
     # AWS Only: Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
@@ -3037,64 +2620,38 @@ class SetWorkspaceWarehouseConfigRequest:
     # SQL configuration parameters
     sql_configuration_parameters: "RepeatedEndpointConfPairs"
 
-    def as_request(self) -> (dict, dict):
-        (
-            setWorkspaceWarehouseConfigRequest_query,
-            setWorkspaceWarehouseConfigRequest_body,
-        ) = ({}, {})
+    def as_dict(self) -> dict:
+        body = {}
         if self.channel:
-            setWorkspaceWarehouseConfigRequest_body[
-                "channel"
-            ] = self.channel.as_request()[1]
+            body["channel"] = self.channel.as_dict()
         if self.config_param:
-            setWorkspaceWarehouseConfigRequest_body[
-                "config_param"
-            ] = self.config_param.as_request()[1]
+            body["config_param"] = self.config_param.as_dict()
         if self.data_access_config:
-            setWorkspaceWarehouseConfigRequest_body["data_access_config"] = [
-                v.as_request()[1] for v in self.data_access_config
-            ]
+            body["data_access_config"] = [v.as_dict() for v in self.data_access_config]
         if self.enable_databricks_compute:
-            setWorkspaceWarehouseConfigRequest_body[
-                "enable_databricks_compute"
-            ] = self.enable_databricks_compute
+            body["enable_databricks_compute"] = self.enable_databricks_compute
         if self.enable_serverless_compute:
-            setWorkspaceWarehouseConfigRequest_body[
-                "enable_serverless_compute"
-            ] = self.enable_serverless_compute
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.enabled_warehouse_types:
-            setWorkspaceWarehouseConfigRequest_body["enabled_warehouse_types"] = [
-                v.as_request()[1] for v in self.enabled_warehouse_types
+            body["enabled_warehouse_types"] = [
+                v.as_dict() for v in self.enabled_warehouse_types
             ]
         if self.global_param:
-            setWorkspaceWarehouseConfigRequest_body[
-                "global_param"
-            ] = self.global_param.as_request()[1]
+            body["global_param"] = self.global_param.as_dict()
         if self.google_service_account:
-            setWorkspaceWarehouseConfigRequest_body[
-                "google_service_account"
-            ] = self.google_service_account
+            body["google_service_account"] = self.google_service_account
         if self.instance_profile_arn:
-            setWorkspaceWarehouseConfigRequest_body[
-                "instance_profile_arn"
-            ] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.security_policy:
-            setWorkspaceWarehouseConfigRequest_body[
-                "security_policy"
-            ] = self.security_policy.value
+            body["security_policy"] = self.security_policy.value
         if self.serverless_agreement:
-            setWorkspaceWarehouseConfigRequest_body[
-                "serverless_agreement"
-            ] = self.serverless_agreement
+            body["serverless_agreement"] = self.serverless_agreement
         if self.sql_configuration_parameters:
-            setWorkspaceWarehouseConfigRequest_body[
+            body[
                 "sql_configuration_parameters"
-            ] = self.sql_configuration_parameters.as_request()[1]
+            ] = self.sql_configuration_parameters.as_dict()
 
-        return (
-            setWorkspaceWarehouseConfigRequest_query,
-            setWorkspaceWarehouseConfigRequest_body,
-        )
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "SetWorkspaceWarehouseConfigRequest":
@@ -3157,19 +2714,6 @@ class StartRequest:
     # Required. Id of the SQL warehouse.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        startRequest_query, startRequest_body = {}, {}
-        if self.id:
-            startRequest_body["id"] = self.id
-
-        return startRequest_query, startRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "StartRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 class State(Enum):
     """State of the warehouse"""
@@ -3198,27 +2742,14 @@ class StopRequest:
     # Required. Id of the SQL warehouse.
     id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        stopRequest_query, stopRequest_body = {}, {}
-        if self.id:
-            stopRequest_body["id"] = self.id
-
-        return stopRequest_query, stopRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "StopRequest":
-        return cls(
-            id=d.get("id", None),
-        )
-
 
 @dataclass
 class Subscription:
 
     # ID of the alert.
     alert_id: str
-    # Alert destination subscribed to the alert, if it exists. Alert
-    # destinations can be configured by admins through the UI. See [here].
+    # Alert destination subscribed to the alert, if it exists. Alert destinations can be configured by admins through
+    # the UI. See [here].
     #
     # [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
     destination: "Destination"
@@ -3227,18 +2758,18 @@ class Subscription:
 
     user: "User"
 
-    def as_request(self) -> (dict, dict):
-        subscription_query, subscription_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.alert_id:
-            subscription_body["alert_id"] = self.alert_id
+            body["alert_id"] = self.alert_id
         if self.destination:
-            subscription_body["destination"] = self.destination.as_request()[1]
+            body["destination"] = self.destination.as_dict()
         if self.id:
-            subscription_body["id"] = self.id
+            body["id"] = self.id
         if self.user:
-            subscription_body["user"] = self.user.as_request()[1]
+            body["user"] = self.user.as_dict()
 
-        return subscription_query, subscription_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Subscription":
@@ -3257,12 +2788,12 @@ class Success:
 
     message: "SuccessMessage"
 
-    def as_request(self) -> (dict, dict):
-        success_query, success_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.message:
-            success_body["message"] = self.message.value
+            body["message"] = self.message.value
 
-        return success_query, success_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Success":
@@ -3281,22 +2812,21 @@ class TerminationReason:
 
     # status code indicating why the cluster was terminated
     code: "TerminationReasonCode"
-    # list of parameters that provide additional information about why the
-    # cluster was terminated
+    # list of parameters that provide additional information about why the cluster was terminated
     parameters: "Dict[str,str]"
     # type of the termination
     type: "TerminationReasonType"
 
-    def as_request(self) -> (dict, dict):
-        terminationReason_query, terminationReason_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.code:
-            terminationReason_body["code"] = self.code.value
+            body["code"] = self.code.value
         if self.parameters:
-            terminationReason_body["parameters"] = self.parameters
+            body["parameters"] = self.parameters
         if self.type:
-            terminationReason_body["type"] = self.type.value
+            body["type"] = self.type.value
 
-        return terminationReason_query, terminationReason_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TerminationReason":
@@ -3418,14 +2948,14 @@ class TimeRange:
     # Limit results to queries that started after this time.
     start_time_ms: int
 
-    def as_request(self) -> (dict, dict):
-        timeRange_query, timeRange_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.end_time_ms:
-            timeRange_body["end_time_ms"] = self.end_time_ms
+            body["end_time_ms"] = self.end_time_ms
         if self.start_time_ms:
-            timeRange_body["start_time_ms"] = self.start_time_ms
+            body["start_time_ms"] = self.start_time_ms
 
-        return timeRange_query, timeRange_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TimeRange":
@@ -3441,12 +2971,12 @@ class TransferOwnershipObjectId:
     # Email address for the new owner, who must exist in the workspace.
     new_owner: str
 
-    def as_request(self) -> (dict, dict):
-        transferOwnershipObjectId_query, transferOwnershipObjectId_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.new_owner:
-            transferOwnershipObjectId_body["new_owner"] = self.new_owner
+            body["new_owner"] = self.new_owner
 
-        return transferOwnershipObjectId_query, transferOwnershipObjectId_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransferOwnershipObjectId":
@@ -3462,29 +2992,29 @@ class TransferOwnershipRequest:
     # Email address for the new owner, who must exist in the workspace.
     new_owner: str
     # The ID of the object on which to change ownership.
-    objectId: "TransferOwnershipObjectId"  # path
+    object_id: "TransferOwnershipObjectId"  # path
     # The type of object on which to change ownership.
-    objectType: "OwnableObjectType"  # path
+    object_type: "OwnableObjectType"  # path
 
-    def as_request(self) -> (dict, dict):
-        transferOwnershipRequest_query, transferOwnershipRequest_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.new_owner:
-            transferOwnershipRequest_body["new_owner"] = self.new_owner
-        if self.objectId:
-            transferOwnershipRequest_body["objectId"] = self.objectId.as_request()[1]
-        if self.objectType:
-            transferOwnershipRequest_body["objectType"] = self.objectType.value
+            body["new_owner"] = self.new_owner
+        if self.object_id:
+            body["objectId"] = self.object_id.as_dict()
+        if self.object_type:
+            body["objectType"] = self.object_type.value
 
-        return transferOwnershipRequest_query, transferOwnershipRequest_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "TransferOwnershipRequest":
         return cls(
             new_owner=d.get("new_owner", None),
-            objectId=TransferOwnershipObjectId.from_dict(d["objectId"])
+            object_id=TransferOwnershipObjectId.from_dict(d["objectId"])
             if "objectId" in d
             else None,
-            objectType=OwnableObjectType(d["objectType"])
+            object_type=OwnableObjectType(d["objectType"])
             if "objectType" in d
             else None,
         )
@@ -3498,22 +3028,6 @@ class UnsubscribeRequest:
 
     subscription_id: str  # path
 
-    def as_request(self) -> (dict, dict):
-        unsubscribeRequest_query, unsubscribeRequest_body = {}, {}
-        if self.alert_id:
-            unsubscribeRequest_body["alert_id"] = self.alert_id
-        if self.subscription_id:
-            unsubscribeRequest_body["subscription_id"] = self.subscription_id
-
-        return unsubscribeRequest_query, unsubscribeRequest_body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "UnsubscribeRequest":
-        return cls(
-            alert_id=d.get("alert_id", None),
-            subscription_id=d.get("subscription_id", None),
-        )
-
 
 @dataclass
 class User:
@@ -3525,24 +3039,23 @@ class User:
     is_db_admin: bool
 
     name: str
-    # The URL for the gravatar profile picture tied to this user's email
-    # address.
+    # The URL for the gravatar profile picture tied to this user's email address.
     profile_image_url: str
 
-    def as_request(self) -> (dict, dict):
-        user_query, user_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.email:
-            user_body["email"] = self.email
+            body["email"] = self.email
         if self.id:
-            user_body["id"] = self.id
+            body["id"] = self.id
         if self.is_db_admin:
-            user_body["is_db_admin"] = self.is_db_admin
+            body["is_db_admin"] = self.is_db_admin
         if self.name:
-            user_body["name"] = self.name
+            body["name"] = self.name
         if self.profile_image_url:
-            user_body["profile_image_url"] = self.profile_image_url
+            body["profile_image_url"] = self.profile_image_url
 
-        return user_query, user_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "User":
@@ -3564,41 +3077,38 @@ class Visualization:
     visualizations entirely in JSON."""
 
     created_at: str
-    # A short description of this visualization. This is not displayed in the
-    # UI.
+    # A short description of this visualization. This is not displayed in the UI.
     description: str
     # The UUID for this visualization.
     id: str
-    # The name of the visualization that appears on dashboards and the query
-    # screen.
+    # The name of the visualization that appears on dashboards and the query screen.
     name: str
-    # The options object varies widely from one visualization type to the next
-    # and is unsupported. Databricks does not recommend modifying visualization
-    # settings in JSON.
+    # The options object varies widely from one visualization type to the next and is unsupported. Databricks does not
+    # recommend modifying visualization settings in JSON.
     options: Any
     # The type of visualization: chart, table, pivot table, and so on.
     type: str
 
     updated_at: str
 
-    def as_request(self) -> (dict, dict):
-        visualization_query, visualization_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at:
-            visualization_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.description:
-            visualization_body["description"] = self.description
+            body["description"] = self.description
         if self.id:
-            visualization_body["id"] = self.id
+            body["id"] = self.id
         if self.name:
-            visualization_body["name"] = self.name
+            body["name"] = self.name
         if self.options:
-            visualization_body["options"] = self.options
+            body["options"] = self.options
         if self.type:
-            visualization_body["type"] = self.type
+            body["type"] = self.type
         if self.updated_at:
-            visualization_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
 
-        return visualization_query, visualization_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Visualization":
@@ -3623,20 +3133,20 @@ class WarehouseType(Enum):
 @dataclass
 class WarehouseTypePair:
 
-    # If set to false the specific warehouse type will not be be allowed as a
-    # value for warehouse_type in CreateWarehouse and EditWarehouse
+    # If set to false the specific warehouse type will not be be allowed as a value for warehouse_type in
+    # CreateWarehouse and EditWarehouse
     enabled: bool
 
     warehouse_type: "WarehouseType"
 
-    def as_request(self) -> (dict, dict):
-        warehouseTypePair_query, warehouseTypePair_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.enabled:
-            warehouseTypePair_body["enabled"] = self.enabled
+            body["enabled"] = self.enabled
         if self.warehouse_type:
-            warehouseTypePair_body["warehouse_type"] = self.warehouse_type.value
+            body["warehouse_type"] = self.warehouse_type.value
 
-        return warehouseTypePair_query, warehouseTypePair_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "WarehouseTypePair":
@@ -3655,27 +3165,25 @@ class Widget:
     id: int
 
     options: "WidgetOptions"
-    # The visualization description API changes frequently and is unsupported.
-    # You can duplicate a visualization by copying description objects received
-    # _from the API_ and then using them to create a new one with a POST request
-    # to the same endpoint. Databricks does not recommend constructing ad-hoc
-    # visualizations entirely in JSON.
+    # The visualization description API changes frequently and is unsupported. You can duplicate a visualization by
+    # copying description objects received _from the API_ and then using them to create a new one with a POST request to
+    # the same endpoint. Databricks does not recommend constructing ad-hoc visualizations entirely in JSON.
     visualization: "Visualization"
     # Unused field.
     width: int
 
-    def as_request(self) -> (dict, dict):
-        widget_query, widget_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.id:
-            widget_body["id"] = self.id
+            body["id"] = self.id
         if self.options:
-            widget_body["options"] = self.options.as_request()[1]
+            body["options"] = self.options.as_dict()
         if self.visualization:
-            widget_body["visualization"] = self.visualization.as_request()[1]
+            body["visualization"] = self.visualization.as_dict()
         if self.width:
-            widget_body["width"] = self.width
+            body["width"] = self.width
 
-        return widget_query, widget_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Widget":
@@ -3694,51 +3202,47 @@ class WidgetOptions:
 
     # Timestamp when this object was created
     created_at: str
-    # The dashboard ID to which this widget belongs. Each widget can belong to
-    # one dashboard.
+    # The dashboard ID to which this widget belongs. Each widget can belong to one dashboard.
     dashboard_id: str
     # Whether this widget is hidden on the dashboard.
-    isHidden: bool
-    # How parameters used by the visualization in this widget relate to other
-    # widgets on the dashboard. Databricks does not recommend modifying this
-    # definition in JSON.
-    parameterMappings: Any
-    # Coordinates of this widget on a dashboard. This portion of the API changes
-    # frequently and is unsupported.
+    is_hidden: bool
+    # How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does
+    # not recommend modifying this definition in JSON.
+    parameter_mappings: Any
+    # Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.
     position: Any
-    # If this is a textbox widget, the application displays this text. This
-    # field is ignored if the widget contains a visualization in the
-    # `visualization` field.
+    # If this is a textbox widget, the application displays this text. This field is ignored if the widget contains a
+    # visualization in the `visualization` field.
     text: str
     # Timestamp of the last time this object was updated.
     updated_at: str
 
-    def as_request(self) -> (dict, dict):
-        widgetOptions_query, widgetOptions_body = {}, {}
+    def as_dict(self) -> dict:
+        body = {}
         if self.created_at:
-            widgetOptions_body["created_at"] = self.created_at
+            body["created_at"] = self.created_at
         if self.dashboard_id:
-            widgetOptions_body["dashboard_id"] = self.dashboard_id
-        if self.isHidden:
-            widgetOptions_body["isHidden"] = self.isHidden
-        if self.parameterMappings:
-            widgetOptions_body["parameterMappings"] = self.parameterMappings
+            body["dashboard_id"] = self.dashboard_id
+        if self.is_hidden:
+            body["isHidden"] = self.is_hidden
+        if self.parameter_mappings:
+            body["parameterMappings"] = self.parameter_mappings
         if self.position:
-            widgetOptions_body["position"] = self.position
+            body["position"] = self.position
         if self.text:
-            widgetOptions_body["text"] = self.text
+            body["text"] = self.text
         if self.updated_at:
-            widgetOptions_body["updated_at"] = self.updated_at
+            body["updated_at"] = self.updated_at
 
-        return widgetOptions_query, widgetOptions_body
+        return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "WidgetOptions":
         return cls(
             created_at=d.get("created_at", None),
             dashboard_id=d.get("dashboard_id", None),
-            isHidden=d.get("isHidden", None),
-            parameterMappings=d.get("parameterMappings", None),
+            is_hidden=d.get("isHidden", None),
+            parameter_mappings=d.get("parameterMappings", None),
             position=d.get("position", None),
             text=d.get("text", None),
             updated_at=d.get("updated_at", None),
@@ -3749,74 +3253,95 @@ class AlertsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: EditAlert) -> Alert:
+    def create(
+        self,
+        name: str,
+        options: AlertOptions,
+        query_id: str,
+        alert_id: str,
+        *,
+        rearm: int = None,
+        **kwargs,
+    ) -> Alert:
         """Create an alert.
 
         Creates an alert. An alert is a Databricks SQL object that periodically
         runs a query, evaluates a condition of its result, and notifies users or
         alert destinations if the condition was met."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "POST", "/api/2.0/preview/sql/alerts", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = EditAlert(
+                alert_id=alert_id,
+                name=name,
+                options=options,
+                query_id=query_id,
+                rearm=rearm,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/2.0/preview/sql/alerts", body=body)
         return Alert.from_dict(json)
 
-    def create_schedule(self, request: CreateRefreshSchedule) -> RefreshSchedule:
+    def create_schedule(
+        self, cron: str, alert_id: str, *, data_source_id: str = None, **kwargs
+    ) -> RefreshSchedule:
         """Create a refresh schedule.
 
         Creates a new refresh schedule for an alert.
 
         **Note:** The structure of refresh schedules is subject to change."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CreateRefreshSchedule(
+                alert_id=alert_id, cron=cron, data_source_id=data_source_id
+            )
+        body = request.as_dict()
+
         json = self._api.do(
             "POST",
             f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules",
-            query=query,
             body=body,
         )
         return RefreshSchedule.from_dict(json)
 
-    def delete(self, request: DeleteAlertRequest):
+    def delete(self, alert_id: str, **kwargs):
         """Delete an alert.
 
         Deletes an alert. Deleted alerts are no longer accessible and cannot be
         restored. **Note:** Unlike queries and dashboards, alerts cannot be
         moved to the trash."""
-        query, body = request.as_request()
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/alerts/{request.alert_id}",
-            query=query,
-            body=body,
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DeleteAlertRequest(alert_id=alert_id)
 
-    def delete_schedule(self, request: DeleteScheduleRequest):
+        self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{request.alert_id}")
+
+    def delete_schedule(self, alert_id: str, schedule_id: str, **kwargs):
         """Delete a refresh schedule.
 
         Deletes an alert's refresh schedule. The refresh schedule specifies when
         to refresh and evaluate the associated query result."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DeleteScheduleRequest(alert_id=alert_id, schedule_id=schedule_id)
+
         self._api.do(
             "DELETE",
             f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules/{request.schedule_id}",
-            query=query,
-            body=body,
         )
 
-    def get(self, request: GetAlertRequest) -> Alert:
+    def get(self, alert_id: str, **kwargs) -> Alert:
         """Get an alert.
 
         Gets an alert."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/alerts/{request.alert_id}",
-            query=query,
-            body=body,
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetAlertRequest(alert_id=alert_id)
+
+        json = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{request.alert_id}")
         return Alert.from_dict(json)
 
-    def get_subscriptions(self, request: GetSubscriptionsRequest) -> SubscriptionList:
+    def get_subscriptions(self, alert_id: str, **kwargs) -> SubscriptionList:
         """Get an alert's subscriptions.
 
         Get the subscriptions for an alert. An alert subscription represents
@@ -3824,12 +3349,12 @@ class AlertsAPI:
         The alert recipient is specified by either the `user` field or the
         `destination` field. The `user` field is ignored if `destination` is
         non-`null`."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetSubscriptionsRequest(alert_id=alert_id)
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions"
         )
         return SubscriptionList.from_dict(json)
 
@@ -3841,7 +3366,7 @@ class AlertsAPI:
         json = self._api.do("GET", "/api/2.0/preview/sql/alerts")
         return AlertList.from_dict(json)
 
-    def list_schedules(self, request: ListSchedulesRequest) -> RefreshScheduleList:
+    def list_schedules(self, alert_id: str, **kwargs) -> RefreshScheduleList:
         """Get refresh schedules.
 
         Gets the refresh schedules for the specified alert. Alerts can have
@@ -3851,48 +3376,79 @@ class AlertsAPI:
         **Note:** Although refresh schedules are returned in a list, only one
         refresh schedule per alert is currently supported. The structure of
         refresh schedules is subject to change."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ListSchedulesRequest(alert_id=alert_id)
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/sql/alerts/{request.alert_id}/refresh-schedules"
         )
         return RefreshScheduleList.from_dict(json)
 
-    def subscribe(self, request: CreateSubscription) -> Subscription:
+    def subscribe(
+        self,
+        alert_id: str,
+        *,
+        destination_id: str = None,
+        user_id: int = None,
+        **kwargs,
+    ) -> Subscription:
         """Subscribe to an alert."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CreateSubscription(
+                alert_id=alert_id, destination_id=destination_id, user_id=user_id
+            )
+        body = request.as_dict()
+
         json = self._api.do(
             "POST",
             f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions",
-            query=query,
             body=body,
         )
         return Subscription.from_dict(json)
 
-    def unsubscribe(self, request: UnsubscribeRequest):
+    def unsubscribe(self, alert_id: str, subscription_id: str, **kwargs):
         """Unsubscribe to an alert.
 
         Unsubscribes a user or a destination to an alert."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = UnsubscribeRequest(
+                alert_id=alert_id, subscription_id=subscription_id
+            )
+
         self._api.do(
             "DELETE",
             f"/api/2.0/preview/sql/alerts/{request.alert_id}/subscriptions/{request.subscription_id}",
-            query=query,
-            body=body,
         )
 
-    def update(self, request: EditAlert):
+    def update(
+        self,
+        name: str,
+        options: AlertOptions,
+        query_id: str,
+        alert_id: str,
+        *,
+        rearm: int = None,
+        **kwargs,
+    ):
         """Update an alert.
 
         Updates an alert."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = EditAlert(
+                alert_id=alert_id,
+                name=name,
+                options=options,
+                query_id=query_id,
+                rearm=rearm,
+            )
+        body = request.as_dict()
+
         self._api.do(
-            "PUT",
-            f"/api/2.0/preview/sql/alerts/{request.alert_id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/preview/sql/alerts/{request.alert_id}", body=body
         )
 
 
@@ -3900,62 +3456,102 @@ class DashboardsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateDashboardRequest) -> Dashboard:
+    def create(
+        self,
+        *,
+        dashboard_filters_enabled: bool = None,
+        is_draft: bool = None,
+        is_trashed: bool = None,
+        name: str = None,
+        tags: List[str] = None,
+        widgets: List[Widget] = None,
+        **kwargs,
+    ) -> Dashboard:
         """Create a dashboard object."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "POST", "/api/2.0/preview/sql/dashboards", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CreateDashboardRequest(
+                dashboard_filters_enabled=dashboard_filters_enabled,
+                is_draft=is_draft,
+                is_trashed=is_trashed,
+                name=name,
+                tags=tags,
+                widgets=widgets,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/2.0/preview/sql/dashboards", body=body)
         return Dashboard.from_dict(json)
 
-    def delete(self, request: DeleteDashboardRequest):
+    def delete(self, dashboard_id: str, **kwargs):
         """Remove a dashboard.
 
         Moves a dashboard to the trash. Trashed dashboards do not appear in list
         views or searches, and cannot be shared."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DeleteDashboardRequest(dashboard_id=dashboard_id)
+
         self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/dashboards/{request.dashboard_id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/preview/sql/dashboards/{request.dashboard_id}"
         )
 
-    def get(self, request: GetDashboardRequest) -> Dashboard:
+    def get(self, dashboard_id: str, **kwargs) -> Dashboard:
         """Retrieve a definition.
 
         Returns a JSON representation of a dashboard object, including its
         visualization and query objects."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetDashboardRequest(dashboard_id=dashboard_id)
+
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/dashboards/{request.dashboard_id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/sql/dashboards/{request.dashboard_id}"
         )
         return Dashboard.from_dict(json)
 
-    def list(self, request: ListDashboardsRequest) -> ListResponse:
+    def list(
+        self,
+        *,
+        order: ListOrder = None,
+        page: int = None,
+        page_size: int = None,
+        q: str = None,
+        **kwargs,
+    ) -> ListResponse:
         """Get dashboard objects.
 
         Fetch a paginated list of dashboard objects."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET", "/api/2.0/preview/sql/dashboards", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ListDashboardsRequest(
+                order=order, page=page, page_size=page_size, q=q
+            )
+
+        query = {}
+        if order:
+            query["order"] = request.order.value
+        if page:
+            query["page"] = request.page
+        if page_size:
+            query["page_size"] = request.page_size
+        if q:
+            query["q"] = request.q
+
+        json = self._api.do("GET", "/api/2.0/preview/sql/dashboards", query=query)
         return ListResponse.from_dict(json)
 
-    def restore(self, request: RestoreDashboardRequest):
+    def restore(self, dashboard_id: str, **kwargs):
         """Restore a dashboard.
 
         A restored dashboard appears in list views and searches and can be
         shared."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = RestoreDashboardRequest(dashboard_id=dashboard_id)
+
         self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/dashboards/trash/{request.dashboard_id}",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/preview/sql/dashboards/trash/{request.dashboard_id}"
         )
 
 
@@ -3979,44 +3575,75 @@ class DbsqlPermissionsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, request: GetDbsqlPermissionRequest) -> GetResponse:
+    def get(
+        self, object_type: ObjectTypePlural, object_id: str, **kwargs
+    ) -> GetResponse:
         """Get object ACL.
 
         Gets a JSON representation of the access control list (ACL) for a
         specified object."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetDbsqlPermissionRequest(
+                object_id=object_id, object_type=object_type
+            )
+
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}",
-            query=query,
-            body=body,
+            f"/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}",
         )
         return GetResponse.from_dict(json)
 
-    def set(self, request: SetRequest) -> SetResponse:
+    def set(
+        self,
+        object_type: ObjectTypePlural,
+        object_id: str,
+        *,
+        access_control_list: List[AccessControl] = None,
+        **kwargs,
+    ) -> SetResponse:
         """Set object ACL.
 
         Sets the access control list (ACL) for a specified object. This
         operation will complete rewrite the ACL."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = SetRequest(
+                access_control_list=access_control_list,
+                object_id=object_id,
+                object_type=object_type,
+            )
+        body = request.as_dict()
+
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}",
-            query=query,
+            f"/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}",
             body=body,
         )
         return SetResponse.from_dict(json)
 
-    def transfer_ownership(self, request: TransferOwnershipRequest) -> Success:
+    def transfer_ownership(
+        self,
+        object_type: OwnableObjectType,
+        object_id: TransferOwnershipObjectId,
+        *,
+        new_owner: str = None,
+        **kwargs,
+    ) -> Success:
         """Transfer object ownership.
 
         Transfers ownership of a dashboard, query, or alert to an active user.
         Requires an admin API key."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = TransferOwnershipRequest(
+                new_owner=new_owner, object_id=object_id, object_type=object_type
+            )
+        body = request.as_dict()
+
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}/transfer",
-            query=query,
+            f"/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}/transfer",
             body=body,
         )
         return Success.from_dict(json)
@@ -4026,7 +3653,18 @@ class QueriesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: QueryPostContent) -> Query:
+    def create(
+        self,
+        query_id: str,
+        *,
+        data_source_id: str = None,
+        description: str = None,
+        name: str = None,
+        options: Any = None,
+        query: str = None,
+        schedule: QueryInterval = None,
+        **kwargs,
+    ) -> Query:
         """Create a new query definition.
 
         Creates a new query definition. Queries created with this endpoint
@@ -4038,77 +3676,122 @@ class QueriesAPI:
         from an existing query.
 
         **Note**: You cannot add a visualization until you create the query."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "POST", "/api/2.0/preview/sql/queries", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = QueryPostContent(
+                data_source_id=data_source_id,
+                description=description,
+                name=name,
+                options=options,
+                query=query,
+                query_id=query_id,
+                schedule=schedule,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/2.0/preview/sql/queries", body=body)
         return Query.from_dict(json)
 
-    def delete(self, request: DeleteQueryRequest):
+    def delete(self, query_id: str, **kwargs):
         """Delete a query.
 
         Moves a query to the trash. Trashed queries immediately disappear from
         searches and list views, and they cannot be used for alerts. The trash
         is deleted after 30 days."""
-        query, body = request.as_request()
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/queries/{request.query_id}",
-            query=query,
-            body=body,
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DeleteQueryRequest(query_id=query_id)
 
-    def get(self, request: GetQueryRequest) -> Query:
+        self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{request.query_id}")
+
+    def get(self, query_id: str, **kwargs) -> Query:
         """Get a query definition.
 
         Retrieve a query object definition along with contextual permissions
         information about the currently authenticated user."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/queries/{request.query_id}",
-            query=query,
-            body=body,
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetQueryRequest(query_id=query_id)
+
+        json = self._api.do("GET", f"/api/2.0/preview/sql/queries/{request.query_id}")
         return Query.from_dict(json)
 
-    def list(self, request: ListQueriesRequest) -> QueryList:
+    def list(
+        self,
+        *,
+        order: str = None,
+        page: int = None,
+        page_size: int = None,
+        q: str = None,
+        **kwargs,
+    ) -> QueryList:
         """Get a list of queries.
 
         Gets a list of queries. Optionally, this list can be filtered by a
         search term."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET", "/api/2.0/preview/sql/queries", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ListQueriesRequest(
+                order=order, page=page, page_size=page_size, q=q
+            )
+
+        query = {}
+        if order:
+            query["order"] = request.order
+        if page:
+            query["page"] = request.page
+        if page_size:
+            query["page_size"] = request.page_size
+        if q:
+            query["q"] = request.q
+
+        json = self._api.do("GET", "/api/2.0/preview/sql/queries", query=query)
         return QueryList.from_dict(json)
 
-    def restore(self, request: RestoreQueryRequest):
+    def restore(self, query_id: str, **kwargs):
         """Restore a query.
 
         Restore a query that has been moved to the trash. A restored query
         appears in list views and searches. You can use restored queries for
         alerts."""
-        query, body = request.as_request()
-        self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/queries/trash/{request.query_id}",
-            query=query,
-            body=body,
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = RestoreQueryRequest(query_id=query_id)
 
-    def update(self, request: QueryPostContent) -> Query:
+        self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{request.query_id}")
+
+    def update(
+        self,
+        query_id: str,
+        *,
+        data_source_id: str = None,
+        description: str = None,
+        name: str = None,
+        options: Any = None,
+        query: str = None,
+        schedule: QueryInterval = None,
+        **kwargs,
+    ) -> Query:
         """Change a query definition.
 
         Modify this query definition.
 
         **Note**: You cannot undo this operation."""
-        query, body = request.as_request()
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = QueryPostContent(
+                data_source_id=data_source_id,
+                description=description,
+                name=name,
+                options=options,
+                query=query,
+                query_id=query_id,
+                schedule=schedule,
+            )
+        body = request.as_dict()
+
         json = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/queries/{request.query_id}",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/preview/sql/queries/{request.query_id}", body=body
         )
         return Query.from_dict(json)
 
@@ -4117,16 +3800,40 @@ class QueryHistoryAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def list(self, request: ListQueryHistoryRequest) -> ListQueriesResponse:
+    def list(
+        self,
+        *,
+        filter_by: QueryFilter = None,
+        include_metrics: bool = None,
+        max_results: int = None,
+        page_token: str = None,
+        **kwargs,
+    ) -> ListQueriesResponse:
         """List Queries.
 
         List the history of queries through SQL warehouses.
 
         You can filter by user ID, warehouse ID, status, and time range."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET", "/api/2.0/sql/history/queries", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ListQueryHistoryRequest(
+                filter_by=filter_by,
+                include_metrics=include_metrics,
+                max_results=max_results,
+                page_token=page_token,
+            )
+
+        query = {}
+        if filter_by:
+            query["filter_by"] = request.filter_by.as_dict()
+        if include_metrics:
+            query["include_metrics"] = request.include_metrics
+        if max_results:
+            query["max_results"] = request.max_results
+        if page_token:
+            query["page_token"] = request.page_token
+
+        json = self._api.do("GET", "/api/2.0/sql/history/queries", query=query)
         return ListQueriesResponse.from_dict(json)
 
 
@@ -4134,40 +3841,114 @@ class WarehousesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, request: CreateWarehouseRequest) -> CreateWarehouseResponse:
+    def create(
+        self,
+        *,
+        auto_stop_mins: int = None,
+        channel: Channel = None,
+        cluster_size: str = None,
+        creator_name: str = None,
+        enable_photon: bool = None,
+        enable_serverless_compute: bool = None,
+        instance_profile_arn: str = None,
+        max_num_clusters: int = None,
+        min_num_clusters: int = None,
+        name: str = None,
+        spot_instance_policy: SpotInstancePolicy = None,
+        tags: EndpointTags = None,
+        warehouse_type: WarehouseType = None,
+        **kwargs,
+    ) -> CreateWarehouseResponse:
         """Create a warehouse.
 
         Creates a new SQL warehouse."""
-        query, body = request.as_request()
-        json = self._api.do("POST", "/api/2.0/sql/warehouses", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = CreateWarehouseRequest(
+                auto_stop_mins=auto_stop_mins,
+                channel=channel,
+                cluster_size=cluster_size,
+                creator_name=creator_name,
+                enable_photon=enable_photon,
+                enable_serverless_compute=enable_serverless_compute,
+                instance_profile_arn=instance_profile_arn,
+                max_num_clusters=max_num_clusters,
+                min_num_clusters=min_num_clusters,
+                name=name,
+                spot_instance_policy=spot_instance_policy,
+                tags=tags,
+                warehouse_type=warehouse_type,
+            )
+        body = request.as_dict()
+
+        json = self._api.do("POST", "/api/2.0/sql/warehouses", body=body)
         return CreateWarehouseResponse.from_dict(json)
 
-    def delete(self, request: DeleteWarehouseRequest):
+    def delete(self, id: str, **kwargs):
         """Delete a warehouse.
 
         Deletes a SQL warehouse."""
-        query, body = request.as_request()
-        self._api.do(
-            "DELETE", f"/api/2.0/sql/warehouses/{request.id}", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = DeleteWarehouseRequest(id=id)
 
-    def edit(self, request: EditWarehouseRequest):
+        self._api.do("DELETE", f"/api/2.0/sql/warehouses/{request.id}")
+
+    def edit(
+        self,
+        id: str,
+        *,
+        auto_stop_mins: int = None,
+        channel: Channel = None,
+        cluster_size: str = None,
+        creator_name: str = None,
+        enable_databricks_compute: bool = None,
+        enable_photon: bool = None,
+        enable_serverless_compute: bool = None,
+        instance_profile_arn: str = None,
+        max_num_clusters: int = None,
+        min_num_clusters: int = None,
+        name: str = None,
+        spot_instance_policy: SpotInstancePolicy = None,
+        tags: EndpointTags = None,
+        warehouse_type: WarehouseType = None,
+        **kwargs,
+    ):
         """Update a warehouse.
 
         Updates the configuration for a SQL warehouse."""
-        query, body = request.as_request()
-        self._api.do(
-            "POST", f"/api/2.0/sql/warehouses/{request.id}/edit", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = EditWarehouseRequest(
+                auto_stop_mins=auto_stop_mins,
+                channel=channel,
+                cluster_size=cluster_size,
+                creator_name=creator_name,
+                enable_databricks_compute=enable_databricks_compute,
+                enable_photon=enable_photon,
+                enable_serverless_compute=enable_serverless_compute,
+                id=id,
+                instance_profile_arn=instance_profile_arn,
+                max_num_clusters=max_num_clusters,
+                min_num_clusters=min_num_clusters,
+                name=name,
+                spot_instance_policy=spot_instance_policy,
+                tags=tags,
+                warehouse_type=warehouse_type,
+            )
+        body = request.as_dict()
 
-    def get(self, request: GetWarehouseRequest) -> GetWarehouseResponse:
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{request.id}/edit", body=body)
+
+    def get(self, id: str, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
 
         Gets the information for a single SQL warehouse."""
-        query, body = request.as_request()
-        json = self._api.do(
-            "GET", f"/api/2.0/sql/warehouses/{request.id}", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = GetWarehouseRequest(id=id)
+
+        json = self._api.do("GET", f"/api/2.0/sql/warehouses/{request.id}")
         return GetWarehouseResponse.from_dict(json)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
@@ -4179,41 +3960,78 @@ class WarehousesAPI:
         json = self._api.do("GET", "/api/2.0/sql/config/warehouses")
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
 
-    def list(self, request: ListWarehousesRequest) -> ListWarehousesResponse:
+    def list(self, *, run_as_user_id: int = None, **kwargs) -> ListWarehousesResponse:
         """List warehouses.
 
         Lists all SQL warehouses that a user has manager permissions on."""
-        query, body = request.as_request()
-        json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = ListWarehousesRequest(run_as_user_id=run_as_user_id)
+
+        query = {}
+        if run_as_user_id:
+            query["run_as_user_id"] = request.run_as_user_id
+
+        json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query)
         return ListWarehousesResponse.from_dict(json)
 
     def set_workspace_warehouse_config(
-        self, request: SetWorkspaceWarehouseConfigRequest
+        self,
+        *,
+        channel: Channel = None,
+        config_param: RepeatedEndpointConfPairs = None,
+        data_access_config: List[EndpointConfPair] = None,
+        enable_databricks_compute: bool = None,
+        enable_serverless_compute: bool = None,
+        enabled_warehouse_types: List[WarehouseTypePair] = None,
+        global_param: RepeatedEndpointConfPairs = None,
+        google_service_account: str = None,
+        instance_profile_arn: str = None,
+        security_policy: SetWorkspaceWarehouseConfigRequestSecurityPolicy = None,
+        serverless_agreement: bool = None,
+        sql_configuration_parameters: RepeatedEndpointConfPairs = None,
+        **kwargs,
     ):
         """Set the workspace configuration.
 
         Sets the workspace level configuration that is shared by all SQL
         warehouses in a workspace."""
-        query, body = request.as_request()
-        self._api.do("PUT", "/api/2.0/sql/config/warehouses", query=query, body=body)
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = SetWorkspaceWarehouseConfigRequest(
+                channel=channel,
+                config_param=config_param,
+                data_access_config=data_access_config,
+                enable_databricks_compute=enable_databricks_compute,
+                enable_serverless_compute=enable_serverless_compute,
+                enabled_warehouse_types=enabled_warehouse_types,
+                global_param=global_param,
+                google_service_account=google_service_account,
+                instance_profile_arn=instance_profile_arn,
+                security_policy=security_policy,
+                serverless_agreement=serverless_agreement,
+                sql_configuration_parameters=sql_configuration_parameters,
+            )
+        body = request.as_dict()
 
-    def start(self, request: StartRequest):
+        self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body)
+
+    def start(self, id: str, **kwargs):
         """Start a warehouse.
 
         Starts a SQL warehouse."""
-        query, body = request.as_request()
-        self._api.do(
-            "POST",
-            f"/api/2.0/sql/warehouses/{request.id}/start",
-            query=query,
-            body=body,
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = StartRequest(id=id)
 
-    def stop(self, request: StopRequest):
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{request.id}/start")
+
+    def stop(self, id: str, **kwargs):
         """Stop a warehouse.
 
         Stops a SQL warehouse."""
-        query, body = request.as_request()
-        self._api.do(
-            "POST", f"/api/2.0/sql/warehouses/{request.id}/stop", query=query, body=body
-        )
+        request = kwargs.get("request", None)
+        if not request:  # request is not given through keyed args
+            request = StopRequest(id=id)
+
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{request.id}/stop")

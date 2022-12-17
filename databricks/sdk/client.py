@@ -418,6 +418,10 @@ class ApiClient(requests.Session):
         self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
         # https://github.com/tomasbasham/ratelimit/blob/master/ratelimit/decorators.py
 
+    @property
+    def account_id(self) -> str:
+        return self._cfg.account_id
+
     def do(self, method: str, path, query: dict = None, body: dict = None) -> dict:
         response = self.request(
             method,
