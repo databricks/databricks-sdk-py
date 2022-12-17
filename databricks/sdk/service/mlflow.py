@@ -1,8 +1,11 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+
+_LOG = logging.getLogger('databricks.sdk.service.mlflow')
 
 # all definitions in this file are in alphabetical order
 

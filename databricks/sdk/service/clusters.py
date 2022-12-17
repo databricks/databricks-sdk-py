@@ -1,8 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+
+from ..errors import OperationFailed, OperationTimeout
+
+_LOG = logging.getLogger('databricks.sdk.service.clusters')
 
 # all definitions in this file are in alphabetical order
 
@@ -1598,7 +1605,9 @@ class ClustersAPI:
                spark_env_vars: Dict[str, str] = None,
                ssh_public_keys: List[str] = None,
                workload_type: WorkloadType = None,
-               **kwargs) -> CreateClusterResponse:
+               wait=True,
+               timeout=20,
+               **kwargs) -> ClusterInfo:
         """Create new cluster.
         
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
@@ -1638,11 +1647,34 @@ class ClustersAPI:
                                     ssh_public_keys=ssh_public_keys,
                                     workload_type=workload_type)
         body = request.as_dict()
+        if wait:
+            op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.ERROR, State.TERMINATED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=op_response['cluster_id'])
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={op_response['cluster_id']})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+        self._api.do('POST', '/api/2.0/clusters/create', body=body)
 
-        json = self._api.do('POST', '/api/2.0/clusters/create', body=body)
-        return CreateClusterResponse.from_dict(json)
-
-    def delete(self, cluster_id: str, **kwargs):
+    def delete(self, cluster_id: str, wait=True, timeout=20, **kwargs) -> ClusterInfo:
         """Terminate cluster.
         
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
@@ -1652,6 +1684,31 @@ class ClustersAPI:
         if not request: # request is not given through keyed args
             request = DeleteCluster(cluster_id=cluster_id)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', '/api/2.0/clusters/delete', body=body)
+            started = time.time()
+            target_states = (State.TERMINATED, )
+            failure_states = (State.ERROR, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=request.cluster_id)
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach TERMINATED, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={request.cluster_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/delete', body=body)
 
     def edit(self,
@@ -1681,7 +1738,9 @@ class ClustersAPI:
              spark_env_vars: Dict[str, str] = None,
              ssh_public_keys: List[str] = None,
              workload_type: WorkloadType = None,
-             **kwargs):
+             wait=True,
+             timeout=20,
+             **kwargs) -> ClusterInfo:
         """Update cluster configuration.
         
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -1723,6 +1782,31 @@ class ClustersAPI:
                                   ssh_public_keys=ssh_public_keys,
                                   workload_type=workload_type)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', '/api/2.0/clusters/edit', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.ERROR, State.TERMINATED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=request.cluster_id)
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={request.cluster_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
 
     def events(self,
@@ -1762,7 +1846,7 @@ class ClustersAPI:
                 return
             body = json['next_page']
 
-    def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
+    def get(self, cluster_id: str, wait=False, timeout=20, **kwargs) -> ClusterInfo:
         """Get cluster info.
         
         "Retrieves the information for a cluster given its identifier. Clusters can be described while they
@@ -1773,6 +1857,32 @@ class ClustersAPI:
 
         query = {}
         if cluster_id: query['cluster_id'] = request.cluster_id
+
+        if wait:
+            op_response = self._api.do('GET', '/api/2.0/clusters/get', query=query)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.ERROR, State.TERMINATED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=op_response['cluster_id'])
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={op_response['cluster_id']})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
 
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterInfo.from_dict(json)
@@ -1840,7 +1950,14 @@ class ClustersAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/clusters/pin', body=body)
 
-    def resize(self, cluster_id: str, *, autoscale: AutoScale = None, num_workers: int = None, **kwargs):
+    def resize(self,
+               cluster_id: str,
+               *,
+               autoscale: AutoScale = None,
+               num_workers: int = None,
+               wait=True,
+               timeout=20,
+               **kwargs) -> ClusterInfo:
         """Resize cluster.
         
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
@@ -1849,9 +1966,40 @@ class ClustersAPI:
         if not request: # request is not given through keyed args
             request = ResizeCluster(autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', '/api/2.0/clusters/resize', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.ERROR, State.TERMINATED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=request.cluster_id)
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={request.cluster_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/resize', body=body)
 
-    def restart(self, cluster_id: str, *, restart_user: str = None, **kwargs):
+    def restart(self,
+                cluster_id: str,
+                *,
+                restart_user: str = None,
+                wait=True,
+                timeout=20,
+                **kwargs) -> ClusterInfo:
         """Restart cluster.
         
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
@@ -1860,6 +2008,31 @@ class ClustersAPI:
         if not request: # request is not given through keyed args
             request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', '/api/2.0/clusters/restart', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.ERROR, State.TERMINATED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=request.cluster_id)
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={request.cluster_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/restart', body=body)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -1870,7 +2043,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
         return GetSparkVersionsResponse.from_dict(json)
 
-    def start(self, cluster_id: str, **kwargs):
+    def start(self, cluster_id: str, wait=True, timeout=20, **kwargs) -> ClusterInfo:
         """Start terminated cluster.
         
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
@@ -1883,6 +2056,31 @@ class ClustersAPI:
         if not request: # request is not given through keyed args
             request = StartCluster(cluster_id=cluster_id)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', '/api/2.0/clusters/start', body=body)
+            started = time.time()
+            target_states = (State.RUNNING, )
+            failure_states = (State.ERROR, State.TERMINATED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(cluster_id=request.cluster_id)
+                status = poll.state
+                status_message = poll.state_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"clusters.get(cluster_id={request.cluster_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/start', body=body)
 
     def unpin(self, cluster_id: str, **kwargs):

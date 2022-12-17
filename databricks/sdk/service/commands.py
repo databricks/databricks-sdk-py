@@ -1,8 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
+
+from ..errors import OperationFailed, OperationTimeout
+
+_LOG = logging.getLogger('databricks.sdk.service.commands')
 
 # all definitions in this file are in alphabetical order
 
@@ -230,7 +237,14 @@ class CommandExecutionAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel(self, *, cluster_id: str = None, command_id: str = None, context_id: str = None, **kwargs):
+    def cancel(self,
+               *,
+               cluster_id: str = None,
+               command_id: str = None,
+               context_id: str = None,
+               wait=True,
+               timeout=20,
+               **kwargs) -> CommandStatusResponse:
         """Cancel a command.
         
         Cancels a currently running command within an execution context.
@@ -240,6 +254,35 @@ class CommandExecutionAPI:
         if not request: # request is not given through keyed args
             request = CancelCommand(cluster_id=cluster_id, command_id=command_id, context_id=context_id)
         body = request.as_dict()
+        if wait:
+            self._api.do('POST', '/api/1.2/commands/cancel', body=body)
+            started = time.time()
+            target_states = (CommandStatus.Cancelled, )
+            failure_states = (CommandStatus.Error, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.command_status(cluster_id=request.cluster_id,
+                                           command_id=request.command_id,
+                                           context_id=request.context_id)
+                status = poll.status
+                status_message = f'current status: {status}'
+                if poll.results:
+                    status_message = poll.results.cause
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach Cancelled, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"command_execution.command_status(cluster_id={request.cluster_id}, command_id={request.command_id}, context_id={request.context_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/1.2/commands/cancel', body=body)
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str,
@@ -278,7 +321,13 @@ class CommandExecutionAPI:
         json = self._api.do('GET', '/api/1.2/contexts/status', query=query)
         return ContextStatusResponse.from_dict(json)
 
-    def create(self, *, cluster_id: str = None, language: Language = None, **kwargs) -> Created:
+    def create(self,
+               *,
+               cluster_id: str = None,
+               language: Language = None,
+               wait=True,
+               timeout=20,
+               **kwargs) -> ContextStatusResponse:
         """Create an execution context.
         
         Creates an execution context for running cluster commands.
@@ -288,9 +337,32 @@ class CommandExecutionAPI:
         if not request: # request is not given through keyed args
             request = CreateContext(cluster_id=cluster_id, language=language)
         body = request.as_dict()
-
-        json = self._api.do('POST', '/api/1.2/contexts/create', body=body)
-        return Created.from_dict(json)
+        if wait:
+            op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body)
+            started = time.time()
+            target_states = (ContextStatus.Running, )
+            failure_states = (ContextStatus.Error, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.context_status(cluster_id=request.cluster_id, context_id=op_response['id'])
+                status = poll.status
+                status_message = f'current status: {status}'
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach Running, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"command_execution.context_status(cluster_id={request.cluster_id}, context_id={op_response['id']})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+        self._api.do('POST', '/api/1.2/contexts/create', body=body)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
         """Delete an execution context.
@@ -308,7 +380,9 @@ class CommandExecutionAPI:
                 command: str = None,
                 context_id: str = None,
                 language: Language = None,
-                **kwargs) -> Created:
+                wait=True,
+                timeout=20,
+                **kwargs) -> CommandStatusResponse:
         """Run a command.
         
         Runs a cluster command in the given execution context, using the provided language.
@@ -321,6 +395,31 @@ class CommandExecutionAPI:
                               context_id=context_id,
                               language=language)
         body = request.as_dict()
-
-        json = self._api.do('POST', '/api/1.2/commands/execute', body=body)
-        return Created.from_dict(json)
+        if wait:
+            op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body)
+            started = time.time()
+            target_states = (CommandStatus.Finished, CommandStatus.Error, )
+            failure_states = (CommandStatus.Cancelled, CommandStatus.Cancelling, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.command_status(cluster_id=request.cluster_id,
+                                           command_id=op_response['id'],
+                                           context_id=request.context_id)
+                status = poll.status
+                status_message = f'current status: {status}'
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach Finished or Error, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"command_execution.command_status(cluster_id={request.cluster_id}, command_id={op_response['id']}, context_id={request.context_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+        self._api.do('POST', '/api/1.2/commands/execute', body=body)

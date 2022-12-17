@@ -1,8 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+
+from ..errors import OperationFailed, OperationTimeout
+
+_LOG = logging.getLogger('databricks.sdk.service.deployment')
 
 # all definitions in this file are in alphabetical order
 
@@ -1657,6 +1664,8 @@ class WorkspacesAPI:
                private_access_settings_id: str = None,
                storage_configuration_id: str = None,
                storage_customer_managed_key_id: str = None,
+               wait=True,
+               timeout=20,
                **kwargs) -> Workspace:
         """Create a new workspace.
         
@@ -1705,9 +1714,34 @@ class WorkspacesAPI:
                 storage_customer_managed_key_id=storage_customer_managed_key_id,
                 workspace_name=workspace_name)
         body = request.as_dict()
-
-        json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
-        return Workspace.from_dict(json)
+        if wait:
+            op_response = self._api.do('POST',
+                                       f'/api/2.0/accounts/{self._api.account_id}/workspaces',
+                                       body=body)
+            started = time.time()
+            target_states = (WorkspaceStatus.RUNNING, )
+            failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(workspace_id=op_response['workspace_id'])
+                status = poll.workspace_status
+                status_message = poll.workspace_status_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"workspaces.get(workspace_id={op_response['workspace_id']})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+        self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
 
     def delete(self, workspace_id: int, **kwargs):
         """Delete workspace.
@@ -1767,7 +1801,9 @@ class WorkspacesAPI:
                network_id: str = None,
                storage_configuration_id: str = None,
                storage_customer_managed_key_id: str = None,
-               **kwargs):
+               wait=True,
+               timeout=20,
+               **kwargs) -> Workspace:
         """Update workspace configuration.
         
         Updates a workspace configuration for either a running workspace or a failed workspace. The elements
@@ -1864,6 +1900,33 @@ class WorkspacesAPI:
                 storage_customer_managed_key_id=storage_customer_managed_key_id,
                 workspace_id=workspace_id)
         body = request.as_dict()
+        if wait:
+            self._api.do('PATCH',
+                         f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
+                         body=body)
+            started = time.time()
+            target_states = (WorkspaceStatus.RUNNING, )
+            failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
+            status_message = 'polling...'
+            attempt = 1
+            while (started + (timeout * 60)) > time.time():
+                poll = self.get(workspace_id=request.workspace_id)
+                status = poll.workspace_status
+                status_message = poll.workspace_status_message
+                if status in target_states:
+                    return poll
+                if status in failure_states:
+                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                    raise OperationFailed(msg)
+                prefix = f"workspaces.get(workspace_id={request.workspace_id})"
+                sleep = attempt
+                if sleep > 10:
+                    # sleep 10s max per attempt
+                    sleep = 10
+                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+                time.sleep(sleep + random.random())
+                attempt += 1
+            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
                      body=body)
