@@ -163,7 +163,7 @@ class {{.Name}}API:{{if .Description}}
         {{if .Pagination.NeedsOffsetDedupe -}}
         # deduplicate items that may have been added during iteration
         seen = set()
-        {{- end}}{{if .Pagination.Offset}}
+        {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.0/clusters/events")) }}
         query['{{.Pagination.Offset.Name}}'] = {{if eq .Pagination.Increment 1}}1{{else}}0{{end}}{{end}}
         while True:
           json = {{template "method-do" .}}

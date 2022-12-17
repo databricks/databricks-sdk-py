@@ -11,7 +11,8 @@ from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.pipelines')
 
-from .clusters import (AutoScale, AwsAttributes, AzureAttributes, ClusterLogConf, GcpAttributes)
+from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
+                       ClusterLogConf, GcpAttributes)
 from .libraries import MavenLibrary
 
 # all definitions in this file are in alphabetical order
