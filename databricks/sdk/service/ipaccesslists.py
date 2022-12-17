@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -259,13 +259,13 @@ class IpAccessListsAPI:
         json = self._api.do('GET', f'/api/2.0/ip-access-lists/{request.ip_access_list_id}')
         return FetchIpAccessListResponse.from_dict(json)
 
-    def list(self) -> GetIpAccessListResponse:
+    def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
         
         Gets all IP access lists for the specified workspace."""
 
         json = self._api.do('GET', '/api/2.0/ip-access-lists')
-        return GetIpAccessListResponse.from_dict(json)
+        return [IpAccessListInfo.from_dict(v) for v in json['ip_access_lists']]
 
     def replace(self,
                 label: str,

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -362,7 +362,7 @@ class SecretsAPI:
         json = self._api.do('GET', '/api/2.0/secrets/acls/get', query=query)
         return AclItem.from_dict(json)
 
-    def list_acls(self, scope: str, **kwargs) -> ListAclsResponse:
+    def list_acls(self, scope: str, **kwargs) -> Iterator[AclItem]:
         """Lists ACLs.
         
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
@@ -377,9 +377,9 @@ class SecretsAPI:
         if scope: query['scope'] = request.scope
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query)
-        return ListAclsResponse.from_dict(json)
+        return [AclItem.from_dict(v) for v in json['items']]
 
-    def list_scopes(self) -> ListScopesResponse:
+    def list_scopes(self) -> Iterator[SecretScope]:
         """List all scopes.
         
         Lists all secret scopes available in the workspace.
@@ -387,9 +387,9 @@ class SecretsAPI:
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call."""
 
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list')
-        return ListScopesResponse.from_dict(json)
+        return [SecretScope.from_dict(v) for v in json['scopes']]
 
-    def list_secrets(self, scope: str, **kwargs) -> ListSecretsResponse:
+    def list_secrets(self, scope: str, **kwargs) -> Iterator[SecretMetadata]:
         """List secret keys.
         
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
@@ -406,7 +406,7 @@ class SecretsAPI:
         if scope: query['scope'] = request.scope
 
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query)
-        return ListSecretsResponse.from_dict(json)
+        return [SecretMetadata.from_dict(v) for v in json['secrets']]
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission, **kwargs):
         """Create/update an ACL.

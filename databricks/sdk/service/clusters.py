@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -1734,7 +1734,7 @@ class ClustersAPI:
                offset: int = None,
                order: GetEventsOrder = None,
                start_time: int = None,
-               **kwargs) -> GetEventsResponse:
+               **kwargs) -> Iterator[ClusterEvent]:
         """List cluster activity events.
         
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
@@ -1751,8 +1751,15 @@ class ClustersAPI:
                                 start_time=start_time)
         body = request.as_dict()
 
-        json = self._api.do('POST', '/api/2.0/clusters/events', body=body)
-        return GetEventsResponse.from_dict(json)
+        while True:
+            json = self._api.do('POST', '/api/2.0/clusters/events', body=body)
+            if not json['events']:
+                return
+            for v in json['events']:
+                yield ClusterEvent.from_dict(v)
+            if 'next_page' not in json or not json['next_page']:
+                return
+            body = json['next_page']
 
     def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
         """Get cluster info.
@@ -1769,7 +1776,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterInfo.from_dict(json)
 
-    def list(self, *, can_use_client: str = None, **kwargs) -> ListClustersResponse:
+    def list(self, *, can_use_client: str = None, **kwargs) -> Iterator[ClusterInfo]:
         """List all clusters.
         
         Returns information about all pinned clusters, currently active clusters, up to 70 of the most
@@ -1788,7 +1795,7 @@ class ClustersAPI:
         if can_use_client: query['can_use_client'] = request.can_use_client
 
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query)
-        return ListClustersResponse.from_dict(json)
+        return [ClusterInfo.from_dict(v) for v in json['clusters']]
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -1948,7 +1955,7 @@ class InstanceProfilesAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/instance-profiles/edit', body=body)
 
-    def list(self) -> ListInstanceProfilesResponse:
+    def list(self) -> Iterator[InstanceProfile]:
         """List available instance profiles.
         
         List the instance profiles that the calling user can use to launch a cluster.
@@ -1956,7 +1963,7 @@ class InstanceProfilesAPI:
         This API is available to all users."""
 
         json = self._api.do('GET', '/api/2.0/instance-profiles/list')
-        return ListInstanceProfilesResponse.from_dict(json)
+        return [InstanceProfile.from_dict(v) for v in json['instance_profiles']]
 
     def remove(self, instance_profile_arn: str, **kwargs):
         """Remove the instance profile.

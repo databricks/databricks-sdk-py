@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -525,7 +525,7 @@ class WorkspaceAssignmentAPI:
         )
         return WorkspacePermissions.from_dict(json)
 
-    def list(self, workspace_id: int, **kwargs) -> PermissionAssignments:
+    def list(self, workspace_id: int, **kwargs) -> Iterator[PermissionAssignment]:
         """Get permission assignments.
         
         Get the permission assignments for the specified Databricks Account and Databricks Workspace."""
@@ -537,7 +537,7 @@ class WorkspaceAssignmentAPI:
             'GET',
             f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments'
         )
-        return PermissionAssignments.from_dict(json)
+        return [PermissionAssignment.from_dict(v) for v in json['permission_assignments']]
 
     def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int, **kwargs):
         """Update permissions assignment.

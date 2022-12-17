@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterator, List
 
 from .clusters import CreateCluster
 from .libraries import Library
@@ -1874,7 +1874,7 @@ class JobsAPI:
              limit: int = None,
              name: str = None,
              offset: int = None,
-             **kwargs) -> ListJobsResponse:
+             **kwargs) -> Iterator[Job]:
         """List all jobs.
         
         Retrieves a list of jobs."""
@@ -1888,8 +1888,19 @@ class JobsAPI:
         if name: query['name'] = request.name
         if offset: query['offset'] = request.offset
 
-        json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
-        return ListJobsResponse.from_dict(json)
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        while True:
+            json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
+            if not json['jobs']:
+                return
+            for v in json['jobs']:
+                i = v['job_id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Job.from_dict(v)
+            query['offset'] += len(json['Jobs'])
 
     def list_runs(self,
                   *,
@@ -1902,7 +1913,7 @@ class JobsAPI:
                   run_type: ListRunsRunType = None,
                   start_time_from: int = None,
                   start_time_to: int = None,
-                  **kwargs) -> ListRunsResponse:
+                  **kwargs) -> Iterator[Run]:
         """List runs for a job.
         
         List runs in descending order by start time."""
@@ -1929,8 +1940,19 @@ class JobsAPI:
         if start_time_from: query['start_time_from'] = request.start_time_from
         if start_time_to: query['start_time_to'] = request.start_time_to
 
-        json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query)
-        return ListRunsResponse.from_dict(json)
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        while True:
+            json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query)
+            if not json['runs']:
+                return
+            for v in json['runs']:
+                i = v['run_id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Run.from_dict(v)
+            query['offset'] += len(json['Runs'])
 
     def repair_run(self,
                    run_id: int,

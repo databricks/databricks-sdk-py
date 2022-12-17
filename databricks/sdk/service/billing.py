@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -514,14 +514,14 @@ class BudgetsAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}')
         return WrappedBudgetWithStatus.from_dict(json)
 
-    def list(self) -> BudgetList:
+    def list(self) -> Iterator[BudgetWithStatus]:
         """Get all budgets.
         
         Gets all budgets associated with this account, including noncumulative status for each day that the
         budget is configured to include."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget')
-        return BudgetList.from_dict(json)
+        return [BudgetWithStatus.from_dict(v) for v in json['budgets']]
 
     def update(self, budget: Budget, budget_id: str, **kwargs):
         """Modify budget.
@@ -640,7 +640,7 @@ class LogDeliveryAPI:
              credentials_id: str = None,
              status: LogDeliveryConfigStatus = None,
              storage_configuration_id: str = None,
-             **kwargs) -> WrappedLogDeliveryConfigurations:
+             **kwargs) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
         
         Gets all Databricks log delivery configurations associated with an account specified by ID."""
@@ -656,7 +656,7 @@ class LogDeliveryAPI:
         if storage_configuration_id: query['storage_configuration_id'] = request.storage_configuration_id
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/log-delivery', query=query)
-        return WrappedLogDeliveryConfigurations.from_dict(json)
+        return [LogDeliveryConfiguration.from_dict(v) for v in json['log_delivery_configurations']]
 
     def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str, **kwargs):
         """Enable or disable log delivery configuration.

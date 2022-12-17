@@ -2314,7 +2314,7 @@ class DashboardsAPI:
              page: int = None,
              page_size: int = None,
              q: str = None,
-             **kwargs) -> ListResponse:
+             **kwargs) -> Iterator[Dashboard]:
         """Get dashboard objects.
         
         Fetch a paginated list of dashboard objects."""
@@ -2328,8 +2328,20 @@ class DashboardsAPI:
         if page_size: query['page_size'] = request.page_size
         if q: query['q'] = request.q
 
-        json = self._api.do('GET', '/api/2.0/preview/sql/dashboards', query=query)
-        return ListResponse.from_dict(json)
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['page'] = 1 # start iterating from the first page
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/sql/dashboards', query=query)
+            if not json['results']:
+                return
+            for v in json['results']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Dashboard.from_dict(v)
+            query['page'] += 1
 
     def restore(self, dashboard_id: str, **kwargs):
         """Restore a dashboard.
@@ -2508,7 +2520,7 @@ class QueriesAPI:
              page: int = None,
              page_size: int = None,
              q: str = None,
-             **kwargs) -> QueryList:
+             **kwargs) -> Iterator[Query]:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term."""
@@ -2522,8 +2534,20 @@ class QueriesAPI:
         if page_size: query['page_size'] = request.page_size
         if q: query['q'] = request.q
 
-        json = self._api.do('GET', '/api/2.0/preview/sql/queries', query=query)
-        return QueryList.from_dict(json)
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['page'] = 1 # start iterating from the first page
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/sql/queries', query=query)
+            if not json['results']:
+                return
+            for v in json['results']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Query.from_dict(v)
+            query['page'] += 1
 
     def restore(self, query_id: str, **kwargs):
         """Restore a query.
@@ -2578,7 +2602,7 @@ class QueryHistoryAPI:
              include_metrics: bool = None,
              max_results: int = None,
              page_token: str = None,
-             **kwargs) -> ListQueriesResponse:
+             **kwargs) -> Iterator[QueryInfo]:
         """List Queries.
         
         List the history of queries through SQL warehouses.
@@ -2597,8 +2621,15 @@ class QueryHistoryAPI:
         if max_results: query['max_results'] = request.max_results
         if page_token: query['page_token'] = request.page_token
 
-        json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query)
-        return ListQueriesResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query)
+            if not json['res']:
+                return
+            for v in json['res']:
+                yield QueryInfo.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
 
 class WarehousesAPI:
@@ -2717,7 +2748,7 @@ class WarehousesAPI:
         json = self._api.do('GET', '/api/2.0/sql/config/warehouses')
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
 
-    def list(self, *, run_as_user_id: int = None, **kwargs) -> ListWarehousesResponse:
+    def list(self, *, run_as_user_id: int = None, **kwargs) -> Iterator[EndpointInfo]:
         """List warehouses.
         
         Lists all SQL warehouses that a user has manager permissions on."""
@@ -2729,7 +2760,7 @@ class WarehousesAPI:
         if run_as_user_id: query['run_as_user_id'] = request.run_as_user_id
 
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query)
-        return ListWarehousesResponse.from_dict(json)
+        return [EndpointInfo.from_dict(v) for v in json['warehouses']]
 
     def set_workspace_warehouse_config(
             self,

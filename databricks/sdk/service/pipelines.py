@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterator, List
 
 from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
                        ClusterLogConf, GcpAttributes)
@@ -832,7 +832,7 @@ class PipelinesAPI:
                        max_results: int = None,
                        order_by: List[str] = None,
                        page_token: str = None,
-                       **kwargs) -> ListPipelinesResponse:
+                       **kwargs) -> Iterator[PipelineStateInfo]:
         """List pipelines.
         
         Lists pipelines defined in the Delta Live Tables system."""
@@ -849,8 +849,15 @@ class PipelinesAPI:
         if order_by: query['order_by'] = [v for v in request.order_by]
         if page_token: query['page_token'] = request.page_token
 
-        json = self._api.do('GET', '/api/2.0/pipelines', query=query)
-        return ListPipelinesResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/pipelines', query=query)
+            if not json['statuses']:
+                return
+            for v in json['statuses']:
+                yield PipelineStateInfo.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def list_updates(self,
                      pipeline_id: str,

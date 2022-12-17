@@ -1,7 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -158,7 +158,7 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/repos/{request.repo_id}')
         return RepoInfo.from_dict(json)
 
-    def list(self, *, next_page_token: str = None, path_prefix: str = None, **kwargs) -> ListReposResponse:
+    def list(self, *, next_page_token: str = None, path_prefix: str = None, **kwargs) -> Iterator[RepoInfo]:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
@@ -171,8 +171,15 @@ class ReposAPI:
         if next_page_token: query['next_page_token'] = request.next_page_token
         if path_prefix: query['path_prefix'] = request.path_prefix
 
-        json = self._api.do('GET', '/api/2.0/repos', query=query)
-        return ListReposResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/repos', query=query)
+            if not json['repos']:
+                return
+            for v in json['repos']:
+                yield RepoInfo.from_dict(v)
+            query['next_page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def update(self, repo_id: int, *, branch: str = None, tag: str = None, **kwargs):
         """Update a repo.
