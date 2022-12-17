@@ -668,12 +668,10 @@ class PermissionsAPI:
                 request_object_type=request_object_type,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            query=query,
             body=body,
         )
         return ObjectPermissions.from_dict(json)
@@ -692,12 +690,10 @@ class PermissionsAPI:
                 request_object_type=request_object_type,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels",
-            query=query,
             body=body,
         )
         return GetPermissionLevelsResponse.from_dict(json)
@@ -725,12 +721,10 @@ class PermissionsAPI:
                 request_object_type=request_object_type,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "PUT",
             f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            query=query,
             body=body,
         )
 
@@ -756,12 +750,10 @@ class PermissionsAPI:
                 request_object_type=request_object_type,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "PATCH",
             f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            query=query,
             body=body,
         )
 
@@ -787,12 +779,10 @@ class WorkspaceAssignmentAPI:
                 permission_assignments=permission_assignments, workspace_id=workspace_id
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "POST",
             f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments",
-            query=query,
             body=body,
         )
         return WorkspaceAssignmentsCreated.from_dict(json)
@@ -809,12 +799,10 @@ class WorkspaceAssignmentAPI:
                 principal_id=principal_id, workspace_id=workspace_id
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "DELETE",
             f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
-            query=query,
             body=body,
         )
 
@@ -828,12 +816,10 @@ class WorkspaceAssignmentAPI:
         if not request:
             request = GetWorkspaceAssignmentRequest(workspace_id=workspace_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/permissions",
-            query=query,
             body=body,
         )
         return WorkspacePermissions.from_dict(json)
@@ -848,12 +834,10 @@ class WorkspaceAssignmentAPI:
         if not request:
             request = ListWorkspaceAssignmentRequest(workspace_id=workspace_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments",
-            query=query,
             body=body,
         )
         return PermissionAssignments.from_dict(json)
@@ -878,11 +862,9 @@ class WorkspaceAssignmentAPI:
                 workspace_id=workspace_id,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "PUT",
             f"/api/2.0/preview/accounts//workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
-            query=query,
             body=body,
         )

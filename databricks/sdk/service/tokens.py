@@ -91,8 +91,7 @@ class PublicTokenInfo:
     comment: str
     # Server time (in epoch milliseconds) when the token was created.
     creation_time: int
-    # Server time (in epoch milliseconds) when the token will expire, or -1 if
-    # not applicable.
+    # Server time (in epoch milliseconds) when the token will expire, or -1 if not applicable.
     expiry_time: int
     # The ID of this token.
     token_id: str
@@ -160,9 +159,8 @@ class TokensAPI:
                 comment=comment, lifetime_seconds=lifetime_seconds
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/2.0/token/create", query=query, body=body)
+        json = self._api.do("POST", "/api/2.0/token/create", body=body)
         return CreateTokenResponse.from_dict(json)
 
     def delete(self, token_id: str, **kwargs):
@@ -177,9 +175,8 @@ class TokensAPI:
         if not request:
             request = RevokeTokenRequest(token_id=token_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/token/delete", query=query, body=body)
+        self._api.do("POST", "/api/2.0/token/delete", body=body)
 
     def list(self) -> ListTokensResponse:
         """List tokens.

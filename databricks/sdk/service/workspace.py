@@ -13,10 +13,9 @@ class Delete:
 
     # The absolute path of the notebook or directory.
     path: str
-    # The flag that specifies whether to delete the object recursively. It is
-    # `false` by default. Please note this deleting directory is not atomic. If
-    # it fails in the middle, some of objects under this directory may be
-    # deleted and cannot be undone.
+    # The flag that specifies whether to delete the object recursively. It is `false` by default. Please note this
+    # deleting directory is not atomic. If it fails in the middle, some of objects under this directory may be deleted
+    # and cannot be undone.
     recursive: bool
 
     def as_dict(self) -> dict:
@@ -40,17 +39,15 @@ class Delete:
 class Export:
     """Export a notebook"""
 
-    # Flag to enable direct download. If it is `true`, the response will be the
-    # exported file itself. Otherwise, the response contains content as base64
-    # encoded string.
+    # Flag to enable direct download. If it is `true`, the response will be the exported file itself. Otherwise, the
+    # response contains content as base64 encoded string.
     direct_download: bool  # query
-    # This specifies the format of the exported file. By default, this is
-    # `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
+    # This specifies the format of the exported file. By default, this is `SOURCE`. However it may be one of: `SOURCE`,
+    # `HTML`, `JUPYTER`, `DBC`.
     #
     # The value is case sensitive.
     format: "ExportFormat"  # query
-    # The absolute path of the notebook or directory. Exporting directory is
-    # only support for `DBC` format.
+    # The absolute path of the notebook or directory. Exporting directory is only support for `DBC` format.
     path: str  # query
 
     def as_dict(self) -> dict:
@@ -74,9 +71,8 @@ class Export:
 
 
 class ExportFormat(Enum):
-    """This specifies the format of the file to be imported. By default, this is
-    `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`. The
-    value is case sensitive."""
+    """This specifies the format of the file to be imported. By default, this is `SOURCE`. However it may be one of:
+    `SOURCE`, `HTML`, `JUPYTER`, `DBC`. The value is case sensitive."""
 
     DBC = "DBC"
     HTML = "HTML"
@@ -88,8 +84,8 @@ class ExportFormat(Enum):
 @dataclass
 class ExportResponse:
 
-    # The base64-encoded content. If the limit (10MB) is exceeded, exception
-    # with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
+    # The base64-encoded content. If the limit (10MB) is exceeded, exception with error code
+    # **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
     content: str
 
     def as_dict(self) -> dict:
@@ -132,23 +128,18 @@ class Import:
 
     # The base64-encoded content. This has a limit of 10 MB.
     #
-    # If the limit (10MB) is exceeded, exception with error code
-    # **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown. This parameter might be
-    # absent, and instead a posted file will be used.
+    # If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown. This
+    # parameter might be absent, and instead a posted file will be used.
     content: str
-    # This specifies the format of the file to be imported. By default, this is
-    # `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
-    # The value is case sensitive.
+    # This specifies the format of the file to be imported. By default, this is `SOURCE`. However it may be one of:
+    # `SOURCE`, `HTML`, `JUPYTER`, `DBC`. The value is case sensitive.
     format: "ExportFormat"
-    # The language of the object. This value is set only if the object type is
-    # `NOTEBOOK`.
+    # The language of the object. This value is set only if the object type is `NOTEBOOK`.
     language: "Language"
-    # The flag that specifies whether to overwrite existing object. It is
-    # `false` by default. For `DBC` format, `overwrite` is not supported since
-    # it may contain a directory.
+    # The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC` format,
+    # `overwrite` is not supported since it may contain a directory.
     overwrite: bool
-    # The absolute path of the notebook or directory. Importing directory is
-    # only support for `DBC` format.
+    # The absolute path of the notebook or directory. Importing directory is only support for `DBC` format.
     path: str
 
     def as_dict(self) -> dict:
@@ -178,8 +169,7 @@ class Import:
 
 
 class Language(Enum):
-    """The language of the object. This value is set only if the object type is
-    `NOTEBOOK`."""
+    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
 
     PYTHON = "PYTHON"
     R = "R"
@@ -238,9 +228,8 @@ class ListResponse:
 @dataclass
 class Mkdirs:
 
-    # The absolute path of the directory. If the parent directories do not
-    # exist, it will also create them. If the directory already exists, this
-    # command will do nothing and succeed.
+    # The absolute path of the directory. If the parent directories do not exist, it will also create them. If the
+    # directory already exists, this command will do nothing and succeed.
     path: str
 
     def as_dict(self) -> dict:
@@ -262,8 +251,7 @@ class ObjectInfo:
 
     # <content needed>
     created_at: int
-    # The language of the object. This value is set only if the object type is
-    # `NOTEBOOK`.
+    # The language of the object. This value is set only if the object type is `NOTEBOOK`.
     language: "Language"
     # <content needed>
     modified_at: int
@@ -338,9 +326,8 @@ class WorkspaceAPI:
         if not request:
             request = Delete(path=path, recursive=recursive)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/workspace/delete", query=query, body=body)
+        self._api.do("POST", "/api/2.0/workspace/delete", body=body)
 
     def export(
         self,
@@ -365,13 +352,14 @@ class WorkspaceAPI:
         if not request:
             request = Export(direct_download=direct_download, format=format, path=path)
         body = request.as_dict()
+
         query = {}
         if direct_download:
-            query["direct_download"] = direct_download
+            query["direct_download"] = request.direct_download
         if format:
-            query["format"] = format.value
+            query["format"] = request.format.value
         if path:
-            query["path"] = path
+            query["path"] = request.path
 
         json = self._api.do("GET", "/api/2.0/workspace/export", query=query, body=body)
         return ExportResponse.from_dict(json)
@@ -386,9 +374,10 @@ class WorkspaceAPI:
         if not request:
             request = GetStatus(path=path)
         body = request.as_dict()
+
         query = {}
         if path:
-            query["path"] = path
+            query["path"] = request.path
 
         json = self._api.do(
             "GET", "/api/2.0/workspace/get-status", query=query, body=body
@@ -422,9 +411,8 @@ class WorkspaceAPI:
                 path=path,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/workspace/import", query=query, body=body)
+        self._api.do("POST", "/api/2.0/workspace/import", body=body)
 
     def list(
         self, path: str, *, notebooks_modified_after: int = None, **kwargs
@@ -439,11 +427,12 @@ class WorkspaceAPI:
         if not request:
             request = List(notebooks_modified_after=notebooks_modified_after, path=path)
         body = request.as_dict()
+
         query = {}
         if notebooks_modified_after:
-            query["notebooks_modified_after"] = notebooks_modified_after
+            query["notebooks_modified_after"] = request.notebooks_modified_after
         if path:
-            query["path"] = path
+            query["path"] = request.path
 
         json = self._api.do("GET", "/api/2.0/workspace/list", query=query, body=body)
         return ListResponse.from_dict(json)
@@ -463,6 +452,5 @@ class WorkspaceAPI:
         if not request:
             request = Mkdirs(path=path)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/workspace/mkdirs", query=query, body=body)
+        self._api.do("POST", "/api/2.0/workspace/mkdirs", body=body)

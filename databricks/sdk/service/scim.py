@@ -236,11 +236,9 @@ class ListGroupsRequest:
     count: int  # query
     # Comma-separated list of attributes to exclude in response.
     excludedAttributes: str  # query
-    # Query by which the results have to be filtered. Supported operators are
-    # equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
-    # Additionally, simple expressions can be formed using logical operators -
-    # `and` and `or`. The [SCIM RFC] has more details but we currently only
-    # support simple expressions.
+    # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
+    # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
+    # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
     #
     # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
@@ -290,8 +288,7 @@ class ListGroupsResponse:
     itemsPerPage: int
     # User objects returned in the response.
     Resources: "List[Group]"
-    # Starting index of all the results that matched the request filters. First
-    # item is number 1.
+    # Starting index of all the results that matched the request filters. First item is number 1.
     startIndex: int
     # Total results that match the request filters.
     totalResults: int
@@ -328,8 +325,7 @@ class ListServicePrincipalResponse:
     itemsPerPage: int
     # User objects returned in the response.
     Resources: "List[ServicePrincipal]"
-    # Starting index of all the results that matched the request filters. First
-    # item is number 1.
+    # Starting index of all the results that matched the request filters. First item is number 1.
     startIndex: int
     # Total results that match the request filters.
     totalResults: int
@@ -369,11 +365,9 @@ class ListServicePrincipalsRequest:
     count: int  # query
     # Comma-separated list of attributes to exclude in response.
     excludedAttributes: str  # query
-    # Query by which the results have to be filtered. Supported operators are
-    # equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
-    # Additionally, simple expressions can be formed using logical operators -
-    # `and` and `or`. The [SCIM RFC] has more details but we currently only
-    # support simple expressions.
+    # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
+    # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
+    # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
     #
     # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
@@ -432,16 +426,14 @@ class ListUsersRequest:
     count: int  # query
     # Comma-separated list of attributes to exclude in response.
     excludedAttributes: str  # query
-    # Query by which the results have to be filtered. Supported operators are
-    # equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
-    # Additionally, simple expressions can be formed using logical operators -
-    # `and` and `or`. The [SCIM RFC] has more details but we currently only
-    # support simple expressions.
+    # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
+    # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
+    # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
     #
     # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
-    # Attribute to sort the results. Multi-part paths are supported. For
-    # example, `userName`, `name.givenName`, and `emails`.
+    # Attribute to sort the results. Multi-part paths are supported. For example, `userName`, `name.givenName`, and
+    # `emails`.
     sortBy: str  # query
     # The order to sort the results.
     sortOrder: "ListSortOrder"  # query
@@ -487,8 +479,7 @@ class ListUsersResponse:
     itemsPerPage: int
     # User objects returned in the response.
     Resources: "List[User]"
-    # Starting index of all the results that matched the request filters. First
-    # item is number 1.
+    # Starting index of all the results that matched the request filters. First item is number 1.
     startIndex: int
     # Total results that match the request filters.
     totalResults: int
@@ -674,8 +665,7 @@ class User:
 
     # If this user is active
     active: bool
-    # String that represents a concatenation of given and family names. For
-    # example `John Smith`.
+    # String that represents a concatenation of given and family names. For example `John Smith`.
     displayName: str
     # All the emails associated with the Databricks user.
     emails: "List[ComplexValue]"
@@ -777,11 +767,8 @@ class AccountGroupsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", f"/api/2.0/accounts//scim/v2/Groups", query=query, body=body
-        )
+        json = self._api.do("POST", f"/api/2.0/accounts//scim/v2/Groups", body=body)
         return Group.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -793,11 +780,8 @@ class AccountGroupsAPI:
         if not request:
             request = DeleteGroupRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
 
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
@@ -808,11 +792,8 @@ class AccountGroupsAPI:
         if not request:
             request = GetGroupRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
         return Group.from_dict(json)
 
     def list(
@@ -843,21 +824,22 @@ class AccountGroupsAPI:
                 start_index=start_index,
             )
         body = request.as_dict()
+
         query = {}
         if attributes:
-            query["attributes"] = attributes
+            query["attributes"] = request.attributes
         if count:
-            query["count"] = count
+            query["count"] = request.count
         if excluded_attributes:
-            query["excludedAttributes"] = excluded_attributes
+            query["excludedAttributes"] = request.excluded_attributes
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if sort_by:
-            query["sortBy"] = sort_by
+            query["sortBy"] = request.sort_by
         if sort_order:
-            query["sortOrder"] = sort_order.value
+            query["sortOrder"] = request.sort_order.value
         if start_index:
-            query["startIndex"] = start_index
+            query["startIndex"] = request.start_index
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts//scim/v2/Groups", query=query, body=body
@@ -884,11 +866,8 @@ class AccountGroupsAPI:
         if not request:
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
 
     def update(
         self,
@@ -919,11 +898,8 @@ class AccountGroupsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PUT", f"/api/2.0/accounts//scim/v2/Groups/{id}", query=query, body=body
-        )
+        self._api.do("PUT", f"/api/2.0/accounts//scim/v2/Groups/{id}", body=body)
 
 
 class AccountServicePrincipalsAPI:
@@ -961,13 +937,9 @@ class AccountServicePrincipalsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/accounts//scim/v2/ServicePrincipals", body=body
         )
         return ServicePrincipal.from_dict(json)
 
@@ -980,13 +952,9 @@ class AccountServicePrincipalsAPI:
         if not request:
             request = DeleteServicePrincipalRequest(id=id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
         )
 
     def get(self, id: str, **kwargs) -> ServicePrincipal:
@@ -999,13 +967,9 @@ class AccountServicePrincipalsAPI:
         if not request:
             request = GetServicePrincipalRequest(id=id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
         )
         return ServicePrincipal.from_dict(json)
 
@@ -1037,21 +1001,22 @@ class AccountServicePrincipalsAPI:
                 start_index=start_index,
             )
         body = request.as_dict()
+
         query = {}
         if attributes:
-            query["attributes"] = attributes
+            query["attributes"] = request.attributes
         if count:
-            query["count"] = count
+            query["count"] = request.count
         if excluded_attributes:
-            query["excludedAttributes"] = excluded_attributes
+            query["excludedAttributes"] = request.excluded_attributes
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if sort_by:
-            query["sortBy"] = sort_by
+            query["sortBy"] = request.sort_by
         if sort_order:
-            query["sortOrder"] = sort_order.value
+            query["sortOrder"] = request.sort_order.value
         if start_index:
-            query["startIndex"] = start_index
+            query["startIndex"] = request.start_index
 
         json = self._api.do(
             "GET",
@@ -1082,13 +1047,9 @@ class AccountServicePrincipalsAPI:
         if not request:
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "PATCH",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
         )
 
     def update(
@@ -1124,13 +1085,9 @@ class AccountServicePrincipalsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "PUT",
-            f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/accounts//scim/v2/ServicePrincipals/{id}", body=body
         )
 
 
@@ -1174,11 +1131,8 @@ class AccountUsersAPI:
                 user_name=user_name,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", f"/api/2.0/accounts//scim/v2/Users", query=query, body=body
-        )
+        json = self._api.do("POST", f"/api/2.0/accounts//scim/v2/Users", body=body)
         return User.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -1191,11 +1145,8 @@ class AccountUsersAPI:
         if not request:
             request = DeleteUserRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
 
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
@@ -1206,11 +1157,8 @@ class AccountUsersAPI:
         if not request:
             request = GetUserRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
         return User.from_dict(json)
 
     def list(
@@ -1241,21 +1189,22 @@ class AccountUsersAPI:
                 start_index=start_index,
             )
         body = request.as_dict()
+
         query = {}
         if attributes:
-            query["attributes"] = attributes
+            query["attributes"] = request.attributes
         if count:
-            query["count"] = count
+            query["count"] = request.count
         if excluded_attributes:
-            query["excludedAttributes"] = excluded_attributes
+            query["excludedAttributes"] = request.excluded_attributes
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if sort_by:
-            query["sortBy"] = sort_by
+            query["sortBy"] = request.sort_by
         if sort_order:
-            query["sortOrder"] = sort_order.value
+            query["sortOrder"] = request.sort_order.value
         if start_index:
-            query["startIndex"] = start_index
+            query["startIndex"] = request.start_index
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts//scim/v2/Users", query=query, body=body
@@ -1283,11 +1232,8 @@ class AccountUsersAPI:
         if not request:
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
 
     def update(
         self,
@@ -1324,11 +1270,8 @@ class AccountUsersAPI:
                 user_name=user_name,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PUT", f"/api/2.0/accounts//scim/v2/Users/{id}", query=query, body=body
-        )
+        self._api.do("PUT", f"/api/2.0/accounts//scim/v2/Users/{id}", body=body)
 
 
 class CurrentUserAPI:
@@ -1378,11 +1321,8 @@ class GroupsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.0/preview/scim/v2/Groups", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body)
         return Group.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -1394,11 +1334,8 @@ class GroupsAPI:
         if not request:
             request = DeleteGroupRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
 
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
@@ -1409,11 +1346,8 @@ class GroupsAPI:
         if not request:
             request = GetGroupRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
         return Group.from_dict(json)
 
     def list(
@@ -1444,21 +1378,22 @@ class GroupsAPI:
                 start_index=start_index,
             )
         body = request.as_dict()
+
         query = {}
         if attributes:
-            query["attributes"] = attributes
+            query["attributes"] = request.attributes
         if count:
-            query["count"] = count
+            query["count"] = request.count
         if excluded_attributes:
-            query["excludedAttributes"] = excluded_attributes
+            query["excludedAttributes"] = request.excluded_attributes
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if sort_by:
-            query["sortBy"] = sort_by
+            query["sortBy"] = request.sort_by
         if sort_order:
-            query["sortOrder"] = sort_order.value
+            query["sortOrder"] = request.sort_order.value
         if start_index:
-            query["startIndex"] = start_index
+            query["startIndex"] = request.start_index
 
         json = self._api.do(
             "GET", "/api/2.0/preview/scim/v2/Groups", query=query, body=body
@@ -1485,11 +1420,8 @@ class GroupsAPI:
         if not request:
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
 
     def update(
         self,
@@ -1520,11 +1452,8 @@ class GroupsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", query=query, body=body
-        )
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body)
 
 
 class ServicePrincipalsAPI:
@@ -1562,10 +1491,9 @@ class ServicePrincipalsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, body=body
+            "POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body
         )
         return ServicePrincipal.from_dict(json)
 
@@ -1578,13 +1506,9 @@ class ServicePrincipalsAPI:
         if not request:
             request = DeleteServicePrincipalRequest(id=id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
         )
 
     def get(self, id: str, **kwargs) -> ServicePrincipal:
@@ -1597,13 +1521,9 @@ class ServicePrincipalsAPI:
         if not request:
             request = GetServicePrincipalRequest(id=id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
         )
         return ServicePrincipal.from_dict(json)
 
@@ -1636,21 +1556,22 @@ class ServicePrincipalsAPI:
                 start_index=start_index,
             )
         body = request.as_dict()
+
         query = {}
         if attributes:
-            query["attributes"] = attributes
+            query["attributes"] = request.attributes
         if count:
-            query["count"] = count
+            query["count"] = request.count
         if excluded_attributes:
-            query["excludedAttributes"] = excluded_attributes
+            query["excludedAttributes"] = request.excluded_attributes
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if sort_by:
-            query["sortBy"] = sort_by
+            query["sortBy"] = request.sort_by
         if sort_order:
-            query["sortOrder"] = sort_order.value
+            query["sortOrder"] = request.sort_order.value
         if start_index:
-            query["startIndex"] = start_index
+            query["startIndex"] = request.start_index
 
         json = self._api.do(
             "GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, body=body
@@ -1678,13 +1599,9 @@ class ServicePrincipalsAPI:
         if not request:
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "PATCH",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
         )
 
     def update(
@@ -1720,13 +1637,9 @@ class ServicePrincipalsAPI:
                 roles=roles,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "PUT",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            query=query,
-            body=body,
+            "PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body
         )
 
 
@@ -1770,11 +1683,8 @@ class UsersAPI:
                 user_name=user_name,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.0/preview/scim/v2/Users", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body)
         return User.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -1787,11 +1697,8 @@ class UsersAPI:
         if not request:
             request = DeleteUserRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
 
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
@@ -1802,11 +1709,8 @@ class UsersAPI:
         if not request:
             request = GetUserRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
         return User.from_dict(json)
 
     def list(
@@ -1837,21 +1741,22 @@ class UsersAPI:
                 start_index=start_index,
             )
         body = request.as_dict()
+
         query = {}
         if attributes:
-            query["attributes"] = attributes
+            query["attributes"] = request.attributes
         if count:
-            query["count"] = count
+            query["count"] = request.count
         if excluded_attributes:
-            query["excludedAttributes"] = excluded_attributes
+            query["excludedAttributes"] = request.excluded_attributes
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if sort_by:
-            query["sortBy"] = sort_by
+            query["sortBy"] = request.sort_by
         if sort_order:
-            query["sortOrder"] = sort_order.value
+            query["sortOrder"] = request.sort_order.value
         if start_index:
-            query["startIndex"] = start_index
+            query["startIndex"] = request.start_index
 
         json = self._api.do(
             "GET", "/api/2.0/preview/scim/v2/Users", query=query, body=body
@@ -1879,11 +1784,8 @@ class UsersAPI:
         if not request:
             request = PartialUpdate(id=id, operations=operations)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)
 
     def update(
         self,
@@ -1920,8 +1822,5 @@ class UsersAPI:
                 user_name=user_name,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PUT", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, body=body
-        )
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body)

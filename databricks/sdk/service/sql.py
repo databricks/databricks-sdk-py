@@ -54,12 +54,11 @@ class Alert:
     options: "AlertOptions"
 
     query: "Query"
-    # Number of seconds after being triggered before the alert rearms itself and
-    # can be triggered again. If `null`, alert will never be triggered again.
+    # Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`,
+    # alert will never be triggered again.
     rearm: int
-    # State of the alert. Possible values are: `unknown` (yet to be evaluated),
-    # `triggered` (evaluated and fulfilled trigger conditions), or `ok`
-    # (evaluated and did not fulfill trigger conditions).
+    # State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled
+    # trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
     state: "AlertState"
     # Timestamp when the alert was last updated.
     updated_at: str
@@ -113,25 +112,22 @@ class AlertOptions:
 
     # Name of column in the query result to compare in alert evaluation.
     column: str
-    # Custom body of alert notification, if it exists. See [here] for custom
-    # templating instructions.
+    # Custom body of alert notification, if it exists. See [here] for custom templating instructions.
     #
     # [here]: https://docs.databricks.com/sql/user/alerts/index.html
     custom_body: str
-    # Custom subject of alert notification, if it exists. This includes email
-    # subject, Slack notification header, etc. See [here] for custom templating
-    # instructions.
+    # Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc.
+    # See [here] for custom templating instructions.
     #
     # [here]: https://docs.databricks.com/sql/user/alerts/index.html
     custom_subject: str
-    # Whether or not the alert is muted. If an alert is muted, it will not
-    # notify users and alert destinations when triggered.
+    # Whether or not the alert is muted. If an alert is muted, it will not notify users and alert destinations when
+    # triggered.
     muted: bool
-    # Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`,
-    # `!=`
+    # Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`
     op: str
-    # Number of failures encountered during alert refresh. This counter is used
-    # for sending aggregated alert failure email notifications.
+    # Number of failures encountered during alert refresh. This counter is used for sending aggregated alert failure
+    # email notifications.
     schedule_failures: int
     # Value used to compare in alert evaluation.
     value: str
@@ -169,9 +165,8 @@ class AlertOptions:
 
 
 class AlertState(Enum):
-    """State of the alert. Possible values are: `unknown` (yet to be evaluated),
-    `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-    and did not fulfill trigger conditions)."""
+    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled
+    trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
 
     ok = "ok"
     triggered = "triggered"
@@ -242,23 +237,20 @@ class ChannelName(Enum):
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    # In the web application, query filters that share a name are coupled to a
-    # single selection box if this value is true.
+    # In the web application, query filters that share a name are coupled to a single selection box if this value is
+    # true.
     dashboard_filters_enabled: bool
     # Draft dashboards only appear in list views for their owners.
     is_draft: bool
-    # Indicates whether the dashboard is trashed. Trashed dashboards don't
-    # appear in list views.
+    # Indicates whether the dashboard is trashed. Trashed dashboards don't appear in list views.
     is_trashed: bool
-    # The title of this dashboard that appears in list views and at the top of
-    # the dashboard page.
+    # The title of this dashboard that appears in list views and at the top of the dashboard page.
     name: str
 
     tags: "List[str]"
-    # An array of widget objects. A complete description of widget objects can
-    # be found in the response to [Retrieve A Dashboard
-    # Definition](#operation/sql-analytics-fetch-dashboard). Databricks does not
-    # recommend creating new widgets via this API.
+    # An array of widget objects. A complete description of widget objects can be found in the response to [Retrieve A
+    # Dashboard Definition](#operation/sql-analytics-fetch-dashboard). Databricks does not recommend creating new
+    # widgets via this API.
     widgets: "List[Widget]"
 
     def as_dict(self) -> dict:
@@ -298,8 +290,7 @@ class CreateRefreshSchedule:
     alert_id: str  # path
     # Cron string representing the refresh schedule.
     cron: str
-    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-    # will be used to refresh.
+    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse will be used to refresh.
     data_source_id: str
 
     def as_dict(self) -> dict:
@@ -327,9 +318,8 @@ class CreateSubscription:
 
     # ID of the alert.
     alert_id: str  # path
-    # ID of the alert subscriber (if subscribing an alert destination). Alert
-    # destinations can be configured by admins through the UI. See
-    # [here](/sql/admin/alert-destinations.html).
+    # ID of the alert subscriber (if subscribing an alert destination). Alert destinations can be configured by admins
+    # through the UI. See [here](/sql/admin/alert-destinations.html).
     destination_id: str
     # ID of the alert subscriber (if subscribing a user).
     user_id: int
@@ -357,8 +347,8 @@ class CreateSubscription:
 @dataclass
 class CreateWarehouseRequest:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -366,12 +356,10 @@ class CreateWarehouseRequest:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
@@ -385,18 +373,15 @@ class CreateWarehouseRequest:
     enable_serverless_compute: bool
     # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -404,13 +389,12 @@ class CreateWarehouseRequest:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
@@ -500,32 +484,27 @@ class Dashboard:
     can_edit: bool
     # Timestamp when this dashboard was created.
     created_at: str
-    # In the web application, query filters that share a name are coupled to a
-    # single selection box if this value is `true`.
+    # In the web application, query filters that share a name are coupled to a single selection box if this value is
+    # `true`.
     dashboard_filters_enabled: bool
     # The ID for this dashboard.
     id: str
-    # Indicates whether a dashboard is trashed. Trashed dashboards won't appear
-    # in list views. If this boolean is `true`, the `options` property for this
-    # dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
+    # Indicates whether a dashboard is trashed. Trashed dashboards won't appear in list views. If this boolean is
+    # `true`, the `options` property for this dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
     # permanently deleted after 30 days.
     is_archived: bool
-    # Whether a dashboard is a draft. Draft dashboards only appear in list views
-    # for their owners.
+    # Whether a dashboard is a draft. Draft dashboards only appear in list views for their owners.
     is_draft: bool
-    # Indicates whether this query object appears in the current user's
-    # favorites list. This flag determines whether the star icon for favorites
-    # is selected.
+    # Indicates whether this query object appears in the current user's favorites list. This flag determines whether the
+    # star icon for favorites is selected.
     is_favorite: bool
-    # The title of the dashboard that appears in list views and at the top of
-    # the dashboard page.
+    # The title of the dashboard that appears in list views and at the top of the dashboard page.
     name: str
 
     options: "DashboardOptions"
     # This describes an enum
     permission_tier: "PermissionLevel"
-    # URL slug. Usually mirrors the query name with dashes (`-`) instead of
-    # spaces. Appears in the URL for this query.
+    # URL slug. Usually mirrors the query name with dashes (`-`) instead of spaces. Appears in the URL for this query.
     slug: str
 
     tags: "List[str]"
@@ -606,9 +585,8 @@ class Dashboard:
 @dataclass
 class DashboardOptions:
 
-    # The timestamp when this dashboard was moved to trash. Only present when
-    # the `is_archived` property is `true`. Trashed items are deleted after
-    # thirty days.
+    # The timestamp when this dashboard was moved to trash. Only present when the `is_archived` property is `true`.
+    # Trashed items are deleted after thirty days.
     moved_to_trash_at: str
 
     def as_dict(self) -> dict:
@@ -629,11 +607,10 @@ class DashboardOptions:
 class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
-    # The unique identifier for this data source / SQL warehouse. Can be used
-    # when creating / modifying queries and dashboards.
+    # The unique identifier for this data source / SQL warehouse. Can be used when creating / modifying queries and
+    # dashboards.
     id: str
-    # The string name of this data source / SQL warehouse as it appears in the
-    # Databricks SQL web application.
+    # The string name of this data source / SQL warehouse as it appears in the Databricks SQL web application.
     name: str
     # <needs content>
     pause_reason: str
@@ -850,8 +827,8 @@ class EditAlert:
     options: "AlertOptions"
     # ID of the query evaluated by the alert.
     query_id: str
-    # Number of seconds after being triggered before the alert rearms itself and
-    # can be triggered again. If `null`, alert will never be triggered again.
+    # Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`,
+    # alert will never be triggered again.
     rearm: int
 
     def as_dict(self) -> dict:
@@ -883,8 +860,8 @@ class EditAlert:
 @dataclass
 class EditWarehouseRequest:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -892,19 +869,16 @@ class EditWarehouseRequest:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
     # Configures whether the endpoint should use Databricks Compute (aka Nephos)
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Configures whether the endpoint should use Photon optimized clusters.
     #
@@ -918,18 +892,15 @@ class EditWarehouseRequest:
     id: str  # path
     # Deprecated. Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -937,13 +908,12 @@ class EditWarehouseRequest:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # Configurations whether the warehouse should use spot instances.
     spot_instance_policy: "SpotInstancePolicy"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
@@ -1039,8 +1009,8 @@ class EndpointHealth:
 
     # Details about errors that are causing current degraded/failed status.
     details: str
-    # The reason for failure to bring up clusters for this endpoint. This is
-    # available when status is 'FAILED' and sometimes when it is DEGRADED.
+    # The reason for failure to bring up clusters for this endpoint. This is available when status is 'FAILED' and
+    # sometimes when it is DEGRADED.
     failure_reason: "TerminationReason"
     # Deprecated. split into summary and details for security
     message: str
@@ -1080,8 +1050,8 @@ class EndpointHealth:
 @dataclass
 class EndpointInfo:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -1089,19 +1059,16 @@ class EndpointInfo:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
     # Configures whether the endpoint should use Databricks Compute (aka Nephos)
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Configures whether the endpoint should use Photon optimized clusters.
     #
@@ -1111,8 +1078,7 @@ class EndpointInfo:
     #
     # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Optional health status. Assume the endpoint is healthy if this field is
-    # not set.
+    # Optional health status. Assume the endpoint is healthy if this field is not set.
     health: "EndpointHealth"
     # unique identifier for endpoint
     id: str
@@ -1120,18 +1086,15 @@ class EndpointInfo:
     instance_profile_arn: str
     # the jdbc connection string for this endpoint
     jdbc_url: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -1139,8 +1102,7 @@ class EndpointInfo:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # current number of active sessions for the endpoint
     num_active_sessions: int
@@ -1152,8 +1114,8 @@ class EndpointInfo:
     spot_instance_policy: "SpotInstancePolicy"
     # State of the warehouse
     state: "State"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
@@ -1450,8 +1412,8 @@ class GetWarehouseRequest:
 @dataclass
 class GetWarehouseResponse:
 
-    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
-    # RUNNING queries) before it is automatically stopped.
+    # The amount of time in minutes that a SQL Endpoint must be idle (i.e., no RUNNING queries) before it is
+    # automatically stopped.
     #
     # Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
     #
@@ -1459,19 +1421,16 @@ class GetWarehouseResponse:
     auto_stop_mins: int
     # Channel Details
     channel: "Channel"
-    # Size of the clusters allocated for this endpoint. Increasing the size of a
-    # spark cluster allows you to run larger queries on it. If you want to
-    # increase the number of concurrent queries, please tune max_num_clusters.
+    # Size of the clusters allocated for this endpoint. Increasing the size of a spark cluster allows you to run larger
+    # queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters.
     #
-    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-    # - 2X-Large - 3X-Large - 4X-Large
+    # Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     cluster_size: str
     # endpoint creator name
     creator_name: str
     # Configures whether the endpoint should use Databricks Compute (aka Nephos)
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Configures whether the endpoint should use Photon optimized clusters.
     #
@@ -1481,8 +1440,7 @@ class GetWarehouseResponse:
     #
     # Defaults to value in global endpoint settings
     enable_serverless_compute: bool
-    # Optional health status. Assume the endpoint is healthy if this field is
-    # not set.
+    # Optional health status. Assume the endpoint is healthy if this field is not set.
     health: "EndpointHealth"
     # unique identifier for endpoint
     id: str
@@ -1490,18 +1448,15 @@ class GetWarehouseResponse:
     instance_profile_arn: str
     # the jdbc connection string for this endpoint
     jdbc_url: str
-    # Maximum number of clusters that the autoscaler will create to handle
-    # concurrent queries.
+    # Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     #
     # Supported values: - Must be >= min_num_clusters - Must be <= 30.
     #
     # Defaults to min_clusters if unset.
     max_num_clusters: int
-    # Minimum number of available clusters that will be maintained for this SQL
-    # Endpoint. Increasing this will ensure that a larger number of clusters are
-    # always running and therefore may reduce the cold start time for new
-    # queries. This is similar to reserved vs. revocable cores in a resource
-    # manager.
+    # Minimum number of available clusters that will be maintained for this SQL Endpoint. Increasing this will ensure
+    # that a larger number of clusters are always running and therefore may reduce the cold start time for new queries.
+    # This is similar to reserved vs. revocable cores in a resource manager.
     #
     # Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
     #
@@ -1509,8 +1464,7 @@ class GetWarehouseResponse:
     min_num_clusters: int
     # Logical name for the cluster.
     #
-    # Supported values: - Must be unique within an org. - Must be less than 100
-    # characters.
+    # Supported values: - Must be unique within an org. - Must be less than 100 characters.
     name: str
     # current number of active sessions for the endpoint
     num_active_sessions: int
@@ -1522,8 +1476,8 @@ class GetWarehouseResponse:
     spot_instance_policy: "SpotInstancePolicy"
     # State of the warehouse
     state: "State"
-    # A set of key-value pairs that will be tagged on all resources (e.g., AWS
-    # instances and EBS volumes) associated with this SQL Endpoints.
+    # A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated
+    # with this SQL Endpoints.
     #
     # Supported values: - Number of tags < 45.
     tags: "EndpointTags"
@@ -1617,27 +1571,22 @@ class GetWorkspaceWarehouseConfigResponse:
     channel: "Channel"
     # Deprecated: Use sql_configuration_parameters
     config_param: "RepeatedEndpointConfPairs"
-    # Spark confs for external hive metastore configuration JSON serialized size
-    # must be less than <= 512K
+    # Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
     data_access_config: "List[EndpointConfPair]"
     # Enable Serverless compute for SQL Endpoints
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Enable Serverless compute for SQL Endpoints
     enable_serverless_compute: bool
-    # List of Warehouse Types allowed in this workspace (limits allowed value of
-    # the type field in CreateWarehouse and EditWarehouse). Note: Some types
-    # cannot be disabled, they don't need to be specified in
-    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
-    # warehouses to be converted to another type. Used by frontend to save
-    # specific type availability in the warehouse create and edit form UI.
+    # List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and
+    # EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in
+    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type.
+    # Used by frontend to save specific type availability in the warehouse create and edit form UI.
     enabled_warehouse_types: "List[WarehouseTypePair]"
     # Deprecated: Use sql_configuration_parameters
     global_param: "RepeatedEndpointConfPairs"
-    # GCP only: Google Service Account used to pass to cluster to access Google
-    # Cloud Storage
+    # GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
     google_service_account: str
     # AWS Only: Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
@@ -1768,20 +1717,18 @@ class ListOrder(Enum):
 class ListQueriesRequest:
     """Get a list of queries"""
 
-    # Name of query attribute to order by. Default sort order is ascending.
-    # Append a dash (`-`) to order descending instead.
+    # Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order descending
+    # instead.
     #
     # - `name`: The name of the query.
     #
     # - `created_at`: The timestamp the query was created.
     #
-    # - `schedule`: The refresh interval for each query. For example: "Every 5
-    # Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
-    # sorting.
+    # - `schedule`: The refresh interval for each query. For example: "Every 5 Hours" or "Every 5 Minutes". "Never" is
+    # treated as the highest value for sorting.
     #
-    # - `runtime`: The time it took to run this query. This is blank for
-    # parameterized queries. A blank value is treated as the highest value for
-    # sorting.
+    # - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank value is treated
+    # as the highest value for sorting.
     #
     # - `executed_at`: The timestamp when the query was last run.
     #
@@ -1946,8 +1893,8 @@ class ListSchedulesRequest:
 class ListWarehousesRequest:
     """List warehouses"""
 
-    # Service Principal which will be used to fetch the list of endpoints. If
-    # not specified, the user from the session header is used.
+    # Service Principal which will be used to fetch the list of endpoints. If not specified, the user from the session
+    # header is used.
     run_as_user_id: int  # query
 
     def as_dict(self) -> dict:
@@ -2049,8 +1996,7 @@ class OwnableObjectType(Enum):
 @dataclass
 class Parameter:
 
-    # The literal parameter marker that appears between double curly braces in
-    # the query text.
+    # The literal parameter marker that appears between double curly braces in the query text.
     name: str
     # The text displayed in a parameter picking widget.
     title: str
@@ -2112,46 +2058,38 @@ class PlansState(Enum):
 @dataclass
 class Query:
 
-    # Describes whether the authenticated user is allowed to edit the definition
-    # of this query.
+    # Describes whether the authenticated user is allowed to edit the definition of this query.
     can_edit: bool
     # The timestamp when this query was created.
     created_at: str
-    # Data Source ID. The UUID that uniquely identifies this data source / SQL
-    # warehouse across the API.
+    # Data Source ID. The UUID that uniquely identifies this data source / SQL warehouse across the API.
     data_source_id: str
-    # General description that conveys additional information about this query
-    # such as usage notes.
+    # General description that conveys additional information about this query such as usage notes.
     description: str
 
     id: str
-    # Indicates whether the query is trashed. Trashed queries can't be used in
-    # dashboards, or appear in search results. If this boolean is `true`, the
-    # `options` property for this query includes a `moved_to_trash_at`
-    # timestamp. Trashed queries are permanently deleted after 30 days.
+    # Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear in search results.
+    # If this boolean is `true`, the `options` property for this query includes a `moved_to_trash_at` timestamp. Trashed
+    # queries are permanently deleted after 30 days.
     is_archived: bool
-    # Whether the query is a draft. Draft queries only appear in list views for
-    # their owners. Visualizations from draft queries cannot appear on
-    # dashboards.
+    # Whether the query is a draft. Draft queries only appear in list views for their owners. Visualizations from draft
+    # queries cannot appear on dashboards.
     is_draft: bool
-    # Whether this query object appears in the current user's favorites list.
-    # This flag determines whether the star icon for favorites is selected.
+    # Whether this query object appears in the current user's favorites list. This flag determines whether the star icon
+    # for favorites is selected.
     is_favorite: bool
-    # Text parameter types are not safe from SQL injection for all types of data
-    # source. Set this Boolean parameter to `true` if a query either does not
-    # use any text type parameters or uses a data source type where text type
+    # Text parameter types are not safe from SQL injection for all types of data source. Set this Boolean parameter to
+    # `true` if a query either does not use any text type parameters or uses a data source type where text type
     # parameters are handled safely.
     is_safe: bool
 
     last_modified_by: "User"
     # The ID of the user who last saved changes to this query.
     last_modified_by_id: int
-    # If there is a cached result for this query and user, this field includes
-    # the query result ID. If this query uses parameters, this field is always
-    # null.
+    # If there is a cached result for this query and user, this field includes the query result ID. If this query uses
+    # parameters, this field is always null.
     latest_query_data_id: str
-    # The title of this query that appears in list views, widget headings, and
-    # on the query page.
+    # The title of this query that appears in list views, widget headings, and on the query page.
     name: str
 
     options: "QueryOptions"
@@ -2304,8 +2242,7 @@ class QueryInfo:
 
     # Channel information for the SQL warehouse at the time of query execution
     channel_used: "ChannelInfo"
-    # Total execution time of the query from the client’s point of view, in
-    # milliseconds.
+    # Total execution time of the query from the client’s point of view, in milliseconds.
     duration: int
     # Alias for `warehouse_id`.
     endpoint_id: str
@@ -2313,8 +2250,7 @@ class QueryInfo:
     error_message: str
     # The ID of the user whose credentials were used to run the query.
     executed_as_user_id: int
-    # The email address or username of the user whose credentials were used to
-    # run the query.
+    # The email address or username of the user whose credentials were used to run the query.
     executed_as_user_name: str
     # The time execution of the query ended.
     execution_end_time_ms: int
@@ -2512,14 +2448,12 @@ class QueryMetrics:
     execution_time_ms: int
     # Total amount of data sent over the network, in bytes.
     network_sent_bytes: int
-    # Total execution time for all individual Photon query engine tasks in the
-    # query, in milliseconds.
+    # Total execution time for all individual Photon query engine tasks in the query, in milliseconds.
     photon_total_time_ms: int
-    # Time spent waiting to execute the query because the SQL warehouse is
-    # already running the maximum number of concurrent queries, in milliseconds.
+    # Time spent waiting to execute the query because the SQL warehouse is already running the maximum number of
+    # concurrent queries, in milliseconds.
     queued_overload_time_ms: int
-    # Time waiting for compute resources to be provisioned for the SQL
-    # warehouse, in milliseconds.
+    # Time waiting for compute resources to be provisioned for the SQL warehouse, in milliseconds.
     queued_provisioning_time_ms: int
     # Total size of data read by the query, in bytes.
     read_bytes: int
@@ -2529,11 +2463,9 @@ class QueryMetrics:
     read_files_count: int
     # Number of partitions read after pruning.
     read_partitions_count: int
-    # Size of persistent data read from cloud object storage on your cloud
-    # tenant, in bytes.
+    # Size of persistent data read from cloud object storage on your cloud tenant, in bytes.
     read_remote_bytes: int
-    # Time spent fetching the query results after the execution finished, in
-    # milliseconds.
+    # Time spent fetching the query results after the execution finished, in milliseconds.
     result_fetch_time_ms: int
     # true if the query result was fetched from cache, false otherwise.
     result_from_cache: bool
@@ -2541,8 +2473,7 @@ class QueryMetrics:
     rows_produced_count: int
     # Total number of rows read by the query.
     rows_read_count: int
-    # Size of data temporarily written to disk while executing the query, in
-    # bytes.
+    # Size of data temporarily written to disk while executing the query, in bytes.
     spill_to_disk_bytes: int
     # Sum of execution time for all of the query’s tasks, in milliseconds.
     task_total_time_ms: int
@@ -2550,11 +2481,9 @@ class QueryMetrics:
     total_files_count: int
     # Number of partitions that would have been read without pruning.
     total_partitions_count: int
-    # Total execution time of the query from the client’s point of view, in
-    # milliseconds.
+    # Total execution time of the query from the client’s point of view, in milliseconds.
     total_time_ms: int
-    # Size pf persistent data written to cloud object storage in your cloud
-    # tenant, in bytes.
+    # Size pf persistent data written to cloud object storage in your cloud tenant, in bytes.
     write_remote_bytes: int
 
     def as_dict(self) -> dict:
@@ -2634,9 +2563,8 @@ class QueryMetrics:
 @dataclass
 class QueryOptions:
 
-    # The timestamp when this query was moved to trash. Only present when the
-    # `is_archived` property is `true`. Trashed items are deleted after thirty
-    # days.
+    # The timestamp when this query was moved to trash. Only present when the `is_archived` property is `true`. Trashed
+    # items are deleted after thirty days.
     moved_to_trash_at: str
 
     parameters: "List[Parameter]"
@@ -2665,22 +2593,19 @@ class QueryPostContent:
 
     # The ID of the data source / SQL warehouse where this query will run.
     data_source_id: str
-    # General description that can convey additional information about this
-    # query such as usage notes.
+    # General description that can convey additional information about this query such as usage notes.
     description: str
     # The name or title of this query to display in list views.
     name: str
-    # Exclusively used for storing a list parameter definitions. A parameter is
-    # an object with `title`, `name`, `type`, and `value` properties. The
-    # `value` field here is the default value. It can be overridden at runtime.
+    # Exclusively used for storing a list parameter definitions. A parameter is an object with `title`, `name`, `type`,
+    # and `value` properties. The `value` field here is the default value. It can be overridden at runtime.
     options: Any
     # The text of the query.
     query: str
 
     query_id: str  # path
-    # JSON object that describes the scheduled execution frequency. A schedule
-    # object includes `interval`, `time`, `day_of_week`, and `until` fields. If
-    # a scheduled is supplied, then only `interval` is required. All other field
+    # JSON object that describes the scheduled execution frequency. A schedule object includes `interval`, `time`,
+    # `day_of_week`, and `until` fields. If a scheduled is supplied, then only `interval` is required. All other field
     # can be `null`.
     schedule: "QueryInterval"
 
@@ -2760,8 +2685,7 @@ class RefreshSchedule:
 
     # Cron string representing the refresh schedule.
     cron: str
-    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-    # will be used to refresh.
+    # ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse will be used to refresh.
     data_source_id: str
     # ID of the refresh schedule.
     id: str
@@ -2864,8 +2788,7 @@ class SetRequest:
     """Set object ACL"""
 
     access_control_list: "List[AccessControl]"
-    # Object ID. The ACL for the object with this UUID is overwritten by this
-    # request's POST content.
+    # Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.
     objectId: str  # path
     # The type of object permission to set.
     objectType: "ObjectTypePlural"  # path
@@ -2938,27 +2861,22 @@ class SetWorkspaceWarehouseConfigRequest:
     channel: "Channel"
     # Deprecated: Use sql_configuration_parameters
     config_param: "RepeatedEndpointConfPairs"
-    # Spark confs for external hive metastore configuration JSON serialized size
-    # must be less than <= 512K
+    # Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
     data_access_config: "List[EndpointConfPair]"
     # Enable Serverless compute for SQL Endpoints
     #
-    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field
-    # once clients are updated
+    # Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the field once clients are updated
     enable_databricks_compute: bool
     # Enable Serverless compute for SQL Endpoints
     enable_serverless_compute: bool
-    # List of Warehouse Types allowed in this workspace (limits allowed value of
-    # the type field in CreateWarehouse and EditWarehouse). Note: Some types
-    # cannot be disabled, they don't need to be specified in
-    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
-    # warehouses to be converted to another type. Used by frontend to save
-    # specific type availability in the warehouse create and edit form UI.
+    # List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and
+    # EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in
+    # SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type.
+    # Used by frontend to save specific type availability in the warehouse create and edit form UI.
     enabled_warehouse_types: "List[WarehouseTypePair]"
     # Deprecated: Use sql_configuration_parameters
     global_param: "RepeatedEndpointConfPairs"
-    # GCP only: Google Service Account used to pass to cluster to access Google
-    # Cloud Storage
+    # GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
     google_service_account: str
     # AWS Only: Instance profile used to pass IAM role to the cluster
     instance_profile_arn: str
@@ -3123,8 +3041,8 @@ class Subscription:
 
     # ID of the alert.
     alert_id: str
-    # Alert destination subscribed to the alert, if it exists. Alert
-    # destinations can be configured by admins through the UI. See [here].
+    # Alert destination subscribed to the alert, if it exists. Alert destinations can be configured by admins through
+    # the UI. See [here].
     #
     # [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
     destination: "Destination"
@@ -3187,8 +3105,7 @@ class TerminationReason:
 
     # status code indicating why the cluster was terminated
     code: "TerminationReasonCode"
-    # list of parameters that provide additional information about why the
-    # cluster was terminated
+    # list of parameters that provide additional information about why the cluster was terminated
     parameters: "Dict[str,str]"
     # type of the termination
     type: "TerminationReasonType"
@@ -3431,8 +3348,7 @@ class User:
     is_db_admin: bool
 
     name: str
-    # The URL for the gravatar profile picture tied to this user's email
-    # address.
+    # The URL for the gravatar profile picture tied to this user's email address.
     profile_image_url: str
 
     def as_dict(self) -> dict:
@@ -3470,17 +3386,14 @@ class Visualization:
     visualizations entirely in JSON."""
 
     created_at: str
-    # A short description of this visualization. This is not displayed in the
-    # UI.
+    # A short description of this visualization. This is not displayed in the UI.
     description: str
     # The UUID for this visualization.
     id: str
-    # The name of the visualization that appears on dashboards and the query
-    # screen.
+    # The name of the visualization that appears on dashboards and the query screen.
     name: str
-    # The options object varies widely from one visualization type to the next
-    # and is unsupported. Databricks does not recommend modifying visualization
-    # settings in JSON.
+    # The options object varies widely from one visualization type to the next and is unsupported. Databricks does not
+    # recommend modifying visualization settings in JSON.
     options: Any
     # The type of visualization: chart, table, pivot table, and so on.
     type: str
@@ -3529,8 +3442,8 @@ class WarehouseType(Enum):
 @dataclass
 class WarehouseTypePair:
 
-    # If set to false the specific warehouse type will not be be allowed as a
-    # value for warehouse_type in CreateWarehouse and EditWarehouse
+    # If set to false the specific warehouse type will not be be allowed as a value for warehouse_type in
+    # CreateWarehouse and EditWarehouse
     enabled: bool
 
     warehouse_type: "WarehouseType"
@@ -3561,11 +3474,9 @@ class Widget:
     id: int
 
     options: "WidgetOptions"
-    # The visualization description API changes frequently and is unsupported.
-    # You can duplicate a visualization by copying description objects received
-    # _from the API_ and then using them to create a new one with a POST request
-    # to the same endpoint. Databricks does not recommend constructing ad-hoc
-    # visualizations entirely in JSON.
+    # The visualization description API changes frequently and is unsupported. You can duplicate a visualization by
+    # copying description objects received _from the API_ and then using them to create a new one with a POST request to
+    # the same endpoint. Databricks does not recommend constructing ad-hoc visualizations entirely in JSON.
     visualization: "Visualization"
     # Unused field.
     width: int
@@ -3600,21 +3511,17 @@ class WidgetOptions:
 
     # Timestamp when this object was created
     created_at: str
-    # The dashboard ID to which this widget belongs. Each widget can belong to
-    # one dashboard.
+    # The dashboard ID to which this widget belongs. Each widget can belong to one dashboard.
     dashboard_id: str
     # Whether this widget is hidden on the dashboard.
     isHidden: bool
-    # How parameters used by the visualization in this widget relate to other
-    # widgets on the dashboard. Databricks does not recommend modifying this
-    # definition in JSON.
+    # How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does
+    # not recommend modifying this definition in JSON.
     parameterMappings: Any
-    # Coordinates of this widget on a dashboard. This portion of the API changes
-    # frequently and is unsupported.
+    # Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.
     position: Any
-    # If this is a textbox widget, the application displays this text. This
-    # field is ignored if the widget contains a visualization in the
-    # `visualization` field.
+    # If this is a textbox widget, the application displays this text. This field is ignored if the widget contains a
+    # visualization in the `visualization` field.
     text: str
     # Timestamp of the last time this object was updated.
     updated_at: str
@@ -3681,11 +3588,8 @@ class AlertsAPI:
                 rearm=rearm,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.0/preview/sql/alerts", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.0/preview/sql/alerts", body=body)
         return Alert.from_dict(json)
 
     def create_schedule(
@@ -3703,12 +3607,10 @@ class AlertsAPI:
                 alert_id=alert_id, cron=cron, data_source_id=data_source_id
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "POST",
             f"/api/2.0/preview/sql/alerts/{alert_id}/refresh-schedules",
-            query=query,
             body=body,
         )
         return RefreshSchedule.from_dict(json)
@@ -3724,11 +3626,8 @@ class AlertsAPI:
         if not request:
             request = DeleteAlertRequest(alert_id=alert_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body)
 
     def delete_schedule(self, alert_id: str, schedule_id: str, **kwargs):
         """Delete a refresh schedule.
@@ -3740,12 +3639,10 @@ class AlertsAPI:
         if not request:
             request = DeleteScheduleRequest(alert_id=alert_id, schedule_id=schedule_id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "DELETE",
             f"/api/2.0/preview/sql/alerts/{alert_id}/refresh-schedules/{schedule_id}",
-            query=query,
             body=body,
         )
 
@@ -3758,11 +3655,8 @@ class AlertsAPI:
         if not request:
             request = GetAlertRequest(alert_id=alert_id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/preview/sql/alerts/{alert_id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body)
         return Alert.from_dict(json)
 
     def get_subscriptions(self, alert_id: str, **kwargs) -> SubscriptionList:
@@ -3778,13 +3672,9 @@ class AlertsAPI:
         if not request:
             request = GetSubscriptionsRequest(alert_id=alert_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions", body=body
         )
         return SubscriptionList.from_dict(json)
 
@@ -3811,12 +3701,10 @@ class AlertsAPI:
         if not request:
             request = ListSchedulesRequest(alert_id=alert_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/preview/sql/alerts/{alert_id}/refresh-schedules",
-            query=query,
             body=body,
         )
         return RefreshScheduleList.from_dict(json)
@@ -3838,13 +3726,9 @@ class AlertsAPI:
                 alert_id=alert_id, destination_id=destination_id, user_id=user_id
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions", body=body
         )
         return Subscription.from_dict(json)
 
@@ -3859,12 +3743,10 @@ class AlertsAPI:
                 alert_id=alert_id, subscription_id=subscription_id
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "DELETE",
             f"/api/2.0/preview/sql/alerts/{alert_id}/subscriptions/{subscription_id}",
-            query=query,
             body=body,
         )
 
@@ -3892,11 +3774,8 @@ class AlertsAPI:
                 rearm=rearm,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", query=query, body=body
-        )
+        self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body)
 
 
 class DashboardsAPI:
@@ -3927,11 +3806,8 @@ class DashboardsAPI:
                 widgets=widgets,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.0/preview/sql/dashboards", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.0/preview/sql/dashboards", body=body)
         return Dashboard.from_dict(json)
 
     def delete(self, dashboard_id: str, **kwargs):
@@ -3944,13 +3820,9 @@ class DashboardsAPI:
         if not request:
             request = DeleteDashboardRequest(dashboard_id=dashboard_id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/dashboards/{dashboard_id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body
         )
 
     def get(self, dashboard_id: str, **kwargs) -> Dashboard:
@@ -3963,13 +3835,9 @@ class DashboardsAPI:
         if not request:
             request = GetDashboardRequest(dashboard_id=dashboard_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/dashboards/{dashboard_id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body
         )
         return Dashboard.from_dict(json)
 
@@ -3992,15 +3860,16 @@ class DashboardsAPI:
                 order=order, page=page, page_size=page_size, q=q
             )
         body = request.as_dict()
+
         query = {}
         if order:
-            query["order"] = order.value
+            query["order"] = request.order.value
         if page:
-            query["page"] = page
+            query["page"] = request.page
         if page_size:
-            query["page_size"] = page_size
+            query["page_size"] = request.page_size
         if q:
-            query["q"] = q
+            query["q"] = request.q
 
         json = self._api.do(
             "GET", "/api/2.0/preview/sql/dashboards", query=query, body=body
@@ -4017,13 +3886,9 @@ class DashboardsAPI:
         if not request:
             request = RestoreDashboardRequest(dashboard_id=dashboard_id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", body=body
         )
 
 
@@ -4061,12 +3926,10 @@ class DbsqlPermissionsAPI:
                 object_id=object_id, object_type=object_type
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/preview/sql/permissions/{objectType}/{objectId}",
-            query=query,
             body=body,
         )
         return GetResponse.from_dict(json)
@@ -4092,12 +3955,10 @@ class DbsqlPermissionsAPI:
                 object_type=object_type,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "POST",
             f"/api/2.0/preview/sql/permissions/{objectType}/{objectId}",
-            query=query,
             body=body,
         )
         return SetResponse.from_dict(json)
@@ -4121,12 +3982,10 @@ class DbsqlPermissionsAPI:
                 new_owner=new_owner, object_id=object_id, object_type=object_type
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "POST",
             f"/api/2.0/preview/sql/permissions/{objectType}/{objectId}/transfer",
-            query=query,
             body=body,
         )
         return Success.from_dict(json)
@@ -4172,11 +4031,8 @@ class QueriesAPI:
                 schedule=schedule,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.0/preview/sql/queries", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.0/preview/sql/queries", body=body)
         return Query.from_dict(json)
 
     def delete(self, query_id: str, **kwargs):
@@ -4190,11 +4046,8 @@ class QueriesAPI:
         if not request:
             request = DeleteQueryRequest(query_id=query_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/preview/sql/queries/{query_id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", body=body)
 
     def get(self, query_id: str, **kwargs) -> Query:
         """Get a query definition.
@@ -4206,10 +4059,9 @@ class QueriesAPI:
         if not request:
             request = GetQueryRequest(query_id=query_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET", f"/api/2.0/preview/sql/queries/{query_id}", query=query, body=body
+            "GET", f"/api/2.0/preview/sql/queries/{query_id}", body=body
         )
         return Query.from_dict(json)
 
@@ -4233,15 +4085,16 @@ class QueriesAPI:
                 order=order, page=page, page_size=page_size, q=q
             )
         body = request.as_dict()
+
         query = {}
         if order:
-            query["order"] = order
+            query["order"] = request.order
         if page:
-            query["page"] = page
+            query["page"] = request.page
         if page_size:
-            query["page_size"] = page_size
+            query["page_size"] = request.page_size
         if q:
-            query["q"] = q
+            query["q"] = request.q
 
         json = self._api.do(
             "GET", "/api/2.0/preview/sql/queries", query=query, body=body
@@ -4259,13 +4112,9 @@ class QueriesAPI:
         if not request:
             request = RestoreQueryRequest(query_id=query_id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/queries/trash/{query_id}",
-            query=query,
-            body=body,
+            "POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", body=body
         )
 
     def update(
@@ -4298,10 +4147,9 @@ class QueriesAPI:
                 schedule=schedule,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST", f"/api/2.0/preview/sql/queries/{query_id}", query=query, body=body
+            "POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body
         )
         return Query.from_dict(json)
 
@@ -4334,15 +4182,16 @@ class QueryHistoryAPI:
                 page_token=page_token,
             )
         body = request.as_dict()
+
         query = {}
         if filter_by:
-            query["filter_by"] = filter_by.as_dict()
+            query["filter_by"] = request.filter_by.as_dict()
         if include_metrics:
-            query["include_metrics"] = include_metrics
+            query["include_metrics"] = request.include_metrics
         if max_results:
-            query["max_results"] = max_results
+            query["max_results"] = request.max_results
         if page_token:
-            query["page_token"] = page_token
+            query["page_token"] = request.page_token
 
         json = self._api.do(
             "GET", "/api/2.0/sql/history/queries", query=query, body=body
@@ -4394,9 +4243,8 @@ class WarehousesAPI:
                 warehouse_type=warehouse_type,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/2.0/sql/warehouses", query=query, body=body)
+        json = self._api.do("POST", "/api/2.0/sql/warehouses", body=body)
         return CreateWarehouseResponse.from_dict(json)
 
     def delete(self, id: str, **kwargs):
@@ -4408,9 +4256,8 @@ class WarehousesAPI:
         if not request:
             request = DeleteWarehouseRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", query=query, body=body)
+        self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", body=body)
 
     def edit(
         self,
@@ -4456,11 +4303,8 @@ class WarehousesAPI:
                 warehouse_type=warehouse_type,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "POST", f"/api/2.0/sql/warehouses/{id}/edit", query=query, body=body
-        )
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body)
 
     def get(self, id: str, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
@@ -4471,11 +4315,8 @@ class WarehousesAPI:
         if not request:
             request = GetWarehouseRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/sql/warehouses/{id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", body=body)
         return GetWarehouseResponse.from_dict(json)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
@@ -4496,9 +4337,10 @@ class WarehousesAPI:
         if not request:
             request = ListWarehousesRequest(run_as_user_id=run_as_user_id)
         body = request.as_dict()
+
         query = {}
         if run_as_user_id:
-            query["run_as_user_id"] = run_as_user_id
+            query["run_as_user_id"] = request.run_as_user_id
 
         json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, body=body)
         return ListWarehousesResponse.from_dict(json)
@@ -4542,9 +4384,8 @@ class WarehousesAPI:
                 sql_configuration_parameters=sql_configuration_parameters,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do("PUT", "/api/2.0/sql/config/warehouses", query=query, body=body)
+        self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body)
 
     def start(self, id: str, **kwargs):
         """Start a warehouse.
@@ -4555,11 +4396,8 @@ class WarehousesAPI:
         if not request:
             request = StartRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "POST", f"/api/2.0/sql/warehouses/{id}/start", query=query, body=body
-        )
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", body=body)
 
     def stop(self, id: str, **kwargs):
         """Stop a warehouse.
@@ -4570,8 +4408,5 @@ class WarehousesAPI:
         if not request:
             request = StopRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "POST", f"/api/2.0/sql/warehouses/{id}/stop", query=query, body=body
-        )
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", body=body)

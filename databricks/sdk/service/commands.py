@@ -292,8 +292,7 @@ class Results:
     fileName: str
 
     fileNames: "List[str]"
-    # true if a JSON schema is returned instead of a string representation of
-    # the Hive type.
+    # true if a JSON schema is returned instead of a string representation of the Hive type.
     isJsonSchema: bool
     # internal field used by SDK
     pos: int
@@ -371,9 +370,8 @@ class CommandExecutionAPI:
                 cluster_id=cluster_id, command_id=command_id, context_id=context_id
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/1.2/commands/cancel", query=query, body=body)
+        self._api.do("POST", "/api/1.2/commands/cancel", body=body)
 
     def command_status(
         self, cluster_id: str, context_id: str, command_id: str, **kwargs
@@ -391,13 +389,14 @@ class CommandExecutionAPI:
                 cluster_id=cluster_id, command_id=command_id, context_id=context_id
             )
         body = request.as_dict()
+
         query = {}
         if cluster_id:
-            query["clusterId"] = cluster_id
+            query["clusterId"] = request.cluster_id
         if command_id:
-            query["commandId"] = command_id
+            query["commandId"] = request.command_id
         if context_id:
-            query["contextId"] = context_id
+            query["contextId"] = request.context_id
 
         json = self._api.do("GET", "/api/1.2/commands/status", query=query, body=body)
         return CommandStatusResponse.from_dict(json)
@@ -413,11 +412,12 @@ class CommandExecutionAPI:
         if not request:
             request = ContextStatusRequest(cluster_id=cluster_id, context_id=context_id)
         body = request.as_dict()
+
         query = {}
         if cluster_id:
-            query["clusterId"] = cluster_id
+            query["clusterId"] = request.cluster_id
         if context_id:
-            query["contextId"] = context_id
+            query["contextId"] = request.context_id
 
         json = self._api.do("GET", "/api/1.2/contexts/status", query=query, body=body)
         return ContextStatusResponse.from_dict(json)
@@ -435,9 +435,8 @@ class CommandExecutionAPI:
         if not request:
             request = CreateContext(cluster_id=cluster_id, language=language)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/1.2/contexts/create", query=query, body=body)
+        json = self._api.do("POST", "/api/1.2/contexts/create", body=body)
         return Created.from_dict(json)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
@@ -449,9 +448,8 @@ class CommandExecutionAPI:
         if not request:
             request = DestroyContext(cluster_id=cluster_id, context_id=context_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/1.2/contexts/destroy", query=query, body=body)
+        self._api.do("POST", "/api/1.2/contexts/destroy", body=body)
 
     def execute(
         self,
@@ -479,7 +477,6 @@ class CommandExecutionAPI:
                 language=language,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/1.2/commands/execute", query=query, body=body)
+        json = self._api.do("POST", "/api/1.2/commands/execute", body=body)
         return Created.from_dict(json)

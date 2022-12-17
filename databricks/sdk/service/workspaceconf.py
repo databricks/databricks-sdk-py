@@ -44,9 +44,10 @@ class WorkspaceConfAPI:
         if not request:
             request = GetStatus(keys=keys)
         body = request.as_dict()
+
         query = {}
         if keys:
-            query["keys"] = keys
+            query["keys"] = request.keys
 
         json = self._api.do("GET", "/api/2.0/workspace-conf", query=query, body=body)
         return WorkspaceConf.from_dict(json)
@@ -61,6 +62,5 @@ class WorkspaceConfAPI:
         if not request:
             request = Dict[str, str]()
         body = request.as_dict()
-        query = {}
 
-        self._api.do("PATCH", "/api/2.0/workspace-conf", query=query, body=body)
+        self._api.do("PATCH", "/api/2.0/workspace-conf", body=body)

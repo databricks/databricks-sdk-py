@@ -156,8 +156,7 @@ class ListTokensResponse:
 @dataclass
 class TokenInfo:
 
-    # Comment that describes the purpose of the token, specified by the token
-    # creator.
+    # Comment that describes the purpose of the token, specified by the token creator.
     comment: str
     # User ID of the user that created the token.
     created_by_id: int
@@ -228,13 +227,9 @@ class TokenManagementAPI:
                 lifetime_seconds=lifetime_seconds,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST",
-            "/api/2.0/token-management/on-behalf-of/tokens",
-            query=query,
-            body=body,
+            "POST", "/api/2.0/token-management/on-behalf-of/tokens", body=body
         )
         return CreateOboTokenResponse.from_dict(json)
 
@@ -247,13 +242,9 @@ class TokenManagementAPI:
         if not request:
             request = Delete(token_id=token_id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/token-management/tokens/{token_id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/token-management/tokens/{token_id}", body=body
         )
 
     def get(self, token_id: str, **kwargs) -> TokenInfo:
@@ -265,13 +256,9 @@ class TokenManagementAPI:
         if not request:
             request = Get(token_id=token_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/token-management/tokens/{token_id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/token-management/tokens/{token_id}", body=body
         )
         return TokenInfo.from_dict(json)
 
@@ -288,11 +275,12 @@ class TokenManagementAPI:
                 created_by_id=created_by_id, created_by_username=created_by_username
             )
         body = request.as_dict()
+
         query = {}
         if created_by_id:
-            query["created_by_id"] = created_by_id
+            query["created_by_id"] = request.created_by_id
         if created_by_username:
-            query["created_by_username"] = created_by_username
+            query["created_by_username"] = request.created_by_username
 
         json = self._api.do(
             "GET", "/api/2.0/token-management/tokens", query=query, body=body

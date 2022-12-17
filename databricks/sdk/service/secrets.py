@@ -45,8 +45,7 @@ class AzureKeyVaultSecretScopeMetadata:
 
     # The DNS of the KeyVault
     dns_name: str
-    # The resource id of the azure KeyVault that user wants to associate the
-    # scope with.
+    # The resource id of the azure KeyVault that user wants to associate the scope with.
     resource_id: str
 
     def as_dict(self) -> dict:
@@ -69,15 +68,13 @@ class AzureKeyVaultSecretScopeMetadata:
 @dataclass
 class CreateScope:
 
-    # The principal that is initially granted `MANAGE` permission to the created
-    # scope.
+    # The principal that is initially granted `MANAGE` permission to the created scope.
     initial_manage_principal: str
     # The metadata for the secret scope if the type is `AZURE_KEYVAULT`
     keyvault_metadata: "AzureKeyVaultSecretScopeMetadata"
     # Scope name requested by the user. Scope names are unique.
     scope: str
-    # The backend type the scope will be created with. If not specified, will
-    # default to `DATABRICKS`
+    # The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
     scope_backend_type: "ScopeBackendType"
 
     def as_dict(self) -> dict:
@@ -471,9 +468,8 @@ class SecretsAPI:
                 scope_backend_type=scope_backend_type,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/secrets/scopes/create", query=query, body=body)
+        self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body)
 
     def delete_acl(self, scope: str, principal: str, **kwargs):
         """Delete an ACL.
@@ -489,9 +485,8 @@ class SecretsAPI:
         if not request:
             request = DeleteAcl(principal=principal, scope=scope)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/secrets/acls/delete", query=query, body=body)
+        self._api.do("POST", "/api/2.0/secrets/acls/delete", body=body)
 
     def delete_scope(self, scope: str, **kwargs):
         """Delete a secret scope.
@@ -506,9 +501,8 @@ class SecretsAPI:
         if not request:
             request = DeleteScope(scope=scope)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/secrets/scopes/delete", query=query, body=body)
+        self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body)
 
     def delete_secret(self, scope: str, key: str, **kwargs):
         """Delete a secret.
@@ -524,9 +518,8 @@ class SecretsAPI:
         if not request:
             request = DeleteSecret(key=key, scope=scope)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/secrets/delete", query=query, body=body)
+        self._api.do("POST", "/api/2.0/secrets/delete", body=body)
 
     def get_acl(self, scope: str, principal: str, **kwargs) -> AclItem:
         """Get secret ACL details.
@@ -542,11 +535,12 @@ class SecretsAPI:
         if not request:
             request = GetAcl(principal=principal, scope=scope)
         body = request.as_dict()
+
         query = {}
         if principal:
-            query["principal"] = principal
+            query["principal"] = request.principal
         if scope:
-            query["scope"] = scope
+            query["scope"] = request.scope
 
         json = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query, body=body)
         return AclItem.from_dict(json)
@@ -565,9 +559,10 @@ class SecretsAPI:
         if not request:
             request = ListAcls(scope=scope)
         body = request.as_dict()
+
         query = {}
         if scope:
-            query["scope"] = scope
+            query["scope"] = request.scope
 
         json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query, body=body)
         return ListAclsResponse.from_dict(json)
@@ -599,9 +594,10 @@ class SecretsAPI:
         if not request:
             request = ListSecrets(scope=scope)
         body = request.as_dict()
+
         query = {}
         if scope:
-            query["scope"] = scope
+            query["scope"] = request.scope
 
         json = self._api.do("GET", "/api/2.0/secrets/list", query=query, body=body)
         return ListSecretsResponse.from_dict(json)
@@ -641,9 +637,8 @@ class SecretsAPI:
         if not request:
             request = PutAcl(permission=permission, principal=principal, scope=scope)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/secrets/acls/put", query=query, body=body)
+        self._api.do("POST", "/api/2.0/secrets/acls/put", body=body)
 
     def put_secret(
         self,
@@ -683,6 +678,5 @@ class SecretsAPI:
                 bytes_value=bytes_value, key=key, scope=scope, string_value=string_value
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/secrets/put", query=query, body=body)
+        self._api.do("POST", "/api/2.0/secrets/put", body=body)

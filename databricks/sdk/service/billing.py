@@ -15,27 +15,24 @@ class Budget:
     alerts: "List[BudgetAlert]"
     # Optional end date of the budget.
     end_date: str
-    # SQL-like filter expression with workspaceId, SKU and tag. Usage in your
-    # account that matches this expression will be counted in this budget.
+    # SQL-like filter expression with workspaceId, SKU and tag. Usage in your account that matches this expression will
+    # be counted in this budget.
     #
-    # Supported properties on left-hand side of comparison: * `workspaceId` -
-    # the ID of the workspace * `sku` - SKU of the cluster, e.g.
-    # `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag name'` - tag of
-    # the cluster
+    # Supported properties on left-hand side of comparison: * `workspaceId` - the ID of the workspace * `sku` - SKU of
+    # the cluster, e.g. `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag name'` - tag of the cluster
     #
     # Supported comparison operators: * `=` - equal * `!=` - not equal
     #
     # Supported logical operators: `AND`, `OR`.
     #
-    # Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND
-    # tag.'my tag'='my value')` * `workspaceId!=456` *
-    # `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR sku='PREMIUM_ALL_PURPOSE_COMPUTE'`
-    # * `tag.name1='value1' AND tag.name2='value2'`
+    # Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND tag.'my tag'='my value')` *
+    # `workspaceId!=456` * `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR sku='PREMIUM_ALL_PURPOSE_COMPUTE'` *
+    # `tag.name1='value1' AND tag.name2='value2'`
     filter: str
     # Human-readable name of the budget.
     name: str
-    # Period length in years, months, weeks and/or days. Examples: `1 month`,
-    # `30 days`, `1 year, 2 months, 1 week, 2 days`
+    # Period length in years, months, weeks and/or days. Examples: `1 month`, `30 days`, `1 year, 2 months, 1 week, 2
+    # days`
     period: str
     # Start date of the budget period calculation.
     start_date: str
@@ -79,11 +76,9 @@ class Budget:
 @dataclass
 class BudgetAlert:
 
-    # List of email addresses to be notified when budget percentage is exceeded
-    # in the given period.
+    # List of email addresses to be notified when budget percentage is exceeded in the given period.
     email_notifications: "List[str]"
-    # Percentage of the target amount used in the currect period that will
-    # trigger a notification.
+    # Percentage of the target amount used in the currect period that will trigger a notification.
     min_percentage: int
 
     def as_dict(self) -> dict:
@@ -136,27 +131,24 @@ class BudgetWithStatus:
     creation_time: str
     # Optional end date of the budget.
     end_date: str
-    # SQL-like filter expression with workspaceId, SKU and tag. Usage in your
-    # account that matches this expression will be counted in this budget.
+    # SQL-like filter expression with workspaceId, SKU and tag. Usage in your account that matches this expression will
+    # be counted in this budget.
     #
-    # Supported properties on left-hand side of comparison: * `workspaceId` -
-    # the ID of the workspace * `sku` - SKU of the cluster, e.g.
-    # `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag name'` - tag of
-    # the cluster
+    # Supported properties on left-hand side of comparison: * `workspaceId` - the ID of the workspace * `sku` - SKU of
+    # the cluster, e.g. `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag name'` - tag of the cluster
     #
     # Supported comparison operators: * `=` - equal * `!=` - not equal
     #
     # Supported logical operators: `AND`, `OR`.
     #
-    # Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND
-    # tag.'my tag'='my value')` * `workspaceId!=456` *
-    # `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR sku='PREMIUM_ALL_PURPOSE_COMPUTE'`
-    # * `tag.name1='value1' AND tag.name2='value2'`
+    # Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND tag.'my tag'='my value')` *
+    # `workspaceId!=456` * `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR sku='PREMIUM_ALL_PURPOSE_COMPUTE'` *
+    # `tag.name1='value1' AND tag.name2='value2'`
     filter: str
     # Human-readable name of the budget.
     name: str
-    # Period length in years, months, weeks and/or days. Examples: `1 month`,
-    # `30 days`, `1 year, 2 months, 1 week, 2 days`
+    # Period length in years, months, weeks and/or days. Examples: `1 month`, `30 days`, `1 year, 2 months, 1 week, 2
+    # days`
     period: str
     # Start date of the budget period calculation.
     start_date: str
@@ -245,33 +237,26 @@ class BudgetWithStatusStatusDailyItem:
 @dataclass
 class CreateLogDeliveryConfigurationParams:
 
-    # The optional human-readable name of the log delivery configuration.
-    # Defaults to empty.
+    # The optional human-readable name of the log delivery configuration. Defaults to empty.
     config_name: str
-    # The ID for a method:CredetialConfigurations/createCredentialConfig that
-    # represents the AWS IAM role with policy and trust relationship as
-    # described in the main billable usage documentation page. See [Configure
-    # billable usage delivery].
+    # The ID for a method:CredetialConfigurations/createCredentialConfig that represents the AWS IAM role with policy
+    # and trust relationship as described in the main billable usage documentation page. See [Configure billable usage
+    # delivery].
     #
     # [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
     credentials_id: str
-    # The optional delivery path prefix within Amazon S3 storage. Defaults to
-    # empty, which means that logs are delivered to the root of the bucket. This
-    # must be a valid S3 object key. This must not start or end with a slash
-    # character.
+    # The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means that logs are delivered
+    # to the root of the bucket. This must be a valid S3 object key. This must not start or end with a slash character.
     delivery_path_prefix: str
-    # This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
-    # optional start month and year for delivery, specified in `YYYY-MM` format.
-    # Defaults to current year and month. `BILLABLE_USAGE` logs are not
-    # available for usage before March 2019 (`2019-03`).
+    # This field applies only if `log_type` is `BILLABLE_USAGE`. This is the optional start month and year for delivery,
+    # specified in `YYYY-MM` format. Defaults to current year and month. `BILLABLE_USAGE` logs are not available for
+    # usage before March 2019 (`2019-03`).
     delivery_start_time: str
     # Log delivery type. Supported values are:
     #
-    # * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
-    # CSV schema, see the [View billable usage].
+    # * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage].
     #
-    # * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
-    # see [Configure audit logging]
+    # * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging]
     #
     # [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     # [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
@@ -280,41 +265,31 @@ class CreateLogDeliveryConfigurationParams:
     log_type: "LogType"
     # The file type of log delivery.
     #
-    # * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
-    # CSV (comma-separated values) format is supported. For the schema, see the
-    # [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
-    # `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
-    # For the schema, see the [Configuring audit logs].
+    # * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is
+    # supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
+    # `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit
+    # logs].
     #
     # [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     # [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
     output_format: "OutputFormat"
-    # Status of log delivery configuration. Set to `ENABLED` (enabled) or
-    # `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
-    # the configuration](#operation/patch-log-delivery-config-status) later.
-    # Deletion of a configuration is not supported, so disable a log delivery
-    # configuration that is no longer needed.
+    # Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`.
+    # You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a
+    # configuration is not supported, so disable a log delivery configuration that is no longer needed.
     status: "LogDeliveryConfigStatus"
-    # "The ID for a method:StorageConfiguration/createCredentialConfig that
-    # represents the S3 bucket with bucket policy as described in the main
-    # billable usage documentation page. See [Configure billable usage
-    # delivery]."
+    # "The ID for a method:StorageConfiguration/createCredentialConfig that represents the S3 bucket with bucket policy
+    # as described in the main billable usage documentation page. See [Configure billable usage delivery]."
     #
     # [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
     storage_configuration_id: str
-    # Optional filter that specifies workspace IDs to deliver logs for. By
-    # default the workspace filter is empty and log delivery applies at the
-    # account level, delivering workspace-level logs for all workspaces in your
-    # account, plus account level logs. You can optionally set this field to an
-    # array of workspace IDs (each one is an `int64`) to which log delivery
-    # should apply, in which case only workspace-level logs relating to the
-    # specified workspaces are delivered. If you plan to use different log
-    # delivery configurations for different workspaces, set this field
-    # explicitly. Be aware that delivery configurations mentioning specific
-    # workspaces won't apply to new workspaces created in the future, and
-    # delivery won't include account level logs. For some types of Databricks
-    # deployments there is only one workspace per account ID, so this field is
-    # unnecessary.
+    # Optional filter that specifies workspace IDs to deliver logs for. By default the workspace filter is empty and log
+    # delivery applies at the account level, delivering workspace-level logs for all workspaces in your account, plus
+    # account level logs. You can optionally set this field to an array of workspace IDs (each one is an `int64`) to
+    # which log delivery should apply, in which case only workspace-level logs relating to the specified workspaces are
+    # delivered. If you plan to use different log delivery configurations for different workspaces, set this field
+    # explicitly. Be aware that delivery configurations mentioning specific workspaces won't apply to new workspaces
+    # created in the future, and delivery won't include account level logs. For some types of Databricks deployments
+    # there is only one workspace per account ID, so this field is unnecessary.
     workspace_ids_filter: "List[int]"
 
     def as_dict(self) -> dict:
@@ -392,15 +367,12 @@ class DeliveryStatus(Enum):
 class DownloadRequest:
     """Return billable usage logs"""
 
-    # Format: `YYYY-MM`. Last month to return billable usage logs for. This
-    # field is required.
+    # Format: `YYYY-MM`. Last month to return billable usage logs for. This field is required.
     end_month: str  # query
-    # Specify whether to include personally identifiable information in the
-    # billable usage logs, for example the email addresses of cluster creators.
-    # Handle this information with care. Defaults to false.
+    # Specify whether to include personally identifiable information in the billable usage logs, for example the email
+    # addresses of cluster creators. Handle this information with care. Defaults to false.
     personal_data: bool  # query
-    # Format: `YYYY-MM`. First month to return billable usage logs for. This
-    # field is required.
+    # Format: `YYYY-MM`. First month to return billable usage logs for. This field is required.
     start_month: str  # query
 
     def as_dict(self) -> dict:
@@ -497,11 +469,9 @@ class ListLogDeliveryRequest:
 
 
 class LogDeliveryConfigStatus(Enum):
-    """Status of log delivery configuration. Set to `ENABLED` (enabled) or
-    `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the
-    configuration](#operation/patch-log-delivery-config-status) later. Deletion
-    of a configuration is not supported, so disable a log delivery configuration
-    that is no longer needed."""
+    """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`.
+    You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a
+    configuration is not supported, so disable a log delivery configuration that is no longer needed."""
 
     DISABLED = "DISABLED"
     ENABLED = "ENABLED"
@@ -514,38 +484,30 @@ class LogDeliveryConfiguration:
     account_id: str
     # Databricks log delivery configuration ID.
     config_id: str
-    # The optional human-readable name of the log delivery configuration.
-    # Defaults to empty.
+    # The optional human-readable name of the log delivery configuration. Defaults to empty.
     config_name: str
-    # Time in epoch milliseconds when the log delivery configuration was
-    # created.
+    # Time in epoch milliseconds when the log delivery configuration was created.
     creation_time: int
-    # The ID for a method:CredetialConfigurations/createCredentialConfig that
-    # represents the AWS IAM role with policy and trust relationship as
-    # described in the main billable usage documentation page. See [Configure
-    # billable usage delivery].
+    # The ID for a method:CredetialConfigurations/createCredentialConfig that represents the AWS IAM role with policy
+    # and trust relationship as described in the main billable usage documentation page. See [Configure billable usage
+    # delivery].
     #
     # [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
     credentials_id: str
-    # The optional delivery path prefix within Amazon S3 storage. Defaults to
-    # empty, which means that logs are delivered to the root of the bucket. This
-    # must be a valid S3 object key. This must not start or end with a slash
-    # character.
+    # The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means that logs are delivered
+    # to the root of the bucket. This must be a valid S3 object key. This must not start or end with a slash character.
     delivery_path_prefix: str
-    # This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
-    # optional start month and year for delivery, specified in `YYYY-MM` format.
-    # Defaults to current year and month. `BILLABLE_USAGE` logs are not
-    # available for usage before March 2019 (`2019-03`).
+    # This field applies only if `log_type` is `BILLABLE_USAGE`. This is the optional start month and year for delivery,
+    # specified in `YYYY-MM` format. Defaults to current year and month. `BILLABLE_USAGE` logs are not available for
+    # usage before March 2019 (`2019-03`).
     delivery_start_time: str
     # Databricks log delivery status.
     log_delivery_status: "LogDeliveryStatus"
     # Log delivery type. Supported values are:
     #
-    # * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
-    # CSV schema, see the [View billable usage].
+    # * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage].
     #
-    # * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
-    # see [Configure audit logging]
+    # * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging]
     #
     # [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     # [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
@@ -554,44 +516,33 @@ class LogDeliveryConfiguration:
     log_type: "LogType"
     # The file type of log delivery.
     #
-    # * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
-    # CSV (comma-separated values) format is supported. For the schema, see the
-    # [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
-    # `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
-    # For the schema, see the [Configuring audit logs].
+    # * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is
+    # supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
+    # `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit
+    # logs].
     #
     # [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     # [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
     output_format: "OutputFormat"
-    # Status of log delivery configuration. Set to `ENABLED` (enabled) or
-    # `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
-    # the configuration](#operation/patch-log-delivery-config-status) later.
-    # Deletion of a configuration is not supported, so disable a log delivery
-    # configuration that is no longer needed.
+    # Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`.
+    # You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a
+    # configuration is not supported, so disable a log delivery configuration that is no longer needed.
     status: "LogDeliveryConfigStatus"
-    # "The ID for a method:StorageConfiguration/createCredentialConfig that
-    # represents the S3 bucket with bucket policy as described in the main
-    # billable usage documentation page. See [Configure billable usage
-    # delivery]."
+    # "The ID for a method:StorageConfiguration/createCredentialConfig that represents the S3 bucket with bucket policy
+    # as described in the main billable usage documentation page. See [Configure billable usage delivery]."
     #
     # [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
     storage_configuration_id: str
-    # Time in epoch milliseconds when the log delivery configuration was
-    # updated.
+    # Time in epoch milliseconds when the log delivery configuration was updated.
     update_time: int
-    # Optional filter that specifies workspace IDs to deliver logs for. By
-    # default the workspace filter is empty and log delivery applies at the
-    # account level, delivering workspace-level logs for all workspaces in your
-    # account, plus account level logs. You can optionally set this field to an
-    # array of workspace IDs (each one is an `int64`) to which log delivery
-    # should apply, in which case only workspace-level logs relating to the
-    # specified workspaces are delivered. If you plan to use different log
-    # delivery configurations for different workspaces, set this field
-    # explicitly. Be aware that delivery configurations mentioning specific
-    # workspaces won't apply to new workspaces created in the future, and
-    # delivery won't include account level logs. For some types of Databricks
-    # deployments there is only one workspace per account ID, so this field is
-    # unnecessary.
+    # Optional filter that specifies workspace IDs to deliver logs for. By default the workspace filter is empty and log
+    # delivery applies at the account level, delivering workspace-level logs for all workspaces in your account, plus
+    # account level logs. You can optionally set this field to an array of workspace IDs (each one is an `int64`) to
+    # which log delivery should apply, in which case only workspace-level logs relating to the specified workspaces are
+    # delivered. If you plan to use different log delivery configurations for different workspaces, set this field
+    # explicitly. Be aware that delivery configurations mentioning specific workspaces won't apply to new workspaces
+    # created in the future, and delivery won't include account level logs. For some types of Databricks deployments
+    # there is only one workspace per account ID, so this field is unnecessary.
     workspace_ids_filter: "List[int]"
 
     def as_dict(self) -> dict:
@@ -659,9 +610,8 @@ class LogDeliveryStatus:
     last_attempt_time: str
     # The UTC time for the latest successful log delivery.
     last_successful_attempt_time: str
-    # Informative message about the latest log delivery attempt. If the log
-    # delivery fails with USER_FAILURE, error details will be provided for
-    # fixing misconfigurations in cloud permissions.
+    # Informative message about the latest log delivery attempt. If the log delivery fails with USER_FAILURE, error
+    # details will be provided for fixing misconfigurations in cloud permissions.
     message: str
     # This describes an enum
     status: "DeliveryStatus"
@@ -692,11 +642,9 @@ class LogDeliveryStatus:
 class LogType(Enum):
     """Log delivery type. Supported values are:
 
-    * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV
-    schema, see the [View billable usage].
+    * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage].
 
-    * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see
-    [Configure audit logging]
+    * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging]
 
     [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
@@ -710,11 +658,9 @@ class LogType(Enum):
 class OutputFormat(Enum):
     """The file type of log delivery.
 
-    * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
-    (comma-separated values) format is supported. For the schema, see the [View
-    billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`.
-    Only the JSON (JavaScript Object Notation) format is supported. For the
-    schema, see the [Configuring audit logs].
+    * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is
+    supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`.
+    Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs].
 
     [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
@@ -728,11 +674,9 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 
     # Databricks log delivery configuration ID
     log_delivery_configuration_id: str  # path
-    # Status of log delivery configuration. Set to `ENABLED` (enabled) or
-    # `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
-    # the configuration](#operation/patch-log-delivery-config-status) later.
-    # Deletion of a configuration is not supported, so disable a log delivery
-    # configuration that is no longer needed.
+    # Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`.
+    # You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a
+    # configuration is not supported, so disable a log delivery configuration that is no longer needed.
     status: "LogDeliveryConfigStatus"
 
     def as_dict(self) -> dict:
@@ -898,13 +842,14 @@ class BillableUsageAPI:
                 start_month=start_month,
             )
         body = request.as_dict()
+
         query = {}
         if end_month:
-            query["end_month"] = end_month
+            query["end_month"] = request.end_month
         if personal_data:
-            query["personal_data"] = personal_data
+            query["personal_data"] = request.personal_data
         if start_month:
-            query["start_month"] = start_month
+            query["start_month"] = request.start_month
 
         self._api.do(
             "GET", f"/api/2.0/accounts//usage/download", query=query, body=body
@@ -926,11 +871,8 @@ class BudgetsAPI:
         if not request:
             request = WrappedBudget(budget=budget, budget_id=budget_id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", f"/api/2.0/accounts//budget", query=query, body=body
-        )
+        json = self._api.do("POST", f"/api/2.0/accounts//budget", body=body)
         return WrappedBudgetWithStatus.from_dict(json)
 
     def delete(self, budget_id: str, **kwargs):
@@ -942,11 +884,8 @@ class BudgetsAPI:
         if not request:
             request = DeleteBudgetRequest(budget_id=budget_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/accounts//budget/{budget_id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts//budget/{budget_id}", body=body)
 
     def get(self, budget_id: str, **kwargs) -> WrappedBudgetWithStatus:
         """Get budget and its status.
@@ -958,11 +897,8 @@ class BudgetsAPI:
         if not request:
             request = GetBudgetRequest(budget_id=budget_id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/accounts//budget/{budget_id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts//budget/{budget_id}", body=body)
         return WrappedBudgetWithStatus.from_dict(json)
 
     def list(self) -> BudgetList:
@@ -984,11 +920,8 @@ class BudgetsAPI:
         if not request:
             request = WrappedBudget(budget=budget, budget_id=budget_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.0/accounts//budget/{budget_id}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.0/accounts//budget/{budget_id}", body=body)
 
 
 class LogDeliveryAPI:
@@ -1038,11 +971,8 @@ class LogDeliveryAPI:
                 log_delivery_configuration=log_delivery_configuration
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", f"/api/2.0/accounts//log-delivery", query=query, body=body
-        )
+        json = self._api.do("POST", f"/api/2.0/accounts//log-delivery", body=body)
         return WrappedLogDeliveryConfiguration.from_dict(json)
 
     def get(
@@ -1059,12 +989,10 @@ class LogDeliveryAPI:
                 log_delivery_configuration_id=log_delivery_configuration_id
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.0/accounts//log-delivery/{log_delivery_configuration_id}",
-            query=query,
             body=body,
         )
         return WrappedLogDeliveryConfiguration.from_dict(json)
@@ -1090,13 +1018,14 @@ class LogDeliveryAPI:
                 storage_configuration_id=storage_configuration_id,
             )
         body = request.as_dict()
+
         query = {}
         if credentials_id:
-            query["credentials_id"] = credentials_id
+            query["credentials_id"] = request.credentials_id
         if status:
-            query["status"] = status.value
+            query["status"] = request.status.value
         if storage_configuration_id:
-            query["storage_configuration_id"] = storage_configuration_id
+            query["storage_configuration_id"] = request.storage_configuration_id
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts//log-delivery", query=query, body=body
@@ -1125,11 +1054,9 @@ class LogDeliveryAPI:
                 status=status,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "PATCH",
             f"/api/2.0/accounts//log-delivery/{log_delivery_configuration_id}",
-            query=query,
             body=body,
         )

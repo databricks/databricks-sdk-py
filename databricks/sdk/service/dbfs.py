@@ -81,8 +81,8 @@ class Create:
 @dataclass
 class CreateResponse:
 
-    # Handle which should subsequently be passed into the AddBlock and Close
-    # calls when writing to a file through a stream.
+    # Handle which should subsequently be passed into the AddBlock and Close calls when writing to a file through a
+    # stream.
     handle: int
 
     def as_dict(self) -> dict:
@@ -102,11 +102,10 @@ class CreateResponse:
 @dataclass
 class Delete:
 
-    # The path of the file or directory to delete. The path should be the
-    # absolute DBFS path.
+    # The path of the file or directory to delete. The path should be the absolute DBFS path.
     path: str
-    # Whether or not to recursively delete the directory's contents. Deleting
-    # empty directories can be done without providing the recursive flag.
+    # Whether or not to recursively delete the directory's contents. Deleting empty directories can be done without
+    # providing the recursive flag.
     recursive: bool
 
     def as_dict(self) -> dict:
@@ -165,8 +164,7 @@ class FileInfo:
 class GetStatus:
     """Get the information of a file or directory"""
 
-    # The path of the file or directory. The path should be the absolute DBFS
-    # path.
+    # The path of the file or directory. The path should be the absolute DBFS path.
     path: str  # query
 
     def as_dict(self) -> dict:
@@ -187,8 +185,7 @@ class GetStatus:
 class List:
     """List directory contents or file details"""
 
-    # The path of the file or directory. The path should be the absolute DBFS
-    # path.
+    # The path of the file or directory. The path should be the absolute DBFS path.
     path: str  # query
 
     def as_dict(self) -> dict:
@@ -208,8 +205,7 @@ class List:
 @dataclass
 class ListStatusResponse:
 
-    # A list of FileInfo's that describe contents of directory or file. See
-    # example above.
+    # A list of FileInfo's that describe contents of directory or file. See example above.
     files: "List[FileInfo]"
 
     def as_dict(self) -> dict:
@@ -249,11 +245,9 @@ class MkDirs:
 @dataclass
 class Move:
 
-    # The destination path of the file or directory. The path should be the
-    # absolute DBFS path.
+    # The destination path of the file or directory. The path should be the absolute DBFS path.
     destination_path: str
-    # The source path of the file or directory. The path should be the absolute
-    # DBFS path.
+    # The source path of the file or directory. The path should be the absolute DBFS path.
     source_path: str
 
     def as_dict(self) -> dict:
@@ -307,8 +301,7 @@ class Put:
 class Read:
     """Get the contents of a file"""
 
-    # The number of bytes to read starting from the offset. This has a limit of
-    # 1 MB, and a default value of 0.5 MB.
+    # The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value of 0.5 MB.
     length: int  # query
     # The offset to read from in bytes.
     offset: int  # query
@@ -338,9 +331,8 @@ class Read:
 @dataclass
 class ReadResponse:
 
-    # The number of bytes read (could be less than `length` if we hit end of
-    # file). This refers to number of bytes read in unencoded version (response
-    # data is base64-encoded).
+    # The number of bytes read (could be less than `length` if we hit end of file). This refers to number of bytes read
+    # in unencoded version (response data is base64-encoded).
     bytes_read: int
     # The base64-encoded contents of the file read.
     data: str
@@ -380,9 +372,8 @@ class DbfsAPI:
         if not request:
             request = AddBlock(data=data, handle=handle)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/dbfs/add-block", query=query, body=body)
+        self._api.do("POST", "/api/2.0/dbfs/add-block", body=body)
 
     def close(self, handle: int, **kwargs):
         """Close the stream.
@@ -394,9 +385,8 @@ class DbfsAPI:
         if not request:
             request = Close(handle=handle)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/dbfs/close", query=query, body=body)
+        self._api.do("POST", "/api/2.0/dbfs/close", body=body)
 
     def create(self, path: str, *, overwrite: bool = None, **kwargs) -> CreateResponse:
         """Open a stream.
@@ -416,9 +406,8 @@ class DbfsAPI:
         if not request:
             request = Create(overwrite=overwrite, path=path)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/2.0/dbfs/create", query=query, body=body)
+        json = self._api.do("POST", "/api/2.0/dbfs/create", body=body)
         return CreateResponse.from_dict(json)
 
     def delete(self, path: str, *, recursive: bool = None, **kwargs):
@@ -447,9 +436,8 @@ class DbfsAPI:
         if not request:
             request = Delete(path=path, recursive=recursive)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/dbfs/delete", query=query, body=body)
+        self._api.do("POST", "/api/2.0/dbfs/delete", body=body)
 
     def get_status(self, path: str, **kwargs) -> FileInfo:
         """Get the information of a file or directory.
@@ -462,9 +450,10 @@ class DbfsAPI:
         if not request:
             request = GetStatus(path=path)
         body = request.as_dict()
+
         query = {}
         if path:
-            query["path"] = path
+            query["path"] = request.path
 
         json = self._api.do("GET", "/api/2.0/dbfs/get-status", query=query, body=body)
         return FileInfo.from_dict(json)
@@ -489,9 +478,10 @@ class DbfsAPI:
         if not request:
             request = List(path=path)
         body = request.as_dict()
+
         query = {}
         if path:
-            query["path"] = path
+            query["path"] = request.path
 
         json = self._api.do("GET", "/api/2.0/dbfs/list", query=query, body=body)
         return ListStatusResponse.from_dict(json)
@@ -509,9 +499,8 @@ class DbfsAPI:
         if not request:
             request = MkDirs(path=path)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/dbfs/mkdirs", query=query, body=body)
+        self._api.do("POST", "/api/2.0/dbfs/mkdirs", body=body)
 
     def move(self, source_path: str, destination_path: str, **kwargs):
         """Move a file.
@@ -527,9 +516,8 @@ class DbfsAPI:
         if not request:
             request = Move(destination_path=destination_path, source_path=source_path)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/dbfs/move", query=query, body=body)
+        self._api.do("POST", "/api/2.0/dbfs/move", body=body)
 
     def put(self, path: str, *, contents: str = None, overwrite: bool = None, **kwargs):
         """Upload a file.
@@ -551,9 +539,8 @@ class DbfsAPI:
         if not request:
             request = Put(contents=contents, overwrite=overwrite, path=path)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/dbfs/put", query=query, body=body)
+        self._api.do("POST", "/api/2.0/dbfs/put", body=body)
 
     def read(
         self, path: str, *, length: int = None, offset: int = None, **kwargs
@@ -574,13 +561,14 @@ class DbfsAPI:
         if not request:
             request = Read(length=length, offset=offset, path=path)
         body = request.as_dict()
+
         query = {}
         if length:
-            query["length"] = length
+            query["length"] = request.length
         if offset:
-            query["offset"] = offset
+            query["offset"] = request.offset
         if path:
-            query["path"] = path
+            query["path"] = request.path
 
         json = self._api.do("GET", "/api/2.0/dbfs/read", query=query, body=body)
         return ReadResponse.from_dict(json)

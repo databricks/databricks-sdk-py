@@ -339,9 +339,8 @@ class IpAccessListsAPI:
                 ip_addresses=ip_addresses, label=label, list_type=list_type
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/2.0/ip-access-lists", query=query, body=body)
+        json = self._api.do("POST", "/api/2.0/ip-access-lists", body=body)
         return CreateIpAccessListResponse.from_dict(json)
 
     def delete(self, ip_access_list_id: str, **kwargs):
@@ -353,13 +352,9 @@ class IpAccessListsAPI:
         if not request:
             request = Delete(ip_access_list_id=ip_access_list_id)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            query=query,
-            body=body,
+            "DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body
         )
 
     def get(self, ip_access_list_id: str, **kwargs) -> FetchIpAccessListResponse:
@@ -371,13 +366,9 @@ class IpAccessListsAPI:
         if not request:
             request = Get(ip_access_list_id=ip_access_list_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body
         )
         return FetchIpAccessListResponse.from_dict(json)
 
@@ -426,14 +417,8 @@ class IpAccessListsAPI:
                 list_type=list_type,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            query=query,
-            body=body,
-        )
+        self._api.do("PUT", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body)
 
     def update(
         self,
@@ -477,11 +462,7 @@ class IpAccessListsAPI:
                 list_type=list_type,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "PATCH",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body
         )

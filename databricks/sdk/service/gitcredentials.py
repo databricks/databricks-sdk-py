@@ -11,13 +11,11 @@ from typing import Optional, Dict, List, Any
 @dataclass
 class CreateCredentials:
 
-    # Git provider. This field is case-insensitive. The available Git providers
-    # are awsCodeCommit, azureDevOpsServices,
+    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
     # Git username.
     git_username: str
-    # The personal access token used to authenticate to the corresponding Git
-    # provider.
+    # The personal access token used to authenticate to the corresponding Git provider.
     personal_access_token: str
 
     def as_dict(self) -> dict:
@@ -45,8 +43,7 @@ class CreateCredentialsResponse:
 
     # ID of the credential object in the workspace.
     credential_id: int
-    # Git provider. This field is case-insensitive. The available Git providers
-    # are awsCodeCommit, azureDevOpsServices,
+    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
     # Git username.
     git_username: str
@@ -76,8 +73,7 @@ class CredentialInfo:
 
     # ID of the credential object in the workspace.
     credential_id: int
-    # Git provider. This field is case-insensitive. The available Git providers
-    # are awsCodeCommit, azureDevOpsServices,
+    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
     # Git username.
     git_username: str
@@ -170,13 +166,11 @@ class UpdateCredentials:
 
     # The ID for the corresponding credential to access.
     credential_id: int  # path
-    # Git provider. This field is case-insensitive. The available Git providers
-    # are awsCodeCommit, azureDevOpsServices,
+    # Git provider. This field is case-insensitive. The available Git providers are awsCodeCommit, azureDevOpsServices,
     git_provider: str
     # Git username.
     git_username: str
-    # The personal access token used to authenticate to the corresponding Git
-    # provider.
+    # The personal access token used to authenticate to the corresponding Git provider.
     personal_access_token: str
 
     def as_dict(self) -> dict:
@@ -229,9 +223,8 @@ class GitCredentialsAPI:
                 personal_access_token=personal_access_token,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/2.0/git-credentials", query=query, body=body)
+        json = self._api.do("POST", "/api/2.0/git-credentials", body=body)
         return CreateCredentialsResponse.from_dict(json)
 
     def delete(self, credential_id: int, **kwargs):
@@ -243,14 +236,8 @@ class GitCredentialsAPI:
         if not request:
             request = Delete(credential_id=credential_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/git-credentials/{credential_id}",
-            query=query,
-            body=body,
-        )
+        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", body=body)
 
     def get(self, credential_id: int, **kwargs) -> CredentialInfo:
         """Get a credential entry.
@@ -261,10 +248,9 @@ class GitCredentialsAPI:
         if not request:
             request = Get(credential_id=credential_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET", f"/api/2.0/git-credentials/{credential_id}", query=query, body=body
+            "GET", f"/api/2.0/git-credentials/{credential_id}", body=body
         )
         return CredentialInfo.from_dict(json)
 
@@ -299,8 +285,5 @@ class GitCredentialsAPI:
                 personal_access_token=personal_access_token,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.0/git-credentials/{credential_id}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body)

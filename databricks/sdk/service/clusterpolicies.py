@@ -11,11 +11,9 @@ from typing import Optional, Dict, List, Any
 @dataclass
 class CreatePolicy:
 
-    # Policy definition document expressed in Databricks Cluster Policy
-    # Definition Language.
+    # Policy definition document expressed in Databricks Cluster Policy Definition Language.
     definition: str
-    # Cluster Policy name requested by the user. This has to be unique. Length
-    # must be between 1 and 100 characters.
+    # Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     name: str
 
     def as_dict(self) -> dict:
@@ -78,11 +76,9 @@ class DeletePolicy:
 @dataclass
 class EditPolicy:
 
-    # Policy definition document expressed in Databricks Cluster Policy
-    # Definition Language.
+    # Policy definition document expressed in Databricks Cluster Policy Definition Language.
     definition: str
-    # Cluster Policy name requested by the user. This has to be unique. Length
-    # must be between 1 and 100 characters.
+    # Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     name: str
     # The ID of the policy to update.
     policy_id: str
@@ -153,17 +149,13 @@ class ListPoliciesResponse:
 @dataclass
 class Policy:
 
-    # Creation time. The timestamp (in millisecond) when this Cluster Policy was
-    # created.
+    # Creation time. The timestamp (in millisecond) when this Cluster Policy was created.
     created_at_timestamp: int
-    # Creator user name. The field won't be included in the response if the user
-    # has already been deleted.
+    # Creator user name. The field won't be included in the response if the user has already been deleted.
     creator_user_name: str
-    # Policy definition document expressed in Databricks Cluster Policy
-    # Definition Language.
+    # Policy definition document expressed in Databricks Cluster Policy Definition Language.
     definition: str
-    # Cluster Policy name requested by the user. This has to be unique. Length
-    # must be between 1 and 100 characters.
+    # Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     name: str
     # Canonical unique identifier for the Cluster Policy.
     policy_id: str
@@ -207,11 +199,8 @@ class ClusterPoliciesAPI:
         if not request:
             request = CreatePolicy(definition=definition, name=name)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.0/policies/clusters/create", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.0/policies/clusters/create", body=body)
         return CreatePolicyResponse.from_dict(json)
 
     def delete(self, policy_id: str, **kwargs):
@@ -224,11 +213,8 @@ class ClusterPoliciesAPI:
         if not request:
             request = DeletePolicy(policy_id=policy_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "POST", "/api/2.0/policies/clusters/delete", query=query, body=body
-        )
+        self._api.do("POST", "/api/2.0/policies/clusters/delete", body=body)
 
     def edit(self, policy_id: str, name: str, definition: str, **kwargs):
         """Update a cluster policy.
@@ -240,9 +226,8 @@ class ClusterPoliciesAPI:
         if not request:
             request = EditPolicy(definition=definition, name=name, policy_id=policy_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do("POST", "/api/2.0/policies/clusters/edit", query=query, body=body)
+        self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body)
 
     def get(self, policy_id: str, **kwargs) -> Policy:
         """Get entity.
@@ -254,9 +239,10 @@ class ClusterPoliciesAPI:
         if not request:
             request = Get(policy_id=policy_id)
         body = request.as_dict()
+
         query = {}
         if policy_id:
-            query["policy_id"] = policy_id
+            query["policy_id"] = request.policy_id
 
         json = self._api.do(
             "GET", "/api/2.0/policies/clusters/get", query=query, body=body

@@ -18,12 +18,10 @@ from .libraries import MavenLibrary
 @dataclass
 class CreatePipeline:
 
-    # If false, deployment will fail if name conflicts with that of another
-    # pipeline.
+    # If false, deployment will fail if name conflicts with that of another pipeline.
     allow_duplicate_names: bool
-    # Catalog in UC to add tables to. If target is specified, tables in this
-    # pipeline will be published to a "target" schema inside catalog (i.e.
-    # <catalog>.<target>.<table>).
+    # Catalog in UC to add tables to. If target is specified, tables in this pipeline will be published to a "target"
+    # schema inside catalog (i.e. <catalog>.<target>.<table>).
     catalog: str
     # DLT Release Channel that specifies which version to use.
     channel: str
@@ -196,12 +194,10 @@ class Delete:
 @dataclass
 class EditPipeline:
 
-    # If false, deployment will fail if name has changed and conflicts the name
-    # of another pipeline.
+    # If false, deployment will fail if name has changed and conflicts the name of another pipeline.
     allow_duplicate_names: bool
-    # Catalog in UC to add tables to. If target is specified, tables in this
-    # pipeline will be published to a "target" schema inside catalog (i.e.
-    # <catalog>.<target>.<table>).
+    # Catalog in UC to add tables to. If target is specified, tables in this pipeline will be published to a "target"
+    # schema inside catalog (i.e. <catalog>.<target>.<table>).
     catalog: str
     # DLT Release Channel that specifies which version to use.
     channel: str
@@ -215,9 +211,8 @@ class EditPipeline:
     development: bool
     # Pipeline product edition.
     edition: str
-    # If present, the last-modified time of the pipeline settings before the
-    # edit. If the settings were modified after that time, then the request will
-    # fail with a conflict.
+    # If present, the last-modified time of the pipeline settings before the edit. If the settings were modified after
+    # that time, then the request will fail with a conflict.
     expected_last_modified: int
     # Filters on which Pipeline packages to include in the deployed graph.
     filters: "Filters"
@@ -365,8 +360,7 @@ class GetPipelineResponse:
     health: "GetPipelineResponseHealth"
     # The last time the pipeline settings were modified or created.
     last_modified: int
-    # Status of the latest updates for the pipeline. Ordered with the newest
-    # update first.
+    # Status of the latest updates for the pipeline. Ordered with the newest update first.
     latest_updates: "List[UpdateStateInfo]"
     # A human friendly identifier for the pipeline, taken from the `spec`.
     name: str
@@ -374,8 +368,7 @@ class GetPipelineResponse:
     pipeline_id: str
     # Username of the user that the pipeline will run on behalf of.
     run_as_user_name: str
-    # The pipeline specification. This field is not returned when called by
-    # `ListPipelines`.
+    # The pipeline specification. This field is not returned when called by `ListPipelines`.
     spec: "PipelineSpec"
     # The pipeline state.
     state: "PipelineState"
@@ -483,24 +476,19 @@ class GetUpdateResponse:
 class ListPipelines:
     """List pipelines"""
 
-    # Select a subset of results based on the specified criteria. The supported
-    # filters are:
+    # Select a subset of results based on the specified criteria. The supported filters are:
     #
-    # * `notebook='<path>'` to select pipelines that reference the provided
-    # notebook path. * `name LIKE '[pattern]'` to select pipelines with a name
-    # that matches pattern. Wildcards are supported, for example: `name LIKE
-    # '%shopping%'`
+    # * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE '[pattern]'` to
+    # select pipelines with a name that matches pattern. Wildcards are supported, for example: `name LIKE '%shopping%'`
     #
     # Composite filters are not supported. This field is optional.
     filter: str  # query
-    # The maximum number of entries to return in a single page. The system may
-    # return fewer than max_results events in a response, even if there are more
-    # events available. This field is optional. The default value is 25. The
-    # maximum value is 100. An error is returned if the value of max_results is
-    # greater than 100.
+    # The maximum number of entries to return in a single page. The system may return fewer than max_results events in a
+    # response, even if there are more events available. This field is optional. The default value is 25. The maximum
+    # value is 100. An error is returned if the value of max_results is greater than 100.
     max_results: int  # query
-    # A list of strings specifying the order of results. Supported order_by
-    # fields are id and name. The default is id asc. This field is optional.
+    # A list of strings specifying the order of results. Supported order_by fields are id and name. The default is id
+    # asc. This field is optional.
     order_by: "List[str]"  # query
     # Page token returned by previous call
     page_token: str  # query
@@ -594,11 +582,10 @@ class ListUpdates:
 @dataclass
 class ListUpdatesResponse:
 
-    # If present, then there are more results, and this a token to be used in a
-    # subsequent request to fetch the next page.
+    # If present, then there are more results, and this a token to be used in a subsequent request to fetch the next
+    # page.
     next_page_token: str
-    # If present, then this token can be used in a subsequent request to fetch
-    # the previous page.
+    # If present, then this token can be used in a subsequent request to fetch the previous page.
     prev_page_token: str
 
     updates: "List[UpdateInfo]"
@@ -650,86 +637,70 @@ class PipelineCluster:
 
     # Note: This field won't be persisted. Only API users will check this field.
     apply_policy_default_values: bool
-    # Parameters needed in order to automatically scale clusters up and down
-    # based on load. Note: autoscaling works best with DB runtime versions 3.0
-    # or later.
+    # Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best
+    # with DB runtime versions 3.0 or later.
     autoscale: "AutoScale"
-    # Attributes related to clusters running on Amazon Web Services. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of
+    # default values will be used.
     aws_attributes: "AwsAttributes"
-    # Attributes related to clusters running on Amazon Web Services. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of
+    # default values will be used.
     azure_attributes: "AzureAttributes"
-    # The configuration for delivering spark logs to a long-term storage
-    # destination. Two kinds of destinations (dbfs and s3) are supported. Only
-    # one destination can be specified for one cluster. If the conf is given,
-    # the logs will be delivered to the destination every `5 mins`. The
-    # destination of driver logs is `$destination/$clusterId/driver`, while the
-    # destination of executor logs is `$destination/$clusterId/executor`.
+    # The configuration for delivering spark logs to a long-term storage destination. Two kinds of destinations (dbfs
+    # and s3) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will
+    # be delivered to the destination every `5 mins`. The destination of driver logs is
+    # `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
     cluster_log_conf: "ClusterLogConf"
-    # Additional tags for cluster resources. Databricks will tag all cluster
-    # resources (e.g., AWS instances and EBS volumes) with these tags in
-    # addition to `default_tags`. Notes:
+    # Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS
+    # volumes) with these tags in addition to `default_tags`. Notes:
     #
     # - Currently, Databricks allows at most 45 custom tags
     #
-    # - Clusters can only reuse cloud resources if the resources' tags are a
-    # subset of the cluster tags
+    # - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
     custom_tags: "Dict[str,str]"
-    # The optional ID of the instance pool for the driver of the cluster
-    # belongs. The pool cluster uses the instance pool with id
-    # (instance_pool_id) if the driver pool is not assigned.
+    # The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance
+    # pool with id (instance_pool_id) if the driver pool is not assigned.
     driver_instance_pool_id: str
-    # The node type of the Spark driver. Note that this field is optional; if
-    # unset, the driver node type will be set as the same value as
-    # `node_type_id` defined above.
+    # The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as
+    # the same value as `node_type_id` defined above.
     driver_node_type_id: str
-    # Attributes related to clusters running on Google Cloud Platform. If not
-    # specified at cluster creation, a set of default values will be used.
+    # Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of
+    # default values will be used.
     gcp_attributes: "GcpAttributes"
     # The optional ID of the instance pool to which the cluster belongs.
     instance_pool_id: str
     # Cluster label
     label: str
-    # This field encodes, through a single value, the resources available to
-    # each of the Spark nodes in this cluster. For example, the Spark nodes can
-    # be provisioned and optimized for memory or compute intensive workloads. A
-    # list of available node types can be retrieved by using the
-    # :method:clusters/listNodeTypes API call.
+    # This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster.
+    # For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of
+    # available node types can be retrieved by using the :method:clusters/listNodeTypes API call.
     node_type_id: str
-    # Number of worker nodes that this cluster should have. A cluster has one
-    # Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-    # Spark nodes.
+    # Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors
+    # for a total of `num_workers` + 1 Spark nodes.
     #
-    # Note: When reading the properties of a cluster, this field reflects the
-    # desired number of workers rather than the actual current number of
-    # workers. For instance, if a cluster is resized from 5 to 10 workers, this
-    # field will immediately be updated to reflect the target size of 10
-    # workers, whereas the workers listed in `spark_info` will gradually
-    # increase from 5 to 10 as the new nodes are provisioned.
+    # Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the
+    # actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will
+    # immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will
+    # gradually increase from 5 to 10 as the new nodes are provisioned.
     num_workers: int
     # The ID of the cluster policy used to create the cluster if applicable.
     policy_id: str
-    # An object containing a set of optional, user-specified Spark configuration
-    # key-value pairs. See :method:clusters/create for more details.
+    # An object containing a set of optional, user-specified Spark configuration key-value pairs. See
+    # :method:clusters/create for more details.
     spark_conf: "Dict[str,str]"
-    # An object containing a set of optional, user-specified environment
-    # variable key-value pairs. Please note that key-value pair of the form
-    # (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-    # driver and workers.
+    # An object containing a set of optional, user-specified environment variable key-value pairs. Please note that
+    # key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and
+    # workers.
     #
-    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-    # recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-    # example below. This ensures that all default databricks managed
+    # In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+    # `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed
     # environmental variables are included as well.
     #
-    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-    # "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-    # "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+    # Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or
+    # `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
     spark_env_vars: "Dict[str,str]"
-    # SSH public key contents that will be added to each Spark node in this
-    # cluster. The corresponding private keys can be used to login with the user
-    # name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+    # SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can
+    # be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
     ssh_public_keys: "List[str]"
 
     def as_dict(self) -> dict:
@@ -805,23 +776,19 @@ class PipelineCluster:
 @dataclass
 class PipelineLibrary:
 
-    # URI of the jar to be installed. Currently only DBFS and S3 URIs are
-    # supported. For example: `{ "jar": "dbfs:/mnt/databricks/library.jar" }` or
-    # `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make sure
-    # the cluster has read access on the library. You may need to launch the
-    # cluster with an IAM role to access the S3 URI.
+    # URI of the jar to be installed. Currently only DBFS and S3 URIs are supported. For example: `{ "jar":
+    # "dbfs:/mnt/databricks/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make
+    # sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the
+    # S3 URI.
     jar: str
-    # Specification of a maven library to be installed. For example: `{
-    # "coordinates": "org.jsoup:jsoup:1.7.2" }`
+    # Specification of a maven library to be installed. For example: `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
     maven: "MavenLibrary"
-    # The path to a notebook that defines a pipeline and is stored in the
-    # Databricks workspace. For example: `{ "notebook" : { "path" :
-    # "/my-pipeline-notebook-path" } }`. Currently, only Scala notebooks are
-    # supported, and pipelines must be defined in a package cell.
+    # The path to a notebook that defines a pipeline and is stored in the Databricks workspace. For example: `{
+    # "notebook" : { "path" : "/my-pipeline-notebook-path" } }`. Currently, only Scala notebooks are supported, and
+    # pipelines must be defined in a package cell.
     notebook: "NotebookLibrary"
-    # URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl" }`
-    # or `{ "whl": "s3://my-bucket/whl" }`. If S3 is used, please make sure the
-    # cluster has read access on the library. You may need to launch the cluster
+    # URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl" }` or `{ "whl": "s3://my-bucket/whl" }`.
+    # If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster
     # with an IAM role to access the S3 URI.
     whl: str
 
@@ -853,9 +820,8 @@ class PipelineLibrary:
 @dataclass
 class PipelineSpec:
 
-    # Catalog in UC to add tables to. If target is specified, tables in this
-    # pipeline will be published to a "target" schema inside catalog (i.e.
-    # <catalog>.<target>.<table>).
+    # Catalog in UC to add tables to. If target is specified, tables in this pipeline will be published to a "target"
+    # schema inside catalog (i.e. <catalog>.<target>.<table>).
     catalog: str
     # DLT Release Channel that specifies which version to use.
     channel: str
@@ -967,15 +933,13 @@ class PipelineStateInfo:
     cluster_id: str
     # The username of the pipeline creator.
     creator_user_name: str
-    # Status of the latest updates for the pipeline. Ordered with the newest
-    # update first.
+    # Status of the latest updates for the pipeline. Ordered with the newest update first.
     latest_updates: "List[UpdateStateInfo]"
     # The user-friendly name of the pipeline.
     name: str
     # The unique identifier of the pipeline.
     pipeline_id: str
-    # The username that the pipeline runs as. This is a read only value derived
-    # from the pipeline owner.
+    # The username that the pipeline runs as. This is a read only value derived from the pipeline owner.
     run_as_user_name: str
     # The pipeline state.
     state: "PipelineState"
@@ -1064,17 +1028,15 @@ class StartUpdate:
     cause: "StartUpdateCause"
     # If true, this update will reset all tables before running.
     full_refresh: bool
-    # A list of tables to update with fullRefresh. If both refresh_selection and
-    # full_refresh_selection are empty, this is a full graph update. Full
-    # Refresh on a table means that the states of the table will be reset before
-    # the refresh.
+    # A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection are empty, this
+    # is a full graph update. Full Refresh on a table means that the states of the table will be reset before the
+    # refresh.
     full_refresh_selection: "List[str]"
 
     pipeline_id: str  # path
-    # A list of tables to update without fullRefresh. If both refresh_selection
-    # and full_refresh_selection are empty, this is a full graph update. Full
-    # Refresh on a table means that the states of the table will be reset before
-    # the refresh.
+    # A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection are empty,
+    # this is a full graph update. Full Refresh on a table means that the states of the table will be reset before the
+    # refresh.
     refresh_selection: "List[str]"
 
     def as_dict(self) -> dict:
@@ -1159,24 +1121,22 @@ class UpdateInfo:
     cause: "UpdateInfoCause"
     # The ID of the cluster that the update is running on.
     cluster_id: str
-    # The pipeline configuration with system defaults applied where unspecified
-    # by the user. Not returned by ListUpdates.
+    # The pipeline configuration with system defaults applied where unspecified by the user. Not returned by
+    # ListUpdates.
     config: "PipelineSpec"
     # The time when this update was created.
     creation_time: int
     # If true, this update will reset all tables before running.
     full_refresh: bool
-    # A list of tables to update with fullRefresh. If both refresh_selection and
-    # full_refresh_selection are empty, this is a full graph update. Full
-    # Refresh on a table means that the states of the table will be reset before
-    # the refresh.
+    # A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection are empty, this
+    # is a full graph update. Full Refresh on a table means that the states of the table will be reset before the
+    # refresh.
     full_refresh_selection: "List[str]"
     # The ID of the pipeline.
     pipeline_id: str
-    # A list of tables to update without fullRefresh. If both refresh_selection
-    # and full_refresh_selection are empty, this is a full graph update. Full
-    # Refresh on a table means that the states of the table will be reset before
-    # the refresh.
+    # A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection are empty,
+    # this is a full graph update. Full Refresh on a table means that the states of the table will be reset before the
+    # refresh.
     refresh_selection: "List[str]"
     # The update state.
     state: "UpdateInfoState"
@@ -1349,9 +1309,8 @@ class PipelinesAPI:
                 trigger=trigger,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do("POST", "/api/2.0/pipelines", query=query, body=body)
+        json = self._api.do("POST", "/api/2.0/pipelines", body=body)
         return CreatePipelineResponse.from_dict(json)
 
     def delete(self, pipeline_id: str, **kwargs):
@@ -1363,11 +1322,8 @@ class PipelinesAPI:
         if not request:
             request = Delete(pipeline_id=pipeline_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", body=body)
 
     def get(self, pipeline_id: str, **kwargs) -> GetPipelineResponse:
         """Get a pipeline."""
@@ -1376,11 +1332,8 @@ class PipelinesAPI:
         if not request:
             request = Get(pipeline_id=pipeline_id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.0/pipelines/{pipeline_id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", body=body)
         return GetPipelineResponse.from_dict(json)
 
     def get_update(
@@ -1394,13 +1347,9 @@ class PipelinesAPI:
         if not request:
             request = GetUpdate(pipeline_id=pipeline_id, update_id=update_id)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", body=body
         )
         return GetUpdateResponse.from_dict(json)
 
@@ -1426,15 +1375,16 @@ class PipelinesAPI:
                 page_token=page_token,
             )
         body = request.as_dict()
+
         query = {}
         if filter:
-            query["filter"] = filter
+            query["filter"] = request.filter
         if max_results:
-            query["max_results"] = max_results
+            query["max_results"] = request.max_results
         if order_by:
-            query["order_by"] = [v for v in order_by]
+            query["order_by"] = [v for v in request.order_by]
         if page_token:
-            query["page_token"] = page_token
+            query["page_token"] = request.page_token
 
         json = self._api.do("GET", "/api/2.0/pipelines", query=query, body=body)
         return ListPipelinesResponse.from_dict(json)
@@ -1461,13 +1411,14 @@ class PipelinesAPI:
                 until_update_id=until_update_id,
             )
         body = request.as_dict()
+
         query = {}
         if max_results:
-            query["max_results"] = max_results
+            query["max_results"] = request.max_results
         if page_token:
-            query["page_token"] = page_token
+            query["page_token"] = request.page_token
         if until_update_id:
-            query["until_update_id"] = until_update_id
+            query["until_update_id"] = request.until_update_id
 
         json = self._api.do(
             "GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, body=body
@@ -1483,11 +1434,8 @@ class PipelinesAPI:
         if not request:
             request = Reset(pipeline_id=pipeline_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "POST", f"/api/2.0/pipelines/{pipeline_id}/reset", query=query, body=body
-        )
+        self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/reset", body=body)
 
     def start_update(
         self,
@@ -1513,10 +1461,9 @@ class PipelinesAPI:
                 refresh_selection=refresh_selection,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, body=body
+            "POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body
         )
         return StartUpdateResponse.from_dict(json)
 
@@ -1529,11 +1476,8 @@ class PipelinesAPI:
         if not request:
             request = Stop(pipeline_id=pipeline_id)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "POST", f"/api/2.0/pipelines/{pipeline_id}/stop", query=query, body=body
-        )
+        self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", body=body)
 
     def update(
         self,
@@ -1585,6 +1529,5 @@ class PipelinesAPI:
                 trigger=trigger,
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", query=query, body=body)
+        self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body)

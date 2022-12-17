@@ -19,13 +19,12 @@ class AuthenticationType(Enum):
 @dataclass
 class AwsIamRole:
 
-    # The external ID used in role assumption to prevent confused deputy
-    # problem..
+    # The external ID used in role assumption to prevent confused deputy problem..
     external_id: str
     # The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
     role_arn: str
-    # The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
-    # This is the identity that is going to assume the AWS IAM role.
+    # The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity that is going to
+    # assume the AWS IAM role.
     unity_catalog_iam_arn: str
 
     def as_dict(self) -> dict:
@@ -51,13 +50,11 @@ class AwsIamRole:
 @dataclass
 class AzureServicePrincipal:
 
-    # The application ID of the application registration within the referenced
-    # AAD tenant.
+    # The application ID of the application registration within the referenced AAD tenant.
     application_id: str
     # The client secret generated for the above app ID in AAD.
     client_secret: str
-    # The directory ID corresponding to the Azure Active Directory (AAD) tenant
-    # of the application.
+    # The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
     directory_id: str
 
     def as_dict(self) -> dict:
@@ -101,8 +98,7 @@ class CatalogInfo:
     properties: "Dict[str,str]"
     # The name of delta sharing provider.
     #
-    # A Delta Sharing Catalog is a catalog that is based on a Delta share on a
-    # remote sharing server.
+    # A Delta Sharing Catalog is a catalog that is based on a Delta share on a remote sharing server.
     provider_name: str
     # The name of the share under the share provider.
     share_name: str
@@ -189,8 +185,7 @@ class ColumnInfo:
     nullable: bool
     # [Create,Update:OPT] Partition index for column.
     partition_index: int
-    # [Create:REQ Update:OPT] Ordinal position of column (starting at position
-    # 0).
+    # [Create:REQ Update:OPT] Ordinal position of column (starting at position 0).
     position: int
     # [Create: OPT, Update: OPT] Format of IntervalType.
     type_interval_type: str
@@ -198,11 +193,9 @@ class ColumnInfo:
     type_json: str
     # [Create: REQ Update: OPT] Name of type (INT, STRUCT, MAP, etc.)
     type_name: "ColumnInfoTypeName"
-    # [Create: OPT, Update: OPT] Digits of precision; required on Create for
-    # DecimalTypes.
+    # [Create: OPT, Update: OPT] Digits of precision; required on Create for DecimalTypes.
     type_precision: int
-    # [Create: OPT, Update: OPT] Digits to right of decimal; Required on Create
-    # for DecimalTypes.
+    # [Create: OPT, Update: OPT] Digits to right of decimal; Required on Create for DecimalTypes.
     type_scale: int
     # [Create:REQ Update:OPT] Full data type spec, SQL/catalogString text.
     type_text: str
@@ -286,8 +279,7 @@ class CreateCatalog:
     properties: "Dict[str,str]"
     # The name of delta sharing provider.
     #
-    # A Delta Sharing Catalog is a catalog that is based on a Delta share on a
-    # remote sharing server.
+    # A Delta Sharing Catalog is a catalog that is based on a Delta share on a remote sharing server.
     provider_name: str
     # The name of the share under the share provider.
     share_name: str
@@ -334,8 +326,7 @@ class CreateExternalLocation:
     name: str
     # Indicates whether the external location is read-only.
     read_only: bool
-    # Skips validation of the storage credential associated with the external
-    # location.
+    # Skips validation of the storage credential associated with the external location.
     skip_validation: bool
     # Path URL of the External Location.
     url: str
@@ -435,8 +426,7 @@ class CreateProvider:
     name: str
     # Username of Provider owner.
     owner: str
-    # This field is required when the authentication_type is `TOKEN` or not
-    # provided.
+    # This field is required when the authentication_type is `TOKEN` or not provided.
     recipient_profile_str: str
 
     def as_dict(self) -> dict:
@@ -474,16 +464,15 @@ class CreateRecipient:
     authentication_type: "AuthenticationType"
     # Description about the recipient.
     comment: str
-    # The global Unity Catalog metastore id provided by the data recipient.\n
-    # This field is only present when the authentication type is `DATABRICKS`.\n
-    # The identifier is of format <cloud>:<region>:<metastore-uuid>.
+    # The global Unity Catalog metastore id provided by the data recipient.\n This field is only present when the
+    # authentication type is `DATABRICKS`.\n The identifier is of format <cloud>:<region>:<metastore-uuid>.
     data_recipient_global_metastore_id: Any
     # IP Access List
     ip_access_list: "IpAccessList"
     # Name of Recipient.
     name: str
-    # The one-time sharing code provided by the data recipient. This field is
-    # only present when the authentication type is `DATABRICKS`.
+    # The one-time sharing code provided by the data recipient. This field is only present when the authentication type
+    # is `DATABRICKS`.
     sharing_code: str
 
     def as_dict(self) -> dict:
@@ -596,8 +585,7 @@ class CreateStorageCredential:
     gcp_service_account_key: "GcpServiceAccountKey"
     # The credential name. The name MUST be unique within the Metastore.
     name: str
-    # Optional. Supplying true to this argument skips validation of the created
-    # set of credentials.
+    # Optional. Supplying true to this argument skips validation of the created set of credentials.
     skip_validation: bool
 
     def as_dict(self) -> dict:
@@ -819,8 +807,7 @@ class DeleteShareRequest:
 class DeleteStorageCredentialRequest:
     """Delete a credential"""
 
-    # Force deletion even if there are dependent external locations or external
-    # tables.
+    # Force deletion even if there are dependent external locations or external tables.
     force: bool  # query
     # Required. Name of the storage credential.
     name: str  # path
@@ -884,8 +871,7 @@ class ExternalLocationInfo:
     owner: str
     # Indicates whether the external location is read-only.
     read_only: bool
-    # Time at which External Location this was last modified, in epoch
-    # milliseconds.
+    # Time at which External Location this was last modified, in epoch milliseconds.
     updated_at: int
     # Username of user who last modified the External Location.
     updated_by: str
@@ -1095,15 +1081,14 @@ class GetMetastoreSummaryResponse:
     created_by: str
     # Unique identifier of the Metastore's (Default) Data Access Configuration.
     default_data_access_config_id: str
-    # The organization name of a Delta Sharing entity, to be used in
-    # Databricks-to-Databricks Delta Sharing as the official name.
+    # The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta Sharing as the
+    # official name.
     delta_sharing_organization_name: str
     # The lifetime of delta sharing recipient token in seconds.
     delta_sharing_recipient_token_lifetime_in_seconds: int
     # The scope of Delta Sharing enabled for the Metastore
     delta_sharing_scope: "GetMetastoreSummaryResponseDeltaSharingScope"
-    # Globally unique metastore ID across clouds and regions, of the form
-    # `cloud:region:metastore_id`.
+    # Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`.
     global_metastore_id: str
     # The unique ID (UUID) of the Metastore.
     metastore_id: str
@@ -1111,8 +1096,7 @@ class GetMetastoreSummaryResponse:
     name: str
     # The owner of the metastore.
     owner: str
-    # Privilege model version of the metastore, of the form `major.minor` (e.g.,
-    # `1.0`)
+    # Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)
     privilege_model_version: str
     # Cloud region of the Metastore home shard (e.g., `us-west-2`, `westus`).
     region: str
@@ -1326,8 +1310,7 @@ class GetSchemaRequest:
 @dataclass
 class GetSharePermissionsResponse:
 
-    # Note to self (acain): Unfortunately, neither json_inline nor json_map work
-    # here.
+    # Note to self (acain): Unfortunately, neither json_inline nor json_map work here.
     privilege_assignments: "List[PrivilegeAssignment]"
 
     def as_dict(self) -> dict:
@@ -1532,8 +1515,7 @@ class ListProviderSharesResponse:
 class ListProvidersRequest:
     """List providers"""
 
-    # If not provided, all providers will be returned. If no providers exist
-    # with this ID, no results will be returned.
+    # If not provided, all providers will be returned. If no providers exist with this ID, no results will be returned.
     data_provider_global_metastore_id: str  # query
 
     def as_dict(self) -> dict:
@@ -1580,8 +1562,8 @@ class ListProvidersResponse:
 class ListRecipientsRequest:
     """List share recipients"""
 
-    # If not provided, all recipients will be returned. If no recipients exist
-    # with this ID, no results will be returned.
+    # If not provided, all recipients will be returned. If no recipients exist with this ID, no results will be
+    # returned.
     data_recipient_global_metastore_id: str  # query
 
     def as_dict(self) -> dict:
@@ -1740,8 +1722,7 @@ class ListTableSummariesResponse:
 
     # Optional. Opaque token for pagination. Empty if there's no more page.
     next_page_token: str
-    # Only name, catalog_name, schema_name, full_name and table_type will be
-    # set.
+    # Only name, catalog_name, schema_name, full_name and table_type will be set.
     tables: "List[TableSummary]"
 
     def as_dict(self) -> dict:
@@ -1769,8 +1750,7 @@ class ListTablesRequest:
 
     # Required. Name of parent catalog for tables of interest.
     catalog_name: str  # query
-    # Required (for now -- may be optional for wildcard search in future).
-    # Parent schema of tables.
+    # Required (for now -- may be optional for wildcard search in future). Parent schema of tables.
     schema_name: str  # query
 
     def as_dict(self) -> dict:
@@ -1831,8 +1811,7 @@ class MetastoreInfo:
     name: str
     # The owner of the metastore.
     owner: str
-    # The region this metastore has an afinity to. This is used by
-    # accounts-manager. Ignored by Unity Catalog.
+    # The region this metastore has an afinity to. This is used by accounts-manager. Ignored by Unity Catalog.
     region: str
     # Storage root URL for Metastore
     storage_root: str
@@ -1926,13 +1905,11 @@ class PartitionValue:
     name: str
     # The operator to apply for the value.
     op: "PartitionValueOp"
-    # The key of a Delta Sharing recipient's property. For example
-    # `databricks-account-id`. When this field is set, field `value` can not be
-    # set.
+    # The key of a Delta Sharing recipient's property. For example `databricks-account-id`. When this field is set,
+    # field `value` can not be set.
     recipient_property_key: str
-    # The value of the partition column. When this value is not set, it means
-    # `null` value. When this field is set, field `recipient_property_key` can
-    # not be set.
+    # The value of the partition column. When this value is not set, it means `null` value. When this field is set,
+    # field `recipient_property_key` can not be set.
     value: str
 
     def as_dict(self) -> dict:
@@ -2059,8 +2036,8 @@ class ProviderInfo:
 
     # The delta sharing authentication type.
     authentication_type: "AuthenticationType"
-    # Cloud vendor of the provider's UC Metastore. This field is only present
-    # when the authentication_type is `DATABRICKS`.
+    # Cloud vendor of the provider's UC Metastore. This field is only present when the authentication_type is
+    # `DATABRICKS`.
     cloud: str
     # Description about the provider.
     comment: str
@@ -2068,25 +2045,21 @@ class ProviderInfo:
     created_at: int
     # Username of Provider creator.
     created_by: str
-    # The global UC metastore id of the data provider. This field is only
-    # present when the authentication type is `DATABRICKS`. The identifier is of
-    # format <cloud>:<region>:<metastore-uuid>.
+    # The global UC metastore id of the data provider. This field is only present when the authentication type is
+    # `DATABRICKS`. The identifier is of format <cloud>:<region>:<metastore-uuid>.
     data_provider_global_metastore_id: str
-    # UUID of the provider's UC Metastore. This field is only present when the
-    # authentication type is `DATABRICKS`.
+    # UUID of the provider's UC Metastore. This field is only present when the authentication type is `DATABRICKS`.
     metastore_id: str
     # The name of the Provider.
     name: str
     # Username of Provider owner.
     owner: str
-    # The recipient profile. This field is only present when the
-    # authentication_type is `TOKEN`.
+    # The recipient profile. This field is only present when the authentication_type is `TOKEN`.
     recipient_profile: "RecipientProfile"
-    # This field is required when the authentication_type is `TOKEN` or not
-    # provided.
+    # This field is required when the authentication_type is `TOKEN` or not provided.
     recipient_profile_str: str
-    # Cloud region of the provider's UC Metastore. This field is only present
-    # when the authentication type is `DATABRICKS`.
+    # Cloud region of the provider's UC Metastore. This field is only present when the authentication type is
+    # `DATABRICKS`.
     region: str
     # Time at which this Provider was created, in epoch milliseconds.
     updated_at: int
@@ -2177,16 +2150,14 @@ class ProviderShare:
 @dataclass
 class RecipientInfo:
 
-    # A boolean status field showing whether the Recipient's activation URL has
-    # been exercised or not.
+    # A boolean status field showing whether the Recipient's activation URL has been exercised or not.
     activated: bool
-    # Full activation url to retrieve the access token. It will be empty if the
-    # token is already retrieved.
+    # Full activation url to retrieve the access token. It will be empty if the token is already retrieved.
     activation_url: str
     # The delta sharing authentication type.
     authentication_type: "AuthenticationType"
-    # Cloud vendor of the recipient's Unity Catalog Metstore. This field is only
-    # present when the authentication type is `DATABRICKS`.
+    # Cloud vendor of the recipient's Unity Catalog Metstore. This field is only present when the authentication type is
+    # `DATABRICKS`.
     cloud: str
     # Description about the recipient.
     comment: str
@@ -2194,22 +2165,21 @@ class RecipientInfo:
     created_at: int
     # Username of recipient creator.
     created_by: str
-    # The global Unity Catalog metastore id provided by the data recipient.\n
-    # This field is only present when the authentication type is `DATABRICKS`.\n
-    # The identifier is of format <cloud>:<region>:<metastore-uuid>.
+    # The global Unity Catalog metastore id provided by the data recipient.\n This field is only present when the
+    # authentication type is `DATABRICKS`.\n The identifier is of format <cloud>:<region>:<metastore-uuid>.
     data_recipient_global_metastore_id: Any
     # IP Access List
     ip_access_list: "IpAccessList"
-    # Unique identifier of recipient's Unity Catalog Metastore. This field is
-    # only present when the authentication type is `DATABRICKS`
+    # Unique identifier of recipient's Unity Catalog Metastore. This field is only present when the authentication type
+    # is `DATABRICKS`
     metastore_id: str
     # Name of Recipient.
     name: str
-    # Cloud region of the recipient's Unity Catalog Metstore. This field is only
-    # present when the authentication type is `DATABRICKS`.
+    # Cloud region of the recipient's Unity Catalog Metstore. This field is only present when the authentication type is
+    # `DATABRICKS`.
     region: str
-    # The one-time sharing code provided by the data recipient. This field is
-    # only present when the authentication type is `DATABRICKS`.
+    # The one-time sharing code provided by the data recipient. This field is only present when the authentication type
+    # is `DATABRICKS`.
     sharing_code: str
     # This field is only present when the authentication type is `TOKEN`.
     tokens: "List[RecipientTokenInfo]"
@@ -2320,8 +2290,7 @@ class RecipientProfile:
 @dataclass
 class RecipientTokenInfo:
 
-    # Full activation URL to retrieve the access token. It will be empty if the
-    # token is already retrieved.
+    # Full activation URL to retrieve the access token. It will be empty if the token is already retrieved.
     activation_url: str
     # Time at which this recipient Token was created, in epoch milliseconds.
     created_at: int
@@ -2427,9 +2396,8 @@ class RetrieveTokenResponse:
 @dataclass
 class RotateRecipientToken:
 
-    # Required. This will set the expiration_time of existing token only to a
-    # smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
-    # the existing token immediately, negative number will return an error.
+    # Required. This will set the expiration_time of existing token only to a smaller timestamp, it cannot extend the
+    # expiration_time. Use 0 to expire the existing token immediately, negative number will return an error.
     existing_token_expire_in_seconds: int
     # Required. The name of the recipient.
     name: str  # path
@@ -2644,35 +2612,30 @@ class ShareToPrivilegeAssignment:
 @dataclass
 class SharedDataObject:
 
-    # The time when this data object is added to the Share, in epoch
-    # milliseconds.
+    # The time when this data object is added to the Share, in epoch milliseconds.
     added_at: int
     # Username of the sharer.
     added_by: str
     # Whether to enable cdf or indicate if cdf is enabled on the shared object.
     cdf_enabled: bool
-    # A user-provided comment when adding the data object to the share.
-    # [Update:OPT]
+    # A user-provided comment when adding the data object to the share. [Update:OPT]
     comment: str
     # The type of the data object.
     data_object_type: str
     # A fully qualified name that uniquely identifies a data object.
     #
-    # For example, a table's fully qualified name is in the format of
-    # `<catalog>.<schema>.<table>`.
+    # For example, a table's fully qualified name is in the format of `<catalog>.<schema>.<table>`.
     name: str
     # Array of partitions for the shared data.
     partitions: "List[Partition]"
-    # A user-provided new name for the data object within the share. If this new
-    # name is not not provided, the object's original name will be used as the
-    # `shared_as` name. The `shared_as` name must be unique within a Share. For
+    # A user-provided new name for the data object within the share. If this new name is not not provided, the object's
+    # original name will be used as the `shared_as` name. The `shared_as` name must be unique within a Share. For
     # tables, the new name must follow the format of `<schema>.<table>`.
     shared_as: str
-    # The start version associated with the object. This allows data providers
-    # to control the lowest object version that is accessible by clients. If
-    # specified, clients can query snapshots or changes for versions >=
-    # start_version. If not specified, clients can only query starting from the
-    # version of the object at the time it was added to the share.
+    # The start version associated with the object. This allows data providers to control the lowest object version that
+    # is accessible by clients. If specified, clients can query snapshots or changes for versions >= start_version. If
+    # not specified, clients can only query starting from the version of the object at the time it was added to the
+    # share.
     #
     # NOTE: The start_version should be <= the `current` version of the object.
     start_version: int
@@ -2785,8 +2748,7 @@ class StorageCredentialInfo:
     metastore_id: str
     # The credential name. The name MUST be unique within the Metastore.
     name: str
-    # Optional. Supplying true to this argument skips validation of the created
-    # set of credentials.
+    # Optional. Supplying true to this argument skips validation of the created set of credentials.
     skip_validation: bool
     # Time at which this credential was last modified, in epoch milliseconds.
     updated_at: int
@@ -2855,9 +2817,8 @@ class TableInfo:
 
     # Name of parent Catalog.
     catalog_name: str
-    # This name ('columns') is what the client actually sees as the field name
-    # in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
-    # TableInfo).
+    # This name ('columns') is what the client actually sees as the field name in messages that include
+    # PropertiesKVPairs using 'json_inline' (e.g., TableInfo).
     columns: "List[ColumnInfo]"
     # User-provided free-form text description.
     comment: str
@@ -2982,16 +2943,13 @@ class TableSummariesRequest:
 
     # Required. Name of parent catalog for tables of interest.
     catalog_name: str  # query
-    # Optional. Maximum number of tables to return (page length). Defaults to
-    # 10000.
+    # Optional. Maximum number of tables to return (page length). Defaults to 10000.
     max_results: int  # query
     # Optional. Opaque token to send for the next page of results (pagination).
     page_token: str  # query
-    # Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
-    # be returned if not set or empty.
+    # Optional. A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
     schema_name_pattern: str  # query
-    # Optional. A sql LIKE pattern (% and _) for table names. All tables will be
-    # returned if not set or empty.
+    # Optional. A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
     table_name_pattern: str  # query
 
     def as_dict(self) -> dict:
@@ -3122,8 +3080,7 @@ class UpdateExternalLocation:
     comment: str
     # Current name of the Storage Credential this location uses.
     credential_name: str
-    # Force update even if changing url invalidates dependent external tables or
-    # mounts.
+    # Force update even if changing url invalidates dependent external tables or mounts.
     force: bool
     # Name of the External Location.
     name: str  # path
@@ -3131,8 +3088,7 @@ class UpdateExternalLocation:
     owner: str
     # Indicates whether the external location is read-only.
     read_only: bool
-    # Skips validation of the storage credential associated with the external
-    # location.
+    # Skips validation of the storage credential associated with the external location.
     skip_validation: bool
     # Path URL of the External Location.
     url: str
@@ -3302,8 +3258,7 @@ class UpdateProvider:
     name: str  # path
     # Username of Provider owner.
     owner: str
-    # This field is required when the authentication_type is `TOKEN` or not
-    # provided.
+    # This field is required when the authentication_type is `TOKEN` or not provided.
     recipient_profile_str: str
 
     def as_dict(self) -> dict:
@@ -3561,11 +3516,8 @@ class CatalogsAPI:
                 storage_root=storage_root,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/catalogs", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.1/unity-catalog/catalogs", body=body)
         return CatalogInfo.from_dict(json)
 
     def delete(self, name: str, *, force: bool = None, **kwargs):
@@ -3578,9 +3530,10 @@ class CatalogsAPI:
         if not request:
             request = DeleteCatalogRequest(force=force, name=name)
         body = request.as_dict()
+
         query = {}
         if force:
-            query["force"] = force
+            query["force"] = request.force
 
         self._api.do(
             "DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, body=body
@@ -3597,11 +3550,8 @@ class CatalogsAPI:
         if not request:
             request = GetCatalogRequest(name=name)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{name}", body=body)
         return CatalogInfo.from_dict(json)
 
     def list(self) -> ListCatalogsResponse:
@@ -3636,10 +3586,9 @@ class CatalogsAPI:
                 comment=comment, name=name, owner=owner, properties=properties
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, body=body
+            "PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", body=body
         )
         return CatalogInfo.from_dict(json)
 
@@ -3676,10 +3625,9 @@ class ExternalLocationsAPI:
                 url=url,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/external-locations", query=query, body=body
+            "POST", "/api/2.1/unity-catalog/external-locations", body=body
         )
         return ExternalLocationInfo.from_dict(json)
 
@@ -3693,9 +3641,10 @@ class ExternalLocationsAPI:
         if not request:
             request = DeleteExternalLocationRequest(force=force, name=name)
         body = request.as_dict()
+
         query = {}
         if force:
-            query["force"] = force
+            query["force"] = request.force
 
         self._api.do(
             "DELETE",
@@ -3715,13 +3664,9 @@ class ExternalLocationsAPI:
         if not request:
             request = GetExternalLocationRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/external-locations/{name}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.1/unity-catalog/external-locations/{name}", body=body
         )
         return ExternalLocationInfo.from_dict(json)
 
@@ -3767,13 +3712,9 @@ class ExternalLocationsAPI:
                 url=url,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/external-locations/{name}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body
         )
         return ExternalLocationInfo.from_dict(json)
 
@@ -3795,9 +3736,10 @@ class GrantsAPI:
                 full_name=full_name, principal=principal, securable_type=securable_type
             )
         body = request.as_dict()
+
         query = {}
         if principal:
-            query["principal"] = principal
+            query["principal"] = request.principal
 
         json = self._api.do(
             "GET",
@@ -3829,9 +3771,10 @@ class GrantsAPI:
                 securable_type=securable_type,
             )
         body = request.as_dict()
+
         query = {}
         if principal:
-            query["principal"] = principal
+            query["principal"] = request.principal
 
         self._api.do(
             "PATCH",
@@ -3863,12 +3806,10 @@ class MetastoresAPI:
                 workspace_id=workspace_id,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "PUT",
             f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
-            query=query,
             body=body,
         )
 
@@ -3881,11 +3822,8 @@ class MetastoresAPI:
         if not request:
             request = CreateMetastore(name=name, storage_root=storage_root)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/metastores", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.1/unity-catalog/metastores", body=body)
         return MetastoreInfo.from_dict(json)
 
     def delete(self, id: str, *, force: bool = None, **kwargs):
@@ -3897,9 +3835,10 @@ class MetastoresAPI:
         if not request:
             request = DeleteMetastoreRequest(force=force, id=id)
         body = request.as_dict()
+
         query = {}
         if force:
-            query["force"] = force
+            query["force"] = request.force
 
         self._api.do(
             "DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, body=body
@@ -3915,11 +3854,8 @@ class MetastoresAPI:
         if not request:
             request = GetMetastoreRequest(id=id)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/metastores/{id}", query=query, body=body
-        )
+        json = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{id}", body=body)
         return MetastoreInfo.from_dict(json)
 
     def list(self) -> ListMetastoresResponse:
@@ -3953,9 +3889,10 @@ class MetastoresAPI:
                 metastore_id=metastore_id, workspace_id=workspace_id
             )
         body = request.as_dict()
+
         query = {}
         if metastore_id:
-            query["metastore_id"] = metastore_id
+            query["metastore_id"] = request.metastore_id
 
         self._api.do(
             "DELETE",
@@ -3993,10 +3930,9 @@ class MetastoresAPI:
                 storage_root_credential_id=storage_root_credential_id,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/metastores/{id}", query=query, body=body
+            "PATCH", f"/api/2.1/unity-catalog/metastores/{id}", body=body
         )
         return MetastoreInfo.from_dict(json)
 
@@ -4024,12 +3960,10 @@ class MetastoresAPI:
                 workspace_id=workspace_id,
             )
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "PATCH",
             f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
-            query=query,
             body=body,
         )
 
@@ -4063,11 +3997,8 @@ class ProvidersAPI:
                 recipient_profile_str=recipient_profile_str,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/providers", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.1/unity-catalog/providers", body=body)
         return ProviderInfo.from_dict(json)
 
     def delete(self, name: str, **kwargs):
@@ -4080,11 +4011,8 @@ class ProvidersAPI:
         if not request:
             request = DeleteProviderRequest(name=name)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.1/unity-catalog/providers/{name}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", body=body)
 
     def get(self, name: str, **kwargs) -> ProviderInfo:
         """Get a provider.
@@ -4097,10 +4025,9 @@ class ProvidersAPI:
         if not request:
             request = GetProviderRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/providers/{name}", query=query, body=body
+            "GET", f"/api/2.1/unity-catalog/providers/{name}", body=body
         )
         return ProviderInfo.from_dict(json)
 
@@ -4119,11 +4046,12 @@ class ProvidersAPI:
                 data_provider_global_metastore_id=data_provider_global_metastore_id
             )
         body = request.as_dict()
+
         query = {}
         if data_provider_global_metastore_id:
             query[
                 "data_provider_global_metastore_id"
-            ] = data_provider_global_metastore_id
+            ] = request.data_provider_global_metastore_id
 
         json = self._api.do(
             "GET", "/api/2.1/unity-catalog/providers", query=query, body=body
@@ -4141,13 +4069,9 @@ class ProvidersAPI:
         if not request:
             request = ListSharesRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/providers/{name}/shares",
-            query=query,
-            body=body,
+            "GET", f"/api/2.1/unity-catalog/providers/{name}/shares", body=body
         )
         return ListProviderSharesResponse.from_dict(json)
 
@@ -4176,10 +4100,9 @@ class ProvidersAPI:
                 recipient_profile_str=recipient_profile_str,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/providers/{name}", query=query, body=body
+            "PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body
         )
         return ProviderInfo.from_dict(json)
 
@@ -4197,12 +4120,10 @@ class RecipientActivationAPI:
         if not request:
             request = GetActivationUrlInfoRequest(activation_url=activation_url)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}",
-            query=query,
             body=body,
         )
 
@@ -4216,12 +4137,10 @@ class RecipientActivationAPI:
         if not request:
             request = RetrieveTokenRequest(activation_url=activation_url)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}",
-            query=query,
             body=body,
         )
         return RetrieveTokenResponse.from_dict(json)
@@ -4259,11 +4178,8 @@ class RecipientsAPI:
                 sharing_code=sharing_code,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/recipients", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.1/unity-catalog/recipients", body=body)
         return RecipientInfo.from_dict(json)
 
     def delete(self, name: str, **kwargs):
@@ -4276,14 +4192,8 @@ class RecipientsAPI:
         if not request:
             request = DeleteRecipientRequest(name=name)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/recipients/{name}",
-            query=query,
-            body=body,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", body=body)
 
     def get(self, name: str, **kwargs) -> RecipientInfo:
         """Get a share recipient.
@@ -4297,10 +4207,9 @@ class RecipientsAPI:
         if not request:
             request = GetRecipientRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/recipients/{name}", query=query, body=body
+            "GET", f"/api/2.1/unity-catalog/recipients/{name}", body=body
         )
         return RecipientInfo.from_dict(json)
 
@@ -4320,11 +4229,12 @@ class RecipientsAPI:
                 data_recipient_global_metastore_id=data_recipient_global_metastore_id
             )
         body = request.as_dict()
+
         query = {}
         if data_recipient_global_metastore_id:
             query[
                 "data_recipient_global_metastore_id"
-            ] = data_recipient_global_metastore_id
+            ] = request.data_recipient_global_metastore_id
 
         json = self._api.do(
             "GET", "/api/2.1/unity-catalog/recipients", query=query, body=body
@@ -4347,13 +4257,9 @@ class RecipientsAPI:
                 name=name,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST",
-            f"/api/2.1/unity-catalog/recipients/{name}/rotate-token",
-            query=query,
-            body=body,
+            "POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body
         )
         return RecipientInfo.from_dict(json)
 
@@ -4369,12 +4275,10 @@ class RecipientsAPI:
         if not request:
             request = SharePermissionsRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/recipients/{name}/share-permissions",
-            query=query,
             body=body,
         )
         return GetRecipientSharePermissionsResponse.from_dict(json)
@@ -4400,11 +4304,8 @@ class RecipientsAPI:
                 comment=comment, ip_access_list=ip_access_list, name=name
             )
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/recipients/{name}", query=query, body=body
-        )
+        self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body)
 
 
 class SchemasAPI:
@@ -4435,11 +4336,8 @@ class SchemasAPI:
                 properties=properties,
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/schemas", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.1/unity-catalog/schemas", body=body)
         return SchemaInfo.from_dict(json)
 
     def delete(self, full_name: str, **kwargs):
@@ -4452,14 +4350,8 @@ class SchemasAPI:
         if not request:
             request = DeleteSchemaRequest(full_name=full_name)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/schemas/{full_name}",
-            query=query,
-            body=body,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body)
 
     def get(self, full_name: str, **kwargs) -> SchemaInfo:
         """Get a schema.
@@ -4472,10 +4364,9 @@ class SchemasAPI:
         if not request:
             request = GetSchemaRequest(full_name=full_name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, body=body
+            "GET", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body
         )
         return SchemaInfo.from_dict(json)
 
@@ -4492,9 +4383,10 @@ class SchemasAPI:
         if not request:
             request = ListSchemasRequest(catalog_name=catalog_name)
         body = request.as_dict()
+
         query = {}
         if catalog_name:
-            query["catalog_name"] = catalog_name
+            query["catalog_name"] = request.catalog_name
 
         json = self._api.do(
             "GET", "/api/2.1/unity-catalog/schemas", query=query, body=body
@@ -4533,13 +4425,9 @@ class SchemasAPI:
                 storage_root=storage_root,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/schemas/{full_name}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body
         )
         return SchemaInfo.from_dict(json)
 
@@ -4559,11 +4447,8 @@ class SharesAPI:
         if not request:
             request = CreateShare(comment=comment, name=name)
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/shares", query=query, body=body
-        )
+        json = self._api.do("POST", "/api/2.1/unity-catalog/shares", body=body)
         return ShareInfo.from_dict(json)
 
     def delete(self, name: str, **kwargs):
@@ -4576,11 +4461,8 @@ class SharesAPI:
         if not request:
             request = DeleteShareRequest(name=name)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE", f"/api/2.1/unity-catalog/shares/{name}", query=query, body=body
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", body=body)
 
     def get(
         self, name: str, *, include_shared_data: bool = None, **kwargs
@@ -4596,9 +4478,10 @@ class SharesAPI:
                 include_shared_data=include_shared_data, name=name
             )
         body = request.as_dict()
+
         query = {}
         if include_shared_data:
-            query["include_shared_data"] = include_shared_data
+            query["include_shared_data"] = request.include_shared_data
 
         json = self._api.do(
             "GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, body=body
@@ -4624,13 +4507,9 @@ class SharesAPI:
         if not request:
             request = SharePermissionsRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/shares/{name}/permissions",
-            query=query,
-            body=body,
+            "GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body
         )
         return GetSharePermissionsResponse.from_dict(json)
 
@@ -4667,11 +4546,8 @@ class SharesAPI:
                 comment=comment, name=name, owner=owner, updates=updates
             )
         body = request.as_dict()
-        query = {}
 
-        json = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/shares/{name}", query=query, body=body
-        )
+        json = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body)
         return ShareInfo.from_dict(json)
 
     def update_permissions(
@@ -4689,13 +4565,9 @@ class SharesAPI:
         if not request:
             request = UpdateSharePermissions(changes=changes, name=name)
         body = request.as_dict()
-        query = {}
 
         self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/shares/{name}/permissions",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body
         )
 
 
@@ -4736,10 +4608,9 @@ class StorageCredentialsAPI:
                 skip_validation=skip_validation,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "POST", "/api/2.1/unity-catalog/storage-credentials", query=query, body=body
+            "POST", "/api/2.1/unity-catalog/storage-credentials", body=body
         )
         return StorageCredentialInfo.from_dict(json)
 
@@ -4753,9 +4624,10 @@ class StorageCredentialsAPI:
         if not request:
             request = DeleteStorageCredentialRequest(force=force, name=name)
         body = request.as_dict()
+
         query = {}
         if force:
-            query["force"] = force
+            query["force"] = request.force
 
         self._api.do(
             "DELETE",
@@ -4775,13 +4647,9 @@ class StorageCredentialsAPI:
         if not request:
             request = GetStorageCredentialRequest(name=name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/storage-credentials/{name}",
-            query=query,
-            body=body,
+            "GET", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body
         )
         return StorageCredentialInfo.from_dict(json)
 
@@ -4824,13 +4692,9 @@ class StorageCredentialsAPI:
                 owner=owner,
             )
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/storage-credentials/{name}",
-            query=query,
-            body=body,
+            "PATCH", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body
         )
         return StorageCredentialInfo.from_dict(json)
 
@@ -4852,14 +4716,8 @@ class TablesAPI:
         if not request:
             request = DeleteTableRequest(full_name=full_name)
         body = request.as_dict()
-        query = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/tables/{full_name}",
-            query=query,
-            body=body,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", body=body)
 
     def get(self, full_name: str, **kwargs) -> TableInfo:
         """Get a table.
@@ -4874,10 +4732,9 @@ class TablesAPI:
         if not request:
             request = GetTableRequest(full_name=full_name)
         body = request.as_dict()
-        query = {}
 
         json = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, body=body
+            "GET", f"/api/2.1/unity-catalog/tables/{full_name}", body=body
         )
         return TableInfo.from_dict(json)
 
@@ -4898,11 +4755,12 @@ class TablesAPI:
                 catalog_name=catalog_name, schema_name=schema_name
             )
         body = request.as_dict()
+
         query = {}
         if catalog_name:
-            query["catalog_name"] = catalog_name
+            query["catalog_name"] = request.catalog_name
         if schema_name:
-            query["schema_name"] = schema_name
+            query["schema_name"] = request.schema_name
 
         json = self._api.do(
             "GET", "/api/2.1/unity-catalog/tables", query=query, body=body
@@ -4942,17 +4800,18 @@ class TablesAPI:
                 table_name_pattern=table_name_pattern,
             )
         body = request.as_dict()
+
         query = {}
         if catalog_name:
-            query["catalog_name"] = catalog_name
+            query["catalog_name"] = request.catalog_name
         if max_results:
-            query["max_results"] = max_results
+            query["max_results"] = request.max_results
         if page_token:
-            query["page_token"] = page_token
+            query["page_token"] = request.page_token
         if schema_name_pattern:
-            query["schema_name_pattern"] = schema_name_pattern
+            query["schema_name_pattern"] = request.schema_name_pattern
         if table_name_pattern:
-            query["table_name_pattern"] = table_name_pattern
+            query["table_name_pattern"] = request.table_name_pattern
 
         json = self._api.do(
             "GET", "/api/2.1/unity-catalog/table-summaries", query=query, body=body
