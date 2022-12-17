@@ -10,30 +10,26 @@ from .{{.Package.Name}} import {{.PascalName}}{{end}}
 # all definitions in this file are in alphabetical order
 {{range .Types}}
 {{if .Fields -}}@dataclass
-class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
-    {{if .Description}}"""{{.Comment "    " 80}}"""{{end}}
-    {{- range .Fields | alphanumOnly}}
-    {{.Comment "    # " 120}}
-    {{.SnakeName}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}
+class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
+    """{{.Comment "    " 100}}"""
+    {{end}}{{- range .Fields | alphanumOnly}}
+    {{.SnakeName}}: {{template "type" .Entity}}{{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}
-        {{range .Fields | alphanumOnly}}if self.{{.SnakeName}}:
-            body['{{.Name}}'] = {{template "as_request_type" .}}
-        {{end}}
+        {{range .Fields | alphanumOnly}}if self.{{.SnakeName -}}: body['{{.Name}}'] = {{template "as_request_type" .}}
+        {{end -}}
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
-        return cls({{range .Fields | alphanumOnly}}
-            {{.SnakeName}}={{template "from_dict_type" .}},{{end}}
-        )
+        return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{$f.SnakeName}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
 
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
 {{else if .MapValue}}{{.PascalName}} = {{template "type-nq" .}}
 {{else if .Enum}}class {{.PascalName}}(Enum):
-    {{if .Description}}"""{{.Comment "    " 120}}"""{{end}}
+    {{if .Description}}"""{{.Comment "    " 100}}"""{{end}}
     {{range .Enum }}
     {{.Content}}{{if eq .Content "None"}}_{{end}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
@@ -78,7 +74,9 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
 {{- end -}}
 
 {{range .Services}}
-class {{.Name}}API:
+class {{.Name}}API:{{if .Description}}
+    """{{.Comment "    " 110}}"""
+    {{end}}
     def __init__(self, api_client):
         self._api = api_client
     {{range .Methods}}
@@ -88,19 +86,17 @@ class {{.Name}}API:
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
       {{- end}}, **kwargs
     {{- end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
-        {{if .Description}}"""{{.Comment "        " 80}}"""{{end}}
-        {{if .Request -}}
-        request = kwargs.get('request', None)
+        {{if .Description}}"""{{.Comment "        " 110}}"""{{end}}
+        {{if .Request -}}request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
           request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})
-        {{if .Request.HasJsonField}}body = request.as_dict(){{end}}
-        {{if .Request.HasQueryField}}
+        {{if .Request.HasJsonField}}body = request.as_dict(){{end}}{{if .Request.HasQueryField}}
         query = {}
         {{- range .Request.Fields}}{{if .IsQuery}}
         if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
-        {{end -}}
-        {{- end}}
-        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
+        {{end}}
+        {{end}}{{if .Response}}
+        json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
         {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
         {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
     {{end -}}

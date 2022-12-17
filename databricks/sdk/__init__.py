@@ -1,3 +1,4 @@
+import databricks.sdk.client as client
 import databricks.sdk.service.billing as billing
 import databricks.sdk.service.clusterpolicies as clusterpolicies
 import databricks.sdk.service.clusters as clusters
@@ -22,10 +23,10 @@ import databricks.sdk.service.tokens as tokens
 import databricks.sdk.service.unitycatalog as unitycatalog
 import databricks.sdk.service.workspace as workspace
 import databricks.sdk.service.workspaceconf as workspaceconf
-import databricks.sdk.client as client
 
 
 class WorkspaceClient:
+
     def __init__(self, **kwargs):
         self.api_client = client.ApiClient(client.Config(**kwargs))
 
@@ -42,9 +43,7 @@ class WorkspaceClient:
         self.experiments = mlflow.ExperimentsAPI(self.api_client)
         self.external_locations = unitycatalog.ExternalLocationsAPI(self.api_client)
         self.git_credentials = gitcredentials.GitCredentialsAPI(self.api_client)
-        self.global_init_scripts = globalinitscripts.GlobalInitScriptsAPI(
-            self.api_client
-        )
+        self.global_init_scripts = globalinitscripts.GlobalInitScriptsAPI(self.api_client)
         self.grants = unitycatalog.GrantsAPI(self.api_client)
         self.groups = scim.GroupsAPI(self.api_client)
         self.instance_pools = instancepools.InstancePoolsAPI(self.api_client)
@@ -85,6 +84,7 @@ class WorkspaceClient:
 
 
 class AccountClient:
+
     def __init__(self, **kwargs):
         self.api_client = client.ApiClient(client.Config(**kwargs))
 
@@ -96,9 +96,7 @@ class AccountClient:
         self.log_delivery = billing.LogDeliveryAPI(self.api_client)
         self.networks = deployment.NetworksAPI(self.api_client)
         self.private_access = deployment.PrivateAccessAPI(self.api_client)
-        self.account_service_principals = scim.AccountServicePrincipalsAPI(
-            self.api_client
-        )
+        self.account_service_principals = scim.AccountServicePrincipalsAPI(self.api_client)
         self.storage = deployment.StorageAPI(self.api_client)
         self.account_users = scim.AccountUsersAPI(self.api_client)
         self.vpc_endpoints = deployment.VpcEndpointsAPI(self.api_client)

@@ -35,44 +35,41 @@ class Token:
 
 
 class TokenSource:
+
     @abstractmethod
     def token(self) -> Token:
         pass
 
 
 class OAuthException(Exception):
+
     def __init__(self, *args: object):
         super().__init__(*args)
 
 
-def retrieve_token(
-    client_id, client_secret, token_url, params, use_params=False, use_header=False
-) -> Token:
+def retrieve_token(client_id, client_secret, token_url, params, use_params=False, use_header=False) -> Token:
     if use_params:
-        if client_id:
-            params["client_id"] = client_id
-        if client_secret:
-            params["client_secret"] = client_secret
+        if client_id: params["client_id"] = client_id
+        if client_secret: params["client_secret"] = client_secret
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     resp = requests.post(token_url, params, auth=auth)
     if not resp.ok:
-        raise OAuthException(resp.content)  # TODO: make it better
+        raise OAuthException(resp.content) # TODO: make it better
     try:
         j = resp.json()
         expires_in = int(j["expires_in"])
         expiry = datetime.datetime.now() + datetime.timedelta(seconds=expires_in)
-        return Token(
-            access_token=j["access_token"], token_type=j["token_type"], expiry=expiry
-        )
+        return Token(access_token=j["access_token"], token_type=j["token_type"], expiry=expiry)
     except Exception as e:
         raise OAuthException(f"Not supported yet: {e}")
 
 
 class Refreshable(TokenSource):
+
     def __init__(self):
-        self._lock = threading.Lock()  # to guard _token
+        self._lock = threading.Lock() # to guard _token
         self._token = None
 
     def token(self) -> Token:
@@ -110,11 +107,9 @@ class ClientCredentials(Refreshable):
         if self.endpoint_params:
             for k, v in self.endpoint_params.items():
                 params[k] = v
-        return retrieve_token(
-            self.client_id,
-            self.client_secret,
-            self.token_url,
-            params,
-            use_params=self.use_params,
-            use_header=self.use_header,
-        )
+        return retrieve_token(self.client_id,
+                              self.client_secret,
+                              self.token_url,
+                              params,
+                              use_params=self.use_params,
+                              use_header=self.use_header)
