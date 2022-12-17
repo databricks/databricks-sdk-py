@@ -1,5 +1,5 @@
 {
-  "formatter": "yapf -pri $FILENAMES",
+  "formatter": "yapf -pri $FILENAMES && autoflake --in-place $FILENAMES",
   "packages": {
     ".codegen/service.py.tmpl": "databricks/sdk/service/{{.Name}}.py"
   },
