@@ -1,7 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -187,10 +187,10 @@ class ClusterPoliciesAPI:
         json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
         return Policy.from_dict(json)
 
-    def list(self) -> ListPoliciesResponse:
+    def list(self) -> Iterator[Policy]:
         """Get a cluster policy.
         
         Returns a list of policies accessible by the requesting user."""
 
         json = self._api.do('GET', '/api/2.0/policies/clusters/list')
-        return ListPoliciesResponse.from_dict(json)
+        return [Policy.from_dict(v) for v in json['policies']]

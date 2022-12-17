@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -1088,13 +1088,13 @@ class CredentialsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/credentials/{request.credentials_id}')
         return Credential.from_dict(json)
 
-    def list(self) -> CredentialList:
+    def list(self) -> Iterator[Credential]:
         """Get all credential configurations.
         
         Gets all Databricks credential configurations associated with an account specified by ID."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials')
-        return CredentialList.from_dict(json)
+        return [Credential.from_dict(v) for v in json]
 
 
 class EncryptionKeysAPI:
@@ -1181,7 +1181,7 @@ class EncryptionKeysAPI:
         )
         return CustomerManagedKey.from_dict(json)
 
-    def list(self) -> CustomerManagedKeyList:
+    def list(self) -> Iterator[CustomerManagedKey]:
         """Get all encryption key configurations.
         
         Gets all customer-managed key configuration objects for an account. If the key is specified as a
@@ -1196,7 +1196,7 @@ class EncryptionKeysAPI:
         This operation is available only if your account is on the E2 version of the platform."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys')
-        return CustomerManagedKeyList.from_dict(json)
+        return [CustomerManagedKey.from_dict(v) for v in json]
 
 
 class NetworksAPI:
@@ -1276,7 +1276,7 @@ class NetworksAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks/{request.network_id}')
         return Network.from_dict(json)
 
-    def list(self) -> NetworkList:
+    def list(self) -> Iterator[Network]:
         """Get all network configurations.
         
         Gets a list of all Databricks network configurations for an account, specified by ID.
@@ -1284,7 +1284,7 @@ class NetworksAPI:
         This operation is available only if your account is on the E2 version of the platform."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks')
-        return NetworkList.from_dict(json)
+        return [Network.from_dict(v) for v in json]
 
 
 class PrivateAccessAPI:
@@ -1389,7 +1389,7 @@ class PrivateAccessAPI:
         )
         return PrivateAccessSettings.from_dict(json)
 
-    def list(self) -> PrivateAccessSettingsList:
+    def list(self) -> Iterator[PrivateAccessSettings]:
         """Get all private access settings objects.
         
         Gets a list of all private access settings objects for an account, specified by ID.
@@ -1399,7 +1399,7 @@ class PrivateAccessAPI:
         representative to enable your account for PrivateLink."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/private-access-settings')
-        return PrivateAccessSettingsList.from_dict(json)
+        return [PrivateAccessSettings.from_dict(v) for v in json]
 
     def replace(self,
                 private_access_settings_name: str,
@@ -1509,13 +1509,13 @@ class StorageAPI:
         )
         return StorageConfiguration.from_dict(json)
 
-    def list(self) -> StorageConfigurationList:
+    def list(self) -> Iterator[StorageConfiguration]:
         """Get all storage configurations.
         
         Gets a list of all Databricks storage configurations for your account, specified by ID."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/storage-configurations')
-        return StorageConfigurationList.from_dict(json)
+        return [StorageConfiguration.from_dict(v) for v in json]
 
 
 class VpcEndpointsAPI:
@@ -1613,7 +1613,7 @@ class VpcEndpointsAPI:
             'GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{request.vpc_endpoint_id}')
         return VpcEndpoint.from_dict(json)
 
-    def list(self) -> VpcEndpointList:
+    def list(self) -> Iterator[VpcEndpoint]:
         """Get all VPC endpoint configurations.
         
         Gets a list of all VPC endpoints for an account, specified by ID.
@@ -1627,7 +1627,7 @@ class VpcEndpointsAPI:
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints')
-        return VpcEndpointList.from_dict(json)
+        return [VpcEndpoint.from_dict(v) for v in json]
 
 
 class WorkspacesAPI:
@@ -1747,7 +1747,7 @@ class WorkspacesAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}')
         return Workspace.from_dict(json)
 
-    def list(self) -> WorkspaceList:
+    def list(self) -> Iterator[Workspace]:
         """Get all workspaces.
         
         Gets a list of all workspaces associated with an account, specified by ID.
@@ -1756,7 +1756,7 @@ class WorkspacesAPI:
         custom plan that allows multiple workspaces per account."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces')
-        return WorkspaceList.from_dict(json)
+        return [Workspace.from_dict(v) for v in json]
 
     def update(self,
                workspace_id: int,

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -427,7 +427,7 @@ class AccountGroupsAPI:
              sort_by: str = None,
              sort_order: ListSortOrder = None,
              start_index: int = None,
-             **kwargs) -> ListGroupsResponse:
+             **kwargs) -> Iterator[Group]:
         """List group details.
         
         Gets all details of the groups associated with the Databricks Account."""
@@ -451,7 +451,7 @@ class AccountGroupsAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
-        return ListGroupsResponse.from_dict(json)
+        return [Group.from_dict(v) for v in json['Resources']]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update group details.
@@ -566,7 +566,7 @@ class AccountServicePrincipalsAPI:
              sort_by: str = None,
              sort_order: ListSortOrder = None,
              start_index: int = None,
-             **kwargs) -> ListServicePrincipalResponse:
+             **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
         Gets the set of service principals associated with a Databricks Account."""
@@ -592,7 +592,7 @@ class AccountServicePrincipalsAPI:
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query)
-        return ListServicePrincipalResponse.from_dict(json)
+        return [ServicePrincipal.from_dict(v) for v in json['Resources']]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
@@ -717,7 +717,7 @@ class AccountUsersAPI:
              sort_by: str = None,
              sort_order: ListSortOrder = None,
              start_index: int = None,
-             **kwargs) -> ListUsersResponse:
+             **kwargs) -> Iterator[User]:
         """List users.
         
         Gets details for all the users associated with a Databricks Account."""
@@ -741,7 +741,7 @@ class AccountUsersAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
-        return ListUsersResponse.from_dict(json)
+        return [User.from_dict(v) for v in json['Resources']]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update user details.
@@ -870,7 +870,7 @@ class GroupsAPI:
              sort_by: str = None,
              sort_order: ListSortOrder = None,
              start_index: int = None,
-             **kwargs) -> ListGroupsResponse:
+             **kwargs) -> Iterator[Group]:
         """List group details.
         
         Gets all details of the groups associated with the Databricks Workspace."""
@@ -894,7 +894,7 @@ class GroupsAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
-        return ListGroupsResponse.from_dict(json)
+        return [Group.from_dict(v) for v in json['Resources']]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update group details.
@@ -1001,7 +1001,7 @@ class ServicePrincipalsAPI:
              sort_by: str = None,
              sort_order: ListSortOrder = None,
              start_index: int = None,
-             **kwargs) -> ListServicePrincipalResponse:
+             **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
         Gets the set of service principals associated with a Databricks Workspace."""
@@ -1025,7 +1025,7 @@ class ServicePrincipalsAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
-        return ListServicePrincipalResponse.from_dict(json)
+        return [ServicePrincipal.from_dict(v) for v in json['Resources']]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
@@ -1146,7 +1146,7 @@ class UsersAPI:
              sort_by: str = None,
              sort_order: ListSortOrder = None,
              start_index: int = None,
-             **kwargs) -> ListUsersResponse:
+             **kwargs) -> Iterator[User]:
         """List users.
         
         Gets details for all the users associated with a Databricks Workspace."""
@@ -1170,7 +1170,7 @@ class UsersAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
-        return ListUsersResponse.from_dict(json)
+        return [User.from_dict(v) for v in json['Resources']]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update user details.

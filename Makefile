@@ -4,8 +4,8 @@ dev-init:
 	.venv/bin/pip install '.[dev]'
 
 fmt:
-	yapf -pri databricks
-	autoflake -ri databricks
+	yapf -pri databricks tests
+	autoflake -ri databricks tests
 
 lint:
 	pycodestyle databricks

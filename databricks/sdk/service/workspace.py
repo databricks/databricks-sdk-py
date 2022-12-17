@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -265,7 +265,7 @@ class WorkspaceAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
 
-    def list(self, path: str, *, notebooks_modified_after: int = None, **kwargs) -> ListResponse:
+    def list(self, path: str, *, notebooks_modified_after: int = None, **kwargs) -> Iterator[ObjectInfo]:
         """List contents.
         
         Lists the contents of a directory, or the object if it is not a directory.If the input path does not
@@ -279,7 +279,7 @@ class WorkspaceAPI:
         if path: query['path'] = request.path
 
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query)
-        return ListResponse.from_dict(json)
+        return [ObjectInfo.from_dict(v) for v in json['objects']]
 
     def mkdirs(self, path: str, **kwargs):
         """Create a directory.

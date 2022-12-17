@@ -1,7 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -170,13 +170,13 @@ class GitCredentialsAPI:
         json = self._api.do('GET', f'/api/2.0/git-credentials/{request.credential_id}')
         return CredentialInfo.from_dict(json)
 
-    def list(self) -> GetCredentialsResponse:
+    def list(self) -> Iterator[CredentialInfo]:
         """Get Git credentials.
         
         Lists the calling user's Git credentials. One credential per user is supported."""
 
         json = self._api.do('GET', '/api/2.0/git-credentials')
-        return GetCredentialsResponse.from_dict(json)
+        return [CredentialInfo.from_dict(v) for v in json['credentials']]
 
     def update(self,
                credential_id: int,

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Iterator
 
 {{range .ImportedEntities}}
 from .{{.Package.Name}} import {{.PascalName}}{{end}}
@@ -85,21 +85,94 @@ class {{.Name}}API:{{if .Description}}
       {{if .Request.NonRequiredFields}}, *
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
       {{- end}}, **kwargs
-    {{- end}}){{if .Response}} -> {{.Response.PascalName}}{{end}}:
+    {{- end}}){{if .Response}} -> {{template "method-return-type" .}}{{end}}:
         {{if .Description}}"""{{.Comment "        " 110}}"""{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
           request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})
+        {{template "method-serialize" .}}
+        {{- end}}
+        {{template "method-call" .}}
+    {{end -}}
+{{- end}}
+
+{{define "method-serialize" -}}
         {{if .Request.HasJsonField}}body = request.as_dict(){{end}}{{if .Request.HasQueryField}}
         query = {}
         {{- range .Request.Fields}}{{if .IsQuery}}
         if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{end}}
-        {{end}}{{if .Response}}
-        json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
-        {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
-        {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
-    {{end -}}
+{{- end}}
+
+{{define "method-call" -}}
+        {{if .Pagination -}}{{template "method-call-paginated" .}}
+        {{- else}}{{template "method-call-default" .}}{{end}}
+{{- end}}
+
+{{define "method-call-paginated" -}}
+        {{if .Pagination.MultiRequest}}
+        {{if .Pagination.NeedsOffsetDedupe -}}
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        {{- end}}{{if .Pagination.Offset}}
+        query['{{.Pagination.Offset.Name}}'] = {{if eq .Pagination.Increment 1}}1{{else}}0{{end}}{{end}}
+        while True:
+          json = {{template "method-do" .}}
+          if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
+            return
+          for v in json['{{.Pagination.Results.Name}}']:
+            {{if .Pagination.NeedsOffsetDedupe -}}
+            i = v['{{.Pagination.Entity.IdentifierField.Name}}']
+            if i in seen:
+              continue
+            seen.add(i)
+            {{end -}}
+            yield {{.Pagination.Entity.PascalName}}.from_dict(v)
+          {{if eq .Path "/api/2.0/clusters/events" -}}
+          if 'next_page' not in json or not json['next_page']:
+            return
+          body = json['next_page']
+          {{- else if .Pagination.Token -}}
+          {{if eq "GET" .Verb}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
+          if not json['{{.Pagination.Token.Bind.Name}}']:
+            return
+          {{- else if eq .Pagination.Increment 1 -}}
+          query['{{.Pagination.Offset.Name}}'] += 1
+          {{- else -}}
+          query['{{.Pagination.Offset.Name}}'] += len(json['{{.Pagination.Results.Name}}'])
+          {{- end}}
+        {{else}}
+        json = {{template "method-do" .}}
+        return [{{.Pagination.Entity.PascalName}}.from_dict(v) for v in json{{if .Pagination.Results}}['{{.Pagination.Results.Name}}']{{end}}]
+        {{end}}
+{{- end}}
+
+{{define "method-call-default" -}}
+        {{if .Response}}
+        json = {{end}}{{template "method-do" .}}
+        {{if .Response -}}
+          {{if .Response.ArrayValue -}}
+            return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in json]
+          {{- else -}}
+            return {{.Response.PascalName}}.from_dict(json)
+          {{- end}}
+        {{- end}}
+{{- end}}
+
+{{define "method-do" -}}
+self._api.do('{{.Verb}}', {{if .PathParts -}}
+  f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
+{{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
+{{- end}}
+
+{{define "method-return-type" -}}
+  {{if .Response.ArrayValue -}}
+    Iterator[{{.Response.ArrayValue.PascalName}}]
+  {{- else if .Pagination -}}
+    Iterator[{{.Pagination.Entity.PascalName}}]
+  {{- else -}}
+    {{.Response.PascalName}}
+  {{- end}}
 {{- end}}
 
 {{- define "method-param-bind" -}}

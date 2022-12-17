@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -2211,7 +2211,7 @@ class ExperimentsAPI:
              max_results: int = None,
              page_token: str = None,
              view_type: str = None,
-             **kwargs) -> ListExperimentsResponse:
+             **kwargs) -> Iterator[Experiment]:
         """List experiments.
         
         Gets a list of all experiments."""
@@ -2226,8 +2226,15 @@ class ExperimentsAPI:
         if page_token: query['page_token'] = request.page_token
         if view_type: query['view_type'] = request.view_type
 
-        json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query)
-        return ListExperimentsResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query)
+            if 'experiments' not in json or not json['experiments']:
+                return
+            for v in json['experiments']:
+                yield Experiment.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def restore(self, experiment_id: str, **kwargs):
         """Restores an experiment.
@@ -2249,7 +2256,7 @@ class ExperimentsAPI:
                order_by: List[str] = None,
                page_token: str = None,
                view_type: SearchExperimentsViewType = None,
-               **kwargs) -> SearchExperimentsResponse:
+               **kwargs) -> Iterator[Experiment]:
         """Search experiments.
         
         Searches for experiments that satisfy specified search criteria."""
@@ -2262,8 +2269,15 @@ class ExperimentsAPI:
                                         view_type=view_type)
         body = request.as_dict()
 
-        json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body)
-        return SearchExperimentsResponse.from_dict(json)
+        while True:
+            json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body)
+            if 'experiments' not in json or not json['experiments']:
+                return
+            for v in json['experiments']:
+                yield Experiment.from_dict(v)
+            body['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
         """Set a tag.
@@ -2297,7 +2311,7 @@ class MLflowArtifactsAPI:
              path: str = None,
              run_id: str = None,
              run_uuid: str = None,
-             **kwargs) -> ListArtifactsResponse:
+             **kwargs) -> Iterator[FileInfo]:
         """Get all artifacts.
         
         List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
@@ -2312,8 +2326,15 @@ class MLflowArtifactsAPI:
         if run_id: query['run_id'] = request.run_id
         if run_uuid: query['run_uuid'] = request.run_uuid
 
-        json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query)
-        return ListArtifactsResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query)
+            if 'files' not in json or not json['files']:
+                return
+            for v in json['files']:
+                yield FileInfo.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
 
 class MLflowDatabricksAPI:
@@ -2577,7 +2598,7 @@ class MLflowRunsAPI:
                order_by: List[str] = None,
                page_token: str = None,
                run_view_type: SearchRunsRunViewType = None,
-               **kwargs) -> SearchRunsResponse:
+               **kwargs) -> Iterator[Run]:
         """Search for runs.
         
         Searches for runs that satisfy expressions.
@@ -2593,8 +2614,15 @@ class MLflowRunsAPI:
                                  run_view_type=run_view_type)
         body = request.as_dict()
 
-        json = self._api.do('POST', '/api/2.0/mlflow/runs/search', body=body)
-        return SearchRunsResponse.from_dict(json)
+        while True:
+            json = self._api.do('POST', '/api/2.0/mlflow/runs/search', body=body)
+            if 'runs' not in json or not json['runs']:
+                return
+            for v in json['runs']:
+                yield Run.from_dict(v)
+            body['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def set_tag(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
         """Set a tag.
@@ -2764,7 +2792,7 @@ class ModelVersionsAPI:
                max_results: int = None,
                order_by: List[str] = None,
                page_token: str = None,
-               **kwargs) -> SearchModelVersionsResponse:
+               **kwargs) -> Iterator[ModelVersion]:
         """Searches model versions.
         
         Searches for specific model versions based on the supplied __filter__."""
@@ -2781,8 +2809,15 @@ class ModelVersionsAPI:
         if order_by: query['order_by'] = [v for v in request.order_by]
         if page_token: query['page_token'] = request.page_token
 
-        json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query)
-        return SearchModelVersionsResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query)
+            if 'model_versions' not in json or not json['model_versions']:
+                return
+            for v in json['model_versions']:
+                yield ModelVersion.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def set_tag(self, name: str, version: str, key: str, value: str, **kwargs):
         """Set a version tag.
@@ -2886,11 +2921,7 @@ class RegisteredModelsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/registered-models/get', query=query)
         return GetRegisteredModelResponse.from_dict(json)
 
-    def get_latest_versions(self,
-                            name: str,
-                            *,
-                            stages: List[str] = None,
-                            **kwargs) -> GetLatestVersionsResponse:
+    def get_latest_versions(self, name: str, *, stages: List[str] = None, **kwargs) -> Iterator[ModelVersion]:
         """Get the latest version.
         
         Gets the latest version of a registered model."""
@@ -2900,13 +2931,9 @@ class RegisteredModelsAPI:
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/get-latest-versions', body=body)
-        return GetLatestVersionsResponse.from_dict(json)
+        return [ModelVersion.from_dict(v) for v in json['model_versions']]
 
-    def list(self,
-             *,
-             max_results: int = None,
-             page_token: str = None,
-             **kwargs) -> ListRegisteredModelsResponse:
+    def list(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[RegisteredModel]:
         """List models.
         
         Lists all available registered models, up to the limit specified in __max_results__."""
@@ -2918,8 +2945,15 @@ class RegisteredModelsAPI:
         if max_results: query['max_results'] = request.max_results
         if page_token: query['page_token'] = request.page_token
 
-        json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
-        return ListRegisteredModelsResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
+            if 'registered_models' not in json or not json['registered_models']:
+                return
+            for v in json['registered_models']:
+                yield RegisteredModel.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def rename(self, name: str, *, new_name: str = None, **kwargs) -> RenameRegisteredModelResponse:
         """Rename a model.
@@ -2939,7 +2973,7 @@ class RegisteredModelsAPI:
                max_results: int = None,
                order_by: List[str] = None,
                page_token: str = None,
-               **kwargs) -> SearchRegisteredModelsResponse:
+               **kwargs) -> Iterator[RegisteredModel]:
         """Search models.
         
         Search for registered models based on the specified __filter__."""
@@ -2956,8 +2990,15 @@ class RegisteredModelsAPI:
         if order_by: query['order_by'] = [v for v in request.order_by]
         if page_token: query['page_token'] = request.page_token
 
-        json = self._api.do('GET', '/api/2.0/mlflow/registered-models/search', query=query)
-        return SearchRegisteredModelsResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/registered-models/search', query=query)
+            if 'registered_models' not in json or not json['registered_models']:
+                return
+            for v in json['registered_models']:
+                yield RegisteredModel.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def set_tag(self, name: str, key: str, value: str, **kwargs):
         """Set a tag.
@@ -3032,7 +3073,7 @@ class RegistryWebhooksAPI:
              events: List[RegistryWebhookEvent] = None,
              model_name: str = None,
              page_token: str = None,
-             **kwargs) -> ListRegistryWebhooks:
+             **kwargs) -> Iterator[RegistryWebhook]:
         """List registry webhooks.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3047,8 +3088,15 @@ class RegistryWebhooksAPI:
         if model_name: query['model_name'] = request.model_name
         if page_token: query['page_token'] = request.page_token
 
-        json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
-        return ListRegistryWebhooks.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
+            if 'webhooks' not in json or not json['webhooks']:
+                return
+            for v in json['webhooks']:
+                yield RegistryWebhook.from_dict(v)
+            query['page_token'] = json['next_page_token']
+            if not json['next_page_token']:
+                return
 
     def test(self, id: str, *, event: RegistryWebhookEvent = None, **kwargs) -> TestRegistryWebhookResponse:
         """Test a webhook.
@@ -3157,7 +3205,7 @@ class TransitionRequestsAPI:
 
         self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
 
-    def list(self, name: str, version: str, **kwargs) -> ListResponse:
+    def list(self, name: str, version: str, **kwargs) -> Iterator[Activity]:
         """List transition requests.
         
         Gets a list of all open stage transition requests for the model version."""
@@ -3170,7 +3218,7 @@ class TransitionRequestsAPI:
         if version: query['version'] = request.version
 
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query)
-        return ListResponse.from_dict(json)
+        return [Activity.from_dict(v) for v in json['requests']]
 
     def reject(self,
                name: str,

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -773,10 +773,10 @@ class InstancePoolsAPI:
         json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query)
         return GetInstancePool.from_dict(json)
 
-    def list(self) -> ListInstancePools:
+    def list(self) -> Iterator[InstancePoolAndStats]:
         """List instance pool info.
         
         Gets a list of instance pools with their statistics."""
 
         json = self._api.do('GET', '/api/2.0/instance-pools/list')
-        return ListInstancePools.from_dict(json)
+        return [InstancePoolAndStats.from_dict(v) for v in json['instance_pools']]

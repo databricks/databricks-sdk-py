@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -2090,7 +2090,7 @@ class CatalogsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{request.name}')
         return CatalogInfo.from_dict(json)
 
-    def list(self) -> ListCatalogsResponse:
+    def list(self) -> Iterator[CatalogInfo]:
         """List catalogs.
         
         Gets an array of catalogs in the Metastore. If the caller is the Metastore admin, all catalogs will be
@@ -2098,7 +2098,7 @@ class CatalogsAPI:
         privilege) will be retrieved."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs')
-        return ListCatalogsResponse.from_dict(json)
+        return [CatalogInfo.from_dict(v) for v in json['catalogs']]
 
     def update(self,
                name: str,
@@ -2187,7 +2187,7 @@ class ExternalLocationsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{request.name}')
         return ExternalLocationInfo.from_dict(json)
 
-    def list(self) -> ListExternalLocationsResponse:
+    def list(self) -> Iterator[ExternalLocationInfo]:
         """List external locations.
         
         Gets an array of External Locations (ExternalLocationInfo objects) from the Metastore. The caller must
@@ -2195,7 +2195,7 @@ class ExternalLocationsAPI:
         location."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations')
-        return ListExternalLocationsResponse.from_dict(json)
+        return [ExternalLocationInfo.from_dict(v) for v in json['external_locations']]
 
     def update(self,
                name: str,
@@ -2361,14 +2361,14 @@ class MetastoresAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{request.id}')
         return MetastoreInfo.from_dict(json)
 
-    def list(self) -> ListMetastoresResponse:
+    def list(self) -> Iterator[MetastoreInfo]:
         """List Metastores.
         
         Gets an array of the available Metastores (as MetastoreInfo objects). The caller must be an admin to
         retrieve this info."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores')
-        return ListMetastoresResponse.from_dict(json)
+        return [MetastoreInfo.from_dict(v) for v in json['metastores']]
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a summary.
@@ -2498,7 +2498,7 @@ class ProvidersAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}')
         return ProviderInfo.from_dict(json)
 
-    def list(self, *, data_provider_global_metastore_id: str = None, **kwargs) -> ListProvidersResponse:
+    def list(self, *, data_provider_global_metastore_id: str = None, **kwargs) -> Iterator[ProviderInfo]:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a Metastore admin or
@@ -2513,7 +2513,7 @@ class ProvidersAPI:
             query['data_provider_global_metastore_id'] = request.data_provider_global_metastore_id
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
-        return ListProvidersResponse.from_dict(json)
+        return [ProviderInfo.from_dict(v) for v in json['providers']]
 
     def list_shares(self, name: str, **kwargs) -> ListProviderSharesResponse:
         """List shares.
@@ -2638,7 +2638,7 @@ class RecipientsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{request.name}')
         return RecipientInfo.from_dict(json)
 
-    def list(self, *, data_recipient_global_metastore_id: str = None, **kwargs) -> ListRecipientsResponse:
+    def list(self, *, data_recipient_global_metastore_id: str = None, **kwargs) -> Iterator[RecipientInfo]:
         """List share recipients.
         
         Gets an array of all share recipients within the current Metastore where:
@@ -2654,7 +2654,7 @@ class RecipientsAPI:
             query['data_recipient_global_metastore_id'] = request.data_recipient_global_metastore_id
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query)
-        return ListRecipientsResponse.from_dict(json)
+        return [RecipientInfo.from_dict(v) for v in json['recipients']]
 
     def rotate_token(self,
                      name: str,
@@ -2755,7 +2755,7 @@ class SchemasAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{request.full_name}')
         return SchemaInfo.from_dict(json)
 
-    def list(self, *, catalog_name: str = None, **kwargs) -> ListSchemasResponse:
+    def list(self, *, catalog_name: str = None, **kwargs) -> Iterator[SchemaInfo]:
         """List schemas.
         
         Gets an array of schemas for catalog in the Metastore. If the caller is the Metastore admin or the
@@ -2769,7 +2769,7 @@ class SchemasAPI:
         if catalog_name: query['catalog_name'] = request.catalog_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query)
-        return ListSchemasResponse.from_dict(json)
+        return [SchemaInfo.from_dict(v) for v in json['schemas']]
 
     def update(self,
                full_name: str,
@@ -2846,14 +2846,14 @@ class SharesAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{request.name}', query=query)
         return ShareInfo.from_dict(json)
 
-    def list(self) -> ListSharesResponse:
+    def list(self) -> Iterator[ShareInfo]:
         """List shares.
         
         Gets an array of data object shares from the Metastore. The caller must be a Metastore admin or the
         owner of the share."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares')
-        return ListSharesResponse.from_dict(json)
+        return [ShareInfo.from_dict(v) for v in json['shares']]
 
     def share_permissions(self, name: str, **kwargs) -> GetSharePermissionsResponse:
         """Get permissions.
@@ -2984,7 +2984,7 @@ class StorageCredentialsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{request.name}')
         return StorageCredentialInfo.from_dict(json)
 
-    def list(self) -> ListStorageCredentialsResponse:
+    def list(self) -> Iterator[StorageCredentialInfo]:
         """List credentials.
         
         Gets an array of storage credentials (as StorageCredentialInfo objects). The array is limited to only
@@ -2992,7 +2992,7 @@ class StorageCredentialsAPI:
         admin, all storage credentials will be retrieved."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials')
-        return ListStorageCredentialsResponse.from_dict(json)
+        return [StorageCredentialInfo.from_dict(v) for v in json['storage_credentials']]
 
     def update(self,
                name: str,
@@ -3060,7 +3060,7 @@ class TablesAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{request.full_name}')
         return TableInfo.from_dict(json)
 
-    def list(self, *, catalog_name: str = None, schema_name: str = None, **kwargs) -> ListTablesResponse:
+    def list(self, *, catalog_name: str = None, schema_name: str = None, **kwargs) -> Iterator[TableInfo]:
         """List tables.
         
         Gets an array of all tables for the current Metastore under the parent catalog and schema. The caller
@@ -3076,7 +3076,7 @@ class TablesAPI:
         if schema_name: query['schema_name'] = request.schema_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query)
-        return ListTablesResponse.from_dict(json)
+        return [TableInfo.from_dict(v) for v in json['tables']]
 
     def table_summaries(self,
                         *,

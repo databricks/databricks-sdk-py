@@ -1,7 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -225,7 +225,7 @@ class GlobalInitScriptsAPI:
         json = self._api.do('GET', f'/api/2.0/global-init-scripts/{request.script_id}')
         return GlobalInitScriptDetailsWithContent.from_dict(json)
 
-    def list(self) -> ListGlobalInitScriptsResponse:
+    def list(self) -> Iterator[GlobalInitScriptDetails]:
         """Get init scripts.
         
         "Get a list of all global init scripts for this workspace. This returns all properties for each script
@@ -233,7 +233,7 @@ class GlobalInitScriptsAPI:
         script](#operation/get-script) operation."""
 
         json = self._api.do('GET', '/api/2.0/global-init-scripts')
-        return ListGlobalInitScriptsResponse.from_dict(json)
+        return [GlobalInitScriptDetails.from_dict(v) for v in json['scripts']]
 
     def update(self,
                name: str,

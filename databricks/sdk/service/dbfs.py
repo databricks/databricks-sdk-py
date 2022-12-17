@@ -1,7 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -296,7 +296,7 @@ class DbfsAPI:
         json = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query)
         return FileInfo.from_dict(json)
 
-    def list(self, path: str, **kwargs) -> ListStatusResponse:
+    def list(self, path: str, **kwargs) -> Iterator[FileInfo]:
         """List directory contents or file details.
         
         List the contents of a directory, or details of the file. If the file or directory does not exist,
@@ -316,7 +316,7 @@ class DbfsAPI:
         if path: query['path'] = request.path
 
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query)
-        return ListStatusResponse.from_dict(json)
+        return [FileInfo.from_dict(v) for v in json['files']]
 
     def mkdirs(self, path: str, **kwargs):
         """Create a directory.

@@ -1,7 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, Iterator, List
 
 # all definitions in this file are in alphabetical order
 
@@ -124,10 +124,10 @@ class TokensAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/token/delete', body=body)
 
-    def list(self) -> ListTokensResponse:
+    def list(self) -> Iterator[PublicTokenInfo]:
         """List tokens.
         
         Lists all the valid tokens for a user-workspace pair."""
 
         json = self._api.do('GET', '/api/2.0/token/list')
-        return ListTokensResponse.from_dict(json)
+        return [PublicTokenInfo.from_dict(v) for v in json['token_infos']]
