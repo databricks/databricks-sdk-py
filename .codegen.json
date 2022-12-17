@@ -6,4 +6,4 @@
   "batch": {
     ".codegen/__init__py.tmpl": "databricks/sdk/__init__.py"
   }
-  }
+}
