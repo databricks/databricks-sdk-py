@@ -851,7 +851,7 @@ class PipelinesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query)
-            if not json['statuses']:
+            if 'statuses' not in json or not json['statuses']:
                 return
             for v in json['statuses']:
                 yield PipelineStateInfo.from_dict(v)

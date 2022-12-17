@@ -2330,10 +2330,10 @@ class DashboardsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['page'] = 1 # start iterating from the first page
+        query['page'] = 1
         while True:
             json = self._api.do('GET', '/api/2.0/preview/sql/dashboards', query=query)
-            if not json['results']:
+            if 'results' not in json or not json['results']:
                 return
             for v in json['results']:
                 i = v['id']
@@ -2536,10 +2536,10 @@ class QueriesAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['page'] = 1 # start iterating from the first page
+        query['page'] = 1
         while True:
             json = self._api.do('GET', '/api/2.0/preview/sql/queries', query=query)
-            if not json['results']:
+            if 'results' not in json or not json['results']:
                 return
             for v in json['results']:
                 i = v['id']
@@ -2623,7 +2623,7 @@ class QueryHistoryAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query)
-            if not json['res']:
+            if 'res' not in json or not json['res']:
                 return
             for v in json['res']:
                 yield QueryInfo.from_dict(v)

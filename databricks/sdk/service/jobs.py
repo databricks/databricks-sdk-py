@@ -1890,9 +1890,10 @@ class JobsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
+        query['offset'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
-            if not json['jobs']:
+            if 'jobs' not in json or not json['jobs']:
                 return
             for v in json['jobs']:
                 i = v['job_id']
@@ -1900,7 +1901,7 @@ class JobsAPI:
                     continue
                 seen.add(i)
                 yield Job.from_dict(v)
-            query['offset'] += len(json['Jobs'])
+            query['offset'] += len(json['jobs'])
 
     def list_runs(self,
                   *,
@@ -1942,9 +1943,10 @@ class JobsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
+        query['offset'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query)
-            if not json['runs']:
+            if 'runs' not in json or not json['runs']:
                 return
             for v in json['runs']:
                 i = v['run_id']
@@ -1952,7 +1954,7 @@ class JobsAPI:
                     continue
                 seen.add(i)
                 yield Run.from_dict(v)
-            query['offset'] += len(json['Runs'])
+            query['offset'] += len(json['runs'])
 
     def repair_run(self,
                    run_id: int,

@@ -1,5 +1,3 @@
-def test_workspaces():
-    from databricks.sdk import AccountClient
-    a = AccountClient(profile='aws-prod-acct')
-    for w in a.workspaces.list():
+def test_workspaces(account_client):
+    for w in account_client.workspaces.list():
         print(w.workspace_name)

@@ -173,7 +173,7 @@ class ReposAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/repos', query=query)
-            if not json['repos']:
+            if 'repos' not in json or not json['repos']:
                 return
             for v in json['repos']:
                 yield RepoInfo.from_dict(v)

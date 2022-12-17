@@ -219,6 +219,30 @@ class DefaultAuth(DatabricksAuth):
         return self.selected.__call__(r)
 
 
+def env_loader(cfg: 'Config'):
+    cfg.host = getenv("DATABRICKS_HOST")
+    cfg.account_id = getenv("DATABRICKS_ACCOUNT_ID")
+    cfg.username = getenv("DATABRICKS_USERNAME")
+    cfg.password = getenv("DATABRICKS_PASSWORD")
+    cfg.client_id = getenv("DATABRICKS_CLIENT_ID")
+    cfg.client_secret = getenv("DATABRICKS_CLIENT_SECRET")
+    cfg.token = getenv("DATABRICKS_TOKEN")
+    cfg.profile = getenv("DATABRICKS_CONFIG_PROFILE")
+    cfg.config_file = getenv("DATABRICKS_CONFIG_FILE", "~/.databrickscfg")
+    cfg.google_service_account = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
+    cfg.google_credentials = getenv("GOOGLE_CREDENTIALS")
+    cfg.azure_workspace_resource_id = getenv("DATABRICKS_AZURE_RESOURCE_ID")
+    cfg.azure_use_msi = getenv("ARM_USE_MSI", False)
+    cfg.azure_client_secret = getenv("ARM_CLIENT_SECRET")
+    cfg.azure_client_id = getenv("ARM_CLIENT_ID")
+    cfg.azure_tenant_id = getenv("ARM_TENANT_ID")
+    cfg.azure_environment = getenv("ARM_ENVIRONMENT")
+    cfg.auth_type = getenv("DATABRICKS_AUTH_TYPE")
+    cfg.debug_truncate_bytes = getenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", 96)
+    cfg.debug_headers = getenv("DATABRICKS_DEBUG_HEADERS", False)
+    cfg.rate_limit = getenv("DATABRICKS_RATE_LIMIT", 15)
+
+
 def known_file_config_loader(cfg: 'Config'):
     config_file = cfg.config_file
     if not config_file:
@@ -284,24 +308,24 @@ class Config:
     # Number of seconds for HTTP timeout
     http_timeout_seconds: int = 30
 
-    loaders = [known_file_config_loader]
+    loaders = [env_loader, known_file_config_loader]
     _lock = threading.Lock()
     _resolved = False
 
     @property
     def is_azure(self) -> bool:
-        return self.azure_workspace_resource_id or ".azuredatabricks.net" in self.host
+        return self.azure_workspace_resource_id or (self.host and ".azuredatabricks.net" in self.host)
 
     @property
     def is_gcp(self) -> bool:
-        return ".gcp.databricks.com" in self.host
+        return self.host and ".gcp.databricks.com" in self.host
 
     @property
     def is_aws(self) -> bool:
         return not self.is_azure and not self.is_gcp
 
     @property
-    def is_accounts(self) -> bool:
+    def is_account_client(self) -> bool:
         return "https://accounts." in self.host
 
     @property
@@ -377,6 +401,10 @@ class ApiClient(requests.Session):
     @property
     def account_id(self) -> str:
         return self._cfg.account_id
+
+    @property
+    def is_account_client(self) -> bool:
+        return self._cfg.is_account_client
 
     def do(self, method: str, path, query: dict = None, body: dict = None) -> dict:
         response = self.request(method,

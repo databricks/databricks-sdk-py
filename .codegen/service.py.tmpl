@@ -114,12 +114,11 @@ class {{.Name}}API:{{if .Description}}
         {{if .Pagination.NeedsOffsetDedupe -}}
         # deduplicate items that may have been added during iteration
         seen = set()
-        {{- end}}{{if eq .Pagination.Increment 1}}
-        query['{{.Pagination.Offset.Name}}'] = 1 # start iterating from the first page
-        {{- end}}
+        {{- end}}{{if .Pagination.Offset}}
+        query['{{.Pagination.Offset.Name}}'] = {{if eq .Pagination.Increment 1}}1{{else}}0{{end}}{{end}}
         while True:
           json = {{template "method-do" .}}
-          if not json['{{.Pagination.Results.Name}}']:
+          if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
             return
           for v in json['{{.Pagination.Results.Name}}']:
             {{if .Pagination.NeedsOffsetDedupe -}}
@@ -138,9 +137,9 @@ class {{.Name}}API:{{if .Description}}
           if not json['{{.Pagination.Token.Bind.Name}}']:
             return
           {{- else if eq .Pagination.Increment 1 -}}
-          query['{{.Pagination.Offset.SnakeName}}'] += 1
+          query['{{.Pagination.Offset.Name}}'] += 1
           {{- else -}}
-          query['{{.Pagination.Offset.SnakeName}}'] += len(json['{{.Pagination.Results.PascalName}}'])
+          query['{{.Pagination.Offset.Name}}'] += len(json['{{.Pagination.Results.Name}}'])
           {{- end}}
         {{else}}
         json = {{template "method-do" .}}

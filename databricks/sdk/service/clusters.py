@@ -1751,9 +1751,10 @@ class ClustersAPI:
                                 start_time=start_time)
         body = request.as_dict()
 
+        query['offset'] = 0
         while True:
             json = self._api.do('POST', '/api/2.0/clusters/events', body=body)
-            if not json['events']:
+            if 'events' not in json or not json['events']:
                 return
             for v in json['events']:
                 yield ClusterEvent.from_dict(v)
