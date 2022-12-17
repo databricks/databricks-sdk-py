@@ -1198,9 +1198,9 @@ class GetDbsqlPermissionRequest:
     """Get object ACL"""
 
     # Object ID. An ACL is returned for the object with this UUID.
-    objectId: str  # path
+    object_id: str  # path
     # The type of object permissions to check.
-    objectType: "ObjectTypePlural"  # path
+    object_type: "ObjectTypePlural"  # path
 
 
 @dataclass
@@ -2520,9 +2520,9 @@ class SetRequest:
 
     access_control_list: "List[AccessControl]"
     # Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.
-    objectId: str  # path
+    object_id: str  # path
     # The type of object permission to set.
-    objectType: "ObjectTypePlural"  # path
+    object_type: "ObjectTypePlural"  # path
 
     def as_dict(self) -> dict:
         body = {}
@@ -2530,10 +2530,10 @@ class SetRequest:
             body["access_control_list"] = [
                 v.as_dict() for v in self.access_control_list
             ]
-        if self.objectId:
-            body["objectId"] = self.objectId
-        if self.objectType:
-            body["objectType"] = self.objectType.value
+        if self.object_id:
+            body["objectId"] = self.object_id
+        if self.object_type:
+            body["objectType"] = self.object_type.value
 
         return body
 
@@ -2545,8 +2545,10 @@ class SetRequest:
             ]
             if "access_control_list" in d
             else None,
-            objectId=d.get("objectId", None),
-            objectType=ObjectTypePlural(d["objectType"]) if "objectType" in d else None,
+            object_id=d.get("objectId", None),
+            object_type=ObjectTypePlural(d["objectType"])
+            if "objectType" in d
+            else None,
         )
 
 
@@ -2990,18 +2992,18 @@ class TransferOwnershipRequest:
     # Email address for the new owner, who must exist in the workspace.
     new_owner: str
     # The ID of the object on which to change ownership.
-    objectId: "TransferOwnershipObjectId"  # path
+    object_id: "TransferOwnershipObjectId"  # path
     # The type of object on which to change ownership.
-    objectType: "OwnableObjectType"  # path
+    object_type: "OwnableObjectType"  # path
 
     def as_dict(self) -> dict:
         body = {}
         if self.new_owner:
             body["new_owner"] = self.new_owner
-        if self.objectId:
-            body["objectId"] = self.objectId.as_dict()
-        if self.objectType:
-            body["objectType"] = self.objectType.value
+        if self.object_id:
+            body["objectId"] = self.object_id.as_dict()
+        if self.object_type:
+            body["objectType"] = self.object_type.value
 
         return body
 
@@ -3009,10 +3011,10 @@ class TransferOwnershipRequest:
     def from_dict(cls, d: Dict[str, any]) -> "TransferOwnershipRequest":
         return cls(
             new_owner=d.get("new_owner", None),
-            objectId=TransferOwnershipObjectId.from_dict(d["objectId"])
+            object_id=TransferOwnershipObjectId.from_dict(d["objectId"])
             if "objectId" in d
             else None,
-            objectType=OwnableObjectType(d["objectType"])
+            object_type=OwnableObjectType(d["objectType"])
             if "objectType" in d
             else None,
         )
@@ -3203,10 +3205,10 @@ class WidgetOptions:
     # The dashboard ID to which this widget belongs. Each widget can belong to one dashboard.
     dashboard_id: str
     # Whether this widget is hidden on the dashboard.
-    isHidden: bool
+    is_hidden: bool
     # How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does
     # not recommend modifying this definition in JSON.
-    parameterMappings: Any
+    parameter_mappings: Any
     # Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.
     position: Any
     # If this is a textbox widget, the application displays this text. This field is ignored if the widget contains a
@@ -3221,10 +3223,10 @@ class WidgetOptions:
             body["created_at"] = self.created_at
         if self.dashboard_id:
             body["dashboard_id"] = self.dashboard_id
-        if self.isHidden:
-            body["isHidden"] = self.isHidden
-        if self.parameterMappings:
-            body["parameterMappings"] = self.parameterMappings
+        if self.is_hidden:
+            body["isHidden"] = self.is_hidden
+        if self.parameter_mappings:
+            body["parameterMappings"] = self.parameter_mappings
         if self.position:
             body["position"] = self.position
         if self.text:
@@ -3239,8 +3241,8 @@ class WidgetOptions:
         return cls(
             created_at=d.get("created_at", None),
             dashboard_id=d.get("dashboard_id", None),
-            isHidden=d.get("isHidden", None),
-            parameterMappings=d.get("parameterMappings", None),
+            is_hidden=d.get("isHidden", None),
+            parameter_mappings=d.get("parameterMappings", None),
             position=d.get("position", None),
             text=d.get("text", None),
             updated_at=d.get("updated_at", None),
@@ -3385,7 +3387,6 @@ class AlertsAPI:
 
     def subscribe(
         self,
-        alert_id: str,
         alert_id: str,
         *,
         destination_id: str = None,
@@ -3589,7 +3590,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             "GET",
-            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}",
+            f"/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}",
         )
         return GetResponse.from_dict(json)
 
@@ -3616,7 +3617,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}",
+            f"/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}",
             body=body,
         )
         return SetResponse.from_dict(json)
@@ -3642,7 +3643,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             "POST",
-            f"/api/2.0/preview/sql/permissions/{request.objectType}/{request.objectId}/transfer",
+            f"/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}/transfer",
             body=body,
         )
         return Success.from_dict(json)

@@ -11,29 +11,29 @@ from typing import Dict, List, Any
 @dataclass
 class CancelCommand:
 
-    clusterId: str
+    cluster_id: str
 
-    commandId: str
+    command_id: str
 
-    contextId: str
+    context_id: str
 
     def as_dict(self) -> dict:
         body = {}
-        if self.clusterId:
-            body["clusterId"] = self.clusterId
-        if self.commandId:
-            body["commandId"] = self.commandId
-        if self.contextId:
-            body["contextId"] = self.contextId
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
+        if self.command_id:
+            body["commandId"] = self.command_id
+        if self.context_id:
+            body["contextId"] = self.context_id
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CancelCommand":
         return cls(
-            clusterId=d.get("clusterId", None),
-            commandId=d.get("commandId", None),
-            contextId=d.get("contextId", None),
+            cluster_id=d.get("clusterId", None),
+            command_id=d.get("commandId", None),
+            context_id=d.get("contextId", None),
         )
 
 
@@ -41,22 +41,22 @@ class CancelCommand:
 class Command:
 
     # Running cluster id
-    clusterId: str
+    cluster_id: str
     # Executable code
     command: str
     # Running context id
-    contextId: str
+    context_id: str
 
     language: "Language"
 
     def as_dict(self) -> dict:
         body = {}
-        if self.clusterId:
-            body["clusterId"] = self.clusterId
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
         if self.command:
             body["command"] = self.command
-        if self.contextId:
-            body["contextId"] = self.contextId
+        if self.context_id:
+            body["contextId"] = self.context_id
         if self.language:
             body["language"] = self.language.value
 
@@ -65,9 +65,9 @@ class Command:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Command":
         return cls(
-            clusterId=d.get("clusterId", None),
+            cluster_id=d.get("clusterId", None),
             command=d.get("command", None),
-            contextId=d.get("contextId", None),
+            context_id=d.get("contextId", None),
             language=Language(d["language"]) if "language" in d else None,
         )
 
@@ -86,11 +86,11 @@ class CommandStatus(Enum):
 class CommandStatusRequest:
     """Get command info"""
 
-    clusterId: str  # query
+    cluster_id: str  # query
 
-    commandId: str  # query
+    command_id: str  # query
 
-    contextId: str  # query
+    context_id: str  # query
 
 
 @dataclass
@@ -133,9 +133,9 @@ class ContextStatus(Enum):
 class ContextStatusRequest:
     """Get status"""
 
-    clusterId: str  # query
+    cluster_id: str  # query
 
-    contextId: str  # query
+    context_id: str  # query
 
 
 @dataclass
@@ -166,14 +166,14 @@ class ContextStatusResponse:
 class CreateContext:
 
     # Running cluster id
-    clusterId: str
+    cluster_id: str
 
     language: "Language"
 
     def as_dict(self) -> dict:
         body = {}
-        if self.clusterId:
-            body["clusterId"] = self.clusterId
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
         if self.language:
             body["language"] = self.language.value
 
@@ -182,7 +182,7 @@ class CreateContext:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "CreateContext":
         return cls(
-            clusterId=d.get("clusterId", None),
+            cluster_id=d.get("clusterId", None),
             language=Language(d["language"]) if "language" in d else None,
         )
 
@@ -209,24 +209,24 @@ class Created:
 @dataclass
 class DestroyContext:
 
-    clusterId: str
+    cluster_id: str
 
-    contextId: str
+    context_id: str
 
     def as_dict(self) -> dict:
         body = {}
-        if self.clusterId:
-            body["clusterId"] = self.clusterId
-        if self.contextId:
-            body["contextId"] = self.contextId
+        if self.cluster_id:
+            body["clusterId"] = self.cluster_id
+        if self.context_id:
+            body["contextId"] = self.context_id
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "DestroyContext":
         return cls(
-            clusterId=d.get("clusterId", None),
-            contextId=d.get("contextId", None),
+            cluster_id=d.get("clusterId", None),
+            context_id=d.get("contextId", None),
         )
 
 
@@ -254,15 +254,15 @@ class Results:
 
     data: Any
     # The image filename
-    fileName: str
+    file_name: str
 
-    fileNames: "List[str]"
+    file_names: "List[str]"
     # true if a JSON schema is returned instead of a string representation of the Hive type.
-    isJsonSchema: bool
+    is_json_schema: bool
     # internal field used by SDK
     pos: int
 
-    resultType: "ResultType"
+    result_type: "ResultType"
     # The table schema
     schema: "List[List[Any]]"
     # The summary of the error
@@ -276,16 +276,16 @@ class Results:
             body["cause"] = self.cause
         if self.data:
             body["data"] = self.data
-        if self.fileName:
-            body["fileName"] = self.fileName
-        if self.fileNames:
-            body["fileNames"] = [v for v in self.fileNames]
-        if self.isJsonSchema:
-            body["isJsonSchema"] = self.isJsonSchema
+        if self.file_name:
+            body["fileName"] = self.file_name
+        if self.file_names:
+            body["fileNames"] = [v for v in self.file_names]
+        if self.is_json_schema:
+            body["isJsonSchema"] = self.is_json_schema
         if self.pos:
             body["pos"] = self.pos
-        if self.resultType:
-            body["resultType"] = self.resultType.value
+        if self.result_type:
+            body["resultType"] = self.result_type.value
         if self.schema:
             body["schema"] = [v for v in self.schema]
         if self.summary:
@@ -300,11 +300,11 @@ class Results:
         return cls(
             cause=d.get("cause", None),
             data=d.get("data", None),
-            fileName=d.get("fileName", None),
-            fileNames=d.get("fileNames", None),
-            isJsonSchema=d.get("isJsonSchema", None),
+            file_name=d.get("fileName", None),
+            file_names=d.get("fileNames", None),
+            is_json_schema=d.get("isJsonSchema", None),
             pos=d.get("pos", None),
-            resultType=ResultType(d["resultType"]) if "resultType" in d else None,
+            result_type=ResultType(d["resultType"]) if "resultType" in d else None,
             schema=d.get("schema", None),
             summary=d.get("summary", None),
             truncated=d.get("truncated", None),

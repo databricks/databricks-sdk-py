@@ -14,11 +14,11 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
     {{if .Description}}"""{{.Comment "    " 80}}"""{{end}}
     {{- range .Fields | alphanumOnly}}
     {{.Comment "    # " 120}}
-    {{.Name}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}
+    {{.SnakeName}}: {{template "type" .Entity}}{{if .IsPath}} # path{{end -}}{{if .IsQuery}} # query{{end -}}{{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}
-        {{range .Fields | alphanumOnly}}if self.{{.Name}}:
+        {{range .Fields | alphanumOnly}}if self.{{.SnakeName}}:
             body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end}}
         return body
@@ -26,7 +26,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
         return cls({{range .Fields | alphanumOnly}}
-            {{.Name}}={{template "from_dict_type" .}},{{end}}
+            {{.SnakeName}}={{template "from_dict_type" .}},{{end}}
         )
     {{end}}
 
@@ -46,10 +46,10 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
 {{- end -}}
 {{- define "as_request_type" -}}
 	{{- if not .Entity }}None # ERROR: No Type
-	{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in self.{{.Name}}]
-	{{- else if .Entity.IsObject }}self.{{.Name}}.as_dict()
-	{{- else if .Entity.Enum }}self.{{.Name}}.value
-	{{- else}}self.{{.Name}}{{- end -}}
+	{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in self.{{.SnakeName}}]
+	{{- else if .Entity.IsObject }}self.{{.SnakeName}}.as_dict()
+	{{- else if .Entity.Enum }}self.{{.SnakeName}}.value
+	{{- else}}self.{{.SnakeName}}{{- end -}}
 {{- end -}}
 {{- define "type" -}}
 	{{- if not . }}any # ERROR: No Type
@@ -82,8 +82,8 @@ class {{.Name}}API:
     def __init__(self, api_client):
         self._api = api_client
     {{range .Methods}}
-    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}{{if .Request.RequiredFields}}
-      {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}{{end}}
+    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}
+      {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
       {{- end}}, **kwargs
@@ -100,7 +100,7 @@ class {{.Name}}API:
         if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{end -}}
         {{- end}}
-        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{request."}}{{.Field.Name}}{{"}"}}{{end}}{{ end }}'
+        {{if .Response}}json = {{end}}self._api.do('{{.Verb}}', {{if .PathParts -}}f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{request."}}{{.Field.SnakeName}}{{"}"}}{{end}}{{ end }}'
         {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
         {{if .Response}}return {{.Response.PascalName}}.from_dict(json){{end}}
     {{end -}}

@@ -94,11 +94,11 @@ class GetUserRequest:
 class Group:
 
     # String that represents a human-readable group name
-    displayName: str
+    display_name: str
 
     entitlements: "List[ComplexValue]"
 
-    externalId: str
+    external_id: str
 
     groups: "List[ComplexValue]"
     # Databricks group ID
@@ -110,12 +110,12 @@ class Group:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.displayName:
-            body["displayName"] = self.displayName
+        if self.display_name:
+            body["displayName"] = self.display_name
         if self.entitlements:
             body["entitlements"] = [v.as_dict() for v in self.entitlements]
-        if self.externalId:
-            body["externalId"] = self.externalId
+        if self.external_id:
+            body["externalId"] = self.external_id
         if self.groups:
             body["groups"] = [v.as_dict() for v in self.groups]
         if self.id:
@@ -130,11 +130,11 @@ class Group:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Group":
         return cls(
-            displayName=d.get("displayName", None),
+            display_name=d.get("displayName", None),
             entitlements=[ComplexValue.from_dict(v) for v in d["entitlements"]]
             if "entitlements" in d
             else None,
-            externalId=d.get("externalId", None),
+            external_id=d.get("externalId", None),
             groups=[ComplexValue.from_dict(v) for v in d["groups"]]
             if "groups" in d
             else None,
@@ -157,7 +157,7 @@ class ListGroupsRequest:
     # Desired number of results per page.
     count: int  # query
     # Comma-separated list of attributes to exclude in response.
-    excludedAttributes: str  # query
+    excluded_attributes: str  # query
     # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
     # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
     # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
@@ -165,47 +165,47 @@ class ListGroupsRequest:
     # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
     # Attribute to sort the results.
-    sortBy: str  # query
+    sort_by: str  # query
     # The order to sort the results.
-    sortOrder: "ListSortOrder"  # query
+    sort_order: "ListSortOrder"  # query
     # Specifies the index of the first result. First item is number 1.
-    startIndex: int  # query
+    start_index: int  # query
 
 
 @dataclass
 class ListGroupsResponse:
 
     # Total results returned in the response.
-    itemsPerPage: int
+    items_per_page: int
     # User objects returned in the response.
-    Resources: "List[Group]"
+    resources: "List[Group]"
     # Starting index of all the results that matched the request filters. First item is number 1.
-    startIndex: int
+    start_index: int
     # Total results that match the request filters.
-    totalResults: int
+    total_results: int
 
     def as_dict(self) -> dict:
         body = {}
-        if self.itemsPerPage:
-            body["itemsPerPage"] = self.itemsPerPage
-        if self.Resources:
-            body["Resources"] = [v.as_dict() for v in self.Resources]
-        if self.startIndex:
-            body["startIndex"] = self.startIndex
-        if self.totalResults:
-            body["totalResults"] = self.totalResults
+        if self.items_per_page:
+            body["itemsPerPage"] = self.items_per_page
+        if self.resources:
+            body["Resources"] = [v.as_dict() for v in self.resources]
+        if self.start_index:
+            body["startIndex"] = self.start_index
+        if self.total_results:
+            body["totalResults"] = self.total_results
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListGroupsResponse":
         return cls(
-            itemsPerPage=d.get("itemsPerPage", None),
-            Resources=[Group.from_dict(v) for v in d["Resources"]]
+            items_per_page=d.get("itemsPerPage", None),
+            resources=[Group.from_dict(v) for v in d["Resources"]]
             if "Resources" in d
             else None,
-            startIndex=d.get("startIndex", None),
-            totalResults=d.get("totalResults", None),
+            start_index=d.get("startIndex", None),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -213,36 +213,36 @@ class ListGroupsResponse:
 class ListServicePrincipalResponse:
 
     # Total results returned in the response.
-    itemsPerPage: int
+    items_per_page: int
     # User objects returned in the response.
-    Resources: "List[ServicePrincipal]"
+    resources: "List[ServicePrincipal]"
     # Starting index of all the results that matched the request filters. First item is number 1.
-    startIndex: int
+    start_index: int
     # Total results that match the request filters.
-    totalResults: int
+    total_results: int
 
     def as_dict(self) -> dict:
         body = {}
-        if self.itemsPerPage:
-            body["itemsPerPage"] = self.itemsPerPage
-        if self.Resources:
-            body["Resources"] = [v.as_dict() for v in self.Resources]
-        if self.startIndex:
-            body["startIndex"] = self.startIndex
-        if self.totalResults:
-            body["totalResults"] = self.totalResults
+        if self.items_per_page:
+            body["itemsPerPage"] = self.items_per_page
+        if self.resources:
+            body["Resources"] = [v.as_dict() for v in self.resources]
+        if self.start_index:
+            body["startIndex"] = self.start_index
+        if self.total_results:
+            body["totalResults"] = self.total_results
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListServicePrincipalResponse":
         return cls(
-            itemsPerPage=d.get("itemsPerPage", None),
-            Resources=[ServicePrincipal.from_dict(v) for v in d["Resources"]]
+            items_per_page=d.get("itemsPerPage", None),
+            resources=[ServicePrincipal.from_dict(v) for v in d["Resources"]]
             if "Resources" in d
             else None,
-            startIndex=d.get("startIndex", None),
-            totalResults=d.get("totalResults", None),
+            start_index=d.get("startIndex", None),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -255,7 +255,7 @@ class ListServicePrincipalsRequest:
     # Desired number of results per page.
     count: int  # query
     # Comma-separated list of attributes to exclude in response.
-    excludedAttributes: str  # query
+    excluded_attributes: str  # query
     # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
     # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
     # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
@@ -263,11 +263,11 @@ class ListServicePrincipalsRequest:
     # [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
     filter: str  # query
     # Attribute to sort the results.
-    sortBy: str  # query
+    sort_by: str  # query
     # The order to sort the results.
-    sortOrder: "ListSortOrder"  # query
+    sort_order: "ListSortOrder"  # query
     # Specifies the index of the first result. First item is number 1.
-    startIndex: int  # query
+    start_index: int  # query
 
 
 class ListSortOrder(Enum):
@@ -285,7 +285,7 @@ class ListUsersRequest:
     # Desired number of results per page.
     count: int  # query
     # Comma-separated list of attributes to exclude in response.
-    excludedAttributes: str  # query
+    excluded_attributes: str  # query
     # Query by which the results have to be filtered. Supported operators are equals(`eq`), contains(`co`), starts
     # with(`sw`) and not equals(`ne`). Additionally, simple expressions can be formed using logical operators - `and`
     # and `or`. The [SCIM RFC] has more details but we currently only support simple expressions.
@@ -294,47 +294,47 @@ class ListUsersRequest:
     filter: str  # query
     # Attribute to sort the results. Multi-part paths are supported. For example, `userName`, `name.givenName`, and
     # `emails`.
-    sortBy: str  # query
+    sort_by: str  # query
     # The order to sort the results.
-    sortOrder: "ListSortOrder"  # query
+    sort_order: "ListSortOrder"  # query
     # Specifies the index of the first result. First item is number 1.
-    startIndex: int  # query
+    start_index: int  # query
 
 
 @dataclass
 class ListUsersResponse:
 
     # Total results returned in the response.
-    itemsPerPage: int
+    items_per_page: int
     # User objects returned in the response.
-    Resources: "List[User]"
+    resources: "List[User]"
     # Starting index of all the results that matched the request filters. First item is number 1.
-    startIndex: int
+    start_index: int
     # Total results that match the request filters.
-    totalResults: int
+    total_results: int
 
     def as_dict(self) -> dict:
         body = {}
-        if self.itemsPerPage:
-            body["itemsPerPage"] = self.itemsPerPage
-        if self.Resources:
-            body["Resources"] = [v.as_dict() for v in self.Resources]
-        if self.startIndex:
-            body["startIndex"] = self.startIndex
-        if self.totalResults:
-            body["totalResults"] = self.totalResults
+        if self.items_per_page:
+            body["itemsPerPage"] = self.items_per_page
+        if self.resources:
+            body["Resources"] = [v.as_dict() for v in self.resources]
+        if self.start_index:
+            body["startIndex"] = self.start_index
+        if self.total_results:
+            body["totalResults"] = self.total_results
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ListUsersResponse":
         return cls(
-            itemsPerPage=d.get("itemsPerPage", None),
-            Resources=[User.from_dict(v) for v in d["Resources"]]
+            items_per_page=d.get("itemsPerPage", None),
+            resources=[User.from_dict(v) for v in d["Resources"]]
             if "Resources" in d
             else None,
-            startIndex=d.get("startIndex", None),
-            totalResults=d.get("totalResults", None),
+            start_index=d.get("startIndex", None),
+            total_results=d.get("totalResults", None),
         )
 
 
@@ -342,24 +342,24 @@ class ListUsersResponse:
 class Name:
 
     # Family name of the Databricks user.
-    familyName: str
+    family_name: str
     # Given name of the Databricks user.
-    givenName: str
+    given_name: str
 
     def as_dict(self) -> dict:
         body = {}
-        if self.familyName:
-            body["familyName"] = self.familyName
-        if self.givenName:
-            body["givenName"] = self.givenName
+        if self.family_name:
+            body["familyName"] = self.family_name
+        if self.given_name:
+            body["givenName"] = self.given_name
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "Name":
         return cls(
-            familyName=d.get("familyName", None),
-            givenName=d.get("givenName", None),
+            family_name=d.get("familyName", None),
+            given_name=d.get("givenName", None),
         )
 
 
@@ -434,13 +434,13 @@ class ServicePrincipal:
     # If this user is active
     active: bool
     # UUID relating to the service principal
-    applicationId: str
+    application_id: str
     # String that represents a concatenation of given and family names.
-    displayName: str
+    display_name: str
 
     entitlements: "List[ComplexValue]"
 
-    externalId: str
+    external_id: str
 
     groups: "List[ComplexValue]"
     # Databricks service principal ID.
@@ -452,14 +452,14 @@ class ServicePrincipal:
         body = {}
         if self.active:
             body["active"] = self.active
-        if self.applicationId:
-            body["applicationId"] = self.applicationId
-        if self.displayName:
-            body["displayName"] = self.displayName
+        if self.application_id:
+            body["applicationId"] = self.application_id
+        if self.display_name:
+            body["displayName"] = self.display_name
         if self.entitlements:
             body["entitlements"] = [v.as_dict() for v in self.entitlements]
-        if self.externalId:
-            body["externalId"] = self.externalId
+        if self.external_id:
+            body["externalId"] = self.external_id
         if self.groups:
             body["groups"] = [v.as_dict() for v in self.groups]
         if self.id:
@@ -473,12 +473,12 @@ class ServicePrincipal:
     def from_dict(cls, d: Dict[str, any]) -> "ServicePrincipal":
         return cls(
             active=d.get("active", None),
-            applicationId=d.get("applicationId", None),
-            displayName=d.get("displayName", None),
+            application_id=d.get("applicationId", None),
+            display_name=d.get("displayName", None),
             entitlements=[ComplexValue.from_dict(v) for v in d["entitlements"]]
             if "entitlements" in d
             else None,
-            externalId=d.get("externalId", None),
+            external_id=d.get("externalId", None),
             groups=[ComplexValue.from_dict(v) for v in d["groups"]]
             if "groups" in d
             else None,
@@ -495,13 +495,13 @@ class User:
     # If this user is active
     active: bool
     # String that represents a concatenation of given and family names. For example `John Smith`.
-    displayName: str
+    display_name: str
     # All the emails associated with the Databricks user.
     emails: "List[ComplexValue]"
 
     entitlements: "List[ComplexValue]"
 
-    externalId: str
+    external_id: str
 
     groups: "List[ComplexValue]"
     # Databricks user ID.
@@ -511,20 +511,20 @@ class User:
 
     roles: "List[ComplexValue]"
     # Email address of the Databricks user.
-    userName: str
+    user_name: str
 
     def as_dict(self) -> dict:
         body = {}
         if self.active:
             body["active"] = self.active
-        if self.displayName:
-            body["displayName"] = self.displayName
+        if self.display_name:
+            body["displayName"] = self.display_name
         if self.emails:
             body["emails"] = [v.as_dict() for v in self.emails]
         if self.entitlements:
             body["entitlements"] = [v.as_dict() for v in self.entitlements]
-        if self.externalId:
-            body["externalId"] = self.externalId
+        if self.external_id:
+            body["externalId"] = self.external_id
         if self.groups:
             body["groups"] = [v.as_dict() for v in self.groups]
         if self.id:
@@ -533,8 +533,8 @@ class User:
             body["name"] = self.name.as_dict()
         if self.roles:
             body["roles"] = [v.as_dict() for v in self.roles]
-        if self.userName:
-            body["userName"] = self.userName
+        if self.user_name:
+            body["userName"] = self.user_name
 
         return body
 
@@ -542,14 +542,14 @@ class User:
     def from_dict(cls, d: Dict[str, any]) -> "User":
         return cls(
             active=d.get("active", None),
-            displayName=d.get("displayName", None),
+            display_name=d.get("displayName", None),
             emails=[ComplexValue.from_dict(v) for v in d["emails"]]
             if "emails" in d
             else None,
             entitlements=[ComplexValue.from_dict(v) for v in d["entitlements"]]
             if "entitlements" in d
             else None,
-            externalId=d.get("externalId", None),
+            external_id=d.get("externalId", None),
             groups=[ComplexValue.from_dict(v) for v in d["groups"]]
             if "groups" in d
             else None,
@@ -558,7 +558,7 @@ class User:
             roles=[ComplexValue.from_dict(v) for v in d["roles"]]
             if "roles" in d
             else None,
-            userName=d.get("userName", None),
+            user_name=d.get("userName", None),
         )
 
 
@@ -568,7 +568,6 @@ class AccountGroupsAPI:
 
     def create(
         self,
-        id: str,
         id: str,
         *,
         display_name: str = None,
@@ -666,18 +665,7 @@ class AccountGroupsAPI:
         json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Groups", query=query)
         return ListGroupsResponse.from_dict(json)
 
-    def patch(
-        self,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        *,
-        operations: List[Patch] = None,
-        **kwargs,
-    ):
+    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update group details.
 
         Partially updates the details of a group."""
@@ -692,7 +680,6 @@ class AccountGroupsAPI:
 
     def update(
         self,
-        id: str,
         id: str,
         *,
         display_name: str = None,
@@ -730,7 +717,6 @@ class AccountServicePrincipalsAPI:
 
     def create(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -838,18 +824,7 @@ class AccountServicePrincipalsAPI:
         )
         return ListServicePrincipalResponse.from_dict(json)
 
-    def patch(
-        self,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        *,
-        operations: List[Patch] = None,
-        **kwargs,
-    ):
+    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the
@@ -867,7 +842,6 @@ class AccountServicePrincipalsAPI:
 
     def update(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -911,7 +885,6 @@ class AccountUsersAPI:
 
     def create(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -1016,18 +989,7 @@ class AccountUsersAPI:
         json = self._api.do("GET", f"/api/2.0/accounts//scim/v2/Users", query=query)
         return ListUsersResponse.from_dict(json)
 
-    def patch(
-        self,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        *,
-        operations: List[Patch] = None,
-        **kwargs,
-    ):
+    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on
@@ -1043,7 +1005,6 @@ class AccountUsersAPI:
 
     def update(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -1098,7 +1059,6 @@ class GroupsAPI:
 
     def create(
         self,
-        id: str,
         id: str,
         *,
         display_name: str = None,
@@ -1196,18 +1156,7 @@ class GroupsAPI:
         json = self._api.do("GET", "/api/2.0/preview/scim/v2/Groups", query=query)
         return ListGroupsResponse.from_dict(json)
 
-    def patch(
-        self,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        *,
-        operations: List[Patch] = None,
-        **kwargs,
-    ):
+    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update group details.
 
         Partially updates the details of a group."""
@@ -1222,7 +1171,6 @@ class GroupsAPI:
 
     def update(
         self,
-        id: str,
         id: str,
         *,
         display_name: str = None,
@@ -1258,7 +1206,6 @@ class ServicePrincipalsAPI:
 
     def create(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -1367,18 +1314,7 @@ class ServicePrincipalsAPI:
         )
         return ListServicePrincipalResponse.from_dict(json)
 
-    def patch(
-        self,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        *,
-        operations: List[Patch] = None,
-        **kwargs,
-    ):
+    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the
@@ -1396,7 +1332,6 @@ class ServicePrincipalsAPI:
 
     def update(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -1438,7 +1373,6 @@ class UsersAPI:
 
     def create(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,
@@ -1543,18 +1477,7 @@ class UsersAPI:
         json = self._api.do("GET", "/api/2.0/preview/scim/v2/Users", query=query)
         return ListUsersResponse.from_dict(json)
 
-    def patch(
-        self,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        id: str,
-        *,
-        operations: List[Patch] = None,
-        **kwargs,
-    ):
+    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on
@@ -1568,7 +1491,6 @@ class UsersAPI:
 
     def update(
         self,
-        id: str,
         id: str,
         *,
         active: bool = None,

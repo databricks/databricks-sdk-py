@@ -1992,34 +1992,34 @@ class RetrieveTokenRequest:
 class RetrieveTokenResponse:
 
     # The token used to authorize the recipient.
-    bearerToken: str
+    bearer_token: str
     # The endpoint for the share to be used by the recipient.
     endpoint: str
     # Expiration timestamp of the token in epoch milliseconds.
-    expirationTime: str
+    expiration_time: str
     # These field names must follow the delta sharing protocol.
-    shareCredentialsVersion: int
+    share_credentials_version: int
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearerToken:
-            body["bearerToken"] = self.bearerToken
+        if self.bearer_token:
+            body["bearerToken"] = self.bearer_token
         if self.endpoint:
             body["endpoint"] = self.endpoint
-        if self.expirationTime:
-            body["expirationTime"] = self.expirationTime
-        if self.shareCredentialsVersion:
-            body["shareCredentialsVersion"] = self.shareCredentialsVersion
+        if self.expiration_time:
+            body["expirationTime"] = self.expiration_time
+        if self.share_credentials_version:
+            body["shareCredentialsVersion"] = self.share_credentials_version
 
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "RetrieveTokenResponse":
         return cls(
-            bearerToken=d.get("bearerToken", None),
+            bearer_token=d.get("bearerToken", None),
             endpoint=d.get("endpoint", None),
-            expirationTime=d.get("expirationTime", None),
-            shareCredentialsVersion=d.get("shareCredentialsVersion", None),
+            expiration_time=d.get("expirationTime", None),
+            share_credentials_version=d.get("shareCredentialsVersion", None),
         )
 
 

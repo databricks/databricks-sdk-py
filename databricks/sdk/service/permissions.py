@@ -622,8 +622,6 @@ class PermissionsAPI:
         self,
         request_object_type: str,
         request_object_id: str,
-        request_object_type: str,
-        request_object_id: str,
         *,
         access_control_list: List[AccessControlRequest] = None,
         **kwargs,
@@ -649,8 +647,6 @@ class PermissionsAPI:
 
     def update(
         self,
-        request_object_type: str,
-        request_object_id: str,
         request_object_type: str,
         request_object_id: str,
         *,
