@@ -8,7 +8,7 @@ __version__ = "0.0.1"
 
 setup(name="databricks",
       version=__version__,
-      packages=find_packages(exclude=['tests']),
+      packages=find_packages(exclude=["tests", "*tests.*", "*tests"]),
       python_requires=">=3.7",
       install_requires=["requests>=2.28.1", ],
       extras_require={"dev": ["pytest", "pytest-cov", "yapf", "pycodestyle", "autoflake", "isort", "wheel"]},
