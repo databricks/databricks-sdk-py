@@ -27,9 +27,41 @@ import databricks.sdk.service.workspaceconf as workspaceconf
 
 class WorkspaceClient:
 
-    def __init__(self, **kwargs):
-        self.api_client = client.ApiClient(client.Config(**kwargs))
-
+    def __init__(self,
+                 *,
+                 host: str = None,
+                 account_id: str = None,
+                 username: str = None,
+                 password: str = None,
+                 client_id: str = None,
+                 client_secret: str = None,
+                 token: str = None,
+                 profile: str = None,
+                 config_file: str = None,
+                 azure_workspace_resource_id: str = None,
+                 azure_client_secret: str = None,
+                 azure_client_id: str = None,
+                 azure_tenant_id: str = None,
+                 azure_environment: str = None,
+                 auth_type: str = None,
+                 **kwargs):
+        self.config = client.Config(host=host,
+                                    account_id=account_id,
+                                    username=username,
+                                    password=password,
+                                    client_id=client_id,
+                                    client_secret=client_secret,
+                                    token=token,
+                                    profile=profile,
+                                    config_file=config_file,
+                                    azure_workspace_resource_id=azure_workspace_resource_id,
+                                    azure_client_secret=azure_client_secret,
+                                    azure_client_id=azure_client_id,
+                                    azure_tenant_id=azure_tenant_id,
+                                    azure_environment=azure_environment,
+                                    auth_type=auth_type,
+                                    **kwargs)
+        self.api_client = client.ApiClient(self.config)
         self.alerts = sql.AlertsAPI(self.api_client)
         self.catalogs = unitycatalog.CatalogsAPI(self.api_client)
         self.cluster_policies = clusterpolicies.ClusterPoliciesAPI(self.api_client)
@@ -85,9 +117,41 @@ class WorkspaceClient:
 
 class AccountClient:
 
-    def __init__(self, **kwargs):
-        self.api_client = client.ApiClient(client.Config(**kwargs))
-
+    def __init__(self,
+                 *,
+                 host: str = None,
+                 account_id: str = None,
+                 username: str = None,
+                 password: str = None,
+                 client_id: str = None,
+                 client_secret: str = None,
+                 token: str = None,
+                 profile: str = None,
+                 config_file: str = None,
+                 azure_workspace_resource_id: str = None,
+                 azure_client_secret: str = None,
+                 azure_client_id: str = None,
+                 azure_tenant_id: str = None,
+                 azure_environment: str = None,
+                 auth_type: str = None,
+                 **kwargs):
+        self.config = client.Config(host=host,
+                                    account_id=account_id,
+                                    username=username,
+                                    password=password,
+                                    client_id=client_id,
+                                    client_secret=client_secret,
+                                    token=token,
+                                    profile=profile,
+                                    config_file=config_file,
+                                    azure_workspace_resource_id=azure_workspace_resource_id,
+                                    azure_client_secret=azure_client_secret,
+                                    azure_client_id=azure_client_id,
+                                    azure_tenant_id=azure_tenant_id,
+                                    azure_environment=azure_environment,
+                                    auth_type=auth_type,
+                                    **kwargs)
+        self.api_client = client.ApiClient(self.config)
         self.billable_usage = billing.BillableUsageAPI(self.api_client)
         self.budgets = billing.BudgetsAPI(self.api_client)
         self.credentials = deployment.CredentialsAPI(self.api_client)

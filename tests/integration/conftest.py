@@ -7,16 +7,16 @@ from databricks.sdk import AccountClient, WorkspaceClient
 
 
 @pytest.fixture
-def account_client() -> AccountClient:
+def a() -> AccountClient:
     _load_debug_env_if_runs_from_ide('account')
     account_client = AccountClient()
-    if not account_client.api_client.is_account_client:
+    if not account_client.config.is_account_client:
         pytest.skip("not Databricks Account client")
     return account_client
 
 
 @pytest.fixture
-def workspace_client() -> WorkspaceClient:
+def w() -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('workspace')
     if 'DATABRICKS_ACCOUNT_ID' in os.environ:
         pytest.skip("Skipping workspace test on account level")

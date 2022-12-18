@@ -1,3 +1,6 @@
-def test_workspaces(account_client):
-    for w in account_client.workspaces.list():
-        print(w.workspace_name)
+import logging
+
+
+def test_workspaces(a):
+    for w in a.workspaces.list():
+        logging.info(f'Found workspace: {w.workspace_name}')

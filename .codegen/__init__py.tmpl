@@ -2,14 +2,20 @@
 import databricks.sdk.service.{{.Name}} as {{.Name}}{{end}}
 import databricks.sdk.client as client
 
+{{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
+  "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"
+  "azure_client_id" "azure_tenant_id" "azure_environment" "auth_type"}}
+
 class WorkspaceClient:
-    def __init__(self, **kwargs):
-        self.api_client = client.ApiClient(client.Config(**kwargs))
-        {{range .Services}}{{if not .IsAccounts}}
+    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}}, **kwargs):
+        self.config = client.Config({{range $args}}{{.}}={{.}}, {{end}}**kwargs)
+        self.api_client = client.ApiClient(self.config)
+        {{- range .Services}}{{if not .IsAccounts}}
         self.{{.SnakeName}} = {{.Package.Name}}.{{.Name}}API(self.api_client){{end -}}{{end}}
 
 class AccountClient:
-    def __init__(self, **kwargs):
-        self.api_client = client.ApiClient(client.Config(**kwargs))
-        {{range .Services}}{{if .IsAccounts}}
+    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}}, **kwargs):
+        self.config = client.Config({{range $args}}{{.}}={{.}}, {{end}}**kwargs)
+        self.api_client = client.ApiClient(self.config)
+        {{- range .Services}}{{if .IsAccounts}}
         self.{{.SnakeName}} = {{.Package.Name}}.{{.Name}}API(self.api_client){{end -}}{{end}}

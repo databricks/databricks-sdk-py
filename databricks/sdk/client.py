@@ -271,7 +271,7 @@ def known_file_config_loader(cfg: 'Config'):
 class Config:
     host: str = getenv("DATABRICKS_HOST")
 
-    credentials: DatabricksAuth = None
+    credentials: DatabricksAuth = None # TODO: this API is not final.
 
     # Databricks Account ID for Accounts API. This field is used in dependencies.
     account_id: str = getenv("DATABRICKS_ACCOUNT_ID")

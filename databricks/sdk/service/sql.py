@@ -2634,9 +2634,9 @@ class QueryHistoryAPI:
                 return
             for v in json['res']:
                 yield QueryInfo.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
 
 class WarehousesAPI:
