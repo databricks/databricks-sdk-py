@@ -220,27 +220,27 @@ class DefaultAuth(DatabricksAuth):
 
 
 def env_loader(cfg: 'Config'):
-    cfg.host = getenv("DATABRICKS_HOST")
-    cfg.account_id = getenv("DATABRICKS_ACCOUNT_ID")
-    cfg.username = getenv("DATABRICKS_USERNAME")
-    cfg.password = getenv("DATABRICKS_PASSWORD")
-    cfg.client_id = getenv("DATABRICKS_CLIENT_ID")
-    cfg.client_secret = getenv("DATABRICKS_CLIENT_SECRET")
-    cfg.token = getenv("DATABRICKS_TOKEN")
-    cfg.profile = getenv("DATABRICKS_CONFIG_PROFILE")
-    cfg.config_file = getenv("DATABRICKS_CONFIG_FILE", "~/.databrickscfg")
-    cfg.google_service_account = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
-    cfg.google_credentials = getenv("GOOGLE_CREDENTIALS")
-    cfg.azure_workspace_resource_id = getenv("DATABRICKS_AZURE_RESOURCE_ID")
-    cfg.azure_use_msi = getenv("ARM_USE_MSI", False)
-    cfg.azure_client_secret = getenv("ARM_CLIENT_SECRET")
-    cfg.azure_client_id = getenv("ARM_CLIENT_ID")
-    cfg.azure_tenant_id = getenv("ARM_TENANT_ID")
-    cfg.azure_environment = getenv("ARM_ENVIRONMENT")
-    cfg.auth_type = getenv("DATABRICKS_AUTH_TYPE")
-    cfg.debug_truncate_bytes = getenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", 96)
-    cfg.debug_headers = getenv("DATABRICKS_DEBUG_HEADERS", False)
-    cfg.rate_limit = getenv("DATABRICKS_RATE_LIMIT", 15)
+    if not cfg.host: cfg.host = getenv("DATABRICKS_HOST")
+    if not cfg.account_id: cfg.account_id = getenv("DATABRICKS_ACCOUNT_ID")
+    if not cfg.username: cfg.username = getenv("DATABRICKS_USERNAME")
+    if not cfg.password: cfg.password = getenv("DATABRICKS_PASSWORD")
+    if not cfg.client_id: cfg.client_id = getenv("DATABRICKS_CLIENT_ID")
+    if not cfg.client_secret: cfg.client_secret = getenv("DATABRICKS_CLIENT_SECRET")
+    if not cfg.token: cfg.token = getenv("DATABRICKS_TOKEN")
+    if not cfg.profile: cfg.profile = getenv("DATABRICKS_CONFIG_PROFILE")
+    if not cfg.config_file: cfg.config_file = getenv("DATABRICKS_CONFIG_FILE", "~/.databrickscfg")
+    if not cfg.google_service_account: cfg.google_service_account = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
+    if not cfg.google_credentials: cfg.google_credentials = getenv("GOOGLE_CREDENTIALS")
+    if not cfg.azure_workspace_resource_id: cfg.azure_workspace_resource_id = getenv("DATABRICKS_AZURE_RESOURCE_ID")
+    if not cfg.azure_use_msi: cfg.azure_use_msi = getenv("ARM_USE_MSI", False)
+    if not cfg.azure_client_secret: cfg.azure_client_secret = getenv("ARM_CLIENT_SECRET")
+    if not cfg.azure_client_id: cfg.azure_client_id = getenv("ARM_CLIENT_ID")
+    if not cfg.azure_tenant_id: cfg.azure_tenant_id = getenv("ARM_TENANT_ID")
+    if not cfg.azure_environment: cfg.azure_environment = getenv("ARM_ENVIRONMENT")
+    if not cfg.auth_type: cfg.auth_type = getenv("DATABRICKS_AUTH_TYPE")
+    if not cfg.debug_truncate_bytes: cfg.debug_truncate_bytes = getenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", 96)
+    if not cfg.debug_headers: cfg.debug_headers = getenv("DATABRICKS_DEBUG_HEADERS", False)
+    if not cfg.rate_limit: cfg.rate_limit = getenv("DATABRICKS_RATE_LIMIT", 15)
 
 
 def known_file_config_loader(cfg: 'Config'):
@@ -269,41 +269,41 @@ def known_file_config_loader(cfg: 'Config'):
 
 @dataclasses.dataclass
 class Config:
-    host: str = getenv("DATABRICKS_HOST")
+    host: str = None
 
     credentials: DatabricksAuth = None # TODO: this API is not final.
 
     # Databricks Account ID for Accounts API. This field is used in dependencies.
-    account_id: str = getenv("DATABRICKS_ACCOUNT_ID")
-    username: str = getenv("DATABRICKS_USERNAME")
-    password: str = getenv("DATABRICKS_PASSWORD")
-    client_id: str = getenv("DATABRICKS_CLIENT_ID")
-    client_secret: str = getenv("DATABRICKS_CLIENT_SECRET")
-    token: str = getenv("DATABRICKS_TOKEN")
+    account_id: str = None
+    username: str = None
+    password: str = None
+    client_id: str = None
+    client_secret: str = None
+    token: str = None
 
     # Connection profile specified within ~/.databrickscfg.
-    profile: str = getenv("DATABRICKS_CONFIG_PROFILE")
+    profile: str = None
     # Location of the Databricks CLI credentials file, that is created
     # by `databricks configure --token` command. By default, it is located
     # in ~/.databrickscfg.
-    config_file: str = getenv("DATABRICKS_CONFIG_FILE", "~/.databrickscfg")
+    config_file: str = None
 
-    google_service_account: str = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
-    google_credentials: str = getenv("GOOGLE_CREDENTIALS")
+    google_service_account: str = None
+    google_credentials: str = None
 
     # Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
-    azure_workspace_resource_id: str = getenv("DATABRICKS_AZURE_RESOURCE_ID")
-    azure_use_msi: bool = getenv("ARM_USE_MSI", False)
-    azure_client_secret: str = getenv("ARM_CLIENT_SECRET")
-    azure_client_id: str = getenv("ARM_CLIENT_ID")
-    azure_tenant_id: str = getenv("ARM_TENANT_ID")
-    azure_environment: str = getenv("ARM_ENVIRONMENT")
+    azure_workspace_resource_id: str = None
+    azure_use_msi: bool = None
+    azure_client_secret: str = None
+    azure_client_id: str = None
+    azure_tenant_id: str = None
+    azure_environment: str = None
     auth_type: str = None
 
     # Truncate JSON fields in JSON above this limit. Default is 96.
-    debug_truncate_bytes: str = getenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", 96)
-    debug_headers: bool = getenv("DATABRICKS_DEBUG_HEADERS", False)
-    rate_limit: int = getenv("DATABRICKS_RATE_LIMIT", 15)
+    debug_truncate_bytes: str = None
+    debug_headers: bool = None
+    rate_limit: int = None
 
     # Number of seconds for HTTP timeout
     http_timeout_seconds: int = 30
