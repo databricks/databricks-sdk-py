@@ -180,9 +180,9 @@ class ReposAPI:
                 return
             for v in json['repos']:
                 yield RepoInfo.from_dict(v)
-            query['next_page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['next_page_token'] = json['next_page_token']
 
     def update(self, repo_id: int, *, branch: str = None, tag: str = None, **kwargs):
         """Update a repo.

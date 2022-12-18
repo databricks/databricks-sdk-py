@@ -11,8 +11,7 @@ from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.pipelines')
 
-from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
-                       ClusterLogConf, GcpAttributes)
+from .clusters import (AutoScale, AwsAttributes, AzureAttributes, ClusterLogConf, GcpAttributes)
 from .libraries import MavenLibrary
 
 # all definitions in this file are in alphabetical order
@@ -888,9 +887,9 @@ class PipelinesAPI:
                 return
             for v in json['statuses']:
                 yield PipelineStateInfo.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
     def list_updates(self,
                      pipeline_id: str,

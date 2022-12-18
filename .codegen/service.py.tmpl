@@ -182,9 +182,9 @@ class {{.Name}}API:{{if .Description}}
             return
           body = json['next_page']
           {{- else if .Pagination.Token -}}
-          {{if eq "GET" .Verb}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
-          if not json['{{.Pagination.Token.Bind.Name}}']:
+          if '{{.Pagination.Token.Bind.Name}}' not in json or not json['{{.Pagination.Token.Bind.Name}}']:
             return
+          {{if eq "GET" .Verb}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
           {{- else if eq .Pagination.Increment 1 -}}
           query['{{.Pagination.Offset.Name}}'] += 1
           {{- else -}}

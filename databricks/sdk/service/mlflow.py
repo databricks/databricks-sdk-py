@@ -2235,9 +2235,9 @@ class ExperimentsAPI:
                 return
             for v in json['experiments']:
                 yield Experiment.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
     def restore(self, experiment_id: str, **kwargs):
         """Restores an experiment.
@@ -2278,9 +2278,9 @@ class ExperimentsAPI:
                 return
             for v in json['experiments']:
                 yield Experiment.from_dict(v)
-            body['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            body['page_token'] = json['next_page_token']
 
     def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
         """Set a tag.
@@ -2335,9 +2335,9 @@ class MLflowArtifactsAPI:
                 return
             for v in json['files']:
                 yield FileInfo.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
 
 class MLflowDatabricksAPI:
@@ -2623,9 +2623,9 @@ class MLflowRunsAPI:
                 return
             for v in json['runs']:
                 yield Run.from_dict(v)
-            body['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            body['page_token'] = json['next_page_token']
 
     def set_tag(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
         """Set a tag.
@@ -2818,9 +2818,9 @@ class ModelVersionsAPI:
                 return
             for v in json['model_versions']:
                 yield ModelVersion.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
     def set_tag(self, name: str, version: str, key: str, value: str, **kwargs):
         """Set a version tag.
@@ -2954,9 +2954,9 @@ class RegisteredModelsAPI:
                 return
             for v in json['registered_models']:
                 yield RegisteredModel.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
     def rename(self, name: str, *, new_name: str = None, **kwargs) -> RenameRegisteredModelResponse:
         """Rename a model.
@@ -2999,9 +2999,9 @@ class RegisteredModelsAPI:
                 return
             for v in json['registered_models']:
                 yield RegisteredModel.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
     def set_tag(self, name: str, key: str, value: str, **kwargs):
         """Set a tag.
@@ -3097,9 +3097,9 @@ class RegistryWebhooksAPI:
                 return
             for v in json['webhooks']:
                 yield RegistryWebhook.from_dict(v)
-            query['page_token'] = json['next_page_token']
-            if not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token']:
                 return
+            query['page_token'] = json['next_page_token']
 
     def test(self, id: str, *, event: RegistryWebhookEvent = None, **kwargs) -> TestRegistryWebhookResponse:
         """Test a webhook.
