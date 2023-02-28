@@ -1,13 +1,12 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
-import random
-import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-
-from ..errors import OperationFailed, OperationTimeout
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
 
 _LOG = logging.getLogger('databricks.sdk.service.clusters')
 
@@ -136,6 +135,90 @@ class AzureAvailability(Enum):
     ON_DEMAND_AZURE = 'ON_DEMAND_AZURE'
     SPOT_AZURE = 'SPOT_AZURE'
     SPOT_WITH_FALLBACK_AZURE = 'SPOT_WITH_FALLBACK_AZURE'
+
+
+@dataclass
+class BaseClusterInfo:
+    autoscale: 'AutoScale'
+    autotermination_minutes: int
+    aws_attributes: 'AwsAttributes'
+    azure_attributes: 'AzureAttributes'
+    cluster_log_conf: 'ClusterLogConf'
+    cluster_name: str
+    cluster_source: 'ClusterSource'
+    custom_tags: 'Dict[str,str]'
+    driver_instance_pool_id: str
+    driver_node_type_id: str
+    enable_elastic_disk: bool
+    enable_local_disk_encryption: bool
+    gcp_attributes: 'GcpAttributes'
+    instance_pool_id: str
+    node_type_id: str
+    num_workers: int
+    policy_id: str
+    runtime_engine: 'RuntimeEngine'
+    spark_conf: 'Dict[str,str]'
+    spark_env_vars: 'Dict[str,str]'
+    spark_version: str
+    ssh_public_keys: 'List[str]'
+    workload_type: 'WorkloadType'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
+        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
+        if self.cluster_name: body['cluster_name'] = self.cluster_name
+        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.num_workers: body['num_workers'] = self.num_workers
+        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'BaseClusterInfo':
+        return cls(
+            autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
+            autotermination_minutes=d.get('autotermination_minutes', None),
+            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
+            azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
+            if 'azure_attributes' in d else None,
+            cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
+            if 'cluster_log_conf' in d else None,
+            cluster_name=d.get('cluster_name', None),
+            cluster_source=ClusterSource(d['cluster_source']) if 'cluster_source' in d else None,
+            custom_tags=d.get('custom_tags', None),
+            driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+            driver_node_type_id=d.get('driver_node_type_id', None),
+            enable_elastic_disk=d.get('enable_elastic_disk', None),
+            enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
+            instance_pool_id=d.get('instance_pool_id', None),
+            node_type_id=d.get('node_type_id', None),
+            num_workers=d.get('num_workers', None),
+            policy_id=d.get('policy_id', None),
+            runtime_engine=RuntimeEngine(d['runtime_engine']) if 'runtime_engine' in d else None,
+            spark_conf=d.get('spark_conf', None),
+            spark_env_vars=d.get('spark_env_vars', None),
+            spark_version=d.get('spark_version', None),
+            ssh_public_keys=d.get('ssh_public_keys', None),
+            workload_type=WorkloadType.from_dict(d['workload_type']) if 'workload_type' in d else None)
 
 
 @dataclass
@@ -415,7 +498,8 @@ class ClusterInfo:
             driver_node_type_id=d.get('driver_node_type_id', None),
             enable_elastic_disk=d.get('enable_elastic_disk', None),
             enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-            executors=[SparkNode.from_dict(v) for v in d['executors']] if 'executors' in d else None,
+            executors=[SparkNode.from_dict(v)
+                       for v in d['executors']] if 'executors' in d and d['executors'] is not None else None,
             gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
             instance_pool_id=d.get('instance_pool_id', None),
             jdbc_port=d.get('jdbc_port', None),
@@ -956,7 +1040,8 @@ class GetEventsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetEventsResponse':
-        return cls(events=[ClusterEvent.from_dict(v) for v in d['events']] if 'events' in d else None,
+        return cls(events=[ClusterEvent.from_dict(v)
+                           for v in d['events']] if 'events' in d and d['events'] is not None else None,
                    next_page=GetEvents.from_dict(d['next_page']) if 'next_page' in d else None,
                    total_count=d.get('total_count', None))
 
@@ -972,7 +1057,9 @@ class GetSparkVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetSparkVersionsResponse':
-        return cls(versions=[SparkVersion.from_dict(v) for v in d['versions']] if 'versions' in d else None)
+        return cls(
+            versions=[SparkVersion.from_dict(v)
+                      for v in d['versions']] if 'versions' in d and d['versions'] is not None else None)
 
 
 @dataclass
@@ -1029,7 +1116,9 @@ class ListClustersResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListClustersResponse':
-        return cls(clusters=[ClusterInfo.from_dict(v) for v in d['clusters']] if 'clusters' in d else None)
+        return cls(
+            clusters=[ClusterInfo.from_dict(v)
+                      for v in d['clusters']] if 'clusters' in d and d['clusters'] is not None else None)
 
 
 @dataclass
@@ -1043,8 +1132,8 @@ class ListInstanceProfilesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListInstanceProfilesResponse':
-        return cls(instance_profiles=[InstanceProfile.from_dict(v)
-                                      for v in d['instance_profiles']] if 'instance_profiles' in d else None)
+        return cls(instance_profiles=[InstanceProfile.from_dict(v) for v in d['instance_profiles']]
+                   if 'instance_profiles' in d and d['instance_profiles'] is not None else None)
 
 
 @dataclass
@@ -1058,7 +1147,8 @@ class ListNodeTypesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListNodeTypesResponse':
-        return cls(node_types=[NodeType.from_dict(v) for v in d['node_types']] if 'node_types' in d else None)
+        return cls(node_types=[NodeType.from_dict(v) for v in d['node_types']]
+                   if 'node_types' in d and d['node_types'] is not None else None)
 
 
 @dataclass

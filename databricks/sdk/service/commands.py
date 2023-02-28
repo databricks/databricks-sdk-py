@@ -1,13 +1,12 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
-import random
-import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
-
-from ..errors import OperationFailed, OperationTimeout
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
 
 _LOG = logging.getLogger('databricks.sdk.service.commands')
 
@@ -91,10 +90,9 @@ class CommandStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CommandStatusResponse':
-        return cls(
-            id=d.get('id', None),
-            results=Results.from_dict(d['results']) if 'results' in d and d['results'] is not None else None,
-            status=CommandStatus(d['status']) if 'status' in d else None)
+        return cls(id=d.get('id', None),
+                   results=Results.from_dict(d['results']) if 'results' in d else None,
+                   status=CommandStatus(d['status']) if 'status' in d else None)
 
 
 class ContextStatus(Enum):
@@ -200,7 +198,7 @@ class Results:
     is_json_schema: bool
     pos: int
     result_type: 'ResultType'
-    schema: 'List[List[Any]]'
+    schema: 'List[Dict[str,Any]]'
     summary: str
     truncated: bool
 

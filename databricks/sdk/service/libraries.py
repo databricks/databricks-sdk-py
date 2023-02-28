@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.libraries')
 
@@ -24,8 +24,8 @@ class ClusterLibraryStatuses:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterLibraryStatuses':
         return cls(cluster_id=d.get('cluster_id', None),
-                   library_statuses=[LibraryFullStatus.from_dict(v)
-                                     for v in d['library_statuses']] if 'library_statuses' in d else None)
+                   library_statuses=[LibraryFullStatus.from_dict(v) for v in d['library_statuses']]
+                   if 'library_statuses' in d and d['library_statuses'] is not None else None)
 
 
 @dataclass
@@ -48,8 +48,10 @@ class InstallLibraries:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstallLibraries':
-        return cls(cluster_id=d.get('cluster_id', None),
-                   libraries=[Library.from_dict(v) for v in d['libraries']] if 'libraries' in d else None)
+        return cls(
+            cluster_id=d.get('cluster_id', None),
+            libraries=[Library.from_dict(v)
+                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None)
 
 
 @dataclass
@@ -128,8 +130,9 @@ class ListAllClusterLibraryStatusesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAllClusterLibraryStatusesResponse':
-        return cls(statuses=[ClusterLibraryStatuses.from_dict(v)
-                             for v in d['statuses']] if 'statuses' in d else None)
+        return cls(
+            statuses=[ClusterLibraryStatuses.from_dict(v)
+                      for v in d['statuses']] if 'statuses' in d and d['statuses'] is not None else None)
 
 
 @dataclass
@@ -197,8 +200,10 @@ class UninstallLibraries:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UninstallLibraries':
-        return cls(cluster_id=d.get('cluster_id', None),
-                   libraries=[Library.from_dict(v) for v in d['libraries']] if 'libraries' in d else None)
+        return cls(
+            cluster_id=d.get('cluster_id', None),
+            libraries=[Library.from_dict(v)
+                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None)
 
 
 class LibrariesAPI:

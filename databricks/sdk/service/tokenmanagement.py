@@ -1,8 +1,8 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.tokenmanagement')
 
@@ -79,8 +79,8 @@ class ListTokensResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTokensResponse':
-        return cls(token_infos=[TokenInfo.from_dict(v)
-                                for v in d['token_infos']] if 'token_infos' in d else None)
+        return cls(token_infos=[TokenInfo.from_dict(v) for v in d['token_infos']]
+                   if 'token_infos' in d and d['token_infos'] is not None else None)
 
 
 @dataclass

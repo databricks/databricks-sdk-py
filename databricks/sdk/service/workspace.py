@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.workspace')
 
@@ -121,7 +121,8 @@ class ListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
-        return cls(objects=[ObjectInfo.from_dict(v) for v in d['objects']] if 'objects' in d else None)
+        return cls(objects=[ObjectInfo.from_dict(v)
+                            for v in d['objects']] if 'objects' in d and d['objects'] is not None else None)
 
 
 @dataclass

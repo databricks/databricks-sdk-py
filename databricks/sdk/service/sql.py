@@ -1,13 +1,12 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
-import random
-import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List
-
-from ..errors import OperationFailed, OperationTimeout
+from typing import Dict, List, Any, Iterator
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
 
 _LOG = logging.getLogger('databricks.sdk.service.sql')
 
@@ -42,6 +41,7 @@ class Alert:
     last_triggered_at: str
     name: str
     options: 'AlertOptions'
+    parent: str
     query: 'Query'
     rearm: int
     state: 'AlertState'
@@ -55,6 +55,7 @@ class Alert:
         if self.last_triggered_at: body['last_triggered_at'] = self.last_triggered_at
         if self.name: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
+        if self.parent: body['parent'] = self.parent
         if self.query: body['query'] = self.query.as_dict()
         if self.rearm: body['rearm'] = self.rearm
         if self.state: body['state'] = self.state.value
@@ -69,6 +70,7 @@ class Alert:
                    last_triggered_at=d.get('last_triggered_at', None),
                    name=d.get('name', None),
                    options=AlertOptions.from_dict(d['options']) if 'options' in d else None,
+                   parent=d.get('parent', None),
                    query=Query.from_dict(d['query']) if 'query' in d else None,
                    rearm=d.get('rearm', None),
                    state=AlertState(d['state']) if 'state' in d else None,
@@ -120,6 +122,13 @@ class AlertState(Enum):
 
 
 @dataclass
+class CancelExecutionRequest:
+    """Cancel statement execution"""
+
+    statement_id: str
+
+
+@dataclass
 class Channel:
     dbsql_version: str
     name: 'ChannelName'
@@ -166,6 +175,120 @@ class ChannelName(Enum):
 
 
 @dataclass
+class ChunkInfo:
+    """Describes metadata for a particular chunk, within a result set; this structure is used both
+    within a manifest, and when fetching individual chunk data or links."""
+
+    byte_count: int
+    chunk_index: int
+    next_chunk_index: int
+    next_chunk_internal_link: str
+    row_count: int
+    row_offset: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.byte_count: body['byte_count'] = self.byte_count
+        if self.chunk_index: body['chunk_index'] = self.chunk_index
+        if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
+        if self.next_chunk_internal_link: body['next_chunk_internal_link'] = self.next_chunk_internal_link
+        if self.row_count: body['row_count'] = self.row_count
+        if self.row_offset: body['row_offset'] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ChunkInfo':
+        return cls(byte_count=d.get('byte_count', None),
+                   chunk_index=d.get('chunk_index', None),
+                   next_chunk_index=d.get('next_chunk_index', None),
+                   next_chunk_internal_link=d.get('next_chunk_internal_link', None),
+                   row_count=d.get('row_count', None),
+                   row_offset=d.get('row_offset', None))
+
+
+@dataclass
+class ColumnInfo:
+    name: str
+    position: int
+    type_interval_type: str
+    type_name: 'ColumnInfoTypeName'
+    type_precision: int
+    type_scale: int
+    type_text: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name: body['name'] = self.name
+        if self.position: body['position'] = self.position
+        if self.type_interval_type: body['type_interval_type'] = self.type_interval_type
+        if self.type_name: body['type_name'] = self.type_name.value
+        if self.type_precision: body['type_precision'] = self.type_precision
+        if self.type_scale: body['type_scale'] = self.type_scale
+        if self.type_text: body['type_text'] = self.type_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
+        return cls(name=d.get('name', None),
+                   position=d.get('position', None),
+                   type_interval_type=d.get('type_interval_type', None),
+                   type_name=ColumnInfoTypeName(d['type_name']) if 'type_name' in d else None,
+                   type_precision=d.get('type_precision', None),
+                   type_scale=d.get('type_scale', None),
+                   type_text=d.get('type_text', None))
+
+
+class ColumnInfoTypeName(Enum):
+    """Name of type (INT, STRUCT, MAP, and so on)"""
+
+    ARRAY = 'ARRAY'
+    BINARY = 'BINARY'
+    BOOLEAN = 'BOOLEAN'
+    BYTE = 'BYTE'
+    CHAR = 'CHAR'
+    DATE = 'DATE'
+    DECIMAL = 'DECIMAL'
+    DOUBLE = 'DOUBLE'
+    FLOAT = 'FLOAT'
+    INT = 'INT'
+    INTERVAL = 'INTERVAL'
+    LONG = 'LONG'
+    MAP = 'MAP'
+    NULL = 'NULL'
+    SHORT = 'SHORT'
+    STRING = 'STRING'
+    STRUCT = 'STRUCT'
+    TIMESTAMP = 'TIMESTAMP'
+    USER_DEFINED_TYPE = 'USER_DEFINED_TYPE'
+
+
+@dataclass
+class CreateAlert:
+    name: str
+    options: 'AlertOptions'
+    parent: str
+    query_id: str
+    rearm: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name: body['name'] = self.name
+        if self.options: body['options'] = self.options.as_dict()
+        if self.parent: body['parent'] = self.parent
+        if self.query_id: body['query_id'] = self.query_id
+        if self.rearm: body['rearm'] = self.rearm
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateAlert':
+        return cls(name=d.get('name', None),
+                   options=AlertOptions.from_dict(d['options']) if 'options' in d else None,
+                   parent=d.get('parent', None),
+                   query_id=d.get('query_id', None),
+                   rearm=d.get('rearm', None))
+
+
+@dataclass
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
@@ -173,6 +296,7 @@ class CreateDashboardRequest:
     is_draft: bool
     is_trashed: bool
     name: str
+    parent: str
     tags: 'List[str]'
     widgets: 'List[Widget]'
 
@@ -182,6 +306,7 @@ class CreateDashboardRequest:
         if self.is_draft: body['is_draft'] = self.is_draft
         if self.is_trashed: body['is_trashed'] = self.is_trashed
         if self.name: body['name'] = self.name
+        if self.parent: body['parent'] = self.parent
         if self.tags: body['tags'] = [v for v in self.tags]
         if self.widgets: body['widgets'] = [v.as_dict() for v in self.widgets]
         return body
@@ -192,8 +317,10 @@ class CreateDashboardRequest:
                    is_draft=d.get('is_draft', None),
                    is_trashed=d.get('is_trashed', None),
                    name=d.get('name', None),
+                   parent=d.get('parent', None),
                    tags=d.get('tags', None),
-                   widgets=[Widget.from_dict(v) for v in d['widgets']] if 'widgets' in d else None)
+                   widgets=[Widget.from_dict(v)
+                            for v in d['widgets']] if 'widgets' in d and d['widgets'] is not None else None)
 
 
 @dataclass
@@ -314,6 +441,7 @@ class Dashboard:
     is_favorite: bool
     name: str
     options: 'DashboardOptions'
+    parent: str
     permission_tier: 'PermissionLevel'
     slug: str
     tags: 'List[str]'
@@ -333,6 +461,7 @@ class Dashboard:
         if self.is_favorite: body['is_favorite'] = self.is_favorite
         if self.name: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
+        if self.parent: body['parent'] = self.parent
         if self.permission_tier: body['permission_tier'] = self.permission_tier.value
         if self.slug: body['slug'] = self.slug
         if self.tags: body['tags'] = [v for v in self.tags]
@@ -353,13 +482,15 @@ class Dashboard:
                    is_favorite=d.get('is_favorite', None),
                    name=d.get('name', None),
                    options=DashboardOptions.from_dict(d['options']) if 'options' in d else None,
+                   parent=d.get('parent', None),
                    permission_tier=PermissionLevel(d['permission_tier']) if 'permission_tier' in d else None,
                    slug=d.get('slug', None),
                    tags=d.get('tags', None),
                    updated_at=d.get('updated_at', None),
                    user=User.from_dict(d['user']) if 'user' in d else None,
                    user_id=d.get('user_id', None),
-                   widgets=[Widget.from_dict(v) for v in d['widgets']] if 'widgets' in d else None)
+                   widgets=[Widget.from_dict(v)
+                            for v in d['widgets']] if 'widgets' in d and d['widgets'] is not None else None)
 
 
 @dataclass
@@ -439,7 +570,7 @@ class DeleteQueryRequest:
 
 @dataclass
 class DeleteScheduleRequest:
-    """Delete a refresh schedule"""
+    """[DEPRECATED] Delete a refresh schedule"""
 
     alert_id: str
     schedule_id: str
@@ -487,6 +618,34 @@ class DestinationType(Enum):
     pagerduty = 'pagerduty'
     slack = 'slack'
     webhook = 'webhook'
+
+
+class Disposition(Enum):
+    """The fetch disposition provides for two modes of fetching results: INLINE, and EXTERNAL_LINKS.
+    
+    Statements executed with INLINE disposition will return result data inline, in JSON_ARRAY
+    format, in a series of chunks. INLINE disposition result sets are constrained to 4 MiB
+    (megabytes) of total data, and will typically be split into chunks of <= 4 MiB per chunk. If a
+    given statement produces a result set with a size larger than 16 MiB, that statement execution
+    is aborted, and no result set will be available.
+    
+    **NOTE** Byte limits are computed based upon internal representations of the result set data,
+    and may not match the sizes visible in JSON responses.
+    
+    Statements executed with EXTERNAL_LINKS disposition will return result data as external links:
+    URLs that point to cloud storage within the workspace's configured DBFS. Using EXTERNAL_LINKS
+    disposition allows statements to generate arbitrarily sized result sets for fetching. The
+    resulting links have two important properties:
+    
+    1. They point to resources _external_ to the Databricks compute; therefore any associated
+    authentication information (typically a PAT token, OAuth token, or similar) _must be removed_
+    when fetching from these links.
+    
+    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
+    when attempting to use an expired link is cloud specific."""
+
+    EXTERNAL_LINKS = 'EXTERNAL_LINKS'
+    INLINE = 'INLINE'
 
 
 @dataclass
@@ -717,8 +876,127 @@ class EndpointTags:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointTags':
-        return cls(custom_tags=[EndpointTagPair.from_dict(v)
-                                for v in d['custom_tags']] if 'custom_tags' in d else None)
+        return cls(custom_tags=[EndpointTagPair.from_dict(v) for v in d['custom_tags']]
+                   if 'custom_tags' in d and d['custom_tags'] is not None else None)
+
+
+@dataclass
+class ExecuteStatementRequest:
+    catalog: str
+    disposition: 'Disposition'
+    format: 'Format'
+    on_wait_timeout: 'TimeoutAction'
+    schema: str
+    statement: str
+    wait_timeout: str
+    warehouse_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.catalog: body['catalog'] = self.catalog
+        if self.disposition: body['disposition'] = self.disposition.value
+        if self.format: body['format'] = self.format.value
+        if self.on_wait_timeout: body['on_wait_timeout'] = self.on_wait_timeout.value
+        if self.schema: body['schema'] = self.schema
+        if self.statement: body['statement'] = self.statement
+        if self.wait_timeout: body['wait_timeout'] = self.wait_timeout
+        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExecuteStatementRequest':
+        return cls(catalog=d.get('catalog', None),
+                   disposition=Disposition(d['disposition']) if 'disposition' in d else None,
+                   format=Format(d['format']) if 'format' in d else None,
+                   on_wait_timeout=TimeoutAction(d['on_wait_timeout']) if 'on_wait_timeout' in d else None,
+                   schema=d.get('schema', None),
+                   statement=d.get('statement', None),
+                   wait_timeout=d.get('wait_timeout', None),
+                   warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
+class ExecuteStatementResponse:
+    manifest: 'ResultManifest'
+    result: 'ResultData'
+    statement_id: str
+    status: 'StatementStatus'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.manifest: body['manifest'] = self.manifest.as_dict()
+        if self.result: body['result'] = self.result.as_dict()
+        if self.statement_id: body['statement_id'] = self.statement_id
+        if self.status: body['status'] = self.status.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExecuteStatementResponse':
+        return cls(manifest=ResultManifest.from_dict(d['manifest']) if 'manifest' in d else None,
+                   result=ResultData.from_dict(d['result']) if 'result' in d else None,
+                   statement_id=d.get('statement_id', None),
+                   status=StatementStatus.from_dict(d['status']) if 'status' in d else None)
+
+
+@dataclass
+class ExternalLink:
+    byte_count: int
+    chunk_index: int
+    expiration: str
+    external_link: str
+    next_chunk_index: int
+    next_chunk_internal_link: str
+    row_count: int
+    row_offset: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.byte_count: body['byte_count'] = self.byte_count
+        if self.chunk_index: body['chunk_index'] = self.chunk_index
+        if self.expiration: body['expiration'] = self.expiration
+        if self.external_link: body['external_link'] = self.external_link
+        if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
+        if self.next_chunk_internal_link: body['next_chunk_internal_link'] = self.next_chunk_internal_link
+        if self.row_count: body['row_count'] = self.row_count
+        if self.row_offset: body['row_offset'] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExternalLink':
+        return cls(byte_count=d.get('byte_count', None),
+                   chunk_index=d.get('chunk_index', None),
+                   expiration=d.get('expiration', None),
+                   external_link=d.get('external_link', None),
+                   next_chunk_index=d.get('next_chunk_index', None),
+                   next_chunk_internal_link=d.get('next_chunk_internal_link', None),
+                   row_count=d.get('row_count', None),
+                   row_offset=d.get('row_offset', None))
+
+
+class Format(Enum):
+    """Statement execution supports two result formats: `JSON_ARRAY` (default), and `ARROW_STREAM`.
+    
+    **NOTE**
+    
+    Currently `JSON_ARRAY` is only available for requests with `disposition=INLINE`, and
+    `ARROW_STREAM` is only available for requests with `disposition=EXTERNAL_LINKS`.
+    
+    When specifying `format=JSON_ARRAY`, result data will be formatted as arrays of arrays of
+    values, where each value is either the *string representation* of a value, or `null`. For
+    example, the output of `SELECT concat('id-', id) AS strId, id AS intId FROM range(3)` would look
+    like this:
+    
+    ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
+    
+    INLINE JSON_ARRAY data can be found within `StatementResponse.result.chunk.data_array` or
+    `ResultData.chunk.data_array`.
+    
+    When specifying `format=ARROW_STREAM`, results fetched through `ResultData.external_links` will
+    be chunks of result data, formatted as Apache Arrow Stream. See
+    [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format] for more details."""
+
+    ARROW_STREAM = 'ARROW_STREAM'
+    JSON_ARRAY = 'JSON_ARRAY'
 
 
 @dataclass
@@ -766,16 +1044,54 @@ class GetResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
-        return cls(
-            access_control_list=[AccessControl.from_dict(v)
-                                 for v in d['access_control_list']] if 'access_control_list' in d else None,
-            object_id=ObjectType(d['object_id']) if 'object_id' in d else None,
-            object_type=d.get('object_type', None))
+        return cls(access_control_list=[AccessControl.from_dict(v) for v in d['access_control_list']]
+                   if 'access_control_list' in d and d['access_control_list'] is not None else None,
+                   object_id=ObjectType(d['object_id']) if 'object_id' in d else None,
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class GetStatementRequest:
+    """Get status, manifest, and result first chunk"""
+
+    statement_id: str
+
+
+@dataclass
+class GetStatementResponse:
+    manifest: 'ResultManifest'
+    result: 'ResultData'
+    statement_id: str
+    status: 'StatementStatus'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.manifest: body['manifest'] = self.manifest.as_dict()
+        if self.result: body['result'] = self.result.as_dict()
+        if self.statement_id: body['statement_id'] = self.statement_id
+        if self.status: body['status'] = self.status.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetStatementResponse':
+        return cls(manifest=ResultManifest.from_dict(d['manifest']) if 'manifest' in d else None,
+                   result=ResultData.from_dict(d['result']) if 'result' in d else None,
+                   statement_id=d.get('statement_id', None),
+                   status=StatementStatus.from_dict(d['status']) if 'status' in d else None)
+
+
+@dataclass
+class GetStatementResultChunkNRequest:
+    """Get result chunk by index"""
+
+    chunk_index: int
+    row_offset: int
+    statement_id: str
 
 
 @dataclass
 class GetSubscriptionsRequest:
-    """Get an alert's subscriptions"""
+    """[DEPRECATED] Get an alert's subscriptions"""
 
     alert_id: str
 
@@ -900,12 +1216,12 @@ class GetWorkspaceWarehouseConfigResponse:
             channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
             config_param=RepeatedEndpointConfPairs.from_dict(d['config_param'])
             if 'config_param' in d else None,
-            data_access_config=[EndpointConfPair.from_dict(v)
-                                for v in d['data_access_config']] if 'data_access_config' in d else None,
+            data_access_config=[EndpointConfPair.from_dict(v) for v in d['data_access_config']]
+            if 'data_access_config' in d and d['data_access_config'] is not None else None,
             enable_databricks_compute=d.get('enable_databricks_compute', None),
             enable_serverless_compute=d.get('enable_serverless_compute', None),
             enabled_warehouse_types=[WarehouseTypePair.from_dict(v) for v in d['enabled_warehouse_types']]
-            if 'enabled_warehouse_types' in d else None,
+            if 'enabled_warehouse_types' in d and d['enabled_warehouse_types'] is not None else None,
             global_param=RepeatedEndpointConfPairs.from_dict(d['global_param'])
             if 'global_param' in d else None,
             google_service_account=d.get('google_service_account', None),
@@ -967,7 +1283,8 @@ class ListQueriesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListQueriesResponse':
         return cls(has_next_page=d.get('has_next_page', None),
                    next_page_token=d.get('next_page_token', None),
-                   res=[QueryInfo.from_dict(v) for v in d['res']] if 'res' in d else None)
+                   res=[QueryInfo.from_dict(v)
+                        for v in d['res']] if 'res' in d and d['res'] is not None else None)
 
 
 @dataclass
@@ -1000,12 +1317,13 @@ class ListResponse:
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
-                   results=[Dashboard.from_dict(v) for v in d['results']] if 'results' in d else None)
+                   results=[Dashboard.from_dict(v)
+                            for v in d['results']] if 'results' in d and d['results'] is not None else None)
 
 
 @dataclass
 class ListSchedulesRequest:
-    """Get refresh schedules"""
+    """[DEPRECATED] Get refresh schedules"""
 
     alert_id: str
 
@@ -1028,8 +1346,8 @@ class ListWarehousesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListWarehousesResponse':
-        return cls(warehouses=[EndpointInfo.from_dict(v)
-                               for v in d['warehouses']] if 'warehouses' in d else None)
+        return cls(warehouses=[EndpointInfo.from_dict(v) for v in d['warehouses']]
+                   if 'warehouses' in d and d['warehouses'] is not None else None)
 
 
 class ObjectType(Enum):
@@ -1147,6 +1465,7 @@ class Query:
     latest_query_data_id: str
     name: str
     options: 'QueryOptions'
+    parent: str
     permission_tier: 'PermissionLevel'
     query: str
     query_hash: str
@@ -1173,6 +1492,7 @@ class Query:
         if self.latest_query_data_id: body['latest_query_data_id'] = self.latest_query_data_id
         if self.name: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
+        if self.parent: body['parent'] = self.parent
         if self.permission_tier: body['permission_tier'] = self.permission_tier.value
         if self.query: body['query'] = self.query
         if self.query_hash: body['query_hash'] = self.query_hash
@@ -1201,6 +1521,7 @@ class Query:
             latest_query_data_id=d.get('latest_query_data_id', None),
             name=d.get('name', None),
             options=QueryOptions.from_dict(d['options']) if 'options' in d else None,
+            parent=d.get('parent', None),
             permission_tier=PermissionLevel(d['permission_tier']) if 'permission_tier' in d else None,
             query=d.get('query', None),
             query_hash=d.get('query_hash', None),
@@ -1209,8 +1530,40 @@ class Query:
             updated_at=d.get('updated_at', None),
             user=User.from_dict(d['user']) if 'user' in d else None,
             user_id=d.get('user_id', None),
-            visualizations=[Visualization.from_dict(v)
-                            for v in d['visualizations']] if 'visualizations' in d else None)
+            visualizations=[Visualization.from_dict(v) for v in d['visualizations']]
+            if 'visualizations' in d and d['visualizations'] is not None else None)
+
+
+@dataclass
+class QueryEditContent:
+    data_source_id: str
+    description: str
+    name: str
+    options: Any
+    query: str
+    query_id: str
+    schedule: 'QueryInterval'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.data_source_id: body['data_source_id'] = self.data_source_id
+        if self.description: body['description'] = self.description
+        if self.name: body['name'] = self.name
+        if self.options: body['options'] = self.options
+        if self.query: body['query'] = self.query
+        if self.query_id: body['query_id'] = self.query_id
+        if self.schedule: body['schedule'] = self.schedule.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'QueryEditContent':
+        return cls(data_source_id=d.get('data_source_id', None),
+                   description=d.get('description', None),
+                   name=d.get('name', None),
+                   options=d.get('options', None),
+                   query=d.get('query', None),
+                   query_id=d.get('query_id', None),
+                   schedule=QueryInterval.from_dict(d['schedule']) if 'schedule' in d else None)
 
 
 @dataclass
@@ -1359,7 +1712,8 @@ class QueryList:
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
-                   results=[Query.from_dict(v) for v in d['results']] if 'results' in d else None)
+                   results=[Query.from_dict(v)
+                            for v in d['results']] if 'results' in d and d['results'] is not None else None)
 
 
 @dataclass
@@ -1453,8 +1807,8 @@ class QueryOptions:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryOptions':
         return cls(moved_to_trash_at=d.get('moved_to_trash_at', None),
-                   parameters=[Parameter.from_dict(v)
-                               for v in d['parameters']] if 'parameters' in d else None)
+                   parameters=[Parameter.from_dict(v) for v in d['parameters']]
+                   if 'parameters' in d and d['parameters'] is not None else None)
 
 
 @dataclass
@@ -1463,8 +1817,8 @@ class QueryPostContent:
     description: str
     name: str
     options: Any
+    parent: str
     query: str
-    query_id: str
     schedule: 'QueryInterval'
 
     def as_dict(self) -> dict:
@@ -1473,8 +1827,8 @@ class QueryPostContent:
         if self.description: body['description'] = self.description
         if self.name: body['name'] = self.name
         if self.options: body['options'] = self.options
+        if self.parent: body['parent'] = self.parent
         if self.query: body['query'] = self.query
-        if self.query_id: body['query_id'] = self.query_id
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         return body
 
@@ -1484,8 +1838,8 @@ class QueryPostContent:
                    description=d.get('description', None),
                    name=d.get('name', None),
                    options=d.get('options', None),
+                   parent=d.get('parent', None),
                    query=d.get('query', None),
-                   query_id=d.get('query_id', None),
                    schedule=QueryInterval.from_dict(d['schedule']) if 'schedule' in d else None)
 
 
@@ -1560,11 +1914,10 @@ class RepeatedEndpointConfPairs:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RepeatedEndpointConfPairs':
-        return cls(
-            config_pair=[EndpointConfPair.from_dict(v)
-                         for v in d['config_pair']] if 'config_pair' in d else None,
-            configuration_pairs=[EndpointConfPair.from_dict(v)
-                                 for v in d['configuration_pairs']] if 'configuration_pairs' in d else None)
+        return cls(config_pair=[EndpointConfPair.from_dict(v) for v in d['config_pair']]
+                   if 'config_pair' in d and d['config_pair'] is not None else None,
+                   configuration_pairs=[EndpointConfPair.from_dict(v) for v in d['configuration_pairs']]
+                   if 'configuration_pairs' in d and d['configuration_pairs'] is not None else None)
 
 
 @dataclass
@@ -1579,6 +1932,133 @@ class RestoreQueryRequest:
     """Restore a query"""
 
     query_id: str
+
+
+@dataclass
+class ResultData:
+    """Result data chunks are delivered in either the `chunk` field when using INLINE disposition, or
+    in the `external_link` field when using EXTERNAL_LINKS disposition. Exactly one of these will be
+    set."""
+
+    byte_count: int
+    chunk_index: int
+    data_array: 'List[List[str]]'
+    external_links: 'List[ExternalLink]'
+    next_chunk_index: int
+    next_chunk_internal_link: str
+    row_count: int
+    row_offset: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.byte_count: body['byte_count'] = self.byte_count
+        if self.chunk_index: body['chunk_index'] = self.chunk_index
+        if self.data_array: body['data_array'] = [v for v in self.data_array]
+        if self.external_links: body['external_links'] = [v.as_dict() for v in self.external_links]
+        if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
+        if self.next_chunk_internal_link: body['next_chunk_internal_link'] = self.next_chunk_internal_link
+        if self.row_count: body['row_count'] = self.row_count
+        if self.row_offset: body['row_offset'] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ResultData':
+        return cls(byte_count=d.get('byte_count', None),
+                   chunk_index=d.get('chunk_index', None),
+                   data_array=d.get('data_array', None),
+                   external_links=[ExternalLink.from_dict(v) for v in d['external_links']]
+                   if 'external_links' in d and d['external_links'] is not None else None,
+                   next_chunk_index=d.get('next_chunk_index', None),
+                   next_chunk_internal_link=d.get('next_chunk_internal_link', None),
+                   row_count=d.get('row_count', None),
+                   row_offset=d.get('row_offset', None))
+
+
+@dataclass
+class ResultManifest:
+    """The result manifest provides schema and metadata for the result set."""
+
+    chunks: 'List[ChunkInfo]'
+    format: 'Format'
+    schema: 'ResultSchema'
+    total_byte_count: int
+    total_chunk_count: int
+    total_row_count: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.chunks: body['chunks'] = [v.as_dict() for v in self.chunks]
+        if self.format: body['format'] = self.format.value
+        if self.schema: body['schema'] = self.schema.as_dict()
+        if self.total_byte_count: body['total_byte_count'] = self.total_byte_count
+        if self.total_chunk_count: body['total_chunk_count'] = self.total_chunk_count
+        if self.total_row_count: body['total_row_count'] = self.total_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ResultManifest':
+        return cls(chunks=[ChunkInfo.from_dict(v)
+                           for v in d['chunks']] if 'chunks' in d and d['chunks'] is not None else None,
+                   format=Format(d['format']) if 'format' in d else None,
+                   schema=ResultSchema.from_dict(d['schema']) if 'schema' in d else None,
+                   total_byte_count=d.get('total_byte_count', None),
+                   total_chunk_count=d.get('total_chunk_count', None),
+                   total_row_count=d.get('total_row_count', None))
+
+
+@dataclass
+class ResultSchema:
+    """Schema is an ordered list of column descriptions."""
+
+    column_count: int
+    columns: 'List[ColumnInfo]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.column_count: body['column_count'] = self.column_count
+        if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ResultSchema':
+        return cls(column_count=d.get('column_count', None),
+                   columns=[ColumnInfo.from_dict(v)
+                            for v in d['columns']] if 'columns' in d and d['columns'] is not None else None)
+
+
+@dataclass
+class ServiceError:
+    error_code: 'ServiceErrorCode'
+    message: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.error_code: body['error_code'] = self.error_code.value
+        if self.message: body['message'] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServiceError':
+        return cls(error_code=ServiceErrorCode(d['error_code']) if 'error_code' in d else None,
+                   message=d.get('message', None))
+
+
+class ServiceErrorCode(Enum):
+
+    ABORTED = 'ABORTED'
+    ALREADY_EXISTS = 'ALREADY_EXISTS'
+    BAD_REQUEST = 'BAD_REQUEST'
+    CANCELLED = 'CANCELLED'
+    DEADLINE_EXCEEDED = 'DEADLINE_EXCEEDED'
+    INTERNAL_ERROR = 'INTERNAL_ERROR'
+    IO_ERROR = 'IO_ERROR'
+    NOT_FOUND = 'NOT_FOUND'
+    RESOURCE_EXHAUSTED = 'RESOURCE_EXHAUSTED'
+    SERVICE_UNDER_MAINTENANCE = 'SERVICE_UNDER_MAINTENANCE'
+    TEMPORARILY_UNAVAILABLE = 'TEMPORARILY_UNAVAILABLE'
+    UNAUTHENTICATED = 'UNAUTHENTICATED'
+    UNKNOWN = 'UNKNOWN'
+    WORKSPACE_TEMPORARILY_UNAVAILABLE = 'WORKSPACE_TEMPORARILY_UNAVAILABLE'
 
 
 @dataclass
@@ -1599,11 +2079,10 @@ class SetRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetRequest':
-        return cls(
-            access_control_list=[AccessControl.from_dict(v)
-                                 for v in d['access_control_list']] if 'access_control_list' in d else None,
-            object_id=d.get('objectId', None),
-            object_type=ObjectTypePlural(d['objectType']) if 'objectType' in d else None)
+        return cls(access_control_list=[AccessControl.from_dict(v) for v in d['access_control_list']]
+                   if 'access_control_list' in d and d['access_control_list'] is not None else None,
+                   object_id=d.get('objectId', None),
+                   object_type=ObjectTypePlural(d['objectType']) if 'objectType' in d else None)
 
 
 @dataclass
@@ -1622,11 +2101,10 @@ class SetResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetResponse':
-        return cls(
-            access_control_list=[AccessControl.from_dict(v)
-                                 for v in d['access_control_list']] if 'access_control_list' in d else None,
-            object_id=ObjectType(d['object_id']) if 'object_id' in d else None,
-            object_type=d.get('object_type', None))
+        return cls(access_control_list=[AccessControl.from_dict(v) for v in d['access_control_list']]
+                   if 'access_control_list' in d and d['access_control_list'] is not None else None,
+                   object_id=ObjectType(d['object_id']) if 'object_id' in d else None,
+                   object_type=d.get('object_type', None))
 
 
 @dataclass
@@ -1669,12 +2147,12 @@ class SetWorkspaceWarehouseConfigRequest:
             channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
             config_param=RepeatedEndpointConfPairs.from_dict(d['config_param'])
             if 'config_param' in d else None,
-            data_access_config=[EndpointConfPair.from_dict(v)
-                                for v in d['data_access_config']] if 'data_access_config' in d else None,
+            data_access_config=[EndpointConfPair.from_dict(v) for v in d['data_access_config']]
+            if 'data_access_config' in d and d['data_access_config'] is not None else None,
             enable_databricks_compute=d.get('enable_databricks_compute', None),
             enable_serverless_compute=d.get('enable_serverless_compute', None),
             enabled_warehouse_types=[WarehouseTypePair.from_dict(v) for v in d['enabled_warehouse_types']]
-            if 'enabled_warehouse_types' in d else None,
+            if 'enabled_warehouse_types' in d and d['enabled_warehouse_types'] is not None else None,
             global_param=RepeatedEndpointConfPairs.from_dict(d['global_param'])
             if 'global_param' in d else None,
             google_service_account=d.get('google_service_account', None),
@@ -1718,6 +2196,40 @@ class State(Enum):
     STARTING = 'STARTING'
     STOPPED = 'STOPPED'
     STOPPING = 'STOPPING'
+
+
+class StatementState(Enum):
+    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
+    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
+    failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
+    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
+    execution successful, and statement closed; result no longer available for fetch"""
+
+    CANCELED = 'CANCELED'
+    CLOSED = 'CLOSED'
+    FAILED = 'FAILED'
+    PENDING = 'PENDING'
+    RUNNING = 'RUNNING'
+    SUCCEEDED = 'SUCCEEDED'
+
+
+@dataclass
+class StatementStatus:
+    """Status response includes execution state and if relevant, error information."""
+
+    error: 'ServiceError'
+    state: 'StatementState'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.error: body['error'] = self.error.as_dict()
+        if self.state: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'StatementStatus':
+        return cls(error=ServiceError.from_dict(d['error']) if 'error' in d else None,
+                   state=StatementState(d['state']) if 'state' in d else None)
 
 
 class Status(Enum):
@@ -1907,6 +2419,16 @@ class TimeRange:
         return cls(end_time_ms=d.get('end_time_ms', None), start_time_ms=d.get('start_time_ms', None))
 
 
+class TimeoutAction(Enum):
+    """When called in synchronous mode (`wait_timeout > 0s`), determines action when timeout reached:
+    
+    `CONTINUE` → statement execution continues asynchronously; call returns immediately. `CANCEL`
+    → statement execution canceled; call returns immediately with `CANCELED` state."""
+
+    CANCEL = 'CANCEL'
+    CONTINUE = 'CONTINUE'
+
+
 @dataclass
 class TransferOwnershipObjectId:
     new_owner: str
@@ -1945,7 +2467,7 @@ class TransferOwnershipRequest:
 
 @dataclass
 class UnsubscribeRequest:
-    """Unsubscribe to an alert"""
+    """[DEPRECATED] Unsubscribe to an alert"""
 
     alert_id: str
     subscription_id: str
@@ -2097,7 +2619,10 @@ class WidgetOptions:
 class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    alert destinations if the condition was met."""
+    alert destinations if the condition was met.
+    
+    **Note**: Programmatic operations on refresh schedules via the Databricks SQL API are deprecated. Alert
+    refresh schedules can be created, updated, fetched and deleted using Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2106,8 +2631,8 @@ class AlertsAPI:
                name: str,
                options: AlertOptions,
                query_id: str,
-               alert_id: str,
                *,
+               parent: str = None,
                rearm: int = None,
                **kwargs) -> Alert:
         """Create an alert.
@@ -2116,7 +2641,7 @@ class AlertsAPI:
         condition of its result, and notifies users or alert destinations if the condition was met."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = EditAlert(alert_id=alert_id, name=name, options=options, query_id=query_id, rearm=rearm)
+            request = CreateAlert(name=name, options=options, parent=parent, query_id=query_id, rearm=rearm)
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body)
@@ -2128,11 +2653,13 @@ class AlertsAPI:
                         *,
                         data_source_id: str = None,
                         **kwargs) -> RefreshSchedule:
-        """Create a refresh schedule.
+        """[DEPRECATED] Create a refresh schedule.
         
         Creates a new refresh schedule for an alert.
         
-        **Note:** The structure of refresh schedules is subject to change."""
+        **Note:** The structure of refresh schedules is subject to change.
+        
+        **Note:** This API is deprecated: Use :method:jobs/create to create a job with the alert."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateRefreshSchedule(alert_id=alert_id, cron=cron, data_source_id=data_source_id)
@@ -2155,10 +2682,12 @@ class AlertsAPI:
         self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{request.alert_id}')
 
     def delete_schedule(self, alert_id: str, schedule_id: str, **kwargs):
-        """Delete a refresh schedule.
+        """[DEPRECATED] Delete a refresh schedule.
         
         Deletes an alert's refresh schedule. The refresh schedule specifies when to refresh and evaluate the
-        associated query result."""
+        associated query result.
+        
+        **Note:** This API is deprecated: Use :method:jobs/delete to delete a job for the alert."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteScheduleRequest(alert_id=alert_id, schedule_id=schedule_id)
@@ -2179,11 +2708,14 @@ class AlertsAPI:
         return Alert.from_dict(json)
 
     def get_subscriptions(self, alert_id: str, **kwargs) -> Iterator[Subscription]:
-        """Get an alert's subscriptions.
+        """[DEPRECATED] Get an alert's subscriptions.
         
         Get the subscriptions for an alert. An alert subscription represents exactly one recipient being
         notified whenever the alert is triggered. The alert recipient is specified by either the `user` field
-        or the `destination` field. The `user` field is ignored if `destination` is non-`null`."""
+        or the `destination` field. The `user` field is ignored if `destination` is non-`null`.
+        
+        **Note:** This API is deprecated: Use :method:jobs/get to get the subscriptions associated with a job
+        for an alert."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetSubscriptionsRequest(alert_id=alert_id)
@@ -2200,13 +2732,15 @@ class AlertsAPI:
         return [Alert.from_dict(v) for v in json]
 
     def list_schedules(self, alert_id: str, **kwargs) -> Iterator[RefreshSchedule]:
-        """Get refresh schedules.
+        """[DEPRECATED] Get refresh schedules.
         
         Gets the refresh schedules for the specified alert. Alerts can have refresh schedules that specify
         when to refresh and evaluate the associated query result.
         
         **Note:** Although refresh schedules are returned in a list, only one refresh schedule per alert is
-        currently supported. The structure of refresh schedules is subject to change."""
+        currently supported. The structure of refresh schedules is subject to change.
+        
+        **Note:** This API is deprecated: Use :method:jobs/list to list jobs and filter by the alert."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListSchedulesRequest(alert_id=alert_id)
@@ -2220,7 +2754,9 @@ class AlertsAPI:
                   destination_id: str = None,
                   user_id: int = None,
                   **kwargs) -> Subscription:
-        """Subscribe to an alert."""
+        """[DEPRECATED] Subscribe to an alert.
+        
+        **Note:** This API is deprecated: Use :method:jobs/update to subscribe to a job for an alert."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateSubscription(alert_id=alert_id, destination_id=destination_id, user_id=user_id)
@@ -2232,9 +2768,11 @@ class AlertsAPI:
         return Subscription.from_dict(json)
 
     def unsubscribe(self, alert_id: str, subscription_id: str, **kwargs):
-        """Unsubscribe to an alert.
+        """[DEPRECATED] Unsubscribe to an alert.
         
-        Unsubscribes a user or a destination to an alert."""
+        Unsubscribes a user or a destination to an alert.
+        
+        **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe to a job for an alert."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UnsubscribeRequest(alert_id=alert_id, subscription_id=subscription_id)
@@ -2265,7 +2803,11 @@ class DashboardsAPI:
     """In general, there is little need to modify dashboards using the API. However, it can be useful to use
     dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
-    to create a new one."""
+    to create a new one.
+    
+    **Note**: Programmatic operations on refresh schedules via the Databricks SQL API are deprecated.
+    Dashboard refresh schedules can be created, updated, fetched and deleted using Jobs API, e.g.
+    :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2276,6 +2818,7 @@ class DashboardsAPI:
                is_draft: bool = None,
                is_trashed: bool = None,
                name: str = None,
+               parent: str = None,
                tags: List[str] = None,
                widgets: List[Widget] = None,
                **kwargs) -> Dashboard:
@@ -2286,6 +2829,7 @@ class DashboardsAPI:
                                              is_draft=is_draft,
                                              is_trashed=is_trashed,
                                              name=name,
+                                             parent=parent,
                                              tags=tags,
                                              widgets=widgets)
         body = request.as_dict()
@@ -2385,9 +2929,9 @@ class DataSourcesAPI:
 
 
 class DbsqlPermissionsAPI:
-    """The SQL Permissions API is similar to the endpoints of the :method:permissions/setobjectpermissions.
-    However, this exposes only one endpoint, which gets the Access Control List for a given object. You cannot
-    modify any permissions using this API.
+    """The SQL Permissions API is similar to the endpoints of the :method:permissions/set. However, this exposes
+    only one endpoint, which gets the Access Control List for a given object. You cannot modify any
+    permissions using this API.
     
     There are three levels of permission:
     
@@ -2459,18 +3003,21 @@ class DbsqlPermissionsAPI:
 
 class QueriesAPI:
     """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
-    SQL warehouse, query text, name, description, tags, execution schedule, parameters, and visualizations."""
+    SQL warehouse, query text, name, description, tags, execution schedule, parameters, and visualizations.
+    
+    **Note**: Programmatic operations on refresh schedules via the Databricks SQL API are deprecated. Query
+    refresh schedules can be created, updated, fetched and deleted using Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(self,
-               query_id: str,
                *,
                data_source_id: str = None,
                description: str = None,
                name: str = None,
                options: Any = None,
+               parent: str = None,
                query: str = None,
                schedule: QueryInterval = None,
                **kwargs) -> Query:
@@ -2490,8 +3037,8 @@ class QueriesAPI:
                                        description=description,
                                        name=name,
                                        options=options,
+                                       parent=parent,
                                        query=query,
-                                       query_id=query_id,
                                        schedule=schedule)
         body = request.as_dict()
 
@@ -2584,7 +3131,7 @@ class QueriesAPI:
         **Note**: You cannot undo this operation."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = QueryPostContent(data_source_id=data_source_id,
+            request = QueryEditContent(data_source_id=data_source_id,
                                        description=description,
                                        name=name,
                                        options=options,
@@ -2637,6 +3184,240 @@ class QueryHistoryAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+
+class StatementExecutionAPI:
+    """The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of
+    result data.
+    
+    **Release Status**
+    
+    This feature is in [Private Preview]. To try it, reach out to your Databricks contact.
+    
+    **Getting started**
+    
+    We suggest beginning with the [SQL Statement Execution API tutorial].
+    
+    **Overview of statement execution and result fetching**
+    
+    Statement execution begins by calling :method:statementexecution/executeStatement with a valid SQL
+    statement and warehouse ID, along with optional parameters such as the data catalog and output format.
+    
+    When submitting the statement, the call can behave synchronously or asynchronously, based on the
+    `wait_timeout` setting. When set between 5-50 seconds (default: 10) the call behaves synchronously; when
+    set to `0s`, the call is asynchronous and responds immediately if accepted.
+    
+    **Call mode: synchronous**
+    
+    In synchronous mode, when statement execution completes, making the result available within the wait
+    timeout, result data is returned in the response. This response will contain `statement_id`, `status`,
+    `manifest`, and `result` fields. `status` will confirm success, and `manifest` contains both the result
+    data column schema, and metadata about the result set. `result` will contain the first chunk of result
+    data according to the specified disposition, and links to fetch any remaining chunks.
+    
+    If execution does not complete before `wait_timeout`, a response will be returned immediately. The setting
+    `on_wait_timeout` determines how the system responds.
+    
+    By default, `on_wait_timeout=CONTINUE`, and after reaching timeout, a response is sent and statement
+    execution continues asynchronously. The response will contain only `statement_id` and `status` fields, and
+    caller must now follow the flow described for asynchronous call mode to poll and fetch result.
+    
+    Alternatively, `on_wait_timeout` can also be set to `CANCEL`; in this case if the timeout is reached
+    before execution completes, the underlying statement execution is canceled, and a `CANCELED` status is
+    returned in the response.
+    
+    **Call mode: asynchronous**
+    
+    In asynchronous mode, or after a timed-out synchronous request continues, a `statement_id` and `status`
+    will be returned. In this case polling :method:statementexecution/getStatement calls are required to fetch
+    result and metadata.
+    
+    Next a caller must poll until execution completes (SUCCEEDED, FAILED, etc.). Given a `statement_id`, poll
+    by calling :method:statementexecution/getStatement.
+    
+    When execution has succeeded, the response will contain `status`, `manifest`, and `result` fields. These
+    fields and structure are identical to those in the response to a successful synchronous submission.
+    `result` will contain the first chunk of result data, either inline or as external links depending on
+    disposition. Additional chunks of result data can be fetched by checking for the presence of the
+    `next_chunk_internal_link` field, and iteratively `GET` those paths until that field is unset: `GET
+    https://$DATABRICKS_HOST/{next_chunk_internal_link}`.
+    
+    **Fetching result data: format and disposition**
+    
+    Result data from statement execution is available in two formats: JSON, and [Apache Arrow Columnar].
+    Statements producing a result set smaller than 16 MiB can be fetched as `format=JSON_ARRAY`, using the
+    `disposition=INLINE`. When a statement executed in INLINE disposition exceeds this limit, execution is
+    aborted, and no result can be fetched. Using `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS` allows
+    large result sets to be fetched, and with higher throughput.
+    
+    The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`. We advise explicitly setting format
+    and disposition in all production use cases.
+    
+    **Statement response: statement_id, status, manifest, and result**
+    
+    The base call :method:statementexecution/getStatement returns a single response combining statement_id,
+    status, a result manifest, and a result data chunk or link. The manifest contains the result schema
+    definition, and result summary metadata. When using EXTERNAL_LINKS disposition, it also contains a full
+    listing of all chunks and their summary metadata.
+    
+    **Use case: small result sets with INLINE + JSON_ARRAY**
+    
+    For flows which will generate small and predictable result sets (<= 16 MiB), INLINE downloads of
+    JSON_ARRAY result data is typically the simplest way to execute and fetch result data. In this case,
+    :method:statementexecution/executeStatement, along with a `warehouse_id` (required) and any other desired
+    options. With default parameters, (noteably `wait_timeout=10s`), execution and result fetch are
+    synchronous: a small result will be returned in the response, if completed within 10 seconds.
+    `wait_timeout` can be extended up to 50 seconds.
+    
+    When result set in INLINE mode becomes larger, it will transfer results in chunks, each up to 4 MiB. After
+    receiving the initial chunk with :method:statementexecution/executeStatement or
+    :method:statementexecution/getStatement, subsequent calls are required to iteratively fetch each chunk.
+    Each result response contains link to the next chunk, when there are additional chunks remaining; it can
+    be found in the field `.next_chunk_internal_link`. This link is an absolute `path` to be joined with your
+    `$DATABRICKS_HOST`, and of the form `/api/2.0/sql/statements/{statement_id}/result/chunks/...`. The next
+    chunk can be fetched like this `GET https://$DATABRICKS_HOST/{next_chunk_internal_link}`.
+    
+    When using this mode, each chunk may be fetched once, and in order. If a chunk has no field
+    `.next_chunk_internal_link`, that indicates it to be the last chunk, and all chunks have been fetched from
+    the result set.
+    
+    **Use case: large result sets with EXTERNAL_LINKS + ARROW_STREAM**
+    
+    Using EXTERNAL_LINKS to fetch result data in Arrow format allows you to fetch large result sets
+    efficiently. The primary difference from using INLINE disposition is that fetched result chunks contain
+    resolved `external_links` URLs, which can be fetched with standard HTTP.
+    
+    **Presigned URLs**
+    
+    External links point to data stored within your workspace's internal DBFS, in the form of a presigned URL.
+    The URLs are valid for only a short period, <= 15 minutes. Alongside each external_link is an expiration
+    field indicating the time at which the URL is no longer valid. In EXTERNAL_LINKS mode, chunks be resolved
+    and fetched multiple time, and in parallel.
+    
+    ----
+    
+    ### **Warning: drop authorization header when fetching data through external links**
+    
+    External link URLs do not require an Authorization header or token, and thus all calls to fetch external
+    links must remove the Authorization header.
+    
+    ----
+    
+    Similar to INLINE mode, callers can iterate through the result set, by using the field
+    `next_chunk_internal_link`. Each internal link response will contain an external link to the raw chunk
+    data, and additionally contain the next_chunk_internal_link if there are more chunks.
+    
+    Unlike INLINE mode, when using EXTERNAL_LINKS, chunks may be fetched out of order, and in parallel to
+    achieve higher throughput.
+    
+    **Limits and limitations**
+    
+    - All byte limits are calculated based on internal storage metrics, and will not match byte counts of
+    actual payloads. - INLINE mode statements limited to 16 MiB, and will abort when this limit is exceeded. -
+    Cancelation may silently fail: A successful response from a cancel request indicates that the cancel
+    request was successfully received and sent to the processing engine. However, for example, an outstanding
+    statement may complete execution during signal delivery, with cancel signal arriving too late to be
+    meaningful. Polling for status until a terminal state is reached a reliable way to see final state. - Wait
+    timeouts are approximate, occur server-side, and cannot account for caller delays, network latency from
+    caller to service, and similarly. - After a statement has been submitted and a statement_id produced, that
+    statement's status and result will automatically close after either of 2 conditions: - The last result
+    chunk is fetched (or resolved to an external link). - Ten (10) minutes pass with no calls to get status or
+    fetch result data. Best practice: in asynchronous clients, poll for status regularly (and with backoff) to
+    keep the statement open and alive.
+    
+    **Private Preview limitations**
+    
+    - `EXTERNAL_LINKS` mode will fail for result sets < 5MB. - After any cancel or close operation, the
+    statement will no longer be visible from the API, specifically - After fetching last result chunk
+    (including `chunk_index=0`), the statement is closed; a short time after closure, the statement will no
+    longer be visible to the API, and further calls may return 404. Thus calling
+    :method:statementexecution/getStatement will return a 404 NOT FOUND error. - In practice, this means that
+    a CANCEL and subsequent poll will often return a NOT FOUND.
+    
+    [Apache Arrow Columnar]: https://arrow.apache.org/overview/
+    [Private Preview]: https://docs.databricks.com/release-notes/release-types.html
+    [SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def cancel_execution(self, statement_id: str, **kwargs):
+        """Cancel statement execution.
+        
+        Requests that an executing statement be cancelled. Callers must poll for status to see terminal state."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CancelExecutionRequest(statement_id=statement_id)
+
+        self._api.do('POST', f'/api/2.0/sql/statements/{request.statement_id}/cancel')
+
+    def execute_statement(self,
+                          *,
+                          catalog: str = None,
+                          disposition: Disposition = None,
+                          format: Format = None,
+                          on_wait_timeout: TimeoutAction = None,
+                          schema: str = None,
+                          statement: str = None,
+                          wait_timeout: str = None,
+                          warehouse_id: str = None,
+                          **kwargs) -> ExecuteStatementResponse:
+        """Execute an SQL statement.
+        
+        Execute an SQL statement, and if flagged as such, await its result for a specified time."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ExecuteStatementRequest(catalog=catalog,
+                                              disposition=disposition,
+                                              format=format,
+                                              on_wait_timeout=on_wait_timeout,
+                                              schema=schema,
+                                              statement=statement,
+                                              wait_timeout=wait_timeout,
+                                              warehouse_id=warehouse_id)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/sql/statements/', body=body)
+        return ExecuteStatementResponse.from_dict(json)
+
+    def get_statement(self, statement_id: str, **kwargs) -> GetStatementResponse:
+        """Get status, manifest, and result first chunk.
+        
+        Polls for statement status; when status.state=SUCCEEDED will also return result manifest, and the
+        first chunk of result data.
+        
+        **NOTE** This call currently may take up to 5 seconds to get latest status and result."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetStatementRequest(statement_id=statement_id)
+
+        json = self._api.do('GET', f'/api/2.0/sql/statements/{request.statement_id}')
+        return GetStatementResponse.from_dict(json)
+
+    def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int, row_offset: int,
+                                     **kwargs) -> ResultData:
+        """Get result chunk by index.
+        
+        After statement execution has SUCCEEDED, result data can be fetched by chunks.
+        
+        The first chunk (`chunk_index=0`) is typically fetched through `getStatementResult`, and subsequent
+        chunks with this call. The response structure is identical to the nested `result` element described in
+        getStatementResult, and similarly includes `next_chunk_index` and `next_chunk_internal_link` for
+        simple iteration through the result set."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetStatementResultChunkNRequest(chunk_index=chunk_index,
+                                                      row_offset=row_offset,
+                                                      statement_id=statement_id)
+
+        query = {}
+        if row_offset: query['row_offset'] = request.row_offset
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/sql/statements/{request.statement_id}/result/chunks/{request.chunk_index}',
+            query=query)
+        return ResultData.from_dict(json)
 
 
 class WarehousesAPI:

@@ -1,8 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
+from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.clusterpolicies')
 
@@ -12,17 +13,31 @@ _LOG = logging.getLogger('databricks.sdk.service.clusterpolicies')
 @dataclass
 class CreatePolicy:
     definition: str
+    description: str
+    max_clusters_per_user: int
     name: str
+    policy_family_definition_overrides: str
+    policy_family_id: str
 
     def as_dict(self) -> dict:
         body = {}
         if self.definition: body['definition'] = self.definition
+        if self.description: body['description'] = self.description
+        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
         if self.name: body['name'] = self.name
+        if self.policy_family_definition_overrides:
+            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
+        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePolicy':
-        return cls(definition=d.get('definition', None), name=d.get('name', None))
+        return cls(definition=d.get('definition', None),
+                   description=d.get('description', None),
+                   max_clusters_per_user=d.get('max_clusters_per_user', None),
+                   name=d.get('name', None),
+                   policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
+                   policy_family_id=d.get('policy_family_id', None))
 
 
 @dataclass
@@ -56,20 +71,33 @@ class DeletePolicy:
 @dataclass
 class EditPolicy:
     definition: str
+    description: str
+    max_clusters_per_user: int
     name: str
+    policy_family_definition_overrides: str
+    policy_family_id: str
     policy_id: str
 
     def as_dict(self) -> dict:
         body = {}
         if self.definition: body['definition'] = self.definition
+        if self.description: body['description'] = self.description
+        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
         if self.name: body['name'] = self.name
+        if self.policy_family_definition_overrides:
+            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
+        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
         if self.policy_id: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EditPolicy':
         return cls(definition=d.get('definition', None),
+                   description=d.get('description', None),
+                   max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
+                   policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
+                   policy_family_id=d.get('policy_family_id', None),
                    policy_id=d.get('policy_id', None))
 
 
@@ -78,6 +106,19 @@ class Get:
     """Get entity"""
 
     policy_id: str
+
+
+@dataclass
+class GetPolicyFamilyRequest:
+    policy_family_id: str
+
+
+@dataclass
+class ListRequest:
+    """Get a cluster policy"""
+
+    sort_column: 'ListSortColumn'
+    sort_order: 'ListSortOrder'
 
 
 @dataclass
@@ -91,7 +132,45 @@ class ListPoliciesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPoliciesResponse':
-        return cls(policies=[Policy.from_dict(v) for v in d['policies']] if 'policies' in d else None)
+        return cls(
+            policies=[Policy.from_dict(v)
+                      for v in d['policies']] if 'policies' in d and d['policies'] is not None else None)
+
+
+@dataclass
+class ListPolicyFamiliesRequest:
+    max_results: int
+    page_token: str
+
+
+@dataclass
+class ListPolicyFamiliesResponse:
+    next_page_token: str
+    policy_families: 'List[PolicyFamily]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.policy_families: body['policy_families'] = [v.as_dict() for v in self.policy_families]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListPolicyFamiliesResponse':
+        return cls(next_page_token=d.get('next_page_token', None),
+                   policy_families=[PolicyFamily.from_dict(v) for v in d['policy_families']]
+                   if 'policy_families' in d and d['policy_families'] is not None else None)
+
+
+class ListSortColumn(Enum):
+
+    POLICY_CREATION_TIME = 'POLICY_CREATION_TIME'
+    POLICY_NAME = 'POLICY_NAME'
+
+
+class ListSortOrder(Enum):
+
+    ASC = 'ASC'
+    DESC = 'DESC'
 
 
 @dataclass
@@ -99,7 +178,12 @@ class Policy:
     created_at_timestamp: int
     creator_user_name: str
     definition: str
+    description: str
+    is_default: bool
+    max_clusters_per_user: int
     name: str
+    policy_family_definition_overrides: str
+    policy_family_id: str
     policy_id: str
 
     def as_dict(self) -> dict:
@@ -107,7 +191,13 @@ class Policy:
         if self.created_at_timestamp: body['created_at_timestamp'] = self.created_at_timestamp
         if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
         if self.definition: body['definition'] = self.definition
+        if self.description: body['description'] = self.description
+        if self.is_default: body['is_default'] = self.is_default
+        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
         if self.name: body['name'] = self.name
+        if self.policy_family_definition_overrides:
+            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
+        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
         if self.policy_id: body['policy_id'] = self.policy_id
         return body
 
@@ -116,8 +206,36 @@ class Policy:
         return cls(created_at_timestamp=d.get('created_at_timestamp', None),
                    creator_user_name=d.get('creator_user_name', None),
                    definition=d.get('definition', None),
+                   description=d.get('description', None),
+                   is_default=d.get('is_default', None),
+                   max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
+                   policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
+                   policy_family_id=d.get('policy_family_id', None),
                    policy_id=d.get('policy_id', None))
+
+
+@dataclass
+class PolicyFamily:
+    definition: str
+    description: str
+    name: str
+    policy_family_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.definition: body['definition'] = self.definition
+        if self.description: body['description'] = self.description
+        if self.name: body['name'] = self.name
+        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PolicyFamily':
+        return cls(definition=d.get('definition', None),
+                   description=d.get('description', None),
+                   name=d.get('name', None),
+                   policy_family_id=d.get('policy_family_id', None))
 
 
 class ClusterPoliciesAPI:
@@ -143,13 +261,26 @@ class ClusterPoliciesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, definition: str, **kwargs) -> CreatePolicyResponse:
+    def create(self,
+               name: str,
+               *,
+               definition: str = None,
+               description: str = None,
+               max_clusters_per_user: int = None,
+               policy_family_definition_overrides: str = None,
+               policy_family_id: str = None,
+               **kwargs) -> CreatePolicyResponse:
         """Create a new policy.
         
         Creates a new policy with prescribed settings."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreatePolicy(definition=definition, name=name)
+            request = CreatePolicy(definition=definition,
+                                   description=description,
+                                   max_clusters_per_user=max_clusters_per_user,
+                                   name=name,
+                                   policy_family_definition_overrides=policy_family_definition_overrides,
+                                   policy_family_id=policy_family_id)
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body)
@@ -165,14 +296,29 @@ class ClusterPoliciesAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/policies/clusters/delete', body=body)
 
-    def edit(self, policy_id: str, name: str, definition: str, **kwargs):
+    def edit(self,
+             policy_id: str,
+             name: str,
+             *,
+             definition: str = None,
+             description: str = None,
+             max_clusters_per_user: int = None,
+             policy_family_definition_overrides: str = None,
+             policy_family_id: str = None,
+             **kwargs):
         """Update a cluster policy.
         
         Update an existing policy for cluster. This operation may make some clusters governed by the previous
         policy invalid."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = EditPolicy(definition=definition, name=name, policy_id=policy_id)
+            request = EditPolicy(definition=definition,
+                                 description=description,
+                                 max_clusters_per_user=max_clusters_per_user,
+                                 name=name,
+                                 policy_family_definition_overrides=policy_family_definition_overrides,
+                                 policy_family_id=policy_family_id,
+                                 policy_id=policy_id)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/policies/clusters/edit', body=body)
 
@@ -190,10 +336,65 @@ class ClusterPoliciesAPI:
         json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
         return Policy.from_dict(json)
 
-    def list(self) -> Iterator[Policy]:
+    def list(self,
+             *,
+             sort_column: ListSortColumn = None,
+             sort_order: ListSortOrder = None,
+             **kwargs) -> Iterator[Policy]:
         """Get a cluster policy.
         
         Returns a list of policies accessible by the requesting user."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListRequest(sort_column=sort_column, sort_order=sort_order)
 
-        json = self._api.do('GET', '/api/2.0/policies/clusters/list')
+        query = {}
+        if sort_column: query['sort_column'] = request.sort_column.value
+        if sort_order: query['sort_order'] = request.sort_order.value
+
+        json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query)
         return [Policy.from_dict(v) for v in json['policies']]
+
+
+class PolicyFamiliesAPI:
+    """View available policy families. A policy family contains a policy definition providing best practices for
+    configuring clusters for a particular use case.
+    
+    Databricks manages and provides policy families for several common cluster use cases. You cannot create,
+    edit, or delete policy families.
+    
+    Policy families cannot be used directly to create clusters. Instead, you create cluster policies using a
+    policy family. Cluster policies created using a policy family inherit the policy family's policy
+    definition."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, policy_family_id: str, **kwargs) -> PolicyFamily:
+
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetPolicyFamilyRequest(policy_family_id=policy_family_id)
+
+        json = self._api.do('GET', f'/api/2.0/policy-families/{request.policy_family_id}')
+        return PolicyFamily.from_dict(json)
+
+    def list(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[PolicyFamily]:
+
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListPolicyFamiliesRequest(max_results=max_results, page_token=page_token)
+
+        query = {}
+        if max_results: query['max_results'] = request.max_results
+        if page_token: query['page_token'] = request.page_token
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/policy-families', query=query)
+            if 'policy_families' not in json or not json['policy_families']:
+                return
+            for v in json['policy_families']:
+                yield PolicyFamily.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']

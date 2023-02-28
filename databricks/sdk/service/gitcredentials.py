@@ -1,8 +1,8 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.gitcredentials')
 
@@ -94,8 +94,8 @@ class GetCredentialsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetCredentialsResponse':
-        return cls(credentials=[CredentialInfo.from_dict(v)
-                                for v in d['credentials']] if 'credentials' in d else None)
+        return cls(credentials=[CredentialInfo.from_dict(v) for v in d['credentials']]
+                   if 'credentials' in d and d['credentials'] is not None else None)
 
 
 @dataclass

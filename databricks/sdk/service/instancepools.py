@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.instancepools')
 
@@ -65,7 +65,7 @@ class CreateInstancePool:
             min_idle_instances=d.get('min_idle_instances', None),
             node_type_id=d.get('node_type_id', None),
             preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-            if 'preloaded_docker_images' in d else None,
+            if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
             preloaded_spark_versions=d.get('preloaded_spark_versions', None))
 
 
@@ -245,7 +245,7 @@ class EditInstancePool:
             min_idle_instances=d.get('min_idle_instances', None),
             node_type_id=d.get('node_type_id', None),
             preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-            if 'preloaded_docker_images' in d else None,
+            if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
             preloaded_spark_versions=d.get('preloaded_spark_versions', None))
 
 
@@ -408,7 +408,7 @@ class GetInstancePool:
             min_idle_instances=d.get('min_idle_instances', None),
             node_type_id=d.get('node_type_id', None),
             preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-            if 'preloaded_docker_images' in d else None,
+            if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
             preloaded_spark_versions=d.get('preloaded_spark_versions', None),
             state=InstancePoolState(d['state']) if 'state' in d else None,
             stats=InstancePoolStats.from_dict(d['stats']) if 'stats' in d else None,
@@ -482,7 +482,7 @@ class InstancePoolAndStats:
             min_idle_instances=d.get('min_idle_instances', None),
             node_type_id=d.get('node_type_id', None),
             preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-            if 'preloaded_docker_images' in d else None,
+            if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
             preloaded_spark_versions=d.get('preloaded_spark_versions', None),
             state=InstancePoolState(d['state']) if 'state' in d else None,
             stats=InstancePoolStats.from_dict(d['stats']) if 'stats' in d else None,
@@ -564,13 +564,14 @@ class InstancePoolFleetAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolFleetAttributes':
-        return cls(fleet_on_demand_option=FleetOnDemandOption.from_dict(d['fleet_on_demand_option'])
-                   if 'fleet_on_demand_option' in d else None,
-                   fleet_spot_option=FleetSpotOption.from_dict(d['fleet_spot_option'])
-                   if 'fleet_spot_option' in d else None,
-                   launch_template_overrides=[
-                       FleetLaunchTemplateOverride.from_dict(v) for v in d['launch_template_overrides']
-                   ] if 'launch_template_overrides' in d else None)
+        return cls(
+            fleet_on_demand_option=FleetOnDemandOption.from_dict(d['fleet_on_demand_option'])
+            if 'fleet_on_demand_option' in d else None,
+            fleet_spot_option=FleetSpotOption.from_dict(d['fleet_spot_option'])
+            if 'fleet_spot_option' in d else None,
+            launch_template_overrides=[
+                FleetLaunchTemplateOverride.from_dict(v) for v in d['launch_template_overrides']
+            ] if 'launch_template_overrides' in d and d['launch_template_overrides'] is not None else None)
 
 
 class InstancePoolState(Enum):
@@ -617,9 +618,8 @@ class InstancePoolStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolStatus':
         return cls(
-            pending_instance_errors=[PendingInstanceError.from_dict(v)
-                                     for v in d['pending_instance_errors']] if 'pending_instance_errors' in
-            d else None)
+            pending_instance_errors=[PendingInstanceError.from_dict(v) for v in d['pending_instance_errors']]
+            if 'pending_instance_errors' in d and d['pending_instance_errors'] is not None else None)
 
 
 @dataclass
@@ -633,8 +633,8 @@ class ListInstancePools:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListInstancePools':
-        return cls(instance_pools=[InstancePoolAndStats.from_dict(v)
-                                   for v in d['instance_pools']] if 'instance_pools' in d else None)
+        return cls(instance_pools=[InstancePoolAndStats.from_dict(v) for v in d['instance_pools']]
+                   if 'instance_pools' in d and d['instance_pools'] is not None else None)
 
 
 @dataclass

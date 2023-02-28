@@ -1,8 +1,8 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.dbfs')
 
@@ -133,7 +133,8 @@ class ListStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListStatusResponse':
-        return cls(files=[FileInfo.from_dict(v) for v in d['files']] if 'files' in d else None)
+        return cls(files=[FileInfo.from_dict(v)
+                          for v in d['files']] if 'files' in d and d['files'] is not None else None)
 
 
 @dataclass
@@ -358,8 +359,8 @@ class DbfsAPI:
         The amount of data that can be passed (when not streaming) using the __contents__ parameter is limited
         to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be thrown if this limit is exceeded.
         
-        If you want to upload large files, use the streaming upload. For details, see :method:create,
-        :method:addBlock, :method:close."""
+        If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
+        :method:dbfs/addBlock, :method:dbfs/close."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Put(contents=contents, overwrite=overwrite, path=path)

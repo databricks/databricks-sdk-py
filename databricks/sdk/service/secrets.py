@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.secrets')
 
@@ -147,7 +147,8 @@ class ListAclsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
-        return cls(items=[AclItem.from_dict(v) for v in d['items']] if 'items' in d else None)
+        return cls(items=[AclItem.from_dict(v)
+                          for v in d['items']] if 'items' in d and d['items'] is not None else None)
 
 
 @dataclass
@@ -161,7 +162,8 @@ class ListScopesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListScopesResponse':
-        return cls(scopes=[SecretScope.from_dict(v) for v in d['scopes']] if 'scopes' in d else None)
+        return cls(scopes=[SecretScope.from_dict(v)
+                           for v in d['scopes']] if 'scopes' in d and d['scopes'] is not None else None)
 
 
 @dataclass
@@ -182,7 +184,8 @@ class ListSecretsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSecretsResponse':
-        return cls(secrets=[SecretMetadata.from_dict(v) for v in d['secrets']] if 'secrets' in d else None)
+        return cls(secrets=[SecretMetadata.from_dict(v)
+                            for v in d['secrets']] if 'secrets' in d and d['secrets'] is not None else None)
 
 
 @dataclass
