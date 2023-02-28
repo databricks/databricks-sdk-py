@@ -229,9 +229,11 @@ def env_loader(cfg: 'Config'):
     if not cfg.token: cfg.token = getenv("DATABRICKS_TOKEN")
     if not cfg.profile: cfg.profile = getenv("DATABRICKS_CONFIG_PROFILE")
     if not cfg.config_file: cfg.config_file = getenv("DATABRICKS_CONFIG_FILE", "~/.databrickscfg")
-    if not cfg.google_service_account: cfg.google_service_account = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
+    if not cfg.google_service_account:
+        cfg.google_service_account = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
     if not cfg.google_credentials: cfg.google_credentials = getenv("GOOGLE_CREDENTIALS")
-    if not cfg.azure_workspace_resource_id: cfg.azure_workspace_resource_id = getenv("DATABRICKS_AZURE_RESOURCE_ID")
+    if not cfg.azure_workspace_resource_id:
+        cfg.azure_workspace_resource_id = getenv("DATABRICKS_AZURE_RESOURCE_ID")
     if not cfg.azure_use_msi: cfg.azure_use_msi = getenv("ARM_USE_MSI", False)
     if not cfg.azure_client_secret: cfg.azure_client_secret = getenv("ARM_CLIENT_SECRET")
     if not cfg.azure_client_id: cfg.azure_client_id = getenv("ARM_CLIENT_ID")

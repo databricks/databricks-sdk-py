@@ -18,4 +18,4 @@ class AccountClient:
         self.config = client.Config({{range $args}}{{.}}={{.}}, {{end}}**kwargs)
         self.api_client = client.ApiClient(self.config)
         {{- range .Services}}{{if .IsAccounts}}
-        self.{{.SnakeName}} = {{.Package.Name}}.{{.Name}}API(self.api_client){{end -}}{{end}}
+        self.{{.SnakeName}} = {{if eq .SnakeName "dbfs"}}dbfs_mixin.DbfsExt{{else}}{{.Package.Name}}.{{.Name}}API{{end}}(self.api_client){{end -}}{{end}}

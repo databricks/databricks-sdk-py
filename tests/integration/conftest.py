@@ -3,7 +3,19 @@ import os
 import pathlib
 import sys
 import pytest
+import string
 from databricks.sdk import AccountClient, WorkspaceClient
+
+
+@pytest.fixture
+def random():
+    import random
+
+    def inner(k=16) -> str:
+        charset = string.ascii_uppercase + string.ascii_lowercase + string.digits
+        return ''.join(random.choices(charset, k=int(k)))
+
+    return inner
 
 
 @pytest.fixture

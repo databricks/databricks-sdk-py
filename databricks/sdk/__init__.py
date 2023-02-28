@@ -3,7 +3,7 @@ import databricks.sdk.service.billing as billing
 import databricks.sdk.service.clusterpolicies as clusterpolicies
 import databricks.sdk.service.clusters as clusters
 import databricks.sdk.service.commands as commands
-import databricks.sdk.service.dbfs as dbfs
+import databricks.sdk.mixins.dbfs as dbfs_mixin
 import databricks.sdk.service.deployment as deployment
 import databricks.sdk.service.gitcredentials as gitcredentials
 import databricks.sdk.service.globalinitscripts as globalinitscripts
@@ -70,7 +70,7 @@ class WorkspaceClient:
         self.current_user = scim.CurrentUserAPI(self.api_client)
         self.dashboards = sql.DashboardsAPI(self.api_client)
         self.data_sources = sql.DataSourcesAPI(self.api_client)
-        self.dbfs = dbfs.DbfsAPI(self.api_client)
+        self.dbfs = dbfs_mixin.DbfsExt(self.api_client)
         self.dbsql_permissions = sql.DbsqlPermissionsAPI(self.api_client)
         self.experiments = mlflow.ExperimentsAPI(self.api_client)
         self.external_locations = unitycatalog.ExternalLocationsAPI(self.api_client)
