@@ -1,8 +1,8 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.globalinitscripts')
 
@@ -171,7 +171,7 @@ class ListGlobalInitScriptsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListGlobalInitScriptsResponse':
         return cls(scripts=[GlobalInitScriptDetails.from_dict(v)
-                            for v in d['scripts']] if 'scripts' in d else None)
+                            for v in d['scripts']] if 'scripts' in d and d['scripts'] is not None else None)
 
 
 class GlobalInitScriptsAPI:

@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.mlflow')
 
@@ -180,7 +180,8 @@ class CreateExperiment:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateExperiment':
         return cls(artifact_location=d.get('artifact_location', None),
                    name=d.get('name', None),
-                   tags=[ExperimentTag.from_dict(v) for v in d['tags']] if 'tags' in d else None)
+                   tags=[ExperimentTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
 
 
 @dataclass
@@ -223,7 +224,8 @@ class CreateModelVersionRequest:
                    run_id=d.get('run_id', None),
                    run_link=d.get('run_link', None),
                    source=d.get('source', None),
-                   tags=[ModelVersionTag.from_dict(v) for v in d['tags']] if 'tags' in d else None)
+                   tags=[ModelVersionTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
 
 
 @dataclass
@@ -257,7 +259,8 @@ class CreateRegisteredModelRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelRequest':
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
-                   tags=[RegisteredModelTag.from_dict(v) for v in d['tags']] if 'tags' in d else None)
+                   tags=[RegisteredModelTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
 
 
 @dataclass
@@ -337,7 +340,8 @@ class CreateRun:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRun':
         return cls(experiment_id=d.get('experiment_id', None),
                    start_time=d.get('start_time', None),
-                   tags=[RunTag.from_dict(v) for v in d['tags']] if 'tags' in d else None,
+                   tags=[RunTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
                    user_id=d.get('user_id', None))
 
 
@@ -508,7 +512,8 @@ class Experiment:
                    last_update_time=d.get('last_update_time', None),
                    lifecycle_stage=d.get('lifecycle_stage', None),
                    name=d.get('name', None),
-                   tags=[ExperimentTag.from_dict(v) for v in d['tags']] if 'tags' in d else None)
+                   tags=[ExperimentTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
 
 
 @dataclass
@@ -575,9 +580,11 @@ class GetExperimentRequest:
 
 @dataclass
 class GetHistoryRequest:
-    """Get all history"""
+    """Get history of a given metric within a run"""
 
+    max_results: int
     metric_key: str
+    page_token: str
     run_id: str
     run_uuid: str
 
@@ -609,8 +616,8 @@ class GetLatestVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetLatestVersionsResponse':
-        return cls(model_versions=[ModelVersion.from_dict(v)
-                                   for v in d['model_versions']] if 'model_versions' in d else None)
+        return cls(model_versions=[ModelVersion.from_dict(v) for v in d['model_versions']]
+                   if 'model_versions' in d and d['model_versions'] is not None else None)
 
 
 @dataclass
@@ -623,15 +630,19 @@ class GetMLflowDatabrickRequest:
 @dataclass
 class GetMetricHistoryResponse:
     metrics: 'List[Metric]'
+    next_page_token: str
 
     def as_dict(self) -> dict:
         body = {}
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
+        if self.next_page_token: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetMetricHistoryResponse':
-        return cls(metrics=[Metric.from_dict(v) for v in d['metrics']] if 'metrics' in d else None)
+        return cls(metrics=[Metric.from_dict(v)
+                            for v in d['metrics']] if 'metrics' in d and d['metrics'] is not None else None,
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -837,7 +848,8 @@ class ListArtifactsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListArtifactsResponse':
-        return cls(files=[FileInfo.from_dict(v) for v in d['files']] if 'files' in d else None,
+        return cls(files=[FileInfo.from_dict(v)
+                          for v in d['files']] if 'files' in d and d['files'] is not None else None,
                    next_page_token=d.get('next_page_token', None),
                    root_uri=d.get('root_uri', None))
 
@@ -864,8 +876,8 @@ class ListExperimentsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListExperimentsResponse':
-        return cls(experiments=[Experiment.from_dict(v)
-                                for v in d['experiments']] if 'experiments' in d else None,
+        return cls(experiments=[Experiment.from_dict(v) for v in d['experiments']]
+                   if 'experiments' in d and d['experiments'] is not None else None,
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -891,8 +903,8 @@ class ListRegisteredModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=[RegisteredModel.from_dict(v)
-                                      for v in d['registered_models']] if 'registered_models' in d else None)
+                   registered_models=[RegisteredModel.from_dict(v) for v in d['registered_models']]
+                   if 'registered_models' in d and d['registered_models'] is not None else None)
 
 
 @dataclass
@@ -908,9 +920,10 @@ class ListRegistryWebhooks:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegistryWebhooks':
-        return cls(next_page_token=d.get('next_page_token', None),
-                   webhooks=[RegistryWebhook.from_dict(v)
-                             for v in d['webhooks']] if 'webhooks' in d else None)
+        return cls(
+            next_page_token=d.get('next_page_token', None),
+            webhooks=[RegistryWebhook.from_dict(v)
+                      for v in d['webhooks']] if 'webhooks' in d and d['webhooks'] is not None else None)
 
 
 @dataclass
@@ -933,7 +946,9 @@ class ListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
-        return cls(requests=[Activity.from_dict(v) for v in d['requests']] if 'requests' in d else None)
+        return cls(
+            requests=[Activity.from_dict(v)
+                      for v in d['requests']] if 'requests' in d and d['requests'] is not None else None)
 
 
 @dataclass
@@ -961,10 +976,13 @@ class LogBatch:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LogBatch':
-        return cls(metrics=[Metric.from_dict(v) for v in d['metrics']] if 'metrics' in d else None,
-                   params=[Param.from_dict(v) for v in d['params']] if 'params' in d else None,
+        return cls(metrics=[Metric.from_dict(v)
+                            for v in d['metrics']] if 'metrics' in d and d['metrics'] is not None else None,
+                   params=[Param.from_dict(v)
+                           for v in d['params']] if 'params' in d and d['params'] is not None else None,
                    run_id=d.get('run_id', None),
-                   tags=[RunTag.from_dict(v) for v in d['tags']] if 'tags' in d else None)
+                   tags=[RunTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
 
 
 @dataclass
@@ -1103,7 +1121,8 @@ class ModelVersion:
                    source=d.get('source', None),
                    status=ModelVersionStatus(d['status']) if 'status' in d else None,
                    status_message=d.get('status_message', None),
-                   tags=[ModelVersionTag.from_dict(v) for v in d['tags']] if 'tags' in d else None,
+                   tags=[ModelVersionTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
                    user_id=d.get('user_id', None),
                    version=d.get('version', None))
 
@@ -1157,7 +1176,8 @@ class ModelVersionDatabricks:
             source=d.get('source', None),
             status=Status(d['status']) if 'status' in d else None,
             status_message=d.get('status_message', None),
-            tags=[ModelVersionTag.from_dict(v) for v in d['tags']] if 'tags' in d else None,
+            tags=[ModelVersionTag.from_dict(v)
+                  for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
             user_id=d.get('user_id', None),
             version=d.get('version', None))
 
@@ -1239,10 +1259,11 @@ class RegisteredModel:
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=[ModelVersion.from_dict(v)
-                                    for v in d['latest_versions']] if 'latest_versions' in d else None,
+                   latest_versions=[ModelVersion.from_dict(v) for v in d['latest_versions']]
+                   if 'latest_versions' in d and d['latest_versions'] is not None else None,
                    name=d.get('name', None),
-                   tags=[RegisteredModelTag.from_dict(v) for v in d['tags']] if 'tags' in d else None,
+                   tags=[RegisteredModelTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
                    user_id=d.get('user_id', None))
 
 
@@ -1278,11 +1299,12 @@ class RegisteredModelDatabricks:
             description=d.get('description', None),
             id=d.get('id', None),
             last_updated_timestamp=d.get('last_updated_timestamp', None),
-            latest_versions=[ModelVersion.from_dict(v)
-                             for v in d['latest_versions']] if 'latest_versions' in d else None,
+            latest_versions=[ModelVersion.from_dict(v) for v in d['latest_versions']]
+            if 'latest_versions' in d and d['latest_versions'] is not None else None,
             name=d.get('name', None),
             permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None,
-            tags=[RegisteredModelTag.from_dict(v) for v in d['tags']] if 'tags' in d else None,
+            tags=[RegisteredModelTag.from_dict(v)
+                  for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
             user_id=d.get('user_id', None))
 
 
@@ -1493,9 +1515,12 @@ class RunData:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunData':
-        return cls(metrics=[Metric.from_dict(v) for v in d['metrics']] if 'metrics' in d else None,
-                   params=[Param.from_dict(v) for v in d['params']] if 'params' in d else None,
-                   tags=[RunTag.from_dict(v) for v in d['tags']] if 'tags' in d else None)
+        return cls(metrics=[Metric.from_dict(v)
+                            for v in d['metrics']] if 'metrics' in d and d['metrics'] is not None else None,
+                   params=[Param.from_dict(v)
+                           for v in d['params']] if 'params' in d and d['params'] is not None else None,
+                   tags=[RunTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
 
 
 @dataclass
@@ -1601,8 +1626,8 @@ class SearchExperimentsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchExperimentsResponse':
-        return cls(experiments=[Experiment.from_dict(v)
-                                for v in d['experiments']] if 'experiments' in d else None,
+        return cls(experiments=[Experiment.from_dict(v) for v in d['experiments']]
+                   if 'experiments' in d and d['experiments'] is not None else None,
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1638,8 +1663,8 @@ class SearchModelVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchModelVersionsResponse':
-        return cls(model_versions=[ModelVersion.from_dict(v)
-                                   for v in d['model_versions']] if 'model_versions' in d else None,
+        return cls(model_versions=[ModelVersion.from_dict(v) for v in d['model_versions']]
+                   if 'model_versions' in d and d['model_versions'] is not None else None,
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1667,8 +1692,8 @@ class SearchRegisteredModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchRegisteredModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=[RegisteredModel.from_dict(v)
-                                      for v in d['registered_models']] if 'registered_models' in d else None)
+                   registered_models=[RegisteredModel.from_dict(v) for v in d['registered_models']]
+                   if 'registered_models' in d and d['registered_models'] is not None else None)
 
 
 @dataclass
@@ -1714,7 +1739,8 @@ class SearchRunsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchRunsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   runs=[Run.from_dict(v) for v in d['runs']] if 'runs' in d else None)
+                   runs=[Run.from_dict(v)
+                         for v in d['runs']] if 'runs' in d and d['runs'] is not None else None)
 
 
 class SearchRunsRunViewType(Enum):
@@ -2401,18 +2427,26 @@ class MLflowMetricsAPI:
     def get_history(self,
                     metric_key: str,
                     *,
+                    max_results: int = None,
+                    page_token: str = None,
                     run_id: str = None,
                     run_uuid: str = None,
                     **kwargs) -> GetMetricHistoryResponse:
-        """Get all history.
+        """Get history of a given metric within a run.
         
         Gets a list of all values for the specified metric for a given run."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetHistoryRequest(metric_key=metric_key, run_id=run_id, run_uuid=run_uuid)
+            request = GetHistoryRequest(max_results=max_results,
+                                        metric_key=metric_key,
+                                        page_token=page_token,
+                                        run_id=run_id,
+                                        run_uuid=run_uuid)
 
         query = {}
+        if max_results: query['max_results'] = request.max_results
         if metric_key: query['metric_key'] = request.metric_key
+        if page_token: query['page_token'] = request.page_token
         if run_id: query['run_id'] = request.run_id
         if run_uuid: query['run_uuid'] = request.run_uuid
 

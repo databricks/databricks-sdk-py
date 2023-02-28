@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.scim')
 
@@ -99,13 +99,16 @@ class Group:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Group':
         return cls(display_name=d.get('displayName', None),
-                   entitlements=[ComplexValue.from_dict(v)
-                                 for v in d['entitlements']] if 'entitlements' in d else None,
+                   entitlements=[ComplexValue.from_dict(v) for v in d['entitlements']]
+                   if 'entitlements' in d and d['entitlements'] is not None else None,
                    external_id=d.get('externalId', None),
-                   groups=[ComplexValue.from_dict(v) for v in d['groups']] if 'groups' in d else None,
+                   groups=[ComplexValue.from_dict(v)
+                           for v in d['groups']] if 'groups' in d and d['groups'] is not None else None,
                    id=d.get('id', None),
-                   members=[ComplexValue.from_dict(v) for v in d['members']] if 'members' in d else None,
-                   roles=[ComplexValue.from_dict(v) for v in d['roles']] if 'roles' in d else None)
+                   members=[ComplexValue.from_dict(v)
+                            for v in d['members']] if 'members' in d and d['members'] is not None else None,
+                   roles=[ComplexValue.from_dict(v)
+                          for v in d['roles']] if 'roles' in d and d['roles'] is not None else None)
 
 
 @dataclass
@@ -138,10 +141,12 @@ class ListGroupsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListGroupsResponse':
-        return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=[Group.from_dict(v) for v in d['Resources']] if 'Resources' in d else None,
-                   start_index=d.get('startIndex', None),
-                   total_results=d.get('totalResults', None))
+        return cls(
+            items_per_page=d.get('itemsPerPage', None),
+            resources=[Group.from_dict(v)
+                       for v in d['Resources']] if 'Resources' in d and d['Resources'] is not None else None,
+            start_index=d.get('startIndex', None),
+            total_results=d.get('totalResults', None))
 
 
 @dataclass
@@ -161,11 +166,12 @@ class ListServicePrincipalResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalResponse':
-        return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=[ServicePrincipal.from_dict(v)
-                              for v in d['Resources']] if 'Resources' in d else None,
-                   start_index=d.get('startIndex', None),
-                   total_results=d.get('totalResults', None))
+        return cls(
+            items_per_page=d.get('itemsPerPage', None),
+            resources=[ServicePrincipal.from_dict(v)
+                       for v in d['Resources']] if 'Resources' in d and d['Resources'] is not None else None,
+            start_index=d.get('startIndex', None),
+            total_results=d.get('totalResults', None))
 
 
 @dataclass
@@ -217,10 +223,12 @@ class ListUsersResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListUsersResponse':
-        return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=[User.from_dict(v) for v in d['Resources']] if 'Resources' in d else None,
-                   start_index=d.get('startIndex', None),
-                   total_results=d.get('totalResults', None))
+        return cls(
+            items_per_page=d.get('itemsPerPage', None),
+            resources=[User.from_dict(v)
+                       for v in d['Resources']] if 'Resources' in d and d['Resources'] is not None else None,
+            start_index=d.get('startIndex', None),
+            total_results=d.get('totalResults', None))
 
 
 @dataclass
@@ -253,7 +261,8 @@ class PartialUpdate:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PartialUpdate':
         return cls(id=d.get('id', None),
-                   operations=[Patch.from_dict(v) for v in d['operations']] if 'operations' in d else None)
+                   operations=[Patch.from_dict(v) for v in d['operations']]
+                   if 'operations' in d and d['operations'] is not None else None)
 
 
 @dataclass
@@ -312,12 +321,14 @@ class ServicePrincipal:
         return cls(active=d.get('active', None),
                    application_id=d.get('applicationId', None),
                    display_name=d.get('displayName', None),
-                   entitlements=[ComplexValue.from_dict(v)
-                                 for v in d['entitlements']] if 'entitlements' in d else None,
+                   entitlements=[ComplexValue.from_dict(v) for v in d['entitlements']]
+                   if 'entitlements' in d and d['entitlements'] is not None else None,
                    external_id=d.get('externalId', None),
-                   groups=[ComplexValue.from_dict(v) for v in d['groups']] if 'groups' in d else None,
+                   groups=[ComplexValue.from_dict(v)
+                           for v in d['groups']] if 'groups' in d and d['groups'] is not None else None,
                    id=d.get('id', None),
-                   roles=[ComplexValue.from_dict(v) for v in d['roles']] if 'roles' in d else None)
+                   roles=[ComplexValue.from_dict(v)
+                          for v in d['roles']] if 'roles' in d and d['roles'] is not None else None)
 
 
 @dataclass
@@ -351,14 +362,17 @@ class User:
     def from_dict(cls, d: Dict[str, any]) -> 'User':
         return cls(active=d.get('active', None),
                    display_name=d.get('displayName', None),
-                   emails=[ComplexValue.from_dict(v) for v in d['emails']] if 'emails' in d else None,
-                   entitlements=[ComplexValue.from_dict(v)
-                                 for v in d['entitlements']] if 'entitlements' in d else None,
+                   emails=[ComplexValue.from_dict(v)
+                           for v in d['emails']] if 'emails' in d and d['emails'] is not None else None,
+                   entitlements=[ComplexValue.from_dict(v) for v in d['entitlements']]
+                   if 'entitlements' in d and d['entitlements'] is not None else None,
                    external_id=d.get('externalId', None),
-                   groups=[ComplexValue.from_dict(v) for v in d['groups']] if 'groups' in d else None,
+                   groups=[ComplexValue.from_dict(v)
+                           for v in d['groups']] if 'groups' in d and d['groups'] is not None else None,
                    id=d.get('id', None),
                    name=Name.from_dict(d['name']) if 'name' in d else None,
-                   roles=[ComplexValue.from_dict(v) for v in d['roles']] if 'roles' in d else None,
+                   roles=[ComplexValue.from_dict(v)
+                          for v in d['roles']] if 'roles' in d and d['roles'] is not None else None,
                    user_name=d.get('userName', None))
 
 

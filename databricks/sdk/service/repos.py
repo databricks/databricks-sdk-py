@@ -1,8 +1,8 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.repos')
 
@@ -13,18 +13,24 @@ _LOG = logging.getLogger('databricks.sdk.service.repos')
 class CreateRepo:
     path: str
     provider: str
+    sparse_checkout: 'SparseCheckout'
     url: str
 
     def as_dict(self) -> dict:
         body = {}
         if self.path: body['path'] = self.path
         if self.provider: body['provider'] = self.provider
+        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
         if self.url: body['url'] = self.url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRepo':
-        return cls(path=d.get('path', None), provider=d.get('provider', None), url=d.get('url', None))
+        return cls(path=d.get('path', None),
+                   provider=d.get('provider', None),
+                   sparse_checkout=SparseCheckout.from_dict(d['sparse_checkout'])
+                   if 'sparse_checkout' in d else None,
+                   url=d.get('url', None))
 
 
 @dataclass
@@ -63,7 +69,8 @@ class ListReposResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListReposResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   repos=[RepoInfo.from_dict(v) for v in d['repos']] if 'repos' in d else None)
+                   repos=[RepoInfo.from_dict(v)
+                          for v in d['repos']] if 'repos' in d and d['repos'] is not None else None)
 
 
 @dataclass
@@ -73,6 +80,7 @@ class RepoInfo:
     id: int
     path: str
     provider: str
+    sparse_checkout: 'SparseCheckout'
     url: str
 
     def as_dict(self) -> dict:
@@ -82,6 +90,7 @@ class RepoInfo:
         if self.id: body['id'] = self.id
         if self.path: body['path'] = self.path
         if self.provider: body['provider'] = self.provider
+        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
         if self.url: body['url'] = self.url
         return body
 
@@ -92,25 +101,61 @@ class RepoInfo:
                    id=d.get('id', None),
                    path=d.get('path', None),
                    provider=d.get('provider', None),
+                   sparse_checkout=SparseCheckout.from_dict(d['sparse_checkout'])
+                   if 'sparse_checkout' in d else None,
                    url=d.get('url', None))
+
+
+@dataclass
+class SparseCheckout:
+    patterns: 'List[str]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.patterns: body['patterns'] = [v for v in self.patterns]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SparseCheckout':
+        return cls(patterns=d.get('patterns', None))
+
+
+@dataclass
+class SparseCheckoutUpdate:
+    patterns: 'List[str]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.patterns: body['patterns'] = [v for v in self.patterns]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SparseCheckoutUpdate':
+        return cls(patterns=d.get('patterns', None))
 
 
 @dataclass
 class UpdateRepo:
     branch: str
     repo_id: int
+    sparse_checkout: 'SparseCheckoutUpdate'
     tag: str
 
     def as_dict(self) -> dict:
         body = {}
         if self.branch: body['branch'] = self.branch
         if self.repo_id: body['repo_id'] = self.repo_id
+        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
         if self.tag: body['tag'] = self.tag
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRepo':
-        return cls(branch=d.get('branch', None), repo_id=d.get('repo_id', None), tag=d.get('tag', None))
+        return cls(branch=d.get('branch', None),
+                   repo_id=d.get('repo_id', None),
+                   sparse_checkout=SparseCheckoutUpdate.from_dict(d['sparse_checkout'])
+                   if 'sparse_checkout' in d else None,
+                   tag=d.get('tag', None))
 
 
 class ReposAPI:
@@ -127,14 +172,20 @@ class ReposAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, url: str, provider: str, *, path: str = None, **kwargs) -> RepoInfo:
+    def create(self,
+               url: str,
+               provider: str,
+               *,
+               path: str = None,
+               sparse_checkout: SparseCheckout = None,
+               **kwargs) -> RepoInfo:
         """Create a repo.
         
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
         programmatically must be linked to a remote Git repo, unlike repos created in the browser."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateRepo(path=path, provider=provider, url=url)
+            request = CreateRepo(path=path, provider=provider, sparse_checkout=sparse_checkout, url=url)
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/repos', body=body)
@@ -184,13 +235,19 @@ class ReposAPI:
                 return
             query['next_page_token'] = json['next_page_token']
 
-    def update(self, repo_id: int, *, branch: str = None, tag: str = None, **kwargs):
+    def update(self,
+               repo_id: int,
+               *,
+               branch: str = None,
+               sparse_checkout: SparseCheckoutUpdate = None,
+               tag: str = None,
+               **kwargs):
         """Update a repo.
         
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
         branch."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateRepo(branch=branch, repo_id=repo_id, tag=tag)
+            request = UpdateRepo(branch=branch, repo_id=repo_id, sparse_checkout=sparse_checkout, tag=tag)
         body = request.as_dict()
         self._api.do('PATCH', f'/api/2.0/repos/{request.repo_id}', body=body)

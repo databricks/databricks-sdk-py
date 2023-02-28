@@ -1,10 +1,10 @@
-import databricks.sdk.client as client
 import databricks.sdk.service.billing as billing
 import databricks.sdk.service.clusterpolicies as clusterpolicies
 import databricks.sdk.service.clusters as clusters
 import databricks.sdk.service.commands as commands
-import databricks.sdk.mixins.dbfs as dbfs_mixin
+import databricks.sdk.service.dbfs as dbfs
 import databricks.sdk.service.deployment as deployment
+import databricks.sdk.service.endpoints as endpoints
 import databricks.sdk.service.gitcredentials as gitcredentials
 import databricks.sdk.service.globalinitscripts as globalinitscripts
 import databricks.sdk.service.instancepools as instancepools
@@ -23,6 +23,7 @@ import databricks.sdk.service.tokens as tokens
 import databricks.sdk.service.unitycatalog as unitycatalog
 import databricks.sdk.service.workspace as workspace
 import databricks.sdk.service.workspaceconf as workspaceconf
+import databricks.sdk.client as client
 
 
 class WorkspaceClient:
@@ -70,10 +71,11 @@ class WorkspaceClient:
         self.current_user = scim.CurrentUserAPI(self.api_client)
         self.dashboards = sql.DashboardsAPI(self.api_client)
         self.data_sources = sql.DataSourcesAPI(self.api_client)
-        self.dbfs = dbfs_mixin.DbfsExt(self.api_client)
+        self.dbfs = dbfs.DbfsAPI(self.api_client)
         self.dbsql_permissions = sql.DbsqlPermissionsAPI(self.api_client)
         self.experiments = mlflow.ExperimentsAPI(self.api_client)
         self.external_locations = unitycatalog.ExternalLocationsAPI(self.api_client)
+        self.functions = unitycatalog.FunctionsAPI(self.api_client)
         self.git_credentials = gitcredentials.GitCredentialsAPI(self.api_client)
         self.global_init_scripts = globalinitscripts.GlobalInitScriptsAPI(self.api_client)
         self.grants = unitycatalog.GrantsAPI(self.api_client)
@@ -92,6 +94,7 @@ class WorkspaceClient:
         self.model_versions = mlflow.ModelVersionsAPI(self.api_client)
         self.permissions = permissions.PermissionsAPI(self.api_client)
         self.pipelines = pipelines.PipelinesAPI(self.api_client)
+        self.policy_families = clusterpolicies.PolicyFamiliesAPI(self.api_client)
         self.providers = unitycatalog.ProvidersAPI(self.api_client)
         self.queries = sql.QueriesAPI(self.api_client)
         self.query_history = sql.QueryHistoryAPI(self.api_client)
@@ -103,8 +106,11 @@ class WorkspaceClient:
         self.schemas = unitycatalog.SchemasAPI(self.api_client)
         self.secrets = secrets.SecretsAPI(self.api_client)
         self.service_principals = scim.ServicePrincipalsAPI(self.api_client)
+        self.serving_endpoints = endpoints.ServingEndpointsAPI(self.api_client)
         self.shares = unitycatalog.SharesAPI(self.api_client)
+        self.statement_execution = sql.StatementExecutionAPI(self.api_client)
         self.storage_credentials = unitycatalog.StorageCredentialsAPI(self.api_client)
+        self.table_constraints = unitycatalog.TableConstraintsAPI(self.api_client)
         self.tables = unitycatalog.TablesAPI(self.api_client)
         self.token_management = tokenmanagement.TokenManagementAPI(self.api_client)
         self.tokens = tokens.TokensAPI(self.api_client)

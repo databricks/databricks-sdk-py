@@ -1,13 +1,12 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
-import random
-import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-
-from ..errors import OperationFailed, OperationTimeout
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
 
 _LOG = logging.getLogger('databricks.sdk.service.deployment')
 
@@ -53,10 +52,10 @@ class AwsKeyInfo:
 
 
 @dataclass
-class CloudResourceBucket:
+class CloudResourceContainer:
     """The general workspace configurations that are specific to cloud providers."""
 
-    gcp: 'GcpProjectContainer'
+    gcp: 'CustomerFacingGcpCloudResourceContainer'
 
     def as_dict(self) -> dict:
         body = {}
@@ -64,8 +63,8 @@ class CloudResourceBucket:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CloudResourceBucket':
-        return cls(gcp=GcpProjectContainer.from_dict(d['gcp']) if 'gcp' in d else None)
+    def from_dict(cls, d: Dict[str, any]) -> 'CloudResourceContainer':
+        return cls(gcp=CustomerFacingGcpCloudResourceContainer.from_dict(d['gcp']) if 'gcp' in d else None)
 
 
 @dataclass
@@ -123,52 +122,6 @@ class CreateCustomerManagedKeyRequest:
         return cls(
             aws_key_info=CreateAwsKeyInfo.from_dict(d['aws_key_info']) if 'aws_key_info' in d else None,
             use_cases=d.get('use_cases', None))
-
-
-@dataclass
-class CreateGcpNetwork:
-    """The network configurations for the workspace. If you provide a network configuration ID for a
-    new workspace, Databricks deploys the new workspace into that associated customer-managed VPC.
-    If omitted, by default Databricks creates a new Databricks-managed VPC for the workspace in your
-    Google account and manages its lifecycle.
-    
-    All the IP range configurations must be mutually exclusive. An attempt to create a workspace
-    fails if Databricks detects an IP range overlap.
-    
-    Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and
-    all IP addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
-    `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
-    
-    The sizes of these IP ranges affect the maximum number of nodes for the workspace.
-    
-    **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
-    workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
-    your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
-    determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
-    Excel spreadsheet. See [calculate subnet sizes for a new workspace].
-    
-    [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html"""
-
-    gcp_common_network_config: 'GcpCommonNetworkConfig'
-    gcp_managed_network_config: 'GcpManagedNetworkConfig'
-    network_id: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.gcp_common_network_config:
-            body['gcp_common_network_config'] = self.gcp_common_network_config.as_dict()
-        if self.gcp_managed_network_config:
-            body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
-        if self.network_id: body['network_id'] = self.network_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateGcpNetwork':
-        return cls(gcp_common_network_config=GcpCommonNetworkConfig.from_dict(d['gcp_common_network_config'])
-                   if 'gcp_common_network_config' in d else None,
-                   gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(
-                       d['gcp_managed_network_config']) if 'gcp_managed_network_config' in d else None,
-                   network_id=d.get('network_id', None))
 
 
 @dataclass
@@ -245,12 +198,11 @@ class CreateVpcEndpointRequest:
 class CreateWorkspaceRequest:
     aws_region: str
     cloud: str
-    cloud_resource_bucket: 'CloudResourceBucket'
+    cloud_resource_container: 'CloudResourceContainer'
     credentials_id: str
     deployment_name: str
     location: str
     managed_services_customer_managed_key_id: str
-    network: 'CreateGcpNetwork'
     network_id: str
     pricing_tier: 'PricingTier'
     private_access_settings_id: str
@@ -262,13 +214,13 @@ class CreateWorkspaceRequest:
         body = {}
         if self.aws_region: body['aws_region'] = self.aws_region
         if self.cloud: body['cloud'] = self.cloud
-        if self.cloud_resource_bucket: body['cloud_resource_bucket'] = self.cloud_resource_bucket.as_dict()
+        if self.cloud_resource_container:
+            body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
         if self.credentials_id: body['credentials_id'] = self.credentials_id
         if self.deployment_name: body['deployment_name'] = self.deployment_name
         if self.location: body['location'] = self.location
         if self.managed_services_customer_managed_key_id:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network: body['network'] = self.network.as_dict()
         if self.network_id: body['network_id'] = self.network_id
         if self.pricing_tier: body['pricing_tier'] = self.pricing_tier.value
         if self.private_access_settings_id:
@@ -283,14 +235,13 @@ class CreateWorkspaceRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateWorkspaceRequest':
         return cls(aws_region=d.get('aws_region', None),
                    cloud=d.get('cloud', None),
-                   cloud_resource_bucket=CloudResourceBucket.from_dict(d['cloud_resource_bucket'])
-                   if 'cloud_resource_bucket' in d else None,
+                   cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
+                   if 'cloud_resource_container' in d else None,
                    credentials_id=d.get('credentials_id', None),
                    deployment_name=d.get('deployment_name', None),
                    location=d.get('location', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
-                   network=CreateGcpNetwork.from_dict(d['network']) if 'network' in d else None,
                    network_id=d.get('network_id', None),
                    pricing_tier=PricingTier(d['pricing_tier']) if 'pricing_tier' in d else None,
                    private_access_settings_id=d.get('private_access_settings_id', None),
@@ -324,6 +275,22 @@ class Credential:
                    creation_time=d.get('creation_time', None),
                    credentials_id=d.get('credentials_id', None),
                    credentials_name=d.get('credentials_name', None))
+
+
+@dataclass
+class CustomerFacingGcpCloudResourceContainer:
+    """The general workspace configurations that are specific to Google Cloud."""
+
+    project_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.project_id: body['project_id'] = self.project_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CustomerFacingGcpCloudResourceContainer':
+        return cls(project_id=d.get('project_id', None))
 
 
 @dataclass
@@ -368,7 +335,7 @@ class DeleteEncryptionKeyRequest:
 
 @dataclass
 class DeleteNetworkRequest:
-    """Delete network configuration"""
+    """Delete a network configuration"""
 
     network_id: str
 
@@ -396,7 +363,7 @@ class DeleteVpcEndpointRequest:
 
 @dataclass
 class DeleteWorkspaceRequest:
-    """Delete workspace"""
+    """Delete a workspace"""
 
     workspace_id: int
 
@@ -430,31 +397,25 @@ class ErrorType(Enum):
 
 
 @dataclass
-class GcpCommonNetworkConfig:
-    """The common network configuration fields that can be used by both Databricks-managed VPCs and
-    customer-managed VPCs."""
-
-    gke_cluster_master_ip_range: str
-    gke_connectivity_type: 'GkeConnectivityType'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.gke_cluster_master_ip_range:
-            body['gke_cluster_master_ip_range'] = self.gke_cluster_master_ip_range
-        if self.gke_connectivity_type: body['gke_connectivity_type'] = self.gke_connectivity_type.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GcpCommonNetworkConfig':
-        return cls(gke_cluster_master_ip_range=d.get('gke_cluster_master_ip_range', None),
-                   gke_connectivity_type=GkeConnectivityType(d['gke_connectivity_type'])
-                   if 'gke_connectivity_type' in d else None)
-
-
-@dataclass
 class GcpManagedNetworkConfig:
     """The network settings for the workspace. The configurations are only for Databricks-managed VPCs.
-    It is ignored if you specify a customer-managed VPC in the `network_id` field."""
+    It is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP
+    range configurations must be mutually exclusive. An attempt to create a workspace fails if
+    Databricks detects an IP range overlap.
+    
+    Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and
+    all IP addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
+    `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
+    
+    The sizes of these IP ranges affect the maximum number of nodes for the workspace.
+    
+    **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
+    workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
+    your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
+    determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
+    Excel spreadsheet. See [calculate subnet sizes for a new workspace].
+    
+    [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html"""
 
     gke_cluster_pod_ip_range: str
     gke_cluster_service_ip_range: str
@@ -473,20 +434,6 @@ class GcpManagedNetworkConfig:
         return cls(gke_cluster_pod_ip_range=d.get('gke_cluster_pod_ip_range', None),
                    gke_cluster_service_ip_range=d.get('gke_cluster_service_ip_range', None),
                    subnet_cidr=d.get('subnet_cidr', None))
-
-
-@dataclass
-class GcpNetwork:
-    network_id: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.network_id: body['network_id'] = self.network_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GcpNetwork':
-        return cls(network_id=d.get('network_id', None))
 
 
 @dataclass
@@ -519,22 +466,6 @@ class GcpNetworkInfo:
                    subnet_id=d.get('subnet_id', None),
                    subnet_region=d.get('subnet_region', None),
                    vpc_id=d.get('vpc_id', None))
-
-
-@dataclass
-class GcpProjectContainer:
-    """The general workspace configurations that are specific to Google Cloud."""
-
-    project_id: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.project_id: body['project_id'] = self.project_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GcpProjectContainer':
-        return cls(project_id=d.get('project_id', None))
 
 
 @dataclass
@@ -581,16 +512,39 @@ class GetVpcEndpointRequest:
 
 @dataclass
 class GetWorkspaceRequest:
-    """Get workspace"""
+    """Get a workspace"""
 
     workspace_id: int
 
 
-class GkeConnectivityType(Enum):
-    """Specifies the network connectivity types for the GKE nodes and the GKE master network. Set to
-    `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes will not
-    have public IPs. Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
-    public GKE cluster have public IP addresses."""
+@dataclass
+class GkeConfig:
+    """The configurations for the GKE cluster of a Databricks workspace."""
+
+    connectivity_type: 'GkeConfigConnectivityType'
+    master_ip_range: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.connectivity_type: body['connectivity_type'] = self.connectivity_type.value
+        if self.master_ip_range: body['master_ip_range'] = self.master_ip_range
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GkeConfig':
+        return cls(connectivity_type=GkeConfigConnectivityType(d['connectivity_type'])
+                   if 'connectivity_type' in d else None,
+                   master_ip_range=d.get('master_ip_range', None))
+
+
+class GkeConfigConnectivityType(Enum):
+    """Specifies the network connectivity types for the GKE nodes and the GKE master network. \n
+    
+    Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes
+    will not have public IPs.\n
+    
+    Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster
+    have public IP addresses."""
 
     PRIVATE_NODE_PUBLIC_MASTER = 'PRIVATE_NODE_PUBLIC_MASTER'
     PUBLIC_NODE_PUBLIC_MASTER = 'PUBLIC_NODE_PUBLIC_MASTER'
@@ -641,8 +595,8 @@ class Network:
         return cls(
             account_id=d.get('account_id', None),
             creation_time=d.get('creation_time', None),
-            error_messages=[NetworkHealth.from_dict(v)
-                            for v in d['error_messages']] if 'error_messages' in d else None,
+            error_messages=[NetworkHealth.from_dict(v) for v in d['error_messages']]
+            if 'error_messages' in d and d['error_messages'] is not None else None,
             gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
             if 'gcp_network_info' in d else None,
             network_id=d.get('network_id', None),
@@ -652,8 +606,8 @@ class Network:
             vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints']) if 'vpc_endpoints' in d else None,
             vpc_id=d.get('vpc_id', None),
             vpc_status=VpcStatus(d['vpc_status']) if 'vpc_status' in d else None,
-            warning_messages=[NetworkWarning.from_dict(v)
-                              for v in d['warning_messages']] if 'warning_messages' in d else None,
+            warning_messages=[NetworkWarning.from_dict(v) for v in d['warning_messages']]
+            if 'warning_messages' in d and d['warning_messages'] is not None else None,
             workspace_id=d.get('workspace_id', None))
 
 
@@ -961,13 +915,15 @@ class Workspace:
     account_id: str
     aws_region: str
     cloud: str
-    cloud_resource_bucket: 'CloudResourceBucket'
+    cloud_resource_container: 'CloudResourceContainer'
     creation_time: int
     credentials_id: str
     deployment_name: str
+    gcp_managed_network_config: 'GcpManagedNetworkConfig'
+    gke_config: 'GkeConfig'
     location: str
     managed_services_customer_managed_key_id: str
-    network: 'GcpNetwork'
+    network_id: str
     pricing_tier: 'PricingTier'
     private_access_settings_id: str
     storage_configuration_id: str
@@ -982,14 +938,18 @@ class Workspace:
         if self.account_id: body['account_id'] = self.account_id
         if self.aws_region: body['aws_region'] = self.aws_region
         if self.cloud: body['cloud'] = self.cloud
-        if self.cloud_resource_bucket: body['cloud_resource_bucket'] = self.cloud_resource_bucket.as_dict()
+        if self.cloud_resource_container:
+            body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
         if self.creation_time: body['creation_time'] = self.creation_time
         if self.credentials_id: body['credentials_id'] = self.credentials_id
         if self.deployment_name: body['deployment_name'] = self.deployment_name
+        if self.gcp_managed_network_config:
+            body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
+        if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
         if self.location: body['location'] = self.location
         if self.managed_services_customer_managed_key_id:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network: body['network'] = self.network.as_dict()
+        if self.network_id: body['network_id'] = self.network_id
         if self.pricing_tier: body['pricing_tier'] = self.pricing_tier.value
         if self.private_access_settings_id:
             body['private_access_settings_id'] = self.private_access_settings_id
@@ -1008,14 +968,17 @@ class Workspace:
             account_id=d.get('account_id', None),
             aws_region=d.get('aws_region', None),
             cloud=d.get('cloud', None),
-            cloud_resource_bucket=CloudResourceBucket.from_dict(d['cloud_resource_bucket'])
-            if 'cloud_resource_bucket' in d else None,
+            cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
+            if 'cloud_resource_container' in d else None,
             creation_time=d.get('creation_time', None),
             credentials_id=d.get('credentials_id', None),
             deployment_name=d.get('deployment_name', None),
+            gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(d['gcp_managed_network_config'])
+            if 'gcp_managed_network_config' in d else None,
+            gke_config=GkeConfig.from_dict(d['gke_config']) if 'gke_config' in d else None,
             location=d.get('location', None),
             managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id', None),
-            network=GcpNetwork.from_dict(d['network']) if 'network' in d else None,
+            network_id=d.get('network_id', None),
             pricing_tier=PricingTier(d['pricing_tier']) if 'pricing_tier' in d else None,
             private_access_settings_id=d.get('private_access_settings_id', None),
             storage_configuration_id=d.get('storage_configuration_id', None),
@@ -1207,9 +1170,8 @@ class EncryptionKeysAPI:
 
 
 class NetworksAPI:
-    """These APIs manage network configurations for customer-managed VPCs (optional). A network configuration
-    encapsulates the IDs for AWS VPCs, subnets, and security groups. Its ID is used when creating a new
-    workspace if you use customer-managed VPCs."""
+    """These APIs manage network configurations for customer-managed VPCs (optional). Its ID is used when
+    creating a new workspace if you use customer-managed VPCs."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1225,22 +1187,8 @@ class NetworksAPI:
                **kwargs) -> Network:
         """Create network configuration.
         
-        Creates a Databricks network configuration that represents an AWS VPC and its resources. The VPC will
-        be used for new Databricks clusters. This requires a pre-existing VPC and subnets. For VPC
-        requirements, see [Customer-managed VPC].
-        
-        **Important**: You can share one customer-managed VPC with multiple workspaces in a single account.
-        Therefore, you can share one VPC across multiple Account API network configurations. However, you
-        **cannot** reuse subnets or Security Groups between workspaces. Because a Databricks Account API
-        network configuration encapsulates this information, you cannot reuse a Databricks Account API network
-        configuration across workspaces. If you plan to share one VPC with multiple workspaces, make sure you
-        size your VPC and subnets accordingly. For information about how to create a new workspace with this
-        API, see [Create a new workspace using the Account API].
-        
-        This operation is available only if your account is on the E2 version of the platform.
-        
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-        [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html"""
+        Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
+        used for new Databricks clusters. This requires a pre-existing VPC and subnets."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateNetworkRequest(gcp_network_info=gcp_network_info,
@@ -1255,9 +1203,9 @@ class NetworksAPI:
         return Network.from_dict(json)
 
     def delete(self, network_id: str, **kwargs):
-        """Delete network configuration.
+        """Delete a network configuration.
         
-        Deletes a Databricks network configuration, which represents an AWS VPC and its resources. You cannot
+        Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
         delete a network that is associated with a workspace.
         
         This operation is available only if your account is on the E2 version of the platform."""
@@ -1270,12 +1218,7 @@ class NetworksAPI:
     def get(self, network_id: str, **kwargs) -> Network:
         """Get a network configuration.
         
-        Gets a Databricks network configuration, which represents an AWS VPC and its resources. This requires
-        a pre-existing VPC and subnets. For VPC requirements, see [Customer-managed VPC].
-        
-        This operation is available only if your account is on the E2 version of the platform.
-        
-        [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html"""
+        Gets a Databricks network configuration, which represents a cloud VPC and its resources."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetNetworkRequest(network_id=network_id)
@@ -1653,12 +1596,11 @@ class WorkspacesAPI:
                *,
                aws_region: str = None,
                cloud: str = None,
-               cloud_resource_bucket: CloudResourceBucket = None,
+               cloud_resource_container: CloudResourceContainer = None,
                credentials_id: str = None,
                deployment_name: str = None,
                location: str = None,
                managed_services_customer_managed_key_id: str = None,
-               network: CreateGcpNetwork = None,
                network_id: str = None,
                pricing_tier: PricingTier = None,
                private_access_settings_id: str = None,
@@ -1669,44 +1611,24 @@ class WorkspacesAPI:
                **kwargs) -> Workspace:
         """Create a new workspace.
         
-        Creates a new workspace using a credential configuration and a storage configuration, an optional
-        network configuration (if using a customer-managed VPC), an optional managed services key
-        configuration (if using customer-managed keys for managed services), and an optional storage key
-        configuration (if using customer-managed keys for storage). The key configurations used for managed
-        services and storage encryption can be the same or different.
+        Creates a new workspace.
         
         **Important**: This operation is asynchronous. A response with HTTP status code 200 means the request
         has been accepted and is in progress, but does not mean that the workspace deployed successfully and
         is running. The initial workspace status is typically `PROVISIONING`. Use the workspace ID
         (`workspace_id`) field in the response to identify the new workspace and make repeated `GET` requests
         with the workspace ID and check its status. The workspace becomes available when the status changes to
-        `RUNNING`.
-        
-        You can share one customer-managed VPC with multiple workspaces in a single account. It is not
-        required to create a new VPC for each workspace. However, you **cannot** reuse subnets or Security
-        Groups between workspaces. If you plan to share one VPC with multiple workspaces, make sure you size
-        your VPC and subnets accordingly. Because a Databricks Account API network configuration encapsulates
-        this information, you cannot reuse a Databricks Account API network configuration across
-        workspaces.\nFor information about how to create a new workspace with this API **including error
-        handling**, see [Create a new workspace using the Account API].
-        
-        **Important**: Customer-managed VPCs, PrivateLink, and customer-managed keys are supported on a
-        limited set of deployment and subscription types. If you have questions about availability, contact
-        your Databricks representative.\n\nThis operation is available only if your account is on the E2
-        version of the platform or on a select custom plan that allows multiple workspaces per account.
-        
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
+        `RUNNING`."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateWorkspaceRequest(
                 aws_region=aws_region,
                 cloud=cloud,
-                cloud_resource_bucket=cloud_resource_bucket,
+                cloud_resource_container=cloud_resource_container,
                 credentials_id=credentials_id,
                 deployment_name=deployment_name,
                 location=location,
                 managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
-                network=network,
                 network_id=network_id,
                 pricing_tier=pricing_tier,
                 private_access_settings_id=private_access_settings_id,
@@ -1744,7 +1666,7 @@ class WorkspacesAPI:
         self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
 
     def delete(self, workspace_id: int, **kwargs):
-        """Delete workspace.
+        """Delete a workspace.
         
         Terminates and deletes a Databricks workspace. From an API perspective, deletion is immediate.
         However, it might take a few minutes for all workspaces resources to be deleted, depending on the size
@@ -1759,7 +1681,7 @@ class WorkspacesAPI:
         self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}')
 
     def get(self, workspace_id: int, **kwargs) -> Workspace:
-        """Get workspace.
+        """Get a workspace.
         
         Gets information including status for a Databricks workspace, specified by ID. In the response, the
         `workspace_status` field indicates the current status. After initial workspace creation (which is

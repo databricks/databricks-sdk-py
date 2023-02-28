@@ -4,6 +4,6 @@
     ".codegen/service.py.tmpl": "databricks/sdk/service/{{.Name}}.py"
   },
   "batch": {
-    ".codegen/__init__py.tmpl": "databricks/sdk/__init__.py"
+    ".codegen/__init__.py.tmpl": "databricks/sdk/__init__.py"
   }
 }

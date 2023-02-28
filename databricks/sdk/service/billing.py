@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
+import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.billing')
 
@@ -35,7 +35,8 @@ class Budget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Budget':
-        return cls(alerts=[BudgetAlert.from_dict(v) for v in d['alerts']] if 'alerts' in d else None,
+        return cls(alerts=[BudgetAlert.from_dict(v)
+                           for v in d['alerts']] if 'alerts' in d and d['alerts'] is not None else None,
                    end_date=d.get('end_date', None),
                    filter=d.get('filter', None),
                    name=d.get('name', None),
@@ -74,7 +75,8 @@ class BudgetList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetList':
-        return cls(budgets=[BudgetWithStatus.from_dict(v) for v in d['budgets']] if 'budgets' in d else None)
+        return cls(budgets=[BudgetWithStatus.from_dict(v)
+                            for v in d['budgets']] if 'budgets' in d and d['budgets'] is not None else None)
 
 
 @dataclass
@@ -110,7 +112,8 @@ class BudgetWithStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetWithStatus':
-        return cls(alerts=[BudgetAlert.from_dict(v) for v in d['alerts']] if 'alerts' in d else None,
+        return cls(alerts=[BudgetAlert.from_dict(v)
+                           for v in d['alerts']] if 'alerts' in d and d['alerts'] is not None else None,
                    budget_id=d.get('budget_id', None),
                    creation_time=d.get('creation_time', None),
                    end_date=d.get('end_date', None),
@@ -118,8 +121,8 @@ class BudgetWithStatus:
                    name=d.get('name', None),
                    period=d.get('period', None),
                    start_date=d.get('start_date', None),
-                   status_daily=[BudgetWithStatusStatusDailyItem.from_dict(v)
-                                 for v in d['status_daily']] if 'status_daily' in d else None,
+                   status_daily=[BudgetWithStatusStatusDailyItem.from_dict(v) for v in d['status_daily']]
+                   if 'status_daily' in d and d['status_daily'] is not None else None,
                    target_amount=d.get('target_amount', None),
                    update_time=d.get('update_time', None))
 
@@ -445,7 +448,7 @@ class WrappedLogDeliveryConfigurations:
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfigurations':
         return cls(log_delivery_configurations=[
             LogDeliveryConfiguration.from_dict(v) for v in d['log_delivery_configurations']
-        ] if 'log_delivery_configurations' in d else None)
+        ] if 'log_delivery_configurations' in d and d['log_delivery_configurations'] is not None else None)
 
 
 class BillableUsageAPI:
