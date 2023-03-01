@@ -12,8 +12,8 @@ _LOG = logging.getLogger('databricks.sdk.service.libraries')
 
 @dataclass
 class ClusterLibraryStatuses:
-    cluster_id: str
-    library_statuses: 'List[LibraryFullStatus]'
+    cluster_id: str = None
+    library_statuses: 'List[LibraryFullStatus]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -56,12 +56,12 @@ class InstallLibraries:
 
 @dataclass
 class Library:
-    cran: 'RCranLibrary'
-    egg: str
-    jar: str
-    maven: 'MavenLibrary'
-    pypi: 'PythonPyPiLibrary'
-    whl: str
+    cran: 'RCranLibrary' = None
+    egg: str = None
+    jar: str = None
+    maven: 'MavenLibrary' = None
+    pypi: 'PythonPyPiLibrary' = None
+    whl: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -85,10 +85,10 @@ class Library:
 
 @dataclass
 class LibraryFullStatus:
-    is_library_for_all_clusters: bool
-    library: 'Library'
-    messages: 'List[str]'
-    status: 'LibraryFullStatusStatus'
+    is_library_for_all_clusters: bool = None
+    library: 'Library' = None
+    messages: 'List[str]' = None
+    status: 'LibraryFullStatusStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -122,7 +122,7 @@ class LibraryFullStatusStatus(Enum):
 
 @dataclass
 class ListAllClusterLibraryStatusesResponse:
-    statuses: 'List[ClusterLibraryStatuses]'
+    statuses: 'List[ClusterLibraryStatuses]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -139,8 +139,8 @@ class ListAllClusterLibraryStatusesResponse:
 @dataclass
 class MavenLibrary:
     coordinates: str
-    exclusions: 'List[str]'
-    repo: str
+    exclusions: 'List[str]' = None
+    repo: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -159,7 +159,7 @@ class MavenLibrary:
 @dataclass
 class PythonPyPiLibrary:
     package: str
-    repo: str
+    repo: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -175,7 +175,7 @@ class PythonPyPiLibrary:
 @dataclass
 class RCranLibrary:
     package: str
-    repo: str
+    repo: str = None
 
     def as_dict(self) -> dict:
         body = {}

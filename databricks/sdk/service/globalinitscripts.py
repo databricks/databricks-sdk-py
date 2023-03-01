@@ -11,7 +11,7 @@ _LOG = logging.getLogger('databricks.sdk.service.globalinitscripts')
 
 @dataclass
 class CreateResponse:
-    script_id: str
+    script_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -39,10 +39,10 @@ class Get:
 
 @dataclass
 class GlobalInitScriptCreateRequest:
-    enabled: bool
     name: str
-    position: int
     script: str
+    enabled: bool = None
+    position: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -62,14 +62,14 @@ class GlobalInitScriptCreateRequest:
 
 @dataclass
 class GlobalInitScriptDetails:
-    created_at: int
-    created_by: str
-    enabled: bool
-    name: str
-    position: int
-    script_id: str
-    updated_at: int
-    updated_by: str
+    created_at: int = None
+    created_by: str = None
+    enabled: bool = None
+    name: str = None
+    position: int = None
+    script_id: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -97,15 +97,15 @@ class GlobalInitScriptDetails:
 
 @dataclass
 class GlobalInitScriptDetailsWithContent:
-    created_at: int
-    created_by: str
-    enabled: bool
-    name: str
-    position: int
-    script: str
-    script_id: str
-    updated_at: int
-    updated_by: str
+    created_at: int = None
+    created_by: str = None
+    enabled: bool = None
+    name: str = None
+    position: int = None
+    script: str = None
+    script_id: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -135,11 +135,11 @@ class GlobalInitScriptDetailsWithContent:
 
 @dataclass
 class GlobalInitScriptUpdateRequest:
-    enabled: bool
     name: str
-    position: int
     script: str
     script_id: str
+    enabled: bool = None
+    position: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -161,7 +161,7 @@ class GlobalInitScriptUpdateRequest:
 
 @dataclass
 class ListGlobalInitScriptsResponse:
-    scripts: 'List[GlobalInitScriptDetails]'
+    scripts: 'List[GlobalInitScriptDetails]' = None
 
     def as_dict(self) -> dict:
         body = {}

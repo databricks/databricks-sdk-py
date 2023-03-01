@@ -12,8 +12,8 @@ _LOG = logging.getLogger('databricks.sdk.service.gitcredentials')
 @dataclass
 class CreateCredentials:
     git_provider: str
-    git_username: str
-    personal_access_token: str
+    git_username: str = None
+    personal_access_token: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -31,9 +31,9 @@ class CreateCredentials:
 
 @dataclass
 class CreateCredentialsResponse:
-    credential_id: int
-    git_provider: str
-    git_username: str
+    credential_id: int = None
+    git_provider: str = None
+    git_username: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -51,9 +51,9 @@ class CreateCredentialsResponse:
 
 @dataclass
 class CredentialInfo:
-    credential_id: int
-    git_provider: str
-    git_username: str
+    credential_id: int = None
+    git_provider: str = None
+    git_username: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -85,7 +85,7 @@ class Get:
 
 @dataclass
 class GetCredentialsResponse:
-    credentials: 'List[CredentialInfo]'
+    credentials: 'List[CredentialInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -101,9 +101,9 @@ class GetCredentialsResponse:
 @dataclass
 class UpdateCredentials:
     credential_id: int
-    git_provider: str
-    git_username: str
-    personal_access_token: str
+    git_provider: str = None
+    git_username: str = None
+    personal_access_token: str = None
 
     def as_dict(self) -> dict:
         body = {}

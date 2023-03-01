@@ -18,8 +18,9 @@ from .{{.Package.Name}} import {{.PascalName}}{{end}}
 {{if .Fields -}}@dataclass
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
-    {{end}}{{- range .Fields | alphanumOnly}}
-    {{.SnakeName}}: {{template "type" .Entity}}{{end}}
+    {{end}}{{- range .RequiredFields | alphanumOnly}}
+    {{.SnakeName}}: {{template "type" .Entity}}{{end}}{{- range .NonRequiredFields | alphanumOnly}}
+    {{.SnakeName}}: {{template "type" .Entity}} = None{{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}

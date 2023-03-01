@@ -16,7 +16,7 @@ _LOG = logging.getLogger('databricks.sdk.service.deployment')
 
 @dataclass
 class AwsCredentials:
-    sts_role: 'StsRole'
+    sts_role: 'StsRole' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -30,10 +30,10 @@ class AwsCredentials:
 
 @dataclass
 class AwsKeyInfo:
-    key_alias: str
     key_arn: str
     key_region: str
-    reuse_key_for_cluster_volumes: bool
+    key_alias: str = None
+    reuse_key_for_cluster_volumes: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -56,7 +56,7 @@ class AwsKeyInfo:
 class CloudResourceContainer:
     """The general workspace configurations that are specific to cloud providers."""
 
-    gcp: 'CustomerFacingGcpCloudResourceContainer'
+    gcp: 'CustomerFacingGcpCloudResourceContainer' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -70,9 +70,9 @@ class CloudResourceContainer:
 
 @dataclass
 class CreateAwsKeyInfo:
-    key_alias: str
     key_arn: str
-    reuse_key_for_cluster_volumes: bool
+    key_alias: str = None
+    reuse_key_for_cluster_volumes: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -91,8 +91,8 @@ class CreateAwsKeyInfo:
 
 @dataclass
 class CreateCredentialRequest:
-    aws_credentials: 'AwsCredentials'
     credentials_name: str
+    aws_credentials: 'AwsCredentials'
 
     def as_dict(self) -> dict:
         body = {}
@@ -127,12 +127,12 @@ class CreateCustomerManagedKeyRequest:
 
 @dataclass
 class CreateNetworkRequest:
-    gcp_network_info: 'GcpNetworkInfo'
     network_name: str
-    security_group_ids: 'List[str]'
-    subnet_ids: 'List[str]'
-    vpc_endpoints: 'NetworkVpcEndpoints'
-    vpc_id: str
+    gcp_network_info: 'GcpNetworkInfo' = None
+    security_group_ids: 'List[str]' = None
+    subnet_ids: 'List[str]' = None
+    vpc_endpoints: 'NetworkVpcEndpoints' = None
+    vpc_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -158,8 +158,8 @@ class CreateNetworkRequest:
 
 @dataclass
 class CreateStorageConfigurationRequest:
-    root_bucket_info: 'RootBucketInfo'
     storage_configuration_name: str
+    root_bucket_info: 'RootBucketInfo'
 
     def as_dict(self) -> dict:
         body = {}
@@ -177,9 +177,9 @@ class CreateStorageConfigurationRequest:
 
 @dataclass
 class CreateVpcEndpointRequest:
+    vpc_endpoint_name: str
     aws_vpc_endpoint_id: str
     region: str
-    vpc_endpoint_name: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -197,19 +197,19 @@ class CreateVpcEndpointRequest:
 
 @dataclass
 class CreateWorkspaceRequest:
-    aws_region: str
-    cloud: str
-    cloud_resource_container: 'CloudResourceContainer'
-    credentials_id: str
-    deployment_name: str
-    location: str
-    managed_services_customer_managed_key_id: str
-    network_id: str
-    pricing_tier: 'PricingTier'
-    private_access_settings_id: str
-    storage_configuration_id: str
-    storage_customer_managed_key_id: str
     workspace_name: str
+    aws_region: str = None
+    cloud: str = None
+    cloud_resource_container: 'CloudResourceContainer' = None
+    credentials_id: str = None
+    deployment_name: str = None
+    location: str = None
+    managed_services_customer_managed_key_id: str = None
+    network_id: str = None
+    pricing_tier: 'PricingTier' = None
+    private_access_settings_id: str = None
+    storage_configuration_id: str = None
+    storage_customer_managed_key_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -254,11 +254,11 @@ class CreateWorkspaceRequest:
 
 @dataclass
 class Credential:
-    account_id: str
-    aws_credentials: 'AwsCredentials'
-    creation_time: int
-    credentials_id: str
-    credentials_name: str
+    account_id: str = None
+    aws_credentials: 'AwsCredentials' = None
+    creation_time: int = None
+    credentials_id: str = None
+    credentials_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -283,7 +283,7 @@ class Credential:
 class CustomerFacingGcpCloudResourceContainer:
     """The general workspace configurations that are specific to Google Cloud."""
 
-    project_id: str
+    project_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -297,11 +297,11 @@ class CustomerFacingGcpCloudResourceContainer:
 
 @dataclass
 class CustomerManagedKey:
-    account_id: str
-    aws_key_info: 'AwsKeyInfo'
-    creation_time: int
-    customer_managed_key_id: str
-    use_cases: 'List[KeyUseCase]'
+    account_id: str = None
+    aws_key_info: 'AwsKeyInfo' = None
+    creation_time: int = None
+    customer_managed_key_id: str = None
+    use_cases: 'List[KeyUseCase]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -419,9 +419,9 @@ class GcpManagedNetworkConfig:
     
     [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html"""
 
-    gke_cluster_pod_ip_range: str
-    gke_cluster_service_ip_range: str
-    subnet_cidr: str
+    gke_cluster_pod_ip_range: str = None
+    gke_cluster_service_ip_range: str = None
+    subnet_cidr: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -444,11 +444,11 @@ class GcpNetworkInfo:
     secondary IP ranges)."""
 
     network_project_id: str
-    pod_ip_range_name: str
-    service_ip_range_name: str
+    vpc_id: str
     subnet_id: str
     subnet_region: str
-    vpc_id: str
+    pod_ip_range_name: str
+    service_ip_range_name: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -523,8 +523,8 @@ class GetWorkspaceRequest:
 class GkeConfig:
     """The configurations for the GKE cluster of a Databricks workspace."""
 
-    connectivity_type: 'GkeConfigConnectivityType'
-    master_ip_range: str
+    connectivity_type: 'GkeConfigConnectivityType' = None
+    master_ip_range: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -561,19 +561,19 @@ class KeyUseCase(Enum):
 
 @dataclass
 class Network:
-    account_id: str
-    creation_time: int
-    error_messages: 'List[NetworkHealth]'
-    gcp_network_info: 'GcpNetworkInfo'
-    network_id: str
-    network_name: str
-    security_group_ids: 'List[str]'
-    subnet_ids: 'List[str]'
-    vpc_endpoints: 'NetworkVpcEndpoints'
-    vpc_id: str
-    vpc_status: 'VpcStatus'
-    warning_messages: 'List[NetworkWarning]'
-    workspace_id: int
+    account_id: str = None
+    creation_time: int = None
+    error_messages: 'List[NetworkHealth]' = None
+    gcp_network_info: 'GcpNetworkInfo' = None
+    network_id: str = None
+    network_name: str = None
+    security_group_ids: 'List[str]' = None
+    subnet_ids: 'List[str]' = None
+    vpc_endpoints: 'NetworkVpcEndpoints' = None
+    vpc_id: str = None
+    vpc_status: 'VpcStatus' = None
+    warning_messages: 'List[NetworkWarning]' = None
+    workspace_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -615,8 +615,8 @@ class Network:
 
 @dataclass
 class NetworkHealth:
-    error_message: str
-    error_type: 'ErrorType'
+    error_message: str = None
+    error_type: 'ErrorType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -637,8 +637,8 @@ class NetworkVpcEndpoints:
     
     [AWS PrivateLink]: https://aws.amazon.com/privatelink/"""
 
-    dataplane_relay: 'List[str]'
     rest_api: 'List[str]'
+    dataplane_relay: 'List[str]'
 
     def as_dict(self) -> dict:
         body = {}
@@ -653,8 +653,8 @@ class NetworkVpcEndpoints:
 
 @dataclass
 class NetworkWarning:
-    warning_message: str
-    warning_type: 'WarningType'
+    warning_message: str = None
+    warning_type: 'WarningType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -697,13 +697,13 @@ class PrivateAccessLevel(Enum):
 
 @dataclass
 class PrivateAccessSettings:
-    account_id: str
-    allowed_vpc_endpoint_ids: 'List[str]'
-    private_access_level: 'PrivateAccessLevel'
-    private_access_settings_id: str
-    private_access_settings_name: str
-    public_access_enabled: bool
-    region: str
+    account_id: str = None
+    allowed_vpc_endpoint_ids: 'List[str]' = None
+    private_access_level: 'PrivateAccessLevel' = None
+    private_access_settings_id: str = None
+    private_access_settings_name: str = None
+    public_access_enabled: bool = None
+    region: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -735,7 +735,7 @@ class PrivateAccessSettings:
 class RootBucketInfo:
     """Root S3 bucket information."""
 
-    bucket_name: str
+    bucket_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -749,11 +749,11 @@ class RootBucketInfo:
 
 @dataclass
 class StorageConfiguration:
-    account_id: str
-    creation_time: int
-    root_bucket_info: 'RootBucketInfo'
-    storage_configuration_id: str
-    storage_configuration_name: str
+    account_id: str = None
+    creation_time: int = None
+    root_bucket_info: 'RootBucketInfo' = None
+    storage_configuration_id: str = None
+    storage_configuration_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -777,8 +777,8 @@ class StorageConfiguration:
 
 @dataclass
 class StsRole:
-    external_id: str
-    role_arn: str
+    external_id: str = None
+    role_arn: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -793,13 +793,13 @@ class StsRole:
 
 @dataclass
 class UpdateWorkspaceRequest:
-    aws_region: str
-    credentials_id: str
-    managed_services_customer_managed_key_id: str
-    network_id: str
-    storage_configuration_id: str
-    storage_customer_managed_key_id: str
     workspace_id: int
+    aws_region: str = None
+    credentials_id: str = None
+    managed_services_customer_managed_key_id: str = None
+    network_id: str = None
+    storage_configuration_id: str = None
+    storage_customer_managed_key_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -828,12 +828,12 @@ class UpdateWorkspaceRequest:
 
 @dataclass
 class UpsertPrivateAccessSettingsRequest:
-    allowed_vpc_endpoint_ids: 'List[str]'
-    private_access_level: 'PrivateAccessLevel'
-    private_access_settings_id: str
     private_access_settings_name: str
-    public_access_enabled: bool
     region: str
+    private_access_settings_id: str
+    allowed_vpc_endpoint_ids: 'List[str]' = None
+    private_access_level: 'PrivateAccessLevel' = None
+    public_access_enabled: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -861,15 +861,15 @@ class UpsertPrivateAccessSettingsRequest:
 
 @dataclass
 class VpcEndpoint:
-    account_id: str
-    aws_account_id: str
-    aws_endpoint_service_id: str
-    aws_vpc_endpoint_id: str
-    region: str
-    state: str
-    use_case: 'EndpointUseCase'
-    vpc_endpoint_id: str
-    vpc_endpoint_name: str
+    account_id: str = None
+    aws_account_id: str = None
+    aws_endpoint_service_id: str = None
+    aws_vpc_endpoint_id: str = None
+    region: str = None
+    state: str = None
+    use_case: 'EndpointUseCase' = None
+    vpc_endpoint_id: str = None
+    vpc_endpoint_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -915,26 +915,26 @@ class WarningType(Enum):
 
 @dataclass
 class Workspace:
-    account_id: str
-    aws_region: str
-    cloud: str
-    cloud_resource_container: 'CloudResourceContainer'
-    creation_time: int
-    credentials_id: str
-    deployment_name: str
-    gcp_managed_network_config: 'GcpManagedNetworkConfig'
-    gke_config: 'GkeConfig'
-    location: str
-    managed_services_customer_managed_key_id: str
-    network_id: str
-    pricing_tier: 'PricingTier'
-    private_access_settings_id: str
-    storage_configuration_id: str
-    storage_customer_managed_key_id: str
-    workspace_id: int
-    workspace_name: str
-    workspace_status: 'WorkspaceStatus'
-    workspace_status_message: str
+    account_id: str = None
+    aws_region: str = None
+    cloud: str = None
+    cloud_resource_container: 'CloudResourceContainer' = None
+    creation_time: int = None
+    credentials_id: str = None
+    deployment_name: str = None
+    gcp_managed_network_config: 'GcpManagedNetworkConfig' = None
+    gke_config: 'GkeConfig' = None
+    location: str = None
+    managed_services_customer_managed_key_id: str = None
+    network_id: str = None
+    pricing_tier: 'PricingTier' = None
+    private_access_settings_id: str = None
+    storage_configuration_id: str = None
+    storage_customer_managed_key_id: str = None
+    workspace_id: int = None
+    workspace_name: str = None
+    workspace_status: 'WorkspaceStatus' = None
+    workspace_status_message: str = None
 
     def as_dict(self) -> dict:
         body = {}

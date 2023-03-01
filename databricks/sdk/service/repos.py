@@ -11,10 +11,10 @@ _LOG = logging.getLogger('databricks.sdk.service.repos')
 
 @dataclass
 class CreateRepo:
-    path: str
-    provider: str
-    sparse_checkout: 'SparseCheckout'
     url: str
+    provider: str
+    path: str = None
+    sparse_checkout: 'SparseCheckout' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -51,14 +51,14 @@ class Get:
 class ListRequest:
     """Get repos"""
 
-    next_page_token: str
-    path_prefix: str
+    next_page_token: str = None
+    path_prefix: str = None
 
 
 @dataclass
 class ListReposResponse:
-    next_page_token: str
-    repos: 'List[RepoInfo]'
+    next_page_token: str = None
+    repos: 'List[RepoInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -75,13 +75,13 @@ class ListReposResponse:
 
 @dataclass
 class RepoInfo:
-    branch: str
-    head_commit_id: str
-    id: int
-    path: str
-    provider: str
-    sparse_checkout: 'SparseCheckout'
-    url: str
+    branch: str = None
+    head_commit_id: str = None
+    id: int = None
+    path: str = None
+    provider: str = None
+    sparse_checkout: 'SparseCheckout' = None
+    url: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -108,7 +108,7 @@ class RepoInfo:
 
 @dataclass
 class SparseCheckout:
-    patterns: 'List[str]'
+    patterns: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -122,7 +122,7 @@ class SparseCheckout:
 
 @dataclass
 class SparseCheckoutUpdate:
-    patterns: 'List[str]'
+    patterns: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -136,10 +136,10 @@ class SparseCheckoutUpdate:
 
 @dataclass
 class UpdateRepo:
-    branch: str
     repo_id: int
-    sparse_checkout: 'SparseCheckoutUpdate'
-    tag: str
+    branch: str = None
+    sparse_checkout: 'SparseCheckoutUpdate' = None
+    tag: str = None
 
     def as_dict(self) -> dict:
         body = {}

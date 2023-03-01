@@ -16,10 +16,10 @@ _LOG = logging.getLogger('databricks.sdk.service.clusters')
 
 @dataclass
 class AddInstanceProfile:
-    iam_role_arn: str
     instance_profile_arn: str
-    is_meta_instance_profile: bool
-    skip_validation: bool
+    iam_role_arn: str = None
+    is_meta_instance_profile: bool = None
+    skip_validation: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -39,8 +39,8 @@ class AddInstanceProfile:
 
 @dataclass
 class AutoScale:
-    max_workers: int
     min_workers: int
+    max_workers: int
 
     def as_dict(self) -> dict:
         body = {}
@@ -55,16 +55,16 @@ class AutoScale:
 
 @dataclass
 class AwsAttributes:
-    availability: 'AwsAvailability'
-    ebs_volume_count: int
-    ebs_volume_iops: int
-    ebs_volume_size: int
-    ebs_volume_throughput: int
-    ebs_volume_type: 'EbsVolumeType'
-    first_on_demand: int
-    instance_profile_arn: str
-    spot_bid_price_percent: int
-    zone_id: str
+    availability: 'AwsAvailability' = None
+    ebs_volume_count: int = None
+    ebs_volume_iops: int = None
+    ebs_volume_size: int = None
+    ebs_volume_throughput: int = None
+    ebs_volume_type: 'EbsVolumeType' = None
+    first_on_demand: int = None
+    instance_profile_arn: str = None
+    spot_bid_price_percent: int = None
+    zone_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -108,10 +108,10 @@ class AwsAvailability(Enum):
 
 @dataclass
 class AzureAttributes:
-    availability: 'AzureAvailability'
-    first_on_demand: int
-    log_analytics_info: 'LogAnalyticsInfo'
-    spot_bid_max_price: float
+    availability: 'AzureAvailability' = None
+    first_on_demand: int = None
+    log_analytics_info: 'LogAnalyticsInfo' = None
+    spot_bid_max_price: float = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -143,29 +143,29 @@ class AzureAvailability(Enum):
 
 @dataclass
 class BaseClusterInfo:
-    autoscale: 'AutoScale'
-    autotermination_minutes: int
-    aws_attributes: 'AwsAttributes'
-    azure_attributes: 'AzureAttributes'
-    cluster_log_conf: 'ClusterLogConf'
-    cluster_name: str
-    cluster_source: 'ClusterSource'
-    custom_tags: 'Dict[str,str]'
-    driver_instance_pool_id: str
-    driver_node_type_id: str
-    enable_elastic_disk: bool
-    enable_local_disk_encryption: bool
-    gcp_attributes: 'GcpAttributes'
-    instance_pool_id: str
-    node_type_id: str
-    num_workers: int
-    policy_id: str
-    runtime_engine: 'RuntimeEngine'
-    spark_conf: 'Dict[str,str]'
-    spark_env_vars: 'Dict[str,str]'
-    spark_version: str
-    ssh_public_keys: 'List[str]'
-    workload_type: 'WorkloadType'
+    autoscale: 'AutoScale' = None
+    autotermination_minutes: int = None
+    aws_attributes: 'AwsAttributes' = None
+    azure_attributes: 'AzureAttributes' = None
+    cluster_log_conf: 'ClusterLogConf' = None
+    cluster_name: str = None
+    cluster_source: 'ClusterSource' = None
+    custom_tags: 'Dict[str,str]' = None
+    driver_instance_pool_id: str = None
+    driver_node_type_id: str = None
+    enable_elastic_disk: bool = None
+    enable_local_disk_encryption: bool = None
+    gcp_attributes: 'GcpAttributes' = None
+    instance_pool_id: str = None
+    node_type_id: str = None
+    num_workers: int = None
+    policy_id: str = None
+    runtime_engine: 'RuntimeEngine' = None
+    spark_conf: 'Dict[str,str]' = None
+    spark_env_vars: 'Dict[str,str]' = None
+    spark_version: str = None
+    ssh_public_keys: 'List[str]' = None
+    workload_type: 'WorkloadType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -245,8 +245,8 @@ class ChangeClusterOwner:
 
 @dataclass
 class ClientsTypes:
-    jobs: bool
-    notebooks: bool
+    jobs: bool = None
+    notebooks: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -261,7 +261,7 @@ class ClientsTypes:
 
 @dataclass
 class CloudProviderNodeInfo:
-    status: 'List[CloudProviderNodeStatus]'
+    status: 'List[CloudProviderNodeStatus]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -281,27 +281,27 @@ class CloudProviderNodeStatus(Enum):
 
 @dataclass
 class ClusterAttributes:
-    autotermination_minutes: int
-    aws_attributes: 'AwsAttributes'
-    azure_attributes: 'AzureAttributes'
-    cluster_log_conf: 'ClusterLogConf'
-    cluster_name: str
-    cluster_source: 'ClusterSource'
-    custom_tags: 'Dict[str,str]'
-    driver_instance_pool_id: str
-    driver_node_type_id: str
-    enable_elastic_disk: bool
-    enable_local_disk_encryption: bool
-    gcp_attributes: 'GcpAttributes'
-    instance_pool_id: str
-    node_type_id: str
-    policy_id: str
-    runtime_engine: 'RuntimeEngine'
-    spark_conf: 'Dict[str,str]'
-    spark_env_vars: 'Dict[str,str]'
     spark_version: str
-    ssh_public_keys: 'List[str]'
-    workload_type: 'WorkloadType'
+    autotermination_minutes: int = None
+    aws_attributes: 'AwsAttributes' = None
+    azure_attributes: 'AzureAttributes' = None
+    cluster_log_conf: 'ClusterLogConf' = None
+    cluster_name: str = None
+    cluster_source: 'ClusterSource' = None
+    custom_tags: 'Dict[str,str]' = None
+    driver_instance_pool_id: str = None
+    driver_node_type_id: str = None
+    enable_elastic_disk: bool = None
+    enable_local_disk_encryption: bool = None
+    gcp_attributes: 'GcpAttributes' = None
+    instance_pool_id: str = None
+    node_type_id: str = None
+    policy_id: str = None
+    runtime_engine: 'RuntimeEngine' = None
+    spark_conf: 'Dict[str,str]' = None
+    spark_env_vars: 'Dict[str,str]' = None
+    ssh_public_keys: 'List[str]' = None
+    workload_type: 'WorkloadType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -362,10 +362,10 @@ class ClusterAttributes:
 @dataclass
 class ClusterEvent:
     cluster_id: str
-    data_plane_event_details: 'DataPlaneEventDetails'
-    details: 'EventDetails'
-    timestamp: int
-    type: 'EventType'
+    data_plane_event_details: 'DataPlaneEventDetails' = None
+    details: 'EventDetails' = None
+    timestamp: int = None
+    type: 'EventType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -389,48 +389,48 @@ class ClusterEvent:
 
 @dataclass
 class ClusterInfo:
-    autoscale: 'AutoScale'
-    autotermination_minutes: int
-    aws_attributes: 'AwsAttributes'
-    azure_attributes: 'AzureAttributes'
-    cluster_cores: float
-    cluster_id: str
-    cluster_log_conf: 'ClusterLogConf'
-    cluster_log_status: 'LogSyncStatus'
-    cluster_memory_mb: int
-    cluster_name: str
-    cluster_source: 'ClusterSource'
-    creator_user_name: str
-    custom_tags: 'Dict[str,str]'
-    data_security_mode: 'DataSecurityMode'
-    default_tags: 'Dict[str,str]'
-    driver: 'SparkNode'
-    driver_instance_pool_id: str
-    driver_node_type_id: str
-    enable_elastic_disk: bool
-    enable_local_disk_encryption: bool
-    executors: 'List[SparkNode]'
-    gcp_attributes: 'GcpAttributes'
-    instance_pool_id: str
-    jdbc_port: int
-    last_restarted_time: int
-    last_state_loss_time: int
-    node_type_id: str
-    num_workers: int
-    policy_id: str
-    runtime_engine: 'RuntimeEngine'
-    single_user_name: str
-    spark_conf: 'Dict[str,str]'
-    spark_context_id: int
-    spark_env_vars: 'Dict[str,str]'
-    spark_version: str
-    ssh_public_keys: 'List[str]'
-    start_time: int
-    state: 'State'
-    state_message: str
-    terminated_time: int
-    termination_reason: 'TerminationReason'
-    workload_type: 'WorkloadType'
+    autoscale: 'AutoScale' = None
+    autotermination_minutes: int = None
+    aws_attributes: 'AwsAttributes' = None
+    azure_attributes: 'AzureAttributes' = None
+    cluster_cores: float = None
+    cluster_id: str = None
+    cluster_log_conf: 'ClusterLogConf' = None
+    cluster_log_status: 'LogSyncStatus' = None
+    cluster_memory_mb: int = None
+    cluster_name: str = None
+    cluster_source: 'ClusterSource' = None
+    creator_user_name: str = None
+    custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    default_tags: 'Dict[str,str]' = None
+    driver: 'SparkNode' = None
+    driver_instance_pool_id: str = None
+    driver_node_type_id: str = None
+    enable_elastic_disk: bool = None
+    enable_local_disk_encryption: bool = None
+    executors: 'List[SparkNode]' = None
+    gcp_attributes: 'GcpAttributes' = None
+    instance_pool_id: str = None
+    jdbc_port: int = None
+    last_restarted_time: int = None
+    last_state_loss_time: int = None
+    node_type_id: str = None
+    num_workers: int = None
+    policy_id: str = None
+    runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
+    spark_conf: 'Dict[str,str]' = None
+    spark_context_id: int = None
+    spark_env_vars: 'Dict[str,str]' = None
+    spark_version: str = None
+    ssh_public_keys: 'List[str]' = None
+    start_time: int = None
+    state: 'State' = None
+    state_message: str = None
+    terminated_time: int = None
+    termination_reason: 'TerminationReason' = None
+    workload_type: 'WorkloadType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -536,8 +536,8 @@ class ClusterInfo:
 
 @dataclass
 class ClusterLogConf:
-    dbfs: 'DbfsStorageInfo'
-    s3: 'S3StorageInfo'
+    dbfs: 'DbfsStorageInfo' = None
+    s3: 'S3StorageInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -553,8 +553,8 @@ class ClusterLogConf:
 
 @dataclass
 class ClusterSize:
-    autoscale: 'AutoScale'
-    num_workers: int
+    autoscale: 'AutoScale' = None
+    num_workers: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -583,30 +583,30 @@ class ClusterSource(Enum):
 
 @dataclass
 class CreateCluster:
-    apply_policy_default_values: bool
-    autoscale: 'AutoScale'
-    autotermination_minutes: int
-    aws_attributes: 'AwsAttributes'
-    azure_attributes: 'AzureAttributes'
-    cluster_log_conf: 'ClusterLogConf'
-    cluster_name: str
-    cluster_source: 'ClusterSource'
-    custom_tags: 'Dict[str,str]'
-    driver_instance_pool_id: str
-    driver_node_type_id: str
-    enable_elastic_disk: bool
-    enable_local_disk_encryption: bool
-    gcp_attributes: 'GcpAttributes'
-    instance_pool_id: str
-    node_type_id: str
-    num_workers: int
-    policy_id: str
-    runtime_engine: 'RuntimeEngine'
-    spark_conf: 'Dict[str,str]'
-    spark_env_vars: 'Dict[str,str]'
     spark_version: str
-    ssh_public_keys: 'List[str]'
-    workload_type: 'WorkloadType'
+    apply_policy_default_values: bool = None
+    autoscale: 'AutoScale' = None
+    autotermination_minutes: int = None
+    aws_attributes: 'AwsAttributes' = None
+    azure_attributes: 'AzureAttributes' = None
+    cluster_log_conf: 'ClusterLogConf' = None
+    cluster_name: str = None
+    cluster_source: 'ClusterSource' = None
+    custom_tags: 'Dict[str,str]' = None
+    driver_instance_pool_id: str = None
+    driver_node_type_id: str = None
+    enable_elastic_disk: bool = None
+    enable_local_disk_encryption: bool = None
+    gcp_attributes: 'GcpAttributes' = None
+    instance_pool_id: str = None
+    node_type_id: str = None
+    num_workers: int = None
+    policy_id: str = None
+    runtime_engine: 'RuntimeEngine' = None
+    spark_conf: 'Dict[str,str]' = None
+    spark_env_vars: 'Dict[str,str]' = None
+    ssh_public_keys: 'List[str]' = None
+    workload_type: 'WorkloadType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -673,7 +673,7 @@ class CreateCluster:
 
 @dataclass
 class CreateClusterResponse:
-    cluster_id: str
+    cluster_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -687,10 +687,10 @@ class CreateClusterResponse:
 
 @dataclass
 class DataPlaneEventDetails:
-    event_type: 'DataPlaneEventDetailsEventType'
-    executor_failures: int
-    host_id: str
-    timestamp: int
+    event_type: 'DataPlaneEventDetailsEventType' = None
+    executor_failures: int = None
+    host_id: str = None
+    timestamp: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -729,7 +729,7 @@ class DataSecurityMode(Enum):
 
 @dataclass
 class DbfsStorageInfo:
-    destination: str
+    destination: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -764,31 +764,31 @@ class EbsVolumeType(Enum):
 
 @dataclass
 class EditCluster:
-    apply_policy_default_values: bool
-    autoscale: 'AutoScale'
-    autotermination_minutes: int
-    aws_attributes: 'AwsAttributes'
-    azure_attributes: 'AzureAttributes'
     cluster_id: str
-    cluster_log_conf: 'ClusterLogConf'
-    cluster_name: str
-    cluster_source: 'ClusterSource'
-    custom_tags: 'Dict[str,str]'
-    driver_instance_pool_id: str
-    driver_node_type_id: str
-    enable_elastic_disk: bool
-    enable_local_disk_encryption: bool
-    gcp_attributes: 'GcpAttributes'
-    instance_pool_id: str
-    node_type_id: str
-    num_workers: int
-    policy_id: str
-    runtime_engine: 'RuntimeEngine'
-    spark_conf: 'Dict[str,str]'
-    spark_env_vars: 'Dict[str,str]'
     spark_version: str
-    ssh_public_keys: 'List[str]'
-    workload_type: 'WorkloadType'
+    apply_policy_default_values: bool = None
+    autoscale: 'AutoScale' = None
+    autotermination_minutes: int = None
+    aws_attributes: 'AwsAttributes' = None
+    azure_attributes: 'AzureAttributes' = None
+    cluster_log_conf: 'ClusterLogConf' = None
+    cluster_name: str = None
+    cluster_source: 'ClusterSource' = None
+    custom_tags: 'Dict[str,str]' = None
+    driver_instance_pool_id: str = None
+    driver_node_type_id: str = None
+    enable_elastic_disk: bool = None
+    enable_local_disk_encryption: bool = None
+    gcp_attributes: 'GcpAttributes' = None
+    instance_pool_id: str = None
+    node_type_id: str = None
+    num_workers: int = None
+    policy_id: str = None
+    runtime_engine: 'RuntimeEngine' = None
+    spark_conf: 'Dict[str,str]' = None
+    spark_env_vars: 'Dict[str,str]' = None
+    ssh_public_keys: 'List[str]' = None
+    workload_type: 'WorkloadType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -857,25 +857,25 @@ class EditCluster:
 
 @dataclass
 class EventDetails:
-    attributes: 'ClusterAttributes'
-    cause: 'EventDetailsCause'
-    cluster_size: 'ClusterSize'
-    current_num_vcpus: int
-    current_num_workers: int
-    did_not_expand_reason: str
-    disk_size: int
-    driver_state_message: str
-    enable_termination_for_node_blocklisted: bool
-    free_space: int
-    instance_id: str
-    job_run_name: str
-    previous_attributes: 'ClusterAttributes'
-    previous_cluster_size: 'ClusterSize'
-    previous_disk_size: int
-    reason: 'TerminationReason'
-    target_num_vcpus: int
-    target_num_workers: int
-    user: str
+    attributes: 'ClusterAttributes' = None
+    cause: 'EventDetailsCause' = None
+    cluster_size: 'ClusterSize' = None
+    current_num_vcpus: int = None
+    current_num_workers: int = None
+    did_not_expand_reason: str = None
+    disk_size: int = None
+    driver_state_message: str = None
+    enable_termination_for_node_blocklisted: bool = None
+    free_space: int = None
+    instance_id: str = None
+    job_run_name: str = None
+    previous_attributes: 'ClusterAttributes' = None
+    previous_cluster_size: 'ClusterSize' = None
+    previous_disk_size: int = None
+    reason: 'TerminationReason' = None
+    target_num_vcpus: int = None
+    target_num_workers: int = None
+    user: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -967,9 +967,9 @@ class EventType(Enum):
 
 @dataclass
 class GcpAttributes:
-    availability: 'GcpAvailability'
-    boot_disk_size: int
-    google_service_account: str
+    availability: 'GcpAvailability' = None
+    boot_disk_size: int = None
+    google_service_account: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1005,12 +1005,12 @@ class Get:
 @dataclass
 class GetEvents:
     cluster_id: str
-    end_time: int
-    event_types: 'List[EventType]'
-    limit: int
-    offset: int
-    order: 'GetEventsOrder'
-    start_time: int
+    end_time: int = None
+    event_types: 'List[EventType]' = None
+    limit: int = None
+    offset: int = None
+    order: 'GetEventsOrder' = None
+    start_time: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1043,9 +1043,9 @@ class GetEventsOrder(Enum):
 
 @dataclass
 class GetEventsResponse:
-    events: 'List[ClusterEvent]'
-    next_page: 'GetEvents'
-    total_count: int
+    events: 'List[ClusterEvent]' = None
+    next_page: 'GetEvents' = None
+    total_count: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1064,7 +1064,7 @@ class GetEventsResponse:
 
 @dataclass
 class GetSparkVersionsResponse:
-    versions: 'List[SparkVersion]'
+    versions: 'List[SparkVersion]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1080,9 +1080,9 @@ class GetSparkVersionsResponse:
 
 @dataclass
 class InstanceProfile:
-    iam_role_arn: str
     instance_profile_arn: str
-    is_meta_instance_profile: bool
+    iam_role_arn: str = None
+    is_meta_instance_profile: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1102,13 +1102,13 @@ class InstanceProfile:
 class ListRequest:
     """List all clusters"""
 
-    can_use_client: str
+    can_use_client: str = None
 
 
 @dataclass
 class ListAvailableZonesResponse:
-    default_zone: str
-    zones: 'List[str]'
+    default_zone: str = None
+    zones: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1123,7 +1123,7 @@ class ListAvailableZonesResponse:
 
 @dataclass
 class ListClustersResponse:
-    clusters: 'List[ClusterInfo]'
+    clusters: 'List[ClusterInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1139,7 +1139,7 @@ class ListClustersResponse:
 
 @dataclass
 class ListInstanceProfilesResponse:
-    instance_profiles: 'List[InstanceProfile]'
+    instance_profiles: 'List[InstanceProfile]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1154,7 +1154,7 @@ class ListInstanceProfilesResponse:
 
 @dataclass
 class ListNodeTypesResponse:
-    node_types: 'List[NodeType]'
+    node_types: 'List[NodeType]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1169,8 +1169,8 @@ class ListNodeTypesResponse:
 
 @dataclass
 class LogAnalyticsInfo:
-    log_analytics_primary_key: str
-    log_analytics_workspace_id: str
+    log_analytics_primary_key: str = None
+    log_analytics_workspace_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1187,8 +1187,8 @@ class LogAnalyticsInfo:
 
 @dataclass
 class LogSyncStatus:
-    last_attempted: int
-    last_exception: str
+    last_attempted: int = None
+    last_exception: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1203,11 +1203,11 @@ class LogSyncStatus:
 
 @dataclass
 class NodeInstanceType:
-    instance_type_id: str
-    local_disk_size_gb: int
-    local_disks: int
-    local_nvme_disk_size_gb: int
-    local_nvme_disks: int
+    instance_type_id: str = None
+    local_disk_size_gb: int = None
+    local_disks: int = None
+    local_nvme_disk_size_gb: int = None
+    local_nvme_disks: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1229,26 +1229,26 @@ class NodeInstanceType:
 
 @dataclass
 class NodeType:
-    category: str
-    description: str
-    display_order: int
-    instance_type_id: str
-    is_deprecated: bool
-    is_encrypted_in_transit: bool
-    is_graviton: bool
-    is_hidden: bool
-    is_io_cache_enabled: bool
-    memory_mb: int
-    node_info: 'CloudProviderNodeInfo'
-    node_instance_type: 'NodeInstanceType'
     node_type_id: str
+    memory_mb: int
     num_cores: float
-    num_gpus: int
-    photon_driver_capable: bool
-    photon_worker_capable: bool
-    support_cluster_tags: bool
-    support_ebs_volumes: bool
-    support_port_forwarding: bool
+    description: str
+    instance_type_id: str
+    category: str = None
+    display_order: int = None
+    is_deprecated: bool = None
+    is_encrypted_in_transit: bool = None
+    is_graviton: bool = None
+    is_hidden: bool = None
+    is_io_cache_enabled: bool = None
+    node_info: 'CloudProviderNodeInfo' = None
+    node_instance_type: 'NodeInstanceType' = None
+    num_gpus: int = None
+    photon_driver_capable: bool = None
+    photon_worker_capable: bool = None
+    support_cluster_tags: bool = None
+    support_ebs_volumes: bool = None
+    support_port_forwarding: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1343,9 +1343,9 @@ class RemoveInstanceProfile:
 
 @dataclass
 class ResizeCluster:
-    autoscale: 'AutoScale'
     cluster_id: str
-    num_workers: int
+    autoscale: 'AutoScale' = None
+    num_workers: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1364,7 +1364,7 @@ class ResizeCluster:
 @dataclass
 class RestartCluster:
     cluster_id: str
-    restart_user: str
+    restart_user: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1388,13 +1388,13 @@ class RuntimeEngine(Enum):
 
 @dataclass
 class S3StorageInfo:
-    canned_acl: str
-    destination: str
-    enable_encryption: bool
-    encryption_type: str
-    endpoint: str
-    kms_key: str
-    region: str
+    canned_acl: str = None
+    destination: str = None
+    enable_encryption: bool = None
+    encryption_type: str = None
+    endpoint: str = None
+    kms_key: str = None
+    region: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1420,13 +1420,13 @@ class S3StorageInfo:
 
 @dataclass
 class SparkNode:
-    host_private_ip: str
-    instance_id: str
-    node_aws_attributes: 'SparkNodeAwsAttributes'
-    node_id: str
-    private_ip: str
-    public_dns: str
-    start_timestamp: int
+    host_private_ip: str = None
+    instance_id: str = None
+    node_aws_attributes: 'SparkNodeAwsAttributes' = None
+    node_id: str = None
+    private_ip: str = None
+    public_dns: str = None
+    start_timestamp: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1453,7 +1453,7 @@ class SparkNode:
 
 @dataclass
 class SparkNodeAwsAttributes:
-    is_spot: bool
+    is_spot: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1467,8 +1467,8 @@ class SparkNodeAwsAttributes:
 
 @dataclass
 class SparkVersion:
-    key: str
-    name: str
+    key: str = None
+    name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1510,9 +1510,9 @@ class State(Enum):
 
 @dataclass
 class TerminationReason:
-    code: 'TerminationReasonCode'
-    parameters: 'Dict[str,str]'
-    type: 'TerminationReasonType'
+    code: 'TerminationReasonCode' = None
+    parameters: 'Dict[str,str]' = None
+    type: 'TerminationReasonType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1637,7 +1637,7 @@ class UnpinCluster:
 
 @dataclass
 class WorkloadType:
-    clients: 'ClientsTypes'
+    clients: 'ClientsTypes' = None
 
     def as_dict(self) -> dict:
         body = {}

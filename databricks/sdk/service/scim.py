@@ -12,10 +12,10 @@ _LOG = logging.getLogger('databricks.sdk.service.scim')
 
 @dataclass
 class ComplexValue:
-    display: str
-    primary: bool
-    type: str
-    value: str
+    display: str = None
+    primary: bool = None
+    type: str = None
+    value: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -77,13 +77,13 @@ class GetUserRequest:
 
 @dataclass
 class Group:
-    display_name: str
-    entitlements: 'List[ComplexValue]'
-    external_id: str
-    groups: 'List[ComplexValue]'
     id: str
-    members: 'List[ComplexValue]'
-    roles: 'List[ComplexValue]'
+    display_name: str = None
+    entitlements: 'List[ComplexValue]' = None
+    external_id: str = None
+    groups: 'List[ComplexValue]' = None
+    members: 'List[ComplexValue]' = None
+    roles: 'List[ComplexValue]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -115,21 +115,21 @@ class Group:
 class ListGroupsRequest:
     """List group details"""
 
-    attributes: str
-    count: int
-    excluded_attributes: str
-    filter: str
-    sort_by: str
-    sort_order: 'ListSortOrder'
-    start_index: int
+    attributes: str = None
+    count: int = None
+    excluded_attributes: str = None
+    filter: str = None
+    sort_by: str = None
+    sort_order: 'ListSortOrder' = None
+    start_index: int = None
 
 
 @dataclass
 class ListGroupsResponse:
-    items_per_page: int
-    resources: 'List[Group]'
-    start_index: int
-    total_results: int
+    items_per_page: int = None
+    resources: 'List[Group]' = None
+    start_index: int = None
+    total_results: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -151,10 +151,10 @@ class ListGroupsResponse:
 
 @dataclass
 class ListServicePrincipalResponse:
-    items_per_page: int
-    resources: 'List[ServicePrincipal]'
-    start_index: int
-    total_results: int
+    items_per_page: int = None
+    resources: 'List[ServicePrincipal]' = None
+    start_index: int = None
+    total_results: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -178,13 +178,13 @@ class ListServicePrincipalResponse:
 class ListServicePrincipalsRequest:
     """List service principals"""
 
-    attributes: str
-    count: int
-    excluded_attributes: str
-    filter: str
-    sort_by: str
-    sort_order: 'ListSortOrder'
-    start_index: int
+    attributes: str = None
+    count: int = None
+    excluded_attributes: str = None
+    filter: str = None
+    sort_by: str = None
+    sort_order: 'ListSortOrder' = None
+    start_index: int = None
 
 
 class ListSortOrder(Enum):
@@ -197,21 +197,21 @@ class ListSortOrder(Enum):
 class ListUsersRequest:
     """List users"""
 
-    attributes: str
-    count: int
-    excluded_attributes: str
-    filter: str
-    sort_by: str
-    sort_order: 'ListSortOrder'
-    start_index: int
+    attributes: str = None
+    count: int = None
+    excluded_attributes: str = None
+    filter: str = None
+    sort_by: str = None
+    sort_order: 'ListSortOrder' = None
+    start_index: int = None
 
 
 @dataclass
 class ListUsersResponse:
-    items_per_page: int
-    resources: 'List[User]'
-    start_index: int
-    total_results: int
+    items_per_page: int = None
+    resources: 'List[User]' = None
+    start_index: int = None
+    total_results: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -233,8 +233,8 @@ class ListUsersResponse:
 
 @dataclass
 class Name:
-    family_name: str
-    given_name: str
+    family_name: str = None
+    given_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -250,7 +250,7 @@ class Name:
 @dataclass
 class PartialUpdate:
     id: str
-    operations: 'List[Patch]'
+    operations: 'List[Patch]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -267,9 +267,9 @@ class PartialUpdate:
 
 @dataclass
 class Patch:
-    op: 'PatchOp'
-    path: str
-    value: str
+    op: 'PatchOp' = None
+    path: str = None
+    value: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -295,14 +295,14 @@ class PatchOp(Enum):
 
 @dataclass
 class ServicePrincipal:
-    active: bool
-    application_id: str
-    display_name: str
-    entitlements: 'List[ComplexValue]'
-    external_id: str
-    groups: 'List[ComplexValue]'
     id: str
-    roles: 'List[ComplexValue]'
+    active: bool = None
+    application_id: str = None
+    display_name: str = None
+    entitlements: 'List[ComplexValue]' = None
+    external_id: str = None
+    groups: 'List[ComplexValue]' = None
+    roles: 'List[ComplexValue]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -333,16 +333,16 @@ class ServicePrincipal:
 
 @dataclass
 class User:
-    active: bool
-    display_name: str
-    emails: 'List[ComplexValue]'
-    entitlements: 'List[ComplexValue]'
-    external_id: str
-    groups: 'List[ComplexValue]'
     id: str
-    name: 'Name'
-    roles: 'List[ComplexValue]'
-    user_name: str
+    active: bool = None
+    display_name: str = None
+    emails: 'List[ComplexValue]' = None
+    entitlements: 'List[ComplexValue]' = None
+    external_id: str = None
+    groups: 'List[ComplexValue]' = None
+    name: 'Name' = None
+    roles: 'List[ComplexValue]' = None
+    user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}

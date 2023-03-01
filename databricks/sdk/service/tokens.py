@@ -11,8 +11,8 @@ _LOG = logging.getLogger('databricks.sdk.service.tokens')
 
 @dataclass
 class CreateTokenRequest:
-    comment: str
-    lifetime_seconds: int
+    comment: str = None
+    lifetime_seconds: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -27,8 +27,8 @@ class CreateTokenRequest:
 
 @dataclass
 class CreateTokenResponse:
-    token_info: 'PublicTokenInfo'
-    token_value: str
+    token_info: 'PublicTokenInfo' = None
+    token_value: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -44,7 +44,7 @@ class CreateTokenResponse:
 
 @dataclass
 class ListTokensResponse:
-    token_infos: 'List[PublicTokenInfo]'
+    token_infos: 'List[PublicTokenInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -59,10 +59,10 @@ class ListTokensResponse:
 
 @dataclass
 class PublicTokenInfo:
-    comment: str
-    creation_time: int
-    expiry_time: int
-    token_id: str
+    comment: str = None
+    creation_time: int = None
+    expiry_time: int = None
+    token_id: str = None
 
     def as_dict(self) -> dict:
         body = {}

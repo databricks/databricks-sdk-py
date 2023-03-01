@@ -12,8 +12,8 @@ _LOG = logging.getLogger('databricks.sdk.service.secrets')
 
 @dataclass
 class AclItem:
-    permission: 'AclPermission'
     principal: str
+    permission: 'AclPermission'
 
     def as_dict(self) -> dict:
         body = {}
@@ -37,8 +37,8 @@ class AclPermission(Enum):
 
 @dataclass
 class AzureKeyVaultSecretScopeMetadata:
-    dns_name: str
     resource_id: str
+    dns_name: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -53,10 +53,10 @@ class AzureKeyVaultSecretScopeMetadata:
 
 @dataclass
 class CreateScope:
-    initial_manage_principal: str
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata'
     scope: str
-    scope_backend_type: 'ScopeBackendType'
+    initial_manage_principal: str = None
+    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
+    scope_backend_type: 'ScopeBackendType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -78,8 +78,8 @@ class CreateScope:
 
 @dataclass
 class DeleteAcl:
-    principal: str
     scope: str
+    principal: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -108,8 +108,8 @@ class DeleteScope:
 
 @dataclass
 class DeleteSecret:
-    key: str
     scope: str
+    key: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -126,8 +126,8 @@ class DeleteSecret:
 class GetAcl:
     """Get secret ACL details"""
 
-    principal: str
     scope: str
+    principal: str
 
 
 @dataclass
@@ -139,7 +139,7 @@ class ListAcls:
 
 @dataclass
 class ListAclsResponse:
-    items: 'List[AclItem]'
+    items: 'List[AclItem]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -154,7 +154,7 @@ class ListAclsResponse:
 
 @dataclass
 class ListScopesResponse:
-    scopes: 'List[SecretScope]'
+    scopes: 'List[SecretScope]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -176,7 +176,7 @@ class ListSecrets:
 
 @dataclass
 class ListSecretsResponse:
-    secrets: 'List[SecretMetadata]'
+    secrets: 'List[SecretMetadata]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -191,9 +191,9 @@ class ListSecretsResponse:
 
 @dataclass
 class PutAcl:
-    permission: 'AclPermission'
-    principal: str
     scope: str
+    principal: str
+    permission: 'AclPermission'
 
     def as_dict(self) -> dict:
         body = {}
@@ -212,10 +212,10 @@ class PutAcl:
 
 @dataclass
 class PutSecret:
-    bytes_value: str
-    key: str
     scope: str
-    string_value: str
+    key: str
+    bytes_value: str = None
+    string_value: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -241,8 +241,8 @@ class ScopeBackendType(Enum):
 
 @dataclass
 class SecretMetadata:
-    key: str
-    last_updated_timestamp: int
+    key: str = None
+    last_updated_timestamp: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -257,9 +257,9 @@ class SecretMetadata:
 
 @dataclass
 class SecretScope:
-    backend_type: 'ScopeBackendType'
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata'
-    name: str
+    backend_type: 'ScopeBackendType' = None
+    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
+    name: str = None
 
     def as_dict(self) -> dict:
         body = {}

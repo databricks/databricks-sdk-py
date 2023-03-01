@@ -19,9 +19,9 @@ class AuthenticationType(Enum):
 
 @dataclass
 class AwsIamRole:
-    external_id: str
     role_arn: str
-    unity_catalog_iam_arn: str
+    external_id: str = None
+    unity_catalog_iam_arn: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -39,9 +39,9 @@ class AwsIamRole:
 
 @dataclass
 class AzureServicePrincipal:
+    directory_id: str
     application_id: str
     client_secret: str
-    directory_id: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -59,20 +59,20 @@ class AzureServicePrincipal:
 
 @dataclass
 class CatalogInfo:
-    catalog_type: 'CatalogType'
-    comment: str
-    created_at: int
-    created_by: str
-    metastore_id: str
-    name: str
-    owner: str
-    properties: 'Dict[str,str]'
-    provider_name: str
-    share_name: str
-    storage_location: str
-    storage_root: str
-    updated_at: int
-    updated_by: str
+    catalog_type: 'CatalogType' = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    properties: 'Dict[str,str]' = None
+    provider_name: str = None
+    share_name: str = None
+    storage_location: str = None
+    storage_root: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -121,18 +121,18 @@ class CatalogType(Enum):
 
 @dataclass
 class ColumnInfo:
-    comment: str
-    mask: 'ColumnMask'
-    name: str
-    nullable: bool
-    partition_index: int
-    position: int
-    type_interval_type: str
-    type_json: str
-    type_name: 'ColumnTypeName'
-    type_precision: int
-    type_scale: int
-    type_text: str
+    comment: str = None
+    mask: 'ColumnMask' = None
+    name: str = None
+    nullable: bool = None
+    partition_index: int = None
+    position: int = None
+    type_interval_type: str = None
+    type_json: str = None
+    type_name: 'ColumnTypeName' = None
+    type_precision: int = None
+    type_scale: int = None
+    type_text: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -169,8 +169,8 @@ class ColumnInfo:
 
 @dataclass
 class ColumnMask:
-    function_name: str
-    using_column_names: 'List[str]'
+    function_name: str = None
+    using_column_names: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -211,12 +211,12 @@ class ColumnTypeName(Enum):
 
 @dataclass
 class CreateCatalog:
-    comment: str
     name: str
-    properties: 'Dict[str,str]'
-    provider_name: str
-    share_name: str
-    storage_root: str
+    comment: str = None
+    properties: 'Dict[str,str]' = None
+    provider_name: str = None
+    share_name: str = None
+    storage_root: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -240,12 +240,12 @@ class CreateCatalog:
 
 @dataclass
 class CreateExternalLocation:
-    comment: str
-    credential_name: str
     name: str
-    read_only: bool
-    skip_validation: bool
     url: str
+    credential_name: str
+    comment: str = None
+    read_only: bool = None
+    skip_validation: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -269,27 +269,27 @@ class CreateExternalLocation:
 
 @dataclass
 class CreateFunction:
-    catalog_name: str
-    comment: str
-    data_type: 'ColumnTypeName'
-    external_language: str
-    external_name: str
-    full_data_type: str
-    input_params: 'List[FunctionParameterInfo]'
-    is_deterministic: bool
-    is_null_call: bool
     name: str
-    parameter_style: 'CreateFunctionParameterStyle'
-    properties: 'Dict[str,str]'
+    catalog_name: str
+    schema_name: str
+    input_params: 'List[FunctionParameterInfo]'
+    data_type: 'ColumnTypeName'
+    full_data_type: str
     return_params: 'List[FunctionParameterInfo]'
     routine_body: 'CreateFunctionRoutineBody'
     routine_definition: str
     routine_dependencies: 'List[Dependency]'
-    schema_name: str
+    parameter_style: 'CreateFunctionParameterStyle'
+    is_deterministic: bool
+    sql_data_access: 'CreateFunctionSqlDataAccess'
+    is_null_call: bool
     security_type: 'CreateFunctionSecurityType'
     specific_name: str
-    sql_data_access: 'CreateFunctionSqlDataAccess'
-    sql_path: str
+    comment: str = None
+    external_language: str = None
+    external_name: str = None
+    properties: 'Dict[str,str]' = None
+    sql_path: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -383,8 +383,8 @@ class CreateFunctionSqlDataAccess(Enum):
 @dataclass
 class CreateMetastore:
     name: str
-    region: str
     storage_root: str
+    region: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -402,8 +402,8 @@ class CreateMetastore:
 
 @dataclass
 class CreateMetastoreAssignment:
-    default_catalog_name: str
     metastore_id: str
+    default_catalog_name: str
     workspace_id: int
 
     def as_dict(self) -> dict:
@@ -422,10 +422,10 @@ class CreateMetastoreAssignment:
 
 @dataclass
 class CreateProvider:
-    authentication_type: 'AuthenticationType'
-    comment: str
     name: str
-    recipient_profile_str: str
+    authentication_type: 'AuthenticationType'
+    comment: str = None
+    recipient_profile_str: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -446,14 +446,14 @@ class CreateProvider:
 
 @dataclass
 class CreateRecipient:
-    authentication_type: 'AuthenticationType'
-    comment: str
-    data_recipient_global_metastore_id: Any
-    ip_access_list: 'IpAccessList'
     name: str
-    owner: str
-    properties_kvpairs: Any
-    sharing_code: str
+    authentication_type: 'AuthenticationType'
+    comment: str = None
+    data_recipient_global_metastore_id: Any = None
+    ip_access_list: 'IpAccessList' = None
+    owner: str = None
+    properties_kvpairs: Any = None
+    sharing_code: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -484,11 +484,11 @@ class CreateRecipient:
 
 @dataclass
 class CreateSchema:
-    catalog_name: str
-    comment: str
     name: str
-    properties: 'Dict[str,str]'
-    storage_root: str
+    catalog_name: str
+    comment: str = None
+    properties: 'Dict[str,str]' = None
+    storage_root: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -510,8 +510,8 @@ class CreateSchema:
 
 @dataclass
 class CreateShare:
-    comment: str
     name: str
+    comment: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -526,13 +526,13 @@ class CreateShare:
 
 @dataclass
 class CreateStorageCredential:
-    aws_iam_role: 'AwsIamRole'
-    azure_service_principal: 'AzureServicePrincipal'
-    comment: str
-    gcp_service_account_key: 'GcpServiceAccountKey'
     name: str
-    read_only: bool
-    skip_validation: bool
+    aws_iam_role: 'AwsIamRole' = None
+    azure_service_principal: 'AzureServicePrincipal' = None
+    comment: str = None
+    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    read_only: bool = None
+    skip_validation: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -562,8 +562,8 @@ class CreateStorageCredential:
 
 @dataclass
 class CreateTableConstraint:
-    constraint: 'TableConstraint'
     full_name_arg: str
+    constraint: 'TableConstraint'
 
     def as_dict(self) -> dict:
         body = {}
@@ -595,32 +595,32 @@ class DataSourceFormat(Enum):
 class DeleteCatalogRequest:
     """Delete a catalog"""
 
-    force: bool
     name: str
+    force: bool = None
 
 
 @dataclass
 class DeleteExternalLocationRequest:
     """Delete an external location"""
 
-    force: bool
     name: str
+    force: bool = None
 
 
 @dataclass
 class DeleteFunctionRequest:
     """Delete a function"""
 
-    force: bool
     name: str
+    force: bool = None
 
 
 @dataclass
 class DeleteMetastoreRequest:
     """Delete a metastore"""
 
-    force: bool
     id: str
+    force: bool = None
 
 
 @dataclass
@@ -655,17 +655,17 @@ class DeleteShareRequest:
 class DeleteStorageCredentialRequest:
     """Delete a credential"""
 
-    force: bool
     name: str
+    force: bool = None
 
 
 @dataclass
 class DeleteTableConstraintRequest:
     """Delete a table constraint"""
 
-    cascade: bool
-    constraint_name: str
     full_name: str
+    constraint_name: str
+    cascade: bool
 
 
 @dataclass
@@ -680,8 +680,8 @@ class Dependency:
     """A dependency of a SQL object. Either the __table__ field or the __function__ field must be
     defined."""
 
-    function: 'FunctionDependency'
-    table: 'TableDependency'
+    function: 'FunctionDependency' = None
+    table: 'TableDependency' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -697,7 +697,7 @@ class Dependency:
 
 @dataclass
 class EffectivePermissionsList:
-    privilege_assignments: 'List[EffectivePrivilegeAssignment]'
+    privilege_assignments: 'List[EffectivePrivilegeAssignment]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -714,9 +714,9 @@ class EffectivePermissionsList:
 
 @dataclass
 class EffectivePrivilege:
-    inherited_from_name: str
-    inherited_from_type: 'SecurableType'
-    privilege: 'Privilege'
+    inherited_from_name: str = None
+    inherited_from_type: 'SecurableType' = None
+    privilege: 'Privilege' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -735,8 +735,8 @@ class EffectivePrivilege:
 
 @dataclass
 class EffectivePrivilegeAssignment:
-    principal: str
-    privileges: 'List[EffectivePrivilege]'
+    principal: str = None
+    privileges: 'List[EffectivePrivilege]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -753,18 +753,18 @@ class EffectivePrivilegeAssignment:
 
 @dataclass
 class ExternalLocationInfo:
-    comment: str
-    created_at: int
-    created_by: str
-    credential_id: str
-    credential_name: str
-    metastore_id: str
-    name: str
-    owner: str
-    read_only: bool
-    updated_at: int
-    updated_by: str
-    url: str
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    credential_id: str = None
+    credential_name: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    read_only: bool = None
+    updated_at: int = None
+    updated_by: str = None
+    url: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -800,10 +800,10 @@ class ExternalLocationInfo:
 
 @dataclass
 class ForeignKeyConstraint:
-    child_columns: 'List[str]'
     name: str
-    parent_columns: 'List[str]'
+    child_columns: 'List[str]'
     parent_table: str
+    parent_columns: 'List[str]'
 
     def as_dict(self) -> dict:
         body = {}
@@ -839,35 +839,35 @@ class FunctionDependency:
 
 @dataclass
 class FunctionInfo:
-    catalog_name: str
-    comment: str
-    created_at: int
-    created_by: str
-    data_type: 'ColumnTypeName'
-    external_language: str
-    external_name: str
-    full_data_type: str
-    full_name: str
-    function_id: str
-    input_params: 'List[FunctionParameterInfo]'
-    is_deterministic: bool
-    is_null_call: bool
-    metastore_id: str
-    name: str
-    owner: str
-    parameter_style: 'FunctionInfoParameterStyle'
-    properties: 'Dict[str,str]'
-    return_params: 'List[FunctionParameterInfo]'
-    routine_body: 'FunctionInfoRoutineBody'
-    routine_definition: str
-    routine_dependencies: 'List[Dependency]'
-    schema_name: str
-    security_type: 'FunctionInfoSecurityType'
-    specific_name: str
-    sql_data_access: 'FunctionInfoSqlDataAccess'
-    sql_path: str
-    updated_at: int
-    updated_by: str
+    catalog_name: str = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    data_type: 'ColumnTypeName' = None
+    external_language: str = None
+    external_name: str = None
+    full_data_type: str = None
+    full_name: str = None
+    function_id: str = None
+    input_params: 'List[FunctionParameterInfo]' = None
+    is_deterministic: bool = None
+    is_null_call: bool = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    parameter_style: 'FunctionInfoParameterStyle' = None
+    properties: 'Dict[str,str]' = None
+    return_params: 'List[FunctionParameterInfo]' = None
+    routine_body: 'FunctionInfoRoutineBody' = None
+    routine_definition: str = None
+    routine_dependencies: 'List[Dependency]' = None
+    schema_name: str = None
+    security_type: 'FunctionInfoSecurityType' = None
+    specific_name: str = None
+    sql_data_access: 'FunctionInfoSqlDataAccess' = None
+    sql_path: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -976,18 +976,18 @@ class FunctionInfoSqlDataAccess(Enum):
 
 @dataclass
 class FunctionParameterInfo:
-    comment: str
     name: str
-    parameter_default: str
-    parameter_mode: 'FunctionParameterMode'
-    parameter_type: 'FunctionParameterType'
-    position: int
-    type_interval_type: str
-    type_json: str
-    type_name: 'ColumnTypeName'
-    type_precision: int
-    type_scale: int
     type_text: str
+    type_name: 'ColumnTypeName'
+    position: int
+    comment: str = None
+    parameter_default: str = None
+    parameter_mode: 'FunctionParameterMode' = None
+    parameter_type: 'FunctionParameterType' = None
+    type_interval_type: str = None
+    type_json: str = None
+    type_precision: int = None
+    type_scale: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1040,8 +1040,8 @@ class FunctionParameterType(Enum):
 @dataclass
 class GcpServiceAccountKey:
     email: str
-    private_key: str
     private_key_id: str
+    private_key: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -1075,9 +1075,9 @@ class GetCatalogRequest:
 class GetEffectiveRequest:
     """Get effective permissions"""
 
-    full_name: str
-    principal: str
     securable_type: 'SecurableType'
+    full_name: str
+    principal: str = None
 
 
 @dataclass
@@ -1098,9 +1098,9 @@ class GetFunctionRequest:
 class GetGrantRequest:
     """Get permissions"""
 
-    full_name: str
-    principal: str
     securable_type: 'SecurableType'
+    full_name: str
+    principal: str = None
 
 
 @dataclass
@@ -1112,24 +1112,24 @@ class GetMetastoreRequest:
 
 @dataclass
 class GetMetastoreSummaryResponse:
-    cloud: str
-    created_at: int
-    created_by: str
-    default_data_access_config_id: str
-    delta_sharing_organization_name: str
-    delta_sharing_recipient_token_lifetime_in_seconds: int
-    delta_sharing_scope: 'GetMetastoreSummaryResponseDeltaSharingScope'
-    global_metastore_id: str
-    metastore_id: str
-    name: str
-    owner: str
-    privilege_model_version: str
-    region: str
-    storage_root: str
-    storage_root_credential_id: str
-    storage_root_credential_name: str
-    updated_at: int
-    updated_by: str
+    cloud: str = None
+    created_at: int = None
+    created_by: str = None
+    default_data_access_config_id: str = None
+    delta_sharing_organization_name: str = None
+    delta_sharing_recipient_token_lifetime_in_seconds: int = None
+    delta_sharing_scope: 'GetMetastoreSummaryResponseDeltaSharingScope' = None
+    global_metastore_id: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    privilege_model_version: str = None
+    region: str = None
+    storage_root: str = None
+    storage_root_credential_id: str = None
+    storage_root_credential_name: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1206,7 +1206,7 @@ class GetRecipientRequest:
 
 @dataclass
 class GetRecipientSharePermissionsResponse:
-    permissions_out: 'List[ShareToPrivilegeAssignment]'
+    permissions_out: 'List[ShareToPrivilegeAssignment]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1230,8 +1230,8 @@ class GetSchemaRequest:
 class GetShareRequest:
     """Get a share"""
 
-    include_shared_data: bool
     name: str
+    include_shared_data: bool = None
 
 
 @dataclass
@@ -1246,12 +1246,12 @@ class GetTableRequest:
     """Get a table"""
 
     full_name: str
-    include_delta_metadata: bool
+    include_delta_metadata: bool = None
 
 
 @dataclass
 class IpAccessList:
-    allowed_ip_addresses: 'List[str]'
+    allowed_ip_addresses: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1265,7 +1265,7 @@ class IpAccessList:
 
 @dataclass
 class ListCatalogsResponse:
-    catalogs: 'List[CatalogInfo]'
+    catalogs: 'List[CatalogInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1281,7 +1281,7 @@ class ListCatalogsResponse:
 
 @dataclass
 class ListExternalLocationsResponse:
-    external_locations: 'List[ExternalLocationInfo]'
+    external_locations: 'List[ExternalLocationInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1305,7 +1305,7 @@ class ListFunctionsRequest:
 
 @dataclass
 class ListFunctionsResponse:
-    schemas: 'List[FunctionInfo]'
+    schemas: 'List[FunctionInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1320,7 +1320,7 @@ class ListFunctionsResponse:
 
 @dataclass
 class ListMetastoresResponse:
-    metastores: 'List[MetastoreInfo]'
+    metastores: 'List[MetastoreInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1335,7 +1335,7 @@ class ListMetastoresResponse:
 
 @dataclass
 class ListProviderSharesResponse:
-    shares: 'List[ProviderShare]'
+    shares: 'List[ProviderShare]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1352,12 +1352,12 @@ class ListProviderSharesResponse:
 class ListProvidersRequest:
     """List providers"""
 
-    data_provider_global_metastore_id: str
+    data_provider_global_metastore_id: str = None
 
 
 @dataclass
 class ListProvidersResponse:
-    providers: 'List[ProviderInfo]'
+    providers: 'List[ProviderInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1375,12 +1375,12 @@ class ListProvidersResponse:
 class ListRecipientsRequest:
     """List share recipients"""
 
-    data_recipient_global_metastore_id: str
+    data_recipient_global_metastore_id: str = None
 
 
 @dataclass
 class ListRecipientsResponse:
-    recipients: 'List[RecipientInfo]'
+    recipients: 'List[RecipientInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1402,7 +1402,7 @@ class ListSchemasRequest:
 
 @dataclass
 class ListSchemasResponse:
-    schemas: 'List[SchemaInfo]'
+    schemas: 'List[SchemaInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1424,7 +1424,7 @@ class ListSharesRequest:
 
 @dataclass
 class ListSharesResponse:
-    shares: 'List[ShareInfo]'
+    shares: 'List[ShareInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1439,7 +1439,7 @@ class ListSharesResponse:
 
 @dataclass
 class ListStorageCredentialsResponse:
-    storage_credentials: 'List[StorageCredentialInfo]'
+    storage_credentials: 'List[StorageCredentialInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1458,16 +1458,16 @@ class ListSummariesRequest:
     """List table summaries"""
 
     catalog_name: str
-    max_results: int
-    page_token: str
-    schema_name_pattern: str
-    table_name_pattern: str
+    max_results: int = None
+    page_token: str = None
+    schema_name_pattern: str = None
+    table_name_pattern: str = None
 
 
 @dataclass
 class ListTableSummariesResponse:
-    next_page_token: str
-    tables: 'List[TableSummary]'
+    next_page_token: str = None
+    tables: 'List[TableSummary]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1487,13 +1487,13 @@ class ListTablesRequest:
     """List tables"""
 
     catalog_name: str
-    include_delta_metadata: bool
     schema_name: str
+    include_delta_metadata: bool = None
 
 
 @dataclass
 class ListTablesResponse:
-    tables: 'List[TableInfo]'
+    tables: 'List[TableInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1508,9 +1508,9 @@ class ListTablesResponse:
 
 @dataclass
 class MetastoreAssignment:
-    default_catalog_name: str
     metastore_id: str
     workspace_id: str
+    default_catalog_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1528,24 +1528,24 @@ class MetastoreAssignment:
 
 @dataclass
 class MetastoreInfo:
-    cloud: str
-    created_at: int
-    created_by: str
-    default_data_access_config_id: str
-    delta_sharing_organization_name: str
-    delta_sharing_recipient_token_lifetime_in_seconds: int
-    delta_sharing_scope: 'MetastoreInfoDeltaSharingScope'
-    global_metastore_id: str
-    metastore_id: str
-    name: str
-    owner: str
-    privilege_model_version: str
-    region: str
-    storage_root: str
-    storage_root_credential_id: str
-    storage_root_credential_name: str
-    updated_at: int
-    updated_by: str
+    cloud: str = None
+    created_at: int = None
+    created_by: str = None
+    default_data_access_config_id: str = None
+    delta_sharing_organization_name: str = None
+    delta_sharing_recipient_token_lifetime_in_seconds: int = None
+    delta_sharing_scope: 'MetastoreInfoDeltaSharingScope' = None
+    global_metastore_id: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    privilege_model_version: str = None
+    region: str = None
+    storage_root: str = None
+    storage_root_credential_id: str = None
+    storage_root_credential_name: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1622,7 +1622,7 @@ class NamedTableConstraint:
 
 @dataclass
 class Partition:
-    values: 'List[PartitionValue]'
+    values: 'List[PartitionValue]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1637,10 +1637,10 @@ class Partition:
 
 @dataclass
 class PartitionValue:
-    name: str
-    op: 'PartitionValueOp'
-    recipient_property_key: str
-    value: str
+    name: str = None
+    op: 'PartitionValueOp' = None
+    recipient_property_key: str = None
+    value: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1667,9 +1667,9 @@ class PartitionValueOp(Enum):
 
 @dataclass
 class PermissionsChange:
-    add: 'List[Privilege]'
-    principal: str
-    remove: 'List[Privilege]'
+    add: 'List[Privilege]' = None
+    principal: str = None
+    remove: 'List[Privilege]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1685,7 +1685,7 @@ class PermissionsChange:
 
 @dataclass
 class PermissionsList:
-    privilege_assignments: 'List[PrivilegeAssignment]'
+    privilege_assignments: 'List[PrivilegeAssignment]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1702,8 +1702,8 @@ class PermissionsList:
 
 @dataclass
 class PrimaryKeyConstraint:
-    child_columns: 'List[str]'
     name: str
+    child_columns: 'List[str]'
 
     def as_dict(self) -> dict:
         body = {}
@@ -1752,8 +1752,8 @@ class Privilege(Enum):
 
 @dataclass
 class PrivilegeAssignment:
-    principal: str
-    privileges: 'List[Privilege]'
+    principal: str = None
+    privileges: 'List[Privilege]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1768,20 +1768,20 @@ class PrivilegeAssignment:
 
 @dataclass
 class ProviderInfo:
-    authentication_type: 'AuthenticationType'
-    cloud: str
-    comment: str
-    created_at: int
-    created_by: str
-    data_provider_global_metastore_id: str
-    metastore_id: str
-    name: str
-    owner: str
-    recipient_profile: 'RecipientProfile'
-    recipient_profile_str: str
-    region: str
-    updated_at: int
-    updated_by: str
+    authentication_type: 'AuthenticationType' = None
+    cloud: str = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    data_provider_global_metastore_id: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    recipient_profile: 'RecipientProfile' = None
+    recipient_profile_str: str = None
+    region: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1824,7 +1824,7 @@ class ProviderInfo:
 
 @dataclass
 class ProviderShare:
-    name: str
+    name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1838,24 +1838,24 @@ class ProviderShare:
 
 @dataclass
 class RecipientInfo:
-    activated: bool
-    activation_url: str
-    authentication_type: 'AuthenticationType'
-    cloud: str
-    comment: str
-    created_at: int
-    created_by: str
-    data_recipient_global_metastore_id: Any
-    ip_access_list: 'IpAccessList'
-    metastore_id: str
-    name: str
-    owner: str
-    properties_kvpairs: Any
-    region: str
-    sharing_code: str
-    tokens: 'List[RecipientTokenInfo]'
-    updated_at: int
-    updated_by: str
+    activated: bool = None
+    activation_url: str = None
+    authentication_type: 'AuthenticationType' = None
+    cloud: str = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    data_recipient_global_metastore_id: Any = None
+    ip_access_list: 'IpAccessList' = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    properties_kvpairs: Any = None
+    region: str = None
+    sharing_code: str = None
+    tokens: 'List[RecipientTokenInfo]' = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1907,9 +1907,9 @@ class RecipientInfo:
 
 @dataclass
 class RecipientProfile:
-    bearer_token: str
-    endpoint: str
-    share_credentials_version: int
+    bearer_token: str = None
+    endpoint: str = None
+    share_credentials_version: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1927,13 +1927,13 @@ class RecipientProfile:
 
 @dataclass
 class RecipientTokenInfo:
-    activation_url: str
-    created_at: int
-    created_by: str
-    expiration_time: int
-    id: str
-    updated_at: int
-    updated_by: str
+    activation_url: str = None
+    created_at: int = None
+    created_by: str = None
+    expiration_time: int = None
+    id: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1966,10 +1966,10 @@ class RetrieveTokenRequest:
 
 @dataclass
 class RetrieveTokenResponse:
-    bearer_token: str
-    endpoint: str
-    expiration_time: str
-    share_credentials_version: int
+    bearer_token: str = None
+    endpoint: str = None
+    expiration_time: str = None
+    share_credentials_version: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2007,20 +2007,20 @@ class RotateRecipientToken:
 
 @dataclass
 class SchemaInfo:
-    catalog_name: str
-    catalog_type: str
-    comment: str
-    created_at: int
-    created_by: str
-    full_name: str
-    metastore_id: str
-    name: str
-    owner: str
-    properties: 'Dict[str,str]'
-    storage_location: str
-    storage_root: str
-    updated_at: int
-    updated_by: str
+    catalog_name: str = None
+    catalog_type: str = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    full_name: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    properties: 'Dict[str,str]' = None
+    storage_location: str = None
+    storage_root: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2078,14 +2078,14 @@ class SecurableType(Enum):
 
 @dataclass
 class ShareInfo:
-    comment: str
-    created_at: int
-    created_by: str
-    name: str
-    objects: 'List[SharedDataObject]'
-    owner: str
-    updated_at: int
-    updated_by: str
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    name: str = None
+    objects: 'List[SharedDataObject]' = None
+    owner: str = None
+    updated_at: int = None
+    updated_by: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2121,8 +2121,8 @@ class SharePermissionsRequest:
 
 @dataclass
 class ShareToPrivilegeAssignment:
-    privilege_assignments: 'List[PrivilegeAssignment]'
-    share_name: str
+    privilege_assignments: 'List[PrivilegeAssignment]' = None
+    share_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2141,16 +2141,16 @@ class ShareToPrivilegeAssignment:
 
 @dataclass
 class SharedDataObject:
-    added_at: int
-    added_by: str
-    cdf_enabled: bool
-    comment: str
-    data_object_type: str
     name: str
-    partitions: 'List[Partition]'
-    shared_as: str
-    start_version: int
-    status: 'SharedDataObjectStatus'
+    added_at: int = None
+    added_by: str = None
+    cdf_enabled: bool = None
+    comment: str = None
+    data_object_type: str = None
+    partitions: 'List[Partition]' = None
+    shared_as: str = None
+    start_version: int = None
+    status: 'SharedDataObjectStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2191,8 +2191,8 @@ class SharedDataObjectStatus(Enum):
 
 @dataclass
 class SharedDataObjectUpdate:
-    action: 'SharedDataObjectUpdateAction'
-    data_object: 'SharedDataObject'
+    action: 'SharedDataObjectUpdateAction' = None
+    data_object: 'SharedDataObject' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2217,20 +2217,20 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class StorageCredentialInfo:
-    aws_iam_role: 'AwsIamRole'
-    azure_service_principal: 'AzureServicePrincipal'
-    comment: str
-    created_at: int
-    created_by: str
-    gcp_service_account_key: 'GcpServiceAccountKey'
-    id: str
-    metastore_id: str
-    name: str
-    owner: str
-    read_only: bool
-    updated_at: int
-    updated_by: str
-    used_for_managed_storage: bool
+    aws_iam_role: 'AwsIamRole' = None
+    azure_service_principal: 'AzureServicePrincipal' = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    id: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    read_only: bool = None
+    updated_at: int = None
+    updated_by: str = None
+    used_for_managed_storage: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2277,9 +2277,9 @@ class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
     __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
 
-    foreign_key_constraint: 'ForeignKeyConstraint'
-    named_table_constraint: 'NamedTableConstraint'
-    primary_key_constraint: 'PrimaryKeyConstraint'
+    foreign_key_constraint: 'ForeignKeyConstraint' = None
+    named_table_constraint: 'NamedTableConstraint' = None
+    primary_key_constraint: 'PrimaryKeyConstraint' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2300,7 +2300,7 @@ class TableConstraint:
 
 @dataclass
 class TableConstraintList:
-    table_constraints: 'List[TableConstraint]'
+    table_constraints: 'List[TableConstraint]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2331,32 +2331,32 @@ class TableDependency:
 
 @dataclass
 class TableInfo:
-    catalog_name: str
-    columns: 'List[ColumnInfo]'
-    comment: str
-    created_at: int
-    created_by: str
-    data_access_configuration_id: str
-    data_source_format: 'DataSourceFormat'
-    deleted_at: int
-    delta_runtime_properties_kvpairs: Any
-    full_name: str
-    metastore_id: str
-    name: str
-    owner: str
-    properties: 'Dict[str,str]'
-    row_filter: 'TableRowFilter'
-    schema_name: str
-    sql_path: str
-    storage_credential_name: str
-    storage_location: str
-    table_constraints: 'TableConstraintList'
-    table_id: str
-    table_type: 'TableType'
-    updated_at: int
-    updated_by: str
-    view_definition: str
-    view_dependencies: 'List[Dependency]'
+    catalog_name: str = None
+    columns: 'List[ColumnInfo]' = None
+    comment: str = None
+    created_at: int = None
+    created_by: str = None
+    data_access_configuration_id: str = None
+    data_source_format: 'DataSourceFormat' = None
+    deleted_at: int = None
+    delta_runtime_properties_kvpairs: Any = None
+    full_name: str = None
+    metastore_id: str = None
+    name: str = None
+    owner: str = None
+    properties: 'Dict[str,str]' = None
+    row_filter: 'TableRowFilter' = None
+    schema_name: str = None
+    sql_path: str = None
+    storage_credential_name: str = None
+    storage_location: str = None
+    table_constraints: 'TableConstraintList' = None
+    table_id: str = None
+    table_type: 'TableType' = None
+    updated_at: int = None
+    updated_by: str = None
+    view_definition: str = None
+    view_dependencies: 'List[Dependency]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2426,8 +2426,8 @@ class TableInfo:
 
 @dataclass
 class TableRowFilter:
-    input_column_names: 'List[str]'
     name: str
+    input_column_names: 'List[str]'
 
     def as_dict(self) -> dict:
         body = {}
@@ -2442,8 +2442,8 @@ class TableRowFilter:
 
 @dataclass
 class TableSummary:
-    full_name: str
-    table_type: 'TableType'
+    full_name: str = None
+    table_type: 'TableType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2470,16 +2470,16 @@ class TableType(Enum):
 class UnassignRequest:
     """Delete an assignment"""
 
-    metastore_id: str
     workspace_id: int
+    metastore_id: str
 
 
 @dataclass
 class UpdateCatalog:
-    comment: str
     name: str
-    owner: str
-    properties: 'Dict[str,str]'
+    comment: str = None
+    owner: str = None
+    properties: 'Dict[str,str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2499,13 +2499,13 @@ class UpdateCatalog:
 
 @dataclass
 class UpdateExternalLocation:
-    comment: str
-    credential_name: str
-    force: bool
     name: str
-    owner: str
-    read_only: bool
-    url: str
+    comment: str = None
+    credential_name: str = None
+    force: bool = None
+    owner: str = None
+    read_only: bool = None
+    url: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2532,7 +2532,7 @@ class UpdateExternalLocation:
 @dataclass
 class UpdateFunction:
     name: str
-    owner: str
+    owner: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2547,14 +2547,14 @@ class UpdateFunction:
 
 @dataclass
 class UpdateMetastore:
-    delta_sharing_organization_name: str
-    delta_sharing_recipient_token_lifetime_in_seconds: int
-    delta_sharing_scope: 'UpdateMetastoreDeltaSharingScope'
     id: str
-    name: str
-    owner: str
-    privilege_model_version: str
-    storage_root_credential_id: str
+    delta_sharing_organization_name: str = None
+    delta_sharing_recipient_token_lifetime_in_seconds: int = None
+    delta_sharing_scope: 'UpdateMetastoreDeltaSharingScope' = None
+    name: str = None
+    owner: str = None
+    privilege_model_version: str = None
+    storage_root_credential_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2588,9 +2588,9 @@ class UpdateMetastore:
 
 @dataclass
 class UpdateMetastoreAssignment:
-    default_catalog_name: str
-    metastore_id: str
     workspace_id: int
+    default_catalog_name: str = None
+    metastore_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2615,9 +2615,9 @@ class UpdateMetastoreDeltaSharingScope(Enum):
 
 @dataclass
 class UpdatePermissions:
-    changes: 'List[PermissionsChange]'
-    full_name: str
     securable_type: 'SecurableType'
+    full_name: str
+    changes: 'List[PermissionsChange]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2637,10 +2637,10 @@ class UpdatePermissions:
 
 @dataclass
 class UpdateProvider:
-    comment: str
     name: str
-    owner: str
-    recipient_profile_str: str
+    comment: str = None
+    owner: str = None
+    recipient_profile_str: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2660,11 +2660,11 @@ class UpdateProvider:
 
 @dataclass
 class UpdateRecipient:
-    comment: str
-    ip_access_list: 'IpAccessList'
     name: str
-    owner: str
-    properties_kvpairs: Any
+    comment: str = None
+    ip_access_list: 'IpAccessList' = None
+    owner: str = None
+    properties_kvpairs: Any = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2687,11 +2687,11 @@ class UpdateRecipient:
 
 @dataclass
 class UpdateSchema:
-    comment: str
     full_name: str
-    name: str
-    owner: str
-    properties: 'Dict[str,str]'
+    comment: str = None
+    name: str = None
+    owner: str = None
+    properties: 'Dict[str,str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2713,10 +2713,10 @@ class UpdateSchema:
 
 @dataclass
 class UpdateShare:
-    comment: str
     name: str
-    owner: str
-    updates: 'List[SharedDataObjectUpdate]'
+    comment: str = None
+    owner: str = None
+    updates: 'List[SharedDataObjectUpdate]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2737,8 +2737,8 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    changes: 'List[PermissionsChange]'
     name: str
+    changes: 'List[PermissionsChange]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2755,15 +2755,15 @@ class UpdateSharePermissions:
 
 @dataclass
 class UpdateStorageCredential:
-    aws_iam_role: 'AwsIamRole'
-    azure_service_principal: 'AzureServicePrincipal'
-    comment: str
-    force: bool
-    gcp_service_account_key: 'GcpServiceAccountKey'
     name: str
-    owner: str
-    read_only: bool
-    skip_validation: bool
+    aws_iam_role: 'AwsIamRole' = None
+    azure_service_principal: 'AzureServicePrincipal' = None
+    comment: str = None
+    force: bool = None
+    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    owner: str = None
+    read_only: bool = None
+    skip_validation: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2797,13 +2797,13 @@ class UpdateStorageCredential:
 
 @dataclass
 class ValidateStorageCredential:
-    aws_iam_role: 'AwsIamRole'
-    azure_service_principal: 'AzureServicePrincipal'
-    external_location_name: str
-    gcp_service_account_key: 'GcpServiceAccountKey'
-    read_only: bool
-    storage_credential_name: Any
-    url: str
+    aws_iam_role: 'AwsIamRole' = None
+    azure_service_principal: 'AzureServicePrincipal' = None
+    external_location_name: str = None
+    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    read_only: bool = None
+    storage_credential_name: Any = None
+    url: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2833,8 +2833,8 @@ class ValidateStorageCredential:
 
 @dataclass
 class ValidateStorageCredentialResponse:
-    is_dir: bool
-    results: 'List[ValidationResult]'
+    is_dir: bool = None
+    results: 'List[ValidationResult]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2851,9 +2851,9 @@ class ValidateStorageCredentialResponse:
 
 @dataclass
 class ValidationResult:
-    message: str
-    operation: 'ValidationResultOperation'
-    result: 'ValidationResultResult'
+    message: str = None
+    operation: 'ValidationResultOperation' = None
+    result: 'ValidationResultResult' = None
 
     def as_dict(self) -> dict:
         body = {}

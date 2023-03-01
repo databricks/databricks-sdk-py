@@ -12,19 +12,19 @@ _LOG = logging.getLogger('databricks.sdk.service.instancepools')
 
 @dataclass
 class CreateInstancePool:
-    aws_attributes: 'InstancePoolAwsAttributes'
-    azure_attributes: 'InstancePoolAzureAttributes'
-    custom_tags: 'Dict[str,str]'
-    disk_spec: 'DiskSpec'
-    enable_elastic_disk: bool
-    idle_instance_autotermination_minutes: int
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes'
     instance_pool_name: str
-    max_capacity: int
-    min_idle_instances: int
     node_type_id: str
-    preloaded_docker_images: 'List[DockerImage]'
-    preloaded_spark_versions: 'List[str]'
+    aws_attributes: 'InstancePoolAwsAttributes' = None
+    azure_attributes: 'InstancePoolAzureAttributes' = None
+    custom_tags: 'Dict[str,str]' = None
+    disk_spec: 'DiskSpec' = None
+    enable_elastic_disk: bool = None
+    idle_instance_autotermination_minutes: int = None
+    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
+    max_capacity: int = None
+    min_idle_instances: int = None
+    preloaded_docker_images: 'List[DockerImage]' = None
+    preloaded_spark_versions: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -71,7 +71,7 @@ class CreateInstancePool:
 
 @dataclass
 class CreateInstancePoolResponse:
-    instance_pool_id: str
+    instance_pool_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -99,11 +99,11 @@ class DeleteInstancePool:
 
 @dataclass
 class DiskSpec:
-    disk_count: int
-    disk_iops: int
-    disk_size: int
-    disk_throughput: int
-    disk_type: 'DiskType'
+    disk_count: int = None
+    disk_iops: int = None
+    disk_size: int = None
+    disk_throughput: int = None
+    disk_type: 'DiskType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -125,8 +125,8 @@ class DiskSpec:
 
 @dataclass
 class DiskType:
-    azure_disk_volume_type: 'DiskTypeAzureDiskVolumeType'
-    ebs_volume_type: 'DiskTypeEbsVolumeType'
+    azure_disk_volume_type: 'DiskTypeAzureDiskVolumeType' = None
+    ebs_volume_type: 'DiskTypeEbsVolumeType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -156,8 +156,8 @@ class DiskTypeEbsVolumeType(Enum):
 
 @dataclass
 class DockerBasicAuth:
-    password: str
-    username: str
+    password: str = None
+    username: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -172,8 +172,8 @@ class DockerBasicAuth:
 
 @dataclass
 class DockerImage:
-    basic_auth: 'DockerBasicAuth'
-    url: str
+    basic_auth: 'DockerBasicAuth' = None
+    url: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -189,20 +189,20 @@ class DockerImage:
 
 @dataclass
 class EditInstancePool:
-    aws_attributes: 'InstancePoolAwsAttributes'
-    azure_attributes: 'InstancePoolAzureAttributes'
-    custom_tags: 'Dict[str,str]'
-    disk_spec: 'DiskSpec'
-    enable_elastic_disk: bool
-    idle_instance_autotermination_minutes: int
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes'
     instance_pool_id: str
     instance_pool_name: str
-    max_capacity: int
-    min_idle_instances: int
     node_type_id: str
-    preloaded_docker_images: 'List[DockerImage]'
-    preloaded_spark_versions: 'List[str]'
+    aws_attributes: 'InstancePoolAwsAttributes' = None
+    azure_attributes: 'InstancePoolAzureAttributes' = None
+    custom_tags: 'Dict[str,str]' = None
+    disk_spec: 'DiskSpec' = None
+    enable_elastic_disk: bool = None
+    idle_instance_autotermination_minutes: int = None
+    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
+    max_capacity: int = None
+    min_idle_instances: int = None
+    preloaded_docker_images: 'List[DockerImage]' = None
+    preloaded_spark_versions: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -253,8 +253,8 @@ class EditInstancePool:
 class FleetLaunchTemplateOverride:
     availability_zone: str
     instance_type: str
-    max_price: float
-    priority: float
+    max_price: float = None
+    priority: float = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -274,9 +274,9 @@ class FleetLaunchTemplateOverride:
 
 @dataclass
 class FleetOnDemandOption:
-    allocation_strategy: 'FleetOnDemandOptionAllocationStrategy'
-    max_total_price: float
-    use_capacity_reservations_first: bool
+    allocation_strategy: 'FleetOnDemandOptionAllocationStrategy' = None
+    max_total_price: float = None
+    use_capacity_reservations_first: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -305,9 +305,9 @@ class FleetOnDemandOptionAllocationStrategy(Enum):
 
 @dataclass
 class FleetSpotOption:
-    allocation_strategy: 'FleetSpotOptionAllocationStrategy'
-    instance_pools_to_use_count: int
-    max_total_price: float
+    allocation_strategy: 'FleetSpotOptionAllocationStrategy' = None
+    instance_pools_to_use_count: int = None
+    max_total_price: float = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -343,24 +343,24 @@ class Get:
 
 @dataclass
 class GetInstancePool:
-    aws_attributes: 'InstancePoolAwsAttributes'
-    azure_attributes: 'InstancePoolAzureAttributes'
-    custom_tags: 'Dict[str,str]'
-    default_tags: 'Dict[str,str]'
-    disk_spec: 'DiskSpec'
-    enable_elastic_disk: bool
-    idle_instance_autotermination_minutes: int
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes'
     instance_pool_id: str
-    instance_pool_name: str
-    max_capacity: int
-    min_idle_instances: int
-    node_type_id: str
-    preloaded_docker_images: 'List[DockerImage]'
-    preloaded_spark_versions: 'List[str]'
-    state: 'InstancePoolState'
-    stats: 'InstancePoolStats'
-    status: 'InstancePoolStatus'
+    aws_attributes: 'InstancePoolAwsAttributes' = None
+    azure_attributes: 'InstancePoolAzureAttributes' = None
+    custom_tags: 'Dict[str,str]' = None
+    default_tags: 'Dict[str,str]' = None
+    disk_spec: 'DiskSpec' = None
+    enable_elastic_disk: bool = None
+    idle_instance_autotermination_minutes: int = None
+    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
+    instance_pool_name: str = None
+    max_capacity: int = None
+    min_idle_instances: int = None
+    node_type_id: str = None
+    preloaded_docker_images: 'List[DockerImage]' = None
+    preloaded_spark_versions: 'List[str]' = None
+    state: 'InstancePoolState' = None
+    stats: 'InstancePoolStats' = None
+    status: 'InstancePoolStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -417,24 +417,24 @@ class GetInstancePool:
 
 @dataclass
 class InstancePoolAndStats:
-    aws_attributes: 'InstancePoolAwsAttributes'
-    azure_attributes: 'InstancePoolAzureAttributes'
-    custom_tags: 'Dict[str,str]'
-    default_tags: 'Dict[str,str]'
-    disk_spec: 'DiskSpec'
-    enable_elastic_disk: bool
-    idle_instance_autotermination_minutes: int
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes'
-    instance_pool_id: str
-    instance_pool_name: str
-    max_capacity: int
-    min_idle_instances: int
-    node_type_id: str
-    preloaded_docker_images: 'List[DockerImage]'
-    preloaded_spark_versions: 'List[str]'
-    state: 'InstancePoolState'
-    stats: 'InstancePoolStats'
-    status: 'InstancePoolStatus'
+    aws_attributes: 'InstancePoolAwsAttributes' = None
+    azure_attributes: 'InstancePoolAzureAttributes' = None
+    custom_tags: 'Dict[str,str]' = None
+    default_tags: 'Dict[str,str]' = None
+    disk_spec: 'DiskSpec' = None
+    enable_elastic_disk: bool = None
+    idle_instance_autotermination_minutes: int = None
+    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
+    instance_pool_id: str = None
+    instance_pool_name: str = None
+    max_capacity: int = None
+    min_idle_instances: int = None
+    node_type_id: str = None
+    preloaded_docker_images: 'List[DockerImage]' = None
+    preloaded_spark_versions: 'List[str]' = None
+    state: 'InstancePoolState' = None
+    stats: 'InstancePoolStats' = None
+    status: 'InstancePoolStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -491,9 +491,9 @@ class InstancePoolAndStats:
 
 @dataclass
 class InstancePoolAwsAttributes:
-    availability: 'InstancePoolAwsAttributesAvailability'
-    spot_bid_price_percent: int
-    zone_id: str
+    availability: 'InstancePoolAwsAttributesAvailability' = None
+    spot_bid_price_percent: int = None
+    zone_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -522,8 +522,8 @@ class InstancePoolAwsAttributesAvailability(Enum):
 
 @dataclass
 class InstancePoolAzureAttributes:
-    availability: 'InstancePoolAzureAttributesAvailability'
-    spot_bid_max_price: float
+    availability: 'InstancePoolAzureAttributesAvailability' = None
+    spot_bid_max_price: float = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -550,9 +550,9 @@ class InstancePoolAzureAttributesAvailability(Enum):
 
 @dataclass
 class InstancePoolFleetAttributes:
-    fleet_on_demand_option: 'FleetOnDemandOption'
-    fleet_spot_option: 'FleetSpotOption'
-    launch_template_overrides: 'List[FleetLaunchTemplateOverride]'
+    fleet_on_demand_option: 'FleetOnDemandOption' = None
+    fleet_spot_option: 'FleetSpotOption' = None
+    launch_template_overrides: 'List[FleetLaunchTemplateOverride]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -584,10 +584,10 @@ class InstancePoolState(Enum):
 
 @dataclass
 class InstancePoolStats:
-    idle_count: int
-    pending_idle_count: int
-    pending_used_count: int
-    used_count: int
+    idle_count: int = None
+    pending_idle_count: int = None
+    pending_used_count: int = None
+    used_count: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -607,7 +607,7 @@ class InstancePoolStats:
 
 @dataclass
 class InstancePoolStatus:
-    pending_instance_errors: 'List[PendingInstanceError]'
+    pending_instance_errors: 'List[PendingInstanceError]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -624,7 +624,7 @@ class InstancePoolStatus:
 
 @dataclass
 class ListInstancePools:
-    instance_pools: 'List[InstancePoolAndStats]'
+    instance_pools: 'List[InstancePoolAndStats]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -639,8 +639,8 @@ class ListInstancePools:
 
 @dataclass
 class PendingInstanceError:
-    instance_id: str
-    message: str
+    instance_id: str = None
+    message: str = None
 
     def as_dict(self) -> dict:
         body = {}
