@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: python3 setup.py develop easy_install "databricks[dev]"
+      - run: python3 setup.py develop install "databricks[dev]"
 
       - name: Build wheel
         run: python3 setup.py bdist_wheel
