@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.billing')
 
@@ -170,15 +170,17 @@ class CreateLogDeliveryConfigurationParams:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateLogDeliveryConfigurationParams':
-        return cls(config_name=d.get('config_name', None),
-                   credentials_id=d.get('credentials_id', None),
-                   delivery_path_prefix=d.get('delivery_path_prefix', None),
-                   delivery_start_time=d.get('delivery_start_time', None),
-                   log_type=LogType(d['log_type']) if 'log_type' in d else None,
-                   output_format=OutputFormat(d['output_format']) if 'output_format' in d else None,
-                   status=LogDeliveryConfigStatus(d['status']) if 'status' in d else None,
-                   storage_configuration_id=d.get('storage_configuration_id', None),
-                   workspace_ids_filter=d.get('workspace_ids_filter', None))
+        return cls(
+            config_name=d.get('config_name', None),
+            credentials_id=d.get('credentials_id', None),
+            delivery_path_prefix=d.get('delivery_path_prefix', None),
+            delivery_start_time=d.get('delivery_start_time', None),
+            log_type=LogType.__members__.get(d['log_type'], None) if 'log_type' in d else None,
+            output_format=OutputFormat.__members__.get(d['output_format'], None)
+            if 'output_format' in d else None,
+            status=LogDeliveryConfigStatus.__members__.get(d['status'], None) if 'status' in d else None,
+            storage_configuration_id=d.get('storage_configuration_id', None),
+            workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
 @dataclass
@@ -277,21 +279,23 @@ class LogDeliveryConfiguration:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LogDeliveryConfiguration':
-        return cls(account_id=d.get('account_id', None),
-                   config_id=d.get('config_id', None),
-                   config_name=d.get('config_name', None),
-                   creation_time=d.get('creation_time', None),
-                   credentials_id=d.get('credentials_id', None),
-                   delivery_path_prefix=d.get('delivery_path_prefix', None),
-                   delivery_start_time=d.get('delivery_start_time', None),
-                   log_delivery_status=LogDeliveryStatus.from_dict(d['log_delivery_status'])
-                   if 'log_delivery_status' in d else None,
-                   log_type=LogType(d['log_type']) if 'log_type' in d else None,
-                   output_format=OutputFormat(d['output_format']) if 'output_format' in d else None,
-                   status=LogDeliveryConfigStatus(d['status']) if 'status' in d else None,
-                   storage_configuration_id=d.get('storage_configuration_id', None),
-                   update_time=d.get('update_time', None),
-                   workspace_ids_filter=d.get('workspace_ids_filter', None))
+        return cls(
+            account_id=d.get('account_id', None),
+            config_id=d.get('config_id', None),
+            config_name=d.get('config_name', None),
+            creation_time=d.get('creation_time', None),
+            credentials_id=d.get('credentials_id', None),
+            delivery_path_prefix=d.get('delivery_path_prefix', None),
+            delivery_start_time=d.get('delivery_start_time', None),
+            log_delivery_status=LogDeliveryStatus.from_dict(d['log_delivery_status'])
+            if 'log_delivery_status' in d else None,
+            log_type=LogType.__members__.get(d['log_type'], None) if 'log_type' in d else None,
+            output_format=OutputFormat.__members__.get(d['output_format'], None)
+            if 'output_format' in d else None,
+            status=LogDeliveryConfigStatus.__members__.get(d['status'], None) if 'status' in d else None,
+            storage_configuration_id=d.get('storage_configuration_id', None),
+            update_time=d.get('update_time', None),
+            workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
 @dataclass
@@ -317,7 +321,7 @@ class LogDeliveryStatus:
         return cls(last_attempt_time=d.get('last_attempt_time', None),
                    last_successful_attempt_time=d.get('last_successful_attempt_time', None),
                    message=d.get('message', None),
-                   status=DeliveryStatus(d['status']) if 'status' in d else None)
+                   status=DeliveryStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 class LogType(Enum):
@@ -367,8 +371,9 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateLogDeliveryConfigurationStatusRequest':
-        return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
-                   status=LogDeliveryConfigStatus(d['status']) if 'status' in d else None)
+        return cls(
+            log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
+            status=LogDeliveryConfigStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 @dataclass

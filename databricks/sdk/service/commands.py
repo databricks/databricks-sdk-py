@@ -1,12 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.commands')
 
@@ -53,7 +54,7 @@ class Command:
         return cls(cluster_id=d.get('clusterId', None),
                    command=d.get('command', None),
                    context_id=d.get('contextId', None),
-                   language=Language(d['language']) if 'language' in d else None)
+                   language=Language.__members__.get(d['language'], None) if 'language' in d else None)
 
 
 class CommandStatus(Enum):
@@ -92,7 +93,7 @@ class CommandStatusResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'CommandStatusResponse':
         return cls(id=d.get('id', None),
                    results=Results.from_dict(d['results']) if 'results' in d else None,
-                   status=CommandStatus(d['status']) if 'status' in d else None)
+                   status=CommandStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 class ContextStatus(Enum):
@@ -123,7 +124,8 @@ class ContextStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ContextStatusResponse':
-        return cls(id=d.get('id', None), status=ContextStatus(d['status']) if 'status' in d else None)
+        return cls(id=d.get('id', None),
+                   status=ContextStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 @dataclass
@@ -140,7 +142,7 @@ class CreateContext:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateContext':
         return cls(cluster_id=d.get('clusterId', None),
-                   language=Language(d['language']) if 'language' in d else None)
+                   language=Language.__members__.get(d['language'], None) if 'language' in d else None)
 
 
 @dataclass
@@ -218,16 +220,17 @@ class Results:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Results':
-        return cls(cause=d.get('cause', None),
-                   data=d.get('data', None),
-                   file_name=d.get('fileName', None),
-                   file_names=d.get('fileNames', None),
-                   is_json_schema=d.get('isJsonSchema', None),
-                   pos=d.get('pos', None),
-                   result_type=ResultType(d['resultType']) if 'resultType' in d else None,
-                   schema=d.get('schema', None),
-                   summary=d.get('summary', None),
-                   truncated=d.get('truncated', None))
+        return cls(
+            cause=d.get('cause', None),
+            data=d.get('data', None),
+            file_name=d.get('fileName', None),
+            file_names=d.get('fileNames', None),
+            is_json_schema=d.get('isJsonSchema', None),
+            pos=d.get('pos', None),
+            result_type=ResultType.__members__.get(d['resultType'], None) if 'resultType' in d else None,
+            schema=d.get('schema', None),
+            summary=d.get('summary', None),
+            truncated=d.get('truncated', None))
 
 
 class CommandExecutionAPI:

@@ -1,12 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.clusters')
 
@@ -81,12 +82,14 @@ class AwsAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AwsAttributes':
-        return cls(availability=AwsAvailability(d['availability']) if 'availability' in d else None,
+        return cls(availability=AwsAvailability.__members__.get(d['availability'], None)
+                   if 'availability' in d else None,
                    ebs_volume_count=d.get('ebs_volume_count', None),
                    ebs_volume_iops=d.get('ebs_volume_iops', None),
                    ebs_volume_size=d.get('ebs_volume_size', None),
                    ebs_volume_throughput=d.get('ebs_volume_throughput', None),
-                   ebs_volume_type=EbsVolumeType(d['ebs_volume_type']) if 'ebs_volume_type' in d else None,
+                   ebs_volume_type=EbsVolumeType.__members__.get(d['ebs_volume_type'], None)
+                   if 'ebs_volume_type' in d else None,
                    first_on_demand=d.get('first_on_demand', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
                    spot_bid_price_percent=d.get('spot_bid_price_percent', None),
@@ -120,7 +123,8 @@ class AzureAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AzureAttributes':
-        return cls(availability=AzureAvailability(d['availability']) if 'availability' in d else None,
+        return cls(availability=AzureAvailability.__members__.get(d['availability'], None)
+                   if 'availability' in d else None,
                    first_on_demand=d.get('first_on_demand', None),
                    log_analytics_info=LogAnalyticsInfo.from_dict(d['log_analytics_info'])
                    if 'log_analytics_info' in d else None,
@@ -202,7 +206,8 @@ class BaseClusterInfo:
             cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
             if 'cluster_log_conf' in d else None,
             cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource(d['cluster_source']) if 'cluster_source' in d else None,
+            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+            if 'cluster_source' in d else None,
             custom_tags=d.get('custom_tags', None),
             driver_instance_pool_id=d.get('driver_instance_pool_id', None),
             driver_node_type_id=d.get('driver_node_type_id', None),
@@ -213,7 +218,8 @@ class BaseClusterInfo:
             node_type_id=d.get('node_type_id', None),
             num_workers=d.get('num_workers', None),
             policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine(d['runtime_engine']) if 'runtime_engine' in d else None,
+            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+            if 'runtime_engine' in d else None,
             spark_conf=d.get('spark_conf', None),
             spark_env_vars=d.get('spark_env_vars', None),
             spark_version=d.get('spark_version', None),
@@ -333,7 +339,8 @@ class ClusterAttributes:
             cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
             if 'cluster_log_conf' in d else None,
             cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource(d['cluster_source']) if 'cluster_source' in d else None,
+            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+            if 'cluster_source' in d else None,
             custom_tags=d.get('custom_tags', None),
             driver_instance_pool_id=d.get('driver_instance_pool_id', None),
             driver_node_type_id=d.get('driver_node_type_id', None),
@@ -343,7 +350,8 @@ class ClusterAttributes:
             instance_pool_id=d.get('instance_pool_id', None),
             node_type_id=d.get('node_type_id', None),
             policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine(d['runtime_engine']) if 'runtime_engine' in d else None,
+            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+            if 'runtime_engine' in d else None,
             spark_conf=d.get('spark_conf', None),
             spark_env_vars=d.get('spark_env_vars', None),
             spark_version=d.get('spark_version', None),
@@ -376,7 +384,7 @@ class ClusterEvent:
                    if 'data_plane_event_details' in d else None,
                    details=EventDetails.from_dict(d['details']) if 'details' in d else None,
                    timestamp=d.get('timestamp', None),
-                   type=EventType(d['type']) if 'type' in d else None)
+                   type=EventType.__members__.get(d['type'], None) if 'type' in d else None)
 
 
 @dataclass
@@ -487,10 +495,11 @@ class ClusterInfo:
             if 'cluster_log_status' in d else None,
             cluster_memory_mb=d.get('cluster_memory_mb', None),
             cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource(d['cluster_source']) if 'cluster_source' in d else None,
+            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+            if 'cluster_source' in d else None,
             creator_user_name=d.get('creator_user_name', None),
             custom_tags=d.get('custom_tags', None),
-            data_security_mode=DataSecurityMode(d['data_security_mode'])
+            data_security_mode=DataSecurityMode.__members__.get(d['data_security_mode'], None)
             if 'data_security_mode' in d else None,
             default_tags=d.get('default_tags', None),
             driver=SparkNode.from_dict(d['driver']) if 'driver' in d else None,
@@ -508,7 +517,8 @@ class ClusterInfo:
             node_type_id=d.get('node_type_id', None),
             num_workers=d.get('num_workers', None),
             policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine(d['runtime_engine']) if 'runtime_engine' in d else None,
+            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+            if 'runtime_engine' in d else None,
             single_user_name=d.get('single_user_name', None),
             spark_conf=d.get('spark_conf', None),
             spark_context_id=d.get('spark_context_id', None),
@@ -516,7 +526,7 @@ class ClusterInfo:
             spark_version=d.get('spark_version', None),
             ssh_public_keys=d.get('ssh_public_keys', None),
             start_time=d.get('start_time', None),
-            state=State(d['state']) if 'state' in d else None,
+            state=State.__members__.get(d['state'], None) if 'state' in d else None,
             state_message=d.get('state_message', None),
             terminated_time=d.get('terminated_time', None),
             termination_reason=TerminationReason.from_dict(d['termination_reason'])
@@ -640,7 +650,8 @@ class CreateCluster:
             cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
             if 'cluster_log_conf' in d else None,
             cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource(d['cluster_source']) if 'cluster_source' in d else None,
+            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+            if 'cluster_source' in d else None,
             custom_tags=d.get('custom_tags', None),
             driver_instance_pool_id=d.get('driver_instance_pool_id', None),
             driver_node_type_id=d.get('driver_node_type_id', None),
@@ -651,7 +662,8 @@ class CreateCluster:
             node_type_id=d.get('node_type_id', None),
             num_workers=d.get('num_workers', None),
             policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine(d['runtime_engine']) if 'runtime_engine' in d else None,
+            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+            if 'runtime_engine' in d else None,
             spark_conf=d.get('spark_conf', None),
             spark_env_vars=d.get('spark_env_vars', None),
             spark_version=d.get('spark_version', None),
@@ -690,7 +702,8 @@ class DataPlaneEventDetails:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DataPlaneEventDetails':
-        return cls(event_type=DataPlaneEventDetailsEventType(d['event_type']) if 'event_type' in d else None,
+        return cls(event_type=DataPlaneEventDetailsEventType.__members__.get(d['event_type'], None)
+                   if 'event_type' in d else None,
                    executor_failures=d.get('executor_failures', None),
                    host_id=d.get('host_id', None),
                    timestamp=d.get('timestamp', None))
@@ -821,7 +834,8 @@ class EditCluster:
             cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
             if 'cluster_log_conf' in d else None,
             cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource(d['cluster_source']) if 'cluster_source' in d else None,
+            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+            if 'cluster_source' in d else None,
             custom_tags=d.get('custom_tags', None),
             driver_instance_pool_id=d.get('driver_instance_pool_id', None),
             driver_node_type_id=d.get('driver_node_type_id', None),
@@ -832,7 +846,8 @@ class EditCluster:
             node_type_id=d.get('node_type_id', None),
             num_workers=d.get('num_workers', None),
             policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine(d['runtime_engine']) if 'runtime_engine' in d else None,
+            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+            if 'runtime_engine' in d else None,
             spark_conf=d.get('spark_conf', None),
             spark_env_vars=d.get('spark_env_vars', None),
             spark_version=d.get('spark_version', None),
@@ -889,7 +904,7 @@ class EventDetails:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EventDetails':
         return cls(attributes=ClusterAttributes.from_dict(d['attributes']) if 'attributes' in d else None,
-                   cause=EventDetailsCause(d['cause']) if 'cause' in d else None,
+                   cause=EventDetailsCause.__members__.get(d['cause'], None) if 'cause' in d else None,
                    cluster_size=ClusterSize.from_dict(d['cluster_size']) if 'cluster_size' in d else None,
                    current_num_vcpus=d.get('current_num_vcpus', None),
                    current_num_workers=d.get('current_num_workers', None),
@@ -965,7 +980,8 @@ class GcpAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GcpAttributes':
-        return cls(availability=GcpAvailability(d['availability']) if 'availability' in d else None,
+        return cls(availability=GcpAvailability.__members__.get(d['availability'], None)
+                   if 'availability' in d else None,
                    boot_disk_size=d.get('boot_disk_size', None),
                    google_service_account=d.get('google_service_account', None))
 
@@ -1014,7 +1030,7 @@ class GetEvents:
                    event_types=d.get('event_types', None),
                    limit=d.get('limit', None),
                    offset=d.get('offset', None),
-                   order=GetEventsOrder(d['order']) if 'order' in d else None,
+                   order=GetEventsOrder.__members__.get(d['order'], None) if 'order' in d else None,
                    start_time=d.get('start_time', None))
 
 
@@ -1507,9 +1523,9 @@ class TerminationReason:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TerminationReason':
-        return cls(code=TerminationReasonCode(d['code']) if 'code' in d else None,
+        return cls(code=TerminationReasonCode.__members__.get(d['code'], None) if 'code' in d else None,
                    parameters=d.get('parameters', None),
-                   type=TerminationReasonType(d['type']) if 'type' in d else None)
+                   type=TerminationReasonType.__members__.get(d['type'], None) if 'type' in d else None)
 
 
 class TerminationReasonCode(Enum):

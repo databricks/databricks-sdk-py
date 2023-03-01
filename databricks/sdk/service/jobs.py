@@ -1,12 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.jobs')
 
@@ -117,14 +118,14 @@ class BaseRun:
                    run_id=d.get('run_id', None),
                    run_name=d.get('run_name', None),
                    run_page_url=d.get('run_page_url', None),
-                   run_type=RunType(d['run_type']) if 'run_type' in d else None,
+                   run_type=RunType.__members__.get(d['run_type'], None) if 'run_type' in d else None,
                    schedule=CronSchedule.from_dict(d['schedule']) if 'schedule' in d else None,
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=RunState.from_dict(d['state']) if 'state' in d else None,
                    tasks=[RunTask.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
-                   trigger=TriggerType(d['trigger']) if 'trigger' in d else None)
+                   trigger=TriggerType.__members__.get(d['trigger'], None) if 'trigger' in d else None)
 
 
 @dataclass
@@ -227,7 +228,7 @@ class CreateJob:
         return cls(access_control_list=d.get('access_control_list', None),
                    email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
                    if 'email_notifications' in d else None,
-                   format=CreateJobFormat(d['format']) if 'format' in d else None,
+                   format=CreateJobFormat.__members__.get(d['format'], None) if 'format' in d else None,
                    git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
                    job_clusters=[JobCluster.from_dict(v) for v in d['job_clusters']]
                    if 'job_clusters' in d and d['job_clusters'] is not None else None,
@@ -279,7 +280,8 @@ class CronSchedule:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CronSchedule':
-        return cls(pause_status=CronSchedulePauseStatus(d['pause_status']) if 'pause_status' in d else None,
+        return cls(pause_status=CronSchedulePauseStatus.__members__.get(d['pause_status'], None)
+                   if 'pause_status' in d else None,
                    quartz_cron_expression=d.get('quartz_cron_expression', None),
                    timezone_id=d.get('timezone_id', None))
 
@@ -453,7 +455,8 @@ class GitSource:
     def from_dict(cls, d: Dict[str, any]) -> 'GitSource':
         return cls(git_branch=d.get('git_branch', None),
                    git_commit=d.get('git_commit', None),
-                   git_provider=GitSourceGitProvider(d['git_provider']) if 'git_provider' in d else None,
+                   git_provider=GitSourceGitProvider.__members__.get(d['git_provider'], None)
+                   if 'git_provider' in d else None,
                    git_snapshot=GitSnapshot.from_dict(d['git_snapshot']) if 'git_snapshot' in d else None,
                    git_tag=d.get('git_tag', None),
                    git_url=d.get('git_url', None))
@@ -571,7 +574,7 @@ class JobSettings:
     def from_dict(cls, d: Dict[str, any]) -> 'JobSettings':
         return cls(email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
                    if 'email_notifications' in d else None,
-                   format=JobSettingsFormat(d['format']) if 'format' in d else None,
+                   format=JobSettingsFormat.__members__.get(d['format'], None) if 'format' in d else None,
                    git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
                    job_clusters=[JobCluster.from_dict(v) for v in d['job_clusters']]
                    if 'job_clusters' in d and d['job_clusters'] is not None else None,
@@ -839,7 +842,7 @@ class NotebookTask:
     def from_dict(cls, d: Dict[str, any]) -> 'NotebookTask':
         return cls(base_parameters=d.get('base_parameters', None),
                    notebook_path=d.get('notebook_path', None),
-                   source=NotebookTaskSource(d['source']) if 'source' in d else None)
+                   source=NotebookTaskSource.__members__.get(d['source'], None) if 'source' in d else None)
 
 
 class NotebookTaskSource(Enum):
@@ -928,7 +931,7 @@ class RepairHistoryItem:
                    start_time=d.get('start_time', None),
                    state=RunState.from_dict(d['state']) if 'state' in d else None,
                    task_run_ids=d.get('task_run_ids', None),
-                   type=RepairHistoryItemType(d['type']) if 'type' in d else None)
+                   type=RepairHistoryItemType.__members__.get(d['type'], None) if 'type' in d else None)
 
 
 class RepairHistoryItemType(Enum):
@@ -1098,14 +1101,14 @@ class Run:
                    run_id=d.get('run_id', None),
                    run_name=d.get('run_name', None),
                    run_page_url=d.get('run_page_url', None),
-                   run_type=RunType(d['run_type']) if 'run_type' in d else None,
+                   run_type=RunType.__members__.get(d['run_type'], None) if 'run_type' in d else None,
                    schedule=CronSchedule.from_dict(d['schedule']) if 'schedule' in d else None,
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=RunState.from_dict(d['state']) if 'state' in d else None,
                    tasks=[RunTask.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
-                   trigger=TriggerType(d['trigger']) if 'trigger' in d else None)
+                   trigger=TriggerType.__members__.get(d['trigger'], None) if 'trigger' in d else None)
 
 
 class RunLifeCycleState(Enum):
@@ -1280,11 +1283,12 @@ class RunState:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunState':
-        return cls(
-            life_cycle_state=RunLifeCycleState(d['life_cycle_state']) if 'life_cycle_state' in d else None,
-            result_state=RunResultState(d['result_state']) if 'result_state' in d else None,
-            state_message=d.get('state_message', None),
-            user_cancelled_or_timedout=d.get('user_cancelled_or_timedout', None))
+        return cls(life_cycle_state=RunLifeCycleState.__members__.get(d['life_cycle_state'], None)
+                   if 'life_cycle_state' in d else None,
+                   result_state=RunResultState.__members__.get(d['result_state'], None)
+                   if 'result_state' in d else None,
+                   state_message=d.get('state_message', None),
+                   user_cancelled_or_timedout=d.get('user_cancelled_or_timedout', None))
 
 
 @dataclass
@@ -1505,12 +1509,13 @@ class SqlAlertOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SqlAlertOutput':
-        return cls(alert_state=SqlAlertState(d['alert_state']) if 'alert_state' in d else None,
-                   output_link=d.get('output_link', None),
-                   query_text=d.get('query_text', None),
-                   sql_statements=[SqlStatementOutput.from_dict(v) for v in d['sql_statements']]
-                   if 'sql_statements' in d and d['sql_statements'] is not None else None,
-                   warehouse_id=d.get('warehouse_id', None))
+        return cls(
+            alert_state=SqlAlertState.__members__.get(d['alert_state'], None) if 'alert_state' in d else None,
+            output_link=d.get('output_link', None),
+            query_text=d.get('query_text', None),
+            sql_statements=[SqlStatementOutput.from_dict(v) for v in d['sql_statements']]
+            if 'sql_statements' in d and d['sql_statements'] is not None else None,
+            warehouse_id=d.get('warehouse_id', None))
 
 
 class SqlAlertState(Enum):
@@ -1568,7 +1573,8 @@ class SqlDashboardWidgetOutput:
                    error=SqlOutputError.from_dict(d['error']) if 'error' in d else None,
                    output_link=d.get('output_link', None),
                    start_time=d.get('start_time', None),
-                   status=SqlDashboardWidgetOutputStatus(d['status']) if 'status' in d else None,
+                   status=SqlDashboardWidgetOutputStatus.__members__.get(d['status'], None)
+                   if 'status' in d else None,
                    widget_id=d.get('widget_id', None),
                    widget_title=d.get('widget_title', None))
 
@@ -1864,7 +1870,7 @@ class ViewItem:
     def from_dict(cls, d: Dict[str, any]) -> 'ViewItem':
         return cls(content=d.get('content', None),
                    name=d.get('name', None),
-                   type=ViewType(d['type']) if 'type' in d else None)
+                   type=ViewType.__members__.get(d['type'], None) if 'type' in d else None)
 
 
 class ViewType(Enum):

@@ -5,6 +5,7 @@ databricks/sdk/service/clusters.py linguist-generated=true
 databricks/sdk/service/commands.py linguist-generated=true
 databricks/sdk/service/dbfs.py linguist-generated=true
 databricks/sdk/service/deployment.py linguist-generated=true
+databricks/sdk/service/endpoints.py linguist-generated=true
 databricks/sdk/service/gitcredentials.py linguist-generated=true
 databricks/sdk/service/globalinitscripts.py linguist-generated=true
 databricks/sdk/service/instancepools.py linguist-generated=true

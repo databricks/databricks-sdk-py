@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.ipaccesslists')
 
@@ -27,7 +27,7 @@ class CreateIpAccessList:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateIpAccessList':
         return cls(ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
-                   list_type=ListType(d['list_type']) if 'list_type' in d else None)
+                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None)
 
 
 @dataclass
@@ -125,7 +125,7 @@ class IpAccessListInfo:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
-                   list_type=ListType(d['list_type']) if 'list_type' in d else None,
+                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None,
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
 
@@ -163,7 +163,7 @@ class ReplaceIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
-                   list_type=ListType(d['list_type']) if 'list_type' in d else None)
+                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None)
 
 
 @dataclass
@@ -192,7 +192,7 @@ class UpdateIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
-                   list_type=ListType(d['list_type']) if 'list_type' in d else None)
+                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None)
 
 
 class IpAccessListsAPI:

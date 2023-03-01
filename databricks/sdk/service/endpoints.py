@@ -1,12 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.endpoints')
 
@@ -157,9 +158,9 @@ class EndpointState:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointState':
-        return cls(
-            config_update=EndpointStateConfigUpdate(d['config_update']) if 'config_update' in d else None,
-            ready=EndpointStateReady(d['ready']) if 'ready' in d else None)
+        return cls(config_update=EndpointStateConfigUpdate.__members__.get(d['config_update'], None)
+                   if 'config_update' in d else None,
+                   ready=EndpointStateReady.__members__.get(d['ready'], None) if 'ready' in d else None)
 
 
 class EndpointStateConfigUpdate(Enum):
@@ -350,7 +351,8 @@ class ServedModelState:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelState':
-        return cls(deployment=ServedModelStateDeployment(d['deployment']) if 'deployment' in d else None,
+        return cls(deployment=ServedModelStateDeployment.__members__.get(d['deployment'], None)
+                   if 'deployment' in d else None,
                    deployment_state_message=d.get('deployment_state_message', None))
 
 
@@ -453,8 +455,8 @@ class ServingEndpointDetailed:
                    name=d.get('name', None),
                    pending_config=EndpointPendingConfig.from_dict(d['pending_config'])
                    if 'pending_config' in d else None,
-                   permission_level=ServingEndpointDetailedPermissionLevel(d['permission_level'])
-                   if 'permission_level' in d else None,
+                   permission_level=ServingEndpointDetailedPermissionLevel.__members__.get(
+                       d['permission_level'], None) if 'permission_level' in d else None,
                    state=EndpointState.from_dict(d['state']) if 'state' in d else None)
 
 

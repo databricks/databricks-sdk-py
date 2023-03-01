@@ -1,12 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any, Iterator
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+from typing import Any, Dict, Iterator, List
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.sql')
 
@@ -28,10 +29,10 @@ class AccessControl:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccessControl':
-        return cls(
-            group_name=d.get('group_name', None),
-            permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None,
-            user_name=d.get('user_name', None))
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
+                   if 'permission_level' in d else None,
+                   user_name=d.get('user_name', None))
 
 
 @dataclass
@@ -73,7 +74,7 @@ class Alert:
                    parent=d.get('parent', None),
                    query=Query.from_dict(d['query']) if 'query' in d else None,
                    rearm=d.get('rearm', None),
-                   state=AlertState(d['state']) if 'state' in d else None,
+                   state=AlertState.__members__.get(d['state'], None) if 'state' in d else None,
                    updated_at=d.get('updated_at', None),
                    user=User.from_dict(d['user']) if 'user' in d else None)
 
@@ -142,7 +143,7 @@ class Channel:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Channel':
         return cls(dbsql_version=d.get('dbsql_version', None),
-                   name=ChannelName(d['name']) if 'name' in d else None)
+                   name=ChannelName.__members__.get(d['name'], None) if 'name' in d else None)
 
 
 @dataclass
@@ -161,11 +162,10 @@ class ChannelInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ChannelInfo':
         return cls(dbsql_version=d.get('dbsql_version', None),
-                   name=ChannelName(d['name']) if 'name' in d else None)
+                   name=ChannelName.__members__.get(d['name'], None) if 'name' in d else None)
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -229,13 +229,14 @@ class ColumnInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
-        return cls(name=d.get('name', None),
-                   position=d.get('position', None),
-                   type_interval_type=d.get('type_interval_type', None),
-                   type_name=ColumnInfoTypeName(d['type_name']) if 'type_name' in d else None,
-                   type_precision=d.get('type_precision', None),
-                   type_scale=d.get('type_scale', None),
-                   type_text=d.get('type_text', None))
+        return cls(
+            name=d.get('name', None),
+            position=d.get('position', None),
+            type_interval_type=d.get('type_interval_type', None),
+            type_name=ColumnInfoTypeName.__members__.get(d['type_name'], None) if 'type_name' in d else None,
+            type_precision=d.get('type_precision', None),
+            type_scale=d.get('type_scale', None),
+            type_text=d.get('type_text', None))
 
 
 class ColumnInfoTypeName(Enum):
@@ -408,10 +409,11 @@ class CreateWarehouseRequest:
                    max_num_clusters=d.get('max_num_clusters', None),
                    min_num_clusters=d.get('min_num_clusters', None),
                    name=d.get('name', None),
-                   spot_instance_policy=SpotInstancePolicy(d['spot_instance_policy'])
+                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
                    if 'spot_instance_policy' in d else None,
                    tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType(d['warehouse_type']) if 'warehouse_type' in d else None)
+                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+                   if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -483,7 +485,8 @@ class Dashboard:
                    name=d.get('name', None),
                    options=DashboardOptions.from_dict(d['options']) if 'options' in d else None,
                    parent=d.get('parent', None),
-                   permission_tier=PermissionLevel(d['permission_tier']) if 'permission_tier' in d else None,
+                   permission_tier=PermissionLevel.__members__.get(d['permission_tier'], None)
+                   if 'permission_tier' in d else None,
                    slug=d.get('slug', None),
                    tags=d.get('tags', None),
                    updated_at=d.get('updated_at', None),
@@ -605,7 +608,7 @@ class Destination:
     def from_dict(cls, d: Dict[str, any]) -> 'Destination':
         return cls(id=d.get('id', None),
                    name=d.get('name', None),
-                   type=DestinationType(d['type']) if 'type' in d else None)
+                   type=DestinationType.__members__.get(d['type'], None) if 'type' in d else None)
 
 
 class DestinationType(Enum):
@@ -725,10 +728,11 @@ class EditWarehouseRequest:
                    max_num_clusters=d.get('max_num_clusters', None),
                    min_num_clusters=d.get('min_num_clusters', None),
                    name=d.get('name', None),
-                   spot_instance_policy=SpotInstancePolicy(d['spot_instance_policy'])
+                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
                    if 'spot_instance_policy' in d else None,
                    tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType(d['warehouse_type']) if 'warehouse_type' in d else None)
+                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+                   if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -770,7 +774,7 @@ class EndpointHealth:
                    failure_reason=TerminationReason.from_dict(d['failure_reason'])
                    if 'failure_reason' in d else None,
                    message=d.get('message', None),
-                   status=Status(d['status']) if 'status' in d else None,
+                   status=Status.__members__.get(d['status'], None) if 'status' in d else None,
                    summary=d.get('summary', None))
 
 
@@ -842,11 +846,12 @@ class EndpointInfo:
                    num_active_sessions=d.get('num_active_sessions', None),
                    num_clusters=d.get('num_clusters', None),
                    odbc_params=OdbcParams.from_dict(d['odbc_params']) if 'odbc_params' in d else None,
-                   spot_instance_policy=SpotInstancePolicy(d['spot_instance_policy'])
+                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
                    if 'spot_instance_policy' in d else None,
-                   state=State(d['state']) if 'state' in d else None,
+                   state=State.__members__.get(d['state'], None) if 'state' in d else None,
                    tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType(d['warehouse_type']) if 'warehouse_type' in d else None)
+                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+                   if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -905,14 +910,16 @@ class ExecuteStatementRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExecuteStatementRequest':
-        return cls(catalog=d.get('catalog', None),
-                   disposition=Disposition(d['disposition']) if 'disposition' in d else None,
-                   format=Format(d['format']) if 'format' in d else None,
-                   on_wait_timeout=TimeoutAction(d['on_wait_timeout']) if 'on_wait_timeout' in d else None,
-                   schema=d.get('schema', None),
-                   statement=d.get('statement', None),
-                   wait_timeout=d.get('wait_timeout', None),
-                   warehouse_id=d.get('warehouse_id', None))
+        return cls(
+            catalog=d.get('catalog', None),
+            disposition=Disposition.__members__.get(d['disposition'], None) if 'disposition' in d else None,
+            format=Format.__members__.get(d['format'], None) if 'format' in d else None,
+            on_wait_timeout=TimeoutAction.__members__.get(d['on_wait_timeout'], None)
+            if 'on_wait_timeout' in d else None,
+            schema=d.get('schema', None),
+            statement=d.get('statement', None),
+            wait_timeout=d.get('wait_timeout', None),
+            warehouse_id=d.get('warehouse_id', None))
 
 
 @dataclass
@@ -1046,7 +1053,7 @@ class GetResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
         return cls(access_control_list=[AccessControl.from_dict(v) for v in d['access_control_list']]
                    if 'access_control_list' in d and d['access_control_list'] is not None else None,
-                   object_id=ObjectType(d['object_id']) if 'object_id' in d else None,
+                   object_id=ObjectType.__members__.get(d['object_id'], None) if 'object_id' in d else None,
                    object_type=d.get('object_type', None))
 
 
@@ -1171,11 +1178,12 @@ class GetWarehouseResponse:
                    num_active_sessions=d.get('num_active_sessions', None),
                    num_clusters=d.get('num_clusters', None),
                    odbc_params=OdbcParams.from_dict(d['odbc_params']) if 'odbc_params' in d else None,
-                   spot_instance_policy=SpotInstancePolicy(d['spot_instance_policy'])
+                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
                    if 'spot_instance_policy' in d else None,
-                   state=State(d['state']) if 'state' in d else None,
+                   state=State.__members__.get(d['state'], None) if 'state' in d else None,
                    tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType(d['warehouse_type']) if 'warehouse_type' in d else None)
+                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+                   if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -1226,8 +1234,8 @@ class GetWorkspaceWarehouseConfigResponse:
             if 'global_param' in d else None,
             google_service_account=d.get('google_service_account', None),
             instance_profile_arn=d.get('instance_profile_arn', None),
-            security_policy=GetWorkspaceWarehouseConfigResponseSecurityPolicy(d['security_policy'])
-            if 'security_policy' in d else None,
+            security_policy=GetWorkspaceWarehouseConfigResponseSecurityPolicy.__members__.get(
+                d['security_policy'], None) if 'security_policy' in d else None,
             sql_configuration_parameters=RepeatedEndpointConfPairs.from_dict(
                 d['sql_configuration_parameters']) if 'sql_configuration_parameters' in d else None)
 
@@ -1418,7 +1426,7 @@ class Parameter:
     def from_dict(cls, d: Dict[str, any]) -> 'Parameter':
         return cls(name=d.get('name', None),
                    title=d.get('title', None),
-                   type=ParameterType(d['type']) if 'type' in d else None,
+                   type=ParameterType.__members__.get(d['type'], None) if 'type' in d else None,
                    value=d.get('value', None))
 
 
@@ -1522,7 +1530,8 @@ class Query:
             name=d.get('name', None),
             options=QueryOptions.from_dict(d['options']) if 'options' in d else None,
             parent=d.get('parent', None),
-            permission_tier=PermissionLevel(d['permission_tier']) if 'permission_tier' in d else None,
+            permission_tier=PermissionLevel.__members__.get(d['permission_tier'], None)
+            if 'permission_tier' in d else None,
             query=d.get('query', None),
             query_hash=d.get('query_hash', None),
             schedule=QueryInterval.from_dict(d['schedule']) if 'schedule' in d else None,
@@ -1645,28 +1654,30 @@ class QueryInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryInfo':
-        return cls(channel_used=ChannelInfo.from_dict(d['channel_used']) if 'channel_used' in d else None,
-                   duration=d.get('duration', None),
-                   endpoint_id=d.get('endpoint_id', None),
-                   error_message=d.get('error_message', None),
-                   executed_as_user_id=d.get('executed_as_user_id', None),
-                   executed_as_user_name=d.get('executed_as_user_name', None),
-                   execution_end_time_ms=d.get('execution_end_time_ms', None),
-                   is_final=d.get('is_final', None),
-                   lookup_key=d.get('lookup_key', None),
-                   metrics=QueryMetrics.from_dict(d['metrics']) if 'metrics' in d else None,
-                   plans_state=PlansState(d['plans_state']) if 'plans_state' in d else None,
-                   query_end_time_ms=d.get('query_end_time_ms', None),
-                   query_id=d.get('query_id', None),
-                   query_start_time_ms=d.get('query_start_time_ms', None),
-                   query_text=d.get('query_text', None),
-                   rows_produced=d.get('rows_produced', None),
-                   spark_ui_url=d.get('spark_ui_url', None),
-                   statement_type=QueryStatementType(d['statement_type']) if 'statement_type' in d else None,
-                   status=QueryStatus(d['status']) if 'status' in d else None,
-                   user_id=d.get('user_id', None),
-                   user_name=d.get('user_name', None),
-                   warehouse_id=d.get('warehouse_id', None))
+        return cls(
+            channel_used=ChannelInfo.from_dict(d['channel_used']) if 'channel_used' in d else None,
+            duration=d.get('duration', None),
+            endpoint_id=d.get('endpoint_id', None),
+            error_message=d.get('error_message', None),
+            executed_as_user_id=d.get('executed_as_user_id', None),
+            executed_as_user_name=d.get('executed_as_user_name', None),
+            execution_end_time_ms=d.get('execution_end_time_ms', None),
+            is_final=d.get('is_final', None),
+            lookup_key=d.get('lookup_key', None),
+            metrics=QueryMetrics.from_dict(d['metrics']) if 'metrics' in d else None,
+            plans_state=PlansState.__members__.get(d['plans_state'], None) if 'plans_state' in d else None,
+            query_end_time_ms=d.get('query_end_time_ms', None),
+            query_id=d.get('query_id', None),
+            query_start_time_ms=d.get('query_start_time_ms', None),
+            query_text=d.get('query_text', None),
+            rows_produced=d.get('rows_produced', None),
+            spark_ui_url=d.get('spark_ui_url', None),
+            statement_type=QueryStatementType.__members__.get(d['statement_type'], None)
+            if 'statement_type' in d else None,
+            status=QueryStatus.__members__.get(d['status'], None) if 'status' in d else None,
+            user_id=d.get('user_id', None),
+            user_name=d.get('user_name', None),
+            warehouse_id=d.get('warehouse_id', None))
 
 
 @dataclass
@@ -1999,7 +2010,7 @@ class ResultManifest:
     def from_dict(cls, d: Dict[str, any]) -> 'ResultManifest':
         return cls(chunks=[ChunkInfo.from_dict(v)
                            for v in d['chunks']] if 'chunks' in d and d['chunks'] is not None else None,
-                   format=Format(d['format']) if 'format' in d else None,
+                   format=Format.__members__.get(d['format'], None) if 'format' in d else None,
                    schema=ResultSchema.from_dict(d['schema']) if 'schema' in d else None,
                    total_byte_count=d.get('total_byte_count', None),
                    total_chunk_count=d.get('total_chunk_count', None),
@@ -2039,8 +2050,9 @@ class ServiceError:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServiceError':
-        return cls(error_code=ServiceErrorCode(d['error_code']) if 'error_code' in d else None,
-                   message=d.get('message', None))
+        return cls(
+            error_code=ServiceErrorCode.__members__.get(d['error_code'], None) if 'error_code' in d else None,
+            message=d.get('message', None))
 
 
 class ServiceErrorCode(Enum):
@@ -2082,7 +2094,8 @@ class SetRequest:
         return cls(access_control_list=[AccessControl.from_dict(v) for v in d['access_control_list']]
                    if 'access_control_list' in d and d['access_control_list'] is not None else None,
                    object_id=d.get('objectId', None),
-                   object_type=ObjectTypePlural(d['objectType']) if 'objectType' in d else None)
+                   object_type=ObjectTypePlural.__members__.get(d['objectType'], None)
+                   if 'objectType' in d else None)
 
 
 @dataclass
@@ -2103,7 +2116,7 @@ class SetResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'SetResponse':
         return cls(access_control_list=[AccessControl.from_dict(v) for v in d['access_control_list']]
                    if 'access_control_list' in d and d['access_control_list'] is not None else None,
-                   object_id=ObjectType(d['object_id']) if 'object_id' in d else None,
+                   object_id=ObjectType.__members__.get(d['object_id'], None) if 'object_id' in d else None,
                    object_type=d.get('object_type', None))
 
 
@@ -2157,8 +2170,8 @@ class SetWorkspaceWarehouseConfigRequest:
             if 'global_param' in d else None,
             google_service_account=d.get('google_service_account', None),
             instance_profile_arn=d.get('instance_profile_arn', None),
-            security_policy=SetWorkspaceWarehouseConfigRequestSecurityPolicy(d['security_policy'])
-            if 'security_policy' in d else None,
+            security_policy=SetWorkspaceWarehouseConfigRequestSecurityPolicy.__members__.get(
+                d['security_policy'], None) if 'security_policy' in d else None,
             serverless_agreement=d.get('serverless_agreement', None),
             sql_configuration_parameters=RepeatedEndpointConfPairs.from_dict(
                 d['sql_configuration_parameters']) if 'sql_configuration_parameters' in d else None)
@@ -2229,7 +2242,7 @@ class StatementStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StatementStatus':
         return cls(error=ServiceError.from_dict(d['error']) if 'error' in d else None,
-                   state=StatementState(d['state']) if 'state' in d else None)
+                   state=StatementState.__members__.get(d['state'], None) if 'state' in d else None)
 
 
 class Status(Enum):
@@ -2282,7 +2295,7 @@ class Success:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Success':
-        return cls(message=SuccessMessage(d['message']) if 'message' in d else None)
+        return cls(message=SuccessMessage.__members__.get(d['message'], None) if 'message' in d else None)
 
 
 class SuccessMessage(Enum):
@@ -2305,9 +2318,9 @@ class TerminationReason:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TerminationReason':
-        return cls(code=TerminationReasonCode(d['code']) if 'code' in d else None,
+        return cls(code=TerminationReasonCode.__members__.get(d['code'], None) if 'code' in d else None,
                    parameters=d.get('parameters', None),
-                   type=TerminationReasonType(d['type']) if 'type' in d else None)
+                   type=TerminationReasonType.__members__.get(d['type'], None) if 'type' in d else None)
 
 
 class TerminationReasonCode(Enum):
@@ -2462,7 +2475,8 @@ class TransferOwnershipRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'TransferOwnershipRequest':
         return cls(new_owner=d.get('new_owner', None),
                    object_id=TransferOwnershipObjectId.from_dict(d['objectId']) if 'objectId' in d else None,
-                   object_type=OwnableObjectType(d['objectType']) if 'objectType' in d else None)
+                   object_type=OwnableObjectType.__members__.get(d['objectType'], None)
+                   if 'objectType' in d else None)
 
 
 @dataclass
@@ -2557,7 +2571,8 @@ class WarehouseTypePair:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WarehouseTypePair':
         return cls(enabled=d.get('enabled', None),
-                   warehouse_type=WarehouseType(d['warehouse_type']) if 'warehouse_type' in d else None)
+                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+                   if 'warehouse_type' in d else None)
 
 
 @dataclass

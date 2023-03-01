@@ -1,8 +1,8 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from typing import Dict
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.workspaceconf')
 

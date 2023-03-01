@@ -1,20 +1,18 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any, Iterator
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+from typing import Any, Dict, Iterator, List
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.pipelines')
 
-from .clusters import AutoScale
-from .clusters import AwsAttributes
-from .clusters import AzureAttributes
-from .clusters import ClusterLogConf
-from .clusters import GcpAttributes
+from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
+                       ClusterLogConf, GcpAttributes)
 from .libraries import MavenLibrary
 
 # all definitions in this file are in alphabetical order
@@ -249,18 +247,19 @@ class GetPipelineResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPipelineResponse':
-        return cls(cause=d.get('cause', None),
-                   cluster_id=d.get('cluster_id', None),
-                   creator_user_name=d.get('creator_user_name', None),
-                   health=GetPipelineResponseHealth(d['health']) if 'health' in d else None,
-                   last_modified=d.get('last_modified', None),
-                   latest_updates=[UpdateStateInfo.from_dict(v) for v in d['latest_updates']]
-                   if 'latest_updates' in d and d['latest_updates'] is not None else None,
-                   name=d.get('name', None),
-                   pipeline_id=d.get('pipeline_id', None),
-                   run_as_user_name=d.get('run_as_user_name', None),
-                   spec=PipelineSpec.from_dict(d['spec']) if 'spec' in d else None,
-                   state=PipelineState(d['state']) if 'state' in d else None)
+        return cls(
+            cause=d.get('cause', None),
+            cluster_id=d.get('cluster_id', None),
+            creator_user_name=d.get('creator_user_name', None),
+            health=GetPipelineResponseHealth.__members__.get(d['health'], None) if 'health' in d else None,
+            last_modified=d.get('last_modified', None),
+            latest_updates=[UpdateStateInfo.from_dict(v) for v in d['latest_updates']]
+            if 'latest_updates' in d and d['latest_updates'] is not None else None,
+            name=d.get('name', None),
+            pipeline_id=d.get('pipeline_id', None),
+            run_as_user_name=d.get('run_as_user_name', None),
+            spec=PipelineSpec.from_dict(d['spec']) if 'spec' in d else None,
+            state=PipelineState.__members__.get(d['state'], None) if 'state' in d else None)
 
 
 class GetPipelineResponseHealth(Enum):
@@ -558,7 +557,7 @@ class PipelineStateInfo:
                    name=d.get('name', None),
                    pipeline_id=d.get('pipeline_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
-                   state=PipelineState(d['state']) if 'state' in d else None)
+                   state=PipelineState.__members__.get(d['state'], None) if 'state' in d else None)
 
 
 @dataclass
@@ -605,7 +604,7 @@ class StartUpdate:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StartUpdate':
-        return cls(cause=StartUpdateCause(d['cause']) if 'cause' in d else None,
+        return cls(cause=StartUpdateCause.__members__.get(d['cause'], None) if 'cause' in d else None,
                    full_refresh=d.get('full_refresh', None),
                    full_refresh_selection=d.get('full_refresh_selection', None),
                    pipeline_id=d.get('pipeline_id', None),
@@ -673,7 +672,7 @@ class UpdateInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateInfo':
-        return cls(cause=UpdateInfoCause(d['cause']) if 'cause' in d else None,
+        return cls(cause=UpdateInfoCause.__members__.get(d['cause'], None) if 'cause' in d else None,
                    cluster_id=d.get('cluster_id', None),
                    config=PipelineSpec.from_dict(d['config']) if 'config' in d else None,
                    creation_time=d.get('creation_time', None),
@@ -681,7 +680,7 @@ class UpdateInfo:
                    full_refresh_selection=d.get('full_refresh_selection', None),
                    pipeline_id=d.get('pipeline_id', None),
                    refresh_selection=d.get('refresh_selection', None),
-                   state=UpdateInfoState(d['state']) if 'state' in d else None,
+                   state=UpdateInfoState.__members__.get(d['state'], None) if 'state' in d else None,
                    update_id=d.get('update_id', None))
 
 
@@ -728,7 +727,7 @@ class UpdateStateInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateStateInfo':
         return cls(creation_time=d.get('creation_time', None),
-                   state=UpdateStateInfoState(d['state']) if 'state' in d else None,
+                   state=UpdateStateInfoState.__members__.get(d['state'], None) if 'state' in d else None,
                    update_id=d.get('update_id', None))
 
 

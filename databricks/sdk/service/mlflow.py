@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.mlflow')
 
@@ -39,14 +39,15 @@ class Activity:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Activity':
-        return cls(activity_type=ActivityType(d['activity_type']) if 'activity_type' in d else None,
+        return cls(activity_type=ActivityType.__members__.get(d['activity_type'], None)
+                   if 'activity_type' in d else None,
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
-                   from_stage=Stage(d['from_stage']) if 'from_stage' in d else None,
+                   from_stage=Stage.__members__.get(d['from_stage'], None) if 'from_stage' in d else None,
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    system_comment=d.get('system_comment', None),
-                   to_stage=Stage(d['to_stage']) if 'to_stage' in d else None,
+                   to_stage=Stage.__members__.get(d['to_stage'], None) if 'to_stage' in d else None,
                    user_id=d.get('user_id', None))
 
 
@@ -106,7 +107,7 @@ class ApproveTransitionRequest:
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage(d['stage']) if 'stage' in d else None,
+                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
                    version=d.get('version', None))
 
 
@@ -304,7 +305,7 @@ class CreateRegistryWebhook:
                    http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec']) if 'http_url_spec' in d else None,
                    job_spec=JobSpec.from_dict(d['job_spec']) if 'job_spec' in d else None,
                    model_name=d.get('model_name', None),
-                   status=RegistryWebhookStatus(d['status']) if 'status' in d else None)
+                   status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 @dataclass
@@ -378,7 +379,7 @@ class CreateTransitionRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateTransitionRequest':
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage(d['stage']) if 'stage' in d else None,
+                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
                    version=d.get('version', None))
 
 
@@ -1119,7 +1120,7 @@ class ModelVersion:
                    run_id=d.get('run_id', None),
                    run_link=d.get('run_link', None),
                    source=d.get('source', None),
-                   status=ModelVersionStatus(d['status']) if 'status' in d else None,
+                   status=ModelVersionStatus.__members__.get(d['status'], None) if 'status' in d else None,
                    status_message=d.get('status_message', None),
                    tags=[ModelVersionTag.from_dict(v)
                          for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
@@ -1166,15 +1167,16 @@ class ModelVersionDatabricks:
     def from_dict(cls, d: Dict[str, any]) -> 'ModelVersionDatabricks':
         return cls(
             creation_timestamp=d.get('creation_timestamp', None),
-            current_stage=Stage(d['current_stage']) if 'current_stage' in d else None,
+            current_stage=Stage.__members__.get(d['current_stage'], None) if 'current_stage' in d else None,
             description=d.get('description', None),
             last_updated_timestamp=d.get('last_updated_timestamp', None),
             name=d.get('name', None),
-            permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None,
+            permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
+            if 'permission_level' in d else None,
             run_id=d.get('run_id', None),
             run_link=d.get('run_link', None),
             source=d.get('source', None),
-            status=Status(d['status']) if 'status' in d else None,
+            status=Status.__members__.get(d['status'], None) if 'status' in d else None,
             status_message=d.get('status_message', None),
             tags=[ModelVersionTag.from_dict(v)
                   for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
@@ -1294,18 +1296,18 @@ class RegisteredModelDatabricks:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelDatabricks':
-        return cls(
-            creation_timestamp=d.get('creation_timestamp', None),
-            description=d.get('description', None),
-            id=d.get('id', None),
-            last_updated_timestamp=d.get('last_updated_timestamp', None),
-            latest_versions=[ModelVersion.from_dict(v) for v in d['latest_versions']]
-            if 'latest_versions' in d and d['latest_versions'] is not None else None,
-            name=d.get('name', None),
-            permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None,
-            tags=[RegisteredModelTag.from_dict(v)
-                  for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
-            user_id=d.get('user_id', None))
+        return cls(creation_timestamp=d.get('creation_timestamp', None),
+                   description=d.get('description', None),
+                   id=d.get('id', None),
+                   last_updated_timestamp=d.get('last_updated_timestamp', None),
+                   latest_versions=[ModelVersion.from_dict(v) for v in d['latest_versions']]
+                   if 'latest_versions' in d and d['latest_versions'] is not None else None,
+                   name=d.get('name', None),
+                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
+                   if 'permission_level' in d else None,
+                   tags=[RegisteredModelTag.from_dict(v)
+                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
+                   user_id=d.get('user_id', None))
 
 
 @dataclass
@@ -1360,7 +1362,7 @@ class RegistryWebhook:
                    job_spec=JobSpecWithoutSecret.from_dict(d['job_spec']) if 'job_spec' in d else None,
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    model_name=d.get('model_name', None),
-                   status=RegistryWebhookStatus(d['status']) if 'status' in d else None)
+                   status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 class RegistryWebhookEvent(Enum):
@@ -1420,7 +1422,7 @@ class RejectTransitionRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'RejectTransitionRequest':
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage(d['stage']) if 'stage' in d else None,
+                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
                    version=d.get('version', None))
 
 
@@ -1557,7 +1559,7 @@ class RunInfo:
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
                    start_time=d.get('start_time', None),
-                   status=RunInfoStatus(d['status']) if 'status' in d else None,
+                   status=RunInfoStatus.__members__.get(d['status'], None) if 'status' in d else None,
                    user_id=d.get('user_id', None))
 
 
@@ -1610,7 +1612,8 @@ class SearchExperiments:
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
                    page_token=d.get('page_token', None),
-                   view_type=SearchExperimentsViewType(d['view_type']) if 'view_type' in d else None)
+                   view_type=SearchExperimentsViewType.__members__.get(d['view_type'], None)
+                   if 'view_type' in d else None)
 
 
 @dataclass
@@ -1722,7 +1725,8 @@ class SearchRuns:
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
                    page_token=d.get('page_token', None),
-                   run_view_type=SearchRunsRunViewType(d['run_view_type']) if 'run_view_type' in d else None)
+                   run_view_type=SearchRunsRunViewType.__members__.get(d['run_view_type'], None)
+                   if 'run_view_type' in d else None)
 
 
 @dataclass
@@ -1883,7 +1887,8 @@ class TestRegistryWebhookRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhookRequest':
-        return cls(event=RegistryWebhookEvent(d['event']) if 'event' in d else None, id=d.get('id', None))
+        return cls(event=RegistryWebhookEvent.__members__.get(d['event'], None) if 'event' in d else None,
+                   id=d.get('id', None))
 
 
 @dataclass
@@ -1945,7 +1950,7 @@ class TransitionModelVersionStageDatabricks:
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage(d['stage']) if 'stage' in d else None,
+                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
                    version=d.get('version', None))
 
 
@@ -1987,7 +1992,7 @@ class TransitionRequest:
         return cls(available_actions=d.get('available_actions', None),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
-                   to_stage=Stage(d['to_stage']) if 'to_stage' in d else None,
+                   to_stage=Stage.__members__.get(d['to_stage'], None) if 'to_stage' in d else None,
                    user_id=d.get('user_id', None))
 
 
@@ -2100,7 +2105,7 @@ class UpdateRegistryWebhook:
                    http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec']) if 'http_url_spec' in d else None,
                    id=d.get('id', None),
                    job_spec=JobSpec.from_dict(d['job_spec']) if 'job_spec' in d else None,
-                   status=RegistryWebhookStatus(d['status']) if 'status' in d else None)
+                   status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 @dataclass
@@ -2137,7 +2142,7 @@ class UpdateRun:
         return cls(end_time=d.get('end_time', None),
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
-                   status=UpdateRunStatus(d['status']) if 'status' in d else None)
+                   status=UpdateRunStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 @dataclass

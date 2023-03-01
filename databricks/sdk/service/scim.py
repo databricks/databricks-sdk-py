@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.scim')
 
@@ -280,7 +280,7 @@ class Patch:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Patch':
-        return cls(op=PatchOp(d['op']) if 'op' in d else None,
+        return cls(op=PatchOp.__members__.get(d['op'], None) if 'op' in d else None,
                    path=d.get('path', None),
                    value=d.get('value', None))
 

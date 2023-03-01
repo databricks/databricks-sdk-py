@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.secrets')
 
@@ -23,8 +23,9 @@ class AclItem:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AclItem':
-        return cls(permission=AclPermission(d['permission']) if 'permission' in d else None,
-                   principal=d.get('principal', None))
+        return cls(
+            permission=AclPermission.__members__.get(d['permission'], None) if 'permission' in d else None,
+            principal=d.get('principal', None))
 
 
 class AclPermission(Enum):
@@ -71,7 +72,7 @@ class CreateScope:
                    keyvault_metadata=AzureKeyVaultSecretScopeMetadata.from_dict(d['keyvault_metadata'])
                    if 'keyvault_metadata' in d else None,
                    scope=d.get('scope', None),
-                   scope_backend_type=ScopeBackendType(d['scope_backend_type'])
+                   scope_backend_type=ScopeBackendType.__members__.get(d['scope_backend_type'], None)
                    if 'scope_backend_type' in d else None)
 
 
@@ -203,9 +204,10 @@ class PutAcl:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PutAcl':
-        return cls(permission=AclPermission(d['permission']) if 'permission' in d else None,
-                   principal=d.get('principal', None),
-                   scope=d.get('scope', None))
+        return cls(
+            permission=AclPermission.__members__.get(d['permission'], None) if 'permission' in d else None,
+            principal=d.get('principal', None),
+            scope=d.get('scope', None))
 
 
 @dataclass
@@ -268,7 +270,8 @@ class SecretScope:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SecretScope':
-        return cls(backend_type=ScopeBackendType(d['backend_type']) if 'backend_type' in d else None,
+        return cls(backend_type=ScopeBackendType.__members__.get(d['backend_type'], None)
+                   if 'backend_type' in d else None,
                    keyvault_metadata=AzureKeyVaultSecretScopeMetadata.from_dict(d['keyvault_metadata'])
                    if 'keyvault_metadata' in d else None,
                    name=d.get('name', None))

@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.permissions')
 
@@ -27,11 +27,11 @@ class AccessControlRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccessControlRequest':
-        return cls(
-            group_name=d.get('group_name', None),
-            permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None,
-            service_principal_name=d.get('service_principal_name', None),
-            user_name=d.get('user_name', None))
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
+                   if 'permission_level' in d else None,
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
 
 
 @dataclass
@@ -168,10 +168,10 @@ class Permission:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Permission':
-        return cls(
-            inherited=d.get('inherited', None),
-            inherited_from_object=d.get('inherited_from_object', None),
-            permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None)
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
+                   if 'permission_level' in d else None)
 
 
 @dataclass
@@ -267,9 +267,9 @@ class PermissionOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionOutput':
-        return cls(
-            description=d.get('description', None),
-            permission_level=WorkspacePermission(d['permission_level']) if 'permission_level' in d else None)
+        return cls(description=d.get('description', None),
+                   permission_level=WorkspacePermission.__members__.get(d['permission_level'], None)
+                   if 'permission_level' in d else None)
 
 
 @dataclass
@@ -285,9 +285,9 @@ class PermissionsDescription:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsDescription':
-        return cls(
-            description=d.get('description', None),
-            permission_level=PermissionLevel(d['permission_level']) if 'permission_level' in d else None)
+        return cls(description=d.get('description', None),
+                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
+                   if 'permission_level' in d else None)
 
 
 @dataclass

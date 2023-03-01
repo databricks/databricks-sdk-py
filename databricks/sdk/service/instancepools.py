@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.instancepools')
 
@@ -136,10 +136,10 @@ class DiskType:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DiskType':
-        return cls(
-            azure_disk_volume_type=DiskTypeAzureDiskVolumeType(d['azure_disk_volume_type'])
-            if 'azure_disk_volume_type' in d else None,
-            ebs_volume_type=DiskTypeEbsVolumeType(d['ebs_volume_type']) if 'ebs_volume_type' in d else None)
+        return cls(azure_disk_volume_type=DiskTypeAzureDiskVolumeType.__members__.get(
+            d['azure_disk_volume_type'], None) if 'azure_disk_volume_type' in d else None,
+                   ebs_volume_type=DiskTypeEbsVolumeType.__members__.get(d['ebs_volume_type'], None)
+                   if 'ebs_volume_type' in d else None)
 
 
 class DiskTypeAzureDiskVolumeType(Enum):
@@ -288,8 +288,8 @@ class FleetOnDemandOption:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FleetOnDemandOption':
-        return cls(allocation_strategy=FleetOnDemandOptionAllocationStrategy(d['allocation_strategy'])
-                   if 'allocation_strategy' in d else None,
+        return cls(allocation_strategy=FleetOnDemandOptionAllocationStrategy.__members__.get(
+            d['allocation_strategy'], None) if 'allocation_strategy' in d else None,
                    max_total_price=d.get('max_total_price', None),
                    use_capacity_reservations_first=d.get('use_capacity_reservations_first', None))
 
@@ -319,8 +319,8 @@ class FleetSpotOption:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FleetSpotOption':
-        return cls(allocation_strategy=FleetSpotOptionAllocationStrategy(d['allocation_strategy'])
-                   if 'allocation_strategy' in d else None,
+        return cls(allocation_strategy=FleetSpotOptionAllocationStrategy.__members__.get(
+            d['allocation_strategy'], None) if 'allocation_strategy' in d else None,
                    instance_pools_to_use_count=d.get('instance_pools_to_use_count', None),
                    max_total_price=d.get('max_total_price', None))
 
@@ -410,7 +410,7 @@ class GetInstancePool:
             preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
             if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
             preloaded_spark_versions=d.get('preloaded_spark_versions', None),
-            state=InstancePoolState(d['state']) if 'state' in d else None,
+            state=InstancePoolState.__members__.get(d['state'], None) if 'state' in d else None,
             stats=InstancePoolStats.from_dict(d['stats']) if 'stats' in d else None,
             status=InstancePoolStatus.from_dict(d['status']) if 'status' in d else None)
 
@@ -484,7 +484,7 @@ class InstancePoolAndStats:
             preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
             if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
             preloaded_spark_versions=d.get('preloaded_spark_versions', None),
-            state=InstancePoolState(d['state']) if 'state' in d else None,
+            state=InstancePoolState.__members__.get(d['state'], None) if 'state' in d else None,
             stats=InstancePoolStats.from_dict(d['stats']) if 'stats' in d else None,
             status=InstancePoolStatus.from_dict(d['status']) if 'status' in d else None)
 
@@ -504,8 +504,8 @@ class InstancePoolAwsAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAwsAttributes':
-        return cls(availability=InstancePoolAwsAttributesAvailability(d['availability'])
-                   if 'availability' in d else None,
+        return cls(availability=InstancePoolAwsAttributesAvailability.__members__.get(
+            d['availability'], None) if 'availability' in d else None,
                    spot_bid_price_percent=d.get('spot_bid_price_percent', None),
                    zone_id=d.get('zone_id', None))
 
@@ -533,8 +533,8 @@ class InstancePoolAzureAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAzureAttributes':
-        return cls(availability=InstancePoolAzureAttributesAvailability(d['availability'])
-                   if 'availability' in d else None,
+        return cls(availability=InstancePoolAzureAttributesAvailability.__members__.get(
+            d['availability'], None) if 'availability' in d else None,
                    spot_bid_max_price=d.get('spot_bid_max_price', None))
 
 

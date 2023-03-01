@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.libraries')
 
@@ -101,10 +101,11 @@ class LibraryFullStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LibraryFullStatus':
-        return cls(is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
-                   library=Library.from_dict(d['library']) if 'library' in d else None,
-                   messages=d.get('messages', None),
-                   status=LibraryFullStatusStatus(d['status']) if 'status' in d else None)
+        return cls(
+            is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
+            library=Library.from_dict(d['library']) if 'library' in d else None,
+            messages=d.get('messages', None),
+            status=LibraryFullStatusStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 class LibraryFullStatusStatus(Enum):
