@@ -11,8 +11,8 @@ _LOG = logging.getLogger('databricks.sdk.service.dbfs')
 
 @dataclass
 class AddBlock:
-    data: str
     handle: int
+    data: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -41,8 +41,8 @@ class Close:
 
 @dataclass
 class Create:
-    overwrite: bool
     path: str
+    overwrite: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -57,7 +57,7 @@ class Create:
 
 @dataclass
 class CreateResponse:
-    handle: int
+    handle: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -72,7 +72,7 @@ class CreateResponse:
 @dataclass
 class Delete:
     path: str
-    recursive: bool
+    recursive: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -87,10 +87,10 @@ class Delete:
 
 @dataclass
 class FileInfo:
-    file_size: int
-    is_dir: bool
-    modification_time: int
-    path: str
+    file_size: int = None
+    is_dir: bool = None
+    modification_time: int = None
+    path: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -124,7 +124,7 @@ class ListRequest:
 
 @dataclass
 class ListStatusResponse:
-    files: 'List[FileInfo]'
+    files: 'List[FileInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -153,8 +153,8 @@ class MkDirs:
 
 @dataclass
 class Move:
-    destination_path: str
     source_path: str
+    destination_path: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -169,9 +169,9 @@ class Move:
 
 @dataclass
 class Put:
-    contents: str
-    overwrite: bool
     path: str
+    contents: str = None
+    overwrite: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -191,15 +191,15 @@ class Put:
 class Read:
     """Get the contents of a file"""
 
-    length: int
-    offset: int
     path: str
+    length: int = None
+    offset: int = None
 
 
 @dataclass
 class ReadResponse:
-    bytes_read: int
-    data: str
+    bytes_read: int = None
+    data: str = None
 
     def as_dict(self) -> dict:
         body = {}

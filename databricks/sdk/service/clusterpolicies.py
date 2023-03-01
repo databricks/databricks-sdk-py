@@ -12,12 +12,12 @@ _LOG = logging.getLogger('databricks.sdk.service.clusterpolicies')
 
 @dataclass
 class CreatePolicy:
-    definition: str
-    description: str
-    max_clusters_per_user: int
     name: str
-    policy_family_definition_overrides: str
-    policy_family_id: str
+    definition: str = None
+    description: str = None
+    max_clusters_per_user: int = None
+    policy_family_definition_overrides: str = None
+    policy_family_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -42,7 +42,7 @@ class CreatePolicy:
 
 @dataclass
 class CreatePolicyResponse:
-    policy_id: str
+    policy_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -70,13 +70,13 @@ class DeletePolicy:
 
 @dataclass
 class EditPolicy:
-    definition: str
-    description: str
-    max_clusters_per_user: int
-    name: str
-    policy_family_definition_overrides: str
-    policy_family_id: str
     policy_id: str
+    name: str
+    definition: str = None
+    description: str = None
+    max_clusters_per_user: int = None
+    policy_family_definition_overrides: str = None
+    policy_family_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -117,13 +117,13 @@ class GetPolicyFamilyRequest:
 class ListRequest:
     """Get a cluster policy"""
 
-    sort_column: 'ListSortColumn'
-    sort_order: 'ListSortOrder'
+    sort_column: 'ListSortColumn' = None
+    sort_order: 'ListSortOrder' = None
 
 
 @dataclass
 class ListPoliciesResponse:
-    policies: 'List[Policy]'
+    policies: 'List[Policy]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -139,14 +139,14 @@ class ListPoliciesResponse:
 
 @dataclass
 class ListPolicyFamiliesRequest:
-    max_results: int
-    page_token: str
+    max_results: int = None
+    page_token: str = None
 
 
 @dataclass
 class ListPolicyFamiliesResponse:
-    next_page_token: str
     policy_families: 'List[PolicyFamily]'
+    next_page_token: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -175,16 +175,16 @@ class ListSortOrder(Enum):
 
 @dataclass
 class Policy:
-    created_at_timestamp: int
-    creator_user_name: str
-    definition: str
-    description: str
-    is_default: bool
-    max_clusters_per_user: int
-    name: str
-    policy_family_definition_overrides: str
-    policy_family_id: str
-    policy_id: str
+    created_at_timestamp: int = None
+    creator_user_name: str = None
+    definition: str = None
+    description: str = None
+    is_default: bool = None
+    max_clusters_per_user: int = None
+    name: str = None
+    policy_family_definition_overrides: str = None
+    policy_family_id: str = None
+    policy_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -217,10 +217,10 @@ class Policy:
 
 @dataclass
 class PolicyFamily:
-    definition: str
-    description: str
-    name: str
     policy_family_id: str
+    name: str
+    description: str
+    definition: str
 
     def as_dict(self) -> dict:
         body = {}

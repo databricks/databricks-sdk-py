@@ -20,10 +20,10 @@ from .permissions import AccessControlRequest
 
 @dataclass
 class BaseJob:
-    created_time: int
-    creator_user_name: str
-    job_id: int
-    settings: 'JobSettings'
+    created_time: int = None
+    creator_user_name: str = None
+    job_id: int = None
+    settings: 'JobSettings' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -43,30 +43,30 @@ class BaseJob:
 
 @dataclass
 class BaseRun:
-    attempt_number: int
-    cleanup_duration: int
-    cluster_instance: 'ClusterInstance'
-    cluster_spec: 'ClusterSpec'
-    creator_user_name: str
-    end_time: int
-    execution_duration: int
-    git_source: 'GitSource'
-    job_clusters: 'List[JobCluster]'
-    job_id: int
-    number_in_job: int
-    original_attempt_run_id: int
-    overriding_parameters: 'RunParameters'
-    run_duration: int
-    run_id: int
-    run_name: str
-    run_page_url: str
-    run_type: 'RunType'
-    schedule: 'CronSchedule'
-    setup_duration: int
-    start_time: int
-    state: 'RunState'
-    tasks: 'List[RunTask]'
-    trigger: 'TriggerType'
+    attempt_number: int = None
+    cleanup_duration: int = None
+    cluster_instance: 'ClusterInstance' = None
+    cluster_spec: 'ClusterSpec' = None
+    creator_user_name: str = None
+    end_time: int = None
+    execution_duration: int = None
+    git_source: 'GitSource' = None
+    job_clusters: 'List[JobCluster]' = None
+    job_id: int = None
+    number_in_job: int = None
+    original_attempt_run_id: int = None
+    overriding_parameters: 'RunParameters' = None
+    run_duration: int = None
+    run_id: int = None
+    run_name: str = None
+    run_page_url: str = None
+    run_type: 'RunType' = None
+    schedule: 'CronSchedule' = None
+    setup_duration: int = None
+    start_time: int = None
+    state: 'RunState' = None
+    tasks: 'List[RunTask]' = None
+    trigger: 'TriggerType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -158,8 +158,8 @@ class CancelRun:
 
 @dataclass
 class ClusterInstance:
-    cluster_id: str
-    spark_context_id: str
+    cluster_id: str = None
+    spark_context_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -174,9 +174,9 @@ class ClusterInstance:
 
 @dataclass
 class ClusterSpec:
-    existing_cluster_id: str
-    libraries: 'List[Library]'
-    new_cluster: 'BaseClusterInfo'
+    existing_cluster_id: str = None
+    libraries: 'List[Library]' = None
+    new_cluster: 'BaseClusterInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -194,18 +194,18 @@ class ClusterSpec:
 
 @dataclass
 class CreateJob:
-    access_control_list: 'List[AccessControlRequest]'
-    email_notifications: 'JobEmailNotifications'
-    format: 'CreateJobFormat'
-    git_source: 'GitSource'
-    job_clusters: 'List[JobCluster]'
-    max_concurrent_runs: int
-    name: str
-    schedule: 'CronSchedule'
-    tags: 'Dict[str,str]'
-    tasks: 'List[JobTaskSettings]'
-    timeout_seconds: int
-    webhook_notifications: 'JobWebhookNotifications'
+    access_control_list: 'List[AccessControlRequest]' = None
+    email_notifications: 'JobEmailNotifications' = None
+    format: 'CreateJobFormat' = None
+    git_source: 'GitSource' = None
+    job_clusters: 'List[JobCluster]' = None
+    max_concurrent_runs: int = None
+    name: str = None
+    schedule: 'CronSchedule' = None
+    tags: 'Dict[str,str]' = None
+    tasks: 'List[JobTaskSettings]' = None
+    timeout_seconds: int = None
+    webhook_notifications: 'JobWebhookNotifications' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -253,7 +253,7 @@ class CreateJobFormat(Enum):
 
 @dataclass
 class CreateResponse:
-    job_id: int
+    job_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -267,9 +267,9 @@ class CreateResponse:
 
 @dataclass
 class CronSchedule:
-    pause_status: 'CronSchedulePauseStatus'
     quartz_cron_expression: str
     timezone_id: str
+    pause_status: 'CronSchedulePauseStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -295,8 +295,8 @@ class CronSchedulePauseStatus(Enum):
 
 @dataclass
 class DbtOutput:
-    artifacts_headers: 'Dict[str,str]'
-    artifacts_link: str
+    artifacts_headers: 'Dict[str,str]' = None
+    artifacts_link: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -312,12 +312,12 @@ class DbtOutput:
 
 @dataclass
 class DbtTask:
-    catalog: str
     commands: 'List[str]'
-    profiles_directory: str
-    project_directory: str
-    schema: str
-    warehouse_id: str
+    catalog: str = None
+    profiles_directory: str = None
+    project_directory: str = None
+    schema: str = None
+    warehouse_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -372,12 +372,12 @@ class ExportRun:
     """Export and retrieve a job run"""
 
     run_id: int
-    views_to_export: 'ViewsToExport'
+    views_to_export: 'ViewsToExport' = None
 
 
 @dataclass
 class ExportRunOutput:
-    views: 'List[ViewItem]'
+    views: 'List[ViewItem]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -401,8 +401,8 @@ class Get:
 class GetRun:
     """Get a single job run"""
 
-    include_history: bool
     run_id: int
+    include_history: bool = None
 
 
 @dataclass
@@ -417,7 +417,7 @@ class GitSnapshot:
     """Read-only state of the remote repository at the time the job was run. This field is only
     included on job runs."""
 
-    used_commit: str
+    used_commit: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -434,12 +434,12 @@ class GitSource:
     """An optional specification for a remote repository containing the notebooks used by this job's
     notebook tasks."""
 
-    git_branch: str
-    git_commit: str
-    git_provider: 'GitSourceGitProvider'
-    git_snapshot: 'GitSnapshot'
-    git_tag: str
     git_url: str
+    git_provider: 'GitSourceGitProvider'
+    git_branch: str = None
+    git_commit: str = None
+    git_snapshot: 'GitSnapshot' = None
+    git_tag: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -477,11 +477,11 @@ class GitSourceGitProvider(Enum):
 
 @dataclass
 class Job:
-    created_time: int
-    creator_user_name: str
-    job_id: int
-    run_as_user_name: str
-    settings: 'JobSettings'
+    created_time: int = None
+    creator_user_name: str = None
+    job_id: int = None
+    run_as_user_name: str = None
+    settings: 'JobSettings' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -504,7 +504,7 @@ class Job:
 @dataclass
 class JobCluster:
     job_cluster_key: str
-    new_cluster: 'BaseClusterInfo'
+    new_cluster: 'BaseClusterInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -520,10 +520,10 @@ class JobCluster:
 
 @dataclass
 class JobEmailNotifications:
-    no_alert_for_skipped_runs: bool
-    on_failure: 'List[str]'
-    on_start: 'List[str]'
-    on_success: 'List[str]'
+    no_alert_for_skipped_runs: bool = None
+    on_failure: 'List[str]' = None
+    on_start: 'List[str]' = None
+    on_success: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -543,17 +543,17 @@ class JobEmailNotifications:
 
 @dataclass
 class JobSettings:
-    email_notifications: 'JobEmailNotifications'
-    format: 'JobSettingsFormat'
-    git_source: 'GitSource'
-    job_clusters: 'List[JobCluster]'
-    max_concurrent_runs: int
-    name: str
-    schedule: 'CronSchedule'
-    tags: 'Dict[str,str]'
-    tasks: 'List[JobTaskSettings]'
-    timeout_seconds: int
-    webhook_notifications: 'JobWebhookNotifications'
+    email_notifications: 'JobEmailNotifications' = None
+    format: 'JobSettingsFormat' = None
+    git_source: 'GitSource' = None
+    job_clusters: 'List[JobCluster]' = None
+    max_concurrent_runs: int = None
+    name: str = None
+    schedule: 'CronSchedule' = None
+    tags: 'Dict[str,str]' = None
+    tasks: 'List[JobTaskSettings]' = None
+    timeout_seconds: int = None
+    webhook_notifications: 'JobWebhookNotifications' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -599,26 +599,26 @@ class JobSettingsFormat(Enum):
 
 @dataclass
 class JobTaskSettings:
-    dbt_task: 'DbtTask'
-    depends_on: 'List[TaskDependenciesItem]'
-    description: str
-    email_notifications: 'JobEmailNotifications'
-    existing_cluster_id: str
-    job_cluster_key: str
-    libraries: 'List[Library]'
-    max_retries: int
-    min_retry_interval_millis: int
-    new_cluster: 'BaseClusterInfo'
-    notebook_task: 'NotebookTask'
-    pipeline_task: 'PipelineTask'
-    python_wheel_task: 'PythonWheelTask'
-    retry_on_timeout: bool
-    spark_jar_task: 'SparkJarTask'
-    spark_python_task: 'SparkPythonTask'
-    spark_submit_task: 'SparkSubmitTask'
-    sql_task: 'SqlTask'
     task_key: str
-    timeout_seconds: int
+    dbt_task: 'DbtTask' = None
+    depends_on: 'List[TaskDependenciesItem]' = None
+    description: str = None
+    email_notifications: 'JobEmailNotifications' = None
+    existing_cluster_id: str = None
+    job_cluster_key: str = None
+    libraries: 'List[Library]' = None
+    max_retries: int = None
+    min_retry_interval_millis: int = None
+    new_cluster: 'BaseClusterInfo' = None
+    notebook_task: 'NotebookTask' = None
+    pipeline_task: 'PipelineTask' = None
+    python_wheel_task: 'PythonWheelTask' = None
+    retry_on_timeout: bool = None
+    spark_jar_task: 'SparkJarTask' = None
+    spark_python_task: 'SparkPythonTask' = None
+    spark_submit_task: 'SparkSubmitTask' = None
+    sql_task: 'SqlTask' = None
+    timeout_seconds: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -676,9 +676,9 @@ class JobTaskSettings:
 
 @dataclass
 class JobWebhookNotifications:
-    on_failure: 'List[JobWebhookNotificationsOnFailureItem]'
-    on_start: 'List[JobWebhookNotificationsOnStartItem]'
-    on_success: 'List[JobWebhookNotificationsOnSuccessItem]'
+    on_failure: 'List[JobWebhookNotificationsOnFailureItem]' = None
+    on_start: 'List[JobWebhookNotificationsOnStartItem]' = None
+    on_success: 'List[JobWebhookNotificationsOnSuccessItem]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -700,7 +700,7 @@ class JobWebhookNotifications:
 
 @dataclass
 class JobWebhookNotificationsOnFailureItem:
-    id: str
+    id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -714,7 +714,7 @@ class JobWebhookNotificationsOnFailureItem:
 
 @dataclass
 class JobWebhookNotificationsOnStartItem:
-    id: str
+    id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -728,7 +728,7 @@ class JobWebhookNotificationsOnStartItem:
 
 @dataclass
 class JobWebhookNotificationsOnSuccessItem:
-    id: str
+    id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -744,16 +744,16 @@ class JobWebhookNotificationsOnSuccessItem:
 class ListRequest:
     """List all jobs"""
 
-    expand_tasks: bool
-    limit: int
-    name: str
-    offset: int
+    expand_tasks: bool = None
+    limit: int = None
+    name: str = None
+    offset: int = None
 
 
 @dataclass
 class ListJobsResponse:
-    has_more: bool
-    jobs: 'List[BaseJob]'
+    has_more: bool = None
+    jobs: 'List[BaseJob]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -772,21 +772,21 @@ class ListJobsResponse:
 class ListRuns:
     """List runs for a job"""
 
-    active_only: bool
-    completed_only: bool
-    expand_tasks: bool
-    job_id: int
-    limit: int
-    offset: int
-    run_type: 'ListRunsRunType'
-    start_time_from: int
-    start_time_to: int
+    active_only: bool = None
+    completed_only: bool = None
+    expand_tasks: bool = None
+    job_id: int = None
+    limit: int = None
+    offset: int = None
+    run_type: 'ListRunsRunType' = None
+    start_time_from: int = None
+    start_time_to: int = None
 
 
 @dataclass
 class ListRunsResponse:
-    has_more: bool
-    runs: 'List[BaseRun]'
+    has_more: bool = None
+    runs: 'List[BaseRun]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -811,8 +811,8 @@ class ListRunsRunType(Enum):
 
 @dataclass
 class NotebookOutput:
-    result: str
-    truncated: bool
+    result: str = None
+    truncated: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -827,9 +827,9 @@ class NotebookOutput:
 
 @dataclass
 class NotebookTask:
-    base_parameters: 'Dict[str,str]'
     notebook_path: str
-    source: 'NotebookTaskSource'
+    base_parameters: 'Dict[str,str]' = None
+    source: 'NotebookTaskSource' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -854,7 +854,7 @@ class NotebookTaskSource(Enum):
 
 @dataclass
 class PipelineParams:
-    full_refresh: bool
+    full_refresh: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -868,8 +868,8 @@ class PipelineParams:
 
 @dataclass
 class PipelineTask:
-    full_refresh: bool
-    pipeline_id: str
+    full_refresh: bool = None
+    pipeline_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -884,10 +884,10 @@ class PipelineTask:
 
 @dataclass
 class PythonWheelTask:
-    entry_point: str
-    named_parameters: 'Dict[str,str]'
-    package_name: str
-    parameters: 'List[str]'
+    entry_point: str = None
+    named_parameters: 'Dict[str,str]' = None
+    package_name: str = None
+    parameters: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -907,12 +907,12 @@ class PythonWheelTask:
 
 @dataclass
 class RepairHistoryItem:
-    end_time: int
-    id: int
-    start_time: int
-    state: 'RunState'
-    task_run_ids: 'List[int]'
-    type: 'RepairHistoryItemType'
+    end_time: int = None
+    id: int = None
+    start_time: int = None
+    state: 'RunState' = None
+    task_run_ids: 'List[int]' = None
+    type: 'RepairHistoryItemType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -943,18 +943,18 @@ class RepairHistoryItemType(Enum):
 
 @dataclass
 class RepairRun:
-    dbt_commands: 'List[str]'
-    jar_params: 'List[str]'
-    latest_repair_id: int
-    notebook_params: 'Dict[str,str]'
-    pipeline_params: 'PipelineParams'
-    python_named_params: 'Dict[str,str]'
-    python_params: 'List[str]'
-    rerun_all_failed_tasks: bool
-    rerun_tasks: 'List[str]'
     run_id: int
-    spark_submit_params: 'List[str]'
-    sql_params: 'Dict[str,str]'
+    dbt_commands: 'List[str]' = None
+    jar_params: 'List[str]' = None
+    latest_repair_id: int = None
+    notebook_params: 'Dict[str,str]' = None
+    pipeline_params: 'PipelineParams' = None
+    python_named_params: 'Dict[str,str]' = None
+    python_params: 'List[str]' = None
+    rerun_all_failed_tasks: bool = None
+    rerun_tasks: 'List[str]' = None
+    spark_submit_params: 'List[str]' = None
+    sql_params: 'Dict[str,str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -991,7 +991,7 @@ class RepairRun:
 
 @dataclass
 class RepairRunResponse:
-    repair_id: int
+    repair_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1022,31 +1022,31 @@ class ResetJob:
 
 @dataclass
 class Run:
-    attempt_number: int
-    cleanup_duration: int
-    cluster_instance: 'ClusterInstance'
-    cluster_spec: 'ClusterSpec'
-    creator_user_name: str
-    end_time: int
-    execution_duration: int
-    git_source: 'GitSource'
-    job_clusters: 'List[JobCluster]'
-    job_id: int
-    number_in_job: int
-    original_attempt_run_id: int
-    overriding_parameters: 'RunParameters'
-    repair_history: 'List[RepairHistoryItem]'
-    run_duration: int
-    run_id: int
-    run_name: str
-    run_page_url: str
-    run_type: 'RunType'
-    schedule: 'CronSchedule'
-    setup_duration: int
-    start_time: int
-    state: 'RunState'
-    tasks: 'List[RunTask]'
-    trigger: 'TriggerType'
+    attempt_number: int = None
+    cleanup_duration: int = None
+    cluster_instance: 'ClusterInstance' = None
+    cluster_spec: 'ClusterSpec' = None
+    creator_user_name: str = None
+    end_time: int = None
+    execution_duration: int = None
+    git_source: 'GitSource' = None
+    job_clusters: 'List[JobCluster]' = None
+    job_id: int = None
+    number_in_job: int = None
+    original_attempt_run_id: int = None
+    overriding_parameters: 'RunParameters' = None
+    repair_history: 'List[RepairHistoryItem]' = None
+    run_duration: int = None
+    run_id: int = None
+    run_name: str = None
+    run_page_url: str = None
+    run_type: 'RunType' = None
+    schedule: 'CronSchedule' = None
+    setup_duration: int = None
+    start_time: int = None
+    state: 'RunState' = None
+    tasks: 'List[RunTask]' = None
+    trigger: 'TriggerType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1126,16 +1126,16 @@ class RunLifeCycleState(Enum):
 
 @dataclass
 class RunNow:
-    dbt_commands: 'List[str]'
-    idempotency_token: str
-    jar_params: 'List[str]'
     job_id: int
-    notebook_params: 'Dict[str,str]'
-    pipeline_params: 'PipelineParams'
-    python_named_params: 'Dict[str,str]'
-    python_params: 'List[str]'
-    spark_submit_params: 'List[str]'
-    sql_params: 'Dict[str,str]'
+    dbt_commands: 'List[str]' = None
+    idempotency_token: str = None
+    jar_params: 'List[str]' = None
+    notebook_params: 'Dict[str,str]' = None
+    pipeline_params: 'PipelineParams' = None
+    python_named_params: 'Dict[str,str]' = None
+    python_params: 'List[str]' = None
+    spark_submit_params: 'List[str]' = None
+    sql_params: 'Dict[str,str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1168,8 +1168,8 @@ class RunNow:
 
 @dataclass
 class RunNowResponse:
-    number_in_job: int
-    run_id: int
+    number_in_job: int = None
+    run_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1184,14 +1184,14 @@ class RunNowResponse:
 
 @dataclass
 class RunOutput:
-    dbt_output: 'DbtOutput'
-    error: str
-    error_trace: str
-    logs: str
-    logs_truncated: bool
-    metadata: 'Run'
-    notebook_output: 'NotebookOutput'
-    sql_output: 'SqlOutput'
+    dbt_output: 'DbtOutput' = None
+    error: str = None
+    error_trace: str = None
+    logs: str = None
+    logs_truncated: bool = None
+    metadata: 'Run' = None
+    notebook_output: 'NotebookOutput' = None
+    sql_output: 'SqlOutput' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1220,14 +1220,14 @@ class RunOutput:
 
 @dataclass
 class RunParameters:
-    dbt_commands: 'List[str]'
-    jar_params: 'List[str]'
-    notebook_params: 'Dict[str,str]'
-    pipeline_params: 'PipelineParams'
-    python_named_params: 'Dict[str,str]'
-    python_params: 'List[str]'
-    spark_submit_params: 'List[str]'
-    sql_params: 'Dict[str,str]'
+    dbt_commands: 'List[str]' = None
+    jar_params: 'List[str]' = None
+    notebook_params: 'Dict[str,str]' = None
+    pipeline_params: 'PipelineParams' = None
+    python_named_params: 'Dict[str,str]' = None
+    python_params: 'List[str]' = None
+    spark_submit_params: 'List[str]' = None
+    sql_params: 'Dict[str,str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1267,10 +1267,10 @@ class RunResultState(Enum):
 class RunState:
     """The result and lifecycle state of the run."""
 
-    life_cycle_state: 'RunLifeCycleState'
-    result_state: 'RunResultState'
-    state_message: str
-    user_cancelled_or_timedout: bool
+    life_cycle_state: 'RunLifeCycleState' = None
+    result_state: 'RunResultState' = None
+    state_message: str = None
+    user_cancelled_or_timedout: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1293,18 +1293,18 @@ class RunState:
 
 @dataclass
 class RunSubmitTaskSettings:
-    depends_on: 'List[TaskDependenciesItem]'
-    existing_cluster_id: str
-    libraries: 'List[Library]'
-    new_cluster: 'BaseClusterInfo'
-    notebook_task: 'NotebookTask'
-    pipeline_task: 'PipelineTask'
-    python_wheel_task: 'PythonWheelTask'
-    spark_jar_task: 'SparkJarTask'
-    spark_python_task: 'SparkPythonTask'
-    spark_submit_task: 'SparkSubmitTask'
     task_key: str
-    timeout_seconds: int
+    depends_on: 'List[TaskDependenciesItem]' = None
+    existing_cluster_id: str = None
+    libraries: 'List[Library]' = None
+    new_cluster: 'BaseClusterInfo' = None
+    notebook_task: 'NotebookTask' = None
+    pipeline_task: 'PipelineTask' = None
+    python_wheel_task: 'PythonWheelTask' = None
+    spark_jar_task: 'SparkJarTask' = None
+    spark_python_task: 'SparkPythonTask' = None
+    spark_submit_task: 'SparkSubmitTask' = None
+    timeout_seconds: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1345,30 +1345,30 @@ class RunSubmitTaskSettings:
 
 @dataclass
 class RunTask:
-    attempt_number: int
-    cleanup_duration: int
-    cluster_instance: 'ClusterInstance'
-    dbt_task: 'DbtTask'
-    depends_on: 'List[TaskDependenciesItem]'
-    description: str
-    end_time: int
-    execution_duration: int
-    existing_cluster_id: str
-    git_source: 'GitSource'
-    libraries: 'List[Library]'
-    new_cluster: 'BaseClusterInfo'
-    notebook_task: 'NotebookTask'
-    pipeline_task: 'PipelineTask'
-    python_wheel_task: 'PythonWheelTask'
-    run_id: int
-    setup_duration: int
-    spark_jar_task: 'SparkJarTask'
-    spark_python_task: 'SparkPythonTask'
-    spark_submit_task: 'SparkSubmitTask'
-    sql_task: 'SqlTask'
-    start_time: int
-    state: 'RunState'
-    task_key: str
+    attempt_number: int = None
+    cleanup_duration: int = None
+    cluster_instance: 'ClusterInstance' = None
+    dbt_task: 'DbtTask' = None
+    depends_on: 'List[TaskDependenciesItem]' = None
+    description: str = None
+    end_time: int = None
+    execution_duration: int = None
+    existing_cluster_id: str = None
+    git_source: 'GitSource' = None
+    libraries: 'List[Library]' = None
+    new_cluster: 'BaseClusterInfo' = None
+    notebook_task: 'NotebookTask' = None
+    pipeline_task: 'PipelineTask' = None
+    python_wheel_task: 'PythonWheelTask' = None
+    run_id: int = None
+    setup_duration: int = None
+    spark_jar_task: 'SparkJarTask' = None
+    spark_python_task: 'SparkPythonTask' = None
+    spark_submit_task: 'SparkSubmitTask' = None
+    sql_task: 'SqlTask' = None
+    start_time: int = None
+    state: 'RunState' = None
+    task_key: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1442,9 +1442,9 @@ class RunType(Enum):
 
 @dataclass
 class SparkJarTask:
-    jar_uri: str
-    main_class_name: str
-    parameters: 'List[str]'
+    jar_uri: str = None
+    main_class_name: str = None
+    parameters: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1462,8 +1462,8 @@ class SparkJarTask:
 
 @dataclass
 class SparkPythonTask:
-    parameters: 'List[str]'
     python_file: str
+    parameters: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1478,7 +1478,7 @@ class SparkPythonTask:
 
 @dataclass
 class SparkSubmitTask:
-    parameters: 'List[str]'
+    parameters: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1492,11 +1492,11 @@ class SparkSubmitTask:
 
 @dataclass
 class SqlAlertOutput:
-    alert_state: 'SqlAlertState'
-    output_link: str
-    query_text: str
-    sql_statements: 'List[SqlStatementOutput]'
-    warehouse_id: str
+    alert_state: 'SqlAlertState' = None
+    output_link: str = None
+    query_text: str = None
+    sql_statements: 'List[SqlStatementOutput]' = None
+    warehouse_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1531,8 +1531,8 @@ class SqlAlertState(Enum):
 
 @dataclass
 class SqlDashboardOutput:
-    warehouse_id: str
-    widgets: 'SqlDashboardWidgetOutput'
+    warehouse_id: str = None
+    widgets: 'SqlDashboardWidgetOutput' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1548,13 +1548,13 @@ class SqlDashboardOutput:
 
 @dataclass
 class SqlDashboardWidgetOutput:
-    end_time: int
-    error: 'SqlOutputError'
-    output_link: str
-    start_time: int
-    status: 'SqlDashboardWidgetOutputStatus'
-    widget_id: str
-    widget_title: str
+    end_time: int = None
+    error: 'SqlOutputError' = None
+    output_link: str = None
+    start_time: int = None
+    status: 'SqlDashboardWidgetOutputStatus' = None
+    widget_id: str = None
+    widget_title: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1591,9 +1591,9 @@ class SqlDashboardWidgetOutputStatus(Enum):
 
 @dataclass
 class SqlOutput:
-    alert_output: 'SqlAlertOutput'
-    dashboard_output: 'SqlDashboardOutput'
-    query_output: 'SqlQueryOutput'
+    alert_output: 'SqlAlertOutput' = None
+    dashboard_output: 'SqlDashboardOutput' = None
+    query_output: 'SqlQueryOutput' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1612,7 +1612,7 @@ class SqlOutput:
 
 @dataclass
 class SqlOutputError:
-    message: str
+    message: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1626,10 +1626,10 @@ class SqlOutputError:
 
 @dataclass
 class SqlQueryOutput:
-    output_link: str
-    query_text: str
-    sql_statements: 'List[SqlStatementOutput]'
-    warehouse_id: str
+    output_link: str = None
+    query_text: str = None
+    sql_statements: 'List[SqlStatementOutput]' = None
+    warehouse_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1650,7 +1650,7 @@ class SqlQueryOutput:
 
 @dataclass
 class SqlStatementOutput:
-    lookup_key: str
+    lookup_key: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1664,11 +1664,11 @@ class SqlStatementOutput:
 
 @dataclass
 class SqlTask:
-    alert: 'SqlTaskAlert'
-    dashboard: 'SqlTaskDashboard'
-    parameters: 'Dict[str,str]'
-    query: 'SqlTaskQuery'
     warehouse_id: str
+    alert: 'SqlTaskAlert' = None
+    dashboard: 'SqlTaskDashboard' = None
+    parameters: 'Dict[str,str]' = None
+    query: 'SqlTaskQuery' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1691,8 +1691,8 @@ class SqlTask:
 @dataclass
 class SqlTaskAlert:
     alert_id: str
-    pause_subscriptions: bool
-    subscriptions: 'List[SqlTaskSubscription]'
+    pause_subscriptions: bool = None
+    subscriptions: 'List[SqlTaskSubscription]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1711,10 +1711,10 @@ class SqlTaskAlert:
 
 @dataclass
 class SqlTaskDashboard:
-    custom_subject: str
     dashboard_id: str
-    pause_subscriptions: bool
-    subscriptions: 'List[SqlTaskSubscription]'
+    custom_subject: str = None
+    pause_subscriptions: bool = None
+    subscriptions: 'List[SqlTaskSubscription]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1749,8 +1749,8 @@ class SqlTaskQuery:
 
 @dataclass
 class SqlTaskSubscription:
-    destination_id: str
-    user_name: str
+    destination_id: str = None
+    user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1765,13 +1765,13 @@ class SqlTaskSubscription:
 
 @dataclass
 class SubmitRun:
-    access_control_list: 'List[AccessControlRequest]'
-    git_source: 'GitSource'
-    idempotency_token: str
-    run_name: str
-    tasks: 'List[RunSubmitTaskSettings]'
-    timeout_seconds: int
-    webhook_notifications: 'JobWebhookNotifications'
+    access_control_list: 'List[AccessControlRequest]' = None
+    git_source: 'GitSource' = None
+    idempotency_token: str = None
+    run_name: str = None
+    tasks: 'List[RunSubmitTaskSettings]' = None
+    timeout_seconds: int = None
+    webhook_notifications: 'JobWebhookNotifications' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1799,7 +1799,7 @@ class SubmitRun:
 
 @dataclass
 class SubmitRunResponse:
-    run_id: int
+    run_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1813,7 +1813,7 @@ class SubmitRunResponse:
 
 @dataclass
 class TaskDependenciesItem:
-    task_key: str
+    task_key: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1835,9 +1835,9 @@ class TriggerType(Enum):
 
 @dataclass
 class UpdateJob:
-    fields_to_remove: 'List[str]'
     job_id: int
-    new_settings: 'JobSettings'
+    fields_to_remove: 'List[str]' = None
+    new_settings: 'JobSettings' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1855,9 +1855,9 @@ class UpdateJob:
 
 @dataclass
 class ViewItem:
-    content: str
-    name: str
-    type: 'ViewType'
+    content: str = None
+    name: str = None
+    type: 'ViewType' = None
 
     def as_dict(self) -> dict:
         body = {}

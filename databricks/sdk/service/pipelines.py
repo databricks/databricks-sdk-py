@@ -20,23 +20,23 @@ from .libraries import MavenLibrary
 
 @dataclass
 class CreatePipeline:
-    allow_duplicate_names: bool
-    catalog: str
-    channel: str
-    clusters: 'List[PipelineCluster]'
-    configuration: 'Dict[str,str]'
-    continuous: bool
-    development: bool
-    dry_run: bool
-    edition: str
-    filters: 'Filters'
-    id: str
-    libraries: 'List[PipelineLibrary]'
-    name: str
-    photon: bool
-    storage: str
-    target: str
-    trigger: 'PipelineTrigger'
+    allow_duplicate_names: bool = None
+    catalog: str = None
+    channel: str = None
+    clusters: 'List[PipelineCluster]' = None
+    configuration: 'Dict[str,str]' = None
+    continuous: bool = None
+    development: bool = None
+    dry_run: bool = None
+    edition: str = None
+    filters: 'Filters' = None
+    id: str = None
+    libraries: 'List[PipelineLibrary]' = None
+    name: str = None
+    photon: bool = None
+    storage: str = None
+    target: str = None
+    trigger: 'PipelineTrigger' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -85,8 +85,8 @@ class CreatePipeline:
 
 @dataclass
 class CreatePipelineResponse:
-    effective_settings: 'PipelineSpec'
-    pipeline_id: str
+    effective_settings: 'PipelineSpec' = None
+    pipeline_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -103,8 +103,8 @@ class CreatePipelineResponse:
 
 @dataclass
 class CronTrigger:
-    quartz_cron_schedule: str
-    timezone_id: str
+    quartz_cron_schedule: str = None
+    timezone_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -127,24 +127,24 @@ class Delete:
 
 @dataclass
 class EditPipeline:
-    allow_duplicate_names: bool
-    catalog: str
-    channel: str
-    clusters: 'List[PipelineCluster]'
-    configuration: 'Dict[str,str]'
-    continuous: bool
-    development: bool
-    edition: str
-    expected_last_modified: int
-    filters: 'Filters'
-    id: str
-    libraries: 'List[PipelineLibrary]'
-    name: str
-    photon: bool
     pipeline_id: str
-    storage: str
-    target: str
-    trigger: 'PipelineTrigger'
+    allow_duplicate_names: bool = None
+    catalog: str = None
+    channel: str = None
+    clusters: 'List[PipelineCluster]' = None
+    configuration: 'Dict[str,str]' = None
+    continuous: bool = None
+    development: bool = None
+    edition: str = None
+    expected_last_modified: int = None
+    filters: 'Filters' = None
+    id: str = None
+    libraries: 'List[PipelineLibrary]' = None
+    name: str = None
+    photon: bool = None
+    storage: str = None
+    target: str = None
+    trigger: 'PipelineTrigger' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -195,8 +195,8 @@ class EditPipeline:
 
 @dataclass
 class Filters:
-    exclude: 'List[str]'
-    include: 'List[str]'
+    exclude: 'List[str]' = None
+    include: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -218,17 +218,17 @@ class Get:
 
 @dataclass
 class GetPipelineResponse:
-    cause: str
-    cluster_id: str
-    creator_user_name: str
-    health: 'GetPipelineResponseHealth'
-    last_modified: int
-    latest_updates: 'List[UpdateStateInfo]'
-    name: str
-    pipeline_id: str
-    run_as_user_name: str
-    spec: 'PipelineSpec'
-    state: 'PipelineState'
+    cause: str = None
+    cluster_id: str = None
+    creator_user_name: str = None
+    health: 'GetPipelineResponseHealth' = None
+    last_modified: int = None
+    latest_updates: 'List[UpdateStateInfo]' = None
+    name: str = None
+    pipeline_id: str = None
+    run_as_user_name: str = None
+    spec: 'PipelineSpec' = None
+    state: 'PipelineState' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -279,7 +279,7 @@ class GetUpdate:
 
 @dataclass
 class GetUpdateResponse:
-    update: 'UpdateInfo'
+    update: 'UpdateInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -295,16 +295,16 @@ class GetUpdateResponse:
 class ListPipelines:
     """List pipelines"""
 
-    filter: str
-    max_results: int
-    order_by: 'List[str]'
-    page_token: str
+    filter: str = None
+    max_results: int = None
+    order_by: 'List[str]' = None
+    page_token: str = None
 
 
 @dataclass
 class ListPipelinesResponse:
-    next_page_token: str
-    statuses: 'List[PipelineStateInfo]'
+    next_page_token: str = None
+    statuses: 'List[PipelineStateInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -324,17 +324,17 @@ class ListPipelinesResponse:
 class ListUpdates:
     """List pipeline updates"""
 
-    max_results: int
-    page_token: str
     pipeline_id: str
-    until_update_id: str
+    max_results: int = None
+    page_token: str = None
+    until_update_id: str = None
 
 
 @dataclass
 class ListUpdatesResponse:
-    next_page_token: str
-    prev_page_token: str
-    updates: 'List[UpdateInfo]'
+    next_page_token: str = None
+    prev_page_token: str = None
+    updates: 'List[UpdateInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -353,7 +353,7 @@ class ListUpdatesResponse:
 
 @dataclass
 class NotebookLibrary:
-    path: str
+    path: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -367,23 +367,23 @@ class NotebookLibrary:
 
 @dataclass
 class PipelineCluster:
-    apply_policy_default_values: bool
-    autoscale: 'AutoScale'
-    aws_attributes: 'AwsAttributes'
-    azure_attributes: 'AzureAttributes'
-    cluster_log_conf: 'ClusterLogConf'
-    custom_tags: 'Dict[str,str]'
-    driver_instance_pool_id: str
-    driver_node_type_id: str
-    gcp_attributes: 'GcpAttributes'
-    instance_pool_id: str
-    label: str
-    node_type_id: str
-    num_workers: int
-    policy_id: str
-    spark_conf: 'Dict[str,str]'
-    spark_env_vars: 'Dict[str,str]'
-    ssh_public_keys: 'List[str]'
+    apply_policy_default_values: bool = None
+    autoscale: 'AutoScale' = None
+    aws_attributes: 'AwsAttributes' = None
+    azure_attributes: 'AzureAttributes' = None
+    cluster_log_conf: 'ClusterLogConf' = None
+    custom_tags: 'Dict[str,str]' = None
+    driver_instance_pool_id: str = None
+    driver_node_type_id: str = None
+    gcp_attributes: 'GcpAttributes' = None
+    instance_pool_id: str = None
+    label: str = None
+    node_type_id: str = None
+    num_workers: int = None
+    policy_id: str = None
+    spark_conf: 'Dict[str,str]' = None
+    spark_env_vars: 'Dict[str,str]' = None
+    ssh_public_keys: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -433,10 +433,10 @@ class PipelineCluster:
 
 @dataclass
 class PipelineLibrary:
-    jar: str
-    maven: 'MavenLibrary'
-    notebook: 'NotebookLibrary'
-    whl: str
+    jar: str = None
+    maven: 'MavenLibrary' = None
+    notebook: 'NotebookLibrary' = None
+    whl: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -456,21 +456,21 @@ class PipelineLibrary:
 
 @dataclass
 class PipelineSpec:
-    catalog: str
-    channel: str
-    clusters: 'List[PipelineCluster]'
-    configuration: 'Dict[str,str]'
-    continuous: bool
-    development: bool
-    edition: str
-    filters: 'Filters'
-    id: str
-    libraries: 'List[PipelineLibrary]'
-    name: str
-    photon: bool
-    storage: str
-    target: str
-    trigger: 'PipelineTrigger'
+    catalog: str = None
+    channel: str = None
+    clusters: 'List[PipelineCluster]' = None
+    configuration: 'Dict[str,str]' = None
+    continuous: bool = None
+    development: bool = None
+    edition: str = None
+    filters: 'Filters' = None
+    id: str = None
+    libraries: 'List[PipelineLibrary]' = None
+    name: str = None
+    photon: bool = None
+    storage: str = None
+    target: str = None
+    trigger: 'PipelineTrigger' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -529,13 +529,13 @@ class PipelineState(Enum):
 
 @dataclass
 class PipelineStateInfo:
-    cluster_id: str
-    creator_user_name: str
-    latest_updates: 'List[UpdateStateInfo]'
-    name: str
-    pipeline_id: str
-    run_as_user_name: str
-    state: 'PipelineState'
+    cluster_id: str = None
+    creator_user_name: str = None
+    latest_updates: 'List[UpdateStateInfo]' = None
+    name: str = None
+    pipeline_id: str = None
+    run_as_user_name: str = None
+    state: 'PipelineState' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -562,8 +562,8 @@ class PipelineStateInfo:
 
 @dataclass
 class PipelineTrigger:
-    cron: 'CronTrigger'
-    manual: Any
+    cron: 'CronTrigger' = None
+    manual: Any = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -586,11 +586,11 @@ class Reset:
 
 @dataclass
 class StartUpdate:
-    cause: 'StartUpdateCause'
-    full_refresh: bool
-    full_refresh_selection: 'List[str]'
     pipeline_id: str
-    refresh_selection: 'List[str]'
+    cause: 'StartUpdateCause' = None
+    full_refresh: bool = None
+    full_refresh_selection: 'List[str]' = None
+    refresh_selection: 'List[str]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -623,7 +623,7 @@ class StartUpdateCause(Enum):
 
 @dataclass
 class StartUpdateResponse:
-    update_id: str
+    update_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -644,16 +644,16 @@ class Stop:
 
 @dataclass
 class UpdateInfo:
-    cause: 'UpdateInfoCause'
-    cluster_id: str
-    config: 'PipelineSpec'
-    creation_time: int
-    full_refresh: bool
-    full_refresh_selection: 'List[str]'
-    pipeline_id: str
-    refresh_selection: 'List[str]'
-    state: 'UpdateInfoState'
-    update_id: str
+    cause: 'UpdateInfoCause' = None
+    cluster_id: str = None
+    config: 'PipelineSpec' = None
+    creation_time: int = None
+    full_refresh: bool = None
+    full_refresh_selection: 'List[str]' = None
+    pipeline_id: str = None
+    refresh_selection: 'List[str]' = None
+    state: 'UpdateInfoState' = None
+    update_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -713,9 +713,9 @@ class UpdateInfoState(Enum):
 
 @dataclass
 class UpdateStateInfo:
-    creation_time: str
-    state: 'UpdateStateInfoState'
-    update_id: str
+    creation_time: str = None
+    state: 'UpdateStateInfoState' = None
+    update_id: str = None
 
     def as_dict(self) -> dict:
         body = {}

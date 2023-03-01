@@ -12,9 +12,9 @@ _LOG = logging.getLogger('databricks.sdk.service.ipaccesslists')
 
 @dataclass
 class CreateIpAccessList:
-    ip_addresses: 'List[str]'
     label: str
     list_type: 'ListType'
+    ip_addresses: 'List[str]'
 
     def as_dict(self) -> dict:
         body = {}
@@ -32,7 +32,7 @@ class CreateIpAccessList:
 
 @dataclass
 class CreateIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo'
+    ip_access_list: 'IpAccessListInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -54,7 +54,7 @@ class Delete:
 
 @dataclass
 class FetchIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo'
+    ip_access_list: 'IpAccessListInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -76,7 +76,7 @@ class Get:
 
 @dataclass
 class GetIpAccessListResponse:
-    ip_access_lists: 'List[IpAccessListInfo]'
+    ip_access_lists: 'List[IpAccessListInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -91,16 +91,16 @@ class GetIpAccessListResponse:
 
 @dataclass
 class IpAccessListInfo:
-    address_count: int
-    created_at: int
-    created_by: int
-    enabled: bool
-    ip_addresses: 'List[str]'
-    label: str
-    list_id: str
-    list_type: 'ListType'
-    updated_at: int
-    updated_by: int
+    address_count: int = None
+    created_at: int = None
+    created_by: int = None
+    enabled: bool = None
+    ip_addresses: 'List[str]' = None
+    label: str = None
+    list_id: str = None
+    list_type: 'ListType' = None
+    updated_at: int = None
+    updated_by: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -139,12 +139,12 @@ class ListType(Enum):
 
 @dataclass
 class ReplaceIpAccessList:
+    label: str
+    list_type: 'ListType'
+    ip_addresses: 'List[str]'
     enabled: bool
     ip_access_list_id: str
-    ip_addresses: 'List[str]'
-    label: str
-    list_id: str
-    list_type: 'ListType'
+    list_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -168,12 +168,12 @@ class ReplaceIpAccessList:
 
 @dataclass
 class UpdateIpAccessList:
+    label: str
+    list_type: 'ListType'
+    ip_addresses: 'List[str]'
     enabled: bool
     ip_access_list_id: str
-    ip_addresses: 'List[str]'
-    label: str
-    list_id: str
-    list_type: 'ListType'
+    list_id: str = None
 
     def as_dict(self) -> dict:
         body = {}

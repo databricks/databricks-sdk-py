@@ -13,7 +13,7 @@ _LOG = logging.getLogger('databricks.sdk.service.workspace')
 @dataclass
 class Delete:
     path: str
-    recursive: bool
+    recursive: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -30,9 +30,9 @@ class Delete:
 class Export:
     """Export a notebook"""
 
-    direct_download: bool
-    format: 'ExportFormat'
     path: str
+    direct_download: bool = None
+    format: 'ExportFormat' = None
 
 
 class ExportFormat(Enum):
@@ -48,7 +48,7 @@ class ExportFormat(Enum):
 
 @dataclass
 class ExportResponse:
-    content: str
+    content: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -69,11 +69,11 @@ class GetStatus:
 
 @dataclass
 class Import:
-    content: str
-    format: 'ExportFormat'
-    language: 'Language'
-    overwrite: bool
     path: str
+    content: str = None
+    format: 'ExportFormat' = None
+    language: 'Language' = None
+    overwrite: bool = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -106,13 +106,13 @@ class Language(Enum):
 class ListRequest:
     """List contents"""
 
-    notebooks_modified_after: int
     path: str
+    notebooks_modified_after: int = None
 
 
 @dataclass
 class ListResponse:
-    objects: 'List[ObjectInfo]'
+    objects: 'List[ObjectInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -141,13 +141,13 @@ class Mkdirs:
 
 @dataclass
 class ObjectInfo:
-    created_at: int
-    language: 'Language'
-    modified_at: int
-    object_id: int
-    object_type: 'ObjectType'
-    path: str
-    size: int
+    created_at: int = None
+    language: 'Language' = None
+    modified_at: int = None
+    object_id: int = None
+    object_type: 'ObjectType' = None
+    path: str = None
+    size: int = None
 
     def as_dict(self) -> dict:
         body = {}

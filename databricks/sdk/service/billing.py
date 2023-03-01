@@ -14,13 +14,13 @@ _LOG = logging.getLogger('databricks.sdk.service.billing')
 class Budget:
     """Budget configuration to be created."""
 
-    alerts: 'List[BudgetAlert]'
-    end_date: str
-    filter: str
     name: str
     period: str
     start_date: str
     target_amount: str
+    filter: str
+    alerts: 'List[BudgetAlert]' = None
+    end_date: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -47,8 +47,8 @@ class Budget:
 
 @dataclass
 class BudgetAlert:
-    email_notifications: 'List[str]'
-    min_percentage: int
+    email_notifications: 'List[str]' = None
+    min_percentage: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -66,7 +66,7 @@ class BudgetAlert:
 class BudgetList:
     """List of budgets."""
 
-    budgets: 'List[BudgetWithStatus]'
+    budgets: 'List[BudgetWithStatus]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -83,17 +83,17 @@ class BudgetList:
 class BudgetWithStatus:
     """Budget configuration with daily status."""
 
-    alerts: 'List[BudgetAlert]'
-    budget_id: str
-    creation_time: str
-    end_date: str
-    filter: str
-    name: str
-    period: str
-    start_date: str
-    status_daily: 'List[BudgetWithStatusStatusDailyItem]'
-    target_amount: str
-    update_time: str
+    alerts: 'List[BudgetAlert]' = None
+    budget_id: str = None
+    creation_time: str = None
+    end_date: str = None
+    filter: str = None
+    name: str = None
+    period: str = None
+    start_date: str = None
+    status_daily: 'List[BudgetWithStatusStatusDailyItem]' = None
+    target_amount: str = None
+    update_time: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -129,8 +129,8 @@ class BudgetWithStatus:
 
 @dataclass
 class BudgetWithStatusStatusDailyItem:
-    amount: str
-    date: str
+    amount: str = None
+    date: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -145,15 +145,15 @@ class BudgetWithStatusStatusDailyItem:
 
 @dataclass
 class CreateLogDeliveryConfigurationParams:
-    config_name: str
-    credentials_id: str
-    delivery_path_prefix: str
-    delivery_start_time: str
     log_type: 'LogType'
     output_format: 'OutputFormat'
-    status: 'LogDeliveryConfigStatus'
+    credentials_id: str
     storage_configuration_id: str
-    workspace_ids_filter: 'List[int]'
+    config_name: str = None
+    delivery_path_prefix: str = None
+    delivery_start_time: str = None
+    status: 'LogDeliveryConfigStatus' = None
+    workspace_ids_filter: 'List[int]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -204,9 +204,9 @@ class DeliveryStatus(Enum):
 class DownloadRequest:
     """Return billable usage logs"""
 
-    end_month: str
-    personal_data: bool
     start_month: str
+    end_month: str
+    personal_data: bool = None
 
 
 @dataclass
@@ -227,9 +227,9 @@ class GetLogDeliveryRequest:
 class ListLogDeliveryRequest:
     """Get all log delivery configurations"""
 
-    credentials_id: str
-    status: 'LogDeliveryConfigStatus'
-    storage_configuration_id: str
+    credentials_id: str = None
+    status: 'LogDeliveryConfigStatus' = None
+    storage_configuration_id: str = None
 
 
 class LogDeliveryConfigStatus(Enum):
@@ -244,20 +244,20 @@ class LogDeliveryConfigStatus(Enum):
 
 @dataclass
 class LogDeliveryConfiguration:
-    account_id: str
-    config_id: str
-    config_name: str
-    creation_time: int
-    credentials_id: str
-    delivery_path_prefix: str
-    delivery_start_time: str
-    log_delivery_status: 'LogDeliveryStatus'
-    log_type: 'LogType'
-    output_format: 'OutputFormat'
-    status: 'LogDeliveryConfigStatus'
-    storage_configuration_id: str
-    update_time: int
-    workspace_ids_filter: 'List[int]'
+    account_id: str = None
+    config_id: str = None
+    config_name: str = None
+    creation_time: int = None
+    credentials_id: str = None
+    delivery_path_prefix: str = None
+    delivery_start_time: str = None
+    log_delivery_status: 'LogDeliveryStatus' = None
+    log_type: 'LogType' = None
+    output_format: 'OutputFormat' = None
+    status: 'LogDeliveryConfigStatus' = None
+    storage_configuration_id: str = None
+    update_time: int = None
+    workspace_ids_filter: 'List[int]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -302,10 +302,10 @@ class LogDeliveryConfiguration:
 class LogDeliveryStatus:
     """Databricks log delivery status."""
 
-    last_attempt_time: str
-    last_successful_attempt_time: str
-    message: str
-    status: 'DeliveryStatus'
+    last_attempt_time: str = None
+    last_successful_attempt_time: str = None
+    message: str = None
+    status: 'DeliveryStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -359,8 +359,8 @@ class OutputFormat(Enum):
 
 @dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
-    log_delivery_configuration_id: str
     status: 'LogDeliveryConfigStatus'
+    log_delivery_configuration_id: str
 
     def as_dict(self) -> dict:
         body = {}
@@ -409,7 +409,7 @@ class WrappedBudgetWithStatus:
 
 @dataclass
 class WrappedCreateLogDeliveryConfiguration:
-    log_delivery_configuration: 'CreateLogDeliveryConfigurationParams'
+    log_delivery_configuration: 'CreateLogDeliveryConfigurationParams' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -425,7 +425,7 @@ class WrappedCreateLogDeliveryConfiguration:
 
 @dataclass
 class WrappedLogDeliveryConfiguration:
-    log_delivery_configuration: 'LogDeliveryConfiguration'
+    log_delivery_configuration: 'LogDeliveryConfiguration' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -441,7 +441,7 @@ class WrappedLogDeliveryConfiguration:
 
 @dataclass
 class WrappedLogDeliveryConfigurations:
-    log_delivery_configurations: 'List[LogDeliveryConfiguration]'
+    log_delivery_configurations: 'List[LogDeliveryConfiguration]' = None
 
     def as_dict(self) -> dict:
         body = {}

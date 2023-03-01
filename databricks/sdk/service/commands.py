@@ -16,9 +16,9 @@ _LOG = logging.getLogger('databricks.sdk.service.commands')
 
 @dataclass
 class CancelCommand:
-    cluster_id: str
-    command_id: str
-    context_id: str
+    cluster_id: str = None
+    command_id: str = None
+    context_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -36,10 +36,10 @@ class CancelCommand:
 
 @dataclass
 class Command:
-    cluster_id: str
-    command: str
-    context_id: str
-    language: 'Language'
+    cluster_id: str = None
+    command: str = None
+    context_id: str = None
+    language: 'Language' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -72,15 +72,15 @@ class CommandStatusRequest:
     """Get command info"""
 
     cluster_id: str
-    command_id: str
     context_id: str
+    command_id: str
 
 
 @dataclass
 class CommandStatusResponse:
-    id: str
-    results: 'Results'
-    status: 'CommandStatus'
+    id: str = None
+    results: 'Results' = None
+    status: 'CommandStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -113,8 +113,8 @@ class ContextStatusRequest:
 
 @dataclass
 class ContextStatusResponse:
-    id: str
-    status: 'ContextStatus'
+    id: str = None
+    status: 'ContextStatus' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -130,8 +130,8 @@ class ContextStatusResponse:
 
 @dataclass
 class CreateContext:
-    cluster_id: str
-    language: 'Language'
+    cluster_id: str = None
+    language: 'Language' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -147,7 +147,7 @@ class CreateContext:
 
 @dataclass
 class Created:
-    id: str
+    id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -193,16 +193,16 @@ class ResultType(Enum):
 
 @dataclass
 class Results:
-    cause: str
-    data: Any
-    file_name: str
-    file_names: 'List[str]'
-    is_json_schema: bool
-    pos: int
-    result_type: 'ResultType'
-    schema: 'List[Dict[str,Any]]'
-    summary: str
-    truncated: bool
+    cause: str = None
+    data: Any = None
+    file_name: str = None
+    file_names: 'List[str]' = None
+    is_json_schema: bool = None
+    pos: int = None
+    result_type: 'ResultType' = None
+    schema: 'List[Dict[str,Any]]' = None
+    summary: str = None
+    truncated: bool = None
 
     def as_dict(self) -> dict:
         body = {}

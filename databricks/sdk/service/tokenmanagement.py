@@ -12,8 +12,8 @@ _LOG = logging.getLogger('databricks.sdk.service.tokenmanagement')
 @dataclass
 class CreateOboTokenRequest:
     application_id: str
-    comment: str
     lifetime_seconds: int
+    comment: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -31,8 +31,8 @@ class CreateOboTokenRequest:
 
 @dataclass
 class CreateOboTokenResponse:
-    token_info: 'TokenInfo'
-    token_value: str
+    token_info: 'TokenInfo' = None
+    token_value: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -64,13 +64,13 @@ class Get:
 class ListRequest:
     """List all tokens"""
 
-    created_by_id: str
-    created_by_username: str
+    created_by_id: str = None
+    created_by_username: str = None
 
 
 @dataclass
 class ListTokensResponse:
-    token_infos: 'List[TokenInfo]'
+    token_infos: 'List[TokenInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -85,13 +85,13 @@ class ListTokensResponse:
 
 @dataclass
 class TokenInfo:
-    comment: str
-    created_by_id: int
-    created_by_username: str
-    creation_time: int
-    expiry_time: int
-    owner_id: int
-    token_id: str
+    comment: str = None
+    created_by_id: int = None
+    created_by_username: str = None
+    creation_time: int = None
+    expiry_time: int = None
+    owner_id: int = None
+    token_id: str = None
 
     def as_dict(self) -> dict:
         body = {}

@@ -12,10 +12,10 @@ _LOG = logging.getLogger('databricks.sdk.service.permissions')
 
 @dataclass
 class AccessControlRequest:
-    group_name: str
-    permission_level: 'PermissionLevel'
-    service_principal_name: str
-    user_name: str
+    group_name: str = None
+    permission_level: 'PermissionLevel' = None
+    service_principal_name: str = None
+    user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -36,10 +36,10 @@ class AccessControlRequest:
 
 @dataclass
 class AccessControlResponse:
-    all_permissions: 'List[Permission]'
-    group_name: str
-    service_principal_name: str
-    user_name: str
+    all_permissions: 'List[Permission]' = None
+    group_name: str = None
+    service_principal_name: str = None
+    user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -82,29 +82,29 @@ class CreateWorkspaceAssignments:
 class DeleteWorkspaceAssignmentRequest:
     """Delete permissions assignment"""
 
-    principal_id: int
     workspace_id: int
+    principal_id: int
 
 
 @dataclass
 class Get:
     """Get object permissions"""
 
-    request_object_id: str
     request_object_type: str
+    request_object_id: str
 
 
 @dataclass
 class GetPermissionLevels:
     """Get permission levels"""
 
-    request_object_id: str
     request_object_type: str
+    request_object_id: str
 
 
 @dataclass
 class GetPermissionLevelsResponse:
-    permission_levels: 'List[PermissionsDescription]'
+    permission_levels: 'List[PermissionsDescription]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -133,9 +133,9 @@ class ListWorkspaceAssignmentRequest:
 
 @dataclass
 class ObjectPermissions:
-    access_control_list: 'List[AccessControlResponse]'
-    object_id: str
-    object_type: str
+    access_control_list: 'List[AccessControlResponse]' = None
+    object_id: str = None
+    object_type: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -155,9 +155,9 @@ class ObjectPermissions:
 
 @dataclass
 class Permission:
-    inherited: bool
-    inherited_from_object: 'List[str]'
-    permission_level: 'PermissionLevel'
+    inherited: bool = None
+    inherited_from_object: 'List[str]' = None
+    permission_level: 'PermissionLevel' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -176,9 +176,9 @@ class Permission:
 
 @dataclass
 class PermissionAssignment:
-    error: str
-    permissions: 'List[WorkspacePermission]'
-    principal: 'PrincipalOutput'
+    error: str = None
+    permissions: 'List[WorkspacePermission]' = None
+    principal: 'PrincipalOutput' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -196,10 +196,10 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignmentInput:
-    group_name: str
     permissions: 'List[WorkspacePermission]'
-    service_principal_name: str
-    user_name: str
+    group_name: str = None
+    service_principal_name: str = None
+    user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -219,7 +219,7 @@ class PermissionAssignmentInput:
 
 @dataclass
 class PermissionAssignments:
-    permission_assignments: 'List[PermissionAssignment]'
+    permission_assignments: 'List[PermissionAssignment]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -256,8 +256,8 @@ class PermissionLevel(Enum):
 
 @dataclass
 class PermissionOutput:
-    description: str
-    permission_level: 'WorkspacePermission'
+    description: str = None
+    permission_level: 'WorkspacePermission' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -274,8 +274,8 @@ class PermissionOutput:
 
 @dataclass
 class PermissionsDescription:
-    description: str
-    permission_level: 'PermissionLevel'
+    description: str = None
+    permission_level: 'PermissionLevel' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -292,9 +292,9 @@ class PermissionsDescription:
 
 @dataclass
 class PermissionsRequest:
-    access_control_list: 'List[AccessControlRequest]'
-    request_object_id: str
     request_object_type: str
+    request_object_id: str
+    access_control_list: 'List[AccessControlRequest]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -314,11 +314,11 @@ class PermissionsRequest:
 
 @dataclass
 class PrincipalOutput:
-    display_name: str
-    group_name: str
-    principal_id: int
-    service_principal_name: str
-    user_name: str
+    display_name: str = None
+    group_name: str = None
+    principal_id: int = None
+    service_principal_name: str = None
+    user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -341,8 +341,8 @@ class PrincipalOutput:
 @dataclass
 class UpdateWorkspaceAssignments:
     permissions: 'List[WorkspacePermission]'
-    principal_id: int
     workspace_id: int
+    principal_id: int
 
     def as_dict(self) -> dict:
         body = {}
@@ -360,7 +360,7 @@ class UpdateWorkspaceAssignments:
 
 @dataclass
 class WorkspaceAssignmentsCreated:
-    permission_assignments: 'List[PermissionAssignment]'
+    permission_assignments: 'List[PermissionAssignment]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -384,7 +384,7 @@ class WorkspacePermission(Enum):
 
 @dataclass
 class WorkspacePermissions:
-    permissions: 'List[PermissionOutput]'
+    permissions: 'List[PermissionOutput]' = None
 
     def as_dict(self) -> dict:
         body = {}
