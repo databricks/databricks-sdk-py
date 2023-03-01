@@ -13,7 +13,7 @@ setup(name="databricks",
       install_requires=["requests>=2.28.1", ],
       extras_require={"dev": ["pytest", "pytest-cov", "yapf", "pycodestyle", "autoflake", "isort", "wheel"]},
       author="Serge Smertin <serge.smertin@databricks.com",
-      description="Ofiicial Databricks SDK for Python",
+      description="Official Databricks SDK for Python",
       long_description=io.open("README.md", encoding="utf-8").read(),
       classifiers=[
           "Intended Audience :: Developers", "Intended Audience :: System Administrators",
