@@ -1,12 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import time
-import random
-import logging
-from ..errors import OperationTimeout, OperationFailed
+
+from ..errors import OperationFailed, OperationTimeout
 
 _LOG = logging.getLogger('databricks.sdk.service.deployment')
 
@@ -243,7 +244,8 @@ class CreateWorkspaceRequest:
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
                    network_id=d.get('network_id', None),
-                   pricing_tier=PricingTier(d['pricing_tier']) if 'pricing_tier' in d else None,
+                   pricing_tier=PricingTier.__members__.get(d['pricing_tier'], None)
+                   if 'pricing_tier' in d else None,
                    private_access_settings_id=d.get('private_access_settings_id', None),
                    storage_configuration_id=d.get('storage_configuration_id', None),
                    storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
@@ -532,7 +534,7 @@ class GkeConfig:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GkeConfig':
-        return cls(connectivity_type=GkeConfigConnectivityType(d['connectivity_type'])
+        return cls(connectivity_type=GkeConfigConnectivityType.__members__.get(d['connectivity_type'], None)
                    if 'connectivity_type' in d else None,
                    master_ip_range=d.get('master_ip_range', None))
 
@@ -605,7 +607,7 @@ class Network:
             subnet_ids=d.get('subnet_ids', None),
             vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints']) if 'vpc_endpoints' in d else None,
             vpc_id=d.get('vpc_id', None),
-            vpc_status=VpcStatus(d['vpc_status']) if 'vpc_status' in d else None,
+            vpc_status=VpcStatus.__members__.get(d['vpc_status'], None) if 'vpc_status' in d else None,
             warning_messages=[NetworkWarning.from_dict(v) for v in d['warning_messages']]
             if 'warning_messages' in d and d['warning_messages'] is not None else None,
             workspace_id=d.get('workspace_id', None))
@@ -625,7 +627,7 @@ class NetworkHealth:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NetworkHealth':
         return cls(error_message=d.get('error_message', None),
-                   error_type=ErrorType(d['error_type']) if 'error_type' in d else None)
+                   error_type=ErrorType.__members__.get(d['error_type'], None) if 'error_type' in d else None)
 
 
 @dataclass
@@ -663,7 +665,8 @@ class NetworkWarning:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NetworkWarning':
         return cls(warning_message=d.get('warning_message', None),
-                   warning_type=WarningType(d['warning_type']) if 'warning_type' in d else None)
+                   warning_type=WarningType.__members__.get(d['warning_type'], None)
+                   if 'warning_type' in d else None)
 
 
 class PricingTier(Enum):
@@ -720,7 +723,7 @@ class PrivateAccessSettings:
     def from_dict(cls, d: Dict[str, any]) -> 'PrivateAccessSettings':
         return cls(account_id=d.get('account_id', None),
                    allowed_vpc_endpoint_ids=d.get('allowed_vpc_endpoint_ids', None),
-                   private_access_level=PrivateAccessLevel(d['private_access_level'])
+                   private_access_level=PrivateAccessLevel.__members__.get(d['private_access_level'], None)
                    if 'private_access_level' in d else None,
                    private_access_settings_id=d.get('private_access_settings_id', None),
                    private_access_settings_name=d.get('private_access_settings_name', None),
@@ -848,7 +851,7 @@ class UpsertPrivateAccessSettingsRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpsertPrivateAccessSettingsRequest':
         return cls(allowed_vpc_endpoint_ids=d.get('allowed_vpc_endpoint_ids', None),
-                   private_access_level=PrivateAccessLevel(d['private_access_level'])
+                   private_access_level=PrivateAccessLevel.__members__.get(d['private_access_level'], None)
                    if 'private_access_level' in d else None,
                    private_access_settings_id=d.get('private_access_settings_id', None),
                    private_access_settings_name=d.get('private_access_settings_name', None),
@@ -889,7 +892,7 @@ class VpcEndpoint:
                    aws_vpc_endpoint_id=d.get('aws_vpc_endpoint_id', None),
                    region=d.get('region', None),
                    state=d.get('state', None),
-                   use_case=EndpointUseCase(d['use_case']) if 'use_case' in d else None,
+                   use_case=EndpointUseCase.__members__.get(d['use_case'], None) if 'use_case' in d else None,
                    vpc_endpoint_id=d.get('vpc_endpoint_id', None),
                    vpc_endpoint_name=d.get('vpc_endpoint_name', None))
 
@@ -964,29 +967,31 @@ class Workspace:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Workspace':
-        return cls(
-            account_id=d.get('account_id', None),
-            aws_region=d.get('aws_region', None),
-            cloud=d.get('cloud', None),
-            cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
-            if 'cloud_resource_container' in d else None,
-            creation_time=d.get('creation_time', None),
-            credentials_id=d.get('credentials_id', None),
-            deployment_name=d.get('deployment_name', None),
-            gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(d['gcp_managed_network_config'])
-            if 'gcp_managed_network_config' in d else None,
-            gke_config=GkeConfig.from_dict(d['gke_config']) if 'gke_config' in d else None,
-            location=d.get('location', None),
-            managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id', None),
-            network_id=d.get('network_id', None),
-            pricing_tier=PricingTier(d['pricing_tier']) if 'pricing_tier' in d else None,
-            private_access_settings_id=d.get('private_access_settings_id', None),
-            storage_configuration_id=d.get('storage_configuration_id', None),
-            storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
-            workspace_id=d.get('workspace_id', None),
-            workspace_name=d.get('workspace_name', None),
-            workspace_status=WorkspaceStatus(d['workspace_status']) if 'workspace_status' in d else None,
-            workspace_status_message=d.get('workspace_status_message', None))
+        return cls(account_id=d.get('account_id', None),
+                   aws_region=d.get('aws_region', None),
+                   cloud=d.get('cloud', None),
+                   cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
+                   if 'cloud_resource_container' in d else None,
+                   creation_time=d.get('creation_time', None),
+                   credentials_id=d.get('credentials_id', None),
+                   deployment_name=d.get('deployment_name', None),
+                   gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(
+                       d['gcp_managed_network_config']) if 'gcp_managed_network_config' in d else None,
+                   gke_config=GkeConfig.from_dict(d['gke_config']) if 'gke_config' in d else None,
+                   location=d.get('location', None),
+                   managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
+                                                                  None),
+                   network_id=d.get('network_id', None),
+                   pricing_tier=PricingTier.__members__.get(d['pricing_tier'], None)
+                   if 'pricing_tier' in d else None,
+                   private_access_settings_id=d.get('private_access_settings_id', None),
+                   storage_configuration_id=d.get('storage_configuration_id', None),
+                   storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
+                   workspace_id=d.get('workspace_id', None),
+                   workspace_name=d.get('workspace_name', None),
+                   workspace_status=WorkspaceStatus.__members__.get(d['workspace_status'], None)
+                   if 'workspace_status' in d else None,
+                   workspace_status_message=d.get('workspace_status_message', None))
 
 
 class WorkspaceStatus(Enum):

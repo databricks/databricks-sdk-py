@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any, Iterator
-import logging
+from typing import Any, Dict, Iterator, List
 
 _LOG = logging.getLogger('databricks.sdk.service.unitycatalog')
 
@@ -94,7 +94,8 @@ class CatalogInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
-        return cls(catalog_type=CatalogType(d['catalog_type']) if 'catalog_type' in d else None,
+        return cls(catalog_type=CatalogType.__members__.get(d['catalog_type'], None)
+                   if 'catalog_type' in d else None,
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -151,18 +152,19 @@ class ColumnInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
-        return cls(comment=d.get('comment', None),
-                   mask=ColumnMask.from_dict(d['mask']) if 'mask' in d else None,
-                   name=d.get('name', None),
-                   nullable=d.get('nullable', None),
-                   partition_index=d.get('partition_index', None),
-                   position=d.get('position', None),
-                   type_interval_type=d.get('type_interval_type', None),
-                   type_json=d.get('type_json', None),
-                   type_name=ColumnTypeName(d['type_name']) if 'type_name' in d else None,
-                   type_precision=d.get('type_precision', None),
-                   type_scale=d.get('type_scale', None),
-                   type_text=d.get('type_text', None))
+        return cls(
+            comment=d.get('comment', None),
+            mask=ColumnMask.from_dict(d['mask']) if 'mask' in d else None,
+            name=d.get('name', None),
+            nullable=d.get('nullable', None),
+            partition_index=d.get('partition_index', None),
+            position=d.get('position', None),
+            type_interval_type=d.get('type_interval_type', None),
+            type_json=d.get('type_json', None),
+            type_name=ColumnTypeName.__members__.get(d['type_name'], None) if 'type_name' in d else None,
+            type_precision=d.get('type_precision', None),
+            type_scale=d.get('type_scale', None),
+            type_text=d.get('type_text', None))
 
 
 @dataclass
@@ -320,7 +322,7 @@ class CreateFunction:
         return cls(
             catalog_name=d.get('catalog_name', None),
             comment=d.get('comment', None),
-            data_type=ColumnTypeName(d['data_type']) if 'data_type' in d else None,
+            data_type=ColumnTypeName.__members__.get(d['data_type'], None) if 'data_type' in d else None,
             external_language=d.get('external_language', None),
             external_name=d.get('external_name', None),
             full_data_type=d.get('full_data_type', None),
@@ -329,19 +331,21 @@ class CreateFunction:
             is_deterministic=d.get('is_deterministic', None),
             is_null_call=d.get('is_null_call', None),
             name=d.get('name', None),
-            parameter_style=CreateFunctionParameterStyle(d['parameter_style'])
+            parameter_style=CreateFunctionParameterStyle.__members__.get(d['parameter_style'], None)
             if 'parameter_style' in d else None,
             properties=d.get('properties', None),
             return_params=[FunctionParameterInfo.from_dict(v) for v in d['return_params']]
             if 'return_params' in d and d['return_params'] is not None else None,
-            routine_body=CreateFunctionRoutineBody(d['routine_body']) if 'routine_body' in d else None,
+            routine_body=CreateFunctionRoutineBody.__members__.get(d['routine_body'], None)
+            if 'routine_body' in d else None,
             routine_definition=d.get('routine_definition', None),
             routine_dependencies=[Dependency.from_dict(v) for v in d['routine_dependencies']]
             if 'routine_dependencies' in d and d['routine_dependencies'] is not None else None,
             schema_name=d.get('schema_name', None),
-            security_type=CreateFunctionSecurityType(d['security_type']) if 'security_type' in d else None,
+            security_type=CreateFunctionSecurityType.__members__.get(d['security_type'], None)
+            if 'security_type' in d else None,
             specific_name=d.get('specific_name', None),
-            sql_data_access=CreateFunctionSqlDataAccess(d['sql_data_access'])
+            sql_data_access=CreateFunctionSqlDataAccess.__members__.get(d['sql_data_access'], None)
             if 'sql_data_access' in d else None,
             sql_path=d.get('sql_path', None))
 
@@ -433,7 +437,7 @@ class CreateProvider:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateProvider':
-        return cls(authentication_type=AuthenticationType(d['authentication_type'])
+        return cls(authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
                    if 'authentication_type' in d else None,
                    comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -467,7 +471,7 @@ class CreateRecipient:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRecipient':
         return cls(
-            authentication_type=AuthenticationType(d['authentication_type'])
+            authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
             if 'authentication_type' in d else None,
             comment=d.get('comment', None),
             data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
@@ -724,9 +728,9 @@ class EffectivePrivilege:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePrivilege':
         return cls(inherited_from_name=d.get('inherited_from_name', None),
-                   inherited_from_type=SecurableType(d['inherited_from_type'])
+                   inherited_from_type=SecurableType.__members__.get(d['inherited_from_type'], None)
                    if 'inherited_from_type' in d else None,
-                   privilege=Privilege(d['privilege']) if 'privilege' in d else None)
+                   privilege=Privilege.__members__.get(d['privilege'], None) if 'privilege' in d else None)
 
 
 @dataclass
@@ -906,7 +910,7 @@ class FunctionInfo:
             comment=d.get('comment', None),
             created_at=d.get('created_at', None),
             created_by=d.get('created_by', None),
-            data_type=ColumnTypeName(d['data_type']) if 'data_type' in d else None,
+            data_type=ColumnTypeName.__members__.get(d['data_type'], None) if 'data_type' in d else None,
             external_language=d.get('external_language', None),
             external_name=d.get('external_name', None),
             full_data_type=d.get('full_data_type', None),
@@ -919,19 +923,21 @@ class FunctionInfo:
             metastore_id=d.get('metastore_id', None),
             name=d.get('name', None),
             owner=d.get('owner', None),
-            parameter_style=FunctionInfoParameterStyle(d['parameter_style'])
+            parameter_style=FunctionInfoParameterStyle.__members__.get(d['parameter_style'], None)
             if 'parameter_style' in d else None,
             properties=d.get('properties', None),
             return_params=[FunctionParameterInfo.from_dict(v) for v in d['return_params']]
             if 'return_params' in d and d['return_params'] is not None else None,
-            routine_body=FunctionInfoRoutineBody(d['routine_body']) if 'routine_body' in d else None,
+            routine_body=FunctionInfoRoutineBody.__members__.get(d['routine_body'], None)
+            if 'routine_body' in d else None,
             routine_definition=d.get('routine_definition', None),
             routine_dependencies=[Dependency.from_dict(v) for v in d['routine_dependencies']]
             if 'routine_dependencies' in d and d['routine_dependencies'] is not None else None,
             schema_name=d.get('schema_name', None),
-            security_type=FunctionInfoSecurityType(d['security_type']) if 'security_type' in d else None,
+            security_type=FunctionInfoSecurityType.__members__.get(d['security_type'], None)
+            if 'security_type' in d else None,
             specific_name=d.get('specific_name', None),
-            sql_data_access=FunctionInfoSqlDataAccess(d['sql_data_access'])
+            sql_data_access=FunctionInfoSqlDataAccess.__members__.get(d['sql_data_access'], None)
             if 'sql_data_access' in d else None,
             sql_path=d.get('sql_path', None),
             updated_at=d.get('updated_at', None),
@@ -1005,12 +1011,14 @@ class FunctionParameterInfo:
             comment=d.get('comment', None),
             name=d.get('name', None),
             parameter_default=d.get('parameter_default', None),
-            parameter_mode=FunctionParameterMode(d['parameter_mode']) if 'parameter_mode' in d else None,
-            parameter_type=FunctionParameterType(d['parameter_type']) if 'parameter_type' in d else None,
+            parameter_mode=FunctionParameterMode.__members__.get(d['parameter_mode'], None)
+            if 'parameter_mode' in d else None,
+            parameter_type=FunctionParameterType.__members__.get(d['parameter_type'], None)
+            if 'parameter_type' in d else None,
             position=d.get('position', None),
             type_interval_type=d.get('type_interval_type', None),
             type_json=d.get('type_json', None),
-            type_name=ColumnTypeName(d['type_name']) if 'type_name' in d else None,
+            type_name=ColumnTypeName.__members__.get(d['type_name'], None) if 'type_name' in d else None,
             type_precision=d.get('type_precision', None),
             type_scale=d.get('type_scale', None),
             type_text=d.get('type_text', None))
@@ -1160,8 +1168,8 @@ class GetMetastoreSummaryResponse:
                    delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
-                   delta_sharing_scope=GetMetastoreSummaryResponseDeltaSharingScope(d['delta_sharing_scope'])
-                   if 'delta_sharing_scope' in d else None,
+                   delta_sharing_scope=GetMetastoreSummaryResponseDeltaSharingScope.__members__.get(
+                       d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -1576,8 +1584,8 @@ class MetastoreInfo:
                    delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
-                   delta_sharing_scope=MetastoreInfoDeltaSharingScope(d['delta_sharing_scope'])
-                   if 'delta_sharing_scope' in d else None,
+                   delta_sharing_scope=MetastoreInfoDeltaSharingScope.__members__.get(
+                       d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -1645,7 +1653,7 @@ class PartitionValue:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PartitionValue':
         return cls(name=d.get('name', None),
-                   op=PartitionValueOp(d['op']) if 'op' in d else None,
+                   op=PartitionValueOp.__members__.get(d['op'], None) if 'op' in d else None,
                    recipient_property_key=d.get('recipient_property_key', None),
                    value=d.get('value', None))
 
@@ -1796,7 +1804,7 @@ class ProviderInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ProviderInfo':
-        return cls(authentication_type=AuthenticationType(d['authentication_type'])
+        return cls(authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
                    if 'authentication_type' in d else None,
                    cloud=d.get('cloud', None),
                    comment=d.get('comment', None),
@@ -1877,7 +1885,7 @@ class RecipientInfo:
         return cls(
             activated=d.get('activated', None),
             activation_url=d.get('activation_url', None),
-            authentication_type=AuthenticationType(d['authentication_type'])
+            authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
             if 'authentication_type' in d else None,
             cloud=d.get('cloud', None),
             comment=d.get('comment', None),
@@ -2160,17 +2168,18 @@ class SharedDataObject:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObject':
-        return cls(added_at=d.get('added_at', None),
-                   added_by=d.get('added_by', None),
-                   cdf_enabled=d.get('cdf_enabled', None),
-                   comment=d.get('comment', None),
-                   data_object_type=d.get('data_object_type', None),
-                   name=d.get('name', None),
-                   partitions=[Partition.from_dict(v) for v in d['partitions']]
-                   if 'partitions' in d and d['partitions'] is not None else None,
-                   shared_as=d.get('shared_as', None),
-                   start_version=d.get('start_version', None),
-                   status=SharedDataObjectStatus(d['status']) if 'status' in d else None)
+        return cls(
+            added_at=d.get('added_at', None),
+            added_by=d.get('added_by', None),
+            cdf_enabled=d.get('cdf_enabled', None),
+            comment=d.get('comment', None),
+            data_object_type=d.get('data_object_type', None),
+            name=d.get('name', None),
+            partitions=[Partition.from_dict(v) for v in d['partitions']]
+            if 'partitions' in d and d['partitions'] is not None else None,
+            shared_as=d.get('shared_as', None),
+            start_version=d.get('start_version', None),
+            status=SharedDataObjectStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 class SharedDataObjectStatus(Enum):
@@ -2193,8 +2202,9 @@ class SharedDataObjectUpdate:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObjectUpdate':
-        return cls(action=SharedDataObjectUpdateAction(d['action']) if 'action' in d else None,
-                   data_object=SharedDataObject.from_dict(d['data_object']) if 'data_object' in d else None)
+        return cls(
+            action=SharedDataObjectUpdateAction.__members__.get(d['action'], None) if 'action' in d else None,
+            data_object=SharedDataObject.from_dict(d['data_object']) if 'data_object' in d else None)
 
 
 class SharedDataObjectUpdateAction(Enum):
@@ -2389,7 +2399,7 @@ class TableInfo:
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    data_access_configuration_id=d.get('data_access_configuration_id', None),
-                   data_source_format=DataSourceFormat(d['data_source_format'])
+                   data_source_format=DataSourceFormat.__members__.get(d['data_source_format'], None)
                    if 'data_source_format' in d else None,
                    deleted_at=d.get('deleted_at', None),
                    delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
@@ -2406,7 +2416,7 @@ class TableInfo:
                    table_constraints=TableConstraintList.from_dict(d['table_constraints'])
                    if 'table_constraints' in d else None,
                    table_id=d.get('table_id', None),
-                   table_type=TableType(d['table_type']) if 'table_type' in d else None,
+                   table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None,
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None),
                    view_definition=d.get('view_definition', None),
@@ -2444,7 +2454,7 @@ class TableSummary:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableSummary':
         return cls(full_name=d.get('full_name', None),
-                   table_type=TableType(d['table_type']) if 'table_type' in d else None)
+                   table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None)
 
 
 class TableType(Enum):
@@ -2567,8 +2577,8 @@ class UpdateMetastore:
         return cls(delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
-                   delta_sharing_scope=UpdateMetastoreDeltaSharingScope(d['delta_sharing_scope'])
-                   if 'delta_sharing_scope' in d else None,
+                   delta_sharing_scope=UpdateMetastoreDeltaSharingScope.__members__.get(
+                       d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
                    id=d.get('id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -2621,7 +2631,8 @@ class UpdatePermissions:
         return cls(changes=[PermissionsChange.from_dict(v)
                             for v in d['changes']] if 'changes' in d and d['changes'] is not None else None,
                    full_name=d.get('full_name', None),
-                   securable_type=SecurableType(d['securable_type']) if 'securable_type' in d else None)
+                   securable_type=SecurableType.__members__.get(d['securable_type'], None)
+                   if 'securable_type' in d else None)
 
 
 @dataclass
@@ -2853,9 +2864,11 @@ class ValidationResult:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidationResult':
-        return cls(message=d.get('message', None),
-                   operation=ValidationResultOperation(d['operation']) if 'operation' in d else None,
-                   result=ValidationResultResult(d['result']) if 'result' in d else None)
+        return cls(
+            message=d.get('message', None),
+            operation=ValidationResultOperation.__members__.get(d['operation'], None)
+            if 'operation' in d else None,
+            result=ValidationResultResult.__members__.get(d['result'], None) if 'result' in d else None)
 
 
 class ValidationResultOperation(Enum):

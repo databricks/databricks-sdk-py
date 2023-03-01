@@ -1,9 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
-import logging
 
 _LOG = logging.getLogger('databricks.sdk.service.workspace')
 
@@ -87,8 +87,8 @@ class Import:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Import':
         return cls(content=d.get('content', None),
-                   format=ExportFormat(d['format']) if 'format' in d else None,
-                   language=Language(d['language']) if 'language' in d else None,
+                   format=ExportFormat.__members__.get(d['format'], None) if 'format' in d else None,
+                   language=Language.__members__.get(d['language'], None) if 'language' in d else None,
                    overwrite=d.get('overwrite', None),
                    path=d.get('path', None))
 
@@ -162,13 +162,14 @@ class ObjectInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ObjectInfo':
-        return cls(created_at=d.get('created_at', None),
-                   language=Language(d['language']) if 'language' in d else None,
-                   modified_at=d.get('modified_at', None),
-                   object_id=d.get('object_id', None),
-                   object_type=ObjectType(d['object_type']) if 'object_type' in d else None,
-                   path=d.get('path', None),
-                   size=d.get('size', None))
+        return cls(
+            created_at=d.get('created_at', None),
+            language=Language.__members__.get(d['language'], None) if 'language' in d else None,
+            modified_at=d.get('modified_at', None),
+            object_id=d.get('object_id', None),
+            object_type=ObjectType.__members__.get(d['object_type'], None) if 'object_type' in d else None,
+            path=d.get('path', None),
+            size=d.get('size', None))
 
 
 class ObjectType(Enum):

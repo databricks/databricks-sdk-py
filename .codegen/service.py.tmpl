@@ -35,7 +35,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
 {{else if .MapValue}}{{.PascalName}} = {{template "type-nq" .}}
 {{else if .Enum}}class {{.PascalName}}(Enum):
-    {{if .Description}}"""{{.Comment "    " 100}}"""{{end}}
+    {{if .Description}}"""{{.Comment "    " 100 | trimSuffix "\"" }}"""{{end}}
     {{range .Enum }}
     {{.Content}}{{if eq .Content "None"}}_{{end}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
@@ -43,7 +43,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}{{if .Entity.ArrayValue.IsObject}}[{{.Entity.ArrayValue.PascalName}}.from_dict(v) for v in d['{{.Name}}']] if '{{.Name}}' in d and d['{{.Name}}'] is not None else None{{else}}d.get('{{.Name}}', None){{end}}
 	{{- else if or .Entity.IsObject .Entity.IsExternal }}{{.Entity.PascalName}}.from_dict(d['{{.Name}}']) if '{{.Name}}' in d else None
-	{{- else if .Entity.Enum }}{{.Entity.PascalName}}(d['{{.Name}}']) if '{{.Name}}' in d else None
+	{{- else if .Entity.Enum }}{{.Entity.PascalName}}.__members__.get(d['{{.Name}}'], None) if '{{.Name}}' in d else None
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
 {{- define "as_request_type" -}}
@@ -92,7 +92,7 @@ class {{.Name}}API:{{if .Description}}
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
       {{- end}}{{if .Wait}}, wait={{if .IsCrudRead}}False{{else}}True{{end}}, timeout={{.Wait.Timeout}}{{end}}, **kwargs
     {{- end}}){{template "method-return-type" .}}:
-        {{if .Description}}"""{{.Comment "        " 110}}"""{{end}}
+        {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}"""{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
           request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})
