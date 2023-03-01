@@ -29,7 +29,8 @@ class DatabricksError(Exception):
                  detail: str = None,
                  status: str = None,
                  scimType: str = None,
-                 error: str = None):
+                 error: str = None,
+                 **kwargs):
         if not message and error:
             # API 1.2 has different response format, let's adapt
             message = error
@@ -45,6 +46,7 @@ class DatabricksError(Exception):
             error_code = f"SCIM_{status}"
         super().__init__(message if message else error)
         self.error_code = error_code
+        self.kwargs = kwargs
 
 
 class DatabricksAuth(ABC, requests.auth.AuthBase):
@@ -414,6 +416,7 @@ class ApiClient(requests.Session):
                                 params=query,
                                 json=body,
                                 headers={"User-Agent": self._user_agent_base})
+        payload = response.json()
         if not response.ok:
-            raise DatabricksError(**response.json())
-        return response.json()
+            raise DatabricksError(**payload)
+        return payload
