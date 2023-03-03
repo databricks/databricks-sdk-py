@@ -69,9 +69,9 @@ as described in the following sections.
 For each authentication method, the SDK searches for compatible authentication credentials in the following locations, 
 in the following order. Once the SDK finds a compatible set of credentials that it can use, it stops searching:
 
-1. Credentials that hard-coded into configuration arguments.
+1. Credentials that are hard-coded into configuration arguments.
 
-   **Caution**: Databricks does not recommend hard-coding credentials into arguments, as they can be exposed in plain text in version control systems. Use environment variables or configuration profiles instead.
+   :warning: **Caution**: Databricks does not recommend hard-coding credentials into arguments, as they can be exposed in plain text in version control systems. Use environment variables or configuration profiles instead.
 
 2. Credentials in Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables).
 3. For Databricks native authentication, credentials in the `.databrickscfg` file's `DEFAULT` [configuration profile](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) from its default file location (`~` for Linux or macOS, and `%USERPROFILE%` for Windows).
@@ -81,7 +81,7 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 ### Databricks native authentication
 
-By default, the Databricks SDK for Python initially tries Databricks token authentication (`auth_type='pat'` argument). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`auth_type="basic"` argument).
+By default, the Databricks SDK for Python initially tries [Databricks token authentication](https://docs.databricks.com/dev-tools/api/latest/authentication.html) (`auth_type='pat'` argument). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`auth_type="basic"` argument).
 
 - For Databricks token authentication, you must provide `host` and `token`; or their environment variable or `.databrickscfg` file field equivalents.
 - For Databricks basic authentication, you must provide `host`, `username`, and `password` _(for AWS workspace-level operations)_; or `host`, `account_id`, `username`, and `password` _(for AWS, Azure, or GCP account-level operations)_; or their environment variable or `.databrickscfg` file field equivalents.
@@ -176,22 +176,28 @@ To find code examples that demonstrate how to call the Databricks SDK for Python
 
 ## Long-running operations
 
-More than 20 methods across different Databricks APIs are long-running operations for managing things like clusters, 
-command execution, jobs, libraries, Delta Live Tables pipelines, and Databricks SQL warehouses. For example, in 
-the Clusters API, once you create a cluster, you receive a cluster ID, and the cluster is in the `PENDING` state while 
-Databricks takes care of provisioning virtual machines from the cloud provider in the background. But the cluster is 
-only usable in the `RUNNING` state. Another example is the API for running a job or repairing the run: right after 
-the run starts, the run is in the `PENDING` state, though the job is considered to be finished only when it is in 
-the `TERMINATED` or `SKIPPED` states. And of course you. would want to know the error message when the long-running 
-operation times out or why things fail. And sometimes you want to configure a custom timeout other than 
-the default of 20 minutes.
-
-To hide all of the integration-specific complexity from the end user, Databricks SDK for Python provides 
-a high-level API for _triggering_ the long-running operations and _waiting_ for the releated entities to reach the right 
-state or return back the error message about the problem in case of failure. All long-running operations have 
+When you invoke a long0running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities to reach the correct state or return the error message in case of failure. All long-running operations have 
 the `wait: bool` optional keyword argument, which is enabled by default. These methods return information about 
 the relevant entity once the operation is finished. It is possible to configure a custom timeout by optionally providing 
 a number of minutes in `timeout` keyword argument.
+
+There are a number of long-runng opereations in Databricks APIs such as managing:
+* Clusters, 
+* Command execution
+* Jobs
+* Libraries 
+* Delta Live Tables pipelines
+* Databricks SQL warehouses. 
+
+For example, in the Clusters API, once you create a cluster, you receive a cluster ID, and the cluster is in the `PENDING` state Meanwhile 
+Databricks takes care of provisioning virtual machines from the cloud provider in the background. The cluster is 
+only usable in the `RUNNING` state and so you have to wait for that state to be reached. 
+
+Another example is the API for running a job or repairing the run: right after 
+the run starts, the run is in the `PENDING` state. The job is only considered to be finished when it is in either
+the `TERMINATED` or `SKIPPED` state. Also you would likely need the error message if the long-running 
+operation times out failed with an error code. Other times you may want to configure a custom timeout other than 
+the default of 20 minutes.
 
 In the following example, `CreateAndWait` returns `ClusterInfo` only once the cluster is in the `RUNNING` state, 
 otherwise it will timeout in 10 minutes:
@@ -205,15 +211,20 @@ info = w.clusters.create(cluster_name='Created cluster',
                          node_type_id='m5d.large',
                          autotermination_minutes=10,
                          num_workers=1,
+                         wait=True # not needed as this is default - added for clarity
                          timeout=10)
 logging.info(f'Created: {info}')
 ```
 
 ## Paginated responses
 
-On the platform side, some Databricks APIs have result pagination, and some of them do not. Some APIs follow 
-the offset-plus-limit pagination, some start their offsets from 0 and some from 1, some use the cursor-based iteration, 
-and others just return all results in a single response. The Databricks SDK for Python hides this intricate complexity 
+On the platform side the Databricks APIs have different wait to deal with pagination:
+* Some APIs follow the offset-plus-limit pagination
+* Some start their offsets from 0 and some from 1
+* Some use the cursor-based iteration
+* Others just return all results in a single response
+
+The Databricks SDK for Python hides this  complexity 
 under `Iterator[T]` abstraction, where multi-page results `yield` items. Python typing helps to auto-complete 
 the individual item fields.
 
