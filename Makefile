@@ -6,6 +6,7 @@ dev-init:
 fmt:
 	yapf -pri databricks tests
 	autoflake -ri databricks tests
+	isort databricks tests
 
 lint:
 	pycodestyle databricks
