@@ -63,6 +63,8 @@ class CatalogInfo:
     comment: str = None
     created_at: int = None
     created_by: str = None
+    effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
+    enable_auto_maintenance: 'EnableAutoMaintenance' = None
     metastore_id: str = None
     name: str = None
     owner: str = None
@@ -80,6 +82,9 @@ class CatalogInfo:
         if self.comment: body['comment'] = self.comment
         if self.created_at: body['created_at'] = self.created_at
         if self.created_by: body['created_by'] = self.created_by
+        if self.effective_auto_maintenance_flag:
+            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
+        if self.enable_auto_maintenance: body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
@@ -94,21 +99,26 @@ class CatalogInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
-        return cls(catalog_type=CatalogType.__members__.get(d['catalog_type'], None)
-                   if 'catalog_type' in d else None,
-                   comment=d.get('comment', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   metastore_id=d.get('metastore_id', None),
-                   name=d.get('name', None),
-                   owner=d.get('owner', None),
-                   properties=d.get('properties', None),
-                   provider_name=d.get('provider_name', None),
-                   share_name=d.get('share_name', None),
-                   storage_location=d.get('storage_location', None),
-                   storage_root=d.get('storage_root', None),
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+        return cls(
+            catalog_type=CatalogType.__members__.get(d['catalog_type'], None)
+            if 'catalog_type' in d else None,
+            comment=d.get('comment', None),
+            created_at=d.get('created_at', None),
+            created_by=d.get('created_by', None),
+            effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
+                d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d else None,
+            enable_auto_maintenance=EnableAutoMaintenance.__members__.get(d['enable_auto_maintenance'], None)
+            if 'enable_auto_maintenance' in d else None,
+            metastore_id=d.get('metastore_id', None),
+            name=d.get('name', None),
+            owner=d.get('owner', None),
+            properties=d.get('properties', None),
+            provider_name=d.get('provider_name', None),
+            share_name=d.get('share_name', None),
+            storage_location=d.get('storage_location', None),
+            storage_root=d.get('storage_root', None),
+            updated_at=d.get('updated_at', None),
+            updated_by=d.get('updated_by', None))
 
 
 class CatalogType(Enum):
@@ -527,6 +537,7 @@ class CreateShare:
 @dataclass
 class CreateStorageCredential:
     name: str
+    metastore_id: str
     aws_iam_role: 'AwsIamRole' = None
     azure_service_principal: 'AzureServicePrincipal' = None
     comment: str = None
@@ -542,6 +553,7 @@ class CreateStorageCredential:
         if self.comment: body['comment'] = self.comment
         if self.gcp_service_account_key:
             body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
+        if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.read_only: body['read_only'] = self.read_only
         if self.skip_validation: body['skip_validation'] = self.skip_validation
@@ -555,6 +567,7 @@ class CreateStorageCredential:
                    comment=d.get('comment', None),
                    gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
                    if 'gcp_service_account_key' in d else None,
+                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
@@ -589,6 +602,21 @@ class DataSourceFormat(Enum):
     PARQUET = 'PARQUET'
     TEXT = 'TEXT'
     UNITY_CATALOG = 'UNITY_CATALOG'
+
+
+@dataclass
+class DeleteAccountMetastoreAssignmentRequest:
+    """Delete a metastore assignment"""
+
+    workspace_id: int
+    metastore_id: str
+
+
+@dataclass
+class DeleteAccountMetastoreRequest:
+    """Delete a metastore"""
+
+    metastore_id: str
 
 
 @dataclass
@@ -696,6 +724,35 @@ class Dependency:
 
 
 @dataclass
+class EffectiveAutoMaintenanceFlag:
+    value: 'EnableAutoMaintenance'
+    inherited_from_name: str = None
+    inherited_from_type: 'EffectiveAutoMaintenanceFlagInheritedFromType' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited_from_name: body['inherited_from_name'] = self.inherited_from_name
+        if self.inherited_from_type: body['inherited_from_type'] = self.inherited_from_type.value
+        if self.value: body['value'] = self.value.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'EffectiveAutoMaintenanceFlag':
+        return cls(inherited_from_name=d.get('inherited_from_name', None),
+                   inherited_from_type=EffectiveAutoMaintenanceFlagInheritedFromType.__members__.get(
+                       d['inherited_from_type'], None) if 'inherited_from_type' in d else None,
+                   value=EnableAutoMaintenance.__members__.get(d['value'], None) if 'value' in d else None)
+
+
+class EffectiveAutoMaintenanceFlagInheritedFromType(Enum):
+    """The type of the object from which the flag was inherited. If there was no inheritance, this
+    field is left blank."""
+
+    CATALOG = 'CATALOG'
+    SCHEMA = 'SCHEMA'
+
+
+@dataclass
 class EffectivePermissionsList:
     privilege_assignments: 'List[EffectivePrivilegeAssignment]' = None
 
@@ -749,6 +806,14 @@ class EffectivePrivilegeAssignment:
         return cls(principal=d.get('principal', None),
                    privileges=[EffectivePrivilege.from_dict(v) for v in d['privileges']]
                    if 'privileges' in d and d['privileges'] is not None else None)
+
+
+class EnableAutoMaintenance(Enum):
+    """Whether auto maintenance should be enabled for this object and objects under it."""
+
+    DISABLE = 'DISABLE'
+    ENABLE = 'ENABLE'
+    INHERIT = 'INHERIT'
 
 
 @dataclass
@@ -1058,6 +1123,29 @@ class GcpServiceAccountKey:
 
 
 @dataclass
+class GetAccountMetastoreAssignmentRequest:
+    """Gets the metastore assignment for a workspace"""
+
+    workspace_id: int
+
+
+@dataclass
+class GetAccountMetastoreRequest:
+    """Get a metastore"""
+
+    metastore_id: str
+
+
+@dataclass
+class GetAccountStorageCredentialRequest:
+    """Gets the named storage credential"""
+
+    metastore_id: str
+    name: str
+    storage_credential_name: str
+
+
+@dataclass
 class GetActivationUrlInfoRequest:
     """Get a share activation URL"""
 
@@ -1264,6 +1352,20 @@ class IpAccessList:
 
 
 @dataclass
+class ListAccountMetastoreAssignmentsRequest:
+    """Get all workspaces assigned to a metastore"""
+
+    metastore_id: str
+
+
+@dataclass
+class ListAccountStorageCredentialsRequest:
+    """Get all storage credentials assigned to a metastore"""
+
+    metastore_id: str
+
+
+@dataclass
 class ListCatalogsResponse:
     catalogs: 'List[CatalogInfo]' = None
 
@@ -1435,22 +1537,6 @@ class ListSharesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListSharesResponse':
         return cls(shares=[ShareInfo.from_dict(v)
                            for v in d['shares']] if 'shares' in d and d['shares'] is not None else None)
-
-
-@dataclass
-class ListStorageCredentialsResponse:
-    storage_credentials: 'List[StorageCredentialInfo]' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.storage_credentials:
-            body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListStorageCredentialsResponse':
-        return cls(storage_credentials=[StorageCredentialInfo.from_dict(v) for v in d['storage_credentials']]
-                   if 'storage_credentials' in d and d['storage_credentials'] is not None else None)
 
 
 @dataclass
@@ -2012,6 +2098,8 @@ class SchemaInfo:
     comment: str = None
     created_at: int = None
     created_by: str = None
+    effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
+    enable_auto_maintenance: 'EnableAutoMaintenance' = None
     full_name: str = None
     metastore_id: str = None
     name: str = None
@@ -2029,6 +2117,9 @@ class SchemaInfo:
         if self.comment: body['comment'] = self.comment
         if self.created_at: body['created_at'] = self.created_at
         if self.created_by: body['created_by'] = self.created_by
+        if self.effective_auto_maintenance_flag:
+            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
+        if self.enable_auto_maintenance: body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
         if self.full_name: body['full_name'] = self.full_name
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
@@ -2042,20 +2133,25 @@ class SchemaInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SchemaInfo':
-        return cls(catalog_name=d.get('catalog_name', None),
-                   catalog_type=d.get('catalog_type', None),
-                   comment=d.get('comment', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   full_name=d.get('full_name', None),
-                   metastore_id=d.get('metastore_id', None),
-                   name=d.get('name', None),
-                   owner=d.get('owner', None),
-                   properties=d.get('properties', None),
-                   storage_location=d.get('storage_location', None),
-                   storage_root=d.get('storage_root', None),
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+        return cls(
+            catalog_name=d.get('catalog_name', None),
+            catalog_type=d.get('catalog_type', None),
+            comment=d.get('comment', None),
+            created_at=d.get('created_at', None),
+            created_by=d.get('created_by', None),
+            effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
+                d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d else None,
+            enable_auto_maintenance=EnableAutoMaintenance.__members__.get(d['enable_auto_maintenance'], None)
+            if 'enable_auto_maintenance' in d else None,
+            full_name=d.get('full_name', None),
+            metastore_id=d.get('metastore_id', None),
+            name=d.get('name', None),
+            owner=d.get('owner', None),
+            properties=d.get('properties', None),
+            storage_location=d.get('storage_location', None),
+            storage_root=d.get('storage_root', None),
+            updated_at=d.get('updated_at', None),
+            updated_by=d.get('updated_by', None))
 
 
 SecurablePropertiesMap = Dict[str, str]
@@ -2340,6 +2436,8 @@ class TableInfo:
     data_source_format: 'DataSourceFormat' = None
     deleted_at: int = None
     delta_runtime_properties_kvpairs: Any = None
+    effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
+    enable_auto_maintenance: 'EnableAutoMaintenance' = None
     full_name: str = None
     metastore_id: str = None
     name: str = None
@@ -2371,6 +2469,9 @@ class TableInfo:
         if self.deleted_at: body['deleted_at'] = self.deleted_at
         if self.delta_runtime_properties_kvpairs:
             body['delta_runtime_properties_kvpairs'] = self.delta_runtime_properties_kvpairs
+        if self.effective_auto_maintenance_flag:
+            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
+        if self.enable_auto_maintenance: body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
         if self.full_name: body['full_name'] = self.full_name
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
@@ -2392,36 +2493,41 @@ class TableInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableInfo':
-        return cls(catalog_name=d.get('catalog_name', None),
-                   columns=[ColumnInfo.from_dict(v)
-                            for v in d['columns']] if 'columns' in d and d['columns'] is not None else None,
-                   comment=d.get('comment', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   data_access_configuration_id=d.get('data_access_configuration_id', None),
-                   data_source_format=DataSourceFormat.__members__.get(d['data_source_format'], None)
-                   if 'data_source_format' in d else None,
-                   deleted_at=d.get('deleted_at', None),
-                   delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
-                   full_name=d.get('full_name', None),
-                   metastore_id=d.get('metastore_id', None),
-                   name=d.get('name', None),
-                   owner=d.get('owner', None),
-                   properties=d.get('properties', None),
-                   row_filter=TableRowFilter.from_dict(d['row_filter']) if 'row_filter' in d else None,
-                   schema_name=d.get('schema_name', None),
-                   sql_path=d.get('sql_path', None),
-                   storage_credential_name=d.get('storage_credential_name', None),
-                   storage_location=d.get('storage_location', None),
-                   table_constraints=TableConstraintList.from_dict(d['table_constraints'])
-                   if 'table_constraints' in d else None,
-                   table_id=d.get('table_id', None),
-                   table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None,
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None),
-                   view_definition=d.get('view_definition', None),
-                   view_dependencies=[Dependency.from_dict(v) for v in d['view_dependencies']]
-                   if 'view_dependencies' in d and d['view_dependencies'] is not None else None)
+        return cls(
+            catalog_name=d.get('catalog_name', None),
+            columns=[ColumnInfo.from_dict(v)
+                     for v in d['columns']] if 'columns' in d and d['columns'] is not None else None,
+            comment=d.get('comment', None),
+            created_at=d.get('created_at', None),
+            created_by=d.get('created_by', None),
+            data_access_configuration_id=d.get('data_access_configuration_id', None),
+            data_source_format=DataSourceFormat.__members__.get(d['data_source_format'], None)
+            if 'data_source_format' in d else None,
+            deleted_at=d.get('deleted_at', None),
+            delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
+            effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
+                d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d else None,
+            enable_auto_maintenance=EnableAutoMaintenance.__members__.get(d['enable_auto_maintenance'], None)
+            if 'enable_auto_maintenance' in d else None,
+            full_name=d.get('full_name', None),
+            metastore_id=d.get('metastore_id', None),
+            name=d.get('name', None),
+            owner=d.get('owner', None),
+            properties=d.get('properties', None),
+            row_filter=TableRowFilter.from_dict(d['row_filter']) if 'row_filter' in d else None,
+            schema_name=d.get('schema_name', None),
+            sql_path=d.get('sql_path', None),
+            storage_credential_name=d.get('storage_credential_name', None),
+            storage_location=d.get('storage_location', None),
+            table_constraints=TableConstraintList.from_dict(d['table_constraints'])
+            if 'table_constraints' in d else None,
+            table_id=d.get('table_id', None),
+            table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None,
+            updated_at=d.get('updated_at', None),
+            updated_by=d.get('updated_by', None),
+            view_definition=d.get('view_definition', None),
+            view_dependencies=[Dependency.from_dict(v) for v in d['view_dependencies']]
+            if 'view_dependencies' in d and d['view_dependencies'] is not None else None)
 
 
 @dataclass
@@ -2547,6 +2653,7 @@ class UpdateFunction:
 
 @dataclass
 class UpdateMetastore:
+    metastore_id: str
     id: str
     delta_sharing_organization_name: str = None
     delta_sharing_recipient_token_lifetime_in_seconds: int = None
@@ -2565,6 +2672,7 @@ class UpdateMetastore:
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope: body['delta_sharing_scope'] = self.delta_sharing_scope.value
         if self.id: body['id'] = self.id
+        if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
         if self.privilege_model_version: body['privilege_model_version'] = self.privilege_model_version
@@ -2580,6 +2688,7 @@ class UpdateMetastore:
                    delta_sharing_scope=UpdateMetastoreDeltaSharingScope.__members__.get(
                        d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
                    id=d.get('id', None),
+                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    privilege_model_version=d.get('privilege_model_version', None),
@@ -2589,8 +2698,8 @@ class UpdateMetastore:
 @dataclass
 class UpdateMetastoreAssignment:
     workspace_id: int
+    metastore_id: str
     default_catalog_name: str = None
-    metastore_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2886,6 +2995,254 @@ class ValidationResultResult(Enum):
     FAIL = 'FAIL'
     PASS = 'PASS'
     SKIP = 'SKIP'
+
+
+class AccountMetastoreAssignmentsAPI:
+    """These APIs manage metastore assignments to a workspace."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, metastore_id: str, default_catalog_name: str, workspace_id: int,
+               **kwargs) -> MetastoreAssignment:
+        """Assigns a workspace to a metastore.
+        
+        Creates an assignment to a metastore for a workspace"""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateMetastoreAssignment(default_catalog_name=default_catalog_name,
+                                                metastore_id=metastore_id,
+                                                workspace_id=workspace_id)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'POST',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
+            body=body)
+        return MetastoreAssignment.from_dict(json)
+
+    def delete(self, workspace_id: int, metastore_id: str, **kwargs):
+        """Delete a metastore assignment.
+        
+        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteAccountMetastoreAssignmentRequest(metastore_id=metastore_id,
+                                                              workspace_id=workspace_id)
+
+        self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}'
+        )
+
+    def get(self, workspace_id: int, **kwargs) -> MetastoreAssignment:
+        """Gets the metastore assignment for a workspace.
+        
+        Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
+        a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
+        will not be found and a 404 returned."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAccountMetastoreAssignmentRequest(workspace_id=workspace_id)
+
+        json = self._api.do(
+            'GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastore')
+        return MetastoreAssignment.from_dict(json)
+
+    def list(self, metastore_id: str, **kwargs) -> Iterator[MetastoreAssignment]:
+        """Get all workspaces assigned to a metastore.
+        
+        Gets a list of all Databricks workspace IDs that have been assigned to given metastore."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListAccountMetastoreAssignmentsRequest(metastore_id=metastore_id)
+
+        json = self._api.do(
+            'GET', f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/workspaces')
+        return [MetastoreAssignment.from_dict(v) for v in json]
+
+    def update(self,
+               workspace_id: int,
+               metastore_id: str,
+               *,
+               default_catalog_name: str = None,
+               **kwargs) -> MetastoreAssignment:
+        """Updates a metastore assignment to a workspaces.
+        
+        Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
+        updated"""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateMetastoreAssignment(default_catalog_name=default_catalog_name,
+                                                metastore_id=metastore_id,
+                                                workspace_id=workspace_id)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'PUT',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
+            body=body)
+        return MetastoreAssignment.from_dict(json)
+
+
+class AccountMetastoresAPI:
+    """These APIs manage Unity Catalog metastores for an account. A metastore contains catalogs that can be
+    associated with workspaces"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, name: str, storage_root: str, *, region: str = None, **kwargs) -> MetastoreInfo:
+        """Create metastore.
+        
+        Creates a Unity Catalog metastore."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateMetastore(name=name, region=region, storage_root=storage_root)
+        body = request.as_dict()
+
+        json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/metastores', body=body)
+        return MetastoreInfo.from_dict(json)
+
+    def delete(self, metastore_id: str, **kwargs):
+        """Delete a metastore.
+        
+        Deletes a Databricks Unity Catalog metastore for an account, both specified by ID."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteAccountMetastoreRequest(metastore_id=metastore_id)
+
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}')
+
+    def get(self, metastore_id: str, **kwargs) -> MetastoreInfo:
+        """Get a metastore.
+        
+        Gets a Databricks Unity Catalog metastore from an account, both specified by ID."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAccountMetastoreRequest(metastore_id=metastore_id)
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}')
+        return MetastoreInfo.from_dict(json)
+
+    def list(self) -> ListMetastoresResponse:
+        """Get all metastores associated with an account.
+        
+        Gets all Unity Catalog metastores associated with an account specified by ID."""
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores')
+        return ListMetastoresResponse.from_dict(json)
+
+    def update(self,
+               metastore_id: str,
+               id: str,
+               *,
+               delta_sharing_organization_name: str = None,
+               delta_sharing_recipient_token_lifetime_in_seconds: int = None,
+               delta_sharing_scope: UpdateMetastoreDeltaSharingScope = None,
+               name: str = None,
+               owner: str = None,
+               privilege_model_version: str = None,
+               storage_root_credential_id: str = None,
+               **kwargs) -> MetastoreInfo:
+        """Update a metastore.
+        
+        Updates an existing Unity Catalog metastore."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateMetastore(
+                delta_sharing_organization_name=delta_sharing_organization_name,
+                delta_sharing_recipient_token_lifetime_in_seconds=delta_sharing_recipient_token_lifetime_in_seconds,
+                delta_sharing_scope=delta_sharing_scope,
+                id=id,
+                metastore_id=metastore_id,
+                name=name,
+                owner=owner,
+                privilege_model_version=privilege_model_version,
+                storage_root_credential_id=storage_root_credential_id)
+        body = request.as_dict()
+
+        json = self._api.do('PUT',
+                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}',
+                            body=body)
+        return MetastoreInfo.from_dict(json)
+
+
+class AccountStorageCredentialsAPI:
+    """These APIs manage storage credentials for a particular metastore."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               name: str,
+               metastore_id: str,
+               *,
+               aws_iam_role: AwsIamRole = None,
+               azure_service_principal: AzureServicePrincipal = None,
+               comment: str = None,
+               gcp_service_account_key: GcpServiceAccountKey = None,
+               read_only: bool = None,
+               skip_validation: bool = None,
+               **kwargs) -> StorageCredentialInfo:
+        """Create a storage credential.
+        
+        Creates a new storage credential. The request object is specific to the cloud:
+        
+        * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure credentials *
+        **GcpServiceAcountKey** for GCP credentials.
+        
+        The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
+        metastore."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateStorageCredential(aws_iam_role=aws_iam_role,
+                                              azure_service_principal=azure_service_principal,
+                                              comment=comment,
+                                              gcp_service_account_key=gcp_service_account_key,
+                                              metastore_id=metastore_id,
+                                              name=name,
+                                              read_only=read_only,
+                                              skip_validation=skip_validation)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'POST',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials',
+            body=body)
+        return StorageCredentialInfo.from_dict(json)
+
+    def get(self, metastore_id: str, name: str, storage_credential_name: str,
+            **kwargs) -> StorageCredentialInfo:
+        """Gets the named storage credential.
+        
+        Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
+        storage credential, or have a level of privilege on the storage credential."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAccountStorageCredentialRequest(metastore_id=metastore_id,
+                                                         name=name,
+                                                         storage_credential_name=storage_credential_name)
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/{request.storage_credential_name}'
+        )
+        return StorageCredentialInfo.from_dict(json)
+
+    def list(self, metastore_id: str, **kwargs) -> Iterator[StorageCredentialInfo]:
+        """Get all storage credentials assigned to a metastore.
+        
+        Gets a list of all storage credentials that have been assigned to given metastore."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListAccountStorageCredentialsRequest(metastore_id=metastore_id)
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials')
+        return [StorageCredentialInfo.from_dict(v) for v in json]
 
 
 class CatalogsAPI:
@@ -3419,6 +3776,7 @@ class MetastoresAPI:
                      query=query)
 
     def update(self,
+               metastore_id: str,
                id: str,
                *,
                delta_sharing_organization_name: str = None,
@@ -3439,6 +3797,7 @@ class MetastoresAPI:
                 delta_sharing_recipient_token_lifetime_in_seconds=delta_sharing_recipient_token_lifetime_in_seconds,
                 delta_sharing_scope=delta_sharing_scope,
                 id=id,
+                metastore_id=metastore_id,
                 name=name,
                 owner=owner,
                 privilege_model_version=privilege_model_version,
@@ -3450,9 +3809,9 @@ class MetastoresAPI:
 
     def update_assignment(self,
                           workspace_id: int,
+                          metastore_id: str,
                           *,
                           default_catalog_name: str = None,
-                          metastore_id: str = None,
                           **kwargs):
         """Update an assignment.
         
@@ -3965,6 +4324,7 @@ class StorageCredentialsAPI:
 
     def create(self,
                name: str,
+               metastore_id: str,
                *,
                aws_iam_role: AwsIamRole = None,
                azure_service_principal: AzureServicePrincipal = None,
@@ -3988,6 +4348,7 @@ class StorageCredentialsAPI:
                                               azure_service_principal=azure_service_principal,
                                               comment=comment,
                                               gcp_service_account_key=gcp_service_account_key,
+                                              metastore_id=metastore_id,
                                               name=name,
                                               read_only=read_only,
                                               skip_validation=skip_validation)
@@ -4031,7 +4392,7 @@ class StorageCredentialsAPI:
         elements in the array."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials')
-        return [StorageCredentialInfo.from_dict(v) for v in json['storage_credentials']]
+        return [StorageCredentialInfo.from_dict(v) for v in json]
 
     def update(self,
                name: str,

@@ -111,19 +111,19 @@ class ClustersExt(clusters.ClustersAPI):
         return False
 
     def select_node_type(self,
-                          min_memory_gb: int = None,
-                          gb_per_core: int = None,
-                          min_cores: int = None,
-                          min_gpus: int = None,
-                          local_disk: bool = None,
-                          local_disk_min_size: int = None,
-                          category: str = None,
-                          photon_worker_capable: bool = None,
-                          photon_driver_capable: bool = None,
-                          graviton: bool = None,
-                          is_io_cache_enabled: bool = None,
-                          support_port_forwarding: bool = None,
-                          fleet: str = None) -> str:
+                         min_memory_gb: int = None,
+                         gb_per_core: int = None,
+                         min_cores: int = None,
+                         min_gpus: int = None,
+                         local_disk: bool = None,
+                         local_disk_min_size: int = None,
+                         category: str = None,
+                         photon_worker_capable: bool = None,
+                         photon_driver_capable: bool = None,
+                         graviton: bool = None,
+                         is_io_cache_enabled: bool = None,
+                         support_port_forwarding: bool = None,
+                         fleet: str = None) -> str:
         # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/clusters/node_type.go
         res = self.list_node_types()
         types = sorted(res.node_types, key=self._node_sorting_tuple)

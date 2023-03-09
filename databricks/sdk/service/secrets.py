@@ -430,7 +430,7 @@ class SecretsAPI:
         read and write to this secret scope. * `READ` - Allowed to read this secret scope and list what
         secrets are available.
         
-        Note that in general, secret values can only be read from within a command\non a cluster (for example,
+        Note that in general, secret values can only be read from within a command on a cluster (for example,
         through a notebook). There is no API to read the actual secret value material outside of a cluster.
         However, the user's permission will be applied based on who is executing the command, and they must
         have at least READ permission.

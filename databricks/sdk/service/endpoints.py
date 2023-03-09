@@ -295,6 +295,7 @@ class ServedModelOutput:
     name: str = None
     scale_to_zero_enabled: bool = None
     state: 'ServedModelState' = None
+    workload_size: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -305,6 +306,7 @@ class ServedModelOutput:
         if self.name: body['name'] = self.name
         if self.scale_to_zero_enabled: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
+        if self.workload_size: body['workload_size'] = self.workload_size
         return body
 
     @classmethod
@@ -315,7 +317,8 @@ class ServedModelOutput:
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
-                   state=ServedModelState.from_dict(d['state']) if 'state' in d else None)
+                   state=ServedModelState.from_dict(d['state']) if 'state' in d else None,
+                   workload_size=d.get('workload_size', None))
 
 
 @dataclass
@@ -484,8 +487,7 @@ class TrafficConfig:
 
 
 class ServingEndpointsAPI:
-    """The Serverless Real-Time Inference Serving Endpoints API allows you to create, update, and delete model
-    serving endpoints.
+    """The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
     
     You can use a serving endpoint to serve models from the Databricks Model Registry. Endpoints expose the
     underlying models as scalable REST API endpoints using serverless compute. This means the endpoints and
@@ -502,8 +504,7 @@ class ServingEndpointsAPI:
         """Retrieve the logs associated with building the model's environment for a given serving endpoint's
         served model.
         
-        Retrieves the build logs associated with the provided served model. Please note that this API is in
-        preview and may change in the future."""
+        Retrieves the build logs associated with the provided served model."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = BuildLogsRequest(name=name, served_model_name=served_model_name)
@@ -564,7 +565,7 @@ class ServingEndpointsAPI:
         OpenMetrics exposition format.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
-        OpenMetrics exposition format. Please note that this API is in preview and may change in the future."""
+        OpenMetrics exposition format."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ExportMetricsRequest(name=name)
@@ -591,8 +592,7 @@ class ServingEndpointsAPI:
     def logs(self, name: str, served_model_name: str, **kwargs) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.
         
-        Retrieves the service logs associated with the provided served model. Please note that this API is in
-        preview and may change in the future."""
+        Retrieves the service logs associated with the provided served model."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogsRequest(name=name, served_model_name=served_model_name)

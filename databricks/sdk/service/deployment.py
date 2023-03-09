@@ -90,9 +90,23 @@ class CreateAwsKeyInfo:
 
 
 @dataclass
+class CreateCredentialAwsCredentials:
+    sts_role: 'CreateCredentialStsRole' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.sts_role: body['sts_role'] = self.sts_role.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialAwsCredentials':
+        return cls(sts_role=CreateCredentialStsRole.from_dict(d['sts_role']) if 'sts_role' in d else None)
+
+
+@dataclass
 class CreateCredentialRequest:
     credentials_name: str
-    aws_credentials: 'AwsCredentials'
+    aws_credentials: 'CreateCredentialAwsCredentials'
 
     def as_dict(self) -> dict:
         body = {}
@@ -102,9 +116,23 @@ class CreateCredentialRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialRequest':
-        return cls(aws_credentials=AwsCredentials.from_dict(d['aws_credentials'])
+        return cls(aws_credentials=CreateCredentialAwsCredentials.from_dict(d['aws_credentials'])
                    if 'aws_credentials' in d else None,
                    credentials_name=d.get('credentials_name', None))
+
+
+@dataclass
+class CreateCredentialStsRole:
+    role_arn: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.role_arn: body['role_arn'] = self.role_arn
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialStsRole':
+        return cls(role_arn=d.get('role_arn', None))
 
 
 @dataclass
@@ -540,10 +568,10 @@ class GkeConfig:
 
 
 class GkeConfigConnectivityType(Enum):
-    """Specifies the network connectivity types for the GKE nodes and the GKE master network. \n
+    """Specifies the network connectivity types for the GKE nodes and the GKE master network.
     
     Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes
-    will not have public IPs.\n
+    will not have public IPs.
     
     Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster
     have public IP addresses."""
@@ -684,14 +712,12 @@ class PricingTier(Enum):
 
 class PrivateAccessLevel(Enum):
     """The private access level controls which VPC endpoints can connect to the UI or API of any
-    workspace that attaches this private access settings object. * `ANY` (deprecated): Any VPC
-    endpoint can connect to your workspace. * `ACCOUNT` level access (the default) allows only VPC
-    endpoints that are registered in your Databricks account connect to your workspace. * `ENDPOINT`
-    level access allows only specified VPC endpoints connect to your workspace. For details, see
-    `allowed_vpc_endpoint_ids`."""
+    workspace that attaches this private access settings object. * `ACCOUNT` level access (the
+    default) allows only VPC endpoints that are registered in your Databricks account connect to
+    your workspace. * `ENDPOINT` level access allows only specified VPC endpoints connect to your
+    workspace. For details, see `allowed_vpc_endpoint_ids`."""
 
     ACCOUNT = 'ACCOUNT'
-    ANY = 'ANY'
     ENDPOINT = 'ENDPOINT'
 
 
@@ -1015,7 +1041,8 @@ class CredentialsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, credentials_name: str, aws_credentials: AwsCredentials, **kwargs) -> Credential:
+    def create(self, credentials_name: str, aws_credentials: CreateCredentialAwsCredentials,
+               **kwargs) -> Credential:
         """Create credential configuration.
         
         Creates a Databricks credential configuration that represents cloud cross-account credentials for a
@@ -1085,7 +1112,7 @@ class EncryptionKeysAPI:
     feature is available if your account is on the E2 version of the platform. Updating a running workspace
     with workspace storage encryption requires that the workspace is on the E2 version of the platform. If you
     have an older workspace, it might not be on the E2 version of the platform. If you are not sure, contact
-    your Databricks reprsentative."""
+    your Databricks representative."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1275,10 +1302,6 @@ class PrivateAccessAPI:
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
-        
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
         request = kwargs.get('request', None)
@@ -1305,10 +1328,6 @@ class PrivateAccessAPI:
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
-        
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
         request = kwargs.get('request', None)
@@ -1328,10 +1347,6 @@ class PrivateAccessAPI:
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
-        
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
         request = kwargs.get('request', None)
@@ -1347,11 +1362,7 @@ class PrivateAccessAPI:
     def list(self) -> Iterator[PrivateAccessSettings]:
         """Get all private access settings objects.
         
-        Gets a list of all private access settings objects for an account, specified by ID.
-        
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for AWS PrivateLink (Public Preview). Contact your Databricks
-        representative to enable your account for PrivateLink."""
+        Gets a list of all private access settings objects for an account, specified by ID."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/private-access-settings')
         return [PrivateAccessSettings.from_dict(v) for v in json]
@@ -1374,16 +1385,13 @@ class PrivateAccessAPI:
         This operation completely overwrites your existing private access settings object attached to your
         workspaces. All workspaces attached to the private access settings are affected by any change. If
         `public_access_enabled`, `private_access_level`, or `allowed_vpc_endpoint_ids` are updated, effects of
-        these changes might take several minutes to propagate to the workspace API. You can share one private
-        access settings object with multiple workspaces in a single account. However, private access settings
-        are specific to AWS regions, so only workspaces in the same AWS region can use a given private access
-        settings object.
+        these changes might take several minutes to propagate to the workspace API.
+        
+        You can share one private access settings object with multiple workspaces in a single account.
+        However, private access settings are specific to AWS regions, so only workspaces in the same AWS
+        region can use a given private access settings object.
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-        
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
@@ -1492,22 +1500,10 @@ class VpcEndpointsAPI:
         Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
         communicate privately with Databricks over [AWS PrivateLink].
         
-        **Important**: When you register a VPC endpoint to the Databricks workspace VPC endpoint service for
-        any workspace, **in this release Databricks enables front-end (web application and REST API) access
-        from the source network of the VPC endpoint to all workspaces in that AWS region in your Databricks
-        account if the workspaces have any PrivateLink connections in their workspace configuration**. If you
-        have questions about this behavior, contact your Databricks representative.
-        
-        Within AWS, your VPC endpoint stays in `pendingAcceptance` state until you register it in a VPC
-        endpoint configuration through the Account API. After you register the VPC endpoint configuration, the
-        Databricks [endpoint service] automatically accepts the VPC endpoint and it eventually transitions to
-        the `available` state.
+        After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically
+        accepts the VPC endpoint.
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-        
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -1534,10 +1530,6 @@ class VpcEndpointsAPI:
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
-        
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
@@ -1553,10 +1545,6 @@ class VpcEndpointsAPI:
         
         Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
         privately with Databricks over [AWS PrivateLink].
-        
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html"""
@@ -1574,10 +1562,6 @@ class VpcEndpointsAPI:
         Gets a list of all VPC endpoints for an account, specified by ID.
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-        
-        This operation is available only if your account is on the E2 version of the platform and your
-        Databricks account is enabled for PrivateLink (Public Preview). Contact your Databricks representative
-        to enable your account for PrivateLink.
         
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
 
@@ -1739,12 +1723,20 @@ class WorkspacesAPI:
         ### Update a failed workspace You can update a Databricks workspace configuration for failed workspace
         deployment for some fields, but not all fields. For a failed workspace, this request supports updates
         to the following fields only: - Credential configuration ID - Storage configuration ID - Network
-        configuration ID. Used only if you use customer-managed VPC. - Key configuration ID for managed
-        services (control plane storage, such as notebook source and Databricks SQL queries). Used only if you
-        use customer-managed keys for managed services. - Key configuration ID for workspace storage (root S3
-        bucket and, optionally, EBS volumes). Used only if you use customer-managed keys for workspace
-        storage. **Important**: If the workspace was ever in the running state, even if briefly before
-        becoming a failed workspace, you cannot add a new key configuration ID for workspace storage.
+        configuration ID. Used only to add or change a network configuration for a customer-managed VPC. For a
+        failed workspace only, you can convert a workspace with Databricks-managed VPC to use a
+        customer-managed VPC by adding this ID. You cannot downgrade a workspace with a customer-managed VPC
+        to be a Databricks-managed VPC. You can update the network configuration for a failed or running
+        workspace to add PrivateLink support, though you must also add a private access settings object. - Key
+        configuration ID for managed services (control plane storage, such as notebook source and Databricks
+        SQL queries). Used only if you use customer-managed keys for managed services. - Key configuration ID
+        for workspace storage (root S3 bucket and, optionally, EBS volumes). Used only if you use
+        customer-managed keys for workspace storage. **Important**: If the workspace was ever in the running
+        state, even if briefly before becoming a failed workspace, you cannot add a new key configuration ID
+        for workspace storage. - Private access settings ID to add PrivateLink support. You can add or update
+        the private access settings ID to upgrade a workspace to add support for front-end, back-end, or both
+        types of connectivity. You cannot remove (downgrade) any existing front-end or back-end PrivateLink
+        support on a workspace.
         
         After calling the `PATCH` operation to update the workspace configuration, make repeated `GET`
         requests with the workspace ID and check the workspace status. The workspace is successful if the
@@ -1757,11 +1749,10 @@ class WorkspacesAPI:
         workspaces for some fields, but not all fields. For a running workspace, this request supports
         updating the following fields only: - Credential configuration ID
         
-        - Network configuration ID. Used only if you already use use customer-managed VPC. This change is
-        supported only if you specified a network configuration ID in your original workspace creation. In
-        other words, you cannot switch from a Databricks-managed VPC to a customer-managed VPC. **Note**: You
-        cannot use a network configuration update in this API to add support for PrivateLink (in Public
-        Preview). To add PrivateLink to an existing workspace, contact your Databricks representative.
+        - Network configuration ID. Used only if you already use a customer-managed VPC. You cannot convert a
+        running workspace from a Databricks-managed VPC to a customer-managed VPC. You can use a network
+        configuration update in this API for a failed or running workspace to add support for PrivateLink,
+        although you also need to add a private access settings object.
         
         - Key configuration ID for managed services (control plane storage, such as notebook source and
         Databricks SQL queries). Databricks does not directly encrypt the data with the customer-managed key
@@ -1774,15 +1765,15 @@ class WorkspacesAPI:
         rotates (changes) the CMK keys and the DEK is re-encrypted with the DMK and the new CMK. - Key
         configuration ID for workspace storage (root S3 bucket and, optionally, EBS volumes). You can set this
         only if the workspace does not already have a customer-managed key configuration for workspace
-        storage.
+        storage. - Private access settings ID to add PrivateLink support. You can add or update the private
+        access settings ID to upgrade a workspace to add support for front-end, back-end, or both types of
+        connectivity. You cannot remove (downgrade) any existing front-end or back-end PrivateLink support on
+        a workspace.
         
-        **Important**: For updating running workspaces, this API is unavailable on Mondays, Tuesdays, and
-        Thursdays from 4:30pm-7:30pm PST due to routine maintenance. Plan your workspace updates accordingly.
-        For questions about this schedule, contact your Databricks representative.
-        
-        **Important**: To update a running workspace, your workspace must have no running cluster instances,
-        which includes all-purpose clusters, job clusters, and pools that might have running clusters.
-        Terminate all cluster instances in the workspace before calling this API.
+        **Important**: To update a running workspace, your workspace must have no running compute resources
+        that run in your workspace's VPC in the Classic data plane. For example, stop all all-purpose
+        clusters, job clusters, pools with running clusters, and Classic SQL warehouses. If you do not
+        terminate all cluster instances in the workspace before calling this API, the request will fail.
         
         ### Wait until changes take effect. After calling the `PATCH` operation to update the workspace
         configuration, make repeated `GET` requests with the workspace ID and check the workspace status and

@@ -1,5 +1,6 @@
 import databricks.sdk.client as client
 import databricks.sdk.mixins.compute as compute_mixin
+import databricks.sdk.mixins.dbfs as dbfs_mixin
 import databricks.sdk.service.billing as billing
 import databricks.sdk.service.clusterpolicies as clusterpolicies
 import databricks.sdk.service.clusters as clusters
@@ -72,7 +73,7 @@ class WorkspaceClient:
         self.current_user = scim.CurrentUserAPI(self.api_client)
         self.dashboards = sql.DashboardsAPI(self.api_client)
         self.data_sources = sql.DataSourcesAPI(self.api_client)
-        self.dbfs = dbfs.DbfsAPI(self.api_client)
+        self.dbfs = dbfs_mixin.DbfsExt(self.api_client)
         self.dbsql_permissions = sql.DbsqlPermissionsAPI(self.api_client)
         self.experiments = mlflow.ExperimentsAPI(self.api_client)
         self.external_locations = unitycatalog.ExternalLocationsAPI(self.api_client)
@@ -165,10 +166,13 @@ class AccountClient:
         self.encryption_keys = deployment.EncryptionKeysAPI(self.api_client)
         self.account_groups = scim.AccountGroupsAPI(self.api_client)
         self.log_delivery = billing.LogDeliveryAPI(self.api_client)
+        self.account_metastore_assignments = unitycatalog.AccountMetastoreAssignmentsAPI(self.api_client)
+        self.account_metastores = unitycatalog.AccountMetastoresAPI(self.api_client)
         self.networks = deployment.NetworksAPI(self.api_client)
         self.private_access = deployment.PrivateAccessAPI(self.api_client)
         self.account_service_principals = scim.AccountServicePrincipalsAPI(self.api_client)
         self.storage = deployment.StorageAPI(self.api_client)
+        self.account_storage_credentials = unitycatalog.AccountStorageCredentialsAPI(self.api_client)
         self.account_users = scim.AccountUsersAPI(self.api_client)
         self.vpc_endpoints = deployment.VpcEndpointsAPI(self.api_client)
         self.workspace_assignment = permissions.WorkspaceAssignmentAPI(self.api_client)
