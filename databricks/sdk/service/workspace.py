@@ -293,7 +293,7 @@ class WorkspaceAPI:
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
         
-        Note that if this operation fails it may have succeeded in creating some of the necessary\nparrent
+        Note that if this operation fails it may have succeeded in creating some of the necessary parrent
         directories."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args

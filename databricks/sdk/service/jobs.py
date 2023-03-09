@@ -47,6 +47,7 @@ class BaseRun:
     cleanup_duration: int = None
     cluster_instance: 'ClusterInstance' = None
     cluster_spec: 'ClusterSpec' = None
+    continuous: 'Continuous' = None
     creator_user_name: str = None
     end_time: int = None
     execution_duration: int = None
@@ -74,6 +75,7 @@ class BaseRun:
         if self.cleanup_duration: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
+        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
         if self.end_time: body['end_time'] = self.end_time
         if self.execution_duration: body['execution_duration'] = self.execution_duration
@@ -103,6 +105,7 @@ class BaseRun:
                    cluster_instance=ClusterInstance.from_dict(d['cluster_instance'])
                    if 'cluster_instance' in d else None,
                    cluster_spec=ClusterSpec.from_dict(d['cluster_spec']) if 'cluster_spec' in d else None,
+                   continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
@@ -193,8 +196,31 @@ class ClusterSpec:
 
 
 @dataclass
+class Continuous:
+    pause_status: 'ContinuousPauseStatus' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.pause_status: body['pause_status'] = self.pause_status.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Continuous':
+        return cls(pause_status=ContinuousPauseStatus.__members__.get(d['pause_status'], None
+                                                                      ) if 'pause_status' in d else None)
+
+
+class ContinuousPauseStatus(Enum):
+    """Indicate whether the continuous execution of the job is paused or not. Defaults to UNPAUSED."""
+
+    PAUSED = 'PAUSED'
+    UNPAUSED = 'UNPAUSED'
+
+
+@dataclass
 class CreateJob:
     access_control_list: 'List[AccessControlRequest]' = None
+    continuous: 'Continuous' = None
     email_notifications: 'JobEmailNotifications' = None
     format: 'CreateJobFormat' = None
     git_source: 'GitSource' = None
@@ -205,11 +231,13 @@ class CreateJob:
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
     timeout_seconds: int = None
+    trigger: 'TriggerSettings' = None
     webhook_notifications: 'JobWebhookNotifications' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list: body['access_control_list'] = [v for v in self.access_control_list]
+        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -220,12 +248,14 @@ class CreateJob:
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.trigger: body['trigger'] = self.trigger.as_dict()
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
         return cls(access_control_list=d.get('access_control_list', None),
+                   continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
                    email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
                    if 'email_notifications' in d else None,
                    format=CreateJobFormat.__members__.get(d['format'], None) if 'format' in d else None,
@@ -239,6 +269,7 @@ class CreateJob:
                    tasks=[JobTaskSettings.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    timeout_seconds=d.get('timeout_seconds', None),
+                   trigger=TriggerSettings.from_dict(d['trigger']) if 'trigger' in d else None,
                    webhook_notifications=JobWebhookNotifications.from_dict(d['webhook_notifications'])
                    if 'webhook_notifications' in d else None)
 
@@ -391,6 +422,28 @@ class ExportRunOutput:
 
 
 @dataclass
+class FileArrivalTriggerSettings:
+    min_time_between_trigger_seconds: int = None
+    url: str = None
+    wait_after_last_change_seconds: int = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.min_time_between_trigger_seconds:
+            body['min_time_between_trigger_seconds'] = self.min_time_between_trigger_seconds
+        if self.url: body['url'] = self.url
+        if self.wait_after_last_change_seconds:
+            body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'FileArrivalTriggerSettings':
+        return cls(min_time_between_trigger_seconds=d.get('min_time_between_trigger_seconds', None),
+                   url=d.get('url', None),
+                   wait_after_last_change_seconds=d.get('wait_after_last_change_seconds', None))
+
+
+@dataclass
 class Get:
     """Get a single job"""
 
@@ -482,6 +535,7 @@ class Job:
     job_id: int = None
     run_as_user_name: str = None
     settings: 'JobSettings' = None
+    trigger_history: 'TriggerHistory' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -490,6 +544,7 @@ class Job:
         if self.job_id: body['job_id'] = self.job_id
         if self.run_as_user_name: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
+        if self.trigger_history: body['trigger_history'] = self.trigger_history.as_dict()
         return body
 
     @classmethod
@@ -498,7 +553,9 @@ class Job:
                    creator_user_name=d.get('creator_user_name', None),
                    job_id=d.get('job_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
-                   settings=JobSettings.from_dict(d['settings']) if 'settings' in d else None)
+                   settings=JobSettings.from_dict(d['settings']) if 'settings' in d else None,
+                   trigger_history=TriggerHistory.from_dict(d['trigger_history'])
+                   if 'trigger_history' in d else None)
 
 
 @dataclass
@@ -543,6 +600,7 @@ class JobEmailNotifications:
 
 @dataclass
 class JobSettings:
+    continuous: 'Continuous' = None
     email_notifications: 'JobEmailNotifications' = None
     format: 'JobSettingsFormat' = None
     git_source: 'GitSource' = None
@@ -553,10 +611,12 @@ class JobSettings:
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
     timeout_seconds: int = None
+    trigger: 'TriggerSettings' = None
     webhook_notifications: 'JobWebhookNotifications' = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -567,12 +627,14 @@ class JobSettings:
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.trigger: body['trigger'] = self.trigger.as_dict()
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobSettings':
-        return cls(email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
+        return cls(continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
+                   email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
                    if 'email_notifications' in d else None,
                    format=JobSettingsFormat.__members__.get(d['format'], None) if 'format' in d else None,
                    git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
@@ -585,6 +647,7 @@ class JobSettings:
                    tasks=[JobTaskSettings.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    timeout_seconds=d.get('timeout_seconds', None),
+                   trigger=TriggerSettings.from_dict(d['trigger']) if 'trigger' in d else None,
                    webhook_notifications=JobWebhookNotifications.from_dict(d['webhook_notifications'])
                    if 'webhook_notifications' in d else None)
 
@@ -1026,6 +1089,7 @@ class Run:
     cleanup_duration: int = None
     cluster_instance: 'ClusterInstance' = None
     cluster_spec: 'ClusterSpec' = None
+    continuous: 'Continuous' = None
     creator_user_name: str = None
     end_time: int = None
     execution_duration: int = None
@@ -1054,6 +1118,7 @@ class Run:
         if self.cleanup_duration: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
+        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
         if self.end_time: body['end_time'] = self.end_time
         if self.execution_duration: body['execution_duration'] = self.execution_duration
@@ -1084,6 +1149,7 @@ class Run:
                    cluster_instance=ClusterInstance.from_dict(d['cluster_instance'])
                    if 'cluster_instance' in d else None,
                    cluster_spec=ClusterSpec.from_dict(d['cluster_spec']) if 'cluster_spec' in d else None,
+                   continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
@@ -1825,9 +1891,78 @@ class TaskDependenciesItem:
         return cls(task_key=d.get('task_key', None))
 
 
+@dataclass
+class TriggerEvaluation:
+    description: str = None
+    run_id: int = None
+    timestamp: int = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description: body['description'] = self.description
+        if self.run_id: body['run_id'] = self.run_id
+        if self.timestamp: body['timestamp'] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TriggerEvaluation':
+        return cls(description=d.get('description', None),
+                   run_id=d.get('run_id', None),
+                   timestamp=d.get('timestamp', None))
+
+
+@dataclass
+class TriggerHistory:
+    last_failed: 'TriggerEvaluation' = None
+    last_not_triggered: 'TriggerEvaluation' = None
+    last_triggered: 'TriggerEvaluation' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.last_failed: body['last_failed'] = self.last_failed.as_dict()
+        if self.last_not_triggered: body['last_not_triggered'] = self.last_not_triggered.as_dict()
+        if self.last_triggered: body['last_triggered'] = self.last_triggered.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TriggerHistory':
+        return cls(last_failed=TriggerEvaluation.from_dict(d['last_failed']) if 'last_failed' in d else None,
+                   last_not_triggered=TriggerEvaluation.from_dict(d['last_not_triggered'])
+                   if 'last_not_triggered' in d else None,
+                   last_triggered=TriggerEvaluation.from_dict(d['last_triggered'])
+                   if 'last_triggered' in d else None)
+
+
+@dataclass
+class TriggerSettings:
+    file_arrival: 'FileArrivalTriggerSettings' = None
+    pause_status: 'TriggerSettingsPauseStatus' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.file_arrival: body['file_arrival'] = self.file_arrival.as_dict()
+        if self.pause_status: body['pause_status'] = self.pause_status.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TriggerSettings':
+        return cls(file_arrival=FileArrivalTriggerSettings.from_dict(d['file_arrival'])
+                   if 'file_arrival' in d else None,
+                   pause_status=TriggerSettingsPauseStatus.__members__.get(d['pause_status'], None)
+                   if 'pause_status' in d else None)
+
+
+class TriggerSettingsPauseStatus(Enum):
+    """Whether this trigger is paused or not."""
+
+    PAUSED = 'PAUSED'
+    UNPAUSED = 'UNPAUSED'
+
+
 class TriggerType(Enum):
     """This describes an enum"""
 
+    FILE_ARRIVAL = 'FILE_ARRIVAL'
     ONE_TIME = 'ONE_TIME'
     PERIODIC = 'PERIODIC'
     RETRY = 'RETRY'
@@ -1959,6 +2094,7 @@ class JobsAPI:
     def create(self,
                *,
                access_control_list: List[AccessControlRequest] = None,
+               continuous: Continuous = None,
                email_notifications: JobEmailNotifications = None,
                format: CreateJobFormat = None,
                git_source: GitSource = None,
@@ -1969,6 +2105,7 @@ class JobsAPI:
                tags: Dict[str, str] = None,
                tasks: List[JobTaskSettings] = None,
                timeout_seconds: int = None,
+               trigger: TriggerSettings = None,
                webhook_notifications: JobWebhookNotifications = None,
                **kwargs) -> CreateResponse:
         """Create a new job.
@@ -1977,6 +2114,7 @@ class JobsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateJob(access_control_list=access_control_list,
+                                continuous=continuous,
                                 email_notifications=email_notifications,
                                 format=format,
                                 git_source=git_source,
@@ -1987,6 +2125,7 @@ class JobsAPI:
                                 tags=tags,
                                 tasks=tasks,
                                 timeout_seconds=timeout_seconds,
+                                trigger=trigger,
                                 webhook_notifications=webhook_notifications)
         body = request.as_dict()
 

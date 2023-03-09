@@ -1,15 +1,14 @@
+import base64
 import json
 import os
-import typing
-import threading
-import base64
-import time
 import random
-
+import threading
+import time
+import typing
 from collections import namedtuple
-from databricks.sdk.service import commands
-from databricks.sdk.service import clusters
+
 from databricks.sdk import errors
+from databricks.sdk.service import clusters, commands
 
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
