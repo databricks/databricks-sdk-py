@@ -1,6 +1,8 @@
 {{range .Packages}}
 import databricks.sdk.service.{{.Name}} as {{.Name}}{{end}}
 import databricks.sdk.client as client
+import databricks.sdk.mixins.dbfs as dbfs_mixin
+import databricks.sdk.mixins.compute as compute_mixin
 
 {{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
   "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"
@@ -11,11 +13,11 @@ class WorkspaceClient:
         self.config = client.Config({{range $args}}{{.}}={{.}}, {{end}}**kwargs)
         self.api_client = client.ApiClient(self.config)
         {{- range .Services}}{{if not .IsAccounts}}
-        self.{{.SnakeName}} = {{.Package.Name}}.{{.Name}}API(self.api_client){{end -}}{{end}}
+        self.{{.SnakeName}} = {{if eq .SnakeName "dbfs"}}dbfs_mixin.DbfsExt{{else if eq .SnakeName "clusters"}}compute_mixin.ClustersExt{{else}}{{.Package.Name}}.{{.Name}}API{{end}}(self.api_client){{end -}}{{end}}
 
 class AccountClient:
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}}, **kwargs):
         self.config = client.Config({{range $args}}{{.}}={{.}}, {{end}}**kwargs)
         self.api_client = client.ApiClient(self.config)
         {{- range .Services}}{{if .IsAccounts}}
-        self.{{.SnakeName}} = {{if eq .SnakeName "dbfs"}}dbfs_mixin.DbfsExt{{else}}{{.Package.Name}}.{{.Name}}API{{end}}(self.api_client){{end -}}{{end}}
+        self.{{.SnakeName}} = {{.Package.Name}}.{{.Name}}API(self.api_client){{end -}}{{end}}

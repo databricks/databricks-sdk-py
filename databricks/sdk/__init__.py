@@ -1,4 +1,5 @@
 import databricks.sdk.client as client
+import databricks.sdk.mixins.compute as compute_mixin
 import databricks.sdk.service.billing as billing
 import databricks.sdk.service.clusterpolicies as clusterpolicies
 import databricks.sdk.service.clusters as clusters
@@ -66,7 +67,7 @@ class WorkspaceClient:
         self.alerts = sql.AlertsAPI(self.api_client)
         self.catalogs = unitycatalog.CatalogsAPI(self.api_client)
         self.cluster_policies = clusterpolicies.ClusterPoliciesAPI(self.api_client)
-        self.clusters = clusters.ClustersAPI(self.api_client)
+        self.clusters = compute_mixin.ClustersExt(self.api_client)
         self.command_execution = commands.CommandExecutionAPI(self.api_client)
         self.current_user = scim.CurrentUserAPI(self.api_client)
         self.dashboards = sql.DashboardsAPI(self.api_client)
