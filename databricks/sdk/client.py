@@ -340,8 +340,13 @@ class Config:
         except KeyError:
             raise DatabricksError(f"Cannot find Azure {env} Environment")
 
+    @property
+    def hostname(self) -> str:
+        url = urllib.parse.urlparse(self.host)
+        return url.hostname
+
     def auth(self) -> DatabricksAuth:
-        self._synchronized(self._resolve)
+        self.load()
         if self.credentials:
             return self.credentials
         self._lock.acquire()
@@ -352,6 +357,9 @@ class Config:
             return self.credentials
         finally:
             self._lock.release()
+
+    def load(self):
+        self._synchronized(self._resolve)
 
     def to_dict(self) -> Dict[str, any]:
         return {k: v for k, v in dataclasses.asdict(self).items() if v}
@@ -365,7 +373,11 @@ class Config:
         if self.host:
             # fix url to remove trailing slash
             o = urllib.parse.urlparse(self.host)
-            self.host = f"{o.scheme}://{o.hostname}"
+            if not o.hostname:
+                # only hostname is specified
+                self.host = f"https://{self.host}"
+            else:
+                self.host = f"{o.scheme}://{o.hostname}"
         self._resolved = True
 
     def _synchronized(self, cb):

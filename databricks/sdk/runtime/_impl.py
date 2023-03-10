@@ -123,48 +123,17 @@ class _RemoteDbUtils:
 
         self.fs = _FsUtil(self)
 
-    def _wait_for_cluster_to(self, target: clusters.State, timeout: int = 15):
-        started = time.time()
-        failure_states = (clusters.State.ERROR, clusters.State.TERMINATED, )
-        status_message = 'polling...'
-        attempt = 1
-        while (started + (timeout * 60)) > time.time():
-            poll = self._api.clusters.get(cluster_id=self._cluster_id, wait=False)
-            status = poll.state
-            status_message = poll.state_message
-            if status == target:
-                return poll
-            if status in failure_states:
-                msg = f'failed to reach {target}, got {status}: {status_message}'
-                raise errors.OperationFailed(msg)
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise errors.OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
-
     def _running_command_context(self) -> commands.ContextStatusResponse:
         if self._ctx:
             return self._ctx
         with self._lock:
             if self._ctx:
                 return self._ctx
-            state = clusters.State
-            info = self._api.clusters.get(self._cluster_id)
-            if info.state == state.TERMINATED:
-                self._api.clusters.start(self._cluster_id, wait=True)
-            elif info.state == state.TERMINATING:
-                self._wait_for_cluster_to(state.TERMINATED)
-                self._api.clusters.start(self._cluster_id, wait=True)
-            elif info.state in (state.PENDING, state.RESIZING, state.RESTARTING):
-                self._wait_for_cluster_to(state.RUNNING)
-            elif info.state in (state.ERROR, state.UNKNOWN):
-                raise RuntimeError(f'Cluster {info.cluster_name} is {info.state}: {info.state_message}')
-            self._ctx = self._api.command_execution.create(cluster_id=self._cluster_id,
-                                                           language=commands.Language.python,
-                                                           wait=True)
+            self._api.clusters.ensure_cluster_is_running(self._cluster_id)
+            self._ctx = self._api.command_execution.create(
+                cluster_id=self._cluster_id,
+                language=commands.Language.python,
+                wait=True)
         return self._ctx
 
     def _proxy(self, util: str, method: str) -> '_ProxyCall':
