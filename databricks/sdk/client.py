@@ -10,7 +10,7 @@ import subprocess
 import threading
 import urllib.parse
 from datetime import datetime
-from typing import Callable, Dict, Optional, Type
+from typing import Callable, Dict, Optional, Type, Iterable
 
 import requests
 import requests.auth
@@ -81,7 +81,7 @@ def auth(name: str, require: list[str]):
     return inner
 
 
-@auth('basic', ['username', 'password'])
+@auth('basic', ['host', 'username', 'password'])
 def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
     static_credentials = {'Authorization': f'Basic {encoded}'}
@@ -92,7 +92,7 @@ def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
     return inner
 
 
-@auth('pat', ['token'])
+@auth('pat', ['host', 'token'])
 def pat_auth(cfg: 'Config') -> Optional[RequestVisitor]:
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
@@ -282,58 +282,61 @@ class Config:
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
 
-    _inner = {}
     _lock = threading.Lock()
     _resolved = False
 
-    def __new__(cls: Type['Config']) -> 'Config':
-        if not hasattr(cls, '_attributes'):
-            # Python 3.7 compatibility: getting type hints require extra hop, as described in
-            # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
-            # https://docs.python.org/3/howto/annotations.html
-            anno = cls.__dict__['__annotations__']
-            attrs = []
-            for name, v in cls.__dict__.items():
-                if type(v) != ConfigAttribute:
-                    continue
-                v.name = name
-                v.transform = anno.get(name, str)
-                attrs.append(v)
-            cls._attributes = attrs
-        return super().__new__(cls)
-
     def __init__(self, *, credentials: CredentialsProvider = None, loaders=None, **kwargs):
+        self._inner = {}
         #self.credentials = credentials if credentials else DefaultAuth(self) TODO: change
-        for attr in self._attributes:
+        for attr in self.attributes():
             if attr.name not in kwargs:
                 continue
             # make sure that args are of correct type
             self._inner[attr.name] = attr.transform(kwargs[attr.name])
-        loaders = loaders if loaders else [self._load_from_env, self._known_file_config_loader]
-        for loader in loaders:
-            loader(self)
+        self._load_from_env()
+        self._known_file_config_loader()
 
-    @staticmethod
-    def _load_from_env(cfg: 'Config'):
+    @classmethod
+    def attributes(cls) -> Iterable[ConfigAttribute]:
+        if hasattr(cls, '_attributes'):
+            return cls._attributes
+        logger.debug('loading Config.attributes()')
+        # Python 3.7 compatibility: getting type hints require extra hop, as described in
+        # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
+        # https://docs.python.org/3/howto/annotations.html
+        anno = cls.__dict__['__annotations__']
+        attrs = []
+        for name, v in cls.__dict__.items():
+            if type(v) != ConfigAttribute:
+                continue
+            v.name = name
+            v.transform = anno.get(name, str)
+            attrs.append(v)
+        cls._attributes = attrs
+        return cls._attributes
+
+    def _load_from_env(self):
         found = False
-        for attr in cfg._attributes:
+        for attr in Config.attributes():
             if not attr.env:
                 continue
-            value = os.getenv(attr.env)
+            if attr.name in self._inner:
+                continue
+            value = os.environ.get(attr.env)
             if not value:
                 continue
-            cfg._inner[attr.name] = value
+            logger.debug(f'ENV: {attr.name} = {value}') # FIXME: remove
+            self._inner[attr.name] = value
             found = True
         if found:
             logger.debug('Loaded from environment')
 
-    @staticmethod
-    def _known_file_config_loader(cfg: 'Config'):
-        if not cfg.profile and (cfg.is_any_auth_configured or cfg.is_azure):
+    def _known_file_config_loader(self):
+        if not self.profile and (self.is_any_auth_configured or self.is_azure):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
             return
-        config_file = cfg.config_file
+        config_file = self.config_file
         if not config_file:
             config_file = "~/.databrickscfg"
         config_path = pathlib.Path(config_file).expanduser()
@@ -342,8 +345,8 @@ class Config:
             return
         ini_file = configparser.ConfigParser()
         ini_file.read(config_path)
-        profile = cfg.profile
-        has_explicit_profile = cfg.profile is not None
+        profile = self.profile
+        has_explicit_profile = self.profile is not None
         if not has_explicit_profile:
             profile = "DEFAULT"
         if not ini_file.has_section(profile):
@@ -351,13 +354,13 @@ class Config:
             return
         logger.info("loading %s profile from %s", profile, config_path)
         for k, v in ini_file.items(profile):
-            cfg.__setattr__(k, v)
-        cfg.profile = None
-        cfg.config_file = None
+            self.__setattr__(k, v)
+        self.profile = None
+        self.config_file = None
 
     @property
     def is_any_auth_configured(self) -> bool:
-        for attr in self._attributes:
+        for attr in Config.attributes():
             if not attr.auth:
                 continue
             value = self._inner.get(attr.name, None)
@@ -369,14 +372,14 @@ class Config:
         buf = []
         attrs_used = []
         envs_used = []
-        for attr in self._attributes:
+        for attr in Config.attributes():
+            if attr.env and os.environ.get(attr.env):
+                envs_used.append(attr.env)
             value = getattr(self, attr.name)
             if not value:
                 continue
             safe = '***' if attr.sensitive else f'{value}'
             attrs_used.append(f'{attr.name}={safe}')
-            if attr.env:
-                envs_used.append(attr.env)
         if attrs_used:
             buf.append(f'Config: {", ".join(attrs_used)}')
         if envs_used:
@@ -397,6 +400,8 @@ class Config:
 
     @property
     def is_account_client(self) -> bool:
+        if not self.host:
+            return False
         return "https://accounts." in self.host
 
     @property
