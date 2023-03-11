@@ -1,7 +1,7 @@
 import base64
 import configparser
-import dataclasses
 import functools
+import json
 import logging
 import os
 import pathlib
@@ -9,12 +9,8 @@ import platform
 import subprocess
 import threading
 import urllib.parse
-from abc import ABC, abstractmethod
-from os import getenv
-import subprocess
-import json
 from datetime import datetime
-from typing import Type, Dict, List, Iterator, Optional, Callable
+from typing import Callable, Dict, Optional, Type
 
 import requests
 import requests.auth
@@ -29,7 +25,9 @@ logger = logging.getLogger(__name__)
 
 class DatabricksError(Exception):
 
-    def __init__(self, message: str = None, *,
+    def __init__(self,
+                 message: str = None,
+                 *,
                  error_code: str = None,
                  detail: str = None,
                  status: str = None,
@@ -61,21 +59,25 @@ class DatabricksError(Exception):
 
 from collections.abc import Callable
 
-RequestVisitor = Callable[[], dict[str,str]]
+RequestVisitor = Callable[[], dict[str, str]]
 CredentialsProvider = Callable[['Config'], Optional[RequestVisitor]]
 
 
 def auth(name: str, require: list[str]):
+
     def inner(func: CredentialsProvider):
+
         @functools.wraps(func)
         def wrapper(cfg: 'Config') -> Optional[RequestVisitor]:
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
+
         # TODO: make a proper Abstract Base Class, so that custom auth can be supplied here
         wrapper.auth_type = name
         return wrapper
+
     return inner
 
 
@@ -84,8 +86,9 @@ def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
     static_credentials = {'Authorization': f'Basic {encoded}'}
 
-    def inner() -> dict[str,str]:
+    def inner() -> dict[str, str]:
         return static_credentials
+
     return inner
 
 
@@ -93,8 +96,9 @@ def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
 def pat_auth(cfg: 'Config') -> Optional[RequestVisitor]:
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
-    def inner() -> dict[str,str]:
+    def inner() -> dict[str, str]:
         return static_credentials
+
     return inner
 
 
@@ -104,18 +108,19 @@ def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
     if not resp.ok:
         return None
     token_source = ClientCredentials(client_id=cfg.client_id,
-                                      client_secret=cfg.client_secret,
-                                      token_url=resp.json()["token_endpoint"],
-                                      scopes=["all-apis"],
-                                      use_header=True)
+                                     client_secret=cfg.client_secret,
+                                     token_url=resp.json()["token_endpoint"],
+                                     scopes=["all-apis"],
+                                     use_header=True)
 
-    def inner() -> dict[str,str]:
+    def inner() -> dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+
     return inner
 
 
-def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str],TokenSource]):
+def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenSource]):
     if cfg.host:
         return
     arm = cfg.arm_environment.resource_manager_endpoint
@@ -129,6 +134,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str],TokenSo
 
 @auth('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
 def azure_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
+
     def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
         return ClientCredentials(client_id=cfg.azure_client_id,
@@ -142,7 +148,7 @@ def azure_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
     inner = token_source_for(cfg.effective_azure_login_app_id)
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
-    def refreshed_headers() -> dict[str,str]:
+    def refreshed_headers() -> dict[str, str]:
         headers = {
             'Authorization': f"Bearer {inner.token().access_token}",
             'X-Databricks-Azure-SP-Management-Token': cloud.token().access_token,
@@ -150,10 +156,12 @@ def azure_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
         if cfg.azure_workspace_resource_id:
             headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
         return headers
+
     return refreshed_headers
 
 
 class AzureCliTokenSource(Refreshable):
+
     def __init__(self, resource: str):
         super().__init__()
         self.resource = resource
@@ -167,11 +175,10 @@ class AzureCliTokenSource(Refreshable):
             raise ValueError("Cannot unmarshal CLI result: {}".format(e))
         expires_on = datetime.strptime(it["expiresOn"], "%Y-%m-%d %H:%M:%S.%f")
 
-        return Token(
-            access_token=it["accessToken"],
-            refresh_token=it.get('refreshToken', None),
-            token_type=it["tokenType"],
-            expiry=expires_on)
+        return Token(access_token=it["accessToken"],
+                     refresh_token=it.get('refreshToken', None),
+                     token_type=it["tokenType"],
+                     expiry=expires_on)
 
 
 @auth('azure-cli', ['is_azure'])
@@ -179,7 +186,7 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
     try:
         token_source.token()
-    except Exception as e:
+    except Exception:
         '''if err != nil {
             if strings.Contains(err.Error(), "No subscription found") {
                 // auth is not configured
@@ -197,9 +204,10 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
 
-    def inner() -> dict[str,str]:
+    def inner() -> dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+
     return inner
 
 
@@ -294,7 +302,7 @@ class Config:
             cls._attributes = attrs
         return super().__new__(cls)
 
-    def __init__(self, *, credentials: CredentialsProvider = None, loaders = None, **kwargs):
+    def __init__(self, *, credentials: CredentialsProvider = None, loaders=None, **kwargs):
         #self.credentials = credentials if credentials else DefaultAuth(self) TODO: change
         for attr in self._attributes:
             if attr.name not in kwargs:
@@ -466,7 +474,7 @@ class ApiClient(requests.Session):
             status_forcelist=[429],
             method_whitelist=set({"POST"}) | set(Retry.DEFAULT_METHOD_WHITELIST),
             respect_retry_after_header=True,
-            raise_on_status=False,  # return original response when retries have been exhausted
+            raise_on_status=False, # return original response when retries have been exhausted
         )
         self.auth = self._cfg.auth()
         py_version = platform.python_version()
