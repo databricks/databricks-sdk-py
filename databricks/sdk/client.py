@@ -1,6 +1,9 @@
+import base64
 import configparser
 import dataclasses
+import functools
 import logging
+import os
 import pathlib
 import platform
 import subprocess
@@ -8,7 +11,10 @@ import threading
 import urllib.parse
 from abc import ABC, abstractmethod
 from os import getenv
-from typing import Dict, List
+import subprocess
+import json
+from datetime import datetime
+from typing import Type, Dict, List, Iterator, Optional, Callable
 
 import requests
 import requests.auth
@@ -16,20 +22,20 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
-from .oauth import ClientCredentials, Refreshable, Token
+from .oauth import ClientCredentials, Refreshable, Token, TokenSource
 
 logger = logging.getLogger(__name__)
 
 
 class DatabricksError(Exception):
 
-    def __init__(self,
-                 message: str = None,
+    def __init__(self, message: str = None, *,
                  error_code: str = None,
                  detail: str = None,
                  status: str = None,
                  scimType: str = None,
                  error: str = None,
+                 cfg: 'Config' = None,
                  **kwargs):
         if not message and error:
             # API 1.2 has different response format, let's adapt
@@ -44,110 +50,86 @@ class DatabricksError(Exception):
             # add more context from SCIM responses
             message = f"{scimType} {message}".strip(" ")
             error_code = f"SCIM_{status}"
+        if cfg:
+            debug_string = cfg.debug_string()
+            if debug_string:
+                message = f'{message}. {debug_string}'
         super().__init__(message if message else error)
         self.error_code = error_code
         self.kwargs = kwargs
 
 
-class DatabricksAuth(ABC, requests.auth.AuthBase):
+from collections.abc import Callable
 
-    @abstractmethod
-    def is_configured(self) -> bool:
-        pass
-
-    @property
-    @abstractmethod
-    def name(self):
-        pass
+RequestVisitor = Callable[[], dict[str,str]]
+CredentialsProvider = Callable[['Config'], Optional[RequestVisitor]]
 
 
-class Basic(DatabricksAuth, requests.auth.HTTPBasicAuth):
-
-    def __init__(self, cfg: 'Config'):
-        super().__init__(cfg.username, cfg.password)
-
-    @property
-    def name(self):
-        return "basic"
-
-    def is_configured(self) -> bool:
-        return self.username and self.password
-
-
-class Pat(DatabricksAuth):
-
-    def __init__(self, cfg: 'Config'):
-        self.token = cfg.token
-
-    @property
-    def name(self):
-        return "pat"
-
-    def is_configured(self) -> bool:
-        return self.token is not None
-
-    def __call__(self, r):
-        r.headers["Authorization"] = f"Bearer {self.token}"
-        return r
+def auth(name: str, require: list[str]):
+    def inner(func: CredentialsProvider):
+        @functools.wraps(func)
+        def wrapper(cfg: 'Config') -> Optional[RequestVisitor]:
+            for attr in require:
+                if not getattr(cfg, attr):
+                    return None
+            return func(cfg)
+        # TODO: make a proper Abstract Base Class, so that custom auth can be supplied here
+        wrapper.auth_type = name
+        return wrapper
+    return inner
 
 
-class OAuthM2M(DatabricksAuth):
-    src: ClientCredentials = None
+@auth('basic', ['username', 'password'])
+def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
+    encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
+    static_credentials = {'Authorization': f'Basic {encoded}'}
 
-    def __init__(self, cfg: 'Config'):
-        if not cfg.is_aws:
-            return
-        if not cfg.host or not cfg.client_id or not cfg.client_secret:
-            return
-        resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
-        if not resp.ok:
-            return
-        self.src = ClientCredentials(client_id=cfg.client_id,
-                                     client_secret=cfg.client_secret,
-                                     token_url=resp.json()["token_endpoint"],
-                                     scopes=["all-apis"],
-                                     use_header=True)
-
-    @property
-    def name(self):
-        return "oauth-m2m"
-
-    def is_configured(self) -> bool:
-        return self.src is not None
-
-    def __call__(self, r):
-        token = self.src.token()
-        r.headers["Authorization"] = f"{token.token_type} {token.access_token}"
-        return r
+    def inner() -> dict[str,str]:
+        return static_credentials
+    return inner
 
 
-class AzureServicePrincipal(DatabricksAuth):
-    inner: ClientCredentials = None
-    cloud: ClientCredentials = None
+@auth('pat', ['token'])
+def pat_auth(cfg: 'Config') -> Optional[RequestVisitor]:
+    static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
-    def __init__(self, cfg: 'Config'):
-        if not cfg.is_azure:
-            return
-        if not cfg.azure_client_id or not cfg.azure_client_secret or not cfg.azure_tenant_id or not cfg.azure_workspace_resource_id:
-            return
-        if not cfg.host:
-            cfg.host = self._resolve_host(cfg)
-        logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
-        self.resource_id = cfg.azure_workspace_resource_id
-        self.inner = self.token_source_for(cfg, ARM_DATABRICKS_RESOURCE_ID)
-        self.cloud = self.token_source_for(cfg, cfg.arm_environment.service_management_endpoint)
+    def inner() -> dict[str,str]:
+        return static_credentials
+    return inner
 
-    def _resolve_host(self, cfg) -> str:
-        arm = cfg.arm_environment.resource_manager_endpoint
-        token = self.token_source_for(cfg, arm).token()
-        resp = requests.get(f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
-                            headers={"Authorization": f"Bearer {token.access_token}"})
-        if not resp.ok:
-            raise DatabricksError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
-        return f"https://{resp.json()['properties']['workspaceUrl']}"
 
-    @staticmethod
-    def token_source_for(cfg: 'Config', resource: str):
+@auth('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
+def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
+    resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
+    if not resp.ok:
+        return None
+    token_source = ClientCredentials(client_id=cfg.client_id,
+                                      client_secret=cfg.client_secret,
+                                      token_url=resp.json()["token_endpoint"],
+                                      scopes=["all-apis"],
+                                      use_header=True)
+
+    def inner() -> dict[str,str]:
+        token = token_source.token()
+        return {'Authorization': f'{token.token_type} {token.access_token}'}
+    return inner
+
+
+def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str],TokenSource]):
+    if cfg.host:
+        return
+    arm = cfg.arm_environment.resource_manager_endpoint
+    token = token_source_for(arm).token()
+    resp = requests.get(f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
+                        headers={"Authorization": f"Bearer {token.access_token}"})
+    if not resp.ok:
+        raise DatabricksError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
+    cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
+
+
+@auth('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+def azure_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
+    def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
         return ClientCredentials(client_id=cfg.azure_client_id,
                                  client_secret=cfg.azure_client_secret,
@@ -155,166 +137,243 @@ class AzureServicePrincipal(DatabricksAuth):
                                  endpoint_params={"resource": resource},
                                  use_params=True)
 
-    @property
-    def name(self):
-        return "azure-client-secret"
+    _ensure_host_present(cfg, token_source_for)
+    logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
+    inner = token_source_for(cfg.effective_azure_login_app_id)
+    cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
-    def is_configured(self) -> bool:
-        return self.inner is not None and self.cloud is not None
+    def refreshed_headers() -> dict[str,str]:
+        headers = {
+            'Authorization': f"Bearer {inner.token().access_token}",
+            'X-Databricks-Azure-SP-Management-Token': cloud.token().access_token,
+        }
+        if cfg.azure_workspace_resource_id:
+            headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
+        return headers
+    return refreshed_headers
 
-    def __call__(self, r):
-        r.headers["X-Databricks-Azure-Workspace-Resource-Id"] = self.resource_id
-        r.headers["X-Databricks-Azure-SP-Management-Token"] = self.cloud.token().access_token
-        r.headers["Authorization"] = f"Bearer {self.inner.token().access_token}"
-        return r
 
-
-class AzureCli(DatabricksAuth, Refreshable):
-
-    def __init__(self, cfg: 'Config'):
-        pass
-
-    def is_configured(self) -> bool:
-        pass
-
-    @property
-    def name(self):
-        return "azure-cli"
+class AzureCliTokenSource(Refreshable):
+    def __init__(self, resource: str):
+        super().__init__()
+        self.resource = resource
 
     def refresh(self) -> Token:
-        result = subprocess.run(
-            ["az", "account", "get-access-token", "--resource", self.resource, "--output", "json", ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True)
-        print(result.returncode, result.stdout, result.stderr)
+        cmd = ["az", "account", "get-access-token", "--resource", self.resource, "--output", "json"]
+        out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        try:
+            it = json.loads(out.decode())
+        except ValueError as e:
+            raise ValueError("Cannot unmarshal CLI result: {}".format(e))
+        expires_on = datetime.strptime(it["expiresOn"], "%Y-%m-%d %H:%M:%S.%f")
 
-    def __call__(self, r):
-        pass
-
-
-class DefaultAuth(DatabricksAuth):
-    classes: List[DatabricksAuth] = [Pat, Basic, OAuthM2M, AzureServicePrincipal]
-    selected: DatabricksAuth = None
-
-    def __init__(self, cfg: 'Config'):
-        candidates = []
-        for provider in self.classes:
-            instance = provider(cfg)
-            if instance.is_configured():
-                candidates.append(instance)
-        if not candidates:
-            raise DatabricksError("No auth configured")
-        if len(candidates) > 1:
-            names = " and ".join(sorted([c.name for c in candidates]))
-            raise DatabricksError(f"More than one auth configured: {names}")
-        self.selected = candidates[0]
-
-    def is_configured(self) -> bool:
-        return self.selected is not None
-
-    @property
-    def name(self):
-        return self.selected.name
-
-    def __call__(self, r):
-        return self.selected.__call__(r)
+        return Token(
+            access_token=it["accessToken"],
+            refresh_token=it.get('refreshToken', None),
+            token_type=it["tokenType"],
+            expiry=expires_on)
 
 
-def env_loader(cfg: 'Config'):
-    if not cfg.host: cfg.host = getenv("DATABRICKS_HOST")
-    if not cfg.account_id: cfg.account_id = getenv("DATABRICKS_ACCOUNT_ID")
-    if not cfg.username: cfg.username = getenv("DATABRICKS_USERNAME")
-    if not cfg.password: cfg.password = getenv("DATABRICKS_PASSWORD")
-    if not cfg.client_id: cfg.client_id = getenv("DATABRICKS_CLIENT_ID")
-    if not cfg.client_secret: cfg.client_secret = getenv("DATABRICKS_CLIENT_SECRET")
-    if not cfg.token: cfg.token = getenv("DATABRICKS_TOKEN")
-    if not cfg.profile: cfg.profile = getenv("DATABRICKS_CONFIG_PROFILE")
-    if not cfg.config_file: cfg.config_file = getenv("DATABRICKS_CONFIG_FILE", "~/.databrickscfg")
-    if not cfg.google_service_account:
-        cfg.google_service_account = getenv("DATABRICKS_GOOGLE_SERVICE_ACCOUNT")
-    if not cfg.google_credentials: cfg.google_credentials = getenv("GOOGLE_CREDENTIALS")
-    if not cfg.azure_workspace_resource_id:
-        cfg.azure_workspace_resource_id = getenv("DATABRICKS_AZURE_RESOURCE_ID")
-    if not cfg.azure_use_msi: cfg.azure_use_msi = getenv("ARM_USE_MSI", False)
-    if not cfg.azure_client_secret: cfg.azure_client_secret = getenv("ARM_CLIENT_SECRET")
-    if not cfg.azure_client_id: cfg.azure_client_id = getenv("ARM_CLIENT_ID")
-    if not cfg.azure_tenant_id: cfg.azure_tenant_id = getenv("ARM_TENANT_ID")
-    if not cfg.azure_environment: cfg.azure_environment = getenv("ARM_ENVIRONMENT")
-    if not cfg.auth_type: cfg.auth_type = getenv("DATABRICKS_AUTH_TYPE")
-    if not cfg.debug_truncate_bytes: cfg.debug_truncate_bytes = getenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", 96)
-    if not cfg.debug_headers: cfg.debug_headers = getenv("DATABRICKS_DEBUG_HEADERS", False)
-    if not cfg.rate_limit: cfg.rate_limit = getenv("DATABRICKS_RATE_LIMIT", 15)
+@auth('azure-cli', ['is_azure'])
+def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
+    token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
+    try:
+        token_source.token()
+    except Exception as e:
+        '''if err != nil {
+            if strings.Contains(err.Error(), "No subscription found") {
+                // auth is not configured
+                return nil, nil
+            }
+            if strings.Contains(err.Error(), "executable file not found") {
+                logger.Debugf(ctx, "Most likely Azure CLI is not installed. "+
+                    "See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
+                return nil, nil
+            }
+            return nil, err
+        }'''
+        return None
+
+    _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
+    logger.info("Using Azure CLI authentication with AAD tokens")
+
+    def inner() -> dict[str,str]:
+        token = token_source.token()
+        return {'Authorization': f'{token.token_type} {token.access_token}'}
+    return inner
 
 
-def known_file_config_loader(cfg: 'Config'):
-    config_file = cfg.config_file
-    if not config_file:
-        config_file = "~/.databrickscfg"
-    config_path = pathlib.Path(config_file).expanduser()
-    if not config_path.exists():
-        logger.debug("%s does not exist", config_path)
-        return
-    ini_file = configparser.ConfigParser()
-    ini_file.read(config_path)
-    profile = cfg.profile
-    has_explicit_profile = cfg.profile != ""
-    if not has_explicit_profile:
-        profile = "DEFAULT"
-    if not ini_file.has_section(profile):
-        logger.debug("%s has no %s profile configured", config_path, profile)
-        return
-    logger.info("loading %s profile from %s", profile, config_path)
-    for k, v in ini_file.items(profile):
-        cfg.__setattr__(k, v) # TODO: fix setting of ints and bools
-    cfg.profile = None
-    cfg.config_file = None
+def default_auth(cfg: 'Config') -> RequestVisitor:
+    auth_providers = [pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli]
+    for provider in auth_providers:
+        if cfg.auth_type and provider.auth_type != cfg.auth_type:
+            # ignore other auth types if one is explicitly enforced
+            logger.debug(f"Ignoring {provider.auth_type} auth, because {cfg.auth_type} is preferred")
+            continue
+        logger.debug(f'Attempting to configure auth: {provider.auth_type}')
+        visitor = provider(cfg)
+        if not visitor:
+            continue
+        cfg.auth_type = provider.auth_type
+        return provider
+    raise DatabricksError("default auth: cannot configure default credentials", cfg=cfg)
 
 
-@dataclasses.dataclass
+default_auth.auth_type = 'default'
+
+
+class ConfigAttribute:
+    # name and transform are discovered from Config.__new__
+    name: str = None
+    transform: type = str
+
+    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+        self.env = env
+        self.auth = auth
+        self.sensitive = sensitive
+
+    def __get__(self, cfg: 'Config', owner):
+        if not cfg:
+            return None
+        return cfg._inner.get(self.name, None)
+
+    def __set__(self, cfg: 'Config', value: any):
+        cfg._inner[self.name] = self.transform(value)
+
+    def __repr__(self) -> str:
+        return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
+
+
 class Config:
-    host: str = None
+    credentials: CredentialsProvider = None
 
-    credentials: DatabricksAuth = None # TODO: this API is not final.
+    host = ConfigAttribute(env='DATABRICKS_HOST')
+    account_id = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
+    token = ConfigAttribute(env='DATABRICKS_TOKEN', auth='pat', sensitive=True)
+    username = ConfigAttribute(env='DATABRICKS_USERNAME', auth='basic')
+    password = ConfigAttribute(env='DATABRICKS_PASSWORD', auth='basic', sensitive=True)
+    client_id = ConfigAttribute(env='DATABRICKS_CLIENT_ID', auth='oauth')
+    client_secret = ConfigAttribute(env='DATABRICKS_CLIENT_SECRET', auth='oauth', sensitive=True)
+    profile = ConfigAttribute(env='DATABRICKS_CONFIG_PROFILE')
+    config_file = ConfigAttribute(env='DATABRICKS_CONFIG_FILE')
+    google_service_account = ConfigAttribute(env='DATABRICKS_GOOGLE_SERVICE_ACCOUNT', auth='google')
+    google_credentials = ConfigAttribute(env='GOOGLE_CREDENTIALS', auth='google', sensitive=True)
+    azure_workspace_resource_id = ConfigAttribute(env='DATABRICKS_AZURE_RESOURCE_ID', auth='azure')
+    azure_use_msi: bool = ConfigAttribute(env='ARM_USE_MSI', auth='azure')
+    azure_client_secret = ConfigAttribute(env='ARM_CLIENT_SECRET', auth='azure', sensitive=True)
+    azure_client_id = ConfigAttribute(env='ARM_CLIENT_ID', auth='azure')
+    azure_tenant_id = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
+    azure_environment = ConfigAttribute(env='ARM_ENVIRONMENT')
+    azure_login_app_id = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
+    bricks_cli_path = ConfigAttribute(env='BRICKS_CLI_PATH')
+    auth_type = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
+    skip_verify: bool = ConfigAttribute()
+    http_timeout_seconds: int = ConfigAttribute()
+    debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
+    debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
+    rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
+    retry_timeout_seconds: int = ConfigAttribute()
 
-    # Databricks Account ID for Accounts API. This field is used in dependencies.
-    account_id: str = None
-    username: str = None
-    password: str = None
-    client_id: str = None
-    client_secret: str = None
-    token: str = None
-
-    # Connection profile specified within ~/.databrickscfg.
-    profile: str = None
-    # Location of the Databricks CLI credentials file, that is created
-    # by `databricks configure --token` command. By default, it is located
-    # in ~/.databrickscfg.
-    config_file: str = None
-
-    google_service_account: str = None
-    google_credentials: str = None
-
-    # Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
-    azure_workspace_resource_id: str = None
-    azure_use_msi: bool = None
-    azure_client_secret: str = None
-    azure_client_id: str = None
-    azure_tenant_id: str = None
-    azure_environment: str = None
-    auth_type: str = None
-
-    # Truncate JSON fields in JSON above this limit. Default is 96.
-    debug_truncate_bytes: str = None
-    debug_headers: bool = None
-    rate_limit: int = None
-
-    # Number of seconds for HTTP timeout
-    http_timeout_seconds: int = 30
-
-    loaders = [env_loader, known_file_config_loader]
+    _inner = {}
     _lock = threading.Lock()
     _resolved = False
+
+    def __new__(cls: Type['Config']) -> 'Config':
+        if not hasattr(cls, '_attributes'):
+            # Python 3.7 compatibility: getting type hints require extra hop, as described in
+            # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
+            # https://docs.python.org/3/howto/annotations.html
+            anno = cls.__dict__['__annotations__']
+            attrs = []
+            for name, v in cls.__dict__.items():
+                if type(v) != ConfigAttribute:
+                    continue
+                v.name = name
+                v.transform = anno.get(name, str)
+                attrs.append(v)
+            cls._attributes = attrs
+        return super().__new__(cls)
+
+    def __init__(self, *, credentials: CredentialsProvider = None, loaders = None, **kwargs):
+        #self.credentials = credentials if credentials else DefaultAuth(self) TODO: change
+        for attr in self._attributes:
+            if attr.name not in kwargs:
+                continue
+            # make sure that args are of correct type
+            self._inner[attr.name] = attr.transform(kwargs[attr.name])
+        loaders = loaders if loaders else [self._load_from_env, self._known_file_config_loader]
+        for loader in loaders:
+            loader(self)
+
+    @staticmethod
+    def _load_from_env(cfg: 'Config'):
+        found = False
+        for attr in cfg._attributes:
+            if not attr.env:
+                continue
+            value = os.getenv(attr.env)
+            if not value:
+                continue
+            cfg._inner[attr.name] = value
+            found = True
+        if found:
+            logger.debug('Loaded from environment')
+
+    @staticmethod
+    def _known_file_config_loader(cfg: 'Config'):
+        if not cfg.profile and (cfg.is_any_auth_configured or cfg.is_azure):
+            # skip loading configuration file if there's any auth configured
+            # directly as part of the Config() constructor.
+            return
+        config_file = cfg.config_file
+        if not config_file:
+            config_file = "~/.databrickscfg"
+        config_path = pathlib.Path(config_file).expanduser()
+        if not config_path.exists():
+            logger.debug("%s does not exist", config_path)
+            return
+        ini_file = configparser.ConfigParser()
+        ini_file.read(config_path)
+        profile = cfg.profile
+        has_explicit_profile = cfg.profile is not None
+        if not has_explicit_profile:
+            profile = "DEFAULT"
+        if not ini_file.has_section(profile):
+            logger.debug("%s has no %s profile configured", config_path, profile)
+            return
+        logger.info("loading %s profile from %s", profile, config_path)
+        for k, v in ini_file.items(profile):
+            cfg.__setattr__(k, v)
+        cfg.profile = None
+        cfg.config_file = None
+
+    @property
+    def is_any_auth_configured(self) -> bool:
+        for attr in self._attributes:
+            if not attr.auth:
+                continue
+            value = self._inner.get(attr.name, None)
+            if value:
+                return True
+        return False
+
+    def debug_string(self):
+        buf = []
+        attrs_used = []
+        envs_used = []
+        for attr in self._attributes:
+            value = getattr(self, attr.name)
+            if not value:
+                continue
+            safe = '***' if attr.sensitive else f'{value}'
+            attrs_used.append(f'{attr.name}={safe}')
+            if attr.env:
+                envs_used.append(attr.env)
+        if attrs_used:
+            buf.append(f'Config: {", ".join(attrs_used)}')
+        if envs_used:
+            buf.append(f'Env: {", ".join(envs_used)}')
+        return '. '.join(buf)
 
     @property
     def is_azure(self) -> bool:
@@ -341,11 +400,18 @@ class Config:
             raise DatabricksError(f"Cannot find Azure {env} Environment")
 
     @property
+    def effective_azure_login_app_id(self):
+        app_id = self.azure_login_app_id
+        if app_id:
+            return app_id
+        return ARM_DATABRICKS_RESOURCE_ID
+
+    @property
     def hostname(self) -> str:
         url = urllib.parse.urlparse(self.host)
         return url.hostname
 
-    def auth(self) -> DatabricksAuth:
+    def auth(self) -> CredentialsProvider:
         self.load()
         if self.credentials:
             return self.credentials
@@ -353,7 +419,7 @@ class Config:
         try:
             if self.credentials:
                 return self.credentials
-            self.credentials = DefaultAuth(self)
+            self.credentials = default_auth(self)
             return self.credentials
         finally:
             self._lock.release()
@@ -362,14 +428,11 @@ class Config:
         self._synchronized(self._resolve)
 
     def to_dict(self) -> Dict[str, any]:
-        return {k: v for k, v in dataclasses.asdict(self).items() if v}
+        return self._inner
 
     def _resolve(self):
         if self._resolved:
             return
-        for loader in self.loaders:
-            logger.debug("loading config via %s", loader.__name__)
-            loader(self)
         if self.host:
             # fix url to remove trailing slash
             o = urllib.parse.urlparse(self.host)
@@ -403,7 +466,7 @@ class ApiClient(requests.Session):
             status_forcelist=[429],
             method_whitelist=set({"POST"}) | set(Retry.DEFAULT_METHOD_WHITELIST),
             respect_retry_after_header=True,
-            raise_on_status=False, # return original response when retries have been exhausted
+            raise_on_status=False,  # return original response when retries have been exhausted
         )
         self.auth = self._cfg.auth()
         py_version = platform.python_version()
