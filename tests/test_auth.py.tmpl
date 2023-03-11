@@ -1,0 +1,31 @@
+# These are auto-generated tests for Unified Authentication
+# In case of editing this file, make sure the change is propagated to all Databricks SDK codebases
+
+import functools
+import pytest
+from databricks.sdk.client import Config, DatabricksError
+
+
+def raises(msg):
+    def inner(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            with pytest.raises(DatabricksError) as info:
+                func(*args, **kwargs)
+            assert msg in str(info.value)
+        return wrapper
+    return inner
+
+
+{{range .}}{{- with .AssertError}}@raises("{{.}}"){{end}}
+def {{.SnakeName}}({{if .Env}}monkeypatch{{end}}):{{range $k,$v := .Env}}
+    monkeypatch.setenv('{{$k}}', '{{$v}}'){{end}}
+
+    cfg = Config({{range $i,$v := .Fields}}{{if $i}}, {{end}}{{.Key}}='{{.Value}}'{{end}})
+    cfg.auth()
+    {{with .AssertAuth}}assert cfg.auth_type == '{{.}}'
+    {{end}}{{- with .AssertHost}}assert cfg.host == '{{.}}'
+    {{end}}{{- if .AssertAzure}}assert cfg.iz_azure
+    {{end}}
+
+{{end}}

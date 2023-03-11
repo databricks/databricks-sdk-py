@@ -1,5 +1,4 @@
 import functools
-
 import pytest
 from databricks.sdk.client import Config, DatabricksError
 
