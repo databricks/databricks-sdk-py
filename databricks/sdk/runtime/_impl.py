@@ -1,14 +1,11 @@
 import base64
 import json
 import os
-import random
 import threading
-import time
 import typing
 from collections import namedtuple
 
-from databricks.sdk import errors
-from databricks.sdk.service import clusters, commands
+from databricks.sdk.service import commands
 
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
@@ -130,10 +127,9 @@ class _RemoteDbUtils:
             if self._ctx:
                 return self._ctx
             self._api.clusters.ensure_cluster_is_running(self._cluster_id)
-            self._ctx = self._api.command_execution.create(
-                cluster_id=self._cluster_id,
-                language=commands.Language.python,
-                wait=True)
+            self._ctx = self._api.command_execution.create(cluster_id=self._cluster_id,
+                                                           language=commands.Language.python,
+                                                           wait=True)
         return self._ctx
 
     def _proxy(self, util: str, method: str) -> '_ProxyCall':

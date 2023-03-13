@@ -10,9 +10,6 @@ import requests.auth
 
 logger = logging.getLogger(__name__)
 
-# oauth implementation is modelled after golang.org/x/oauth2 (BSD) package from Go
-# Copyright 2014 The Go Authors
-
 
 @dataclass
 class Token:
