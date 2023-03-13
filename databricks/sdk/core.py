@@ -54,14 +54,15 @@ class DatabricksError(Exception):
 
 RequestVisitor = Callable[[], dict[str, str]]
 
-
 class CredentialsProvider(Protocol):
     def auth_type(self) -> str: ...
     def __call__(self, cfg: 'Config') -> RequestVisitor: ...
 
 
-def auth(name: str, require: list[str]):
-    """ Returns """
+def credentials_provider(name: str, require: list[str]):
+    """ Given the function that receives a Config and returns RequestVisitor,
+    create CredentialsProvider with a given name and required configuration
+    attribute names to be present for this function to be called. """
 
     def inner(func: Callable[['Config'], RequestVisitor]) -> CredentialsProvider:
         @functools.wraps(func)
@@ -76,7 +77,7 @@ def auth(name: str, require: list[str]):
     return inner
 
 
-@auth('basic', ['host', 'username', 'password'])
+@credentials_provider('basic', ['host', 'username', 'password'])
 def basic_auth(cfg: 'Config') -> RequestVisitor:
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
     static_credentials = {'Authorization': f'Basic {encoded}'}
@@ -87,7 +88,7 @@ def basic_auth(cfg: 'Config') -> RequestVisitor:
     return inner
 
 
-@auth('pat', ['host', 'token'])
+@credentials_provider('pat', ['host', 'token'])
 def pat_auth(cfg: 'Config') -> RequestVisitor:
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
@@ -97,7 +98,7 @@ def pat_auth(cfg: 'Config') -> RequestVisitor:
     return inner
 
 
-@auth('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
+@credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
 def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
     resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
     if not resp.ok:
@@ -127,7 +128,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@auth('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+@credentials_provider('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
 def azure_service_principal(cfg: 'Config') -> RequestVisitor:
 
     def token_source_for(resource: str) -> TokenSource:
@@ -187,7 +188,7 @@ class AzureCliTokenSource(Refreshable):
             raise IOError(f'cannot get access token: {e.output.decode()}') from e
 
 
-@auth('azure-cli', ['is_azure'])
+@credentials_provider('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
     try:
@@ -493,6 +494,8 @@ class Config:
         try:
             self._request_visitor = self._credentials_provider(self)
             self.auth_type = self._credentials_provider.auth_type()
+            if not self._request_visitor:
+                raise ValueError('not configured')
         except ValueError as e:
             raise ValueError(f'{self._credentials_provider.auth_type()} auth: {e}') from e
 
