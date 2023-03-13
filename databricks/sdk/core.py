@@ -201,14 +201,6 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
         logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
         return None
-    except IOError as e:
-        '''if err != nil {
-            if strings.Contains(err.Error(), "No subscription found") {
-                // auth is not configured
-                return nil, nil
-            }
-        }'''
-        raise e
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
@@ -302,46 +294,76 @@ class Config:
         self._validate()
         self._init_auth()
 
-    def _init_auth(self):
-        try:
-            self._request_visitor = self._credentials_provider(self)
-        except Exception as e:
-            raise DatabricksError(f'{self._credentials_provider.auth_type} auth: {e}', cfg=self) from e
+    @property
+    def is_azure(self) -> bool:
+        has_resource_id = self.azure_workspace_resource_id is not None
+        has_host = self.host is not None
+        return has_resource_id or (has_host and ".azuredatabricks.net" in self.host)
 
-    def _fix_host_if_needed(self):
+    @property
+    def is_gcp(self) -> bool:
+        return self.host and ".gcp.databricks.com" in self.host
+
+    @property
+    def is_aws(self) -> bool:
+        return not self.is_azure and not self.is_gcp
+
+    @property
+    def is_account_client(self) -> bool:
         if not self.host:
-            return
-        # fix url to remove trailing slash
-        o = urllib.parse.urlparse(self.host)
-        if not o.hostname:
-            # only hostname is specified
-            self.host = f"https://{self.host}"
-        else:
-            self.host = f"{o.scheme}://{o.netloc}"
+            return False
+        return "https://accounts." in self.host
 
-    def _set_inner_config(self, keyword_args: dict[str, any]):
-        for attr in self.attributes():
-            if attr.name not in keyword_args:
-                continue
-            # make sure that args are of correct type
-            self._inner[attr.name] = attr.transform(keyword_args[attr.name])
+    @property
+    def arm_environment(self) -> AzureEnvironment:
+        env = self.azure_environment if self.azure_environment else "PUBLIC"
+        try:
+            return ENVIRONMENTS[env]
+        except KeyError:
+            raise DatabricksError(f"Cannot find Azure {env} Environment", cfg=self)
 
-    def _validate(self):
-        auths_used = set()
+    @property
+    def effective_azure_login_app_id(self):
+        app_id = self.azure_login_app_id
+        if app_id:
+            return app_id
+        return ARM_DATABRICKS_RESOURCE_ID
+
+    @property
+    def hostname(self) -> str:
+        url = urllib.parse.urlparse(self.host)
+        return url.netloc
+
+    @property
+    def is_any_auth_configured(self) -> bool:
         for attr in Config.attributes():
-            if attr.name not in self._inner:
-                continue
             if not attr.auth:
                 continue
-            auths_used.add(attr.auth)
-        if len(auths_used) <= 1:
-            return
-        if self.auth_type:
-            # client has auth preference set
-            return
-        names = " and ".join(sorted(auths_used))
-        msg = f'validate: more than one authorization method configured: {names}'
-        raise DatabricksError(msg, cfg=self)
+            value = self._inner.get(attr.name, None)
+            if value:
+                return True
+        return False
+
+    def debug_string(self):
+        buf = []
+        attrs_used = []
+        envs_used = []
+        for attr in Config.attributes():
+            if attr.env and os.environ.get(attr.env):
+                envs_used.append(attr.env)
+            value = getattr(self, attr.name)
+            if not value:
+                continue
+            safe = '***' if attr.sensitive else f'{value}'
+            attrs_used.append(f'{attr.name}={safe}')
+        if attrs_used:
+            buf.append(f'Config: {", ".join(attrs_used)}')
+        if envs_used:
+            buf.append(f'Env: {", ".join(envs_used)}')
+        return '. '.join(buf)
+
+    def to_dict(self) -> Dict[str, any]:
+        return self._inner
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
@@ -360,6 +382,24 @@ class Config:
             attrs.append(v)
         cls._attributes = attrs
         return cls._attributes
+
+    def _fix_host_if_needed(self):
+        if not self.host:
+            return
+        # fix url to remove trailing slash
+        o = urllib.parse.urlparse(self.host)
+        if not o.hostname:
+            # only hostname is specified
+            self.host = f"https://{self.host}"
+        else:
+            self.host = f"{o.scheme}://{o.netloc}"
+
+    def _set_inner_config(self, keyword_args: dict[str, any]):
+        for attr in self.attributes():
+            if attr.name not in keyword_args:
+                continue
+            # make sure that args are of correct type
+            self._inner[attr.name] = attr.transform(keyword_args[attr.name])
 
     def _load_from_env(self):
         found = False
@@ -414,76 +454,28 @@ class Config:
                 continue
             self.__setattr__(k, v)
 
-    @property
-    def is_any_auth_configured(self) -> bool:
+    def _validate(self):
+        auths_used = set()
         for attr in Config.attributes():
+            if attr.name not in self._inner:
+                continue
             if not attr.auth:
                 continue
-            value = self._inner.get(attr.name, None)
-            if value:
-                return True
-        return False
+            auths_used.add(attr.auth)
+        if len(auths_used) <= 1:
+            return
+        if self.auth_type:
+            # client has auth preference set
+            return
+        names = " and ".join(sorted(auths_used))
+        msg = f'validate: more than one authorization method configured: {names}'
+        raise DatabricksError(msg, cfg=self)
 
-    def debug_string(self):
-        buf = []
-        attrs_used = []
-        envs_used = []
-        for attr in Config.attributes():
-            if attr.env and os.environ.get(attr.env):
-                envs_used.append(attr.env)
-            value = getattr(self, attr.name)
-            if not value:
-                continue
-            safe = '***' if attr.sensitive else f'{value}'
-            attrs_used.append(f'{attr.name}={safe}')
-        if attrs_used:
-            buf.append(f'Config: {", ".join(attrs_used)}')
-        if envs_used:
-            buf.append(f'Env: {", ".join(envs_used)}')
-        return '. '.join(buf)
-
-    @property
-    def is_azure(self) -> bool:
-        has_resource_id = self.azure_workspace_resource_id is not None
-        has_host = self.host is not None
-        return has_resource_id or (has_host and ".azuredatabricks.net" in self.host)
-
-    @property
-    def is_gcp(self) -> bool:
-        return self.host and ".gcp.databricks.com" in self.host
-
-    @property
-    def is_aws(self) -> bool:
-        return not self.is_azure and not self.is_gcp
-
-    @property
-    def is_account_client(self) -> bool:
-        if not self.host:
-            return False
-        return "https://accounts." in self.host
-
-    @property
-    def arm_environment(self) -> AzureEnvironment:
-        env = self.azure_environment if self.azure_environment else "PUBLIC"
+    def _init_auth(self):
         try:
-            return ENVIRONMENTS[env]
-        except KeyError:
-            raise DatabricksError(f"Cannot find Azure {env} Environment")
-
-    @property
-    def effective_azure_login_app_id(self):
-        app_id = self.azure_login_app_id
-        if app_id:
-            return app_id
-        return ARM_DATABRICKS_RESOURCE_ID
-
-    @property
-    def hostname(self) -> str:
-        url = urllib.parse.urlparse(self.host)
-        return url.netloc
-
-    def to_dict(self) -> Dict[str, any]:
-        return self._inner
+            self._request_visitor = self._credentials_provider(self)
+        except Exception as e:
+            raise DatabricksError(f'{self._credentials_provider.auth_type} auth: {e}', cfg=self) from e
 
     def __repr__(self):
         return f'<{self.debug_string()}>'
