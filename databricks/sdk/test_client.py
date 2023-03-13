@@ -1,4 +1,4 @@
-from .client import ApiClient
+from .core import ApiClient
 from .service import clusters, tokens
 
 

@@ -16,7 +16,7 @@ from typing import (
     Generator,
     Type,
 )
-from databricks.sdk.client import Config, ApiClient
+from databricks.sdk.core import Config, ApiClient
 from databricks.sdk.mixins import compute
 
 # r.headers["Authorization"]

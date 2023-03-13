@@ -5,7 +5,7 @@ import functools
 
 import pytest
 
-from databricks.sdk.client import Config, DatabricksError
+from databricks.sdk.core import Config, DatabricksError
 
 
 def raises(msg):

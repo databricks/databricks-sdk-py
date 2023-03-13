@@ -2,7 +2,7 @@ import pathlib
 
 import pytest
 
-from databricks.sdk.client import DatabricksError
+from databricks.sdk.core import DatabricksError
 
 
 def test_local_io(random):

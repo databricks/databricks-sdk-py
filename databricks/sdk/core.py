@@ -347,7 +347,6 @@ class Config:
     def attributes(cls) -> Iterable[ConfigAttribute]:
         if hasattr(cls, '_attributes'):
             return cls._attributes
-        logger.debug('loading Config.attributes()')
         # Python 3.7 compatibility: getting type hints require extra hop, as described in
         # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
         # https://docs.python.org/3/howto/annotations.html
@@ -414,8 +413,6 @@ class Config:
                 # don't overwrite a value previously set
                 continue
             self.__setattr__(k, v)
-        # self.profile = None
-        # self.config_file = None
 
     @property
     def is_any_auth_configured(self) -> bool:

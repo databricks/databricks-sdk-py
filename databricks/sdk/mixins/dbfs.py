@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from types import TracebackType
 from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
 
-from databricks.sdk.client import DatabricksError
+from databricks.sdk.core import DatabricksError
 
 from ..service import dbfs
 
@@ -337,7 +337,7 @@ class DbfsExt(dbfs.DbfsAPI):
 
     def exists(self, path: str) -> bool:
         # TODO: check if we want to put it to errors module to prevent circular import
-        from databricks.sdk.client import DatabricksError
+        from databricks.sdk.core import DatabricksError
         try:
             self.get_status(path)
             return True
