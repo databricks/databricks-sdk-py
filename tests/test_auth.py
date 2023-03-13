@@ -14,7 +14,7 @@ def raises(msg):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            with pytest.raises(DatabricksError) as info:
+            with pytest.raises(ValueError) as info:
                 func(*args, **kwargs)
             assert msg in str(info.value)
 

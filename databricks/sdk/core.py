@@ -10,7 +10,7 @@ import subprocess
 import threading
 import urllib.parse
 from datetime import datetime
-from typing import Callable, Dict, Optional, Type, Iterable
+from typing import Callable, Dict, Optional, Type, Iterable, Protocol
 
 import requests
 import requests.auth
@@ -33,7 +33,6 @@ class DatabricksError(Exception):
                  status: str = None,
                  scimType: str = None,
                  error: str = None,
-                 cfg: 'Config' = None,
                  **kwargs):
         if not message and error:
             # API 1.2 has different response format, let's adapt
@@ -48,41 +47,37 @@ class DatabricksError(Exception):
             # add more context from SCIM responses
             message = f"{scimType} {message}".strip(" ")
             error_code = f"SCIM_{status}"
-        if cfg:
-            debug_string = cfg.debug_string()
-            if debug_string:
-                message = f'{message}. {debug_string}'
         super().__init__(message if message else error)
         self.error_code = error_code
         self.kwargs = kwargs
 
 
-from collections.abc import Callable
-
 RequestVisitor = Callable[[], dict[str, str]]
-CredentialsProvider = Callable[['Config'], Optional[RequestVisitor]]
+
+
+class CredentialsProvider(Protocol):
+    def auth_type(self) -> str: ...
+    def __call__(self, cfg: 'Config') -> RequestVisitor: ...
 
 
 def auth(name: str, require: list[str]):
+    """ Returns """
 
-    def inner(func: CredentialsProvider):
-
+    def inner(func: Callable[['Config'], RequestVisitor]) -> CredentialsProvider:
         @functools.wraps(func)
         def wrapper(cfg: 'Config') -> Optional[RequestVisitor]:
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
-
-        # TODO: make a proper Abstract Base Class, so that custom auth can be supplied here
-        wrapper.auth_type = name
+        wrapper.auth_type = lambda: name
         return wrapper
 
     return inner
 
 
 @auth('basic', ['host', 'username', 'password'])
-def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
+def basic_auth(cfg: 'Config') -> RequestVisitor:
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
     static_credentials = {'Authorization': f'Basic {encoded}'}
 
@@ -93,7 +88,7 @@ def basic_auth(cfg: 'Config') -> Optional[RequestVisitor]:
 
 
 @auth('pat', ['host', 'token'])
-def pat_auth(cfg: 'Config') -> Optional[RequestVisitor]:
+def pat_auth(cfg: 'Config') -> RequestVisitor:
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
     def inner() -> dict[str, str]:
@@ -133,7 +128,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
 
 
 @auth('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
-def azure_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
+def azure_service_principal(cfg: 'Config') -> RequestVisitor:
 
     def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
@@ -187,7 +182,7 @@ class AzureCliTokenSource(Refreshable):
                          token_type=it["tokenType"],
                          expiry=expires_on)
         except ValueError as e:
-            raise ValueError("Cannot unmarshal CLI result: {}".format(e))
+            raise ValueError(f"cannot unmarshal CLI result: {e}")
         except subprocess.CalledProcessError as e:
             raise IOError(f'cannot get access token: {e.output.decode()}') from e
 
@@ -212,26 +207,31 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
     return inner
 
 
-def default_auth(cfg: 'Config') -> RequestVisitor:
-    auth_providers = [pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli]
-    for provider in auth_providers:
-        if cfg.auth_type and provider.auth_type != cfg.auth_type:
-            # ignore other auth types if one is explicitly enforced
-            logger.debug(f"Ignoring {provider.auth_type} auth, because {cfg.auth_type} is preferred")
-            continue
-        logger.debug(f'Attempting to configure auth: {provider.auth_type}')
-        try:
-            visitor = provider(cfg)
-            if not visitor:
+class DefaultCredentials:
+    def __init__(self) -> None:
+        self._auth_type = 'default'
+
+    def auth_type(self) -> str:
+        return self._auth_type
+
+    def __call__(self, cfg: 'Config') -> RequestVisitor:
+        auth_providers = [pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli]
+        for provider in auth_providers:
+            auth_type = provider.auth_type()
+            if cfg.auth_type and auth_type != cfg.auth_type:
+                # ignore other auth types if one is explicitly enforced
+                logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue
-            cfg.auth_type = provider.auth_type
-            return provider
-        except Exception as e:
-            raise DatabricksError(f'{provider.auth_type}: {e}', cfg=cfg) from e
-    raise DatabricksError("cannot configure default credentials", cfg=cfg)
-
-
-default_auth.auth_type = 'default'
+            logger.debug(f'Attempting to configure auth: {auth_type}')
+            try:
+                visitor = provider(cfg)
+                if not visitor:
+                    continue
+                self._auth_type = auth_type
+                return visitor
+            except Exception as e:
+                raise ValueError(f'{auth_type}: {e}') from e
+        raise ValueError('cannot configure default credentials')
 
 
 class ConfigAttribute:
@@ -284,15 +284,24 @@ class Config:
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
 
-    def __init__(self, *, credentials: CredentialsProvider = None, **kwargs):
+    def __init__(self, *, credentials_provider: CredentialsProvider = None, product="unknown", product_version="0.0.0", **kwargs):
         self._inner = {}
-        self._credentials_provider = credentials if credentials else default_auth
-        self._set_inner_config(kwargs)
-        self._load_from_env()
-        self._known_file_config_loader()
-        self._fix_host_if_needed()
-        self._validate()
-        self._init_auth()
+        self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
+        try:
+            self._set_inner_config(kwargs)
+            self._load_from_env()
+            self._known_file_config_loader()
+            self._fix_host_if_needed()
+            self._validate()
+            self._init_auth()
+            self._product = product
+            self._product_version = product_version
+        except ValueError as e:
+            message = str(e)
+            debug_string = self.debug_string()
+            if debug_string:
+                message = f'{message}. {debug_string}'
+            raise ValueError(message) from e
 
     @property
     def is_azure(self) -> bool:
@@ -320,7 +329,7 @@ class Config:
         try:
             return ENVIRONMENTS[env]
         except KeyError:
-            raise DatabricksError(f"Cannot find Azure {env} Environment", cfg=self)
+            raise ValueError(f"Cannot find Azure {env} Environment")
 
     @property
     def effective_azure_login_app_id(self):
@@ -344,7 +353,16 @@ class Config:
                 return True
         return False
 
-    def debug_string(self):
+    @property
+    def user_agent(self):
+        """ Returns User-Agent header used by this SDK """
+        py_version = platform.python_version()
+        os_name = platform.uname().system.lower()
+        return (f"{self._product}/{self._product_version} databricks-sdk-py/{VERSION}"
+                f" python/{py_version} os/{os_name} auth/{self.auth_type}")
+
+    def debug_string(self) -> str:
+        """ Returns log-friendly representation of configured attributes """
         buf = []
         attrs_used = []
         envs_used = []
@@ -367,6 +385,7 @@ class Config:
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
+        """ Returns a list of Databricks SDK configuration metadata """
         if hasattr(cls, '_attributes'):
             return cls._attributes
         # Python 3.7 compatibility: getting type hints require extra hop, as described in
@@ -445,7 +464,7 @@ class Config:
         if ini_file.defaults():
             profiles['DEFAULT'] = ini_file.defaults()
         if profile not in profiles:
-            raise DatabricksError(f'resolve: {config_path} has no {profile} profile configured', cfg=self)
+            raise ValueError(f'resolve: {config_path} has no {profile} profile configured')
         raw_config = profiles[profile]
         logger.info(f'loading {profile} profile from {config_file}: {", ".join(raw_config.keys())}')
         for k, v in raw_config.items():
@@ -468,14 +487,14 @@ class Config:
             # client has auth preference set
             return
         names = " and ".join(sorted(auths_used))
-        msg = f'validate: more than one authorization method configured: {names}'
-        raise DatabricksError(msg, cfg=self)
+        raise ValueError(f'validate: more than one authorization method configured: {names}')
 
     def _init_auth(self):
         try:
             self._request_visitor = self._credentials_provider(self)
-        except Exception as e:
-            raise DatabricksError(f'{self._credentials_provider.auth_type} auth: {e}', cfg=self) from e
+            self.auth_type = self._credentials_provider.auth_type()
+        except ValueError as e:
+            raise ValueError(f'{self._credentials_provider.auth_type()} auth: {e}') from e
 
     def __repr__(self):
         return f'<{self.debug_string()}>'
@@ -487,7 +506,7 @@ VERSION = "0.0.1"
 class ApiClient(requests.Session):
     _cfg: Config
 
-    def __init__(self, cfg: Config = None, product="unknown", product_version="0.0.0"):
+    def __init__(self, cfg: Config = None):
         super().__init__()
         self._cfg = Config() if not cfg else cfg
         retry_strategy = Retry(
@@ -500,10 +519,7 @@ class ApiClient(requests.Session):
         )
         # TODO: change
         self.auth = self._cfg.auth()
-        py_version = platform.python_version()
-        os_name = platform.uname().system.lower()
-        self._user_agent_base = (f"{product}/{product_version} databricks-sdk-py/{VERSION}"
-                                 f" python/{py_version} os/{os_name} auth/{self.auth.name}")
+        self._user_agent_base = cfg.user_agent
 
         self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
         # https://github.com/tomasbasham/ratelimit/blob/master/ratelimit/decorators.py
