@@ -21,9 +21,9 @@ def raises(msg):
 def {{.SnakeName}}({{if .Env}}monkeypatch{{end}}):{{range $k,$v := .Env}}
     monkeypatch.setenv('{{$k}}', '{{$v}}'){{end}}
     cfg = Config({{range $i,$v := .Fields}}{{if $i}}, {{end}}{{.Key}}='{{.Value}}'{{end}})
-    cfg.auth(){{with .AssertAuth}}
+    {{with .AssertAuth}}
     assert cfg.auth_type == '{{.}}'{{end}}{{with .AssertHost}}
     assert cfg.host == '{{.}}'{{end}}{{if .AssertAzure}}
-    assert cfg.iz_azure{{end}}
+    assert cfg.is_azure{{end}}
 
 {{end}}

@@ -166,19 +166,30 @@ class AzureCliTokenSource(Refreshable):
         super().__init__()
         self.resource = resource
 
+    @staticmethod
+    def _parse_expiry(expiry: str) -> datetime:
+        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S"):
+            try:
+                return datetime.strptime(expiry, fmt)
+            except ValueError as e:
+                last_e = e
+        if last_e:
+            raise last_e
+
     def refresh(self) -> Token:
-        cmd = ["az", "account", "get-access-token", "--resource", self.resource, "--output", "json"]
-        out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         try:
+            cmd = ["az", "account", "get-access-token", "--resource", self.resource, "--output", "json"]
+            out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
             it = json.loads(out.decode())
+            expires_on = self._parse_expiry(it["expiresOn"])
+            return Token(access_token=it["accessToken"],
+                         refresh_token=it.get('refreshToken', None),
+                         token_type=it["tokenType"],
+                         expiry=expires_on)
         except ValueError as e:
             raise ValueError("Cannot unmarshal CLI result: {}".format(e))
-        expires_on = datetime.strptime(it["expiresOn"], "%Y-%m-%d %H:%M:%S.%f")
-
-        return Token(access_token=it["accessToken"],
-                     refresh_token=it.get('refreshToken', None),
-                     token_type=it["tokenType"],
-                     expiry=expires_on)
+        except subprocess.CalledProcessError as e:
+            raise IOError(f'cannot get access token: {e.output.decode()}') from e
 
 
 @auth('azure-cli', ['is_azure'])
@@ -186,20 +197,18 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
     try:
         token_source.token()
-    except Exception:
+    except FileNotFoundError:
+        doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
+        logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
+        return None
+    except IOError as e:
         '''if err != nil {
             if strings.Contains(err.Error(), "No subscription found") {
                 // auth is not configured
                 return nil, nil
             }
-            if strings.Contains(err.Error(), "executable file not found") {
-                logger.Debugf(ctx, "Most likely Azure CLI is not installed. "+
-                    "See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
-                return nil, nil
-            }
-            return nil, err
         }'''
-        return None
+        raise e
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
@@ -219,12 +228,15 @@ def default_auth(cfg: 'Config') -> RequestVisitor:
             logger.debug(f"Ignoring {provider.auth_type} auth, because {cfg.auth_type} is preferred")
             continue
         logger.debug(f'Attempting to configure auth: {provider.auth_type}')
-        visitor = provider(cfg)
-        if not visitor:
-            continue
-        cfg.auth_type = provider.auth_type
-        return provider
-    raise DatabricksError("default auth: cannot configure default credentials", cfg=cfg)
+        try:
+            visitor = provider(cfg)
+            if not visitor:
+                continue
+            cfg.auth_type = provider.auth_type
+            return provider
+        except Exception as e:
+            raise DatabricksError(f'{provider.auth_type}: {e}', cfg=cfg) from e
+    raise DatabricksError("cannot configure default credentials", cfg=cfg)
 
 
 default_auth.auth_type = 'default'
@@ -253,8 +265,6 @@ class ConfigAttribute:
 
 
 class Config:
-    credentials: CredentialsProvider = None
-
     host = ConfigAttribute(env='DATABRICKS_HOST')
     account_id = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
     token = ConfigAttribute(env='DATABRICKS_TOKEN', auth='pat', sensitive=True)
@@ -282,19 +292,56 @@ class Config:
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
 
-    _lock = threading.Lock()
-    _resolved = False
-
-    def __init__(self, *, credentials: CredentialsProvider = None, loaders=None, **kwargs):
+    def __init__(self, *, credentials: CredentialsProvider = None, **kwargs):
         self._inner = {}
-        #self.credentials = credentials if credentials else DefaultAuth(self) TODO: change
-        for attr in self.attributes():
-            if attr.name not in kwargs:
-                continue
-            # make sure that args are of correct type
-            self._inner[attr.name] = attr.transform(kwargs[attr.name])
+        self._credentials_provider = credentials if credentials else default_auth
+        self._set_inner_config(kwargs)
         self._load_from_env()
         self._known_file_config_loader()
+        self._fix_host_if_needed()
+        self._validate()
+        self._init_auth()
+
+    def _init_auth(self):
+        try:
+            self._request_visitor = self._credentials_provider(self)
+        except Exception as e:
+            raise DatabricksError(f'{self._credentials_provider.auth_type} auth: {e}', cfg=self) from e
+
+    def _fix_host_if_needed(self):
+        if not self.host:
+            return
+        # fix url to remove trailing slash
+        o = urllib.parse.urlparse(self.host)
+        if not o.hostname:
+            # only hostname is specified
+            self.host = f"https://{self.host}"
+        else:
+            self.host = f"{o.scheme}://{o.netloc}"
+
+    def _set_inner_config(self, keyword_args: dict[str, any]):
+        for attr in self.attributes():
+            if attr.name not in keyword_args:
+                continue
+            # make sure that args are of correct type
+            self._inner[attr.name] = attr.transform(keyword_args[attr.name])
+
+    def _validate(self):
+        auths_used = set()
+        for attr in Config.attributes():
+            if attr.name not in self._inner:
+                continue
+            if not attr.auth:
+                continue
+            auths_used.add(attr.auth)
+        if len(auths_used) <= 1:
+            return
+        if self.auth_type:
+            # client has auth preference set
+            return
+        names = " and ".join(sorted(auths_used))
+        msg = f'validate: more than one authorization method configured: {names}'
+        raise DatabricksError(msg, cfg=self)
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
@@ -325,7 +372,6 @@ class Config:
             value = os.environ.get(attr.env)
             if not value:
                 continue
-            logger.debug(f'ENV: {attr.name} = {value}') # FIXME: remove
             self._inner[attr.name] = value
             found = True
         if found:
@@ -347,16 +393,29 @@ class Config:
         ini_file.read(config_path)
         profile = self.profile
         has_explicit_profile = self.profile is not None
+        # In Go SDK, we skip merging the profile with DEFAULT section, though Python's ConfigParser.items()
+        # is returning profile key-value pairs _including those from DEFAULT_. This is not what we expect
+        # from Unified Auth test suite at the moment. Hence, the private variable access.
+        # See: https://docs.python.org/3/library/configparser.html#mapping-protocol-access
+        if not has_explicit_profile and not ini_file.defaults():
+            logger.debug(f'{config_path} has no DEFAULT profile configured')
+            return
         if not has_explicit_profile:
             profile = "DEFAULT"
-        if not ini_file.has_section(profile):
-            logger.debug("%s has no %s profile configured", config_path, profile)
-            return
-        logger.info("loading %s profile from %s", profile, config_path)
-        for k, v in ini_file.items(profile):
+        profiles = ini_file._sections
+        if ini_file.defaults():
+            profiles['DEFAULT'] = ini_file.defaults()
+        if profile not in profiles:
+            raise DatabricksError(f'resolve: {config_path} has no {profile} profile configured', cfg=self)
+        raw_config = profiles[profile]
+        logger.info(f'loading {profile} profile from {config_file}: {", ".join(raw_config.keys())}')
+        for k, v in raw_config.items():
+            if k in self._inner:
+                # don't overwrite a value previously set
+                continue
             self.__setattr__(k, v)
-        self.profile = None
-        self.config_file = None
+        # self.profile = None
+        # self.config_file = None
 
     @property
     def is_any_auth_configured(self) -> bool:
@@ -388,7 +447,9 @@ class Config:
 
     @property
     def is_azure(self) -> bool:
-        return self.azure_workspace_resource_id or (self.host and ".azuredatabricks.net" in self.host)
+        has_resource_id = self.azure_workspace_resource_id is not None
+        has_host = self.host is not None
+        return has_resource_id or (has_host and ".azuredatabricks.net" in self.host)
 
     @property
     def is_gcp(self) -> bool:
@@ -422,46 +483,13 @@ class Config:
     @property
     def hostname(self) -> str:
         url = urllib.parse.urlparse(self.host)
-        return url.hostname
-
-    def auth(self) -> CredentialsProvider:
-        self.load()
-        if self.credentials:
-            return self.credentials
-        self._lock.acquire()
-        try:
-            if self.credentials:
-                return self.credentials
-            self.credentials = default_auth(self)
-            return self.credentials
-        finally:
-            self._lock.release()
-
-    def load(self):
-        self._synchronized(self._resolve)
+        return url.netloc
 
     def to_dict(self) -> Dict[str, any]:
         return self._inner
 
-    def _resolve(self):
-        if self._resolved:
-            return
-        if self.host:
-            # fix url to remove trailing slash
-            o = urllib.parse.urlparse(self.host)
-            if not o.hostname:
-                # only hostname is specified
-                self.host = f"https://{self.host}"
-            else:
-                self.host = f"{o.scheme}://{o.hostname}"
-        self._resolved = True
-
-    def _synchronized(self, cb):
-        self._lock.acquire()
-        try:
-            cb()
-        finally:
-            self._lock.release()
+    def __repr__(self):
+        return f'<{self.debug_string()}>'
 
 
 VERSION = "0.0.1"
@@ -481,6 +509,7 @@ class ApiClient(requests.Session):
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )
+        # TODO: change
         self.auth = self._cfg.auth()
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()

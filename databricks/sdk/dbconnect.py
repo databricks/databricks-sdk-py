@@ -66,7 +66,7 @@ class DatabricksChannelBuilder:
         A list of tuples (key, value)
         """
         # TODO: implement the rest of the options
-        self._clusters_api.ensure_cluster_is_running(self._cluster_id)
+        # self._clusters_api.ensure_cluster_is_running(self._cluster_id)
         return [
             ('x-databricks-cluster-id', self._cluster_id),
         ]
@@ -88,7 +88,7 @@ class DatabricksChannelBuilder:
 
 class DatabricksAuthMetadataPlugin(grpc.AuthMetadataPlugin):
     def __init__(self, config: Config):
-        self._auth = config.auth()
+        self._auth = config.auth() # this method will return a list of headers
 
     def __call__(self, context: grpc.AuthMetadataContext,
                  callback: grpc.AuthMetadataPluginCallback):
@@ -96,6 +96,7 @@ class DatabricksAuthMetadataPlugin(grpc.AuthMetadataPlugin):
         try:
             self._auth(dummy)
             metadata = ()
+            # these are HTTP headers returned by Databricks SDK
             for k,v in dummy.headers.items():
                 # gRPC requires headers to be lower-cased
                 metadata += ((k.lower(), v),)
