@@ -6,11 +6,11 @@ import logging
 import os
 import pathlib
 import platform
+import re
 import subprocess
-import threading
 import urllib.parse
 from datetime import datetime
-from typing import Callable, Dict, Optional, Type, Iterable, Protocol
+from typing import Callable, Dict, Iterable, Optional, Protocol
 
 import requests
 import requests.auth
@@ -20,43 +20,22 @@ from urllib3.util.retry import Retry
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
 from .oauth import ClientCredentials, Refreshable, Token, TokenSource
 
+__all__ = ['Config']
+
 logger = logging.getLogger(__name__)
-
-
-class DatabricksError(Exception):
-
-    def __init__(self,
-                 message: str = None,
-                 *,
-                 error_code: str = None,
-                 detail: str = None,
-                 status: str = None,
-                 scimType: str = None,
-                 error: str = None,
-                 **kwargs):
-        if not message and error:
-            # API 1.2 has different response format, let's adapt
-            message = error
-        if not message and detail:
-            # Handle SCIM error message details
-            # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
-            if detail == "null":
-                message = "SCIM API Internal Error"
-            else:
-                message = detail
-            # add more context from SCIM responses
-            message = f"{scimType} {message}".strip(" ")
-            error_code = f"SCIM_{status}"
-        super().__init__(message if message else error)
-        self.error_code = error_code
-        self.kwargs = kwargs
-
 
 RequestVisitor = Callable[[], dict[str, str]]
 
+
 class CredentialsProvider(Protocol):
-    def auth_type(self) -> str: ...
-    def __call__(self, cfg: 'Config') -> RequestVisitor: ...
+    """ CredentialsProvider is the protocol (call-side interface)
+     for authenticating requests to Databricks REST APIs"""
+
+    def auth_type(self) -> str:
+        ...
+
+    def __call__(self, cfg: 'Config') -> RequestVisitor:
+        ...
 
 
 def credentials_provider(name: str, require: list[str]):
@@ -65,12 +44,14 @@ def credentials_provider(name: str, require: list[str]):
     attribute names to be present for this function to be called. """
 
     def inner(func: Callable[['Config'], RequestVisitor]) -> CredentialsProvider:
+
         @functools.wraps(func)
         def wrapper(cfg: 'Config') -> Optional[RequestVisitor]:
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
+
         wrapper.auth_type = lambda: name
         return wrapper
 
@@ -79,6 +60,7 @@ def credentials_provider(name: str, require: list[str]):
 
 @credentials_provider('basic', ['host', 'username', 'password'])
 def basic_auth(cfg: 'Config') -> RequestVisitor:
+    """ Given username and password, add base64-encoded Basic credentials """
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
     static_credentials = {'Authorization': f'Basic {encoded}'}
 
@@ -90,6 +72,7 @@ def basic_auth(cfg: 'Config') -> RequestVisitor:
 
 @credentials_provider('pat', ['host', 'token'])
 def pat_auth(cfg: 'Config') -> RequestVisitor:
+    """ Adds Databricks Personal Access Token to every request """
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
     def inner() -> dict[str, str]:
@@ -100,6 +83,8 @@ def pat_auth(cfg: 'Config') -> RequestVisitor:
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
 def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
+    """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
+    if /oidc/.well-known/oauth-authorization-server is available on the given host. """
     resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
     if not resp.ok:
         return None
@@ -117,19 +102,25 @@ def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
 
 
 def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenSource]):
+    """ Resolves Azure Databricks workspace URL from ARM Resource ID """
     if cfg.host:
+        return
+    if not cfg.azure_workspace_resource_id:
         return
     arm = cfg.arm_environment.resource_manager_endpoint
     token = token_source_for(arm).token()
     resp = requests.get(f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
                         headers={"Authorization": f"Bearer {token.access_token}"})
     if not resp.ok:
-        raise DatabricksError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
+        raise ValueError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@credentials_provider('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+@credentials_provider('azure-client-secret',
+                      ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
 def azure_service_principal(cfg: 'Config') -> RequestVisitor:
+    """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
+    to every request, while automatically resolving different Azure environment endpoints. """
 
     def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
@@ -157,6 +148,7 @@ def azure_service_principal(cfg: 'Config') -> RequestVisitor:
 
 
 class AzureCliTokenSource(Refreshable):
+    """ Obtain the token granted by `az login` CLI command """
 
     def __init__(self, resource: str):
         super().__init__()
@@ -190,6 +182,7 @@ class AzureCliTokenSource(Refreshable):
 
 @credentials_provider('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
+    """ Adds refreshed OAuth token granted by `az login` command to every request. """
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
     try:
         token_source.token()
@@ -209,6 +202,8 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
 
 
 class DefaultCredentials:
+    """ Select the first applicable credential provider from the chain """
+
     def __init__(self) -> None:
         self._auth_type = 'default'
 
@@ -236,6 +231,8 @@ class DefaultCredentials:
 
 
 class ConfigAttribute:
+    """ Configuration attribute metadata and descriptor protocols. """
+
     # name and transform are discovered from Config.__new__
     name: str = None
     transform: type = str
@@ -285,7 +282,12 @@ class Config:
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
 
-    def __init__(self, *, credentials_provider: CredentialsProvider = None, product="unknown", product_version="0.0.0", **kwargs):
+    def __init__(self,
+                 *,
+                 credentials_provider: CredentialsProvider = None,
+                 product="unknown",
+                 product_version="0.0.0",
+                 **kwargs):
         self._inner = {}
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         try:
@@ -303,6 +305,10 @@ class Config:
             if debug_string:
                 message = f'{message}. {debug_string}'
             raise ValueError(message) from e
+
+    def authenticate(self) -> dict[str, str]:
+        """ Returns a list of fresh authentication headers """
+        return self._request_visitor()
 
     @property
     def is_azure(self) -> bool:
@@ -418,6 +424,8 @@ class Config:
         for attr in self.attributes():
             if attr.name not in keyword_args:
                 continue
+            if keyword_args.get(attr.name, None) is None:
+                continue
             # make sure that args are of correct type
             self._inner[attr.name] = attr.transform(keyword_args[attr.name])
 
@@ -506,8 +514,40 @@ class Config:
 VERSION = "0.0.1"
 
 
+class DatabricksError(IOError):
+    """ Generic error from Databricks REST API """
+
+    def __init__(self,
+                 message: str = None,
+                 *,
+                 error_code: str = None,
+                 detail: str = None,
+                 status: str = None,
+                 scimType: str = None,
+                 error: str = None,
+                 **kwargs):
+        if not message and error:
+            # API 1.2 has different response format, let's adapt
+            message = error
+        if not message and detail:
+            # Handle SCIM error message details
+            # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
+            if detail == "null":
+                message = "SCIM API Internal Error"
+            else:
+                message = detail
+            # add more context from SCIM responses
+            message = f"{scimType} {message}".strip(" ")
+            error_code = f"SCIM_{status}"
+        super().__init__(message if message else error)
+        self.error_code = error_code
+        self.kwargs = kwargs
+
+
 class ApiClient(requests.Session):
     _cfg: Config
+
+    _html_pre = re.compile(r"<pre>(.*)</pre>", re.MULTILINE)
 
     def __init__(self, cfg: Config = None):
         super().__init__()
@@ -520,9 +560,8 @@ class ApiClient(requests.Session):
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )
-        # TODO: change
-        self.auth = self._cfg.auth()
         self._user_agent_base = cfg.user_agent
+        self.auth = self._authenticate
 
         self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
         # https://github.com/tomasbasham/ratelimit/blob/master/ratelimit/decorators.py
@@ -535,13 +574,31 @@ class ApiClient(requests.Session):
     def is_account_client(self) -> bool:
         return self._cfg.is_account_client
 
-    def do(self, method: str, path, query: dict = None, body: dict = None) -> dict:
+    def _authenticate(self, r: requests.PreparedRequest) -> requests.PreparedRequest:
+        headers = self._cfg.authenticate()
+        for k, v in headers.items():
+            r.headers[k] = v
+        return r
+
+    def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
         response = self.request(method,
                                 f"{self._cfg.host}{path}",
                                 params=query,
                                 json=body,
-                                headers={"User-Agent": self._user_agent_base})
-        payload = response.json()
-        if not response.ok:
-            raise DatabricksError(**payload)
-        return payload
+                                headers={
+                                    'Accept': 'application/json',
+                                    'User-Agent': self._user_agent_base
+                                })
+        try:
+            payload = response.json()
+            if not response.ok:
+                # TODO: experiment with traceback pruning for better readability
+                # See https://stackoverflow.com/a/58821552/277035
+                raise DatabricksError(**payload) from None
+            return payload
+        except requests.exceptions.JSONDecodeError:
+            txt = response.text
+            match = self._html_pre.search(txt)
+            if not match:
+                raise DatabricksError(txt) from None
+            raise DatabricksError(match.group(1).strip()) from None
