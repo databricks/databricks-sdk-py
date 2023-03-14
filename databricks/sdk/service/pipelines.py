@@ -119,6 +119,22 @@ class CronTrigger:
 
 
 @dataclass
+class DataPlaneId:
+    instance: str = None
+    seq_no: Any = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.instance: body['instance'] = self.instance
+        if self.seq_no: body['seq_no'] = self.seq_no
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DataPlaneId':
+        return cls(instance=d.get('instance', None), seq_no=d.get('seq_no', None))
+
+
+@dataclass
 class Delete:
     """Delete a pipeline"""
 
@@ -191,6 +207,33 @@ class EditPipeline:
             storage=d.get('storage', None),
             target=d.get('target', None),
             trigger=PipelineTrigger.from_dict(d['trigger']) if 'trigger' in d else None)
+
+
+@dataclass
+class ErrorDetail:
+    exceptions: 'List[SerializedException]' = None
+    fatal: bool = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.exceptions: body['exceptions'] = [v.as_dict() for v in self.exceptions]
+        if self.fatal: body['fatal'] = self.fatal
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
+        return cls(exceptions=[SerializedException.from_dict(v) for v in d['exceptions']]
+                   if 'exceptions' in d and d['exceptions'] is not None else None,
+                   fatal=d.get('fatal', None))
+
+
+class EventLevel(Enum):
+    """The severity level of the event."""
+
+    ERROR = 'ERROR'
+    INFO = 'INFO'
+    METRICS = 'METRICS'
+    WARN = 'WARN'
 
 
 @dataclass
@@ -292,6 +335,38 @@ class GetUpdateResponse:
 
 
 @dataclass
+class ListPipelineEvents:
+    """List pipeline events"""
+
+    pipeline_id: str
+    filter: str = None
+    max_results: int = None
+    order_by: 'List[str]' = None
+    page_token: str = None
+
+
+@dataclass
+class ListPipelineEventsResponse:
+    events: 'List[PipelineEvent]' = None
+    next_page_token: str = None
+    prev_page_token: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.events: body['events'] = [v.as_dict() for v in self.events]
+        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListPipelineEventsResponse':
+        return cls(events=[PipelineEvent.from_dict(v)
+                           for v in d['events']] if 'events' in d and d['events'] is not None else None,
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
+
+
+@dataclass
 class ListPipelines:
     """List pipelines"""
 
@@ -351,6 +426,14 @@ class ListUpdatesResponse:
                             for v in d['updates']] if 'updates' in d and d['updates'] is not None else None)
 
 
+class MaturityLevel(Enum):
+    """Maturity level for EventDetails."""
+
+    DEPRECATED = 'DEPRECATED'
+    EVOLVING = 'EVOLVING'
+    STABLE = 'STABLE'
+
+
 @dataclass
 class NotebookLibrary:
     path: str = None
@@ -363,6 +446,68 @@ class NotebookLibrary:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NotebookLibrary':
         return cls(path=d.get('path', None))
+
+
+@dataclass
+class Origin:
+    batch_id: int = None
+    cloud: str = None
+    cluster_id: str = None
+    dataset_name: str = None
+    flow_id: str = None
+    flow_name: str = None
+    host: str = None
+    maintenance_id: str = None
+    materialization_name: str = None
+    org_id: int = None
+    pipeline_id: str = None
+    pipeline_name: str = None
+    region: str = None
+    request_id: str = None
+    table_id: str = None
+    uc_resource_id: str = None
+    update_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.batch_id: body['batch_id'] = self.batch_id
+        if self.cloud: body['cloud'] = self.cloud
+        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.dataset_name: body['dataset_name'] = self.dataset_name
+        if self.flow_id: body['flow_id'] = self.flow_id
+        if self.flow_name: body['flow_name'] = self.flow_name
+        if self.host: body['host'] = self.host
+        if self.maintenance_id: body['maintenance_id'] = self.maintenance_id
+        if self.materialization_name: body['materialization_name'] = self.materialization_name
+        if self.org_id: body['org_id'] = self.org_id
+        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_name: body['pipeline_name'] = self.pipeline_name
+        if self.region: body['region'] = self.region
+        if self.request_id: body['request_id'] = self.request_id
+        if self.table_id: body['table_id'] = self.table_id
+        if self.uc_resource_id: body['uc_resource_id'] = self.uc_resource_id
+        if self.update_id: body['update_id'] = self.update_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Origin':
+        return cls(batch_id=d.get('batch_id', None),
+                   cloud=d.get('cloud', None),
+                   cluster_id=d.get('cluster_id', None),
+                   dataset_name=d.get('dataset_name', None),
+                   flow_id=d.get('flow_id', None),
+                   flow_name=d.get('flow_name', None),
+                   host=d.get('host', None),
+                   maintenance_id=d.get('maintenance_id', None),
+                   materialization_name=d.get('materialization_name', None),
+                   org_id=d.get('org_id', None),
+                   pipeline_id=d.get('pipeline_id', None),
+                   pipeline_name=d.get('pipeline_name', None),
+                   region=d.get('region', None),
+                   request_id=d.get('request_id', None),
+                   table_id=d.get('table_id', None),
+                   uc_resource_id=d.get('uc_resource_id', None),
+                   update_id=d.get('update_id', None))
 
 
 @dataclass
@@ -429,6 +574,45 @@ class PipelineCluster:
             spark_conf=d.get('spark_conf', None),
             spark_env_vars=d.get('spark_env_vars', None),
             ssh_public_keys=d.get('ssh_public_keys', None))
+
+
+@dataclass
+class PipelineEvent:
+    error: 'ErrorDetail' = None
+    event_type: str = None
+    id: str = None
+    level: 'EventLevel' = None
+    maturity_level: 'MaturityLevel' = None
+    message: str = None
+    origin: 'Origin' = None
+    sequence: 'Sequencing' = None
+    timestamp: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.error: body['error'] = self.error.as_dict()
+        if self.event_type: body['event_type'] = self.event_type
+        if self.id: body['id'] = self.id
+        if self.level: body['level'] = self.level.value
+        if self.maturity_level: body['maturity_level'] = self.maturity_level.value
+        if self.message: body['message'] = self.message
+        if self.origin: body['origin'] = self.origin.as_dict()
+        if self.sequence: body['sequence'] = self.sequence.as_dict()
+        if self.timestamp: body['timestamp'] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelineEvent':
+        return cls(error=ErrorDetail.from_dict(d['error']) if 'error' in d else None,
+                   event_type=d.get('event_type', None),
+                   id=d.get('id', None),
+                   level=EventLevel.__members__.get(d['level'], None) if 'level' in d else None,
+                   maturity_level=MaturityLevel.__members__.get(d['maturity_level'], None)
+                   if 'maturity_level' in d else None,
+                   message=d.get('message', None),
+                   origin=Origin.from_dict(d['origin']) if 'origin' in d else None,
+                   sequence=Sequencing.from_dict(d['sequence']) if 'sequence' in d else None,
+                   timestamp=d.get('timestamp', None))
 
 
 @dataclass
@@ -582,6 +766,67 @@ class Reset:
     """Reset a pipeline"""
 
     pipeline_id: str
+
+
+@dataclass
+class Sequencing:
+    control_plane_seq_no: int = None
+    data_plane_id: 'DataPlaneId' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.control_plane_seq_no: body['control_plane_seq_no'] = self.control_plane_seq_no
+        if self.data_plane_id: body['data_plane_id'] = self.data_plane_id.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Sequencing':
+        return cls(control_plane_seq_no=d.get('control_plane_seq_no', None),
+                   data_plane_id=DataPlaneId.from_dict(d['data_plane_id']) if 'data_plane_id' in d else None)
+
+
+@dataclass
+class SerializedException:
+    class_name: str = None
+    message: str = None
+    stack: 'List[StackFrame]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.class_name: body['class_name'] = self.class_name
+        if self.message: body['message'] = self.message
+        if self.stack: body['stack'] = [v.as_dict() for v in self.stack]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SerializedException':
+        return cls(class_name=d.get('class_name', None),
+                   message=d.get('message', None),
+                   stack=[StackFrame.from_dict(v)
+                          for v in d['stack']] if 'stack' in d and d['stack'] is not None else None)
+
+
+@dataclass
+class StackFrame:
+    declaring_class: str = None
+    file_name: str = None
+    line_number: int = None
+    method_name: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.declaring_class: body['declaring_class'] = self.declaring_class
+        if self.file_name: body['file_name'] = self.file_name
+        if self.line_number: body['line_number'] = self.line_number
+        if self.method_name: body['method_name'] = self.method_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'StackFrame':
+        return cls(declaring_class=d.get('declaring_class', None),
+                   file_name=d.get('file_name', None),
+                   line_number=d.get('line_number', None),
+                   method_name=d.get('method_name', None))
 
 
 @dataclass
@@ -864,6 +1109,41 @@ class PipelinesAPI:
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/updates/{request.update_id}')
         return GetUpdateResponse.from_dict(json)
+
+    def list_pipeline_events(self,
+                             pipeline_id: str,
+                             *,
+                             filter: str = None,
+                             max_results: int = None,
+                             order_by: List[str] = None,
+                             page_token: str = None,
+                             **kwargs) -> Iterator[PipelineEvent]:
+        """List pipeline events.
+        
+        Retrieves events for a pipeline."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListPipelineEvents(filter=filter,
+                                         max_results=max_results,
+                                         order_by=order_by,
+                                         page_token=page_token,
+                                         pipeline_id=pipeline_id)
+
+        query = {}
+        if filter: query['filter'] = request.filter
+        if max_results: query['max_results'] = request.max_results
+        if order_by: query['order_by'] = [v for v in request.order_by]
+        if page_token: query['page_token'] = request.page_token
+
+        while True:
+            json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/events', query=query)
+            if 'events' not in json or not json['events']:
+                return
+            for v in json['events']:
+                yield PipelineEvent.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def list_pipelines(self,
                        *,

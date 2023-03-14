@@ -13,6 +13,7 @@ databricks/sdk/service/ipaccesslists.py linguist-generated=true
 databricks/sdk/service/jobs.py linguist-generated=true
 databricks/sdk/service/libraries.py linguist-generated=true
 databricks/sdk/service/mlflow.py linguist-generated=true
+databricks/sdk/service/oauth2.py linguist-generated=true
 databricks/sdk/service/permissions.py linguist-generated=true
 databricks/sdk/service/pipelines.py linguist-generated=true
 databricks/sdk/service/repos.py linguist-generated=true
