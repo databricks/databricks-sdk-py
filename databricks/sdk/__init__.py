@@ -1,4 +1,4 @@
-import databricks.sdk.core as client
+import databricks.sdk.client as client
 import databricks.sdk.mixins.compute as compute_mixin
 import databricks.sdk.mixins.dbfs as dbfs_mixin
 import databricks.sdk.service.billing as billing
@@ -15,6 +15,7 @@ import databricks.sdk.service.ipaccesslists as ipaccesslists
 import databricks.sdk.service.jobs as jobs
 import databricks.sdk.service.libraries as libraries
 import databricks.sdk.service.mlflow as mlflow
+import databricks.sdk.service.oauth2 as oauth2
 import databricks.sdk.service.permissions as permissions
 import databricks.sdk.service.pipelines as pipelines
 import databricks.sdk.service.repos as repos
@@ -163,13 +164,16 @@ class AccountClient:
         self.billable_usage = billing.BillableUsageAPI(self.api_client)
         self.budgets = billing.BudgetsAPI(self.api_client)
         self.credentials = deployment.CredentialsAPI(self.api_client)
+        self.custom_app_integration = oauth2.CustomAppIntegrationAPI(self.api_client)
         self.encryption_keys = deployment.EncryptionKeysAPI(self.api_client)
         self.account_groups = scim.AccountGroupsAPI(self.api_client)
         self.log_delivery = billing.LogDeliveryAPI(self.api_client)
         self.account_metastore_assignments = unitycatalog.AccountMetastoreAssignmentsAPI(self.api_client)
         self.account_metastores = unitycatalog.AccountMetastoresAPI(self.api_client)
         self.networks = deployment.NetworksAPI(self.api_client)
+        self.o_auth_enrollment = oauth2.OAuthEnrollmentAPI(self.api_client)
         self.private_access = deployment.PrivateAccessAPI(self.api_client)
+        self.published_app_integration = oauth2.PublishedAppIntegrationAPI(self.api_client)
         self.account_service_principals = scim.AccountServicePrincipalsAPI(self.api_client)
         self.storage = deployment.StorageAPI(self.api_client)
         self.account_storage_credentials = unitycatalog.AccountStorageCredentialsAPI(self.api_client)

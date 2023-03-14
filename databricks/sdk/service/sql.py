@@ -3013,10 +3013,14 @@ class StatementExecutionAPI:
     
     ----
     
-    ### **Warning: drop the authorization header when fetching data through external links**
+    ### **Warning: We recommend you protect the URLs in the EXTERNAL_LINKS.**
     
-    External link URLs do not require an Authorization header or token, and thus all calls to fetch external
-    links must remove the Authorization header.
+    When using the EXTERNAL_LINKS disposition, a short-lived pre-signed URL is generated, which the client can
+    use to download the result chunk directly from cloud storage. As the short-lived credential is embedded in
+    a pre-signed URL, this URL should be protected.
+    
+    Since pre-signed URLs are generated with embedded temporary credentials, you need to remove the
+    authorization header from the fetch requests.
     
     ----
     
