@@ -1,7 +1,8 @@
 dev-init:
-	python3 -m venv .databricks
-	.venv/bin/pip install .
-	.venv/bin/pip install '.[dev]'
+	python3 -m venv .venv
+	. .venv/bin/activate
+	pip install .
+	pip install '.[dev]'
 
 fmt:
 	yapf -pri databricks tests
