@@ -320,7 +320,7 @@ class DbfsAPI:
         if path: query['path'] = request.path
 
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query)
-        return [FileInfo.from_dict(v) for v in json['files']]
+        return [FileInfo.from_dict(v) for v in json.get('files', [])]
 
     def mkdirs(self, path: str, **kwargs):
         """Create a directory.

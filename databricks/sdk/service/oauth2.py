@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterator, List
 
 _LOG = logging.getLogger('databricks.sdk.service.oauth2')
 
@@ -11,16 +11,14 @@ _LOG = logging.getLogger('databricks.sdk.service.oauth2')
 
 @dataclass
 class CreateCustomAppIntegration:
-    integration_id: str
+    name: str
+    redirect_urls: 'List[str]'
     confidential: bool = None
-    name: str = None
-    redirect_urls: 'List[str]' = None
     token_access_policy: 'TokenAccessPolicy' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.confidential: body['confidential'] = self.confidential
-        if self.integration_id: body['integration_id'] = self.integration_id
         if self.name: body['name'] = self.name
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
@@ -29,7 +27,6 @@ class CreateCustomAppIntegration:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCustomAppIntegration':
         return cls(confidential=d.get('confidential', None),
-                   integration_id=d.get('integration_id', None),
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
@@ -72,21 +69,18 @@ class CreateOAuthEnrollment:
 
 @dataclass
 class CreatePublishedAppIntegration:
-    integration_id: str
     app_id: str = None
     token_access_policy: 'TokenAccessPolicy' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.app_id: body['app_id'] = self.app_id
-        if self.integration_id: body['integration_id'] = self.integration_id
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePublishedAppIntegration':
         return cls(app_id=d.get('app_id', None),
-                   integration_id=d.get('integration_id', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
                    if 'token_access_policy' in d else None)
 
@@ -123,6 +117,7 @@ class DeletePublishedAppIntegrationRequest:
 class GetCustomAppIntegrationOutput:
     client_id: str = None
     confidential: bool = None
+    integration_id: str = None
     name: str = None
     redirect_urls: 'List[str]' = None
     token_access_policy: 'TokenAccessPolicy' = None
@@ -131,6 +126,7 @@ class GetCustomAppIntegrationOutput:
         body = {}
         if self.client_id: body['client_id'] = self.client_id
         if self.confidential: body['confidential'] = self.confidential
+        if self.integration_id: body['integration_id'] = self.integration_id
         if self.name: body['name'] = self.name
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
@@ -140,6 +136,7 @@ class GetCustomAppIntegrationOutput:
     def from_dict(cls, d: Dict[str, any]) -> 'GetCustomAppIntegrationOutput':
         return cls(client_id=d.get('client_id', None),
                    confidential=d.get('confidential', None),
+                   integration_id=d.get('integration_id', None),
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
@@ -151,6 +148,21 @@ class GetCustomAppIntegrationRequest:
     """Get OAuth Custom App Integration"""
 
     integration_id: str
+
+
+@dataclass
+class GetCustomAppIntegrationsOutput:
+    apps: 'List[GetCustomAppIntegrationOutput]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetCustomAppIntegrationsOutput':
+        return cls(apps=[GetCustomAppIntegrationOutput.from_dict(v)
+                         for v in d['apps']] if 'apps' in d and d['apps'] is not None else None)
 
 
 @dataclass
@@ -182,6 +194,21 @@ class GetPublishedAppIntegrationRequest:
     """Get OAuth Published App Integration"""
 
     integration_id: str
+
+
+@dataclass
+class GetPublishedAppIntegrationsOutput:
+    apps: 'List[GetPublishedAppIntegrationOutput]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetPublishedAppIntegrationsOutput':
+        return cls(apps=[GetPublishedAppIntegrationOutput.from_dict(v)
+                         for v in d['apps']] if 'apps' in d and d['apps'] is not None else None)
 
 
 @dataclass
@@ -267,11 +294,10 @@ class CustomAppIntegrationAPI:
         self._api = api_client
 
     def create(self,
-               integration_id: str,
+               name: str,
+               redirect_urls: List[str],
                *,
                confidential: bool = None,
-               name: str = None,
-               redirect_urls: List[str] = None,
                token_access_policy: TokenAccessPolicy = None,
                **kwargs) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
@@ -282,16 +308,14 @@ class CustomAppIntegrationAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCustomAppIntegration(confidential=confidential,
-                                                 integration_id=integration_id,
                                                  name=name,
                                                  redirect_urls=redirect_urls,
                                                  token_access_policy=token_access_policy)
         body = request.as_dict()
 
-        json = self._api.do(
-            'POST',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integration/{request.integration_id}',
-            body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
+                            body=body)
         return CreateCustomAppIntegrationOutput.from_dict(json)
 
     def delete(self, integration_id: str, **kwargs):
@@ -305,7 +329,7 @@ class CustomAppIntegrationAPI:
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integration/{request.integration_id}'
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{request.integration_id}'
         )
 
     def get(self, integration_id: str, **kwargs) -> GetCustomAppIntegrationOutput:
@@ -318,9 +342,17 @@ class CustomAppIntegrationAPI:
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integration/{request.integration_id}'
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{request.integration_id}'
         )
         return GetCustomAppIntegrationOutput.from_dict(json)
+
+    def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
+        """Get custom oauth app integrations.
+        
+        Get the list of custom oauth app integrations for the specified Databricks Account"""
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations')
+        return [GetCustomAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
 
     def update(self,
                integration_id: str,
@@ -340,7 +372,7 @@ class CustomAppIntegrationAPI:
         body = request.as_dict()
         self._api.do(
             'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integration/{request.integration_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{request.integration_id}',
             body=body)
 
 
@@ -393,7 +425,6 @@ class PublishedAppIntegrationAPI:
         self._api = api_client
 
     def create(self,
-               integration_id: str,
                *,
                app_id: str = None,
                token_access_policy: TokenAccessPolicy = None,
@@ -405,15 +436,12 @@ class PublishedAppIntegrationAPI:
         You can retrieve the published oauth app integration via :method:get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreatePublishedAppIntegration(app_id=app_id,
-                                                    integration_id=integration_id,
-                                                    token_access_policy=token_access_policy)
+            request = CreatePublishedAppIntegration(app_id=app_id, token_access_policy=token_access_policy)
         body = request.as_dict()
 
-        json = self._api.do(
-            'POST',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integration/{request.integration_id}',
-            body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
+                            body=body)
         return CreatePublishedAppIntegrationOutput.from_dict(json)
 
     def delete(self, integration_id: str, **kwargs):
@@ -427,7 +455,7 @@ class PublishedAppIntegrationAPI:
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integration/{request.integration_id}'
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}'
         )
 
     def get(self, integration_id: str, **kwargs) -> GetPublishedAppIntegrationOutput:
@@ -440,9 +468,18 @@ class PublishedAppIntegrationAPI:
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integration/{request.integration_id}'
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}'
         )
         return GetPublishedAppIntegrationOutput.from_dict(json)
+
+    def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
+        """Get published oauth app integrations.
+        
+        Get the list of published oauth app integrations for the specified Databricks Account"""
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations')
+        return [GetPublishedAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
 
     def update(self, integration_id: str, *, token_access_policy: TokenAccessPolicy = None, **kwargs):
         """Updates Published OAuth App Integration.
@@ -456,5 +493,5 @@ class PublishedAppIntegrationAPI:
         body = request.as_dict()
         self._api.do(
             'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integration/{request.integration_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}',
             body=body)

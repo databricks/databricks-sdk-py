@@ -3317,7 +3317,7 @@ class CatalogsAPI:
         elements in the array."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs')
-        return [CatalogInfo.from_dict(v) for v in json['catalogs']]
+        return [CatalogInfo.from_dict(v) for v in json.get('catalogs', [])]
 
     def update(self,
                name: str,
@@ -3415,7 +3415,7 @@ class ExternalLocationsAPI:
         the external location. There is no guarantee of a specific ordering of the elements in the array."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations')
-        return [ExternalLocationInfo.from_dict(v) for v in json['external_locations']]
+        return [ExternalLocationInfo.from_dict(v) for v in json.get('external_locations', [])]
 
     def update(self,
                name: str,
@@ -3749,7 +3749,7 @@ class MetastoresAPI:
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores')
-        return [MetastoreInfo.from_dict(v) for v in json['metastores']]
+        return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.
@@ -3897,7 +3897,7 @@ class ProvidersAPI:
             query['data_provider_global_metastore_id'] = request.data_provider_global_metastore_id
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
-        return [ProviderInfo.from_dict(v) for v in json['providers']]
+        return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
 
     def list_shares(self, name: str, **kwargs) -> ListProviderSharesResponse:
         """List shares by Provider.
@@ -4042,7 +4042,7 @@ class RecipientsAPI:
             query['data_recipient_global_metastore_id'] = request.data_recipient_global_metastore_id
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query)
-        return [RecipientInfo.from_dict(v) for v in json['recipients']]
+        return [RecipientInfo.from_dict(v) for v in json.get('recipients', [])]
 
     def rotate_token(self, existing_token_expire_in_seconds: int, name: str, **kwargs) -> RecipientInfo:
         """Rotate a token.
@@ -4167,7 +4167,7 @@ class SchemasAPI:
         if catalog_name: query['catalog_name'] = request.catalog_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query)
-        return [SchemaInfo.from_dict(v) for v in json['schemas']]
+        return [SchemaInfo.from_dict(v) for v in json.get('schemas', [])]
 
     def update(self,
                full_name: str,
@@ -4248,7 +4248,7 @@ class SharesAPI:
         owner of the share. There is no guarantee of a specific ordering of the elements in the array."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares')
-        return [ShareInfo.from_dict(v) for v in json['shares']]
+        return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
 
     def share_permissions(self, name: str, **kwargs) -> PermissionsList:
         """Get permissions.
@@ -4589,7 +4589,7 @@ class TablesAPI:
         if schema_name: query['schema_name'] = request.schema_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query)
-        return [TableInfo.from_dict(v) for v in json['tables']]
+        return [TableInfo.from_dict(v) for v in json.get('tables', [])]
 
     def list_summaries(self,
                        catalog_name: str,

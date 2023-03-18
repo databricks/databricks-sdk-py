@@ -2974,7 +2974,7 @@ class RegisteredModelsAPI:
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/get-latest-versions', body=body)
-        return [ModelVersion.from_dict(v) for v in json['model_versions']]
+        return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
 
     def list(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[RegisteredModel]:
         """List models.
@@ -3261,7 +3261,7 @@ class TransitionRequestsAPI:
         if version: query['version'] = request.version
 
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query)
-        return [Activity.from_dict(v) for v in json['requests']]
+        return [Activity.from_dict(v) for v in json.get('requests', [])]
 
     def reject(self,
                name: str,

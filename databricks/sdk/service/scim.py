@@ -468,7 +468,7 @@ class AccountGroupsAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
-        return [Group.from_dict(v) for v in json['Resources']]
+        return [Group.from_dict(v) for v in json.get('Resources', [])]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update group details.
@@ -609,7 +609,7 @@ class AccountServicePrincipalsAPI:
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query)
-        return [ServicePrincipal.from_dict(v) for v in json['Resources']]
+        return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
@@ -758,7 +758,7 @@ class AccountUsersAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
-        return [User.from_dict(v) for v in json['Resources']]
+        return [User.from_dict(v) for v in json.get('Resources', [])]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update user details.
@@ -911,7 +911,7 @@ class GroupsAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
-        return [Group.from_dict(v) for v in json['Resources']]
+        return [Group.from_dict(v) for v in json.get('Resources', [])]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update group details.
@@ -1042,7 +1042,7 @@ class ServicePrincipalsAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
-        return [ServicePrincipal.from_dict(v) for v in json['Resources']]
+        return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
@@ -1187,7 +1187,7 @@ class UsersAPI:
         if start_index: query['startIndex'] = request.start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
-        return [User.from_dict(v) for v in json['Resources']]
+        return [User.from_dict(v) for v in json.get('Resources', [])]
 
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update user details.

@@ -18,7 +18,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
-from .oauth import ClientCredentials, Refreshable, Token, TokenSource
+from .oauth import ClientCredentials, Refreshable, Token, TokenSource, OidcEndpoints, InteractiveFlow
 
 __all__ = ['Config']
 
@@ -61,7 +61,7 @@ def credentials_provider(name: str, require: list[str]):
 @credentials_provider('basic', ['host', 'username', 'password'])
 def basic_auth(cfg: 'Config') -> RequestVisitor:
     """ Given username and password, add base64-encoded Basic credentials """
-    encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode())
+    encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode()).decode()
     static_credentials = {'Authorization': f'Basic {encoded}'}
 
     def inner() -> dict[str, str]:
@@ -85,6 +85,9 @@ def pat_auth(cfg: 'Config') -> RequestVisitor:
 def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
+    # TODO: change to use cfg.oidc_endpoints (and add cache there)
+    # TODO: Azure returns 404 for UC workspace after redirecting to
+    # https://login.microsoftonline.com/{cfg.azure_tenant_id}/.well-known/oauth-authorization-server
     resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
     if not resp.ok:
         return None
@@ -99,6 +102,20 @@ def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
     return inner
+
+
+@credentials_provider('oauth-local', ['host', 'client_id'])
+def oauth_local(cfg: 'Config') -> Optional[RequestVisitor]:
+    if cfg.client_id != 'local-browser':
+        return None
+    if cfg.is_aws:
+        cfg.client_id = 'databricks-cli'
+        redirect_url = 'http://localhost:8020'
+    else:
+        raise ValueError(f'local browser SSO is not supported')
+    redirect = cfg.oauth_interactive_flow(redirect_url)
+    credentials = redirect.launch_external_browser()
+    return credentials(cfg)
 
 
 def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenSource]):
@@ -211,7 +228,7 @@ class DefaultCredentials:
         return self._auth_type
 
     def __call__(self, cfg: 'Config') -> RequestVisitor:
-        auth_providers = [pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli]
+        auth_providers = [pat_auth, basic_auth, oauth_service_principal, oauth_local, azure_service_principal, azure_cli]
         for provider in auth_providers:
             auth_type = provider.auth_type()
             if cfg.auth_type and auth_type != cfg.auth_type:
@@ -306,9 +323,29 @@ class Config:
                 message = f'{message}. {debug_string}'
             raise ValueError(message) from e
 
+    @staticmethod
+    def parse_dsn(dsn: str) -> 'Config':
+        uri = urllib.parse.urlparse(dsn)
+        if uri.scheme != 'databricks':
+            raise ValueError(f'Expected databricks:// scheme, got {uri.scheme}://')
+        kwargs = {'host': f'https://{uri.hostname}'}
+        if uri.username:
+            kwargs['username'] = uri.username
+        if uri.password:
+            kwargs['password'] = uri.password
+        query = dict(urllib.parse.parse_qsl(uri.query))
+        for attr in Config.attributes():
+            if attr.name not in query:
+                continue
+            kwargs[attr.name] = query[attr.name]
+        return Config(**kwargs)
+
     def authenticate(self) -> dict[str, str]:
         """ Returns a list of fresh authentication headers """
         return self._request_visitor()
+
+    def as_dict(self) -> dict:
+        return self._inner
 
     @property
     def is_azure(self) -> bool:
@@ -367,6 +404,37 @@ class Config:
         os_name = platform.uname().system.lower()
         return (f"{self._product}/{self._product_version} databricks-sdk-py/{VERSION}"
                 f" python/{py_version} os/{os_name} auth/{self.auth_type}")
+
+    @property
+    def oidc_endpoints(self) -> Optional[OidcEndpoints]:
+        self._fix_host_if_needed()
+        if not self.host:
+            return None
+        if self.account_id:
+            prefix = f'{self.host}/oidc/accounts/{self.account_id}'
+            return OidcEndpoints(authorization_endpoint=f'{prefix}/v1/authorize',
+                                 token_endpoint=f'{prefix}/v1/token')
+        oidc = f'{self.host}/oidc/.well-known/oauth-authorization-server'
+        res = requests.get(oidc)
+        if res.status_code != 200:
+            return None
+        auth_metadata = res.json()
+        return OidcEndpoints(authorization_endpoint=auth_metadata.get('authorization_endpoint'),
+                             token_endpoint=auth_metadata.get('token_endpoint'))
+
+    def oauth_interactive_flow(self, redirect_url, *, scopes=None):
+        if not scopes:
+            scopes = ['offline_access', 'clusters', 'sql']
+        oidc = self.oidc_endpoints
+        if not oidc:
+            return None
+        ac = InteractiveFlow(client_id=self.client_id,
+                             client_secret=self.client_secret,
+                             auth_url=oidc.authorization_endpoint,
+                             token_url=oidc.token_endpoint,
+                             redirect_url=redirect_url,
+                             scopes=scopes)
+        return ac.auth_code_url()
 
     def debug_string(self) -> str:
         """ Returns log-friendly representation of configured attributes """
@@ -589,16 +657,24 @@ class ApiClient(requests.Session):
                                     'Accept': 'application/json',
                                     'User-Agent': self._user_agent_base
                                 })
+        if not len(response.content):
+            return {}
         try:
             payload = response.json()
             if not response.ok:
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
-                raise DatabricksError(**payload) from None
+                raise self._make_nicer_error(status_code=response.status_code, **payload) from None
             return payload
         except requests.exceptions.JSONDecodeError:
             txt = response.text
             match = self._html_pre.search(txt)
-            if not match:
-                raise DatabricksError(txt) from None
-            raise DatabricksError(match.group(1).strip()) from None
+            message = match.group(1).strip() if match else txt
+            raise self._make_nicer_error(message) from None
+
+    def _make_nicer_error(self, message: str, status_code: int = 200, **kwargs) -> DatabricksError:
+        is_http_unauthorized_or_forbidden = status_code in (401, 403)
+        debug_string = self._cfg.debug_string()
+        if debug_string and is_http_unauthorized_or_forbidden:
+            message = f'{message}. {debug_string}'
+        return DatabricksError(message, **kwargs)

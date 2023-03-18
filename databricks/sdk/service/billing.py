@@ -532,7 +532,7 @@ class BudgetsAPI:
         budget is configured to include."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget')
-        return [BudgetWithStatus.from_dict(v) for v in json['budgets']]
+        return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
 
     def update(self, budget: Budget, budget_id: str, **kwargs):
         """Modify budget.
@@ -667,7 +667,7 @@ class LogDeliveryAPI:
         if storage_configuration_id: query['storage_configuration_id'] = request.storage_configuration_id
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/log-delivery', query=query)
-        return [LogDeliveryConfiguration.from_dict(v) for v in json['log_delivery_configurations']]
+        return [LogDeliveryConfiguration.from_dict(v) for v in json.get('log_delivery_configurations', [])]
 
     def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str, **kwargs):
         """Enable or disable log delivery configuration.

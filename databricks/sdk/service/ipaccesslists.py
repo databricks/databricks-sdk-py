@@ -270,7 +270,7 @@ class IpAccessListsAPI:
         Gets all IP access lists for the specified workspace."""
 
         json = self._api.do('GET', '/api/2.0/ip-access-lists')
-        return [IpAccessListInfo.from_dict(v) for v in json['ip_access_lists']]
+        return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
 
     def replace(self,
                 label: str,
