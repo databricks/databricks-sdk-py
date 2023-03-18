@@ -353,7 +353,7 @@ class ClusterPoliciesAPI:
         if sort_order: query['sort_order'] = request.sort_order.value
 
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query)
-        return [Policy.from_dict(v) for v in json['policies']]
+        return [Policy.from_dict(v) for v in json.get('policies', [])]
 
 
 class PolicyFamiliesAPI:

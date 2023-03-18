@@ -536,7 +536,7 @@ class WorkspaceAssignmentAPI:
             'GET',
             f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments'
         )
-        return [PermissionAssignment.from_dict(v) for v in json['permission_assignments']]
+        return [PermissionAssignment.from_dict(v) for v in json.get('permission_assignments', [])]
 
     def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int, **kwargs):
         """Update permissions assignment.

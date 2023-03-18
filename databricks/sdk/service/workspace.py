@@ -284,7 +284,7 @@ class WorkspaceAPI:
         if path: query['path'] = request.path
 
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query)
-        return [ObjectInfo.from_dict(v) for v in json['objects']]
+        return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
 
     def mkdirs(self, path: str, **kwargs):
         """Create a directory.

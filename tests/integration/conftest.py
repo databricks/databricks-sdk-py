@@ -38,6 +38,14 @@ def w() -> WorkspaceClient:
 
 
 @pytest.fixture
+def ucws() -> WorkspaceClient:
+    _load_debug_env_if_runs_from_ide('ucws')
+    if 'TEST_METASTORE_ID' not in os.environ:
+        pytest.skip("not in Unity Catalog Workspace test env")
+    return WorkspaceClient()
+
+
+@pytest.fixture
 def env_or_skip():
 
     def inner(var) -> str:

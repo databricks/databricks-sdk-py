@@ -386,7 +386,7 @@ class SecretsAPI:
         if scope: query['scope'] = request.scope
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query)
-        return [AclItem.from_dict(v) for v in json['items']]
+        return [AclItem.from_dict(v) for v in json.get('items', [])]
 
     def list_scopes(self) -> Iterator[SecretScope]:
         """List all scopes.
@@ -396,7 +396,7 @@ class SecretsAPI:
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call."""
 
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list')
-        return [SecretScope.from_dict(v) for v in json['scopes']]
+        return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
 
     def list_secrets(self, scope: str, **kwargs) -> Iterator[SecretMetadata]:
         """List secret keys.
@@ -415,7 +415,7 @@ class SecretsAPI:
         if scope: query['scope'] = request.scope
 
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query)
-        return [SecretMetadata.from_dict(v) for v in json['secrets']]
+        return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission, **kwargs):
         """Create/update an ACL.

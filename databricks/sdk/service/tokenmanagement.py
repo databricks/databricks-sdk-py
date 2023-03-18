@@ -179,4 +179,4 @@ class TokenManagementAPI:
         if created_by_username: query['created_by_username'] = request.created_by_username
 
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query)
-        return [TokenInfo.from_dict(v) for v in json['token_infos']]
+        return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]

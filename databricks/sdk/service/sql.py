@@ -3369,7 +3369,7 @@ class WarehousesAPI:
         if run_as_user_id: query['run_as_user_id'] = request.run_as_user_id
 
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query)
-        return [EndpointInfo.from_dict(v) for v in json['warehouses']]
+        return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
 
     def set_workspace_warehouse_config(
             self,

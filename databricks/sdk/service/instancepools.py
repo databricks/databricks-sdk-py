@@ -782,4 +782,4 @@ class InstancePoolsAPI:
         Gets a list of instance pools with their statistics."""
 
         json = self._api.do('GET', '/api/2.0/instance-pools/list')
-        return [InstancePoolAndStats.from_dict(v) for v in json['instance_pools']]
+        return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]

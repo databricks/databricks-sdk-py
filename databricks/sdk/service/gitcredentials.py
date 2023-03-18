@@ -179,7 +179,7 @@ class GitCredentialsAPI:
         Lists the calling user's Git credentials. One credential per user is supported."""
 
         json = self._api.do('GET', '/api/2.0/git-credentials')
-        return [CredentialInfo.from_dict(v) for v in json['credentials']]
+        return [CredentialInfo.from_dict(v) for v in json.get('credentials', [])]
 
     def update(self,
                credential_id: int,

@@ -2011,7 +2011,7 @@ class ClustersAPI:
         if can_use_client: query['can_use_client'] = request.can_use_client
 
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query)
-        return [ClusterInfo.from_dict(v) for v in json['clusters']]
+        return [ClusterInfo.from_dict(v) for v in json.get('clusters', [])]
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -2267,7 +2267,7 @@ class InstanceProfilesAPI:
         This API is available to all users."""
 
         json = self._api.do('GET', '/api/2.0/instance-profiles/list')
-        return [InstanceProfile.from_dict(v) for v in json['instance_profiles']]
+        return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
 
     def remove(self, instance_profile_arn: str, **kwargs):
         """Remove the instance profile.

@@ -133,4 +133,4 @@ class TokensAPI:
         Lists all the valid tokens for a user-workspace pair."""
 
         json = self._api.do('GET', '/api/2.0/token/list')
-        return [PublicTokenInfo.from_dict(v) for v in json['token_infos']]
+        return [PublicTokenInfo.from_dict(v) for v in json.get('token_infos', [])]

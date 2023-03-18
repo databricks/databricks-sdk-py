@@ -236,7 +236,7 @@ class GlobalInitScriptsAPI:
         script](#operation/get-script) operation."""
 
         json = self._api.do('GET', '/api/2.0/global-init-scripts')
-        return [GlobalInitScriptDetails.from_dict(v) for v in json['scripts']]
+        return [GlobalInitScriptDetails.from_dict(v) for v in json.get('scripts', [])]
 
     def update(self,
                name: str,
