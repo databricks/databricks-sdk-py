@@ -4,14 +4,13 @@ import functools
 import hashlib
 import logging
 import secrets
-import json
-import urllib.parse
 import threading
+import urllib.parse
+import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Callable, Any
-import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import List
 
 import requests
 import requests.auth
@@ -46,9 +45,7 @@ class Token:
         return self.access_token and not self.expired
 
     def as_dict(self) -> dict:
-        raw = {'access_token': self.access_token,
-               'token_type': self.token_type,
-               'expiry': self.expiry}
+        raw = {'access_token': self.access_token, 'token_type': self.token_type, 'expiry': self.expiry}
         if self.refresh_token:
             raw['refresh_token'] = self.refresh_token
         return raw
@@ -118,6 +115,7 @@ class Refreshable(TokenSource):
 
 
 class _OAuthCallback(BaseHTTPRequestHandler):
+
     def __init__(self, feedback: list, *args):
         self._feedback = feedback
         super().__init__(*args)
@@ -144,13 +142,13 @@ class _OAuthCallback(BaseHTTPRequestHandler):
 
 
 class RefreshableCredentials(Refreshable):
+
     def __init__(self, flow: 'InteractiveFlow', token: Token):
         self._flow = flow
         super().__init__(token)
 
     def as_dict(self) -> dict:
-        return {'flow': self._flow.as_dict(),
-                'token': self._token.as_dict()}
+        return {'flow': self._flow.as_dict(), 'token': self._token.as_dict()}
 
     @staticmethod
     def from_dict(raw: dict) -> 'RefreshableCredentials':
@@ -164,20 +162,22 @@ class RefreshableCredentials(Refreshable):
 
     def __call__(self, *args, **kwargs):
         """Implementing CredentialsProvider protocol"""
-        def inner() -> dict[str,str]:
+
+        def inner() -> dict[str, str]:
             return {'Authorization': f"Bearer {self.token().access_token}"}
+
         return inner
 
     def refresh(self) -> Token:
         refresh_token = self._token.refresh_token
         if not refresh_token:
             raise ValueError('oauth2: token expired and refresh token is not set')
-        params = {'grant_type': 'refresh_token',
-                  'refresh_token': refresh_token}
+        params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
         return retrieve_token(client_id=self._flow.client_id,
                               client_secret=self._flow.client_secret,
                               token_url=self._flow.token_url,
-                              params=params, use_params=True)
+                              params=params,
+                              use_params=True)
 
 
 @dataclass
@@ -188,10 +188,12 @@ class Consent:
     verifier: str
 
     def as_dict(self) -> dict:
-        return {'flow': self.flow.as_dict(),
-                'auth_url': self.auth_url,
-                'state': self.state,
-                'verifier': self.verifier}
+        return {
+            'flow': self.flow.as_dict(),
+            'auth_url': self.auth_url,
+            'state': self.state,
+            'verifier': self.verifier
+        }
 
     @staticmethod
     def from_dict(raw: dict) -> 'Consent':
@@ -227,14 +229,17 @@ class Consent:
     def exchange(self, code: str, state: str) -> RefreshableCredentials:
         if self.state != state:
             raise ValueError('state mismatch')
-        params = {'grant_type': 'authorization_code',
-                  'code': code,
-                  'code_verifier': self.verifier,
-                  'redirect_uri': self.flow.redirect_url}
+        params = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'code_verifier': self.verifier,
+            'redirect_uri': self.flow.redirect_url
+        }
         token = retrieve_token(client_id=self.flow.client_id,
                                client_secret=self.flow.client_secret,
                                token_url=self.flow.token_url,
-                               params=params, use_params=True)
+                               params=params,
+                               use_params=True)
         return RefreshableCredentials(self.flow, token)
 
 
@@ -267,13 +272,15 @@ class InteractiveFlow:
     use_header: bool = False
 
     def as_dict(self) -> dict:
-        raw = {'client_id': self.client_id,
-               'auth_url': self.auth_url,
-               'token_url': self.token_url,
-               'redirect_url': self.redirect_url,
-               'scopes': self.scopes,
-               'use_params': self.use_params,
-               'use_header': self.use_header}
+        raw = {
+            'client_id': self.client_id,
+            'auth_url': self.auth_url,
+            'token_url': self.token_url,
+            'redirect_url': self.redirect_url,
+            'scopes': self.scopes,
+            'use_params': self.use_params,
+            'use_header': self.use_header
+        }
         if self.client_secret:
             raw['client_secret'] = self.client_secret
         return raw
@@ -302,18 +309,17 @@ class InteractiveFlow:
         # sha256 = hashlib.sha256(verifier)
         # challenge = base64.b64encode(sha256.digest()).decode('utf8')
 
-        params = {'response_type': 'code',
-                  'client_id': self.client_id,
-                  'redirect_uri': self.redirect_url,
-                  'scope': ' '.join(self.scopes),
-                  'state': state,
-                  'code_challenge': challenge,
-                  'code_challenge_method': 'S256'}
+        params = {
+            'response_type': 'code',
+            'client_id': self.client_id,
+            'redirect_uri': self.redirect_url,
+            'scope': ' '.join(self.scopes),
+            'state': state,
+            'code_challenge': challenge,
+            'code_challenge_method': 'S256'
+        }
         url = f'{self.auth_url}?{urllib.parse.urlencode(params)}'
-        return Consent(flow=self,
-                       auth_url=url,
-                       state=state,
-                       verifier=verifier)
+        return Consent(flow=self, auth_url=url, state=state, verifier=verifier)
 
 
 @dataclass

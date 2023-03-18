@@ -18,7 +18,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
-from .oauth import ClientCredentials, Refreshable, Token, TokenSource, OidcEndpoints, InteractiveFlow
+from .oauth import (ClientCredentials, InteractiveFlow, OidcEndpoints,
+                    Refreshable, Token, TokenSource)
 
 __all__ = ['Config']
 
@@ -228,7 +229,9 @@ class DefaultCredentials:
         return self._auth_type
 
     def __call__(self, cfg: 'Config') -> RequestVisitor:
-        auth_providers = [pat_auth, basic_auth, oauth_service_principal, oauth_local, azure_service_principal, azure_cli]
+        auth_providers = [
+            pat_auth, basic_auth, oauth_service_principal, oauth_local, azure_service_principal, azure_cli
+        ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
             if cfg.auth_type and auth_type != cfg.auth_type:
