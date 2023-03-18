@@ -112,6 +112,12 @@ def oauth_local(cfg: 'Config') -> Optional[RequestVisitor]:
     if cfg.is_aws:
         cfg.client_id = 'databricks-cli'
         redirect_url = 'http://localhost:8020'
+    elif cfg.is_azure:
+        # Use Azure AD app for cases when Azure CLI is not available on the machine.
+        # App has to be registered as Single-page multi-tenant to support PKCE
+        # TODO: temporary app ID, change it later.
+        cfg.client_id = '6128a518-99a9-425b-8333-4cc94f04cacd'
+        redirect_url = 'http://localhost:8020'
     else:
         raise ValueError(f'local browser SSO is not supported')
     redirect = cfg.oauth_interactive_flow(redirect_url)
@@ -230,7 +236,7 @@ class DefaultCredentials:
 
     def __call__(self, cfg: 'Config') -> RequestVisitor:
         auth_providers = [
-            pat_auth, basic_auth, oauth_service_principal, oauth_local, azure_service_principal, azure_cli
+            pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli, oauth_local
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -413,6 +419,14 @@ class Config:
         self._fix_host_if_needed()
         if not self.host:
             return None
+        if self.is_azure:
+            # Retrieve authorize endpoint to retrieve token endpoint after
+            res = requests.get(f'{self.host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
+            real_auth_url = res.headers.get('location')
+            if not real_auth_url:
+                return None
+            return OidcEndpoints(authorization_endpoint=real_auth_url,
+                                 token_endpoint=real_auth_url.replace('/authorize', '/token'))
         if self.account_id:
             prefix = f'{self.host}/oidc/accounts/{self.account_id}'
             return OidcEndpoints(authorization_endpoint=f'{prefix}/v1/authorize',
@@ -428,6 +442,9 @@ class Config:
     def oauth_interactive_flow(self, redirect_url, *, scopes=None):
         if not scopes:
             scopes = ['offline_access', 'clusters', 'sql']
+        if self.is_azure:
+            # Azure AD only supports full access to Azure Databricks.
+            scopes = [f'{self.effective_azure_login_app_id}/user_impersonation', 'offline_access']
         oidc = self.oidc_endpoints
         if not oidc:
             return None

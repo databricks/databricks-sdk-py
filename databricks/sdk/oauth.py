@@ -65,7 +65,13 @@ class TokenSource:
         pass
 
 
-def retrieve_token(client_id, client_secret, token_url, params, use_params=False, use_header=False) -> Token:
+def retrieve_token(client_id,
+                   client_secret,
+                   token_url,
+                   params,
+                   use_params=False,
+                   use_header=False,
+                   headers=None) -> Token:
     logger.debug(f'Retrieving token for {client_id}')
     if use_params:
         if client_id: params["client_id"] = client_id
@@ -73,9 +79,9 @@ def retrieve_token(client_id, client_secret, token_url, params, use_params=False
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
-    resp = requests.post(token_url, params, auth=auth)
+    resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
-        if resp.headers['Content-Type'] == 'application/json':
+        if resp.headers['Content-Type'].startswith('application/json'):
             err = resp.json()
             code = err.get('errorCode', err.get('error', 'unknown'))
             summary = err.get('errorSummary', err.get('error_description', 'unknown'))
@@ -173,11 +179,17 @@ class RefreshableCredentials(Refreshable):
         if not refresh_token:
             raise ValueError('oauth2: token expired and refresh token is not set')
         params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
+        headers = {}
+        if 'microsoft' in self._flow.token_url:
+            # Tokens issued for the 'Single-Page Application' client-type may
+            # only be redeemed via cross-origin requests
+            headers = {'Origin': self._flow.redirect_url}
         return retrieve_token(client_id=self._flow.client_id,
                               client_secret=self._flow.client_secret,
                               token_url=self._flow.token_url,
                               params=params,
-                              use_params=True)
+                              use_params=True,
+                              headers=headers)
 
 
 @dataclass
@@ -235,10 +247,16 @@ class Consent:
             'code_verifier': self.verifier,
             'redirect_uri': self.flow.redirect_url
         }
+        headers = {}
+        if 'microsoft' in self.flow.token_url:
+            # Tokens issued for the 'Single-Page Application' client-type may
+            # only be redeemed via cross-origin requests
+            headers = {'Origin': self.flow.redirect_url}
         token = retrieve_token(client_id=self.flow.client_id,
                                client_secret=self.flow.client_secret,
                                token_url=self.flow.token_url,
                                params=params,
+                               headers=headers,
                                use_params=True)
         return RefreshableCredentials(self.flow, token)
 
