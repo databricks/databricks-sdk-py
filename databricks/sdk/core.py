@@ -18,8 +18,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
-from .oauth import (ClientCredentials, InteractiveFlow, OidcEndpoints,
-                    Refreshable, Token, TokenSource)
+from .oauth import (ClientCredentials, OidcEndpoints,
+                    Refreshable, Token, TokenSource, OAuthClient)
 
 __all__ = ['Config']
 
@@ -105,17 +105,24 @@ def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
     return inner
 
 
-@credentials_provider('oauth-local', ['host', 'client_id'])
-def oauth_local(cfg: 'Config') -> Optional[RequestVisitor]:
-    if cfg.client_id != 'local-browser':
+@credentials_provider('external-browser', ['host', 'auth_type'])
+def external_browser(cfg: 'Config') -> Optional[RequestVisitor]:
+    if cfg.auth_type != 'external-browser':
         return None
     if cfg.is_aws:
-        cfg.client_id = 'databricks-cli'
-        redirect_url = 'http://localhost:8020'
+        client_id = 'databricks-cli'
+    elif cfg.is_azure:
+        # Use Azure AD app for cases when Azure CLI is not available on the machine.
+        # App has to be registered as Single-page multi-tenant to support PKCE
+        # TODO: temporary app ID, change it later.
+        client_id = '6128a518-99a9-425b-8333-4cc94f04cacd'
     else:
         raise ValueError(f'local browser SSO is not supported')
-    redirect = cfg.oauth_interactive_flow(redirect_url)
-    credentials = redirect.launch_external_browser()
+    oauth_client = OAuthClient(cfg.host, client_id, 'http://localhost:8020')
+    consent = oauth_client.initiate_consent()
+    if not consent:
+        return None
+    credentials = consent.launch_external_browser()
     return credentials(cfg)
 
 
@@ -230,7 +237,7 @@ class DefaultCredentials:
 
     def __call__(self, cfg: 'Config') -> RequestVisitor:
         auth_providers = [
-            pat_auth, basic_auth, oauth_service_principal, oauth_local, azure_service_principal, azure_cli
+            pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli, external_browser
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -240,11 +247,11 @@ class DefaultCredentials:
                 continue
             logger.debug(f'Attempting to configure auth: {auth_type}')
             try:
-                visitor = provider(cfg)
-                if not visitor:
+                header_factory = provider(cfg)
+                if not header_factory:
                     continue
                 self._auth_type = auth_type
-                return visitor
+                return header_factory
             except Exception as e:
                 raise ValueError(f'{auth_type}: {e}') from e
         raise ValueError('cannot configure default credentials')
@@ -345,7 +352,7 @@ class Config:
 
     def authenticate(self) -> dict[str, str]:
         """ Returns a list of fresh authentication headers """
-        return self._request_visitor()
+        return self._header_factory()
 
     def as_dict(self) -> dict:
         return self._inner
@@ -413,6 +420,14 @@ class Config:
         self._fix_host_if_needed()
         if not self.host:
             return None
+        if self.is_azure:
+            # Retrieve authorize endpoint to retrieve token endpoint after
+            res = requests.get(f'{self.host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
+            real_auth_url = res.headers.get('location')
+            if not real_auth_url:
+                return None
+            return OidcEndpoints(authorization_endpoint=real_auth_url,
+                                 token_endpoint=real_auth_url.replace('/authorize', '/token'))
         if self.account_id:
             prefix = f'{self.host}/oidc/accounts/{self.account_id}'
             return OidcEndpoints(authorization_endpoint=f'{prefix}/v1/authorize',
@@ -424,20 +439,6 @@ class Config:
         auth_metadata = res.json()
         return OidcEndpoints(authorization_endpoint=auth_metadata.get('authorization_endpoint'),
                              token_endpoint=auth_metadata.get('token_endpoint'))
-
-    def oauth_interactive_flow(self, redirect_url, *, scopes=None):
-        if not scopes:
-            scopes = ['offline_access', 'clusters', 'sql']
-        oidc = self.oidc_endpoints
-        if not oidc:
-            return None
-        ac = InteractiveFlow(client_id=self.client_id,
-                             client_secret=self.client_secret,
-                             auth_url=oidc.authorization_endpoint,
-                             token_url=oidc.token_endpoint,
-                             redirect_url=redirect_url,
-                             scopes=scopes)
-        return ac.auth_code_url()
 
     def debug_string(self) -> str:
         """ Returns log-friendly representation of configured attributes """
@@ -571,9 +572,9 @@ class Config:
 
     def _init_auth(self):
         try:
-            self._request_visitor = self._credentials_provider(self)
+            self._header_factory = self._credentials_provider(self)
             self.auth_type = self._credentials_provider.auth_type()
-            if not self._request_visitor:
+            if not self._header_factory:
                 raise ValueError('not configured')
         except ValueError as e:
             raise ValueError(f'{self._credentials_provider.auth_type()} auth: {e}') from e

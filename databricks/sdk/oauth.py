@@ -65,7 +65,13 @@ class TokenSource:
         pass
 
 
-def retrieve_token(client_id, client_secret, token_url, params, use_params=False, use_header=False) -> Token:
+def retrieve_token(client_id,
+                   client_secret,
+                   token_url,
+                   params,
+                   use_params=False,
+                   use_header=False,
+                   headers=None) -> Token:
     logger.debug(f'Retrieving token for {client_id}')
     if use_params:
         if client_id: params["client_id"] = client_id
@@ -73,9 +79,9 @@ def retrieve_token(client_id, client_secret, token_url, params, use_params=False
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
-    resp = requests.post(token_url, params, auth=auth)
+    resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
-        if resp.headers['Content-Type'] == 'application/json':
+        if resp.headers['Content-Type'].startswith('application/json'):
             err = resp.json()
             code = err.get('errorCode', err.get('error', 'unknown'))
             summary = err.get('errorSummary', err.get('error_description', 'unknown'))
@@ -143,17 +149,16 @@ class _OAuthCallback(BaseHTTPRequestHandler):
 
 class RefreshableCredentials(Refreshable):
 
-    def __init__(self, flow: 'InteractiveFlow', token: Token):
-        self._flow = flow
+    def __init__(self, client: 'OAuthClient', token: Token):
+        self._client = client
         super().__init__(token)
 
     def as_dict(self) -> dict:
-        return {'flow': self._flow.as_dict(), 'token': self._token.as_dict()}
+        return {'token': self._token.as_dict()}
 
     @staticmethod
-    def from_dict(raw: dict) -> 'RefreshableCredentials':
-        return RefreshableCredentials(flow=InteractiveFlow.from_dict(raw['flow']),
-                                      token=Token.from_dict(raw['token']))
+    def from_dict(client: 'OAuthClient', raw: dict) -> 'RefreshableCredentials':
+        return RefreshableCredentials(client=client, token=Token.from_dict(raw['token']))
 
     def auth_type(self):
         """Implementing CredentialsProvider protocol"""
@@ -173,37 +178,37 @@ class RefreshableCredentials(Refreshable):
         if not refresh_token:
             raise ValueError('oauth2: token expired and refresh token is not set')
         params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
-        return retrieve_token(client_id=self._flow.client_id,
-                              client_secret=self._flow.client_secret,
-                              token_url=self._flow.token_url,
+        headers = {}
+        if 'microsoft' in self._client.token_url:
+            # Tokens issued for the 'Single-Page Application' client-type may
+            # only be redeemed via cross-origin requests
+            headers = {'Origin': self._client.redirect_url}
+        return retrieve_token(client_id=self._client.client_id,
+                              client_secret=self._client.client_secret,
+                              token_url=self._client.token_url,
                               params=params,
-                              use_params=True)
+                              use_params=True,
+                              headers=headers)
 
 
-@dataclass
 class Consent:
-    flow: 'InteractiveFlow'
-    auth_url: str
-    state: str
-    verifier: str
+    def __init__(self, client: 'OAuthClient', state: str, verifier: str, auth_url: str = None) -> None:
+        self.auth_url = auth_url
+
+        self._verifier = verifier
+        self._state = state
+        self._client = client
 
     def as_dict(self) -> dict:
-        return {
-            'flow': self.flow.as_dict(),
-            'auth_url': self.auth_url,
-            'state': self.state,
-            'verifier': self.verifier
-        }
+        return {'state': self._state,
+                'verifier': self._verifier}
 
     @staticmethod
-    def from_dict(raw: dict) -> 'Consent':
-        return Consent(flow=InteractiveFlow.from_dict(raw['flow']),
-                       auth_url=raw['auth_url'],
-                       state=raw['state'],
-                       verifier=raw['verifier'])
+    def from_dict(client: 'OAuthClient', raw: dict) -> 'Consent':
+        return Consent(client, raw['state'], raw['verifier'])
 
     def launch_external_browser(self) -> RefreshableCredentials:
-        redirect_url = urllib.parse.urlparse(self.flow.redirect_url)
+        redirect_url = urllib.parse.urlparse(self._client.redirect_url)
         if redirect_url.hostname not in ('localhost', '127.0.0.1'):
             raise ValueError(f'cannot listen on {redirect_url.hostname}')
         feedback = []
@@ -217,9 +222,9 @@ class Consent:
         if not feedback:
             raise ValueError('No data received in callback')
         query = feedback.pop()
-        return self.exchange_query(query)
+        return self.exchange_callback_parameters(query)
 
-    def exchange_query(self, query: dict[str, str]) -> RefreshableCredentials:
+    def exchange_callback_parameters(self, query: dict[str, str]) -> RefreshableCredentials:
         if 'error' in query:
             raise ValueError('{error}: {error_description}'.format(**query))
         if 'code' not in query or 'state' not in query:
@@ -227,24 +232,27 @@ class Consent:
         return self.exchange(query['code'], query['state'])
 
     def exchange(self, code: str, state: str) -> RefreshableCredentials:
-        if self.state != state:
+        if self._state != state:
             raise ValueError('state mismatch')
-        params = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'code_verifier': self.verifier,
-            'redirect_uri': self.flow.redirect_url
-        }
-        token = retrieve_token(client_id=self.flow.client_id,
-                               client_secret=self.flow.client_secret,
-                               token_url=self.flow.token_url,
+        params = {'grant_type': 'authorization_code',
+                  'code': code,
+                  'code_verifier': self._verifier,
+                  'redirect_uri': self._client.redirect_url}
+        headers = {}
+        if 'microsoft' in self._client.token_url:
+            # Tokens issued for the 'Single-Page Application' client-type may
+            # only be redeemed via cross-origin requests
+            headers = {'Origin': self._client.redirect_url}
+        token = retrieve_token(client_id=self._client.client_id,
+                               client_secret=self._client.client_secret,
+                               token_url=self._client.token_url,
                                params=params,
+                               headers=headers,
                                use_params=True)
-        return RefreshableCredentials(self.flow, token)
+        return RefreshableCredentials(self._client, token)
 
 
-@dataclass
-class InteractiveFlow:
+class OAuthClient:
     """Enables 3-legged OAuth2 flow with PKCE
 
     For a regular web app running on a server, it's recommended to use
@@ -260,66 +268,60 @@ class InteractiveFlow:
     a transform value of the Code Verifier, called the Code Challenge,
     and sends it over HTTPS to obtain an Authorization Code.
     By intercepting the Authorization Code, a malicious attacker cannot
-    exchange it for a token without possessing the Code Verifier."""
+    exchange it for a token without possessing the Code Verifier.
+    """
 
-    client_id: str
-    auth_url: str
-    token_url: str
-    redirect_url: str
-    scopes: list[str]
-    client_secret: str = None
-    use_params: bool = False
-    use_header: bool = False
+    def __init__(self, host: str, client_id: str, redirect_url: str, *,
+                 scopes: list[str] = None,
+                 client_secret: str = None):
+        # TODO: is it a circular dependency?..
+        from .core import Config, credentials_provider
 
-    def as_dict(self) -> dict:
-        raw = {
-            'client_id': self.client_id,
-            'auth_url': self.auth_url,
-            'token_url': self.token_url,
-            'redirect_url': self.redirect_url,
-            'scopes': self.scopes,
-            'use_params': self.use_params,
-            'use_header': self.use_header
-        }
-        if self.client_secret:
-            raw['client_secret'] = self.client_secret
-        return raw
+        @credentials_provider('noop', [])
+        def noop_credentials(_: any):
+            return lambda: {}
 
-    @staticmethod
-    def from_dict(raw: dict) -> 'InteractiveFlow':
-        return InteractiveFlow(client_id=raw['client_id'],
-                               client_secret=raw.get('client_secret'),
-                               redirect_url=raw['redirect_url'],
-                               auth_url=raw['auth_url'],
-                               token_url=raw['token_url'],
-                               scopes=raw['scopes'],
-                               use_params=raw.get('use_params', False),
-                               use_header=raw.get('use_header', False))
+        config = Config(host=host, credentials_provider=noop_credentials)
+        if not scopes:
+            scopes = ['offline_access', 'clusters', 'sql']
+        if config.is_azure:
+            # Azure AD only supports full access to Azure Databricks.
+            scopes = [f'{config.effective_azure_login_app_id}/user_impersonation', 'offline_access']
+        oidc = config.oidc_endpoints
+        if not oidc:
+            raise ValueError(f'{host} does not support OAuth')
 
-    def auth_code_url(self) -> Consent:
+        self.host = host
+        self.redirect_url = redirect_url
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.token_url = oidc.token_endpoint
+        self.is_aws = config.is_aws
+        self.is_azure = config.is_azure
+
+        self._auth_url = oidc.authorization_endpoint
+        self._scopes = scopes
+
+    def initiate_consent(self) -> Consent:
         state = secrets.token_urlsafe(16)
 
         # token_urlsafe() already returns base64-encoded string
-
         verifier = secrets.token_urlsafe(32)
         digest = hashlib.sha256(verifier.encode("UTF-8")).digest()
         challenge = (base64.urlsafe_b64encode(digest).decode("UTF-8").replace("=", ""))
 
-        # verifier = secrets.token_bytes(32)
-        # sha256 = hashlib.sha256(verifier)
-        # challenge = base64.b64encode(sha256.digest()).decode('utf8')
+        params = {'response_type': 'code',
+                  'client_id': self.client_id,
+                  'redirect_uri': self.redirect_url,
+                  'scope': ' '.join(self._scopes),
+                  'state': state,
+                  'code_challenge': challenge,
+                  'code_challenge_method': 'S256'}
+        url = f'{self._auth_url}?{urllib.parse.urlencode(params)}'
+        return Consent(self, state, verifier, auth_url=url)
 
-        params = {
-            'response_type': 'code',
-            'client_id': self.client_id,
-            'redirect_uri': self.redirect_url,
-            'scope': ' '.join(self.scopes),
-            'state': state,
-            'code_challenge': challenge,
-            'code_challenge_method': 'S256'
-        }
-        url = f'{self.auth_url}?{urllib.parse.urlencode(params)}'
-        return Consent(flow=self, auth_url=url, state=state, verifier=verifier)
+    def __repr__(self) -> str:
+        return f'<OAuthClient {self.host} client_id={self.client_id}>'
 
 
 @dataclass
