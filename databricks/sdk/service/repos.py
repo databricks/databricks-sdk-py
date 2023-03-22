@@ -29,7 +29,7 @@ class CreateRepo:
         return cls(path=d.get('path', None),
                    provider=d.get('provider', None),
                    sparse_checkout=SparseCheckout.from_dict(d['sparse_checkout'])
-                   if 'sparse_checkout' in d else None,
+                   if 'sparse_checkout' in d and d['sparse_checkout'] is not None else None,
                    url=d.get('url', None))
 
 
@@ -102,7 +102,7 @@ class RepoInfo:
                    path=d.get('path', None),
                    provider=d.get('provider', None),
                    sparse_checkout=SparseCheckout.from_dict(d['sparse_checkout'])
-                   if 'sparse_checkout' in d else None,
+                   if 'sparse_checkout' in d and d['sparse_checkout'] is not None else None,
                    url=d.get('url', None))
 
 
@@ -154,7 +154,7 @@ class UpdateRepo:
         return cls(branch=d.get('branch', None),
                    repo_id=d.get('repo_id', None),
                    sparse_checkout=SparseCheckoutUpdate.from_dict(d['sparse_checkout'])
-                   if 'sparse_checkout' in d else None,
+                   if 'sparse_checkout' in d and d['sparse_checkout'] is not None else None,
                    tag=d.get('tag', None))
 
 

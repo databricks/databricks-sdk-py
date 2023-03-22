@@ -38,7 +38,8 @@ class BaseJob:
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
                    job_id=d.get('job_id', None),
-                   settings=JobSettings.from_dict(d['settings']) if 'settings' in d else None)
+                   settings=JobSettings.from_dict(d['settings'])
+                   if 'settings' in d and d['settings'] is not None else None)
 
 
 @dataclass
@@ -103,29 +104,33 @@ class BaseRun:
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=ClusterInstance.from_dict(d['cluster_instance'])
-                   if 'cluster_instance' in d else None,
-                   cluster_spec=ClusterSpec.from_dict(d['cluster_spec']) if 'cluster_spec' in d else None,
-                   continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
+                   if 'cluster_instance' in d and d['cluster_instance'] is not None else None,
+                   cluster_spec=ClusterSpec.from_dict(d['cluster_spec'])
+                   if 'cluster_spec' in d and d['cluster_spec'] is not None else None,
+                   continuous=Continuous.from_dict(d['continuous'])
+                   if 'continuous' in d and d['continuous'] is not None else None,
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
-                   git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
+                   git_source=GitSource.from_dict(d['git_source'])
+                   if 'git_source' in d and d['git_source'] is not None else None,
                    job_clusters=[JobCluster.from_dict(v) for v in d['job_clusters']]
                    if 'job_clusters' in d and d['job_clusters'] is not None else None,
                    job_id=d.get('job_id', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=RunParameters.from_dict(d['overriding_parameters'])
-                   if 'overriding_parameters' in d else None,
+                   if 'overriding_parameters' in d and d['overriding_parameters'] is not None else None,
                    run_duration=d.get('run_duration', None),
                    run_id=d.get('run_id', None),
                    run_name=d.get('run_name', None),
                    run_page_url=d.get('run_page_url', None),
                    run_type=RunType.__members__.get(d['run_type'], None) if 'run_type' in d else None,
-                   schedule=CronSchedule.from_dict(d['schedule']) if 'schedule' in d else None,
+                   schedule=CronSchedule.from_dict(d['schedule'])
+                   if 'schedule' in d and d['schedule'] is not None else None,
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
-                   state=RunState.from_dict(d['state']) if 'state' in d else None,
+                   state=RunState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None,
                    tasks=[RunTask.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    trigger=TriggerType.__members__.get(d['trigger'], None) if 'trigger' in d else None)
@@ -192,7 +197,8 @@ class ClusterSpec:
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
                    libraries=d.get('libraries', None),
-                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster']) if 'new_cluster' in d else None)
+                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster'])
+                   if 'new_cluster' in d and d['new_cluster'] is not None else None)
 
 
 @dataclass
@@ -255,23 +261,27 @@ class CreateJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
         return cls(access_control_list=d.get('access_control_list', None),
-                   continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
+                   continuous=Continuous.from_dict(d['continuous'])
+                   if 'continuous' in d and d['continuous'] is not None else None,
                    email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
-                   if 'email_notifications' in d else None,
+                   if 'email_notifications' in d and d['email_notifications'] is not None else None,
                    format=CreateJobFormat.__members__.get(d['format'], None) if 'format' in d else None,
-                   git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
+                   git_source=GitSource.from_dict(d['git_source'])
+                   if 'git_source' in d and d['git_source'] is not None else None,
                    job_clusters=[JobCluster.from_dict(v) for v in d['job_clusters']]
                    if 'job_clusters' in d and d['job_clusters'] is not None else None,
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
-                   schedule=CronSchedule.from_dict(d['schedule']) if 'schedule' in d else None,
+                   schedule=CronSchedule.from_dict(d['schedule'])
+                   if 'schedule' in d and d['schedule'] is not None else None,
                    tags=d.get('tags', None),
                    tasks=[JobTaskSettings.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    timeout_seconds=d.get('timeout_seconds', None),
-                   trigger=TriggerSettings.from_dict(d['trigger']) if 'trigger' in d else None,
+                   trigger=TriggerSettings.from_dict(d['trigger'])
+                   if 'trigger' in d and d['trigger'] is not None else None,
                    webhook_notifications=JobWebhookNotifications.from_dict(d['webhook_notifications'])
-                   if 'webhook_notifications' in d else None)
+                   if 'webhook_notifications' in d and d['webhook_notifications'] is not None else None)
 
 
 class CreateJobFormat(Enum):
@@ -510,7 +520,8 @@ class GitSource:
                    git_commit=d.get('git_commit', None),
                    git_provider=GitSourceGitProvider.__members__.get(d['git_provider'], None)
                    if 'git_provider' in d else None,
-                   git_snapshot=GitSnapshot.from_dict(d['git_snapshot']) if 'git_snapshot' in d else None,
+                   git_snapshot=GitSnapshot.from_dict(d['git_snapshot'])
+                   if 'git_snapshot' in d and d['git_snapshot'] is not None else None,
                    git_tag=d.get('git_tag', None),
                    git_url=d.get('git_url', None))
 
@@ -553,9 +564,10 @@ class Job:
                    creator_user_name=d.get('creator_user_name', None),
                    job_id=d.get('job_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
-                   settings=JobSettings.from_dict(d['settings']) if 'settings' in d else None,
+                   settings=JobSettings.from_dict(d['settings'])
+                   if 'settings' in d and d['settings'] is not None else None,
                    trigger_history=TriggerHistory.from_dict(d['trigger_history'])
-                   if 'trigger_history' in d else None)
+                   if 'trigger_history' in d and d['trigger_history'] is not None else None)
 
 
 @dataclass
@@ -572,7 +584,8 @@ class JobCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobCluster':
         return cls(job_cluster_key=d.get('job_cluster_key', None),
-                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster']) if 'new_cluster' in d else None)
+                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster'])
+                   if 'new_cluster' in d and d['new_cluster'] is not None else None)
 
 
 @dataclass
@@ -633,23 +646,27 @@ class JobSettings:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobSettings':
-        return cls(continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
+        return cls(continuous=Continuous.from_dict(d['continuous'])
+                   if 'continuous' in d and d['continuous'] is not None else None,
                    email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
-                   if 'email_notifications' in d else None,
+                   if 'email_notifications' in d and d['email_notifications'] is not None else None,
                    format=JobSettingsFormat.__members__.get(d['format'], None) if 'format' in d else None,
-                   git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
+                   git_source=GitSource.from_dict(d['git_source'])
+                   if 'git_source' in d and d['git_source'] is not None else None,
                    job_clusters=[JobCluster.from_dict(v) for v in d['job_clusters']]
                    if 'job_clusters' in d and d['job_clusters'] is not None else None,
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
-                   schedule=CronSchedule.from_dict(d['schedule']) if 'schedule' in d else None,
+                   schedule=CronSchedule.from_dict(d['schedule'])
+                   if 'schedule' in d and d['schedule'] is not None else None,
                    tags=d.get('tags', None),
                    tasks=[JobTaskSettings.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    timeout_seconds=d.get('timeout_seconds', None),
-                   trigger=TriggerSettings.from_dict(d['trigger']) if 'trigger' in d else None,
+                   trigger=TriggerSettings.from_dict(d['trigger'])
+                   if 'trigger' in d and d['trigger'] is not None else None,
                    webhook_notifications=JobWebhookNotifications.from_dict(d['webhook_notifications'])
-                   if 'webhook_notifications' in d else None)
+                   if 'webhook_notifications' in d and d['webhook_notifications'] is not None else None)
 
 
 class JobSettingsFormat(Enum):
@@ -709,32 +726,37 @@ class JobTaskSettings:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobTaskSettings':
-        return cls(
-            dbt_task=DbtTask.from_dict(d['dbt_task']) if 'dbt_task' in d else None,
-            depends_on=[TaskDependenciesItem.from_dict(v) for v in d['depends_on']]
-            if 'depends_on' in d and d['depends_on'] is not None else None,
-            description=d.get('description', None),
-            email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
-            if 'email_notifications' in d else None,
-            existing_cluster_id=d.get('existing_cluster_id', None),
-            job_cluster_key=d.get('job_cluster_key', None),
-            libraries=d.get('libraries', None),
-            max_retries=d.get('max_retries', None),
-            min_retry_interval_millis=d.get('min_retry_interval_millis', None),
-            new_cluster=BaseClusterInfo.from_dict(d['new_cluster']) if 'new_cluster' in d else None,
-            notebook_task=NotebookTask.from_dict(d['notebook_task']) if 'notebook_task' in d else None,
-            pipeline_task=PipelineTask.from_dict(d['pipeline_task']) if 'pipeline_task' in d else None,
-            python_wheel_task=PythonWheelTask.from_dict(d['python_wheel_task'])
-            if 'python_wheel_task' in d else None,
-            retry_on_timeout=d.get('retry_on_timeout', None),
-            spark_jar_task=SparkJarTask.from_dict(d['spark_jar_task']) if 'spark_jar_task' in d else None,
-            spark_python_task=SparkPythonTask.from_dict(d['spark_python_task'])
-            if 'spark_python_task' in d else None,
-            spark_submit_task=SparkSubmitTask.from_dict(d['spark_submit_task'])
-            if 'spark_submit_task' in d else None,
-            sql_task=SqlTask.from_dict(d['sql_task']) if 'sql_task' in d else None,
-            task_key=d.get('task_key', None),
-            timeout_seconds=d.get('timeout_seconds', None))
+        return cls(dbt_task=DbtTask.from_dict(d['dbt_task'])
+                   if 'dbt_task' in d and d['dbt_task'] is not None else None,
+                   depends_on=[TaskDependenciesItem.from_dict(v) for v in d['depends_on']]
+                   if 'depends_on' in d and d['depends_on'] is not None else None,
+                   description=d.get('description', None),
+                   email_notifications=JobEmailNotifications.from_dict(d['email_notifications'])
+                   if 'email_notifications' in d and d['email_notifications'] is not None else None,
+                   existing_cluster_id=d.get('existing_cluster_id', None),
+                   job_cluster_key=d.get('job_cluster_key', None),
+                   libraries=d.get('libraries', None),
+                   max_retries=d.get('max_retries', None),
+                   min_retry_interval_millis=d.get('min_retry_interval_millis', None),
+                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster'])
+                   if 'new_cluster' in d and d['new_cluster'] is not None else None,
+                   notebook_task=NotebookTask.from_dict(d['notebook_task'])
+                   if 'notebook_task' in d and d['notebook_task'] is not None else None,
+                   pipeline_task=PipelineTask.from_dict(d['pipeline_task'])
+                   if 'pipeline_task' in d and d['pipeline_task'] is not None else None,
+                   python_wheel_task=PythonWheelTask.from_dict(d['python_wheel_task'])
+                   if 'python_wheel_task' in d and d['python_wheel_task'] is not None else None,
+                   retry_on_timeout=d.get('retry_on_timeout', None),
+                   spark_jar_task=SparkJarTask.from_dict(d['spark_jar_task'])
+                   if 'spark_jar_task' in d and d['spark_jar_task'] is not None else None,
+                   spark_python_task=SparkPythonTask.from_dict(d['spark_python_task'])
+                   if 'spark_python_task' in d and d['spark_python_task'] is not None else None,
+                   spark_submit_task=SparkSubmitTask.from_dict(d['spark_submit_task'])
+                   if 'spark_submit_task' in d and d['spark_submit_task'] is not None else None,
+                   sql_task=SqlTask.from_dict(d['sql_task'])
+                   if 'sql_task' in d and d['sql_task'] is not None else None,
+                   task_key=d.get('task_key', None),
+                   timeout_seconds=d.get('timeout_seconds', None))
 
 
 @dataclass
@@ -992,7 +1014,7 @@ class RepairHistoryItem:
         return cls(end_time=d.get('end_time', None),
                    id=d.get('id', None),
                    start_time=d.get('start_time', None),
-                   state=RunState.from_dict(d['state']) if 'state' in d else None,
+                   state=RunState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None,
                    task_run_ids=d.get('task_run_ids', None),
                    type=RepairHistoryItemType.__members__.get(d['type'], None) if 'type' in d else None)
 
@@ -1042,7 +1064,7 @@ class RepairRun:
                    latest_repair_id=d.get('latest_repair_id', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=PipelineParams.from_dict(d['pipeline_params'])
-                   if 'pipeline_params' in d else None,
+                   if 'pipeline_params' in d and d['pipeline_params'] is not None else None,
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
                    rerun_all_failed_tasks=d.get('rerun_all_failed_tasks', None),
@@ -1080,7 +1102,8 @@ class ResetJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResetJob':
         return cls(job_id=d.get('job_id', None),
-                   new_settings=JobSettings.from_dict(d['new_settings']) if 'new_settings' in d else None)
+                   new_settings=JobSettings.from_dict(d['new_settings'])
+                   if 'new_settings' in d and d['new_settings'] is not None else None)
 
 
 @dataclass
@@ -1147,20 +1170,23 @@ class Run:
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=ClusterInstance.from_dict(d['cluster_instance'])
-                   if 'cluster_instance' in d else None,
-                   cluster_spec=ClusterSpec.from_dict(d['cluster_spec']) if 'cluster_spec' in d else None,
-                   continuous=Continuous.from_dict(d['continuous']) if 'continuous' in d else None,
+                   if 'cluster_instance' in d and d['cluster_instance'] is not None else None,
+                   cluster_spec=ClusterSpec.from_dict(d['cluster_spec'])
+                   if 'cluster_spec' in d and d['cluster_spec'] is not None else None,
+                   continuous=Continuous.from_dict(d['continuous'])
+                   if 'continuous' in d and d['continuous'] is not None else None,
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
-                   git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
+                   git_source=GitSource.from_dict(d['git_source'])
+                   if 'git_source' in d and d['git_source'] is not None else None,
                    job_clusters=[JobCluster.from_dict(v) for v in d['job_clusters']]
                    if 'job_clusters' in d and d['job_clusters'] is not None else None,
                    job_id=d.get('job_id', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=RunParameters.from_dict(d['overriding_parameters'])
-                   if 'overriding_parameters' in d else None,
+                   if 'overriding_parameters' in d and d['overriding_parameters'] is not None else None,
                    repair_history=[RepairHistoryItem.from_dict(v) for v in d['repair_history']]
                    if 'repair_history' in d and d['repair_history'] is not None else None,
                    run_duration=d.get('run_duration', None),
@@ -1168,10 +1194,11 @@ class Run:
                    run_name=d.get('run_name', None),
                    run_page_url=d.get('run_page_url', None),
                    run_type=RunType.__members__.get(d['run_type'], None) if 'run_type' in d else None,
-                   schedule=CronSchedule.from_dict(d['schedule']) if 'schedule' in d else None,
+                   schedule=CronSchedule.from_dict(d['schedule'])
+                   if 'schedule' in d and d['schedule'] is not None else None,
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
-                   state=RunState.from_dict(d['state']) if 'state' in d else None,
+                   state=RunState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None,
                    tasks=[RunTask.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    trigger=TriggerType.__members__.get(d['trigger'], None) if 'trigger' in d else None)
@@ -1225,7 +1252,7 @@ class RunNow:
                    job_id=d.get('job_id', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=PipelineParams.from_dict(d['pipeline_params'])
-                   if 'pipeline_params' in d else None,
+                   if 'pipeline_params' in d and d['pipeline_params'] is not None else None,
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
                    spark_submit_params=d.get('spark_submit_params', None),
@@ -1273,15 +1300,18 @@ class RunOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunOutput':
-        return cls(dbt_output=DbtOutput.from_dict(d['dbt_output']) if 'dbt_output' in d else None,
-                   error=d.get('error', None),
-                   error_trace=d.get('error_trace', None),
-                   logs=d.get('logs', None),
-                   logs_truncated=d.get('logs_truncated', None),
-                   metadata=Run.from_dict(d['metadata']) if 'metadata' in d else None,
-                   notebook_output=NotebookOutput.from_dict(d['notebook_output'])
-                   if 'notebook_output' in d else None,
-                   sql_output=SqlOutput.from_dict(d['sql_output']) if 'sql_output' in d else None)
+        return cls(
+            dbt_output=DbtOutput.from_dict(d['dbt_output'])
+            if 'dbt_output' in d and d['dbt_output'] is not None else None,
+            error=d.get('error', None),
+            error_trace=d.get('error_trace', None),
+            logs=d.get('logs', None),
+            logs_truncated=d.get('logs_truncated', None),
+            metadata=Run.from_dict(d['metadata']) if 'metadata' in d and d['metadata'] is not None else None,
+            notebook_output=NotebookOutput.from_dict(d['notebook_output'])
+            if 'notebook_output' in d and d['notebook_output'] is not None else None,
+            sql_output=SqlOutput.from_dict(d['sql_output'])
+            if 'sql_output' in d and d['sql_output'] is not None else None)
 
 
 @dataclass
@@ -1313,7 +1343,7 @@ class RunParameters:
                    jar_params=d.get('jar_params', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=PipelineParams.from_dict(d['pipeline_params'])
-                   if 'pipeline_params' in d else None,
+                   if 'pipeline_params' in d and d['pipeline_params'] is not None else None,
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
                    spark_submit_params=d.get('spark_submit_params', None),
@@ -1390,23 +1420,26 @@ class RunSubmitTaskSettings:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunSubmitTaskSettings':
-        return cls(
-            depends_on=[TaskDependenciesItem.from_dict(v) for v in d['depends_on']]
-            if 'depends_on' in d and d['depends_on'] is not None else None,
-            existing_cluster_id=d.get('existing_cluster_id', None),
-            libraries=d.get('libraries', None),
-            new_cluster=BaseClusterInfo.from_dict(d['new_cluster']) if 'new_cluster' in d else None,
-            notebook_task=NotebookTask.from_dict(d['notebook_task']) if 'notebook_task' in d else None,
-            pipeline_task=PipelineTask.from_dict(d['pipeline_task']) if 'pipeline_task' in d else None,
-            python_wheel_task=PythonWheelTask.from_dict(d['python_wheel_task'])
-            if 'python_wheel_task' in d else None,
-            spark_jar_task=SparkJarTask.from_dict(d['spark_jar_task']) if 'spark_jar_task' in d else None,
-            spark_python_task=SparkPythonTask.from_dict(d['spark_python_task'])
-            if 'spark_python_task' in d else None,
-            spark_submit_task=SparkSubmitTask.from_dict(d['spark_submit_task'])
-            if 'spark_submit_task' in d else None,
-            task_key=d.get('task_key', None),
-            timeout_seconds=d.get('timeout_seconds', None))
+        return cls(depends_on=[TaskDependenciesItem.from_dict(v) for v in d['depends_on']]
+                   if 'depends_on' in d and d['depends_on'] is not None else None,
+                   existing_cluster_id=d.get('existing_cluster_id', None),
+                   libraries=d.get('libraries', None),
+                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster'])
+                   if 'new_cluster' in d and d['new_cluster'] is not None else None,
+                   notebook_task=NotebookTask.from_dict(d['notebook_task'])
+                   if 'notebook_task' in d and d['notebook_task'] is not None else None,
+                   pipeline_task=PipelineTask.from_dict(d['pipeline_task'])
+                   if 'pipeline_task' in d and d['pipeline_task'] is not None else None,
+                   python_wheel_task=PythonWheelTask.from_dict(d['python_wheel_task'])
+                   if 'python_wheel_task' in d and d['python_wheel_task'] is not None else None,
+                   spark_jar_task=SparkJarTask.from_dict(d['spark_jar_task'])
+                   if 'spark_jar_task' in d and d['spark_jar_task'] is not None else None,
+                   spark_python_task=SparkPythonTask.from_dict(d['spark_python_task'])
+                   if 'spark_python_task' in d and d['spark_python_task'] is not None else None,
+                   spark_submit_task=SparkSubmitTask.from_dict(d['spark_submit_task'])
+                   if 'spark_submit_task' in d and d['spark_submit_task'] is not None else None,
+                   task_key=d.get('task_key', None),
+                   timeout_seconds=d.get('timeout_seconds', None))
 
 
 @dataclass
@@ -1466,36 +1499,42 @@ class RunTask:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunTask':
-        return cls(
-            attempt_number=d.get('attempt_number', None),
-            cleanup_duration=d.get('cleanup_duration', None),
-            cluster_instance=ClusterInstance.from_dict(d['cluster_instance'])
-            if 'cluster_instance' in d else None,
-            dbt_task=DbtTask.from_dict(d['dbt_task']) if 'dbt_task' in d else None,
-            depends_on=[TaskDependenciesItem.from_dict(v) for v in d['depends_on']]
-            if 'depends_on' in d and d['depends_on'] is not None else None,
-            description=d.get('description', None),
-            end_time=d.get('end_time', None),
-            execution_duration=d.get('execution_duration', None),
-            existing_cluster_id=d.get('existing_cluster_id', None),
-            git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
-            libraries=d.get('libraries', None),
-            new_cluster=BaseClusterInfo.from_dict(d['new_cluster']) if 'new_cluster' in d else None,
-            notebook_task=NotebookTask.from_dict(d['notebook_task']) if 'notebook_task' in d else None,
-            pipeline_task=PipelineTask.from_dict(d['pipeline_task']) if 'pipeline_task' in d else None,
-            python_wheel_task=PythonWheelTask.from_dict(d['python_wheel_task'])
-            if 'python_wheel_task' in d else None,
-            run_id=d.get('run_id', None),
-            setup_duration=d.get('setup_duration', None),
-            spark_jar_task=SparkJarTask.from_dict(d['spark_jar_task']) if 'spark_jar_task' in d else None,
-            spark_python_task=SparkPythonTask.from_dict(d['spark_python_task'])
-            if 'spark_python_task' in d else None,
-            spark_submit_task=SparkSubmitTask.from_dict(d['spark_submit_task'])
-            if 'spark_submit_task' in d else None,
-            sql_task=SqlTask.from_dict(d['sql_task']) if 'sql_task' in d else None,
-            start_time=d.get('start_time', None),
-            state=RunState.from_dict(d['state']) if 'state' in d else None,
-            task_key=d.get('task_key', None))
+        return cls(attempt_number=d.get('attempt_number', None),
+                   cleanup_duration=d.get('cleanup_duration', None),
+                   cluster_instance=ClusterInstance.from_dict(d['cluster_instance'])
+                   if 'cluster_instance' in d and d['cluster_instance'] is not None else None,
+                   dbt_task=DbtTask.from_dict(d['dbt_task'])
+                   if 'dbt_task' in d and d['dbt_task'] is not None else None,
+                   depends_on=[TaskDependenciesItem.from_dict(v) for v in d['depends_on']]
+                   if 'depends_on' in d and d['depends_on'] is not None else None,
+                   description=d.get('description', None),
+                   end_time=d.get('end_time', None),
+                   execution_duration=d.get('execution_duration', None),
+                   existing_cluster_id=d.get('existing_cluster_id', None),
+                   git_source=GitSource.from_dict(d['git_source'])
+                   if 'git_source' in d and d['git_source'] is not None else None,
+                   libraries=d.get('libraries', None),
+                   new_cluster=BaseClusterInfo.from_dict(d['new_cluster'])
+                   if 'new_cluster' in d and d['new_cluster'] is not None else None,
+                   notebook_task=NotebookTask.from_dict(d['notebook_task'])
+                   if 'notebook_task' in d and d['notebook_task'] is not None else None,
+                   pipeline_task=PipelineTask.from_dict(d['pipeline_task'])
+                   if 'pipeline_task' in d and d['pipeline_task'] is not None else None,
+                   python_wheel_task=PythonWheelTask.from_dict(d['python_wheel_task'])
+                   if 'python_wheel_task' in d and d['python_wheel_task'] is not None else None,
+                   run_id=d.get('run_id', None),
+                   setup_duration=d.get('setup_duration', None),
+                   spark_jar_task=SparkJarTask.from_dict(d['spark_jar_task'])
+                   if 'spark_jar_task' in d and d['spark_jar_task'] is not None else None,
+                   spark_python_task=SparkPythonTask.from_dict(d['spark_python_task'])
+                   if 'spark_python_task' in d and d['spark_python_task'] is not None else None,
+                   spark_submit_task=SparkSubmitTask.from_dict(d['spark_submit_task'])
+                   if 'spark_submit_task' in d and d['spark_submit_task'] is not None else None,
+                   sql_task=SqlTask.from_dict(d['sql_task'])
+                   if 'sql_task' in d and d['sql_task'] is not None else None,
+                   start_time=d.get('start_time', None),
+                   state=RunState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None,
+                   task_key=d.get('task_key', None))
 
 
 class RunType(Enum):
@@ -1609,7 +1648,8 @@ class SqlDashboardOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SqlDashboardOutput':
         return cls(warehouse_id=d.get('warehouse_id', None),
-                   widgets=SqlDashboardWidgetOutput.from_dict(d['widgets']) if 'widgets' in d else None)
+                   widgets=SqlDashboardWidgetOutput.from_dict(d['widgets'])
+                   if 'widgets' in d and d['widgets'] is not None else None)
 
 
 @dataclass
@@ -1635,14 +1675,15 @@ class SqlDashboardWidgetOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SqlDashboardWidgetOutput':
-        return cls(end_time=d.get('end_time', None),
-                   error=SqlOutputError.from_dict(d['error']) if 'error' in d else None,
-                   output_link=d.get('output_link', None),
-                   start_time=d.get('start_time', None),
-                   status=SqlDashboardWidgetOutputStatus.__members__.get(d['status'], None)
-                   if 'status' in d else None,
-                   widget_id=d.get('widget_id', None),
-                   widget_title=d.get('widget_title', None))
+        return cls(
+            end_time=d.get('end_time', None),
+            error=SqlOutputError.from_dict(d['error']) if 'error' in d and d['error'] is not None else None,
+            output_link=d.get('output_link', None),
+            start_time=d.get('start_time', None),
+            status=SqlDashboardWidgetOutputStatus.__members__.get(d['status'], None)
+            if 'status' in d else None,
+            widget_id=d.get('widget_id', None),
+            widget_title=d.get('widget_title', None))
 
 
 class SqlDashboardWidgetOutputStatus(Enum):
@@ -1670,10 +1711,12 @@ class SqlOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SqlOutput':
-        return cls(alert_output=SqlAlertOutput.from_dict(d['alert_output']) if 'alert_output' in d else None,
+        return cls(alert_output=SqlAlertOutput.from_dict(d['alert_output'])
+                   if 'alert_output' in d and d['alert_output'] is not None else None,
                    dashboard_output=SqlDashboardOutput.from_dict(d['dashboard_output'])
-                   if 'dashboard_output' in d else None,
-                   query_output=SqlQueryOutput.from_dict(d['query_output']) if 'query_output' in d else None)
+                   if 'dashboard_output' in d and d['dashboard_output'] is not None else None,
+                   query_output=SqlQueryOutput.from_dict(d['query_output'])
+                   if 'query_output' in d and d['query_output'] is not None else None)
 
 
 @dataclass
@@ -1747,11 +1790,13 @@ class SqlTask:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SqlTask':
-        return cls(alert=SqlTaskAlert.from_dict(d['alert']) if 'alert' in d else None,
-                   dashboard=SqlTaskDashboard.from_dict(d['dashboard']) if 'dashboard' in d else None,
-                   parameters=d.get('parameters', None),
-                   query=SqlTaskQuery.from_dict(d['query']) if 'query' in d else None,
-                   warehouse_id=d.get('warehouse_id', None))
+        return cls(
+            alert=SqlTaskAlert.from_dict(d['alert']) if 'alert' in d and d['alert'] is not None else None,
+            dashboard=SqlTaskDashboard.from_dict(d['dashboard'])
+            if 'dashboard' in d and d['dashboard'] is not None else None,
+            parameters=d.get('parameters', None),
+            query=SqlTaskQuery.from_dict(d['query']) if 'query' in d and d['query'] is not None else None,
+            warehouse_id=d.get('warehouse_id', None))
 
 
 @dataclass
@@ -1853,14 +1898,15 @@ class SubmitRun:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SubmitRun':
         return cls(access_control_list=d.get('access_control_list', None),
-                   git_source=GitSource.from_dict(d['git_source']) if 'git_source' in d else None,
+                   git_source=GitSource.from_dict(d['git_source'])
+                   if 'git_source' in d and d['git_source'] is not None else None,
                    idempotency_token=d.get('idempotency_token', None),
                    run_name=d.get('run_name', None),
                    tasks=[RunSubmitTaskSettings.from_dict(v)
                           for v in d['tasks']] if 'tasks' in d and d['tasks'] is not None else None,
                    timeout_seconds=d.get('timeout_seconds', None),
                    webhook_notifications=JobWebhookNotifications.from_dict(d['webhook_notifications'])
-                   if 'webhook_notifications' in d else None)
+                   if 'webhook_notifications' in d and d['webhook_notifications'] is not None else None)
 
 
 @dataclass
@@ -1926,11 +1972,12 @@ class TriggerHistory:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TriggerHistory':
-        return cls(last_failed=TriggerEvaluation.from_dict(d['last_failed']) if 'last_failed' in d else None,
+        return cls(last_failed=TriggerEvaluation.from_dict(d['last_failed'])
+                   if 'last_failed' in d and d['last_failed'] is not None else None,
                    last_not_triggered=TriggerEvaluation.from_dict(d['last_not_triggered'])
-                   if 'last_not_triggered' in d else None,
+                   if 'last_not_triggered' in d and d['last_not_triggered'] is not None else None,
                    last_triggered=TriggerEvaluation.from_dict(d['last_triggered'])
-                   if 'last_triggered' in d else None)
+                   if 'last_triggered' in d and d['last_triggered'] is not None else None)
 
 
 @dataclass
@@ -1947,7 +1994,7 @@ class TriggerSettings:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TriggerSettings':
         return cls(file_arrival=FileArrivalTriggerSettings.from_dict(d['file_arrival'])
-                   if 'file_arrival' in d else None,
+                   if 'file_arrival' in d and d['file_arrival'] is not None else None,
                    pause_status=TriggerSettingsPauseStatus.__members__.get(d['pause_status'], None)
                    if 'pause_status' in d else None)
 
@@ -1985,7 +2032,8 @@ class UpdateJob:
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateJob':
         return cls(fields_to_remove=d.get('fields_to_remove', None),
                    job_id=d.get('job_id', None),
-                   new_settings=JobSettings.from_dict(d['new_settings']) if 'new_settings' in d else None)
+                   new_settings=JobSettings.from_dict(d['new_settings'])
+                   if 'new_settings' in d and d['new_settings'] is not None else None)
 
 
 @dataclass

@@ -99,26 +99,26 @@ class CatalogInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
-        return cls(
-            catalog_type=CatalogType.__members__.get(d['catalog_type'], None)
-            if 'catalog_type' in d else None,
-            comment=d.get('comment', None),
-            created_at=d.get('created_at', None),
-            created_by=d.get('created_by', None),
-            effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
-                d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d else None,
-            enable_auto_maintenance=EnableAutoMaintenance.__members__.get(d['enable_auto_maintenance'], None)
-            if 'enable_auto_maintenance' in d else None,
-            metastore_id=d.get('metastore_id', None),
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            properties=d.get('properties', None),
-            provider_name=d.get('provider_name', None),
-            share_name=d.get('share_name', None),
-            storage_location=d.get('storage_location', None),
-            storage_root=d.get('storage_root', None),
-            updated_at=d.get('updated_at', None),
-            updated_by=d.get('updated_by', None))
+        return cls(catalog_type=CatalogType.__members__.get(d['catalog_type'], None)
+                   if 'catalog_type' in d else None,
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
+                       d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d
+                   and d['effective_auto_maintenance_flag'] is not None else None,
+                   enable_auto_maintenance=EnableAutoMaintenance.__members__.get(
+                       d['enable_auto_maintenance'], None) if 'enable_auto_maintenance' in d else None,
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   properties=d.get('properties', None),
+                   provider_name=d.get('provider_name', None),
+                   share_name=d.get('share_name', None),
+                   storage_location=d.get('storage_location', None),
+                   storage_root=d.get('storage_root', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None))
 
 
 class CatalogType(Enum):
@@ -164,7 +164,7 @@ class ColumnInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
         return cls(
             comment=d.get('comment', None),
-            mask=ColumnMask.from_dict(d['mask']) if 'mask' in d else None,
+            mask=ColumnMask.from_dict(d['mask']) if 'mask' in d and d['mask'] is not None else None,
             name=d.get('name', None),
             nullable=d.get('nullable', None),
             partition_index=d.get('partition_index', None),
@@ -480,16 +480,16 @@ class CreateRecipient:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRecipient':
-        return cls(
-            authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
-            if 'authentication_type' in d else None,
-            comment=d.get('comment', None),
-            data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
-            ip_access_list=IpAccessList.from_dict(d['ip_access_list']) if 'ip_access_list' in d else None,
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            properties_kvpairs=d.get('properties_kvpairs', None),
-            sharing_code=d.get('sharing_code', None))
+        return cls(authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
+                   if 'authentication_type' in d else None,
+                   comment=d.get('comment', None),
+                   data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
+                   ip_access_list=IpAccessList.from_dict(d['ip_access_list'])
+                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None,
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   sharing_code=d.get('sharing_code', None))
 
 
 @dataclass
@@ -561,12 +561,13 @@ class CreateStorageCredential:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateStorageCredential':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role']) if 'aws_iam_role' in d else None,
+        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
+                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
                    azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d else None,
+                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
                    comment=d.get('comment', None),
                    gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d else None,
+                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
@@ -586,7 +587,8 @@ class CreateTableConstraint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateTableConstraint':
-        return cls(constraint=TableConstraint.from_dict(d['constraint']) if 'constraint' in d else None,
+        return cls(constraint=TableConstraint.from_dict(d['constraint'])
+                   if 'constraint' in d and d['constraint'] is not None else None,
                    full_name_arg=d.get('full_name_arg', None))
 
 
@@ -719,8 +721,10 @@ class Dependency:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Dependency':
-        return cls(function=FunctionDependency.from_dict(d['function']) if 'function' in d else None,
-                   table=TableDependency.from_dict(d['table']) if 'table' in d else None)
+        return cls(
+            function=FunctionDependency.from_dict(d['function'])
+            if 'function' in d and d['function'] is not None else None,
+            table=TableDependency.from_dict(d['table']) if 'table' in d and d['table'] is not None else None)
 
 
 @dataclass
@@ -1901,7 +1905,7 @@ class ProviderInfo:
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    recipient_profile=RecipientProfile.from_dict(d['recipient_profile'])
-                   if 'recipient_profile' in d else None,
+                   if 'recipient_profile' in d and d['recipient_profile'] is not None else None,
                    recipient_profile_str=d.get('recipient_profile_str', None),
                    region=d.get('region', None),
                    updated_at=d.get('updated_at', None),
@@ -1968,27 +1972,27 @@ class RecipientInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RecipientInfo':
-        return cls(
-            activated=d.get('activated', None),
-            activation_url=d.get('activation_url', None),
-            authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
-            if 'authentication_type' in d else None,
-            cloud=d.get('cloud', None),
-            comment=d.get('comment', None),
-            created_at=d.get('created_at', None),
-            created_by=d.get('created_by', None),
-            data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
-            ip_access_list=IpAccessList.from_dict(d['ip_access_list']) if 'ip_access_list' in d else None,
-            metastore_id=d.get('metastore_id', None),
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            properties_kvpairs=d.get('properties_kvpairs', None),
-            region=d.get('region', None),
-            sharing_code=d.get('sharing_code', None),
-            tokens=[RecipientTokenInfo.from_dict(v)
-                    for v in d['tokens']] if 'tokens' in d and d['tokens'] is not None else None,
-            updated_at=d.get('updated_at', None),
-            updated_by=d.get('updated_by', None))
+        return cls(activated=d.get('activated', None),
+                   activation_url=d.get('activation_url', None),
+                   authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
+                   if 'authentication_type' in d else None,
+                   cloud=d.get('cloud', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
+                   ip_access_list=IpAccessList.from_dict(d['ip_access_list'])
+                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None,
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   region=d.get('region', None),
+                   sharing_code=d.get('sharing_code', None),
+                   tokens=[RecipientTokenInfo.from_dict(v)
+                           for v in d['tokens']] if 'tokens' in d and d['tokens'] is not None else None,
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None))
 
 
 @dataclass
@@ -2133,25 +2137,25 @@ class SchemaInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SchemaInfo':
-        return cls(
-            catalog_name=d.get('catalog_name', None),
-            catalog_type=d.get('catalog_type', None),
-            comment=d.get('comment', None),
-            created_at=d.get('created_at', None),
-            created_by=d.get('created_by', None),
-            effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
-                d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d else None,
-            enable_auto_maintenance=EnableAutoMaintenance.__members__.get(d['enable_auto_maintenance'], None)
-            if 'enable_auto_maintenance' in d else None,
-            full_name=d.get('full_name', None),
-            metastore_id=d.get('metastore_id', None),
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            properties=d.get('properties', None),
-            storage_location=d.get('storage_location', None),
-            storage_root=d.get('storage_root', None),
-            updated_at=d.get('updated_at', None),
-            updated_by=d.get('updated_by', None))
+        return cls(catalog_name=d.get('catalog_name', None),
+                   catalog_type=d.get('catalog_type', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
+                       d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d
+                   and d['effective_auto_maintenance_flag'] is not None else None,
+                   enable_auto_maintenance=EnableAutoMaintenance.__members__.get(
+                       d['enable_auto_maintenance'], None) if 'enable_auto_maintenance' in d else None,
+                   full_name=d.get('full_name', None),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   properties=d.get('properties', None),
+                   storage_location=d.get('storage_location', None),
+                   storage_root=d.get('storage_root', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None))
 
 
 SecurablePropertiesMap = Dict[str, str]
@@ -2300,7 +2304,8 @@ class SharedDataObjectUpdate:
     def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObjectUpdate':
         return cls(
             action=SharedDataObjectUpdateAction.__members__.get(d['action'], None) if 'action' in d else None,
-            data_object=SharedDataObject.from_dict(d['data_object']) if 'data_object' in d else None)
+            data_object=SharedDataObject.from_dict(d['data_object'])
+            if 'data_object' in d and d['data_object'] is not None else None)
 
 
 class SharedDataObjectUpdateAction(Enum):
@@ -2350,14 +2355,15 @@ class StorageCredentialInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StorageCredentialInfo':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role']) if 'aws_iam_role' in d else None,
+        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
+                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
                    azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d else None,
+                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d else None,
+                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
                    id=d.get('id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2387,11 +2393,11 @@ class TableConstraint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableConstraint':
         return cls(foreign_key_constraint=ForeignKeyConstraint.from_dict(d['foreign_key_constraint'])
-                   if 'foreign_key_constraint' in d else None,
+                   if 'foreign_key_constraint' in d and d['foreign_key_constraint'] is not None else None,
                    named_table_constraint=NamedTableConstraint.from_dict(d['named_table_constraint'])
-                   if 'named_table_constraint' in d else None,
+                   if 'named_table_constraint' in d and d['named_table_constraint'] is not None else None,
                    primary_key_constraint=PrimaryKeyConstraint.from_dict(d['primary_key_constraint'])
-                   if 'primary_key_constraint' in d else None)
+                   if 'primary_key_constraint' in d and d['primary_key_constraint'] is not None else None)
 
 
 @dataclass
@@ -2493,41 +2499,42 @@ class TableInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableInfo':
-        return cls(
-            catalog_name=d.get('catalog_name', None),
-            columns=[ColumnInfo.from_dict(v)
-                     for v in d['columns']] if 'columns' in d and d['columns'] is not None else None,
-            comment=d.get('comment', None),
-            created_at=d.get('created_at', None),
-            created_by=d.get('created_by', None),
-            data_access_configuration_id=d.get('data_access_configuration_id', None),
-            data_source_format=DataSourceFormat.__members__.get(d['data_source_format'], None)
-            if 'data_source_format' in d else None,
-            deleted_at=d.get('deleted_at', None),
-            delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
-            effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
-                d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d else None,
-            enable_auto_maintenance=EnableAutoMaintenance.__members__.get(d['enable_auto_maintenance'], None)
-            if 'enable_auto_maintenance' in d else None,
-            full_name=d.get('full_name', None),
-            metastore_id=d.get('metastore_id', None),
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            properties=d.get('properties', None),
-            row_filter=TableRowFilter.from_dict(d['row_filter']) if 'row_filter' in d else None,
-            schema_name=d.get('schema_name', None),
-            sql_path=d.get('sql_path', None),
-            storage_credential_name=d.get('storage_credential_name', None),
-            storage_location=d.get('storage_location', None),
-            table_constraints=TableConstraintList.from_dict(d['table_constraints'])
-            if 'table_constraints' in d else None,
-            table_id=d.get('table_id', None),
-            table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None,
-            updated_at=d.get('updated_at', None),
-            updated_by=d.get('updated_by', None),
-            view_definition=d.get('view_definition', None),
-            view_dependencies=[Dependency.from_dict(v) for v in d['view_dependencies']]
-            if 'view_dependencies' in d and d['view_dependencies'] is not None else None)
+        return cls(catalog_name=d.get('catalog_name', None),
+                   columns=[ColumnInfo.from_dict(v)
+                            for v in d['columns']] if 'columns' in d and d['columns'] is not None else None,
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   data_access_configuration_id=d.get('data_access_configuration_id', None),
+                   data_source_format=DataSourceFormat.__members__.get(d['data_source_format'], None)
+                   if 'data_source_format' in d else None,
+                   deleted_at=d.get('deleted_at', None),
+                   delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
+                   effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
+                       d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d
+                   and d['effective_auto_maintenance_flag'] is not None else None,
+                   enable_auto_maintenance=EnableAutoMaintenance.__members__.get(
+                       d['enable_auto_maintenance'], None) if 'enable_auto_maintenance' in d else None,
+                   full_name=d.get('full_name', None),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   properties=d.get('properties', None),
+                   row_filter=TableRowFilter.from_dict(d['row_filter'])
+                   if 'row_filter' in d and d['row_filter'] is not None else None,
+                   schema_name=d.get('schema_name', None),
+                   sql_path=d.get('sql_path', None),
+                   storage_credential_name=d.get('storage_credential_name', None),
+                   storage_location=d.get('storage_location', None),
+                   table_constraints=TableConstraintList.from_dict(d['table_constraints'])
+                   if 'table_constraints' in d and d['table_constraints'] is not None else None,
+                   table_id=d.get('table_id', None),
+                   table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None,
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None),
+                   view_definition=d.get('view_definition', None),
+                   view_dependencies=[Dependency.from_dict(v) for v in d['view_dependencies']]
+                   if 'view_dependencies' in d and d['view_dependencies'] is not None else None)
 
 
 @dataclass
@@ -2786,12 +2793,12 @@ class UpdateRecipient:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRecipient':
-        return cls(
-            comment=d.get('comment', None),
-            ip_access_list=IpAccessList.from_dict(d['ip_access_list']) if 'ip_access_list' in d else None,
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            properties_kvpairs=d.get('properties_kvpairs', None))
+        return cls(comment=d.get('comment', None),
+                   ip_access_list=IpAccessList.from_dict(d['ip_access_list'])
+                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None,
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   properties_kvpairs=d.get('properties_kvpairs', None))
 
 
 @dataclass
@@ -2891,13 +2898,14 @@ class UpdateStorageCredential:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateStorageCredential':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role']) if 'aws_iam_role' in d else None,
+        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
+                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
                    azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d else None,
+                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
                    comment=d.get('comment', None),
                    force=d.get('force', None),
                    gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d else None,
+                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
@@ -2929,12 +2937,13 @@ class ValidateStorageCredential:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidateStorageCredential':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role']) if 'aws_iam_role' in d else None,
+        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
+                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
                    azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d else None,
+                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
                    external_location_name=d.get('external_location_name', None),
                    gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d else None,
+                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
                    read_only=d.get('read_only', None),
                    storage_credential_name=d.get('storage_credential_name', None),
                    url=d.get('url', None))

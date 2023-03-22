@@ -14,5 +14,9 @@ except ImportError:
     from ._impl import _RemoteDbUtils
     if not dbutils:
         dbutils = _RemoteDbUtils()
+except NameError:
+    from ._impl import _RemoteDbUtils
+    if not dbutils:
+        dbutils = _RemoteDbUtils()
 
 __all__ = ['dbutils']

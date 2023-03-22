@@ -127,7 +127,7 @@ class AzureAttributes:
                    if 'availability' in d else None,
                    first_on_demand=d.get('first_on_demand', None),
                    log_analytics_info=LogAnalyticsInfo.from_dict(d['log_analytics_info'])
-                   if 'log_analytics_info' in d else None,
+                   if 'log_analytics_info' in d and d['log_analytics_info'] is not None else None,
                    spot_bid_max_price=d.get('spot_bid_max_price', None))
 
 
@@ -197,34 +197,37 @@ class BaseClusterInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BaseClusterInfo':
-        return cls(
-            autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
-            autotermination_minutes=d.get('autotermination_minutes', None),
-            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
-            azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-            if 'azure_attributes' in d else None,
-            cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-            if 'cluster_log_conf' in d else None,
-            cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
-            if 'cluster_source' in d else None,
-            custom_tags=d.get('custom_tags', None),
-            driver_instance_pool_id=d.get('driver_instance_pool_id', None),
-            driver_node_type_id=d.get('driver_node_type_id', None),
-            enable_elastic_disk=d.get('enable_elastic_disk', None),
-            enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
-            instance_pool_id=d.get('instance_pool_id', None),
-            node_type_id=d.get('node_type_id', None),
-            num_workers=d.get('num_workers', None),
-            policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
-            if 'runtime_engine' in d else None,
-            spark_conf=d.get('spark_conf', None),
-            spark_env_vars=d.get('spark_env_vars', None),
-            spark_version=d.get('spark_version', None),
-            ssh_public_keys=d.get('ssh_public_keys', None),
-            workload_type=WorkloadType.from_dict(d['workload_type']) if 'workload_type' in d else None)
+        return cls(autoscale=AutoScale.from_dict(d['autoscale'])
+                   if 'autoscale' in d and d['autoscale'] is not None else None,
+                   autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
+                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
+                   azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
+                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+                   cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
+                   if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
+                   cluster_name=d.get('cluster_name', None),
+                   cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+                   if 'cluster_source' in d else None,
+                   custom_tags=d.get('custom_tags', None),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
+                   if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+                   if 'runtime_engine' in d else None,
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=WorkloadType.from_dict(d['workload_type'])
+                   if 'workload_type' in d and d['workload_type'] is not None else None)
 
 
 @dataclass
@@ -331,32 +334,34 @@ class ClusterAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterAttributes':
-        return cls(
-            autotermination_minutes=d.get('autotermination_minutes', None),
-            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
-            azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-            if 'azure_attributes' in d else None,
-            cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-            if 'cluster_log_conf' in d else None,
-            cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
-            if 'cluster_source' in d else None,
-            custom_tags=d.get('custom_tags', None),
-            driver_instance_pool_id=d.get('driver_instance_pool_id', None),
-            driver_node_type_id=d.get('driver_node_type_id', None),
-            enable_elastic_disk=d.get('enable_elastic_disk', None),
-            enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
-            instance_pool_id=d.get('instance_pool_id', None),
-            node_type_id=d.get('node_type_id', None),
-            policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
-            if 'runtime_engine' in d else None,
-            spark_conf=d.get('spark_conf', None),
-            spark_env_vars=d.get('spark_env_vars', None),
-            spark_version=d.get('spark_version', None),
-            ssh_public_keys=d.get('ssh_public_keys', None),
-            workload_type=WorkloadType.from_dict(d['workload_type']) if 'workload_type' in d else None)
+        return cls(autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
+                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
+                   azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
+                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+                   cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
+                   if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
+                   cluster_name=d.get('cluster_name', None),
+                   cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+                   if 'cluster_source' in d else None,
+                   custom_tags=d.get('custom_tags', None),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
+                   if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+                   if 'runtime_engine' in d else None,
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=WorkloadType.from_dict(d['workload_type'])
+                   if 'workload_type' in d and d['workload_type'] is not None else None)
 
 
 @dataclass
@@ -381,8 +386,9 @@ class ClusterEvent:
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterEvent':
         return cls(cluster_id=d.get('cluster_id', None),
                    data_plane_event_details=DataPlaneEventDetails.from_dict(d['data_plane_event_details'])
-                   if 'data_plane_event_details' in d else None,
-                   details=EventDetails.from_dict(d['details']) if 'details' in d else None,
+                   if 'data_plane_event_details' in d and d['data_plane_event_details'] is not None else None,
+                   details=EventDetails.from_dict(d['details'])
+                   if 'details' in d and d['details'] is not None else None,
                    timestamp=d.get('timestamp', None),
                    type=EventType.__members__.get(d['type'], None) if 'type' in d else None)
 
@@ -482,17 +488,19 @@ class ClusterInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterInfo':
         return cls(
-            autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
+            autoscale=AutoScale.from_dict(d['autoscale'])
+            if 'autoscale' in d and d['autoscale'] is not None else None,
             autotermination_minutes=d.get('autotermination_minutes', None),
-            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
+            aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
+            if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
             azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-            if 'azure_attributes' in d else None,
+            if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
             cluster_cores=d.get('cluster_cores', None),
             cluster_id=d.get('cluster_id', None),
             cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-            if 'cluster_log_conf' in d else None,
+            if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
             cluster_log_status=LogSyncStatus.from_dict(d['cluster_log_status'])
-            if 'cluster_log_status' in d else None,
+            if 'cluster_log_status' in d and d['cluster_log_status'] is not None else None,
             cluster_memory_mb=d.get('cluster_memory_mb', None),
             cluster_name=d.get('cluster_name', None),
             cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
@@ -502,14 +510,15 @@ class ClusterInfo:
             data_security_mode=DataSecurityMode.__members__.get(d['data_security_mode'], None)
             if 'data_security_mode' in d else None,
             default_tags=d.get('default_tags', None),
-            driver=SparkNode.from_dict(d['driver']) if 'driver' in d else None,
+            driver=SparkNode.from_dict(d['driver']) if 'driver' in d and d['driver'] is not None else None,
             driver_instance_pool_id=d.get('driver_instance_pool_id', None),
             driver_node_type_id=d.get('driver_node_type_id', None),
             enable_elastic_disk=d.get('enable_elastic_disk', None),
             enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
             executors=[SparkNode.from_dict(v)
                        for v in d['executors']] if 'executors' in d and d['executors'] is not None else None,
-            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
+            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
+            if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
             instance_pool_id=d.get('instance_pool_id', None),
             jdbc_port=d.get('jdbc_port', None),
             last_restarted_time=d.get('last_restarted_time', None),
@@ -530,8 +539,9 @@ class ClusterInfo:
             state_message=d.get('state_message', None),
             terminated_time=d.get('terminated_time', None),
             termination_reason=TerminationReason.from_dict(d['termination_reason'])
-            if 'termination_reason' in d else None,
-            workload_type=WorkloadType.from_dict(d['workload_type']) if 'workload_type' in d else None)
+            if 'termination_reason' in d and d['termination_reason'] is not None else None,
+            workload_type=WorkloadType.from_dict(d['workload_type'])
+            if 'workload_type' in d and d['workload_type'] is not None else None)
 
 
 @dataclass
@@ -547,8 +557,9 @@ class ClusterLogConf:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterLogConf':
-        return cls(dbfs=DbfsStorageInfo.from_dict(d['dbfs']) if 'dbfs' in d else None,
-                   s3=S3StorageInfo.from_dict(d['s3']) if 's3' in d else None)
+        return cls(
+            dbfs=DbfsStorageInfo.from_dict(d['dbfs']) if 'dbfs' in d and d['dbfs'] is not None else None,
+            s3=S3StorageInfo.from_dict(d['s3']) if 's3' in d and d['s3'] is not None else None)
 
 
 @dataclass
@@ -564,7 +575,8 @@ class ClusterSize:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSize':
-        return cls(autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
+        return cls(autoscale=AutoScale.from_dict(d['autoscale'])
+                   if 'autoscale' in d and d['autoscale'] is not None else None,
                    num_workers=d.get('num_workers', None))
 
 
@@ -640,35 +652,38 @@ class CreateCluster:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCluster':
-        return cls(
-            apply_policy_default_values=d.get('apply_policy_default_values', None),
-            autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
-            autotermination_minutes=d.get('autotermination_minutes', None),
-            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
-            azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-            if 'azure_attributes' in d else None,
-            cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-            if 'cluster_log_conf' in d else None,
-            cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
-            if 'cluster_source' in d else None,
-            custom_tags=d.get('custom_tags', None),
-            driver_instance_pool_id=d.get('driver_instance_pool_id', None),
-            driver_node_type_id=d.get('driver_node_type_id', None),
-            enable_elastic_disk=d.get('enable_elastic_disk', None),
-            enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
-            instance_pool_id=d.get('instance_pool_id', None),
-            node_type_id=d.get('node_type_id', None),
-            num_workers=d.get('num_workers', None),
-            policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
-            if 'runtime_engine' in d else None,
-            spark_conf=d.get('spark_conf', None),
-            spark_env_vars=d.get('spark_env_vars', None),
-            spark_version=d.get('spark_version', None),
-            ssh_public_keys=d.get('ssh_public_keys', None),
-            workload_type=WorkloadType.from_dict(d['workload_type']) if 'workload_type' in d else None)
+        return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
+                   autoscale=AutoScale.from_dict(d['autoscale'])
+                   if 'autoscale' in d and d['autoscale'] is not None else None,
+                   autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
+                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
+                   azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
+                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+                   cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
+                   if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
+                   cluster_name=d.get('cluster_name', None),
+                   cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+                   if 'cluster_source' in d else None,
+                   custom_tags=d.get('custom_tags', None),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
+                   if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+                   if 'runtime_engine' in d else None,
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=WorkloadType.from_dict(d['workload_type'])
+                   if 'workload_type' in d and d['workload_type'] is not None else None)
 
 
 @dataclass
@@ -823,36 +838,39 @@ class EditCluster:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EditCluster':
-        return cls(
-            apply_policy_default_values=d.get('apply_policy_default_values', None),
-            autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
-            autotermination_minutes=d.get('autotermination_minutes', None),
-            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
-            azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-            if 'azure_attributes' in d else None,
-            cluster_id=d.get('cluster_id', None),
-            cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-            if 'cluster_log_conf' in d else None,
-            cluster_name=d.get('cluster_name', None),
-            cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
-            if 'cluster_source' in d else None,
-            custom_tags=d.get('custom_tags', None),
-            driver_instance_pool_id=d.get('driver_instance_pool_id', None),
-            driver_node_type_id=d.get('driver_node_type_id', None),
-            enable_elastic_disk=d.get('enable_elastic_disk', None),
-            enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
-            instance_pool_id=d.get('instance_pool_id', None),
-            node_type_id=d.get('node_type_id', None),
-            num_workers=d.get('num_workers', None),
-            policy_id=d.get('policy_id', None),
-            runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
-            if 'runtime_engine' in d else None,
-            spark_conf=d.get('spark_conf', None),
-            spark_env_vars=d.get('spark_env_vars', None),
-            spark_version=d.get('spark_version', None),
-            ssh_public_keys=d.get('ssh_public_keys', None),
-            workload_type=WorkloadType.from_dict(d['workload_type']) if 'workload_type' in d else None)
+        return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
+                   autoscale=AutoScale.from_dict(d['autoscale'])
+                   if 'autoscale' in d and d['autoscale'] is not None else None,
+                   autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
+                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
+                   azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
+                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+                   cluster_id=d.get('cluster_id', None),
+                   cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
+                   if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
+                   cluster_name=d.get('cluster_name', None),
+                   cluster_source=ClusterSource.__members__.get(d['cluster_source'], None)
+                   if 'cluster_source' in d else None,
+                   custom_tags=d.get('custom_tags', None),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
+                   if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=RuntimeEngine.__members__.get(d['runtime_engine'], None)
+                   if 'runtime_engine' in d else None,
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=WorkloadType.from_dict(d['workload_type'])
+                   if 'workload_type' in d and d['workload_type'] is not None else None)
 
 
 @dataclass
@@ -903,9 +921,11 @@ class EventDetails:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EventDetails':
-        return cls(attributes=ClusterAttributes.from_dict(d['attributes']) if 'attributes' in d else None,
+        return cls(attributes=ClusterAttributes.from_dict(d['attributes'])
+                   if 'attributes' in d and d['attributes'] is not None else None,
                    cause=EventDetailsCause.__members__.get(d['cause'], None) if 'cause' in d else None,
-                   cluster_size=ClusterSize.from_dict(d['cluster_size']) if 'cluster_size' in d else None,
+                   cluster_size=ClusterSize.from_dict(d['cluster_size'])
+                   if 'cluster_size' in d and d['cluster_size'] is not None else None,
                    current_num_vcpus=d.get('current_num_vcpus', None),
                    current_num_workers=d.get('current_num_workers', None),
                    did_not_expand_reason=d.get('did_not_expand_reason', None),
@@ -917,11 +937,12 @@ class EventDetails:
                    instance_id=d.get('instance_id', None),
                    job_run_name=d.get('job_run_name', None),
                    previous_attributes=ClusterAttributes.from_dict(d['previous_attributes'])
-                   if 'previous_attributes' in d else None,
+                   if 'previous_attributes' in d and d['previous_attributes'] is not None else None,
                    previous_cluster_size=ClusterSize.from_dict(d['previous_cluster_size'])
-                   if 'previous_cluster_size' in d else None,
+                   if 'previous_cluster_size' in d and d['previous_cluster_size'] is not None else None,
                    previous_disk_size=d.get('previous_disk_size', None),
-                   reason=TerminationReason.from_dict(d['reason']) if 'reason' in d else None,
+                   reason=TerminationReason.from_dict(d['reason'])
+                   if 'reason' in d and d['reason'] is not None else None,
                    target_num_vcpus=d.get('target_num_vcpus', None),
                    target_num_workers=d.get('target_num_workers', None),
                    user=d.get('user', None))
@@ -1058,7 +1079,8 @@ class GetEventsResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'GetEventsResponse':
         return cls(events=[ClusterEvent.from_dict(v)
                            for v in d['events']] if 'events' in d and d['events'] is not None else None,
-                   next_page=GetEvents.from_dict(d['next_page']) if 'next_page' in d else None,
+                   next_page=GetEvents.from_dict(d['next_page'])
+                   if 'next_page' in d and d['next_page'] is not None else None,
                    total_count=d.get('total_count', None))
 
 
@@ -1286,9 +1308,10 @@ class NodeType:
                    is_hidden=d.get('is_hidden', None),
                    is_io_cache_enabled=d.get('is_io_cache_enabled', None),
                    memory_mb=d.get('memory_mb', None),
-                   node_info=CloudProviderNodeInfo.from_dict(d['node_info']) if 'node_info' in d else None,
+                   node_info=CloudProviderNodeInfo.from_dict(d['node_info'])
+                   if 'node_info' in d and d['node_info'] is not None else None,
                    node_instance_type=NodeInstanceType.from_dict(d['node_instance_type'])
-                   if 'node_instance_type' in d else None,
+                   if 'node_instance_type' in d and d['node_instance_type'] is not None else None,
                    node_type_id=d.get('node_type_id', None),
                    num_cores=d.get('num_cores', None),
                    num_gpus=d.get('num_gpus', None),
@@ -1356,7 +1379,8 @@ class ResizeCluster:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResizeCluster':
-        return cls(autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
+        return cls(autoscale=AutoScale.from_dict(d['autoscale'])
+                   if 'autoscale' in d and d['autoscale'] is not None else None,
                    cluster_id=d.get('cluster_id', None),
                    num_workers=d.get('num_workers', None))
 
@@ -1444,7 +1468,7 @@ class SparkNode:
         return cls(host_private_ip=d.get('host_private_ip', None),
                    instance_id=d.get('instance_id', None),
                    node_aws_attributes=SparkNodeAwsAttributes.from_dict(d['node_aws_attributes'])
-                   if 'node_aws_attributes' in d else None,
+                   if 'node_aws_attributes' in d and d['node_aws_attributes'] is not None else None,
                    node_id=d.get('node_id', None),
                    private_ip=d.get('private_ip', None),
                    public_dns=d.get('public_dns', None),
@@ -1646,7 +1670,8 @@ class WorkloadType:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkloadType':
-        return cls(clients=ClientsTypes.from_dict(d['clients']) if 'clients' in d else None)
+        return cls(clients=ClientsTypes.from_dict(d['clients']
+                                                  ) if 'clients' in d and d['clients'] is not None else None)
 
 
 class ClustersAPI:

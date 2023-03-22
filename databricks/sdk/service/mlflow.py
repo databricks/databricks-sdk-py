@@ -82,7 +82,8 @@ class ApproveResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ApproveResponse':
-        return cls(activity=Activity.from_dict(d['activity']) if 'activity' in d else None)
+        return cls(activity=Activity.from_dict(d['activity']
+                                               ) if 'activity' in d and d['activity'] is not None else None)
 
 
 @dataclass
@@ -240,7 +241,8 @@ class CreateModelVersionResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateModelVersionResponse':
-        return cls(model_version=ModelVersion.from_dict(d['model_version']) if 'model_version' in d else None)
+        return cls(model_version=ModelVersion.from_dict(d['model_version'])
+                   if 'model_version' in d and d['model_version'] is not None else None)
 
 
 @dataclass
@@ -275,8 +277,8 @@ class CreateRegisteredModelResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelResponse':
-        return cls(registered_model=RegisteredModel.from_dict(d['registered_model']) if 'registered_model' in
-                   d else None)
+        return cls(registered_model=RegisteredModel.from_dict(d['registered_model'])
+                   if 'registered_model' in d and d['registered_model'] is not None else None)
 
 
 @dataclass
@@ -302,8 +304,10 @@ class CreateRegistryWebhook:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegistryWebhook':
         return cls(description=d.get('description', None),
                    events=d.get('events', None),
-                   http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec']) if 'http_url_spec' in d else None,
-                   job_spec=JobSpec.from_dict(d['job_spec']) if 'job_spec' in d else None,
+                   http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec'])
+                   if 'http_url_spec' in d and d['http_url_spec'] is not None else None,
+                   job_spec=JobSpec.from_dict(d['job_spec'])
+                   if 'job_spec' in d and d['job_spec'] is not None else None,
                    model_name=d.get('model_name', None),
                    status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
@@ -319,7 +323,8 @@ class CreateResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateResponse':
-        return cls(comment=CommentObject.from_dict(d['comment']) if 'comment' in d else None)
+        return cls(comment=CommentObject.from_dict(d['comment']
+                                                   ) if 'comment' in d and d['comment'] is not None else None)
 
 
 @dataclass
@@ -357,7 +362,7 @@ class CreateRunResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRunResponse':
-        return cls(run=Run.from_dict(d['run']) if 'run' in d else None)
+        return cls(run=Run.from_dict(d['run']) if 'run' in d and d['run'] is not None else None)
 
 
 @dataclass
@@ -569,7 +574,8 @@ class GetExperimentByNameResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentByNameResponse':
-        return cls(experiment=Experiment.from_dict(d['experiment']) if 'experiment' in d else None)
+        return cls(experiment=Experiment.
+                   from_dict(d['experiment']) if 'experiment' in d and d['experiment'] is not None else None)
 
 
 @dataclass
@@ -687,7 +693,8 @@ class GetModelVersionResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
-        return cls(model_version=ModelVersion.from_dict(d['model_version']) if 'model_version' in d else None)
+        return cls(model_version=ModelVersion.from_dict(d['model_version'])
+                   if 'model_version' in d and d['model_version'] is not None else None)
 
 
 @dataclass
@@ -708,8 +715,8 @@ class GetRegisteredModelResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelResponse':
-        return cls(registered_model=RegisteredModel.from_dict(d['registered_model']) if 'registered_model' in
-                   d else None)
+        return cls(registered_model=RegisteredModel.from_dict(d['registered_model'])
+                   if 'registered_model' in d and d['registered_model'] is not None else None)
 
 
 @dataclass
@@ -723,8 +730,8 @@ class GetResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
-        return cls(registered_model=RegisteredModelDatabricks.
-                   from_dict(d['registered_model']) if 'registered_model' in d else None)
+        return cls(registered_model=RegisteredModelDatabricks.from_dict(d['registered_model'])
+                   if 'registered_model' in d and d['registered_model'] is not None else None)
 
 
 @dataclass
@@ -746,7 +753,7 @@ class GetRunResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRunResponse':
-        return cls(run=Run.from_dict(d['run']) if 'run' in d else None)
+        return cls(run=Run.from_dict(d['run']) if 'run' in d and d['run'] is not None else None)
 
 
 @dataclass
@@ -1357,9 +1364,10 @@ class RegistryWebhook:
                    description=d.get('description', None),
                    events=d.get('events', None),
                    http_url_spec=HttpUrlSpecWithoutSecret.from_dict(d['http_url_spec'])
-                   if 'http_url_spec' in d else None,
+                   if 'http_url_spec' in d and d['http_url_spec'] is not None else None,
                    id=d.get('id', None),
-                   job_spec=JobSpecWithoutSecret.from_dict(d['job_spec']) if 'job_spec' in d else None,
+                   job_spec=JobSpecWithoutSecret.from_dict(d['job_spec'])
+                   if 'job_spec' in d and d['job_spec'] is not None else None,
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    model_name=d.get('model_name', None),
                    status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
@@ -1400,7 +1408,8 @@ class RejectResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RejectResponse':
-        return cls(activity=Activity.from_dict(d['activity']) if 'activity' in d else None)
+        return cls(activity=Activity.from_dict(d['activity']
+                                               ) if 'activity' in d and d['activity'] is not None else None)
 
 
 @dataclass
@@ -1453,8 +1462,8 @@ class RenameRegisteredModelResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RenameRegisteredModelResponse':
-        return cls(registered_model=RegisteredModel.from_dict(d['registered_model']) if 'registered_model' in
-                   d else None)
+        return cls(registered_model=RegisteredModel.from_dict(d['registered_model'])
+                   if 'registered_model' in d and d['registered_model'] is not None else None)
 
 
 @dataclass
@@ -1498,8 +1507,8 @@ class Run:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Run':
-        return cls(data=RunData.from_dict(d['data']) if 'data' in d else None,
-                   info=RunInfo.from_dict(d['info']) if 'info' in d else None)
+        return cls(data=RunData.from_dict(d['data']) if 'data' in d and d['data'] is not None else None,
+                   info=RunInfo.from_dict(d['info']) if 'info' in d and d['info'] is not None else None)
 
 
 @dataclass
@@ -1902,7 +1911,8 @@ class TestRegistryWebhookResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhookResponse':
-        return cls(webhook=TestRegistryWebhook.from_dict(d['webhook']) if 'webhook' in d else None)
+        return cls(webhook=TestRegistryWebhook.
+                   from_dict(d['webhook']) if 'webhook' in d and d['webhook'] is not None else None)
 
 
 @dataclass
@@ -1965,7 +1975,8 @@ class TransitionModelVersionStageResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TransitionModelVersionStageResponse':
-        return cls(model_version=ModelVersion.from_dict(d['model_version']) if 'model_version' in d else None)
+        return cls(model_version=ModelVersion.from_dict(d['model_version'])
+                   if 'model_version' in d and d['model_version'] is not None else None)
 
 
 @dataclass
@@ -2007,8 +2018,8 @@ class TransitionStageResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TransitionStageResponse':
-        return cls(model_version=ModelVersionDatabricks.from_dict(d['model_version']) if 'model_version' in
-                   d else None)
+        return cls(model_version=ModelVersionDatabricks.from_dict(d['model_version'])
+                   if 'model_version' in d and d['model_version'] is not None else None)
 
 
 @dataclass
@@ -2102,9 +2113,11 @@ class UpdateRegistryWebhook:
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegistryWebhook':
         return cls(description=d.get('description', None),
                    events=d.get('events', None),
-                   http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec']) if 'http_url_spec' in d else None,
+                   http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec'])
+                   if 'http_url_spec' in d and d['http_url_spec'] is not None else None,
                    id=d.get('id', None),
-                   job_spec=JobSpec.from_dict(d['job_spec']) if 'job_spec' in d else None,
+                   job_spec=JobSpec.from_dict(d['job_spec'])
+                   if 'job_spec' in d and d['job_spec'] is not None else None,
                    status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
@@ -2119,7 +2132,8 @@ class UpdateResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateResponse':
-        return cls(comment=CommentObject.from_dict(d['comment']) if 'comment' in d else None)
+        return cls(comment=CommentObject.from_dict(d['comment']
+                                                   ) if 'comment' in d and d['comment'] is not None else None)
 
 
 @dataclass
@@ -2156,7 +2170,8 @@ class UpdateRunResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRunResponse':
-        return cls(run_info=RunInfo.from_dict(d['run_info']) if 'run_info' in d else None)
+        return cls(run_info=RunInfo.from_dict(d['run_info']
+                                              ) if 'run_info' in d and d['run_info'] is not None else None)
 
 
 class UpdateRunStatus(Enum):

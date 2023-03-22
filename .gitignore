@@ -10,3 +10,4 @@ __pycache__
 databricks-sdk-py.iml
 .databricks
 .coverage
+htmlcov

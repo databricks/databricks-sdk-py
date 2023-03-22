@@ -25,7 +25,8 @@ class AwsCredentials:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AwsCredentials':
-        return cls(sts_role=StsRole.from_dict(d['sts_role']) if 'sts_role' in d else None)
+        return cls(sts_role=StsRole.from_dict(d['sts_role']
+                                              ) if 'sts_role' in d and d['sts_role'] is not None else None)
 
 
 @dataclass
@@ -65,7 +66,8 @@ class CloudResourceContainer:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CloudResourceContainer':
-        return cls(gcp=CustomerFacingGcpCloudResourceContainer.from_dict(d['gcp']) if 'gcp' in d else None)
+        return cls(gcp=CustomerFacingGcpCloudResourceContainer.
+                   from_dict(d['gcp']) if 'gcp' in d and d['gcp'] is not None else None)
 
 
 @dataclass
@@ -100,7 +102,8 @@ class CreateCredentialAwsCredentials:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialAwsCredentials':
-        return cls(sts_role=CreateCredentialStsRole.from_dict(d['sts_role']) if 'sts_role' in d else None)
+        return cls(sts_role=CreateCredentialStsRole.
+                   from_dict(d['sts_role']) if 'sts_role' in d and d['sts_role'] is not None else None)
 
 
 @dataclass
@@ -117,7 +120,7 @@ class CreateCredentialRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialRequest':
         return cls(aws_credentials=CreateCredentialAwsCredentials.from_dict(d['aws_credentials'])
-                   if 'aws_credentials' in d else None,
+                   if 'aws_credentials' in d and d['aws_credentials'] is not None else None,
                    credentials_name=d.get('credentials_name', None))
 
 
@@ -148,9 +151,9 @@ class CreateCustomerManagedKeyRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCustomerManagedKeyRequest':
-        return cls(
-            aws_key_info=CreateAwsKeyInfo.from_dict(d['aws_key_info']) if 'aws_key_info' in d else None,
-            use_cases=d.get('use_cases', None))
+        return cls(aws_key_info=CreateAwsKeyInfo.from_dict(d['aws_key_info'])
+                   if 'aws_key_info' in d and d['aws_key_info'] is not None else None,
+                   use_cases=d.get('use_cases', None))
 
 
 @dataclass
@@ -174,14 +177,14 @@ class CreateNetworkRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateNetworkRequest':
-        return cls(
-            gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
-            if 'gcp_network_info' in d else None,
-            network_name=d.get('network_name', None),
-            security_group_ids=d.get('security_group_ids', None),
-            subnet_ids=d.get('subnet_ids', None),
-            vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints']) if 'vpc_endpoints' in d else None,
-            vpc_id=d.get('vpc_id', None))
+        return cls(gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
+                   if 'gcp_network_info' in d and d['gcp_network_info'] is not None else None,
+                   network_name=d.get('network_name', None),
+                   security_group_ids=d.get('security_group_ids', None),
+                   subnet_ids=d.get('subnet_ids', None),
+                   vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints'])
+                   if 'vpc_endpoints' in d and d['vpc_endpoints'] is not None else None,
+                   vpc_id=d.get('vpc_id', None))
 
 
 @dataclass
@@ -199,7 +202,7 @@ class CreateStorageConfigurationRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateStorageConfigurationRequest':
         return cls(root_bucket_info=RootBucketInfo.from_dict(d['root_bucket_info'])
-                   if 'root_bucket_info' in d else None,
+                   if 'root_bucket_info' in d and d['root_bucket_info'] is not None else None,
                    storage_configuration_name=d.get('storage_configuration_name', None))
 
 
@@ -265,7 +268,7 @@ class CreateWorkspaceRequest:
         return cls(aws_region=d.get('aws_region', None),
                    cloud=d.get('cloud', None),
                    cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
-                   if 'cloud_resource_container' in d else None,
+                   if 'cloud_resource_container' in d and d['cloud_resource_container'] is not None else None,
                    credentials_id=d.get('credentials_id', None),
                    deployment_name=d.get('deployment_name', None),
                    location=d.get('location', None),
@@ -301,7 +304,7 @@ class Credential:
     def from_dict(cls, d: Dict[str, any]) -> 'Credential':
         return cls(account_id=d.get('account_id', None),
                    aws_credentials=AwsCredentials.from_dict(d['aws_credentials'])
-                   if 'aws_credentials' in d else None,
+                   if 'aws_credentials' in d and d['aws_credentials'] is not None else None,
                    creation_time=d.get('creation_time', None),
                    credentials_id=d.get('credentials_id', None),
                    credentials_name=d.get('credentials_name', None))
@@ -343,7 +346,8 @@ class CustomerManagedKey:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CustomerManagedKey':
         return cls(account_id=d.get('account_id', None),
-                   aws_key_info=AwsKeyInfo.from_dict(d['aws_key_info']) if 'aws_key_info' in d else None,
+                   aws_key_info=AwsKeyInfo.from_dict(d['aws_key_info'])
+                   if 'aws_key_info' in d and d['aws_key_info'] is not None else None,
                    creation_time=d.get('creation_time', None),
                    customer_managed_key_id=d.get('customer_managed_key_id', None),
                    use_cases=d.get('use_cases', None))
@@ -622,23 +626,23 @@ class Network:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Network':
-        return cls(
-            account_id=d.get('account_id', None),
-            creation_time=d.get('creation_time', None),
-            error_messages=[NetworkHealth.from_dict(v) for v in d['error_messages']]
-            if 'error_messages' in d and d['error_messages'] is not None else None,
-            gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
-            if 'gcp_network_info' in d else None,
-            network_id=d.get('network_id', None),
-            network_name=d.get('network_name', None),
-            security_group_ids=d.get('security_group_ids', None),
-            subnet_ids=d.get('subnet_ids', None),
-            vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints']) if 'vpc_endpoints' in d else None,
-            vpc_id=d.get('vpc_id', None),
-            vpc_status=VpcStatus.__members__.get(d['vpc_status'], None) if 'vpc_status' in d else None,
-            warning_messages=[NetworkWarning.from_dict(v) for v in d['warning_messages']]
-            if 'warning_messages' in d and d['warning_messages'] is not None else None,
-            workspace_id=d.get('workspace_id', None))
+        return cls(account_id=d.get('account_id', None),
+                   creation_time=d.get('creation_time', None),
+                   error_messages=[NetworkHealth.from_dict(v) for v in d['error_messages']]
+                   if 'error_messages' in d and d['error_messages'] is not None else None,
+                   gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
+                   if 'gcp_network_info' in d and d['gcp_network_info'] is not None else None,
+                   network_id=d.get('network_id', None),
+                   network_name=d.get('network_name', None),
+                   security_group_ids=d.get('security_group_ids', None),
+                   subnet_ids=d.get('subnet_ids', None),
+                   vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints'])
+                   if 'vpc_endpoints' in d and d['vpc_endpoints'] is not None else None,
+                   vpc_id=d.get('vpc_id', None),
+                   vpc_status=VpcStatus.__members__.get(d['vpc_status'], None) if 'vpc_status' in d else None,
+                   warning_messages=[NetworkWarning.from_dict(v) for v in d['warning_messages']]
+                   if 'warning_messages' in d and d['warning_messages'] is not None else None,
+                   workspace_id=d.get('workspace_id', None))
 
 
 @dataclass
@@ -796,7 +800,7 @@ class StorageConfiguration:
         return cls(account_id=d.get('account_id', None),
                    creation_time=d.get('creation_time', None),
                    root_bucket_info=RootBucketInfo.from_dict(d['root_bucket_info'])
-                   if 'root_bucket_info' in d else None,
+                   if 'root_bucket_info' in d and d['root_bucket_info'] is not None else None,
                    storage_configuration_id=d.get('storage_configuration_id', None),
                    storage_configuration_name=d.get('storage_configuration_name', None))
 
@@ -993,31 +997,32 @@ class Workspace:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Workspace':
-        return cls(account_id=d.get('account_id', None),
-                   aws_region=d.get('aws_region', None),
-                   cloud=d.get('cloud', None),
-                   cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
-                   if 'cloud_resource_container' in d else None,
-                   creation_time=d.get('creation_time', None),
-                   credentials_id=d.get('credentials_id', None),
-                   deployment_name=d.get('deployment_name', None),
-                   gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(
-                       d['gcp_managed_network_config']) if 'gcp_managed_network_config' in d else None,
-                   gke_config=GkeConfig.from_dict(d['gke_config']) if 'gke_config' in d else None,
-                   location=d.get('location', None),
-                   managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
-                                                                  None),
-                   network_id=d.get('network_id', None),
-                   pricing_tier=PricingTier.__members__.get(d['pricing_tier'], None)
-                   if 'pricing_tier' in d else None,
-                   private_access_settings_id=d.get('private_access_settings_id', None),
-                   storage_configuration_id=d.get('storage_configuration_id', None),
-                   storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
-                   workspace_id=d.get('workspace_id', None),
-                   workspace_name=d.get('workspace_name', None),
-                   workspace_status=WorkspaceStatus.__members__.get(d['workspace_status'], None)
-                   if 'workspace_status' in d else None,
-                   workspace_status_message=d.get('workspace_status_message', None))
+        return cls(
+            account_id=d.get('account_id', None),
+            aws_region=d.get('aws_region', None),
+            cloud=d.get('cloud', None),
+            cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
+            if 'cloud_resource_container' in d and d['cloud_resource_container'] is not None else None,
+            creation_time=d.get('creation_time', None),
+            credentials_id=d.get('credentials_id', None),
+            deployment_name=d.get('deployment_name', None),
+            gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(d['gcp_managed_network_config'])
+            if 'gcp_managed_network_config' in d and d['gcp_managed_network_config'] is not None else None,
+            gke_config=GkeConfig.from_dict(d['gke_config'])
+            if 'gke_config' in d and d['gke_config'] is not None else None,
+            location=d.get('location', None),
+            managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id', None),
+            network_id=d.get('network_id', None),
+            pricing_tier=PricingTier.__members__.get(d['pricing_tier'], None)
+            if 'pricing_tier' in d else None,
+            private_access_settings_id=d.get('private_access_settings_id', None),
+            storage_configuration_id=d.get('storage_configuration_id', None),
+            storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
+            workspace_id=d.get('workspace_id', None),
+            workspace_name=d.get('workspace_name', None),
+            workspace_status=WorkspaceStatus.__members__.get(d['workspace_status'], None)
+            if 'workspace_status' in d else None,
+            workspace_status_message=d.get('workspace_status_message', None))
 
 
 class WorkspaceStatus(Enum):

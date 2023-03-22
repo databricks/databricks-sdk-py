@@ -1,4 +1,9 @@
+import pytest
+
+
 def test_it_works_with_dbconnect(w):
+    pytest.skip('not yet available')
+
     import pyspark.sql.connect.functions as F
     from pyspark.sql.connect.session import SparkSession
 
@@ -11,6 +16,8 @@ def test_it_works_with_dbconnect(w):
 
 
 def test_it_works_with_vanilla_dbconnect(w):
+    pytest.skip('not yet available')
+
     import os
     from urllib.parse import urlparse
 

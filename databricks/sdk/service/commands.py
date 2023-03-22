@@ -91,9 +91,10 @@ class CommandStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CommandStatusResponse':
-        return cls(id=d.get('id', None),
-                   results=Results.from_dict(d['results']) if 'results' in d else None,
-                   status=CommandStatus.__members__.get(d['status'], None) if 'status' in d else None)
+        return cls(
+            id=d.get('id', None),
+            results=Results.from_dict(d['results']) if 'results' in d and d['results'] is not None else None,
+            status=CommandStatus.__members__.get(d['status'], None) if 'status' in d else None)
 
 
 class ContextStatus(Enum):

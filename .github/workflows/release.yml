@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: pip install -e '.[dev]'
+      - run: make dev
 
       - name: Build wheel
         run: python3 setup.py bdist_wheel

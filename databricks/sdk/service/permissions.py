@@ -191,7 +191,8 @@ class PermissionAssignment:
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignment':
         return cls(error=d.get('error', None),
                    permissions=d.get('permissions', None),
-                   principal=PrincipalOutput.from_dict(d['principal']) if 'principal' in d else None)
+                   principal=PrincipalOutput.from_dict(d['principal'])
+                   if 'principal' in d and d['principal'] is not None else None)
 
 
 @dataclass

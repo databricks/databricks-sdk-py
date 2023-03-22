@@ -43,7 +43,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}{{if .Entity.ArrayValue.IsObject}}[{{.Entity.ArrayValue.PascalName}}.from_dict(v) for v in d['{{.Name}}']] if '{{.Name}}' in d and d['{{.Name}}'] is not None else None{{else}}d.get('{{.Name}}', None){{end}}
-	{{- else if or .Entity.IsObject .Entity.IsExternal }}{{.Entity.PascalName}}.from_dict(d['{{.Name}}']) if '{{.Name}}' in d else None
+	{{- else if or .Entity.IsObject .Entity.IsExternal }}{{.Entity.PascalName}}.from_dict(d['{{.Name}}']) if '{{.Name}}' in d and d['{{.Name}}'] is not None else None
 	{{- else if .Entity.Enum }}{{.Entity.PascalName}}.__members__.get(d['{{.Name}}'], None) if '{{.Name}}' in d else None
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}

@@ -70,13 +70,14 @@ class Alert:
                    id=d.get('id', None),
                    last_triggered_at=d.get('last_triggered_at', None),
                    name=d.get('name', None),
-                   options=AlertOptions.from_dict(d['options']) if 'options' in d else None,
+                   options=AlertOptions.from_dict(d['options'])
+                   if 'options' in d and d['options'] is not None else None,
                    parent=d.get('parent', None),
-                   query=Query.from_dict(d['query']) if 'query' in d else None,
+                   query=Query.from_dict(d['query']) if 'query' in d and d['query'] is not None else None,
                    rearm=d.get('rearm', None),
                    state=AlertState.__members__.get(d['state'], None) if 'state' in d else None,
                    updated_at=d.get('updated_at', None),
-                   user=User.from_dict(d['user']) if 'user' in d else None)
+                   user=User.from_dict(d['user']) if 'user' in d and d['user'] is not None else None)
 
 
 @dataclass
@@ -163,6 +164,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -280,7 +282,8 @@ class CreateAlert:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateAlert':
         return cls(name=d.get('name', None),
-                   options=AlertOptions.from_dict(d['options']) if 'options' in d else None,
+                   options=AlertOptions.from_dict(d['options'])
+                   if 'options' in d and d['options'] is not None else None,
                    parent=d.get('parent', None),
                    query_id=d.get('query_id', None),
                    rearm=d.get('rearm', None))
@@ -356,21 +359,22 @@ class CreateWarehouseRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateWarehouseRequest':
-        return cls(auto_stop_mins=d.get('auto_stop_mins', None),
-                   channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
-                   cluster_size=d.get('cluster_size', None),
-                   creator_name=d.get('creator_name', None),
-                   enable_photon=d.get('enable_photon', None),
-                   enable_serverless_compute=d.get('enable_serverless_compute', None),
-                   instance_profile_arn=d.get('instance_profile_arn', None),
-                   max_num_clusters=d.get('max_num_clusters', None),
-                   min_num_clusters=d.get('min_num_clusters', None),
-                   name=d.get('name', None),
-                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
-                   if 'spot_instance_policy' in d else None,
-                   tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
-                   if 'warehouse_type' in d else None)
+        return cls(
+            auto_stop_mins=d.get('auto_stop_mins', None),
+            channel=Channel.from_dict(d['channel']) if 'channel' in d and d['channel'] is not None else None,
+            cluster_size=d.get('cluster_size', None),
+            creator_name=d.get('creator_name', None),
+            enable_photon=d.get('enable_photon', None),
+            enable_serverless_compute=d.get('enable_serverless_compute', None),
+            instance_profile_arn=d.get('instance_profile_arn', None),
+            max_num_clusters=d.get('max_num_clusters', None),
+            min_num_clusters=d.get('min_num_clusters', None),
+            name=d.get('name', None),
+            spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
+            if 'spot_instance_policy' in d else None,
+            tags=EndpointTags.from_dict(d['tags']) if 'tags' in d and d['tags'] is not None else None,
+            warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+            if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -440,14 +444,15 @@ class Dashboard:
                    is_draft=d.get('is_draft', None),
                    is_favorite=d.get('is_favorite', None),
                    name=d.get('name', None),
-                   options=DashboardOptions.from_dict(d['options']) if 'options' in d else None,
+                   options=DashboardOptions.from_dict(d['options'])
+                   if 'options' in d and d['options'] is not None else None,
                    parent=d.get('parent', None),
                    permission_tier=PermissionLevel.__members__.get(d['permission_tier'], None)
                    if 'permission_tier' in d else None,
                    slug=d.get('slug', None),
                    tags=d.get('tags', None),
                    updated_at=d.get('updated_at', None),
-                   user=User.from_dict(d['user']) if 'user' in d else None,
+                   user=User.from_dict(d['user']) if 'user' in d and d['user'] is not None else None,
                    user_id=d.get('user_id', None),
                    widgets=[Widget.from_dict(v)
                             for v in d['widgets']] if 'widgets' in d and d['widgets'] is not None else None)
@@ -582,7 +587,8 @@ class EditAlert:
     def from_dict(cls, d: Dict[str, any]) -> 'EditAlert':
         return cls(alert_id=d.get('alert_id', None),
                    name=d.get('name', None),
-                   options=AlertOptions.from_dict(d['options']) if 'options' in d else None,
+                   options=AlertOptions.from_dict(d['options'])
+                   if 'options' in d and d['options'] is not None else None,
                    query_id=d.get('query_id', None),
                    rearm=d.get('rearm', None))
 
@@ -626,23 +632,24 @@ class EditWarehouseRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EditWarehouseRequest':
-        return cls(auto_stop_mins=d.get('auto_stop_mins', None),
-                   channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
-                   cluster_size=d.get('cluster_size', None),
-                   creator_name=d.get('creator_name', None),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
-                   enable_photon=d.get('enable_photon', None),
-                   enable_serverless_compute=d.get('enable_serverless_compute', None),
-                   id=d.get('id', None),
-                   instance_profile_arn=d.get('instance_profile_arn', None),
-                   max_num_clusters=d.get('max_num_clusters', None),
-                   min_num_clusters=d.get('min_num_clusters', None),
-                   name=d.get('name', None),
-                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
-                   if 'spot_instance_policy' in d else None,
-                   tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
-                   if 'warehouse_type' in d else None)
+        return cls(
+            auto_stop_mins=d.get('auto_stop_mins', None),
+            channel=Channel.from_dict(d['channel']) if 'channel' in d and d['channel'] is not None else None,
+            cluster_size=d.get('cluster_size', None),
+            creator_name=d.get('creator_name', None),
+            enable_databricks_compute=d.get('enable_databricks_compute', None),
+            enable_photon=d.get('enable_photon', None),
+            enable_serverless_compute=d.get('enable_serverless_compute', None),
+            id=d.get('id', None),
+            instance_profile_arn=d.get('instance_profile_arn', None),
+            max_num_clusters=d.get('max_num_clusters', None),
+            min_num_clusters=d.get('min_num_clusters', None),
+            name=d.get('name', None),
+            spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
+            if 'spot_instance_policy' in d else None,
+            tags=EndpointTags.from_dict(d['tags']) if 'tags' in d and d['tags'] is not None else None,
+            warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+            if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -682,7 +689,7 @@ class EndpointHealth:
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointHealth':
         return cls(details=d.get('details', None),
                    failure_reason=TerminationReason.from_dict(d['failure_reason'])
-                   if 'failure_reason' in d else None,
+                   if 'failure_reason' in d and d['failure_reason'] is not None else None,
                    message=d.get('message', None),
                    status=Status.__members__.get(d['status'], None) if 'status' in d else None,
                    summary=d.get('summary', None))
@@ -739,29 +746,32 @@ class EndpointInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointInfo':
-        return cls(auto_stop_mins=d.get('auto_stop_mins', None),
-                   channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
-                   cluster_size=d.get('cluster_size', None),
-                   creator_name=d.get('creator_name', None),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
-                   enable_photon=d.get('enable_photon', None),
-                   enable_serverless_compute=d.get('enable_serverless_compute', None),
-                   health=EndpointHealth.from_dict(d['health']) if 'health' in d else None,
-                   id=d.get('id', None),
-                   instance_profile_arn=d.get('instance_profile_arn', None),
-                   jdbc_url=d.get('jdbc_url', None),
-                   max_num_clusters=d.get('max_num_clusters', None),
-                   min_num_clusters=d.get('min_num_clusters', None),
-                   name=d.get('name', None),
-                   num_active_sessions=d.get('num_active_sessions', None),
-                   num_clusters=d.get('num_clusters', None),
-                   odbc_params=OdbcParams.from_dict(d['odbc_params']) if 'odbc_params' in d else None,
-                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
-                   if 'spot_instance_policy' in d else None,
-                   state=State.__members__.get(d['state'], None) if 'state' in d else None,
-                   tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
-                   if 'warehouse_type' in d else None)
+        return cls(
+            auto_stop_mins=d.get('auto_stop_mins', None),
+            channel=Channel.from_dict(d['channel']) if 'channel' in d and d['channel'] is not None else None,
+            cluster_size=d.get('cluster_size', None),
+            creator_name=d.get('creator_name', None),
+            enable_databricks_compute=d.get('enable_databricks_compute', None),
+            enable_photon=d.get('enable_photon', None),
+            enable_serverless_compute=d.get('enable_serverless_compute', None),
+            health=EndpointHealth.from_dict(d['health'])
+            if 'health' in d and d['health'] is not None else None,
+            id=d.get('id', None),
+            instance_profile_arn=d.get('instance_profile_arn', None),
+            jdbc_url=d.get('jdbc_url', None),
+            max_num_clusters=d.get('max_num_clusters', None),
+            min_num_clusters=d.get('min_num_clusters', None),
+            name=d.get('name', None),
+            num_active_sessions=d.get('num_active_sessions', None),
+            num_clusters=d.get('num_clusters', None),
+            odbc_params=OdbcParams.from_dict(d['odbc_params'])
+            if 'odbc_params' in d and d['odbc_params'] is not None else None,
+            spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
+            if 'spot_instance_policy' in d else None,
+            state=State.__members__.get(d['state'], None) if 'state' in d else None,
+            tags=EndpointTags.from_dict(d['tags']) if 'tags' in d and d['tags'] is not None else None,
+            warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+            if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -852,10 +862,13 @@ class ExecuteStatementResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExecuteStatementResponse':
-        return cls(manifest=ResultManifest.from_dict(d['manifest']) if 'manifest' in d else None,
-                   result=ResultData.from_dict(d['result']) if 'result' in d else None,
-                   statement_id=d.get('statement_id', None),
-                   status=StatementStatus.from_dict(d['status']) if 'status' in d else None)
+        return cls(
+            manifest=ResultManifest.from_dict(d['manifest'])
+            if 'manifest' in d and d['manifest'] is not None else None,
+            result=ResultData.from_dict(d['result']) if 'result' in d and d['result'] is not None else None,
+            statement_id=d.get('statement_id', None),
+            status=StatementStatus.from_dict(d['status'])
+            if 'status' in d and d['status'] is not None else None)
 
 
 @dataclass
@@ -996,10 +1009,13 @@ class GetStatementResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetStatementResponse':
-        return cls(manifest=ResultManifest.from_dict(d['manifest']) if 'manifest' in d else None,
-                   result=ResultData.from_dict(d['result']) if 'result' in d else None,
-                   statement_id=d.get('statement_id', None),
-                   status=StatementStatus.from_dict(d['status']) if 'status' in d else None)
+        return cls(
+            manifest=ResultManifest.from_dict(d['manifest'])
+            if 'manifest' in d and d['manifest'] is not None else None,
+            result=ResultData.from_dict(d['result']) if 'result' in d and d['result'] is not None else None,
+            statement_id=d.get('statement_id', None),
+            status=StatementStatus.from_dict(d['status'])
+            if 'status' in d and d['status'] is not None else None)
 
 
 @dataclass
@@ -1068,29 +1084,32 @@ class GetWarehouseResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetWarehouseResponse':
-        return cls(auto_stop_mins=d.get('auto_stop_mins', None),
-                   channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
-                   cluster_size=d.get('cluster_size', None),
-                   creator_name=d.get('creator_name', None),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
-                   enable_photon=d.get('enable_photon', None),
-                   enable_serverless_compute=d.get('enable_serverless_compute', None),
-                   health=EndpointHealth.from_dict(d['health']) if 'health' in d else None,
-                   id=d.get('id', None),
-                   instance_profile_arn=d.get('instance_profile_arn', None),
-                   jdbc_url=d.get('jdbc_url', None),
-                   max_num_clusters=d.get('max_num_clusters', None),
-                   min_num_clusters=d.get('min_num_clusters', None),
-                   name=d.get('name', None),
-                   num_active_sessions=d.get('num_active_sessions', None),
-                   num_clusters=d.get('num_clusters', None),
-                   odbc_params=OdbcParams.from_dict(d['odbc_params']) if 'odbc_params' in d else None,
-                   spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
-                   if 'spot_instance_policy' in d else None,
-                   state=State.__members__.get(d['state'], None) if 'state' in d else None,
-                   tags=EndpointTags.from_dict(d['tags']) if 'tags' in d else None,
-                   warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
-                   if 'warehouse_type' in d else None)
+        return cls(
+            auto_stop_mins=d.get('auto_stop_mins', None),
+            channel=Channel.from_dict(d['channel']) if 'channel' in d and d['channel'] is not None else None,
+            cluster_size=d.get('cluster_size', None),
+            creator_name=d.get('creator_name', None),
+            enable_databricks_compute=d.get('enable_databricks_compute', None),
+            enable_photon=d.get('enable_photon', None),
+            enable_serverless_compute=d.get('enable_serverless_compute', None),
+            health=EndpointHealth.from_dict(d['health'])
+            if 'health' in d and d['health'] is not None else None,
+            id=d.get('id', None),
+            instance_profile_arn=d.get('instance_profile_arn', None),
+            jdbc_url=d.get('jdbc_url', None),
+            max_num_clusters=d.get('max_num_clusters', None),
+            min_num_clusters=d.get('min_num_clusters', None),
+            name=d.get('name', None),
+            num_active_sessions=d.get('num_active_sessions', None),
+            num_clusters=d.get('num_clusters', None),
+            odbc_params=OdbcParams.from_dict(d['odbc_params'])
+            if 'odbc_params' in d and d['odbc_params'] is not None else None,
+            spot_instance_policy=SpotInstancePolicy.__members__.get(d['spot_instance_policy'], None)
+            if 'spot_instance_policy' in d else None,
+            state=State.__members__.get(d['state'], None) if 'state' in d else None,
+            tags=EndpointTags.from_dict(d['tags']) if 'tags' in d and d['tags'] is not None else None,
+            warehouse_type=WarehouseType.__members__.get(d['warehouse_type'], None)
+            if 'warehouse_type' in d else None)
 
 
 @dataclass
@@ -1128,9 +1147,9 @@ class GetWorkspaceWarehouseConfigResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceWarehouseConfigResponse':
         return cls(
-            channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
+            channel=Channel.from_dict(d['channel']) if 'channel' in d and d['channel'] is not None else None,
             config_param=RepeatedEndpointConfPairs.from_dict(d['config_param'])
-            if 'config_param' in d else None,
+            if 'config_param' in d and d['config_param'] is not None else None,
             data_access_config=[EndpointConfPair.from_dict(v) for v in d['data_access_config']]
             if 'data_access_config' in d and d['data_access_config'] is not None else None,
             enable_databricks_compute=d.get('enable_databricks_compute', None),
@@ -1138,13 +1157,14 @@ class GetWorkspaceWarehouseConfigResponse:
             enabled_warehouse_types=[WarehouseTypePair.from_dict(v) for v in d['enabled_warehouse_types']]
             if 'enabled_warehouse_types' in d and d['enabled_warehouse_types'] is not None else None,
             global_param=RepeatedEndpointConfPairs.from_dict(d['global_param'])
-            if 'global_param' in d else None,
+            if 'global_param' in d and d['global_param'] is not None else None,
             google_service_account=d.get('google_service_account', None),
             instance_profile_arn=d.get('instance_profile_arn', None),
             security_policy=GetWorkspaceWarehouseConfigResponseSecurityPolicy.__members__.get(
                 d['security_policy'], None) if 'security_policy' in d else None,
             sql_configuration_parameters=RepeatedEndpointConfPairs.from_dict(
-                d['sql_configuration_parameters']) if 'sql_configuration_parameters' in d else None)
+                d['sql_configuration_parameters']) if 'sql_configuration_parameters' in d
+            and d['sql_configuration_parameters'] is not None else None)
 
 
 class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
@@ -1412,32 +1432,33 @@ class Query:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Query':
-        return cls(
-            can_edit=d.get('can_edit', None),
-            created_at=d.get('created_at', None),
-            data_source_id=d.get('data_source_id', None),
-            description=d.get('description', None),
-            id=d.get('id', None),
-            is_archived=d.get('is_archived', None),
-            is_draft=d.get('is_draft', None),
-            is_favorite=d.get('is_favorite', None),
-            is_safe=d.get('is_safe', None),
-            last_modified_by=User.from_dict(d['last_modified_by']) if 'last_modified_by' in d else None,
-            last_modified_by_id=d.get('last_modified_by_id', None),
-            latest_query_data_id=d.get('latest_query_data_id', None),
-            name=d.get('name', None),
-            options=QueryOptions.from_dict(d['options']) if 'options' in d else None,
-            parent=d.get('parent', None),
-            permission_tier=PermissionLevel.__members__.get(d['permission_tier'], None)
-            if 'permission_tier' in d else None,
-            query=d.get('query', None),
-            query_hash=d.get('query_hash', None),
-            tags=d.get('tags', None),
-            updated_at=d.get('updated_at', None),
-            user=User.from_dict(d['user']) if 'user' in d else None,
-            user_id=d.get('user_id', None),
-            visualizations=[Visualization.from_dict(v) for v in d['visualizations']]
-            if 'visualizations' in d and d['visualizations'] is not None else None)
+        return cls(can_edit=d.get('can_edit', None),
+                   created_at=d.get('created_at', None),
+                   data_source_id=d.get('data_source_id', None),
+                   description=d.get('description', None),
+                   id=d.get('id', None),
+                   is_archived=d.get('is_archived', None),
+                   is_draft=d.get('is_draft', None),
+                   is_favorite=d.get('is_favorite', None),
+                   is_safe=d.get('is_safe', None),
+                   last_modified_by=User.from_dict(d['last_modified_by'])
+                   if 'last_modified_by' in d and d['last_modified_by'] is not None else None,
+                   last_modified_by_id=d.get('last_modified_by_id', None),
+                   latest_query_data_id=d.get('latest_query_data_id', None),
+                   name=d.get('name', None),
+                   options=QueryOptions.from_dict(d['options'])
+                   if 'options' in d and d['options'] is not None else None,
+                   parent=d.get('parent', None),
+                   permission_tier=PermissionLevel.__members__.get(d['permission_tier'], None)
+                   if 'permission_tier' in d else None,
+                   query=d.get('query', None),
+                   query_hash=d.get('query_hash', None),
+                   tags=d.get('tags', None),
+                   updated_at=d.get('updated_at', None),
+                   user=User.from_dict(d['user']) if 'user' in d and d['user'] is not None else None,
+                   user_id=d.get('user_id', None),
+                   visualizations=[Visualization.from_dict(v) for v in d['visualizations']]
+                   if 'visualizations' in d and d['visualizations'] is not None else None)
 
 
 @dataclass
@@ -1489,7 +1510,7 @@ class QueryFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryFilter':
         return cls(query_start_time_range=TimeRange.from_dict(d['query_start_time_range'])
-                   if 'query_start_time_range' in d else None,
+                   if 'query_start_time_range' in d and d['query_start_time_range'] is not None else None,
                    statuses=d.get('statuses', None),
                    user_ids=d.get('user_ids', None),
                    warehouse_ids=d.get('warehouse_ids', None))
@@ -1549,7 +1570,8 @@ class QueryInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryInfo':
         return cls(
-            channel_used=ChannelInfo.from_dict(d['channel_used']) if 'channel_used' in d else None,
+            channel_used=ChannelInfo.from_dict(d['channel_used'])
+            if 'channel_used' in d and d['channel_used'] is not None else None,
             duration=d.get('duration', None),
             endpoint_id=d.get('endpoint_id', None),
             error_message=d.get('error_message', None),
@@ -1558,7 +1580,8 @@ class QueryInfo:
             execution_end_time_ms=d.get('execution_end_time_ms', None),
             is_final=d.get('is_final', None),
             lookup_key=d.get('lookup_key', None),
-            metrics=QueryMetrics.from_dict(d['metrics']) if 'metrics' in d else None,
+            metrics=QueryMetrics.from_dict(d['metrics'])
+            if 'metrics' in d and d['metrics'] is not None else None,
             plans_state=PlansState.__members__.get(d['plans_state'], None) if 'plans_state' in d else None,
             query_end_time_ms=d.get('query_end_time_ms', None),
             query_id=d.get('query_id', None),
@@ -1856,13 +1879,14 @@ class ResultManifest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResultManifest':
-        return cls(chunks=[ChunkInfo.from_dict(v)
-                           for v in d['chunks']] if 'chunks' in d and d['chunks'] is not None else None,
-                   format=Format.__members__.get(d['format'], None) if 'format' in d else None,
-                   schema=ResultSchema.from_dict(d['schema']) if 'schema' in d else None,
-                   total_byte_count=d.get('total_byte_count', None),
-                   total_chunk_count=d.get('total_chunk_count', None),
-                   total_row_count=d.get('total_row_count', None))
+        return cls(
+            chunks=[ChunkInfo.from_dict(v)
+                    for v in d['chunks']] if 'chunks' in d and d['chunks'] is not None else None,
+            format=Format.__members__.get(d['format'], None) if 'format' in d else None,
+            schema=ResultSchema.from_dict(d['schema']) if 'schema' in d and d['schema'] is not None else None,
+            total_byte_count=d.get('total_byte_count', None),
+            total_chunk_count=d.get('total_chunk_count', None),
+            total_row_count=d.get('total_row_count', None))
 
 
 @dataclass
@@ -2005,9 +2029,9 @@ class SetWorkspaceWarehouseConfigRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetWorkspaceWarehouseConfigRequest':
         return cls(
-            channel=Channel.from_dict(d['channel']) if 'channel' in d else None,
+            channel=Channel.from_dict(d['channel']) if 'channel' in d and d['channel'] is not None else None,
             config_param=RepeatedEndpointConfPairs.from_dict(d['config_param'])
-            if 'config_param' in d else None,
+            if 'config_param' in d and d['config_param'] is not None else None,
             data_access_config=[EndpointConfPair.from_dict(v) for v in d['data_access_config']]
             if 'data_access_config' in d and d['data_access_config'] is not None else None,
             enable_databricks_compute=d.get('enable_databricks_compute', None),
@@ -2015,14 +2039,15 @@ class SetWorkspaceWarehouseConfigRequest:
             enabled_warehouse_types=[WarehouseTypePair.from_dict(v) for v in d['enabled_warehouse_types']]
             if 'enabled_warehouse_types' in d and d['enabled_warehouse_types'] is not None else None,
             global_param=RepeatedEndpointConfPairs.from_dict(d['global_param'])
-            if 'global_param' in d else None,
+            if 'global_param' in d and d['global_param'] is not None else None,
             google_service_account=d.get('google_service_account', None),
             instance_profile_arn=d.get('instance_profile_arn', None),
             security_policy=SetWorkspaceWarehouseConfigRequestSecurityPolicy.__members__.get(
                 d['security_policy'], None) if 'security_policy' in d else None,
             serverless_agreement=d.get('serverless_agreement', None),
             sql_configuration_parameters=RepeatedEndpointConfPairs.from_dict(
-                d['sql_configuration_parameters']) if 'sql_configuration_parameters' in d else None)
+                d['sql_configuration_parameters']) if 'sql_configuration_parameters' in d
+            and d['sql_configuration_parameters'] is not None else None)
 
 
 class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
@@ -2089,8 +2114,9 @@ class StatementStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StatementStatus':
-        return cls(error=ServiceError.from_dict(d['error']) if 'error' in d else None,
-                   state=StatementState.__members__.get(d['state'], None) if 'state' in d else None)
+        return cls(
+            error=ServiceError.from_dict(d['error']) if 'error' in d and d['error'] is not None else None,
+            state=StatementState.__members__.get(d['state'], None) if 'state' in d else None)
 
 
 class Status(Enum):
@@ -2303,7 +2329,8 @@ class TransferOwnershipRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TransferOwnershipRequest':
         return cls(new_owner=d.get('new_owner', None),
-                   object_id=TransferOwnershipObjectId.from_dict(d['objectId']) if 'objectId' in d else None,
+                   object_id=TransferOwnershipObjectId.from_dict(d['objectId'])
+                   if 'objectId' in d and d['objectId'] is not None else None,
                    object_type=OwnableObjectType.__members__.get(d['objectType'], None)
                    if 'objectType' in d else None)
 
@@ -2413,11 +2440,12 @@ class Widget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Widget':
-        return cls(
-            id=d.get('id', None),
-            options=WidgetOptions.from_dict(d['options']) if 'options' in d else None,
-            visualization=Visualization.from_dict(d['visualization']) if 'visualization' in d else None,
-            width=d.get('width', None))
+        return cls(id=d.get('id', None),
+                   options=WidgetOptions.from_dict(d['options'])
+                   if 'options' in d and d['options'] is not None else None,
+                   visualization=Visualization.from_dict(d['visualization'])
+                   if 'visualization' in d and d['visualization'] is not None else None,
+                   width=d.get('width', None))
 
 
 @dataclass
