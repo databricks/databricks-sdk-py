@@ -19,10 +19,10 @@ import requests.auth
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .version import __version__
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenSource)
+from .version import __version__
 
 __all__ = ['Config']
 
