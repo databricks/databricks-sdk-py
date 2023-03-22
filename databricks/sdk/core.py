@@ -11,7 +11,7 @@ import re
 import subprocess
 import urllib.parse
 from datetime import datetime
-from typing import Callable, Dict, Iterable, Optional, Protocol, List
+from typing import Callable, Dict, Iterable, List, Optional
 
 import requests
 import requests.auth

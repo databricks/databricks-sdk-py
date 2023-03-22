@@ -10,7 +10,7 @@ import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import List, Dict
+from typing import Dict, List
 
 import requests
 import requests.auth

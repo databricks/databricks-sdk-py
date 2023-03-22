@@ -263,7 +263,7 @@ def test_config_azure_and_password_conflict(monkeypatch):
 )
 def test_config_corrupt_config(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'DEFAULT')
-    monkeypatch.setenv('HOME',   __tests__ + '/testdata/corrupt')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/corrupt')
     Config()
 
 
