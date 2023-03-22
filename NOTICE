@@ -1,0 +1,15 @@
+Copyright (2023) Databricks, Inc.
+
+This Software includes software developed at Databricks (https://www.databricks.com/) and its use is subject to the included LICENSE file.
+
+This Software contains code from the following open source projects, licensed under the Apache 2.0 license:
+
+psf/requests - https://github.com/psf/requests
+Copyright 2019 Kenneth Reitz
+License - https://github.com/psf/requests/blob/main/LICENSE
+
+This software contains code from the following open source projects, licensed under the BSD (3-clause) license.
+
+x/oauth2 - https://cs.opensource.google/go/x/oauth2/+/master:oauth2.go
+Copyright 2014 The Go Authors. All rights reserved.
+License - https://cs.opensource.google/go/x/oauth2/+/master:LICENSE
