@@ -9,6 +9,21 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient
 
 
+def pytest_configure(config):
+    config.addinivalue_line("markers",
+                            "integration: marks tests as those requiring a real Databricks backend")
+
+
+def pytest_collection_modifyitems(items):
+    # safer to refer to fixture fns instead of strings
+    client_fixtures = [x.__name__ for x in [a, w, ucws]]
+    for item in items:
+        current_fixtures = getattr(item, 'fixturenames', ())
+        for requires_client in client_fixtures:
+            if requires_client in current_fixtures:
+                item.add_marker('integration')
+
+
 @pytest.fixture
 def random():
     import random

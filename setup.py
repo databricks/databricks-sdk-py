@@ -12,7 +12,7 @@ setup(name="databricks",
       python_requires=">=3.7",
       install_requires=["requests>=2.28.1", ],
       extras_require={"dev": ["pytest", "pytest-cov", "yapf", "pycodestyle", "autoflake", "isort", "wheel"]},
-      author="Serge Smertin <serge.smertin@databricks.com",
+      author="Serge Smertin <serge.smertin@databricks.com>",
       description="Official Databricks SDK for Python",
       long_description=io.open("README.md", encoding="utf-8").read(),
       classifiers=[
