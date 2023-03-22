@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict
 
-_LOG = logging.getLogger('databricks.sdk.service.workspaceconf')
+_LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
 

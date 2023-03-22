@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List
 
-_LOG = logging.getLogger('databricks.sdk.service.unitycatalog')
+_LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
 

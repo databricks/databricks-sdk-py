@@ -8,7 +8,7 @@ import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
 
-_LOG = logging.getLogger('databricks.sdk.service.{{.Name}}')
+_LOG = logging.getLogger('databricks.sdk')
 
 {{range .ImportedEntities}}
 from .{{.Package.Name}} import {{.PascalName}}{{end}}

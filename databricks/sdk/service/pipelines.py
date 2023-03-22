@@ -9,7 +9,7 @@ from typing import Any, Dict, Iterator, List
 
 from ..errors import OperationFailed, OperationTimeout
 
-_LOG = logging.getLogger('databricks.sdk.service.pipelines')
+_LOG = logging.getLogger('databricks.sdk')
 
 from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
                        ClusterLogConf, GcpAttributes)

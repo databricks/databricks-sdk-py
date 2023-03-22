@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import pathlib
 import string
@@ -9,9 +10,19 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient
 
 
+def pytest_addoption(parser):
+    # make logging sensible and readable.
+    parser.addini('log_format', '...', 'string', '%(asctime)s [%(name)s][%(levelname)s] %(message)s')
+    parser.addini('log_date_format', '...', 'string', '%H:%M')
+
+
 def pytest_configure(config):
-    config.addinivalue_line("markers",
-                            "integration: marks tests as those requiring a real Databricks backend")
+    # disable urllib3, as it adds more noise
+    logger = logging.getLogger('urllib3.connectionpool')
+    logger.propagate = False
+
+    config.addinivalue_line('markers',
+                            'integration: marks tests as those requiring a real Databricks backend')
 
 
 def pytest_collection_modifyitems(items):
