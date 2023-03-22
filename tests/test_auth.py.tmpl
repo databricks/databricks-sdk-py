@@ -2,8 +2,13 @@
 # In case of editing this file, make sure the change is propagated to all Databricks SDK codebases
 
 import functools
+import os
+
 import pytest
-from databricks.sdk.client import Config, DatabricksError
+
+from databricks.sdk.core import Config
+
+__tests__ = os.path.dirname(__file__)
 
 
 def raises(msg):
@@ -12,14 +17,16 @@ def raises(msg):
         def wrapper(*args, **kwargs):
             with pytest.raises(DatabricksError) as info:
                 func(*args, **kwargs)
-            assert msg in str(info.value)
+            exception_str = str(info.value)
+            exception_str = exception_str.replace(__tests__ + '/', '')
+            assert msg in exception_str
         return wrapper
     return inner
 
 
 {{range .}}{{- with .AssertError}}@raises("{{.}}"){{end}}
 def {{.SnakeName}}({{if .Env}}monkeypatch{{end}}):{{range $k,$v := .Env}}
-    monkeypatch.setenv('{{$k}}', '{{$v}}'){{end}}
+    monkeypatch.setenv('{{$k}}', {{if eq $k "HOME"}}__tests__ + '/{{$v}}'{{else}}'{{$v}}'{{end}}){{end}}
     cfg = Config({{range $i,$v := .Fields}}{{if $i}}, {{end}}{{.Key}}='{{.Value}}'{{end}})
     {{with .AssertAuth}}
     assert cfg.auth_type == '{{.}}'{{end}}{{with .AssertHost}}

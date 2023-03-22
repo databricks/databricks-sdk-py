@@ -1,0 +1,44 @@
+name: build
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: [main]
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        pyVersion: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.pyVersion }}
+
+      - name: Run tests
+        run: make dev-init test
+
+      - name: Publish test coverage
+        uses: codecov/codecov-action@v1
+
+  fmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Format all files
+        run: make dev-init fmt
+
+      - name: Fail on differences
+        run: git diff --exit-code

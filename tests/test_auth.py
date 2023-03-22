@@ -2,10 +2,13 @@
 # In case of editing this file, make sure the change is propagated to all Databricks SDK codebases
 
 import functools
+import os
 
 import pytest
 
 from databricks.sdk.core import Config
+
+__tests__ = os.path.dirname(__file__)
 
 
 def raises(msg):
@@ -16,7 +19,9 @@ def raises(msg):
         def wrapper(*args, **kwargs):
             with pytest.raises(ValueError) as info:
                 func(*args, **kwargs)
-            assert msg in str(info.value)
+            exception_str = str(info.value)
+            exception_str = exception_str.replace(__tests__ + '/', '')
+            assert msg in exception_str
 
         return wrapper
 
@@ -133,7 +138,7 @@ def test_config_config_file(monkeypatch):
 
 
 def test_config_pat_from_databricks_cfg(monkeypatch):
-    monkeypatch.setenv('HOME', 'testdata')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
     cfg = Config()
 
     assert cfg.auth_type == 'pat'
@@ -142,7 +147,7 @@ def test_config_pat_from_databricks_cfg(monkeypatch):
 
 def test_config_pat_from_databricks_cfg_dot_profile(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'pat.with.dot')
-    monkeypatch.setenv('HOME', 'testdata')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
     cfg = Config()
 
     assert cfg.auth_type == 'pat'
@@ -154,7 +159,7 @@ def test_config_pat_from_databricks_cfg_dot_profile(monkeypatch):
 )
 def test_config_pat_from_databricks_cfg_nohost_profile(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'nohost')
-    monkeypatch.setenv('HOME', 'testdata')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
     Config()
 
 
@@ -164,7 +169,7 @@ def test_config_pat_from_databricks_cfg_nohost_profile(monkeypatch):
 def test_config_config_profile_and_token(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'nohost')
     monkeypatch.setenv('DATABRICKS_TOKEN', 'x')
-    monkeypatch.setenv('HOME', 'testdata')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
     Config()
 
 
@@ -174,7 +179,7 @@ def test_config_config_profile_and_token(monkeypatch):
 def test_config_config_profile_and_password(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'nohost')
     monkeypatch.setenv('DATABRICKS_USERNAME', 'x')
-    monkeypatch.setenv('HOME', 'testdata')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
     Config()
 
 
@@ -187,8 +192,8 @@ def test_config_azure_pat():
 
 
 def test_config_azure_cli_host(monkeypatch):
-    monkeypatch.setenv('HOME', 'testdata/azure')
-    monkeypatch.setenv('PATH', 'testdata:/bin')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
+    monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
     cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
@@ -201,14 +206,14 @@ def test_config_azure_cli_host(monkeypatch):
 )
 def test_config_azure_cli_host_fail(monkeypatch):
     monkeypatch.setenv('FAIL', 'yes')
-    monkeypatch.setenv('HOME', 'testdata/azure')
-    monkeypatch.setenv('PATH', 'testdata:/bin')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
+    monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
     cfg = Config(azure_workspace_resource_id='/sub/rg/ws')
 
 
 @raises("default auth: cannot configure default credentials. Config: azure_workspace_resource_id=/sub/rg/ws")
 def test_config_azure_cli_host_az_not_installed(monkeypatch):
-    monkeypatch.setenv('HOME', 'testdata/azure')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
     monkeypatch.setenv('PATH', 'whatever')
     cfg = Config(azure_workspace_resource_id='/sub/rg/ws')
 
@@ -217,14 +222,14 @@ def test_config_azure_cli_host_az_not_installed(monkeypatch):
     "validate: more than one authorization method configured: azure and pat. Config: token=***, azure_workspace_resource_id=/sub/rg/ws"
 )
 def test_config_azure_cli_host_pat_conflict_with_config_file_present_without_default_profile(monkeypatch):
-    monkeypatch.setenv('HOME', 'testdata/azure')
-    monkeypatch.setenv('PATH', 'testdata:/bin')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
+    monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
     cfg = Config(token='x', azure_workspace_resource_id='/sub/rg/ws')
 
 
 def test_config_azure_cli_host_and_resource_id(monkeypatch):
-    monkeypatch.setenv('HOME', 'testdata')
-    monkeypatch.setenv('PATH', 'testdata:/bin')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
+    monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
     cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
@@ -234,8 +239,8 @@ def test_config_azure_cli_host_and_resource_id(monkeypatch):
 
 def test_config_azure_cli_host_and_resource_i_d_configuration_precedence(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'justhost')
-    monkeypatch.setenv('HOME', 'testdata/azure')
-    monkeypatch.setenv('PATH', 'testdata:/bin')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
+    monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
     cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
@@ -248,8 +253,8 @@ def test_config_azure_cli_host_and_resource_i_d_configuration_precedence(monkeyp
 )
 def test_config_azure_and_password_conflict(monkeypatch):
     monkeypatch.setenv('DATABRICKS_USERNAME', 'x')
-    monkeypatch.setenv('HOME', 'testdata/azure')
-    monkeypatch.setenv('PATH', 'testdata:/bin')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
+    monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
     cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
 
 
@@ -258,7 +263,7 @@ def test_config_azure_and_password_conflict(monkeypatch):
 )
 def test_config_corrupt_config(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'DEFAULT')
-    monkeypatch.setenv('HOME', 'testdata/corrupt')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/corrupt')
     Config()
 
 

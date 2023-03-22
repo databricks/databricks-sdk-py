@@ -13,3 +13,8 @@ lint:
 	pycodestyle databricks
 	autoflake --check-diff --quiet --recursive databricks
 
+test:
+	pytest -m 'not integration' --cov=databricks --cov-report html tests
+
+coverage: test
+	open htmlcov/index.html

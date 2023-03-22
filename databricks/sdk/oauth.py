@@ -10,7 +10,7 @@ import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import List
+from typing import Dict, List
 
 import requests
 import requests.auth
@@ -168,7 +168,7 @@ class RefreshableCredentials(Refreshable):
     def __call__(self, *args, **kwargs):
         """Implementing CredentialsProvider protocol"""
 
-        def inner() -> dict[str, str]:
+        def inner() -> Dict[str, str]:
             return {'Authorization': f"Bearer {self.token().access_token}"}
 
         return inner
@@ -192,6 +192,7 @@ class RefreshableCredentials(Refreshable):
 
 
 class Consent:
+
     def __init__(self, client: 'OAuthClient', state: str, verifier: str, auth_url: str = None) -> None:
         self.auth_url = auth_url
 
@@ -200,8 +201,7 @@ class Consent:
         self._client = client
 
     def as_dict(self) -> dict:
-        return {'state': self._state,
-                'verifier': self._verifier}
+        return {'state': self._state, 'verifier': self._verifier}
 
     @staticmethod
     def from_dict(client: 'OAuthClient', raw: dict) -> 'Consent':
@@ -224,7 +224,7 @@ class Consent:
         query = feedback.pop()
         return self.exchange_callback_parameters(query)
 
-    def exchange_callback_parameters(self, query: dict[str, str]) -> RefreshableCredentials:
+    def exchange_callback_parameters(self, query: Dict[str, str]) -> RefreshableCredentials:
         if 'error' in query:
             raise ValueError('{error}: {error_description}'.format(**query))
         if 'code' not in query or 'state' not in query:
@@ -234,10 +234,12 @@ class Consent:
     def exchange(self, code: str, state: str) -> RefreshableCredentials:
         if self._state != state:
             raise ValueError('state mismatch')
-        params = {'grant_type': 'authorization_code',
-                  'code': code,
-                  'code_verifier': self._verifier,
-                  'redirect_uri': self._client.redirect_url}
+        params = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'code_verifier': self._verifier,
+            'redirect_uri': self._client.redirect_url
+        }
         headers = {}
         if 'microsoft' in self._client.token_url:
             # Tokens issued for the 'Single-Page Application' client-type may
@@ -271,8 +273,12 @@ class OAuthClient:
     exchange it for a token without possessing the Code Verifier.
     """
 
-    def __init__(self, host: str, client_id: str, redirect_url: str, *,
-                 scopes: list[str] = None,
+    def __init__(self,
+                 host: str,
+                 client_id: str,
+                 redirect_url: str,
+                 *,
+                 scopes: List[str] = None,
                  client_secret: str = None):
         # TODO: is it a circular dependency?..
         from .core import Config, credentials_provider
@@ -310,13 +316,15 @@ class OAuthClient:
         digest = hashlib.sha256(verifier.encode("UTF-8")).digest()
         challenge = (base64.urlsafe_b64encode(digest).decode("UTF-8").replace("=", ""))
 
-        params = {'response_type': 'code',
-                  'client_id': self.client_id,
-                  'redirect_uri': self.redirect_url,
-                  'scope': ' '.join(self._scopes),
-                  'state': state,
-                  'code_challenge': challenge,
-                  'code_challenge_method': 'S256'}
+        params = {
+            'response_type': 'code',
+            'client_id': self.client_id,
+            'redirect_uri': self.redirect_url,
+            'scope': ' '.join(self._scopes),
+            'state': state,
+            'code_challenge': challenge,
+            'code_challenge_method': 'S256'
+        }
         url = f'{self._auth_url}?{urllib.parse.urlencode(params)}'
         return Consent(self, state, verifier, auth_url=url)
 
