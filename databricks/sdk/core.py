@@ -1,3 +1,4 @@
+import abc
 import base64
 import configparser
 import functools
@@ -25,16 +26,18 @@ __all__ = ['Config']
 
 logger = logging.getLogger(__name__)
 
-RequestVisitor = Callable[[], dict[str, str]]
+RequestVisitor = Callable[[], Dict[str, str]]
 
 
-class CredentialsProvider(Protocol):
+class CredentialsProvider(abc.ABC):
     """ CredentialsProvider is the protocol (call-side interface)
      for authenticating requests to Databricks REST APIs"""
 
+    @abc.abstractmethod
     def auth_type(self) -> str:
         ...
 
+    @abc.abstractmethod
     def __call__(self, cfg: 'Config') -> RequestVisitor:
         ...
 
@@ -65,7 +68,7 @@ def basic_auth(cfg: 'Config') -> RequestVisitor:
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode()).decode()
     static_credentials = {'Authorization': f'Basic {encoded}'}
 
-    def inner() -> dict[str, str]:
+    def inner() -> Dict[str, str]:
         return static_credentials
 
     return inner
@@ -76,7 +79,7 @@ def pat_auth(cfg: 'Config') -> RequestVisitor:
     """ Adds Databricks Personal Access Token to every request """
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
-    def inner() -> dict[str, str]:
+    def inner() -> Dict[str, str]:
         return static_credentials
 
     return inner
@@ -98,7 +101,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
                                      scopes=["all-apis"],
                                      use_header=True)
 
-    def inner() -> dict[str, str]:
+    def inner() -> Dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
@@ -160,7 +163,7 @@ def azure_service_principal(cfg: 'Config') -> RequestVisitor:
     inner = token_source_for(cfg.effective_azure_login_app_id)
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
-    def refreshed_headers() -> dict[str, str]:
+    def refreshed_headers() -> Dict[str, str]:
         headers = {
             'Authorization': f"Bearer {inner.token().access_token}",
             'X-Databricks-Azure-SP-Management-Token': cloud.token().access_token,
@@ -219,7 +222,7 @@ def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
 
-    def inner() -> dict[str, str]:
+    def inner() -> Dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
@@ -351,7 +354,7 @@ class Config:
             kwargs[attr.name] = query[attr.name]
         return Config(**kwargs)
 
-    def authenticate(self) -> dict[str, str]:
+    def authenticate(self) -> Dict[str, str]:
         """ Returns a list of fresh authentication headers """
         return self._header_factory()
 

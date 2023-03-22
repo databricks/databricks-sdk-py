@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Format all files
-        run: make fmt
+        run: make dev-init fmt
 
       - name: Fail on differences
         run: git diff --exit-code

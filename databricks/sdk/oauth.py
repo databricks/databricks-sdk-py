@@ -10,7 +10,7 @@ import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import List
+from typing import List, Dict
 
 import requests
 import requests.auth
@@ -168,7 +168,7 @@ class RefreshableCredentials(Refreshable):
     def __call__(self, *args, **kwargs):
         """Implementing CredentialsProvider protocol"""
 
-        def inner() -> dict[str, str]:
+        def inner() -> Dict[str, str]:
             return {'Authorization': f"Bearer {self.token().access_token}"}
 
         return inner
@@ -224,7 +224,7 @@ class Consent:
         query = feedback.pop()
         return self.exchange_callback_parameters(query)
 
-    def exchange_callback_parameters(self, query: dict[str, str]) -> RefreshableCredentials:
+    def exchange_callback_parameters(self, query: Dict[str, str]) -> RefreshableCredentials:
         if 'error' in query:
             raise ValueError('{error}: {error_description}'.format(**query))
         if 'code' not in query or 'state' not in query:
