@@ -1,7 +1,6 @@
 import io
 from setuptools import setup, find_packages
-
-__version__ = "0.0.2"
+from databricks.sdk.version import __version__
 
 # look at this one
 # https://github.com/psf/requests/blob/main/setup.py
