@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
 
-_LOG = logging.getLogger('databricks.sdk.service.tokens')
+_LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
 

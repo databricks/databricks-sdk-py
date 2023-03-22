@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List
 
-_LOG = logging.getLogger('databricks.sdk.service.oauth2')
+_LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
 

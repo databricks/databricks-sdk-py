@@ -137,7 +137,9 @@ def parse_arguments() -> argparse.Namespace:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='[%(levelname)s] %(message)s')
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+                        format='%(asctime)s [%(name)s][%(levelname)s] %(message)s')
+    logging.getLogger('databricks.sdk').setLevel(logging.DEBUG)
 
     args = parse_arguments()
     oauth_cfg = init_oauth_config(args)

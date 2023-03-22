@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 
 from ..errors import OperationFailed, OperationTimeout
 
-_LOG = logging.getLogger('databricks.sdk.service.commands')
+_LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
 

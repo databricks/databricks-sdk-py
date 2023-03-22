@@ -11,6 +11,7 @@ import re
 import subprocess
 import urllib.parse
 from datetime import datetime
+from json import JSONDecodeError
 from typing import Callable, Dict, Iterable, List, Optional
 
 import requests
@@ -24,7 +25,7 @@ from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
 
 __all__ = ['Config']
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('databricks.sdk')
 
 RequestVisitor = Callable[[], Dict[str, str]]
 
@@ -636,6 +637,7 @@ class ApiClient(requests.Session):
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )
+        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
         self._user_agent_base = cfg.user_agent
         self.auth = self._authenticate
 
@@ -657,27 +659,24 @@ class ApiClient(requests.Session):
         return r
 
     def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
-        response = self.request(method,
-                                f"{self._cfg.host}{path}",
-                                params=query,
-                                json=body,
-                                headers={
-                                    'Accept': 'application/json',
-                                    'User-Agent': self._user_agent_base
-                                })
-        if not len(response.content):
-            return {}
+        headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
+        response = self.request(method, f"{self._cfg.host}{path}", params=query, json=body, headers=headers)
         try:
-            payload = response.json()
+            self._record_request_log(response)
             if not response.ok:
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
+                payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
-            return payload
+            if not len(response.content):
+                return {}
+            return response.json()
         except requests.exceptions.JSONDecodeError:
             txt = response.text
             match = self._html_pre.search(txt)
             message = match.group(1).strip() if match else txt
+            if not message:
+                message = response.reason
             raise self._make_nicer_error(message) from None
 
     def _make_nicer_error(self, message: str, status_code: int = 200, **kwargs) -> DatabricksError:
@@ -686,3 +685,88 @@ class ApiClient(requests.Session):
         if debug_string and is_http_unauthorized_or_forbidden:
             message = f'{message}. {debug_string}'
         return DatabricksError(message, **kwargs)
+
+    def _record_request_log(self, response: requests.Response):
+        if not logger.isEnabledFor(logging.DEBUG):
+            return
+        request = response.request
+        url = urllib.parse.urlparse(request.url)
+        query = ''
+        if url.query:
+            query = f'?{urllib.parse.unquote(url.query)}'
+        sb = [f'{request.method} {urllib.parse.unquote(url.path)}{query}']
+        if self._cfg.debug_headers:
+            if self._cfg.host:
+                sb.append(f'> * Host: {self._cfg.host}')
+            for k, v in request.headers.items():
+                sb.append(f'> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}')
+        if request.body:
+            sb.append(self._redacted_dump("> ", request.body))
+        sb.append(f'< {response.status_code} {response.reason}')
+        if response.content:
+            sb.append(self._redacted_dump("< ", response.content))
+        logger.debug("\n".join(sb))
+
+    @staticmethod
+    def _mask(m: Dict[str, any]):
+        for k in m:
+            if k in {'string_value', 'token_value', 'content'}:
+                m[k] = "**REDACTED**"
+
+    @staticmethod
+    def _map_keys(m: Dict[str, any]) -> List[str]:
+        keys = list(m.keys())
+        keys.sort()
+        return keys
+
+    @staticmethod
+    def _only_n_bytes(j: str, num_bytes: int = 96) -> str:
+        diff = len(j.encode('utf-8')) - num_bytes
+        if diff > 0:
+            return f"{j[:num_bytes]}... ({diff} more bytes)"
+        return j
+
+    def _recursive_marshal_dict(self, m, budget) -> dict:
+        out = {}
+        self._mask(m)
+        for k in sorted(m.keys()):
+            raw = self._recursive_marshal(m[k], budget)
+            out[k] = raw
+            budget -= len(str(raw))
+        return out
+
+    def _recursive_marshal_list(self, s, budget) -> list:
+        out = []
+        for i in range(len(s)):
+            if i > 0 >= budget:
+                out.append("... (%d additional elements)" % (len(s) - len(out)))
+                break
+            raw = self._recursive_marshal(s[i], budget)
+            out.append(raw)
+            budget -= len(str(raw))
+        return out
+
+    def _recursive_marshal(self, v: any, budget: int) -> any:
+        if isinstance(v, dict):
+            return self._recursive_marshal_dict(v, budget)
+        elif isinstance(v, list):
+            return self._recursive_marshal_list(v, budget)
+        elif isinstance(v, str):
+            return self._only_n_bytes(v, self._debug_truncate_bytes)
+        else:
+            return v
+
+    def _redacted_dump(self, prefix: str, body: str) -> str:
+        if len(body) == 0:
+            return ""
+        try:
+            # Unmarshal body into primitive types.
+            tmp = json.loads(body)
+            max_bytes = 96
+            if self._debug_truncate_bytes > max_bytes:
+                max_bytes = self._debug_truncate_bytes
+            # Re-marshal body taking redaction and character limit into account.
+            raw = self._recursive_marshal(tmp, max_bytes)
+            return "\n".join([f'{prefix}{line}' for line in json.dumps(raw, indent=2).split("\n")])
+        except JSONDecodeError:
+            return f'{prefix}[non-JSON document of {len(body)} bytes]'

@@ -9,7 +9,7 @@ from typing import Dict, Iterator, List
 
 from ..errors import OperationFailed, OperationTimeout
 
-_LOG = logging.getLogger('databricks.sdk.service.jobs')
+_LOG = logging.getLogger('databricks.sdk')
 
 from .clusters import BaseClusterInfo
 from .libraries import Library
