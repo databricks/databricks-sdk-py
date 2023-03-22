@@ -496,7 +496,7 @@ class Config:
         else:
             self.host = f"{o.scheme}://{o.netloc}"
 
-    def _set_inner_config(self, keyword_args: dict[str, any]):
+    def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():
             if attr.name not in keyword_args:
                 continue
