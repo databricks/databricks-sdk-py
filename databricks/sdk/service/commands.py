@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
 
-from ..errors import OperationFailed, OperationTimeout
+from ..errors import OperationFailed
+from ._internal import _enum, _from_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -54,7 +55,7 @@ class Command:
         return cls(cluster_id=d.get('clusterId', None),
                    command=d.get('command', None),
                    context_id=d.get('contextId', None),
-                   language=Language.__members__.get(d['language'], None) if 'language' in d else None)
+                   language=_enum(d, 'language', Language))
 
 
 class CommandStatus(Enum):
@@ -91,10 +92,9 @@ class CommandStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CommandStatusResponse':
-        return cls(
-            id=d.get('id', None),
-            results=Results.from_dict(d['results']) if 'results' in d and d['results'] is not None else None,
-            status=CommandStatus.__members__.get(d['status'], None) if 'status' in d else None)
+        return cls(id=d.get('id', None),
+                   results=_from_dict(d, 'results', Results),
+                   status=_enum(d, 'status', CommandStatus))
 
 
 class ContextStatus(Enum):
@@ -125,8 +125,7 @@ class ContextStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ContextStatusResponse':
-        return cls(id=d.get('id', None),
-                   status=ContextStatus.__members__.get(d['status'], None) if 'status' in d else None)
+        return cls(id=d.get('id', None), status=_enum(d, 'status', ContextStatus))
 
 
 @dataclass
@@ -142,8 +141,7 @@ class CreateContext:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateContext':
-        return cls(cluster_id=d.get('clusterId', None),
-                   language=Language.__members__.get(d['language'], None) if 'language' in d else None)
+        return cls(cluster_id=d.get('clusterId', None), language=_enum(d, 'language', Language))
 
 
 @dataclass
@@ -221,17 +219,16 @@ class Results:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Results':
-        return cls(
-            cause=d.get('cause', None),
-            data=d.get('data', None),
-            file_name=d.get('fileName', None),
-            file_names=d.get('fileNames', None),
-            is_json_schema=d.get('isJsonSchema', None),
-            pos=d.get('pos', None),
-            result_type=ResultType.__members__.get(d['resultType'], None) if 'resultType' in d else None,
-            schema=d.get('schema', None),
-            summary=d.get('summary', None),
-            truncated=d.get('truncated', None))
+        return cls(cause=d.get('cause', None),
+                   data=d.get('data', None),
+                   file_name=d.get('fileName', None),
+                   file_names=d.get('fileNames', None),
+                   is_json_schema=d.get('isJsonSchema', None),
+                   pos=d.get('pos', None),
+                   result_type=_enum(d, 'resultType', ResultType),
+                   schema=d.get('schema', None),
+                   summary=d.get('summary', None),
+                   truncated=d.get('truncated', None))
 
 
 class CommandExecutionAPI:
@@ -285,7 +282,7 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/1.2/commands/cancel', body=body)
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str,
@@ -364,7 +361,7 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/1.2/contexts/create', body=body)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
@@ -424,5 +421,5 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/1.2/commands/execute', body=body)

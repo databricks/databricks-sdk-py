@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -23,9 +25,7 @@ class AclItem:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AclItem':
-        return cls(
-            permission=AclPermission.__members__.get(d['permission'], None) if 'permission' in d else None,
-            principal=d.get('principal', None))
+        return cls(permission=_enum(d, 'permission', AclPermission), principal=d.get('principal', None))
 
 
 class AclPermission(Enum):
@@ -69,11 +69,9 @@ class CreateScope:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateScope':
         return cls(initial_manage_principal=d.get('initial_manage_principal', None),
-                   keyvault_metadata=AzureKeyVaultSecretScopeMetadata.from_dict(d['keyvault_metadata'])
-                   if 'keyvault_metadata' in d and d['keyvault_metadata'] is not None else None,
+                   keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
                    scope=d.get('scope', None),
-                   scope_backend_type=ScopeBackendType.__members__.get(d['scope_backend_type'], None)
-                   if 'scope_backend_type' in d else None)
+                   scope_backend_type=_enum(d, 'scope_backend_type', ScopeBackendType))
 
 
 @dataclass
@@ -148,8 +146,7 @@ class ListAclsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
-        return cls(items=[AclItem.from_dict(v)
-                          for v in d['items']] if 'items' in d and d['items'] is not None else None)
+        return cls(items=_repeated(d, 'items', AclItem))
 
 
 @dataclass
@@ -163,8 +160,7 @@ class ListScopesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListScopesResponse':
-        return cls(scopes=[SecretScope.from_dict(v)
-                           for v in d['scopes']] if 'scopes' in d and d['scopes'] is not None else None)
+        return cls(scopes=_repeated(d, 'scopes', SecretScope))
 
 
 @dataclass
@@ -185,8 +181,7 @@ class ListSecretsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSecretsResponse':
-        return cls(secrets=[SecretMetadata.from_dict(v)
-                            for v in d['secrets']] if 'secrets' in d and d['secrets'] is not None else None)
+        return cls(secrets=_repeated(d, 'secrets', SecretMetadata))
 
 
 @dataclass
@@ -204,10 +199,9 @@ class PutAcl:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PutAcl':
-        return cls(
-            permission=AclPermission.__members__.get(d['permission'], None) if 'permission' in d else None,
-            principal=d.get('principal', None),
-            scope=d.get('scope', None))
+        return cls(permission=_enum(d, 'permission', AclPermission),
+                   principal=d.get('principal', None),
+                   scope=d.get('scope', None))
 
 
 @dataclass
@@ -270,10 +264,8 @@ class SecretScope:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SecretScope':
-        return cls(backend_type=ScopeBackendType.__members__.get(d['backend_type'], None)
-                   if 'backend_type' in d else None,
-                   keyvault_metadata=AzureKeyVaultSecretScopeMetadata.from_dict(d['keyvault_metadata'])
-                   if 'keyvault_metadata' in d and d['keyvault_metadata'] is not None else None,
+        return cls(backend_type=_enum(d, 'backend_type', ScopeBackendType),
+                   keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
                    name=d.get('name', None))
 
 

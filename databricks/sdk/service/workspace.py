@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -87,8 +89,8 @@ class Import:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Import':
         return cls(content=d.get('content', None),
-                   format=ExportFormat.__members__.get(d['format'], None) if 'format' in d else None,
-                   language=Language.__members__.get(d['language'], None) if 'language' in d else None,
+                   format=_enum(d, 'format', ExportFormat),
+                   language=_enum(d, 'language', Language),
                    overwrite=d.get('overwrite', None),
                    path=d.get('path', None))
 
@@ -121,8 +123,7 @@ class ListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
-        return cls(objects=[ObjectInfo.from_dict(v)
-                            for v in d['objects']] if 'objects' in d and d['objects'] is not None else None)
+        return cls(objects=_repeated(d, 'objects', ObjectInfo))
 
 
 @dataclass
@@ -162,14 +163,13 @@ class ObjectInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ObjectInfo':
-        return cls(
-            created_at=d.get('created_at', None),
-            language=Language.__members__.get(d['language'], None) if 'language' in d else None,
-            modified_at=d.get('modified_at', None),
-            object_id=d.get('object_id', None),
-            object_type=ObjectType.__members__.get(d['object_type'], None) if 'object_type' in d else None,
-            path=d.get('path', None),
-            size=d.get('size', None))
+        return cls(created_at=d.get('created_at', None),
+                   language=_enum(d, 'language', Language),
+                   modified_at=d.get('modified_at', None),
+                   object_id=d.get('object_id', None),
+                   object_type=_enum(d, 'object_type', ObjectType),
+                   path=d.get('path', None),
+                   size=d.get('size', None))
 
 
 class ObjectType(Enum):

@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -35,8 +37,7 @@ class Budget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Budget':
-        return cls(alerts=[BudgetAlert.from_dict(v)
-                           for v in d['alerts']] if 'alerts' in d and d['alerts'] is not None else None,
+        return cls(alerts=_repeated(d, 'alerts', BudgetAlert),
                    end_date=d.get('end_date', None),
                    filter=d.get('filter', None),
                    name=d.get('name', None),
@@ -75,8 +76,7 @@ class BudgetList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetList':
-        return cls(budgets=[BudgetWithStatus.from_dict(v)
-                            for v in d['budgets']] if 'budgets' in d and d['budgets'] is not None else None)
+        return cls(budgets=_repeated(d, 'budgets', BudgetWithStatus))
 
 
 @dataclass
@@ -112,8 +112,7 @@ class BudgetWithStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetWithStatus':
-        return cls(alerts=[BudgetAlert.from_dict(v)
-                           for v in d['alerts']] if 'alerts' in d and d['alerts'] is not None else None,
+        return cls(alerts=_repeated(d, 'alerts', BudgetAlert),
                    budget_id=d.get('budget_id', None),
                    creation_time=d.get('creation_time', None),
                    end_date=d.get('end_date', None),
@@ -121,8 +120,7 @@ class BudgetWithStatus:
                    name=d.get('name', None),
                    period=d.get('period', None),
                    start_date=d.get('start_date', None),
-                   status_daily=[BudgetWithStatusStatusDailyItem.from_dict(v) for v in d['status_daily']]
-                   if 'status_daily' in d and d['status_daily'] is not None else None,
+                   status_daily=_repeated(d, 'status_daily', BudgetWithStatusStatusDailyItem),
                    target_amount=d.get('target_amount', None),
                    update_time=d.get('update_time', None))
 
@@ -170,17 +168,15 @@ class CreateLogDeliveryConfigurationParams:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateLogDeliveryConfigurationParams':
-        return cls(
-            config_name=d.get('config_name', None),
-            credentials_id=d.get('credentials_id', None),
-            delivery_path_prefix=d.get('delivery_path_prefix', None),
-            delivery_start_time=d.get('delivery_start_time', None),
-            log_type=LogType.__members__.get(d['log_type'], None) if 'log_type' in d else None,
-            output_format=OutputFormat.__members__.get(d['output_format'], None)
-            if 'output_format' in d else None,
-            status=LogDeliveryConfigStatus.__members__.get(d['status'], None) if 'status' in d else None,
-            storage_configuration_id=d.get('storage_configuration_id', None),
-            workspace_ids_filter=d.get('workspace_ids_filter', None))
+        return cls(config_name=d.get('config_name', None),
+                   credentials_id=d.get('credentials_id', None),
+                   delivery_path_prefix=d.get('delivery_path_prefix', None),
+                   delivery_start_time=d.get('delivery_start_time', None),
+                   log_type=_enum(d, 'log_type', LogType),
+                   output_format=_enum(d, 'output_format', OutputFormat),
+                   status=_enum(d, 'status', LogDeliveryConfigStatus),
+                   storage_configuration_id=d.get('storage_configuration_id', None),
+                   workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
 @dataclass
@@ -279,23 +275,20 @@ class LogDeliveryConfiguration:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LogDeliveryConfiguration':
-        return cls(
-            account_id=d.get('account_id', None),
-            config_id=d.get('config_id', None),
-            config_name=d.get('config_name', None),
-            creation_time=d.get('creation_time', None),
-            credentials_id=d.get('credentials_id', None),
-            delivery_path_prefix=d.get('delivery_path_prefix', None),
-            delivery_start_time=d.get('delivery_start_time', None),
-            log_delivery_status=LogDeliveryStatus.from_dict(d['log_delivery_status'])
-            if 'log_delivery_status' in d and d['log_delivery_status'] is not None else None,
-            log_type=LogType.__members__.get(d['log_type'], None) if 'log_type' in d else None,
-            output_format=OutputFormat.__members__.get(d['output_format'], None)
-            if 'output_format' in d else None,
-            status=LogDeliveryConfigStatus.__members__.get(d['status'], None) if 'status' in d else None,
-            storage_configuration_id=d.get('storage_configuration_id', None),
-            update_time=d.get('update_time', None),
-            workspace_ids_filter=d.get('workspace_ids_filter', None))
+        return cls(account_id=d.get('account_id', None),
+                   config_id=d.get('config_id', None),
+                   config_name=d.get('config_name', None),
+                   creation_time=d.get('creation_time', None),
+                   credentials_id=d.get('credentials_id', None),
+                   delivery_path_prefix=d.get('delivery_path_prefix', None),
+                   delivery_start_time=d.get('delivery_start_time', None),
+                   log_delivery_status=_from_dict(d, 'log_delivery_status', LogDeliveryStatus),
+                   log_type=_enum(d, 'log_type', LogType),
+                   output_format=_enum(d, 'output_format', OutputFormat),
+                   status=_enum(d, 'status', LogDeliveryConfigStatus),
+                   storage_configuration_id=d.get('storage_configuration_id', None),
+                   update_time=d.get('update_time', None),
+                   workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
 @dataclass
@@ -321,7 +314,7 @@ class LogDeliveryStatus:
         return cls(last_attempt_time=d.get('last_attempt_time', None),
                    last_successful_attempt_time=d.get('last_successful_attempt_time', None),
                    message=d.get('message', None),
-                   status=DeliveryStatus.__members__.get(d['status'], None) if 'status' in d else None)
+                   status=_enum(d, 'status', DeliveryStatus))
 
 
 class LogType(Enum):
@@ -371,9 +364,8 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateLogDeliveryConfigurationStatusRequest':
-        return cls(
-            log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
-            status=LogDeliveryConfigStatus.__members__.get(d['status'], None) if 'status' in d else None)
+        return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
+                   status=_enum(d, 'status', LogDeliveryConfigStatus))
 
 
 @dataclass
@@ -389,9 +381,7 @@ class WrappedBudget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedBudget':
-        return cls(
-            budget=Budget.from_dict(d['budget']) if 'budget' in d and d['budget'] is not None else None,
-            budget_id=d.get('budget_id', None))
+        return cls(budget=_from_dict(d, 'budget', Budget), budget_id=d.get('budget_id', None))
 
 
 @dataclass
@@ -405,8 +395,7 @@ class WrappedBudgetWithStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedBudgetWithStatus':
-        return cls(budget=BudgetWithStatus.from_dict(d['budget']
-                                                     ) if 'budget' in d and d['budget'] is not None else None)
+        return cls(budget=_from_dict(d, 'budget', BudgetWithStatus))
 
 
 @dataclass
@@ -421,9 +410,8 @@ class WrappedCreateLogDeliveryConfiguration:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedCreateLogDeliveryConfiguration':
-        return cls(log_delivery_configuration=CreateLogDeliveryConfigurationParams.
-                   from_dict(d['log_delivery_configuration']) if 'log_delivery_configuration' in d
-                   and d['log_delivery_configuration'] is not None else None)
+        return cls(log_delivery_configuration=_from_dict(d, 'log_delivery_configuration',
+                                                         CreateLogDeliveryConfigurationParams))
 
 
 @dataclass
@@ -439,8 +427,7 @@ class WrappedLogDeliveryConfiguration:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfiguration':
         return cls(
-            log_delivery_configuration=LogDeliveryConfiguration.from_dict(d['log_delivery_configuration'])
-            if 'log_delivery_configuration' in d and d['log_delivery_configuration'] is not None else None)
+            log_delivery_configuration=_from_dict(d, 'log_delivery_configuration', LogDeliveryConfiguration))
 
 
 @dataclass
@@ -455,9 +442,8 @@ class WrappedLogDeliveryConfigurations:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfigurations':
-        return cls(log_delivery_configurations=[
-            LogDeliveryConfiguration.from_dict(v) for v in d['log_delivery_configurations']
-        ] if 'log_delivery_configurations' in d and d['log_delivery_configurations'] is not None else None)
+        return cls(
+            log_delivery_configurations=_repeated(d, 'log_delivery_configurations', LogDeliveryConfiguration))
 
 
 class BillableUsageAPI:

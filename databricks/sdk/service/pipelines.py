@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List
 
-from ..errors import OperationFailed, OperationTimeout
+from ..errors import OperationFailed
+from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -61,27 +62,23 @@ class CreatePipeline:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePipeline':
-        return cls(
-            allow_duplicate_names=d.get('allow_duplicate_names', None),
-            catalog=d.get('catalog', None),
-            channel=d.get('channel', None),
-            clusters=[PipelineCluster.from_dict(v)
-                      for v in d['clusters']] if 'clusters' in d and d['clusters'] is not None else None,
-            configuration=d.get('configuration', None),
-            continuous=d.get('continuous', None),
-            development=d.get('development', None),
-            dry_run=d.get('dry_run', None),
-            edition=d.get('edition', None),
-            filters=Filters.from_dict(d['filters']) if 'filters' in d and d['filters'] is not None else None,
-            id=d.get('id', None),
-            libraries=[PipelineLibrary.from_dict(v)
-                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None,
-            name=d.get('name', None),
-            photon=d.get('photon', None),
-            storage=d.get('storage', None),
-            target=d.get('target', None),
-            trigger=PipelineTrigger.from_dict(d['trigger'])
-            if 'trigger' in d and d['trigger'] is not None else None)
+        return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
+                   catalog=d.get('catalog', None),
+                   channel=d.get('channel', None),
+                   clusters=_repeated(d, 'clusters', PipelineCluster),
+                   configuration=d.get('configuration', None),
+                   continuous=d.get('continuous', None),
+                   development=d.get('development', None),
+                   dry_run=d.get('dry_run', None),
+                   edition=d.get('edition', None),
+                   filters=_from_dict(d, 'filters', Filters),
+                   id=d.get('id', None),
+                   libraries=_repeated(d, 'libraries', PipelineLibrary),
+                   name=d.get('name', None),
+                   photon=d.get('photon', None),
+                   storage=d.get('storage', None),
+                   target=d.get('target', None),
+                   trigger=_from_dict(d, 'trigger', PipelineTrigger))
 
 
 @dataclass
@@ -97,8 +94,7 @@ class CreatePipelineResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePipelineResponse':
-        return cls(effective_settings=PipelineSpec.from_dict(d['effective_settings'])
-                   if 'effective_settings' in d and d['effective_settings'] is not None else None,
+        return cls(effective_settings=_from_dict(d, 'effective_settings', PipelineSpec),
                    pipeline_id=d.get('pipeline_id', None))
 
 
@@ -187,28 +183,24 @@ class EditPipeline:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EditPipeline':
-        return cls(
-            allow_duplicate_names=d.get('allow_duplicate_names', None),
-            catalog=d.get('catalog', None),
-            channel=d.get('channel', None),
-            clusters=[PipelineCluster.from_dict(v)
-                      for v in d['clusters']] if 'clusters' in d and d['clusters'] is not None else None,
-            configuration=d.get('configuration', None),
-            continuous=d.get('continuous', None),
-            development=d.get('development', None),
-            edition=d.get('edition', None),
-            expected_last_modified=d.get('expected_last_modified', None),
-            filters=Filters.from_dict(d['filters']) if 'filters' in d and d['filters'] is not None else None,
-            id=d.get('id', None),
-            libraries=[PipelineLibrary.from_dict(v)
-                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None,
-            name=d.get('name', None),
-            photon=d.get('photon', None),
-            pipeline_id=d.get('pipeline_id', None),
-            storage=d.get('storage', None),
-            target=d.get('target', None),
-            trigger=PipelineTrigger.from_dict(d['trigger'])
-            if 'trigger' in d and d['trigger'] is not None else None)
+        return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
+                   catalog=d.get('catalog', None),
+                   channel=d.get('channel', None),
+                   clusters=_repeated(d, 'clusters', PipelineCluster),
+                   configuration=d.get('configuration', None),
+                   continuous=d.get('continuous', None),
+                   development=d.get('development', None),
+                   edition=d.get('edition', None),
+                   expected_last_modified=d.get('expected_last_modified', None),
+                   filters=_from_dict(d, 'filters', Filters),
+                   id=d.get('id', None),
+                   libraries=_repeated(d, 'libraries', PipelineLibrary),
+                   name=d.get('name', None),
+                   photon=d.get('photon', None),
+                   pipeline_id=d.get('pipeline_id', None),
+                   storage=d.get('storage', None),
+                   target=d.get('target', None),
+                   trigger=_from_dict(d, 'trigger', PipelineTrigger))
 
 
 @dataclass
@@ -224,9 +216,7 @@ class ErrorDetail:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
-        return cls(exceptions=[SerializedException.from_dict(v) for v in d['exceptions']]
-                   if 'exceptions' in d and d['exceptions'] is not None else None,
-                   fatal=d.get('fatal', None))
+        return cls(exceptions=_repeated(d, 'exceptions', SerializedException), fatal=d.get('fatal', None))
 
 
 class EventLevel(Enum):
@@ -292,19 +282,17 @@ class GetPipelineResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPipelineResponse':
-        return cls(
-            cause=d.get('cause', None),
-            cluster_id=d.get('cluster_id', None),
-            creator_user_name=d.get('creator_user_name', None),
-            health=GetPipelineResponseHealth.__members__.get(d['health'], None) if 'health' in d else None,
-            last_modified=d.get('last_modified', None),
-            latest_updates=[UpdateStateInfo.from_dict(v) for v in d['latest_updates']]
-            if 'latest_updates' in d and d['latest_updates'] is not None else None,
-            name=d.get('name', None),
-            pipeline_id=d.get('pipeline_id', None),
-            run_as_user_name=d.get('run_as_user_name', None),
-            spec=PipelineSpec.from_dict(d['spec']) if 'spec' in d and d['spec'] is not None else None,
-            state=PipelineState.__members__.get(d['state'], None) if 'state' in d else None)
+        return cls(cause=d.get('cause', None),
+                   cluster_id=d.get('cluster_id', None),
+                   creator_user_name=d.get('creator_user_name', None),
+                   health=_enum(d, 'health', GetPipelineResponseHealth),
+                   last_modified=d.get('last_modified', None),
+                   latest_updates=_repeated(d, 'latest_updates', UpdateStateInfo),
+                   name=d.get('name', None),
+                   pipeline_id=d.get('pipeline_id', None),
+                   run_as_user_name=d.get('run_as_user_name', None),
+                   spec=_from_dict(d, 'spec', PipelineSpec),
+                   state=_enum(d, 'state', PipelineState))
 
 
 class GetPipelineResponseHealth(Enum):
@@ -333,8 +321,7 @@ class GetUpdateResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetUpdateResponse':
-        return cls(
-            update=UpdateInfo.from_dict(d['update']) if 'update' in d and d['update'] is not None else None)
+        return cls(update=_from_dict(d, 'update', UpdateInfo))
 
 
 @dataclass
@@ -363,8 +350,7 @@ class ListPipelineEventsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPipelineEventsResponse':
-        return cls(events=[PipelineEvent.from_dict(v)
-                           for v in d['events']] if 'events' in d and d['events'] is not None else None,
+        return cls(events=_repeated(d, 'events', PipelineEvent),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
 
@@ -392,10 +378,8 @@ class ListPipelinesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPipelinesResponse':
-        return cls(
-            next_page_token=d.get('next_page_token', None),
-            statuses=[PipelineStateInfo.from_dict(v)
-                      for v in d['statuses']] if 'statuses' in d and d['statuses'] is not None else None)
+        return cls(next_page_token=d.get('next_page_token', None),
+                   statuses=_repeated(d, 'statuses', PipelineStateInfo))
 
 
 @dataclass
@@ -425,8 +409,7 @@ class ListUpdatesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListUpdatesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
-                   updates=[UpdateInfo.from_dict(v)
-                            for v in d['updates']] if 'updates' in d and d['updates'] is not None else None)
+                   updates=_repeated(d, 'updates', UpdateInfo))
 
 
 class MaturityLevel(Enum):
@@ -558,19 +541,14 @@ class PipelineCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineCluster':
         return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
-                   autoscale=AutoScale.from_dict(d['autoscale'])
-                   if 'autoscale' in d and d['autoscale'] is not None else None,
-                   aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
-                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
-                   azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
-                   cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-                   if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
+                   autoscale=_from_dict(d, 'autoscale', AutoScale),
+                   aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    custom_tags=d.get('custom_tags', None),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
-                   gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
-                   if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    label=d.get('label', None),
                    node_type_id=d.get('node_type_id', None),
@@ -608,18 +586,15 @@ class PipelineEvent:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineEvent':
-        return cls(
-            error=ErrorDetail.from_dict(d['error']) if 'error' in d and d['error'] is not None else None,
-            event_type=d.get('event_type', None),
-            id=d.get('id', None),
-            level=EventLevel.__members__.get(d['level'], None) if 'level' in d else None,
-            maturity_level=MaturityLevel.__members__.get(d['maturity_level'], None)
-            if 'maturity_level' in d else None,
-            message=d.get('message', None),
-            origin=Origin.from_dict(d['origin']) if 'origin' in d and d['origin'] is not None else None,
-            sequence=Sequencing.from_dict(d['sequence'])
-            if 'sequence' in d and d['sequence'] is not None else None,
-            timestamp=d.get('timestamp', None))
+        return cls(error=_from_dict(d, 'error', ErrorDetail),
+                   event_type=d.get('event_type', None),
+                   id=d.get('id', None),
+                   level=_enum(d, 'level', EventLevel),
+                   maturity_level=_enum(d, 'maturity_level', MaturityLevel),
+                   message=d.get('message', None),
+                   origin=_from_dict(d, 'origin', Origin),
+                   sequence=_from_dict(d, 'sequence', Sequencing),
+                   timestamp=d.get('timestamp', None))
 
 
 @dataclass
@@ -639,12 +614,10 @@ class PipelineLibrary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineLibrary':
-        return cls(
-            jar=d.get('jar', None),
-            maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d and d['maven'] is not None else None,
-            notebook=NotebookLibrary.from_dict(d['notebook'])
-            if 'notebook' in d and d['notebook'] is not None else None,
-            whl=d.get('whl', None))
+        return cls(jar=d.get('jar', None),
+                   maven=_from_dict(d, 'maven', MavenLibrary),
+                   notebook=_from_dict(d, 'notebook', NotebookLibrary),
+                   whl=d.get('whl', None))
 
 
 @dataclass
@@ -686,25 +659,21 @@ class PipelineSpec:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineSpec':
-        return cls(
-            catalog=d.get('catalog', None),
-            channel=d.get('channel', None),
-            clusters=[PipelineCluster.from_dict(v)
-                      for v in d['clusters']] if 'clusters' in d and d['clusters'] is not None else None,
-            configuration=d.get('configuration', None),
-            continuous=d.get('continuous', None),
-            development=d.get('development', None),
-            edition=d.get('edition', None),
-            filters=Filters.from_dict(d['filters']) if 'filters' in d and d['filters'] is not None else None,
-            id=d.get('id', None),
-            libraries=[PipelineLibrary.from_dict(v)
-                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None,
-            name=d.get('name', None),
-            photon=d.get('photon', None),
-            storage=d.get('storage', None),
-            target=d.get('target', None),
-            trigger=PipelineTrigger.from_dict(d['trigger'])
-            if 'trigger' in d and d['trigger'] is not None else None)
+        return cls(catalog=d.get('catalog', None),
+                   channel=d.get('channel', None),
+                   clusters=_repeated(d, 'clusters', PipelineCluster),
+                   configuration=d.get('configuration', None),
+                   continuous=d.get('continuous', None),
+                   development=d.get('development', None),
+                   edition=d.get('edition', None),
+                   filters=_from_dict(d, 'filters', Filters),
+                   id=d.get('id', None),
+                   libraries=_repeated(d, 'libraries', PipelineLibrary),
+                   name=d.get('name', None),
+                   photon=d.get('photon', None),
+                   storage=d.get('storage', None),
+                   target=d.get('target', None),
+                   trigger=_from_dict(d, 'trigger', PipelineTrigger))
 
 
 class PipelineState(Enum):
@@ -746,12 +715,11 @@ class PipelineStateInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineStateInfo':
         return cls(cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
-                   latest_updates=[UpdateStateInfo.from_dict(v) for v in d['latest_updates']]
-                   if 'latest_updates' in d and d['latest_updates'] is not None else None,
+                   latest_updates=_repeated(d, 'latest_updates', UpdateStateInfo),
                    name=d.get('name', None),
                    pipeline_id=d.get('pipeline_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
-                   state=PipelineState.__members__.get(d['state'], None) if 'state' in d else None)
+                   state=_enum(d, 'state', PipelineState))
 
 
 @dataclass
@@ -767,8 +735,7 @@ class PipelineTrigger:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineTrigger':
-        return cls(cron=CronTrigger.from_dict(d['cron']) if 'cron' in d and d['cron'] is not None else None,
-                   manual=d.get('manual', None))
+        return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=d.get('manual', None))
 
 
 @dataclass
@@ -792,8 +759,7 @@ class Sequencing:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Sequencing':
         return cls(control_plane_seq_no=d.get('control_plane_seq_no', None),
-                   data_plane_id=DataPlaneId.from_dict(d['data_plane_id'])
-                   if 'data_plane_id' in d and d['data_plane_id'] is not None else None)
+                   data_plane_id=_from_dict(d, 'data_plane_id', DataPlaneId))
 
 
 @dataclass
@@ -813,8 +779,7 @@ class SerializedException:
     def from_dict(cls, d: Dict[str, any]) -> 'SerializedException':
         return cls(class_name=d.get('class_name', None),
                    message=d.get('message', None),
-                   stack=[StackFrame.from_dict(v)
-                          for v in d['stack']] if 'stack' in d and d['stack'] is not None else None)
+                   stack=_repeated(d, 'stack', StackFrame))
 
 
 @dataclass
@@ -860,7 +825,7 @@ class StartUpdate:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StartUpdate':
-        return cls(cause=StartUpdateCause.__members__.get(d['cause'], None) if 'cause' in d else None,
+        return cls(cause=_enum(d, 'cause', StartUpdateCause),
                    full_refresh=d.get('full_refresh', None),
                    full_refresh_selection=d.get('full_refresh_selection', None),
                    pipeline_id=d.get('pipeline_id', None),
@@ -928,17 +893,16 @@ class UpdateInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateInfo':
-        return cls(
-            cause=UpdateInfoCause.__members__.get(d['cause'], None) if 'cause' in d else None,
-            cluster_id=d.get('cluster_id', None),
-            config=PipelineSpec.from_dict(d['config']) if 'config' in d and d['config'] is not None else None,
-            creation_time=d.get('creation_time', None),
-            full_refresh=d.get('full_refresh', None),
-            full_refresh_selection=d.get('full_refresh_selection', None),
-            pipeline_id=d.get('pipeline_id', None),
-            refresh_selection=d.get('refresh_selection', None),
-            state=UpdateInfoState.__members__.get(d['state'], None) if 'state' in d else None,
-            update_id=d.get('update_id', None))
+        return cls(cause=_enum(d, 'cause', UpdateInfoCause),
+                   cluster_id=d.get('cluster_id', None),
+                   config=_from_dict(d, 'config', PipelineSpec),
+                   creation_time=d.get('creation_time', None),
+                   full_refresh=d.get('full_refresh', None),
+                   full_refresh_selection=d.get('full_refresh_selection', None),
+                   pipeline_id=d.get('pipeline_id', None),
+                   refresh_selection=d.get('refresh_selection', None),
+                   state=_enum(d, 'state', UpdateInfoState),
+                   update_id=d.get('update_id', None))
 
 
 class UpdateInfoCause(Enum):
@@ -984,7 +948,7 @@ class UpdateStateInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateStateInfo':
         return cls(creation_time=d.get('creation_time', None),
-                   state=UpdateStateInfoState.__members__.get(d['state'], None) if 'state' in d else None,
+                   state=_enum(d, 'state', UpdateStateInfoState),
                    update_id=d.get('update_id', None))
 
 
@@ -1106,7 +1070,7 @@ class PipelinesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}')
         return GetPipelineResponse.from_dict(json)
@@ -1247,7 +1211,7 @@ class PipelinesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
 
     def start_update(self,
@@ -1305,7 +1269,7 @@ class PipelinesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
 
     def update(self,

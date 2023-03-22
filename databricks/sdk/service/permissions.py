@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -28,8 +30,7 @@ class AccessControlRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccessControlRequest':
         return cls(group_name=d.get('group_name', None),
-                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
-                   if 'permission_level' in d else None,
+                   permission_level=_enum(d, 'permission_level', PermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
                    user_name=d.get('user_name', None))
 
@@ -51,8 +52,7 @@ class AccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccessControlResponse':
-        return cls(all_permissions=[Permission.from_dict(v) for v in d['all_permissions']]
-                   if 'all_permissions' in d and d['all_permissions'] is not None else None,
+        return cls(all_permissions=_repeated(d, 'all_permissions', Permission),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
                    user_name=d.get('user_name', None))
@@ -72,9 +72,7 @@ class CreateWorkspaceAssignments:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateWorkspaceAssignments':
-        return cls(permission_assignments=[
-            PermissionAssignmentInput.from_dict(v) for v in d['permission_assignments']
-        ] if 'permission_assignments' in d and d['permission_assignments'] is not None else None,
+        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignmentInput),
                    workspace_id=d.get('workspace_id', None))
 
 
@@ -113,8 +111,7 @@ class GetPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPermissionLevelsResponse':
-        return cls(permission_levels=[PermissionsDescription.from_dict(v) for v in d['permission_levels']]
-                   if 'permission_levels' in d and d['permission_levels'] is not None else None)
+        return cls(permission_levels=_repeated(d, 'permission_levels', PermissionsDescription))
 
 
 @dataclass
@@ -147,8 +144,7 @@ class ObjectPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ObjectPermissions':
-        return cls(access_control_list=[AccessControlResponse.from_dict(v) for v in d['access_control_list']]
-                   if 'access_control_list' in d and d['access_control_list'] is not None else None,
+        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -170,8 +166,7 @@ class Permission:
     def from_dict(cls, d: Dict[str, any]) -> 'Permission':
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
-                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
-                   if 'permission_level' in d else None)
+                   permission_level=_enum(d, 'permission_level', PermissionLevel))
 
 
 @dataclass
@@ -191,8 +186,7 @@ class PermissionAssignment:
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignment':
         return cls(error=d.get('error', None),
                    permissions=d.get('permissions', None),
-                   principal=PrincipalOutput.from_dict(d['principal'])
-                   if 'principal' in d and d['principal'] is not None else None)
+                   principal=_from_dict(d, 'principal', PrincipalOutput))
 
 
 @dataclass
@@ -230,9 +224,7 @@ class PermissionAssignments:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignments':
-        return cls(
-            permission_assignments=[PermissionAssignment.from_dict(v) for v in d['permission_assignments']]
-            if 'permission_assignments' in d and d['permission_assignments'] is not None else None)
+        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignment))
 
 
 class PermissionLevel(Enum):
@@ -269,8 +261,7 @@ class PermissionOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionOutput':
         return cls(description=d.get('description', None),
-                   permission_level=WorkspacePermission.__members__.get(d['permission_level'], None)
-                   if 'permission_level' in d else None)
+                   permission_level=_enum(d, 'permission_level', WorkspacePermission))
 
 
 @dataclass
@@ -287,8 +278,7 @@ class PermissionsDescription:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsDescription':
         return cls(description=d.get('description', None),
-                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
-                   if 'permission_level' in d else None)
+                   permission_level=_enum(d, 'permission_level', PermissionLevel))
 
 
 @dataclass
@@ -307,8 +297,7 @@ class PermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsRequest':
-        return cls(access_control_list=[AccessControlRequest.from_dict(v) for v in d['access_control_list']]
-                   if 'access_control_list' in d and d['access_control_list'] is not None else None,
+        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
                    request_object_id=d.get('request_object_id', None),
                    request_object_type=d.get('request_object_type', None))
 
@@ -371,9 +360,7 @@ class WorkspaceAssignmentsCreated:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceAssignmentsCreated':
-        return cls(
-            permission_assignments=[PermissionAssignment.from_dict(v) for v in d['permission_assignments']]
-            if 'permission_assignments' in d and d['permission_assignments'] is not None else None)
+        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignment))
 
 
 class WorkspacePermission(Enum):
@@ -394,8 +381,7 @@ class WorkspacePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspacePermissions':
-        return cls(permissions=[PermissionOutput.from_dict(v) for v in d['permissions']]
-                   if 'permissions' in d and d['permissions'] is not None else None)
+        return cls(permissions=_repeated(d, 'permissions', PermissionOutput))
 
 
 class PermissionsAPI:

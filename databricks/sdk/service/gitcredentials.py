@@ -4,6 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
 
+from ._internal import _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -94,8 +96,7 @@ class GetCredentialsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetCredentialsResponse':
-        return cls(credentials=[CredentialInfo.from_dict(v) for v in d['credentials']]
-                   if 'credentials' in d and d['credentials'] is not None else None)
+        return cls(credentials=_repeated(d, 'credentials', CredentialInfo))
 
 
 @dataclass

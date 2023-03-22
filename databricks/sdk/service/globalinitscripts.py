@@ -4,6 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
 
+from ._internal import _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -170,8 +172,7 @@ class ListGlobalInitScriptsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListGlobalInitScriptsResponse':
-        return cls(scripts=[GlobalInitScriptDetails.from_dict(v)
-                            for v in d['scripts']] if 'scripts' in d and d['scripts'] is not None else None)
+        return cls(scripts=_repeated(d, 'scripts', GlobalInitScriptDetails))
 
 
 class GlobalInitScriptsAPI:

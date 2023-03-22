@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -49,24 +51,19 @@ class CreateInstancePool:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateInstancePool':
-        return cls(aws_attributes=InstancePoolAwsAttributes.from_dict(d['aws_attributes'])
-                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
-                   azure_attributes=InstancePoolAzureAttributes.from_dict(d['azure_attributes'])
-                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+        return cls(aws_attributes=_from_dict(d, 'aws_attributes', InstancePoolAwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', InstancePoolAzureAttributes),
                    custom_tags=d.get('custom_tags', None),
-                   disk_spec=DiskSpec.from_dict(d['disk_spec'])
-                   if 'disk_spec' in d and d['disk_spec'] is not None else None,
+                   disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=InstancePoolFleetAttributes.from_dict(
-                       d['instance_pool_fleet_attributes']) if 'instance_pool_fleet_attributes' in d
-                   and d['instance_pool_fleet_attributes'] is not None else None,
+                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
+                                                             InstancePoolFleetAttributes),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-                   if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
+                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None))
 
 
@@ -121,8 +118,7 @@ class DiskSpec:
                    disk_iops=d.get('disk_iops', None),
                    disk_size=d.get('disk_size', None),
                    disk_throughput=d.get('disk_throughput', None),
-                   disk_type=DiskType.from_dict(d['disk_type'])
-                   if 'disk_type' in d and d['disk_type'] is not None else None)
+                   disk_type=_from_dict(d, 'disk_type', DiskType))
 
 
 @dataclass
@@ -138,10 +134,8 @@ class DiskType:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DiskType':
-        return cls(azure_disk_volume_type=DiskTypeAzureDiskVolumeType.__members__.get(
-            d['azure_disk_volume_type'], None) if 'azure_disk_volume_type' in d else None,
-                   ebs_volume_type=DiskTypeEbsVolumeType.__members__.get(d['ebs_volume_type'], None)
-                   if 'ebs_volume_type' in d else None)
+        return cls(azure_disk_volume_type=_enum(d, 'azure_disk_volume_type', DiskTypeAzureDiskVolumeType),
+                   ebs_volume_type=_enum(d, 'ebs_volume_type', DiskTypeEbsVolumeType))
 
 
 class DiskTypeAzureDiskVolumeType(Enum):
@@ -185,9 +179,7 @@ class DockerImage:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DockerImage':
-        return cls(basic_auth=DockerBasicAuth.from_dict(d['basic_auth'])
-                   if 'basic_auth' in d and d['basic_auth'] is not None else None,
-                   url=d.get('url', None))
+        return cls(basic_auth=_from_dict(d, 'basic_auth', DockerBasicAuth), url=d.get('url', None))
 
 
 @dataclass
@@ -231,25 +223,20 @@ class EditInstancePool:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EditInstancePool':
-        return cls(aws_attributes=InstancePoolAwsAttributes.from_dict(d['aws_attributes'])
-                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
-                   azure_attributes=InstancePoolAzureAttributes.from_dict(d['azure_attributes'])
-                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+        return cls(aws_attributes=_from_dict(d, 'aws_attributes', InstancePoolAwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', InstancePoolAzureAttributes),
                    custom_tags=d.get('custom_tags', None),
-                   disk_spec=DiskSpec.from_dict(d['disk_spec'])
-                   if 'disk_spec' in d and d['disk_spec'] is not None else None,
+                   disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=InstancePoolFleetAttributes.from_dict(
-                       d['instance_pool_fleet_attributes']) if 'instance_pool_fleet_attributes' in d
-                   and d['instance_pool_fleet_attributes'] is not None else None,
+                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
+                                                             InstancePoolFleetAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-                   if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
+                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None))
 
 
@@ -292,8 +279,7 @@ class FleetOnDemandOption:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FleetOnDemandOption':
-        return cls(allocation_strategy=FleetOnDemandOptionAllocationStrategy.__members__.get(
-            d['allocation_strategy'], None) if 'allocation_strategy' in d else None,
+        return cls(allocation_strategy=_enum(d, 'allocation_strategy', FleetOnDemandOptionAllocationStrategy),
                    max_total_price=d.get('max_total_price', None),
                    use_capacity_reservations_first=d.get('use_capacity_reservations_first', None))
 
@@ -323,8 +309,7 @@ class FleetSpotOption:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FleetSpotOption':
-        return cls(allocation_strategy=FleetSpotOptionAllocationStrategy.__members__.get(
-            d['allocation_strategy'], None) if 'allocation_strategy' in d else None,
+        return cls(allocation_strategy=_enum(d, 'allocation_strategy', FleetSpotOptionAllocationStrategy),
                    instance_pools_to_use_count=d.get('instance_pools_to_use_count', None),
                    max_total_price=d.get('max_total_price', None))
 
@@ -394,32 +379,25 @@ class GetInstancePool:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetInstancePool':
-        return cls(aws_attributes=InstancePoolAwsAttributes.from_dict(d['aws_attributes'])
-                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
-                   azure_attributes=InstancePoolAzureAttributes.from_dict(d['azure_attributes'])
-                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+        return cls(aws_attributes=_from_dict(d, 'aws_attributes', InstancePoolAwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', InstancePoolAzureAttributes),
                    custom_tags=d.get('custom_tags', None),
                    default_tags=d.get('default_tags', None),
-                   disk_spec=DiskSpec.from_dict(d['disk_spec'])
-                   if 'disk_spec' in d and d['disk_spec'] is not None else None,
+                   disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=InstancePoolFleetAttributes.from_dict(
-                       d['instance_pool_fleet_attributes']) if 'instance_pool_fleet_attributes' in d
-                   and d['instance_pool_fleet_attributes'] is not None else None,
+                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
+                                                             InstancePoolFleetAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-                   if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
+                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None),
-                   state=InstancePoolState.__members__.get(d['state'], None) if 'state' in d else None,
-                   stats=InstancePoolStats.from_dict(d['stats'])
-                   if 'stats' in d and d['stats'] is not None else None,
-                   status=InstancePoolStatus.from_dict(d['status'])
-                   if 'status' in d and d['status'] is not None else None)
+                   state=_enum(d, 'state', InstancePoolState),
+                   stats=_from_dict(d, 'stats', InstancePoolStats),
+                   status=_from_dict(d, 'status', InstancePoolStatus))
 
 
 @dataclass
@@ -471,32 +449,25 @@ class InstancePoolAndStats:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAndStats':
-        return cls(aws_attributes=InstancePoolAwsAttributes.from_dict(d['aws_attributes'])
-                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
-                   azure_attributes=InstancePoolAzureAttributes.from_dict(d['azure_attributes'])
-                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+        return cls(aws_attributes=_from_dict(d, 'aws_attributes', InstancePoolAwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', InstancePoolAzureAttributes),
                    custom_tags=d.get('custom_tags', None),
                    default_tags=d.get('default_tags', None),
-                   disk_spec=DiskSpec.from_dict(d['disk_spec'])
-                   if 'disk_spec' in d and d['disk_spec'] is not None else None,
+                   disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=InstancePoolFleetAttributes.from_dict(
-                       d['instance_pool_fleet_attributes']) if 'instance_pool_fleet_attributes' in d
-                   and d['instance_pool_fleet_attributes'] is not None else None,
+                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
+                                                             InstancePoolFleetAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=[DockerImage.from_dict(v) for v in d['preloaded_docker_images']]
-                   if 'preloaded_docker_images' in d and d['preloaded_docker_images'] is not None else None,
+                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None),
-                   state=InstancePoolState.__members__.get(d['state'], None) if 'state' in d else None,
-                   stats=InstancePoolStats.from_dict(d['stats'])
-                   if 'stats' in d and d['stats'] is not None else None,
-                   status=InstancePoolStatus.from_dict(d['status'])
-                   if 'status' in d and d['status'] is not None else None)
+                   state=_enum(d, 'state', InstancePoolState),
+                   stats=_from_dict(d, 'stats', InstancePoolStats),
+                   status=_from_dict(d, 'status', InstancePoolStatus))
 
 
 @dataclass
@@ -514,8 +485,7 @@ class InstancePoolAwsAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAwsAttributes':
-        return cls(availability=InstancePoolAwsAttributesAvailability.__members__.get(
-            d['availability'], None) if 'availability' in d else None,
+        return cls(availability=_enum(d, 'availability', InstancePoolAwsAttributesAvailability),
                    spot_bid_price_percent=d.get('spot_bid_price_percent', None),
                    zone_id=d.get('zone_id', None))
 
@@ -543,8 +513,7 @@ class InstancePoolAzureAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAzureAttributes':
-        return cls(availability=InstancePoolAzureAttributesAvailability.__members__.get(
-            d['availability'], None) if 'availability' in d else None,
+        return cls(availability=_enum(d, 'availability', InstancePoolAzureAttributesAvailability),
                    spot_bid_max_price=d.get('spot_bid_max_price', None))
 
 
@@ -574,14 +543,10 @@ class InstancePoolFleetAttributes:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolFleetAttributes':
-        return cls(
-            fleet_on_demand_option=FleetOnDemandOption.from_dict(d['fleet_on_demand_option'])
-            if 'fleet_on_demand_option' in d and d['fleet_on_demand_option'] is not None else None,
-            fleet_spot_option=FleetSpotOption.from_dict(d['fleet_spot_option'])
-            if 'fleet_spot_option' in d and d['fleet_spot_option'] is not None else None,
-            launch_template_overrides=[
-                FleetLaunchTemplateOverride.from_dict(v) for v in d['launch_template_overrides']
-            ] if 'launch_template_overrides' in d and d['launch_template_overrides'] is not None else None)
+        return cls(fleet_on_demand_option=_from_dict(d, 'fleet_on_demand_option', FleetOnDemandOption),
+                   fleet_spot_option=_from_dict(d, 'fleet_spot_option', FleetSpotOption),
+                   launch_template_overrides=_repeated(d, 'launch_template_overrides',
+                                                       FleetLaunchTemplateOverride))
 
 
 class InstancePoolState(Enum):
@@ -627,9 +592,7 @@ class InstancePoolStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolStatus':
-        return cls(
-            pending_instance_errors=[PendingInstanceError.from_dict(v) for v in d['pending_instance_errors']]
-            if 'pending_instance_errors' in d and d['pending_instance_errors'] is not None else None)
+        return cls(pending_instance_errors=_repeated(d, 'pending_instance_errors', PendingInstanceError))
 
 
 @dataclass
@@ -643,8 +606,7 @@ class ListInstancePools:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListInstancePools':
-        return cls(instance_pools=[InstancePoolAndStats.from_dict(v) for v in d['instance_pools']]
-                   if 'instance_pools' in d and d['instance_pools'] is not None else None)
+        return cls(instance_pools=_repeated(d, 'instance_pools', InstancePoolAndStats))
 
 
 @dataclass

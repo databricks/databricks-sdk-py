@@ -2,11 +2,12 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any, Iterator
+from typing import Dict, List, Any, Iterator, Type
 import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -42,9 +43,9 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{end}}
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
-	{{- else if .Entity.ArrayValue }}{{if .Entity.ArrayValue.IsObject}}[{{.Entity.ArrayValue.PascalName}}.from_dict(v) for v in d['{{.Name}}']] if '{{.Name}}' in d and d['{{.Name}}'] is not None else None{{else}}d.get('{{.Name}}', None){{end}}
-	{{- else if or .Entity.IsObject .Entity.IsExternal }}{{.Entity.PascalName}}.from_dict(d['{{.Name}}']) if '{{.Name}}' in d and d['{{.Name}}'] is not None else None
-	{{- else if .Entity.Enum }}{{.Entity.PascalName}}.__members__.get(d['{{.Name}}'], None) if '{{.Name}}' in d else None
+	{{- else if .Entity.ArrayValue }}{{if .Entity.ArrayValue.IsObject}}_repeated(d, '{{.Name}}', {{.Entity.ArrayValue.PascalName}}){{else}}d.get('{{.Name}}', None){{end}}
+	{{- else if or .Entity.IsObject .Entity.IsExternal }}_from_dict(d, '{{.Name}}', {{.Entity.PascalName}})
+	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{.Entity.PascalName}})
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
 {{- define "as_request_type" -}}
@@ -155,7 +156,7 @@ class {{.Name}}API:{{if .Description}}
             _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
             time.sleep(sleep + random.random())
             attempt += 1
-          raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+          raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         {{if .IsCrudRead}}{{template "method-call-default" .}}{{else}}{{template "method-do" .}}{{end}}
 {{- end}}
 
