@@ -15,8 +15,7 @@ If you have already Custom App:
 
 If you want this script to register Custom App and redirect URL for you:
 
-./flask_app_with_oauth.py <databricks workspace url> \
-    --account_id <databricks-account-id>
+./flask_app_with_oauth.py <databricks workspace url>
 
 You'll get prompted for Databricks Account username and password for
 script to enroll your account into OAuth and create a custom app with
@@ -32,7 +31,7 @@ import logging
 import argparse
 import sys
 
-from databricks.sdk.core import Config
+from databricks.sdk.oauth import OAuthClient
 
 APP_NAME = 'flask-demo'
 all_clusters_template = '''<ul>
@@ -45,7 +44,7 @@ all_clusters_template = '''<ul>
 </ul>'''
 
 
-def create_flask_app(oauth_cfg: Config, port: int):
+def create_flask_app(oauth_client: OAuthClient, port: int):
     """Creates OAuth-enabled flask app"""
     import secrets
     from flask import Flask, render_template_string, request, redirect, url_for, session
@@ -56,23 +55,22 @@ def create_flask_app(oauth_cfg: Config, port: int):
     @app.route('/callback')
     def callback():
         from databricks.sdk.oauth import Consent
-        consent = Consent.from_dict(session['consent'])
-        session['creds'] = consent.exchange_query(request.args).as_dict()
+        consent = Consent.from_dict(oauth_client, session['consent'])
+        session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
         return redirect(url_for('index'))
 
     @app.route('/')
     def index():
         if 'creds' not in session:
-            redirect_url = f'http://localhost:{port}/callback'
-            consent = oauth_cfg.oauth_interactive_flow(redirect_url, scopes=['clusters'])
+            consent = oauth_client.initiate_consent()
             session['consent'] = consent.as_dict()
             return redirect(consent.auth_url)
 
         from databricks.sdk import WorkspaceClient
         from databricks.sdk.oauth import RefreshableCredentials
 
-        credentials_provider = RefreshableCredentials.from_dict(session['creds'])
-        workspace_client = WorkspaceClient(host=oauth_cfg.host,
+        credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
+        workspace_client = WorkspaceClient(host=oauth_client.host,
                                            product=APP_NAME,
                                            credentials_provider=credentials_provider)
 
@@ -81,9 +79,9 @@ def create_flask_app(oauth_cfg: Config, port: int):
     return app
 
 
-def register_custom_app(oauth_cfg: Config, args: argparse.Namespace) -> tuple[str,str]:
+def register_custom_app(oauth_client: OAuthClient, args: argparse.Namespace) -> tuple[str, str]:
     """Creates new Custom OAuth App in Databricks Account"""
-    if not oauth_cfg.is_aws:
+    if not oauth_client.is_aws:
         logging.error('Not supported for other clouds than AWS')
         sys.exit(2)
 
@@ -92,7 +90,7 @@ def register_custom_app(oauth_cfg: Config, args: argparse.Namespace) -> tuple[st
     import getpass
     from databricks.sdk import AccountClient
     account_client = AccountClient(host='https://accounts.cloud.databricks.com',
-                                   account_id=args.account_id,
+                                   account_id=input('Databricks Account ID: '),
                                    username=input('Username: '),
                                    password=getpass.getpass('Password: '))
 
@@ -113,26 +111,19 @@ def register_custom_app(oauth_cfg: Config, args: argparse.Namespace) -> tuple[st
     return custom_app.client_id, custom_app.client_secret
 
 
-def init_oauth_config(args) -> Config:
+def init_oauth_config(args) -> OAuthClient:
     """Creates Databricks SDK configuration for OAuth"""
-    # TODO: (TBD) make auth init in the config lazy (???) and remove this hack
-    # or alternatively introduce the OAuthConfig class
-    def dummy_auth(cfg): return lambda: {}
-    dummy_auth.auth_type = lambda: 'dummy'
+    oauth_client = OAuthClient(host=args.host,
+                               client_id=args.client_id,
+                               client_secret=args.client_secret,
+                               redirect_url=f'http://localhost:{args.port}/callback',
+                               scopes=['clusters'])
+    if not oauth_client.client_id:
+        client_id, client_secret = register_custom_app(oauth_client, args)
+        oauth_client.client_id = client_id
+        oauth_client.client_secret = client_secret
 
-    # create Databricks SDK config for OAuth flow
-    oauth_cfg = Config(**vars(args), credentials_provider=dummy_auth)
-    if not oauth_cfg.client_id and not args.account_id:
-        logging.error('No custom app client/secret provided. Please provide --account_id with '
-                      'Databricks Account ID to create a custom OAuth app.')
-        sys.exit(1)
-
-    if not oauth_cfg.client_id and args.account_id:
-        client_id, client_secret = register_custom_app(oauth_cfg, args)
-        oauth_cfg.client_id = client_id
-        oauth_cfg.client_secret = client_secret
-
-    return oauth_cfg
+    return oauth_client
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -141,7 +132,6 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('host')
     for flag in ['client_id', 'client_secret']:
         parser.add_argument(f'--{flag}')
-    parser.add_argument('--account_id')
     parser.add_argument('--port', default=5001, type=int)
     return parser.parse_args()
 
@@ -156,4 +146,4 @@ if __name__ == '__main__':
     app.run(host='localhost', port=args.port, debug=True,
             # to simplify this demo experience, we create OAuth Custom App for you,
             # but it intervenes with the werkzeug reloader. So we disable it
-            use_reloader=not args.account_id)
+            use_reloader=args.client_id is not None)
