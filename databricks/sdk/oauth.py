@@ -278,7 +278,7 @@ class OAuthClient:
                  client_id: str,
                  redirect_url: str,
                  *,
-                 scopes: list[str] = None,
+                 scopes: List[str] = None,
                  client_secret: str = None):
         # TODO: is it a circular dependency?..
         from .core import Config, credentials_provider

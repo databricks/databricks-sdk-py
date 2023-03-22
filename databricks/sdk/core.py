@@ -11,7 +11,7 @@ import re
 import subprocess
 import urllib.parse
 from datetime import datetime
-from typing import Callable, Dict, Iterable, Optional, Protocol
+from typing import Callable, Dict, Iterable, Optional, Protocol, List
 
 import requests
 import requests.auth
@@ -42,7 +42,7 @@ class CredentialsProvider(abc.ABC):
         ...
 
 
-def credentials_provider(name: str, require: list[str]):
+def credentials_provider(name: str, require: List[str]):
     """ Given the function that receives a Config and returns RequestVisitor,
     create CredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called. """
