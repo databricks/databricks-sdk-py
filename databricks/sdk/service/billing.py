@@ -288,7 +288,7 @@ class LogDeliveryConfiguration:
             delivery_path_prefix=d.get('delivery_path_prefix', None),
             delivery_start_time=d.get('delivery_start_time', None),
             log_delivery_status=LogDeliveryStatus.from_dict(d['log_delivery_status'])
-            if 'log_delivery_status' in d else None,
+            if 'log_delivery_status' in d and d['log_delivery_status'] is not None else None,
             log_type=LogType.__members__.get(d['log_type'], None) if 'log_type' in d else None,
             output_format=OutputFormat.__members__.get(d['output_format'], None)
             if 'output_format' in d else None,
@@ -389,8 +389,9 @@ class WrappedBudget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedBudget':
-        return cls(budget=Budget.from_dict(d['budget']) if 'budget' in d else None,
-                   budget_id=d.get('budget_id', None))
+        return cls(
+            budget=Budget.from_dict(d['budget']) if 'budget' in d and d['budget'] is not None else None,
+            budget_id=d.get('budget_id', None))
 
 
 @dataclass
@@ -404,7 +405,8 @@ class WrappedBudgetWithStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedBudgetWithStatus':
-        return cls(budget=BudgetWithStatus.from_dict(d['budget']) if 'budget' in d else None)
+        return cls(budget=BudgetWithStatus.from_dict(d['budget']
+                                                     ) if 'budget' in d and d['budget'] is not None else None)
 
 
 @dataclass
@@ -420,7 +422,8 @@ class WrappedCreateLogDeliveryConfiguration:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedCreateLogDeliveryConfiguration':
         return cls(log_delivery_configuration=CreateLogDeliveryConfigurationParams.
-                   from_dict(d['log_delivery_configuration']) if 'log_delivery_configuration' in d else None)
+                   from_dict(d['log_delivery_configuration']) if 'log_delivery_configuration' in d
+                   and d['log_delivery_configuration'] is not None else None)
 
 
 @dataclass
@@ -435,8 +438,9 @@ class WrappedLogDeliveryConfiguration:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfiguration':
-        return cls(log_delivery_configuration=LogDeliveryConfiguration.
-                   from_dict(d['log_delivery_configuration']) if 'log_delivery_configuration' in d else None)
+        return cls(
+            log_delivery_configuration=LogDeliveryConfiguration.from_dict(d['log_delivery_configuration'])
+            if 'log_delivery_configuration' in d and d['log_delivery_configuration'] is not None else None)
 
 
 @dataclass

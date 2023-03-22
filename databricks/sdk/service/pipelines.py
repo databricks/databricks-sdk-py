@@ -72,7 +72,7 @@ class CreatePipeline:
             development=d.get('development', None),
             dry_run=d.get('dry_run', None),
             edition=d.get('edition', None),
-            filters=Filters.from_dict(d['filters']) if 'filters' in d else None,
+            filters=Filters.from_dict(d['filters']) if 'filters' in d and d['filters'] is not None else None,
             id=d.get('id', None),
             libraries=[PipelineLibrary.from_dict(v)
                        for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None,
@@ -80,7 +80,8 @@ class CreatePipeline:
             photon=d.get('photon', None),
             storage=d.get('storage', None),
             target=d.get('target', None),
-            trigger=PipelineTrigger.from_dict(d['trigger']) if 'trigger' in d else None)
+            trigger=PipelineTrigger.from_dict(d['trigger'])
+            if 'trigger' in d and d['trigger'] is not None else None)
 
 
 @dataclass
@@ -97,7 +98,7 @@ class CreatePipelineResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePipelineResponse':
         return cls(effective_settings=PipelineSpec.from_dict(d['effective_settings'])
-                   if 'effective_settings' in d else None,
+                   if 'effective_settings' in d and d['effective_settings'] is not None else None,
                    pipeline_id=d.get('pipeline_id', None))
 
 
@@ -197,7 +198,7 @@ class EditPipeline:
             development=d.get('development', None),
             edition=d.get('edition', None),
             expected_last_modified=d.get('expected_last_modified', None),
-            filters=Filters.from_dict(d['filters']) if 'filters' in d else None,
+            filters=Filters.from_dict(d['filters']) if 'filters' in d and d['filters'] is not None else None,
             id=d.get('id', None),
             libraries=[PipelineLibrary.from_dict(v)
                        for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None,
@@ -206,7 +207,8 @@ class EditPipeline:
             pipeline_id=d.get('pipeline_id', None),
             storage=d.get('storage', None),
             target=d.get('target', None),
-            trigger=PipelineTrigger.from_dict(d['trigger']) if 'trigger' in d else None)
+            trigger=PipelineTrigger.from_dict(d['trigger'])
+            if 'trigger' in d and d['trigger'] is not None else None)
 
 
 @dataclass
@@ -301,7 +303,7 @@ class GetPipelineResponse:
             name=d.get('name', None),
             pipeline_id=d.get('pipeline_id', None),
             run_as_user_name=d.get('run_as_user_name', None),
-            spec=PipelineSpec.from_dict(d['spec']) if 'spec' in d else None,
+            spec=PipelineSpec.from_dict(d['spec']) if 'spec' in d and d['spec'] is not None else None,
             state=PipelineState.__members__.get(d['state'], None) if 'state' in d else None)
 
 
@@ -331,7 +333,8 @@ class GetUpdateResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetUpdateResponse':
-        return cls(update=UpdateInfo.from_dict(d['update']) if 'update' in d else None)
+        return cls(
+            update=UpdateInfo.from_dict(d['update']) if 'update' in d and d['update'] is not None else None)
 
 
 @dataclass
@@ -554,26 +557,28 @@ class PipelineCluster:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineCluster':
-        return cls(
-            apply_policy_default_values=d.get('apply_policy_default_values', None),
-            autoscale=AutoScale.from_dict(d['autoscale']) if 'autoscale' in d else None,
-            aws_attributes=AwsAttributes.from_dict(d['aws_attributes']) if 'aws_attributes' in d else None,
-            azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
-            if 'azure_attributes' in d else None,
-            cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
-            if 'cluster_log_conf' in d else None,
-            custom_tags=d.get('custom_tags', None),
-            driver_instance_pool_id=d.get('driver_instance_pool_id', None),
-            driver_node_type_id=d.get('driver_node_type_id', None),
-            gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes']) if 'gcp_attributes' in d else None,
-            instance_pool_id=d.get('instance_pool_id', None),
-            label=d.get('label', None),
-            node_type_id=d.get('node_type_id', None),
-            num_workers=d.get('num_workers', None),
-            policy_id=d.get('policy_id', None),
-            spark_conf=d.get('spark_conf', None),
-            spark_env_vars=d.get('spark_env_vars', None),
-            ssh_public_keys=d.get('ssh_public_keys', None))
+        return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
+                   autoscale=AutoScale.from_dict(d['autoscale'])
+                   if 'autoscale' in d and d['autoscale'] is not None else None,
+                   aws_attributes=AwsAttributes.from_dict(d['aws_attributes'])
+                   if 'aws_attributes' in d and d['aws_attributes'] is not None else None,
+                   azure_attributes=AzureAttributes.from_dict(d['azure_attributes'])
+                   if 'azure_attributes' in d and d['azure_attributes'] is not None else None,
+                   cluster_log_conf=ClusterLogConf.from_dict(d['cluster_log_conf'])
+                   if 'cluster_log_conf' in d and d['cluster_log_conf'] is not None else None,
+                   custom_tags=d.get('custom_tags', None),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   gcp_attributes=GcpAttributes.from_dict(d['gcp_attributes'])
+                   if 'gcp_attributes' in d and d['gcp_attributes'] is not None else None,
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   label=d.get('label', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None))
 
 
 @dataclass
@@ -603,16 +608,18 @@ class PipelineEvent:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineEvent':
-        return cls(error=ErrorDetail.from_dict(d['error']) if 'error' in d else None,
-                   event_type=d.get('event_type', None),
-                   id=d.get('id', None),
-                   level=EventLevel.__members__.get(d['level'], None) if 'level' in d else None,
-                   maturity_level=MaturityLevel.__members__.get(d['maturity_level'], None)
-                   if 'maturity_level' in d else None,
-                   message=d.get('message', None),
-                   origin=Origin.from_dict(d['origin']) if 'origin' in d else None,
-                   sequence=Sequencing.from_dict(d['sequence']) if 'sequence' in d else None,
-                   timestamp=d.get('timestamp', None))
+        return cls(
+            error=ErrorDetail.from_dict(d['error']) if 'error' in d and d['error'] is not None else None,
+            event_type=d.get('event_type', None),
+            id=d.get('id', None),
+            level=EventLevel.__members__.get(d['level'], None) if 'level' in d else None,
+            maturity_level=MaturityLevel.__members__.get(d['maturity_level'], None)
+            if 'maturity_level' in d else None,
+            message=d.get('message', None),
+            origin=Origin.from_dict(d['origin']) if 'origin' in d and d['origin'] is not None else None,
+            sequence=Sequencing.from_dict(d['sequence'])
+            if 'sequence' in d and d['sequence'] is not None else None,
+            timestamp=d.get('timestamp', None))
 
 
 @dataclass
@@ -632,10 +639,12 @@ class PipelineLibrary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineLibrary':
-        return cls(jar=d.get('jar', None),
-                   maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d else None,
-                   notebook=NotebookLibrary.from_dict(d['notebook']) if 'notebook' in d else None,
-                   whl=d.get('whl', None))
+        return cls(
+            jar=d.get('jar', None),
+            maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d and d['maven'] is not None else None,
+            notebook=NotebookLibrary.from_dict(d['notebook'])
+            if 'notebook' in d and d['notebook'] is not None else None,
+            whl=d.get('whl', None))
 
 
 @dataclass
@@ -686,7 +695,7 @@ class PipelineSpec:
             continuous=d.get('continuous', None),
             development=d.get('development', None),
             edition=d.get('edition', None),
-            filters=Filters.from_dict(d['filters']) if 'filters' in d else None,
+            filters=Filters.from_dict(d['filters']) if 'filters' in d and d['filters'] is not None else None,
             id=d.get('id', None),
             libraries=[PipelineLibrary.from_dict(v)
                        for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None,
@@ -694,7 +703,8 @@ class PipelineSpec:
             photon=d.get('photon', None),
             storage=d.get('storage', None),
             target=d.get('target', None),
-            trigger=PipelineTrigger.from_dict(d['trigger']) if 'trigger' in d else None)
+            trigger=PipelineTrigger.from_dict(d['trigger'])
+            if 'trigger' in d and d['trigger'] is not None else None)
 
 
 class PipelineState(Enum):
@@ -757,7 +767,7 @@ class PipelineTrigger:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineTrigger':
-        return cls(cron=CronTrigger.from_dict(d['cron']) if 'cron' in d else None,
+        return cls(cron=CronTrigger.from_dict(d['cron']) if 'cron' in d and d['cron'] is not None else None,
                    manual=d.get('manual', None))
 
 
@@ -782,7 +792,8 @@ class Sequencing:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Sequencing':
         return cls(control_plane_seq_no=d.get('control_plane_seq_no', None),
-                   data_plane_id=DataPlaneId.from_dict(d['data_plane_id']) if 'data_plane_id' in d else None)
+                   data_plane_id=DataPlaneId.from_dict(d['data_plane_id'])
+                   if 'data_plane_id' in d and d['data_plane_id'] is not None else None)
 
 
 @dataclass
@@ -917,16 +928,17 @@ class UpdateInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateInfo':
-        return cls(cause=UpdateInfoCause.__members__.get(d['cause'], None) if 'cause' in d else None,
-                   cluster_id=d.get('cluster_id', None),
-                   config=PipelineSpec.from_dict(d['config']) if 'config' in d else None,
-                   creation_time=d.get('creation_time', None),
-                   full_refresh=d.get('full_refresh', None),
-                   full_refresh_selection=d.get('full_refresh_selection', None),
-                   pipeline_id=d.get('pipeline_id', None),
-                   refresh_selection=d.get('refresh_selection', None),
-                   state=UpdateInfoState.__members__.get(d['state'], None) if 'state' in d else None,
-                   update_id=d.get('update_id', None))
+        return cls(
+            cause=UpdateInfoCause.__members__.get(d['cause'], None) if 'cause' in d else None,
+            cluster_id=d.get('cluster_id', None),
+            config=PipelineSpec.from_dict(d['config']) if 'config' in d and d['config'] is not None else None,
+            creation_time=d.get('creation_time', None),
+            full_refresh=d.get('full_refresh', None),
+            full_refresh_selection=d.get('full_refresh_selection', None),
+            pipeline_id=d.get('pipeline_id', None),
+            refresh_selection=d.get('refresh_selection', None),
+            state=UpdateInfoState.__members__.get(d['state'], None) if 'state' in d else None,
+            update_id=d.get('update_id', None))
 
 
 class UpdateInfoCause(Enum):

@@ -370,7 +370,7 @@ class User:
                    groups=[ComplexValue.from_dict(v)
                            for v in d['groups']] if 'groups' in d and d['groups'] is not None else None,
                    id=d.get('id', None),
-                   name=Name.from_dict(d['name']) if 'name' in d else None,
+                   name=Name.from_dict(d['name']) if 'name' in d and d['name'] is not None else None,
                    roles=[ComplexValue.from_dict(v)
                           for v in d['roles']] if 'roles' in d and d['roles'] is not None else None,
                    user_name=d.get('userName', None))

@@ -50,7 +50,8 @@ class CreateServingEndpoint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
-        return cls(config=EndpointCoreConfigInput.from_dict(d['config']) if 'config' in d else None,
+        return cls(config=EndpointCoreConfigInput.from_dict(d['config'])
+                   if 'config' in d and d['config'] is not None else None,
                    name=d.get('name', None))
 
 
@@ -76,11 +77,11 @@ class EndpointCoreConfigInput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigInput':
-        return cls(
-            name=d.get('name', None),
-            served_models=[ServedModelInput.from_dict(v) for v in d['served_models']]
-            if 'served_models' in d and d['served_models'] is not None else None,
-            traffic_config=TrafficConfig.from_dict(d['traffic_config']) if 'traffic_config' in d else None)
+        return cls(name=d.get('name', None),
+                   served_models=[ServedModelInput.from_dict(v) for v in d['served_models']]
+                   if 'served_models' in d and d['served_models'] is not None else None,
+                   traffic_config=TrafficConfig.from_dict(d['traffic_config'])
+                   if 'traffic_config' in d and d['traffic_config'] is not None else None)
 
 
 @dataclass
@@ -98,11 +99,11 @@ class EndpointCoreConfigOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigOutput':
-        return cls(
-            config_version=d.get('config_version', None),
-            served_models=[ServedModelOutput.from_dict(v) for v in d['served_models']]
-            if 'served_models' in d and d['served_models'] is not None else None,
-            traffic_config=TrafficConfig.from_dict(d['traffic_config']) if 'traffic_config' in d else None)
+        return cls(config_version=d.get('config_version', None),
+                   served_models=[ServedModelOutput.from_dict(v) for v in d['served_models']]
+                   if 'served_models' in d and d['served_models'] is not None else None,
+                   traffic_config=TrafficConfig.from_dict(d['traffic_config'])
+                   if 'traffic_config' in d and d['traffic_config'] is not None else None)
 
 
 @dataclass
@@ -137,12 +138,12 @@ class EndpointPendingConfig:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointPendingConfig':
-        return cls(
-            config_version=d.get('config_version', None),
-            served_models=[ServedModelOutput.from_dict(v) for v in d['served_models']]
-            if 'served_models' in d and d['served_models'] is not None else None,
-            start_time=d.get('start_time', None),
-            traffic_config=TrafficConfig.from_dict(d['traffic_config']) if 'traffic_config' in d else None)
+        return cls(config_version=d.get('config_version', None),
+                   served_models=[ServedModelOutput.from_dict(v) for v in d['served_models']]
+                   if 'served_models' in d and d['served_models'] is not None else None,
+                   start_time=d.get('start_time', None),
+                   traffic_config=TrafficConfig.from_dict(d['traffic_config'])
+                   if 'traffic_config' in d and d['traffic_config'] is not None else None)
 
 
 @dataclass
@@ -311,14 +312,15 @@ class ServedModelOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelOutput':
-        return cls(creation_timestamp=d.get('creation_timestamp', None),
-                   creator=d.get('creator', None),
-                   model_name=d.get('model_name', None),
-                   model_version=d.get('model_version', None),
-                   name=d.get('name', None),
-                   scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
-                   state=ServedModelState.from_dict(d['state']) if 'state' in d else None,
-                   workload_size=d.get('workload_size', None))
+        return cls(
+            creation_timestamp=d.get('creation_timestamp', None),
+            creator=d.get('creator', None),
+            model_name=d.get('model_name', None),
+            model_version=d.get('model_version', None),
+            name=d.get('name', None),
+            scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
+            state=ServedModelState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None,
+            workload_size=d.get('workload_size', None))
 
 
 @dataclass
@@ -414,13 +416,15 @@ class ServingEndpoint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpoint':
-        return cls(config=EndpointCoreConfigSummary.from_dict(d['config']) if 'config' in d else None,
-                   creation_timestamp=d.get('creation_timestamp', None),
-                   creator=d.get('creator', None),
-                   id=d.get('id', None),
-                   last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   name=d.get('name', None),
-                   state=EndpointState.from_dict(d['state']) if 'state' in d else None)
+        return cls(
+            config=EndpointCoreConfigSummary.from_dict(d['config'])
+            if 'config' in d and d['config'] is not None else None,
+            creation_timestamp=d.get('creation_timestamp', None),
+            creator=d.get('creator', None),
+            id=d.get('id', None),
+            last_updated_timestamp=d.get('last_updated_timestamp', None),
+            name=d.get('name', None),
+            state=EndpointState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None)
 
 
 @dataclass
@@ -450,17 +454,19 @@ class ServingEndpointDetailed:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointDetailed':
-        return cls(config=EndpointCoreConfigOutput.from_dict(d['config']) if 'config' in d else None,
-                   creation_timestamp=d.get('creation_timestamp', None),
-                   creator=d.get('creator', None),
-                   id=d.get('id', None),
-                   last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   name=d.get('name', None),
-                   pending_config=EndpointPendingConfig.from_dict(d['pending_config'])
-                   if 'pending_config' in d else None,
-                   permission_level=ServingEndpointDetailedPermissionLevel.__members__.get(
-                       d['permission_level'], None) if 'permission_level' in d else None,
-                   state=EndpointState.from_dict(d['state']) if 'state' in d else None)
+        return cls(
+            config=EndpointCoreConfigOutput.from_dict(d['config'])
+            if 'config' in d and d['config'] is not None else None,
+            creation_timestamp=d.get('creation_timestamp', None),
+            creator=d.get('creator', None),
+            id=d.get('id', None),
+            last_updated_timestamp=d.get('last_updated_timestamp', None),
+            name=d.get('name', None),
+            pending_config=EndpointPendingConfig.from_dict(d['pending_config'])
+            if 'pending_config' in d and d['pending_config'] is not None else None,
+            permission_level=ServingEndpointDetailedPermissionLevel.__members__.get(
+                d['permission_level'], None) if 'permission_level' in d else None,
+            state=EndpointState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None)
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):

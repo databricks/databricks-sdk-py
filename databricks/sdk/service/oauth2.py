@@ -30,7 +30,7 @@ class CreateCustomAppIntegration:
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
-                   if 'token_access_policy' in d else None)
+                   if 'token_access_policy' in d and d['token_access_policy'] is not None else None)
 
 
 @dataclass
@@ -82,7 +82,7 @@ class CreatePublishedAppIntegration:
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePublishedAppIntegration':
         return cls(app_id=d.get('app_id', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
-                   if 'token_access_policy' in d else None)
+                   if 'token_access_policy' in d and d['token_access_policy'] is not None else None)
 
 
 @dataclass
@@ -140,7 +140,7 @@ class GetCustomAppIntegrationOutput:
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
-                   if 'token_access_policy' in d else None)
+                   if 'token_access_policy' in d and d['token_access_policy'] is not None else None)
 
 
 @dataclass
@@ -186,7 +186,7 @@ class GetPublishedAppIntegrationOutput:
                    integration_id=d.get('integration_id', None),
                    name=d.get('name', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
-                   if 'token_access_policy' in d else None)
+                   if 'token_access_policy' in d and d['token_access_policy'] is not None else None)
 
 
 @dataclass
@@ -262,7 +262,7 @@ class UpdateCustomAppIntegration:
         return cls(integration_id=d.get('integration_id', None),
                    redirect_urls=d.get('redirect_urls', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
-                   if 'token_access_policy' in d else None)
+                   if 'token_access_policy' in d and d['token_access_policy'] is not None else None)
 
 
 @dataclass
@@ -280,7 +280,7 @@ class UpdatePublishedAppIntegration:
     def from_dict(cls, d: Dict[str, any]) -> 'UpdatePublishedAppIntegration':
         return cls(integration_id=d.get('integration_id', None),
                    token_access_policy=TokenAccessPolicy.from_dict(d['token_access_policy'])
-                   if 'token_access_policy' in d else None)
+                   if 'token_access_policy' in d and d['token_access_policy'] is not None else None)
 
 
 class CustomAppIntegrationAPI:

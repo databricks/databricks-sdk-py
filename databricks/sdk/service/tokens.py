@@ -38,7 +38,8 @@ class CreateTokenResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateTokenResponse':
-        return cls(token_info=PublicTokenInfo.from_dict(d['token_info']) if 'token_info' in d else None,
+        return cls(token_info=PublicTokenInfo.from_dict(d['token_info'])
+                   if 'token_info' in d and d['token_info'] is not None else None,
                    token_value=d.get('token_value', None))
 
 

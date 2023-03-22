@@ -41,8 +41,8 @@ class CreateIpAccessListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateIpAccessListResponse':
-        return cls(
-            ip_access_list=IpAccessListInfo.from_dict(d['ip_access_list']) if 'ip_access_list' in d else None)
+        return cls(ip_access_list=IpAccessListInfo.from_dict(d['ip_access_list'])
+                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None)
 
 
 @dataclass
@@ -63,8 +63,8 @@ class FetchIpAccessListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FetchIpAccessListResponse':
-        return cls(
-            ip_access_list=IpAccessListInfo.from_dict(d['ip_access_list']) if 'ip_access_list' in d else None)
+        return cls(ip_access_list=IpAccessListInfo.from_dict(d['ip_access_list'])
+                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None)
 
 
 @dataclass

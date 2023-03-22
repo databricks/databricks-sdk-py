@@ -75,12 +75,13 @@ class Library:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Library':
-        return cls(cran=RCranLibrary.from_dict(d['cran']) if 'cran' in d else None,
-                   egg=d.get('egg', None),
-                   jar=d.get('jar', None),
-                   maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d else None,
-                   pypi=PythonPyPiLibrary.from_dict(d['pypi']) if 'pypi' in d else None,
-                   whl=d.get('whl', None))
+        return cls(
+            cran=RCranLibrary.from_dict(d['cran']) if 'cran' in d and d['cran'] is not None else None,
+            egg=d.get('egg', None),
+            jar=d.get('jar', None),
+            maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d and d['maven'] is not None else None,
+            pypi=PythonPyPiLibrary.from_dict(d['pypi']) if 'pypi' in d and d['pypi'] is not None else None,
+            whl=d.get('whl', None))
 
 
 @dataclass
@@ -103,7 +104,7 @@ class LibraryFullStatus:
     def from_dict(cls, d: Dict[str, any]) -> 'LibraryFullStatus':
         return cls(
             is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
-            library=Library.from_dict(d['library']) if 'library' in d else None,
+            library=Library.from_dict(d['library']) if 'library' in d and d['library'] is not None else None,
             messages=d.get('messages', None),
             status=LibraryFullStatusStatus.__members__.get(d['status'], None) if 'status' in d else None)
 

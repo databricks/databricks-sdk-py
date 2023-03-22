@@ -70,7 +70,7 @@ class CreateScope:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateScope':
         return cls(initial_manage_principal=d.get('initial_manage_principal', None),
                    keyvault_metadata=AzureKeyVaultSecretScopeMetadata.from_dict(d['keyvault_metadata'])
-                   if 'keyvault_metadata' in d else None,
+                   if 'keyvault_metadata' in d and d['keyvault_metadata'] is not None else None,
                    scope=d.get('scope', None),
                    scope_backend_type=ScopeBackendType.__members__.get(d['scope_backend_type'], None)
                    if 'scope_backend_type' in d else None)
@@ -273,7 +273,7 @@ class SecretScope:
         return cls(backend_type=ScopeBackendType.__members__.get(d['backend_type'], None)
                    if 'backend_type' in d else None,
                    keyvault_metadata=AzureKeyVaultSecretScopeMetadata.from_dict(d['keyvault_metadata'])
-                   if 'keyvault_metadata' in d else None,
+                   if 'keyvault_metadata' in d and d['keyvault_metadata'] is not None else None,
                    name=d.get('name', None))
 
 

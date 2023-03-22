@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.pyVersion }}
 
       - name: Run tests
-        run: make dev-init test
+        run: make dev test
 
       - name: Publish test coverage
         uses: codecov/codecov-action@v1
@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Format all files
-        run: make dev-init fmt
+        run: make dev fmt
 
       - name: Fail on differences
         run: git diff --exit-code

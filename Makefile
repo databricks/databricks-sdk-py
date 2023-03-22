@@ -1,4 +1,4 @@
-dev-init:
+dev:
 	python3 -m venv .venv
 	. .venv/bin/activate
 	pip install .
@@ -15,6 +15,9 @@ lint:
 
 test:
 	pytest -m 'not integration' --cov=databricks --cov-report html tests
+
+integration:
+	pytest -n auto -m 'integration' --cov=databricks --cov-report html tests
 
 coverage: test
 	open htmlcov/index.html
