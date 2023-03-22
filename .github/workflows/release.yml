@@ -11,10 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: make dev
-
       - name: Build wheel
-        run: python3 setup.py bdist_wheel
+        run: make dev dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

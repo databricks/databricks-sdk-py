@@ -21,3 +21,9 @@ integration:
 
 coverage: test
 	open htmlcov/index.html
+
+dist:
+	python3 setup.py bdist_wheel
+
+clean:
+	rm -fr dist *.egg-info .pytest_cache build htmlcov

@@ -22,6 +22,7 @@ from urllib3.util.retry import Retry
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenSource)
+from .version import __version__
 
 __all__ = ['Config']
 
@@ -417,7 +418,7 @@ class Config:
         """ Returns User-Agent header used by this SDK """
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()
-        return (f"{self._product}/{self._product_version} databricks-sdk-py/{VERSION}"
+        return (f"{self._product}/{self._product_version} databricks-sdk-py/{__version__}"
                 f" python/{py_version} os/{os_name} auth/{self.auth_type}")
 
     @property
@@ -586,9 +587,6 @@ class Config:
 
     def __repr__(self):
         return f'<{self.debug_string()}>'
-
-
-VERSION = "0.0.1"
 
 
 class DatabricksError(IOError):
