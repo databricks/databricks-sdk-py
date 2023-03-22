@@ -45,7 +45,11 @@ all_clusters_template = '''<ul>
 
 
 def create_flask_app(oauth_client: OAuthClient, port: int):
-    """Creates OAuth-enabled flask app"""
+    """The create_flask_app function creates a Flask app that is enabled with OAuth.
+
+    It initializes the app and web session secret keys with a randomly generated token. It defines two routes for
+    handling the callback and index pages.
+    """
     import secrets
     from flask import Flask, render_template_string, request, redirect, url_for, session
 
@@ -54,6 +58,8 @@ def create_flask_app(oauth_client: OAuthClient, port: int):
 
     @app.route('/callback')
     def callback():
+        """The callback route initiates consent using the OAuth client, exchanges
+        the callback parameters, and redirects the user to the index page."""
         from databricks.sdk.oauth import Consent
         consent = Consent.from_dict(oauth_client, session['consent'])
         session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
@@ -61,6 +67,8 @@ def create_flask_app(oauth_client: OAuthClient, port: int):
 
     @app.route('/')
     def index():
+        """The index page checks if the user has already authenticated and retrieves the user's credentials using
+        the Databricks SDK WorkspaceClient. It then renders the template with the clusters' list."""
         if 'creds' not in session:
             consent = oauth_client.initiate_consent()
             session['consent'] = consent.as_dict()
