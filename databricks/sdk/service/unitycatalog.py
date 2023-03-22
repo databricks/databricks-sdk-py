@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -99,16 +101,13 @@ class CatalogInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
-        return cls(catalog_type=CatalogType.__members__.get(d['catalog_type'], None)
-                   if 'catalog_type' in d else None,
+        return cls(catalog_type=_enum(d, 'catalog_type', CatalogType),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
-                       d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d
-                   and d['effective_auto_maintenance_flag'] is not None else None,
-                   enable_auto_maintenance=EnableAutoMaintenance.__members__.get(
-                       d['enable_auto_maintenance'], None) if 'enable_auto_maintenance' in d else None,
+                   effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
+                                                              EffectiveAutoMaintenanceFlag),
+                   enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -162,19 +161,18 @@ class ColumnInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
-        return cls(
-            comment=d.get('comment', None),
-            mask=ColumnMask.from_dict(d['mask']) if 'mask' in d and d['mask'] is not None else None,
-            name=d.get('name', None),
-            nullable=d.get('nullable', None),
-            partition_index=d.get('partition_index', None),
-            position=d.get('position', None),
-            type_interval_type=d.get('type_interval_type', None),
-            type_json=d.get('type_json', None),
-            type_name=ColumnTypeName.__members__.get(d['type_name'], None) if 'type_name' in d else None,
-            type_precision=d.get('type_precision', None),
-            type_scale=d.get('type_scale', None),
-            type_text=d.get('type_text', None))
+        return cls(comment=d.get('comment', None),
+                   mask=_from_dict(d, 'mask', ColumnMask),
+                   name=d.get('name', None),
+                   nullable=d.get('nullable', None),
+                   partition_index=d.get('partition_index', None),
+                   position=d.get('position', None),
+                   type_interval_type=d.get('type_interval_type', None),
+                   type_json=d.get('type_json', None),
+                   type_name=_enum(d, 'type_name', ColumnTypeName),
+                   type_precision=d.get('type_precision', None),
+                   type_scale=d.get('type_scale', None),
+                   type_text=d.get('type_text', None))
 
 
 @dataclass
@@ -329,35 +327,27 @@ class CreateFunction:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateFunction':
-        return cls(
-            catalog_name=d.get('catalog_name', None),
-            comment=d.get('comment', None),
-            data_type=ColumnTypeName.__members__.get(d['data_type'], None) if 'data_type' in d else None,
-            external_language=d.get('external_language', None),
-            external_name=d.get('external_name', None),
-            full_data_type=d.get('full_data_type', None),
-            input_params=[FunctionParameterInfo.from_dict(v) for v in d['input_params']]
-            if 'input_params' in d and d['input_params'] is not None else None,
-            is_deterministic=d.get('is_deterministic', None),
-            is_null_call=d.get('is_null_call', None),
-            name=d.get('name', None),
-            parameter_style=CreateFunctionParameterStyle.__members__.get(d['parameter_style'], None)
-            if 'parameter_style' in d else None,
-            properties=d.get('properties', None),
-            return_params=[FunctionParameterInfo.from_dict(v) for v in d['return_params']]
-            if 'return_params' in d and d['return_params'] is not None else None,
-            routine_body=CreateFunctionRoutineBody.__members__.get(d['routine_body'], None)
-            if 'routine_body' in d else None,
-            routine_definition=d.get('routine_definition', None),
-            routine_dependencies=[Dependency.from_dict(v) for v in d['routine_dependencies']]
-            if 'routine_dependencies' in d and d['routine_dependencies'] is not None else None,
-            schema_name=d.get('schema_name', None),
-            security_type=CreateFunctionSecurityType.__members__.get(d['security_type'], None)
-            if 'security_type' in d else None,
-            specific_name=d.get('specific_name', None),
-            sql_data_access=CreateFunctionSqlDataAccess.__members__.get(d['sql_data_access'], None)
-            if 'sql_data_access' in d else None,
-            sql_path=d.get('sql_path', None))
+        return cls(catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   data_type=_enum(d, 'data_type', ColumnTypeName),
+                   external_language=d.get('external_language', None),
+                   external_name=d.get('external_name', None),
+                   full_data_type=d.get('full_data_type', None),
+                   input_params=_repeated(d, 'input_params', FunctionParameterInfo),
+                   is_deterministic=d.get('is_deterministic', None),
+                   is_null_call=d.get('is_null_call', None),
+                   name=d.get('name', None),
+                   parameter_style=_enum(d, 'parameter_style', CreateFunctionParameterStyle),
+                   properties=d.get('properties', None),
+                   return_params=_repeated(d, 'return_params', FunctionParameterInfo),
+                   routine_body=_enum(d, 'routine_body', CreateFunctionRoutineBody),
+                   routine_definition=d.get('routine_definition', None),
+                   routine_dependencies=_repeated(d, 'routine_dependencies', Dependency),
+                   schema_name=d.get('schema_name', None),
+                   security_type=_enum(d, 'security_type', CreateFunctionSecurityType),
+                   specific_name=d.get('specific_name', None),
+                   sql_data_access=_enum(d, 'sql_data_access', CreateFunctionSqlDataAccess),
+                   sql_path=d.get('sql_path', None))
 
 
 class CreateFunctionParameterStyle(Enum):
@@ -447,8 +437,7 @@ class CreateProvider:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateProvider':
-        return cls(authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
-                   if 'authentication_type' in d else None,
+        return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
                    recipient_profile_str=d.get('recipient_profile_str', None))
@@ -480,12 +469,10 @@ class CreateRecipient:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRecipient':
-        return cls(authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
-                   if 'authentication_type' in d else None,
+        return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
                    data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
-                   ip_access_list=IpAccessList.from_dict(d['ip_access_list'])
-                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None,
+                   ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=d.get('properties_kvpairs', None),
@@ -561,13 +548,10 @@ class CreateStorageCredential:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateStorageCredential':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
-                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
-                   azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
-                   gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
+                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
@@ -587,8 +571,7 @@ class CreateTableConstraint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateTableConstraint':
-        return cls(constraint=TableConstraint.from_dict(d['constraint'])
-                   if 'constraint' in d and d['constraint'] is not None else None,
+        return cls(constraint=_from_dict(d, 'constraint', TableConstraint),
                    full_name_arg=d.get('full_name_arg', None))
 
 
@@ -721,10 +704,8 @@ class Dependency:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Dependency':
-        return cls(
-            function=FunctionDependency.from_dict(d['function'])
-            if 'function' in d and d['function'] is not None else None,
-            table=TableDependency.from_dict(d['table']) if 'table' in d and d['table'] is not None else None)
+        return cls(function=_from_dict(d, 'function', FunctionDependency),
+                   table=_from_dict(d, 'table', TableDependency))
 
 
 @dataclass
@@ -743,9 +724,9 @@ class EffectiveAutoMaintenanceFlag:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectiveAutoMaintenanceFlag':
         return cls(inherited_from_name=d.get('inherited_from_name', None),
-                   inherited_from_type=EffectiveAutoMaintenanceFlagInheritedFromType.__members__.get(
-                       d['inherited_from_type'], None) if 'inherited_from_type' in d else None,
-                   value=EnableAutoMaintenance.__members__.get(d['value'], None) if 'value' in d else None)
+                   inherited_from_type=_enum(d, 'inherited_from_type',
+                                             EffectiveAutoMaintenanceFlagInheritedFromType),
+                   value=_enum(d, 'value', EnableAutoMaintenance))
 
 
 class EffectiveAutoMaintenanceFlagInheritedFromType(Enum):
@@ -768,9 +749,7 @@ class EffectivePermissionsList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePermissionsList':
-        return cls(privilege_assignments=[
-            EffectivePrivilegeAssignment.from_dict(v) for v in d['privilege_assignments']
-        ] if 'privilege_assignments' in d and d['privilege_assignments'] is not None else None)
+        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', EffectivePrivilegeAssignment))
 
 
 @dataclass
@@ -789,9 +768,8 @@ class EffectivePrivilege:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePrivilege':
         return cls(inherited_from_name=d.get('inherited_from_name', None),
-                   inherited_from_type=SecurableType.__members__.get(d['inherited_from_type'], None)
-                   if 'inherited_from_type' in d else None,
-                   privilege=Privilege.__members__.get(d['privilege'], None) if 'privilege' in d else None)
+                   inherited_from_type=_enum(d, 'inherited_from_type', SecurableType),
+                   privilege=_enum(d, 'privilege', Privilege))
 
 
 @dataclass
@@ -808,8 +786,7 @@ class EffectivePrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePrivilegeAssignment':
         return cls(principal=d.get('principal', None),
-                   privileges=[EffectivePrivilege.from_dict(v) for v in d['privileges']]
-                   if 'privileges' in d and d['privileges'] is not None else None)
+                   privileges=_repeated(d, 'privileges', EffectivePrivilege))
 
 
 class EnableAutoMaintenance(Enum):
@@ -974,43 +951,35 @@ class FunctionInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FunctionInfo':
-        return cls(
-            catalog_name=d.get('catalog_name', None),
-            comment=d.get('comment', None),
-            created_at=d.get('created_at', None),
-            created_by=d.get('created_by', None),
-            data_type=ColumnTypeName.__members__.get(d['data_type'], None) if 'data_type' in d else None,
-            external_language=d.get('external_language', None),
-            external_name=d.get('external_name', None),
-            full_data_type=d.get('full_data_type', None),
-            full_name=d.get('full_name', None),
-            function_id=d.get('function_id', None),
-            input_params=[FunctionParameterInfo.from_dict(v) for v in d['input_params']]
-            if 'input_params' in d and d['input_params'] is not None else None,
-            is_deterministic=d.get('is_deterministic', None),
-            is_null_call=d.get('is_null_call', None),
-            metastore_id=d.get('metastore_id', None),
-            name=d.get('name', None),
-            owner=d.get('owner', None),
-            parameter_style=FunctionInfoParameterStyle.__members__.get(d['parameter_style'], None)
-            if 'parameter_style' in d else None,
-            properties=d.get('properties', None),
-            return_params=[FunctionParameterInfo.from_dict(v) for v in d['return_params']]
-            if 'return_params' in d and d['return_params'] is not None else None,
-            routine_body=FunctionInfoRoutineBody.__members__.get(d['routine_body'], None)
-            if 'routine_body' in d else None,
-            routine_definition=d.get('routine_definition', None),
-            routine_dependencies=[Dependency.from_dict(v) for v in d['routine_dependencies']]
-            if 'routine_dependencies' in d and d['routine_dependencies'] is not None else None,
-            schema_name=d.get('schema_name', None),
-            security_type=FunctionInfoSecurityType.__members__.get(d['security_type'], None)
-            if 'security_type' in d else None,
-            specific_name=d.get('specific_name', None),
-            sql_data_access=FunctionInfoSqlDataAccess.__members__.get(d['sql_data_access'], None)
-            if 'sql_data_access' in d else None,
-            sql_path=d.get('sql_path', None),
-            updated_at=d.get('updated_at', None),
-            updated_by=d.get('updated_by', None))
+        return cls(catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   data_type=_enum(d, 'data_type', ColumnTypeName),
+                   external_language=d.get('external_language', None),
+                   external_name=d.get('external_name', None),
+                   full_data_type=d.get('full_data_type', None),
+                   full_name=d.get('full_name', None),
+                   function_id=d.get('function_id', None),
+                   input_params=_repeated(d, 'input_params', FunctionParameterInfo),
+                   is_deterministic=d.get('is_deterministic', None),
+                   is_null_call=d.get('is_null_call', None),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   parameter_style=_enum(d, 'parameter_style', FunctionInfoParameterStyle),
+                   properties=d.get('properties', None),
+                   return_params=_repeated(d, 'return_params', FunctionParameterInfo),
+                   routine_body=_enum(d, 'routine_body', FunctionInfoRoutineBody),
+                   routine_definition=d.get('routine_definition', None),
+                   routine_dependencies=_repeated(d, 'routine_dependencies', Dependency),
+                   schema_name=d.get('schema_name', None),
+                   security_type=_enum(d, 'security_type', FunctionInfoSecurityType),
+                   specific_name=d.get('specific_name', None),
+                   sql_data_access=_enum(d, 'sql_data_access', FunctionInfoSqlDataAccess),
+                   sql_path=d.get('sql_path', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None))
 
 
 class FunctionInfoParameterStyle(Enum):
@@ -1076,21 +1045,18 @@ class FunctionParameterInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FunctionParameterInfo':
-        return cls(
-            comment=d.get('comment', None),
-            name=d.get('name', None),
-            parameter_default=d.get('parameter_default', None),
-            parameter_mode=FunctionParameterMode.__members__.get(d['parameter_mode'], None)
-            if 'parameter_mode' in d else None,
-            parameter_type=FunctionParameterType.__members__.get(d['parameter_type'], None)
-            if 'parameter_type' in d else None,
-            position=d.get('position', None),
-            type_interval_type=d.get('type_interval_type', None),
-            type_json=d.get('type_json', None),
-            type_name=ColumnTypeName.__members__.get(d['type_name'], None) if 'type_name' in d else None,
-            type_precision=d.get('type_precision', None),
-            type_scale=d.get('type_scale', None),
-            type_text=d.get('type_text', None))
+        return cls(comment=d.get('comment', None),
+                   name=d.get('name', None),
+                   parameter_default=d.get('parameter_default', None),
+                   parameter_mode=_enum(d, 'parameter_mode', FunctionParameterMode),
+                   parameter_type=_enum(d, 'parameter_type', FunctionParameterType),
+                   position=d.get('position', None),
+                   type_interval_type=d.get('type_interval_type', None),
+                   type_json=d.get('type_json', None),
+                   type_name=_enum(d, 'type_name', ColumnTypeName),
+                   type_precision=d.get('type_precision', None),
+                   type_scale=d.get('type_scale', None),
+                   type_text=d.get('type_text', None))
 
 
 class FunctionParameterMode(Enum):
@@ -1260,8 +1226,8 @@ class GetMetastoreSummaryResponse:
                    delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
-                   delta_sharing_scope=GetMetastoreSummaryResponseDeltaSharingScope.__members__.get(
-                       d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
+                   delta_sharing_scope=_enum(d, 'delta_sharing_scope',
+                                             GetMetastoreSummaryResponseDeltaSharingScope),
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -1307,8 +1273,7 @@ class GetRecipientSharePermissionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRecipientSharePermissionsResponse':
-        return cls(permissions_out=[ShareToPrivilegeAssignment.from_dict(v) for v in d['permissions_out']]
-                   if 'permissions_out' in d and d['permissions_out'] is not None else None)
+        return cls(permissions_out=_repeated(d, 'permissions_out', ShareToPrivilegeAssignment))
 
 
 @dataclass
@@ -1380,9 +1345,7 @@ class ListCatalogsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListCatalogsResponse':
-        return cls(
-            catalogs=[CatalogInfo.from_dict(v)
-                      for v in d['catalogs']] if 'catalogs' in d and d['catalogs'] is not None else None)
+        return cls(catalogs=_repeated(d, 'catalogs', CatalogInfo))
 
 
 @dataclass
@@ -1397,8 +1360,7 @@ class ListExternalLocationsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListExternalLocationsResponse':
-        return cls(external_locations=[ExternalLocationInfo.from_dict(v) for v in d['external_locations']]
-                   if 'external_locations' in d and d['external_locations'] is not None else None)
+        return cls(external_locations=_repeated(d, 'external_locations', ExternalLocationInfo))
 
 
 @dataclass
@@ -1420,8 +1382,7 @@ class ListFunctionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListFunctionsResponse':
-        return cls(schemas=[FunctionInfo.from_dict(v)
-                            for v in d['schemas']] if 'schemas' in d and d['schemas'] is not None else None)
+        return cls(schemas=_repeated(d, 'schemas', FunctionInfo))
 
 
 @dataclass
@@ -1435,8 +1396,7 @@ class ListMetastoresResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListMetastoresResponse':
-        return cls(metastores=[MetastoreInfo.from_dict(v) for v in d['metastores']]
-                   if 'metastores' in d and d['metastores'] is not None else None)
+        return cls(metastores=_repeated(d, 'metastores', MetastoreInfo))
 
 
 @dataclass
@@ -1450,8 +1410,7 @@ class ListProviderSharesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListProviderSharesResponse':
-        return cls(shares=[ProviderShare.from_dict(v)
-                           for v in d['shares']] if 'shares' in d and d['shares'] is not None else None)
+        return cls(shares=_repeated(d, 'shares', ProviderShare))
 
 
 @dataclass
@@ -1472,9 +1431,7 @@ class ListProvidersResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListProvidersResponse':
-        return cls(
-            providers=[ProviderInfo.from_dict(v)
-                       for v in d['providers']] if 'providers' in d and d['providers'] is not None else None)
+        return cls(providers=_repeated(d, 'providers', ProviderInfo))
 
 
 @dataclass
@@ -1495,8 +1452,7 @@ class ListRecipientsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRecipientsResponse':
-        return cls(recipients=[RecipientInfo.from_dict(v) for v in d['recipients']]
-                   if 'recipients' in d and d['recipients'] is not None else None)
+        return cls(recipients=_repeated(d, 'recipients', RecipientInfo))
 
 
 @dataclass
@@ -1517,8 +1473,7 @@ class ListSchemasResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSchemasResponse':
-        return cls(schemas=[SchemaInfo.from_dict(v)
-                            for v in d['schemas']] if 'schemas' in d and d['schemas'] is not None else None)
+        return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
 
 
 @dataclass
@@ -1539,8 +1494,7 @@ class ListSharesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSharesResponse':
-        return cls(shares=[ShareInfo.from_dict(v)
-                           for v in d['shares']] if 'shares' in d and d['shares'] is not None else None)
+        return cls(shares=_repeated(d, 'shares', ShareInfo))
 
 
 @dataclass
@@ -1568,8 +1522,7 @@ class ListTableSummariesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTableSummariesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   tables=[TableSummary.from_dict(v)
-                           for v in d['tables']] if 'tables' in d and d['tables'] is not None else None)
+                   tables=_repeated(d, 'tables', TableSummary))
 
 
 @dataclass
@@ -1592,8 +1545,7 @@ class ListTablesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTablesResponse':
-        return cls(tables=[TableInfo.from_dict(v)
-                           for v in d['tables']] if 'tables' in d and d['tables'] is not None else None)
+        return cls(tables=_repeated(d, 'tables', TableInfo))
 
 
 @dataclass
@@ -1674,8 +1626,7 @@ class MetastoreInfo:
                    delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
-                   delta_sharing_scope=MetastoreInfoDeltaSharingScope.__members__.get(
-                       d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
+                   delta_sharing_scope=_enum(d, 'delta_sharing_scope', MetastoreInfoDeltaSharingScope),
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -1721,8 +1672,7 @@ class Partition:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Partition':
-        return cls(values=[PartitionValue.from_dict(v)
-                           for v in d['values']] if 'values' in d and d['values'] is not None else None)
+        return cls(values=_repeated(d, 'values', PartitionValue))
 
 
 @dataclass
@@ -1743,7 +1693,7 @@ class PartitionValue:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PartitionValue':
         return cls(name=d.get('name', None),
-                   op=PartitionValueOp.__members__.get(d['op'], None) if 'op' in d else None,
+                   op=_enum(d, 'op', PartitionValueOp),
                    recipient_property_key=d.get('recipient_property_key', None),
                    value=d.get('value', None))
 
@@ -1785,9 +1735,7 @@ class PermissionsList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsList':
-        return cls(
-            privilege_assignments=[PrivilegeAssignment.from_dict(v) for v in d['privilege_assignments']]
-            if 'privilege_assignments' in d and d['privilege_assignments'] is not None else None)
+        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', PrivilegeAssignment))
 
 
 @dataclass
@@ -1894,8 +1842,7 @@ class ProviderInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ProviderInfo':
-        return cls(authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
-                   if 'authentication_type' in d else None,
+        return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    cloud=d.get('cloud', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -1904,8 +1851,7 @@ class ProviderInfo:
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   recipient_profile=RecipientProfile.from_dict(d['recipient_profile'])
-                   if 'recipient_profile' in d and d['recipient_profile'] is not None else None,
+                   recipient_profile=_from_dict(d, 'recipient_profile', RecipientProfile),
                    recipient_profile_str=d.get('recipient_profile_str', None),
                    region=d.get('region', None),
                    updated_at=d.get('updated_at', None),
@@ -1974,23 +1920,20 @@ class RecipientInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'RecipientInfo':
         return cls(activated=d.get('activated', None),
                    activation_url=d.get('activation_url', None),
-                   authentication_type=AuthenticationType.__members__.get(d['authentication_type'], None)
-                   if 'authentication_type' in d else None,
+                   authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    cloud=d.get('cloud', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
-                   ip_access_list=IpAccessList.from_dict(d['ip_access_list'])
-                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None,
+                   ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=d.get('properties_kvpairs', None),
                    region=d.get('region', None),
                    sharing_code=d.get('sharing_code', None),
-                   tokens=[RecipientTokenInfo.from_dict(v)
-                           for v in d['tokens']] if 'tokens' in d and d['tokens'] is not None else None,
+                   tokens=_repeated(d, 'tokens', RecipientTokenInfo),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
 
@@ -2142,11 +2085,9 @@ class SchemaInfo:
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
-                       d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d
-                   and d['effective_auto_maintenance_flag'] is not None else None,
-                   enable_auto_maintenance=EnableAutoMaintenance.__members__.get(
-                       d['enable_auto_maintenance'], None) if 'enable_auto_maintenance' in d else None,
+                   effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
+                                                              EffectiveAutoMaintenanceFlag),
+                   enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2205,8 +2146,7 @@ class ShareInfo:
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    name=d.get('name', None),
-                   objects=[SharedDataObject.from_dict(v)
-                            for v in d['objects']] if 'objects' in d and d['objects'] is not None else None,
+                   objects=_repeated(d, 'objects', SharedDataObject),
                    owner=d.get('owner', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
@@ -2233,10 +2173,8 @@ class ShareToPrivilegeAssignment:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ShareToPrivilegeAssignment':
-        return cls(
-            privilege_assignments=[PrivilegeAssignment.from_dict(v) for v in d['privilege_assignments']]
-            if 'privilege_assignments' in d and d['privilege_assignments'] is not None else None,
-            share_name=d.get('share_name', None))
+        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', PrivilegeAssignment),
+                   share_name=d.get('share_name', None))
 
 
 @dataclass
@@ -2268,18 +2206,16 @@ class SharedDataObject:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObject':
-        return cls(
-            added_at=d.get('added_at', None),
-            added_by=d.get('added_by', None),
-            cdf_enabled=d.get('cdf_enabled', None),
-            comment=d.get('comment', None),
-            data_object_type=d.get('data_object_type', None),
-            name=d.get('name', None),
-            partitions=[Partition.from_dict(v) for v in d['partitions']]
-            if 'partitions' in d and d['partitions'] is not None else None,
-            shared_as=d.get('shared_as', None),
-            start_version=d.get('start_version', None),
-            status=SharedDataObjectStatus.__members__.get(d['status'], None) if 'status' in d else None)
+        return cls(added_at=d.get('added_at', None),
+                   added_by=d.get('added_by', None),
+                   cdf_enabled=d.get('cdf_enabled', None),
+                   comment=d.get('comment', None),
+                   data_object_type=d.get('data_object_type', None),
+                   name=d.get('name', None),
+                   partitions=_repeated(d, 'partitions', Partition),
+                   shared_as=d.get('shared_as', None),
+                   start_version=d.get('start_version', None),
+                   status=_enum(d, 'status', SharedDataObjectStatus))
 
 
 class SharedDataObjectStatus(Enum):
@@ -2302,10 +2238,8 @@ class SharedDataObjectUpdate:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObjectUpdate':
-        return cls(
-            action=SharedDataObjectUpdateAction.__members__.get(d['action'], None) if 'action' in d else None,
-            data_object=SharedDataObject.from_dict(d['data_object'])
-            if 'data_object' in d and d['data_object'] is not None else None)
+        return cls(action=_enum(d, 'action', SharedDataObjectUpdateAction),
+                   data_object=_from_dict(d, 'data_object', SharedDataObject))
 
 
 class SharedDataObjectUpdateAction(Enum):
@@ -2355,15 +2289,12 @@ class StorageCredentialInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StorageCredentialInfo':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
-                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
-                   azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
+                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    id=d.get('id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2392,12 +2323,9 @@ class TableConstraint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableConstraint':
-        return cls(foreign_key_constraint=ForeignKeyConstraint.from_dict(d['foreign_key_constraint'])
-                   if 'foreign_key_constraint' in d and d['foreign_key_constraint'] is not None else None,
-                   named_table_constraint=NamedTableConstraint.from_dict(d['named_table_constraint'])
-                   if 'named_table_constraint' in d and d['named_table_constraint'] is not None else None,
-                   primary_key_constraint=PrimaryKeyConstraint.from_dict(d['primary_key_constraint'])
-                   if 'primary_key_constraint' in d and d['primary_key_constraint'] is not None else None)
+        return cls(foreign_key_constraint=_from_dict(d, 'foreign_key_constraint', ForeignKeyConstraint),
+                   named_table_constraint=_from_dict(d, 'named_table_constraint', NamedTableConstraint),
+                   primary_key_constraint=_from_dict(d, 'primary_key_constraint', PrimaryKeyConstraint))
 
 
 @dataclass
@@ -2411,8 +2339,7 @@ class TableConstraintList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableConstraintList':
-        return cls(table_constraints=[TableConstraint.from_dict(v) for v in d['table_constraints']]
-                   if 'table_constraints' in d and d['table_constraints'] is not None else None)
+        return cls(table_constraints=_repeated(d, 'table_constraints', TableConstraint))
 
 
 @dataclass
@@ -2500,41 +2427,34 @@ class TableInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableInfo':
         return cls(catalog_name=d.get('catalog_name', None),
-                   columns=[ColumnInfo.from_dict(v)
-                            for v in d['columns']] if 'columns' in d and d['columns'] is not None else None,
+                   columns=_repeated(d, 'columns', ColumnInfo),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    data_access_configuration_id=d.get('data_access_configuration_id', None),
-                   data_source_format=DataSourceFormat.__members__.get(d['data_source_format'], None)
-                   if 'data_source_format' in d else None,
+                   data_source_format=_enum(d, 'data_source_format', DataSourceFormat),
                    deleted_at=d.get('deleted_at', None),
                    delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
-                   effective_auto_maintenance_flag=EffectiveAutoMaintenanceFlag.from_dict(
-                       d['effective_auto_maintenance_flag']) if 'effective_auto_maintenance_flag' in d
-                   and d['effective_auto_maintenance_flag'] is not None else None,
-                   enable_auto_maintenance=EnableAutoMaintenance.__members__.get(
-                       d['enable_auto_maintenance'], None) if 'enable_auto_maintenance' in d else None,
+                   effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
+                                                              EffectiveAutoMaintenanceFlag),
+                   enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
-                   row_filter=TableRowFilter.from_dict(d['row_filter'])
-                   if 'row_filter' in d and d['row_filter'] is not None else None,
+                   row_filter=_from_dict(d, 'row_filter', TableRowFilter),
                    schema_name=d.get('schema_name', None),
                    sql_path=d.get('sql_path', None),
                    storage_credential_name=d.get('storage_credential_name', None),
                    storage_location=d.get('storage_location', None),
-                   table_constraints=TableConstraintList.from_dict(d['table_constraints'])
-                   if 'table_constraints' in d and d['table_constraints'] is not None else None,
+                   table_constraints=_from_dict(d, 'table_constraints', TableConstraintList),
                    table_id=d.get('table_id', None),
-                   table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None,
+                   table_type=_enum(d, 'table_type', TableType),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None),
                    view_definition=d.get('view_definition', None),
-                   view_dependencies=[Dependency.from_dict(v) for v in d['view_dependencies']]
-                   if 'view_dependencies' in d and d['view_dependencies'] is not None else None)
+                   view_dependencies=_repeated(d, 'view_dependencies', Dependency))
 
 
 @dataclass
@@ -2566,8 +2486,7 @@ class TableSummary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableSummary':
-        return cls(full_name=d.get('full_name', None),
-                   table_type=TableType.__members__.get(d['table_type'], None) if 'table_type' in d else None)
+        return cls(full_name=d.get('full_name', None), table_type=_enum(d, 'table_type', TableType))
 
 
 class TableType(Enum):
@@ -2692,8 +2611,7 @@ class UpdateMetastore:
         return cls(delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
-                   delta_sharing_scope=UpdateMetastoreDeltaSharingScope.__members__.get(
-                       d['delta_sharing_scope'], None) if 'delta_sharing_scope' in d else None,
+                   delta_sharing_scope=_enum(d, 'delta_sharing_scope', UpdateMetastoreDeltaSharingScope),
                    id=d.get('id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2744,11 +2662,9 @@ class UpdatePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdatePermissions':
-        return cls(changes=[PermissionsChange.from_dict(v)
-                            for v in d['changes']] if 'changes' in d and d['changes'] is not None else None,
+        return cls(changes=_repeated(d, 'changes', PermissionsChange),
                    full_name=d.get('full_name', None),
-                   securable_type=SecurableType.__members__.get(d['securable_type'], None)
-                   if 'securable_type' in d else None)
+                   securable_type=_enum(d, 'securable_type', SecurableType))
 
 
 @dataclass
@@ -2794,8 +2710,7 @@ class UpdateRecipient:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRecipient':
         return cls(comment=d.get('comment', None),
-                   ip_access_list=IpAccessList.from_dict(d['ip_access_list'])
-                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None,
+                   ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=d.get('properties_kvpairs', None))
@@ -2847,8 +2762,7 @@ class UpdateShare:
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   updates=[SharedDataObjectUpdate.from_dict(v)
-                            for v in d['updates']] if 'updates' in d and d['updates'] is not None else None)
+                   updates=_repeated(d, 'updates', SharedDataObjectUpdate))
 
 
 @dataclass
@@ -2864,9 +2778,7 @@ class UpdateSharePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
-        return cls(changes=[PermissionsChange.from_dict(v)
-                            for v in d['changes']] if 'changes' in d and d['changes'] is not None else None,
-                   name=d.get('name', None))
+        return cls(changes=_repeated(d, 'changes', PermissionsChange), name=d.get('name', None))
 
 
 @dataclass
@@ -2898,14 +2810,11 @@ class UpdateStorageCredential:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateStorageCredential':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
-                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
-                   azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
                    force=d.get('force', None),
-                   gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
+                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
@@ -2937,13 +2846,10 @@ class ValidateStorageCredential:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidateStorageCredential':
-        return cls(aws_iam_role=AwsIamRole.from_dict(d['aws_iam_role'])
-                   if 'aws_iam_role' in d and d['aws_iam_role'] is not None else None,
-                   azure_service_principal=AzureServicePrincipal.from_dict(d['azure_service_principal'])
-                   if 'azure_service_principal' in d and d['azure_service_principal'] is not None else None,
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    external_location_name=d.get('external_location_name', None),
-                   gcp_service_account_key=GcpServiceAccountKey.from_dict(d['gcp_service_account_key'])
-                   if 'gcp_service_account_key' in d and d['gcp_service_account_key'] is not None else None,
+                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    read_only=d.get('read_only', None),
                    storage_credential_name=d.get('storage_credential_name', None),
                    url=d.get('url', None))
@@ -2962,9 +2868,7 @@ class ValidateStorageCredentialResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidateStorageCredentialResponse':
-        return cls(is_dir=d.get('isDir', None),
-                   results=[ValidationResult.from_dict(v)
-                            for v in d['results']] if 'results' in d and d['results'] is not None else None)
+        return cls(is_dir=d.get('isDir', None), results=_repeated(d, 'results', ValidationResult))
 
 
 @dataclass
@@ -2982,11 +2886,9 @@ class ValidationResult:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidationResult':
-        return cls(
-            message=d.get('message', None),
-            operation=ValidationResultOperation.__members__.get(d['operation'], None)
-            if 'operation' in d else None,
-            result=ValidationResultResult.__members__.get(d['result'], None) if 'result' in d else None)
+        return cls(message=d.get('message', None),
+                   operation=_enum(d, 'operation', ValidationResultOperation),
+                   result=_enum(d, 'result', ValidationResultResult))
 
 
 class ValidationResultOperation(Enum):

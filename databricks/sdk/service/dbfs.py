@@ -4,6 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
 
+from ._internal import _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -133,8 +135,7 @@ class ListStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListStatusResponse':
-        return cls(files=[FileInfo.from_dict(v)
-                          for v in d['files']] if 'files' in d and d['files'] is not None else None)
+        return cls(files=_repeated(d, 'files', FileInfo))
 
 
 @dataclass

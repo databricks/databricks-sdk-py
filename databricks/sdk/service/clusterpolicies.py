@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -132,9 +134,7 @@ class ListPoliciesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPoliciesResponse':
-        return cls(
-            policies=[Policy.from_dict(v)
-                      for v in d['policies']] if 'policies' in d and d['policies'] is not None else None)
+        return cls(policies=_repeated(d, 'policies', Policy))
 
 
 @dataclass
@@ -157,8 +157,7 @@ class ListPolicyFamiliesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPolicyFamiliesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   policy_families=[PolicyFamily.from_dict(v) for v in d['policy_families']]
-                   if 'policy_families' in d and d['policy_families'] is not None else None)
+                   policy_families=_repeated(d, 'policy_families', PolicyFamily))
 
 
 class ListSortColumn(Enum):

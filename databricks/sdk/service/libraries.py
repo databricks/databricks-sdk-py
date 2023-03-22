@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -24,8 +26,7 @@ class ClusterLibraryStatuses:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterLibraryStatuses':
         return cls(cluster_id=d.get('cluster_id', None),
-                   library_statuses=[LibraryFullStatus.from_dict(v) for v in d['library_statuses']]
-                   if 'library_statuses' in d and d['library_statuses'] is not None else None)
+                   library_statuses=_repeated(d, 'library_statuses', LibraryFullStatus))
 
 
 @dataclass
@@ -48,10 +49,7 @@ class InstallLibraries:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstallLibraries':
-        return cls(
-            cluster_id=d.get('cluster_id', None),
-            libraries=[Library.from_dict(v)
-                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None)
+        return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated(d, 'libraries', Library))
 
 
 @dataclass
@@ -75,13 +73,12 @@ class Library:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Library':
-        return cls(
-            cran=RCranLibrary.from_dict(d['cran']) if 'cran' in d and d['cran'] is not None else None,
-            egg=d.get('egg', None),
-            jar=d.get('jar', None),
-            maven=MavenLibrary.from_dict(d['maven']) if 'maven' in d and d['maven'] is not None else None,
-            pypi=PythonPyPiLibrary.from_dict(d['pypi']) if 'pypi' in d and d['pypi'] is not None else None,
-            whl=d.get('whl', None))
+        return cls(cran=_from_dict(d, 'cran', RCranLibrary),
+                   egg=d.get('egg', None),
+                   jar=d.get('jar', None),
+                   maven=_from_dict(d, 'maven', MavenLibrary),
+                   pypi=_from_dict(d, 'pypi', PythonPyPiLibrary),
+                   whl=d.get('whl', None))
 
 
 @dataclass
@@ -102,11 +99,10 @@ class LibraryFullStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LibraryFullStatus':
-        return cls(
-            is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
-            library=Library.from_dict(d['library']) if 'library' in d and d['library'] is not None else None,
-            messages=d.get('messages', None),
-            status=LibraryFullStatusStatus.__members__.get(d['status'], None) if 'status' in d else None)
+        return cls(is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
+                   library=_from_dict(d, 'library', Library),
+                   messages=d.get('messages', None),
+                   status=_enum(d, 'status', LibraryFullStatusStatus))
 
 
 class LibraryFullStatusStatus(Enum):
@@ -132,9 +128,7 @@ class ListAllClusterLibraryStatusesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAllClusterLibraryStatusesResponse':
-        return cls(
-            statuses=[ClusterLibraryStatuses.from_dict(v)
-                      for v in d['statuses']] if 'statuses' in d and d['statuses'] is not None else None)
+        return cls(statuses=_repeated(d, 'statuses', ClusterLibraryStatuses))
 
 
 @dataclass
@@ -202,10 +196,7 @@ class UninstallLibraries:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UninstallLibraries':
-        return cls(
-            cluster_id=d.get('cluster_id', None),
-            libraries=[Library.from_dict(v)
-                       for v in d['libraries']] if 'libraries' in d and d['libraries'] is not None else None)
+        return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated(d, 'libraries', Library))
 
 
 class LibrariesAPI:

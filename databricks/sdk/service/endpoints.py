@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
 
-from ..errors import OperationFailed, OperationTimeout
+from ..errors import OperationFailed
+from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -50,9 +51,7 @@ class CreateServingEndpoint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
-        return cls(config=EndpointCoreConfigInput.from_dict(d['config'])
-                   if 'config' in d and d['config'] is not None else None,
-                   name=d.get('name', None))
+        return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput), name=d.get('name', None))
 
 
 @dataclass
@@ -78,10 +77,8 @@ class EndpointCoreConfigInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigInput':
         return cls(name=d.get('name', None),
-                   served_models=[ServedModelInput.from_dict(v) for v in d['served_models']]
-                   if 'served_models' in d and d['served_models'] is not None else None,
-                   traffic_config=TrafficConfig.from_dict(d['traffic_config'])
-                   if 'traffic_config' in d and d['traffic_config'] is not None else None)
+                   served_models=_repeated(d, 'served_models', ServedModelInput),
+                   traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
 @dataclass
@@ -100,10 +97,8 @@ class EndpointCoreConfigOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigOutput':
         return cls(config_version=d.get('config_version', None),
-                   served_models=[ServedModelOutput.from_dict(v) for v in d['served_models']]
-                   if 'served_models' in d and d['served_models'] is not None else None,
-                   traffic_config=TrafficConfig.from_dict(d['traffic_config'])
-                   if 'traffic_config' in d and d['traffic_config'] is not None else None)
+                   served_models=_repeated(d, 'served_models', ServedModelOutput),
+                   traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
 @dataclass
@@ -117,8 +112,7 @@ class EndpointCoreConfigSummary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigSummary':
-        return cls(served_models=[ServedModelSpec.from_dict(v) for v in d['served_models']]
-                   if 'served_models' in d and d['served_models'] is not None else None)
+        return cls(served_models=_repeated(d, 'served_models', ServedModelSpec))
 
 
 @dataclass
@@ -139,11 +133,9 @@ class EndpointPendingConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointPendingConfig':
         return cls(config_version=d.get('config_version', None),
-                   served_models=[ServedModelOutput.from_dict(v) for v in d['served_models']]
-                   if 'served_models' in d and d['served_models'] is not None else None,
+                   served_models=_repeated(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),
-                   traffic_config=TrafficConfig.from_dict(d['traffic_config'])
-                   if 'traffic_config' in d and d['traffic_config'] is not None else None)
+                   traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
 @dataclass
@@ -159,9 +151,8 @@ class EndpointState:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointState':
-        return cls(config_update=EndpointStateConfigUpdate.__members__.get(d['config_update'], None)
-                   if 'config_update' in d else None,
-                   ready=EndpointStateReady.__members__.get(d['ready'], None) if 'ready' in d else None)
+        return cls(config_update=_enum(d, 'config_update', EndpointStateConfigUpdate),
+                   ready=_enum(d, 'ready', EndpointStateReady))
 
 
 class EndpointStateConfigUpdate(Enum):
@@ -210,9 +201,7 @@ class ListEndpointsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListEndpointsResponse':
-        return cls(
-            endpoints=[ServingEndpoint.from_dict(v)
-                       for v in d['endpoints']] if 'endpoints' in d and d['endpoints'] is not None else None)
+        return cls(endpoints=_repeated(d, 'endpoints', ServingEndpoint))
 
 
 @dataclass
@@ -312,15 +301,14 @@ class ServedModelOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelOutput':
-        return cls(
-            creation_timestamp=d.get('creation_timestamp', None),
-            creator=d.get('creator', None),
-            model_name=d.get('model_name', None),
-            model_version=d.get('model_version', None),
-            name=d.get('name', None),
-            scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
-            state=ServedModelState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None,
-            workload_size=d.get('workload_size', None))
+        return cls(creation_timestamp=d.get('creation_timestamp', None),
+                   creator=d.get('creator', None),
+                   model_name=d.get('model_name', None),
+                   model_version=d.get('model_version', None),
+                   name=d.get('name', None),
+                   scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
+                   state=_from_dict(d, 'state', ServedModelState),
+                   workload_size=d.get('workload_size', None))
 
 
 @dataclass
@@ -356,8 +344,7 @@ class ServedModelState:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelState':
-        return cls(deployment=ServedModelStateDeployment.__members__.get(d['deployment'], None)
-                   if 'deployment' in d else None,
+        return cls(deployment=_enum(d, 'deployment', ServedModelStateDeployment),
                    deployment_state_message=d.get('deployment_state_message', None))
 
 
@@ -416,15 +403,13 @@ class ServingEndpoint:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpoint':
-        return cls(
-            config=EndpointCoreConfigSummary.from_dict(d['config'])
-            if 'config' in d and d['config'] is not None else None,
-            creation_timestamp=d.get('creation_timestamp', None),
-            creator=d.get('creator', None),
-            id=d.get('id', None),
-            last_updated_timestamp=d.get('last_updated_timestamp', None),
-            name=d.get('name', None),
-            state=EndpointState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None)
+        return cls(config=_from_dict(d, 'config', EndpointCoreConfigSummary),
+                   creation_timestamp=d.get('creation_timestamp', None),
+                   creator=d.get('creator', None),
+                   id=d.get('id', None),
+                   last_updated_timestamp=d.get('last_updated_timestamp', None),
+                   name=d.get('name', None),
+                   state=_from_dict(d, 'state', EndpointState))
 
 
 @dataclass
@@ -454,19 +439,15 @@ class ServingEndpointDetailed:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointDetailed':
-        return cls(
-            config=EndpointCoreConfigOutput.from_dict(d['config'])
-            if 'config' in d and d['config'] is not None else None,
-            creation_timestamp=d.get('creation_timestamp', None),
-            creator=d.get('creator', None),
-            id=d.get('id', None),
-            last_updated_timestamp=d.get('last_updated_timestamp', None),
-            name=d.get('name', None),
-            pending_config=EndpointPendingConfig.from_dict(d['pending_config'])
-            if 'pending_config' in d and d['pending_config'] is not None else None,
-            permission_level=ServingEndpointDetailedPermissionLevel.__members__.get(
-                d['permission_level'], None) if 'permission_level' in d else None,
-            state=EndpointState.from_dict(d['state']) if 'state' in d and d['state'] is not None else None)
+        return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
+                   creation_timestamp=d.get('creation_timestamp', None),
+                   creator=d.get('creator', None),
+                   id=d.get('id', None),
+                   last_updated_timestamp=d.get('last_updated_timestamp', None),
+                   name=d.get('name', None),
+                   pending_config=_from_dict(d, 'pending_config', EndpointPendingConfig),
+                   permission_level=_enum(d, 'permission_level', ServingEndpointDetailedPermissionLevel),
+                   state=_from_dict(d, 'state', EndpointState))
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
@@ -488,8 +469,7 @@ class TrafficConfig:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TrafficConfig':
-        return cls(routes=[Route.from_dict(v)
-                           for v in d['routes']] if 'routes' in d and d['routes'] is not None else None)
+        return cls(routes=_repeated(d, 'routes', Route))
 
 
 class ServingEndpointsAPI:
@@ -555,7 +535,7 @@ class ServingEndpointsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
 
     def delete(self, name: str, **kwargs):
@@ -660,5 +640,5 @@ class ServingEndpointsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)

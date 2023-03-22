@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -27,7 +29,7 @@ class CreateIpAccessList:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateIpAccessList':
         return cls(ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
-                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None)
+                   list_type=_enum(d, 'list_type', ListType))
 
 
 @dataclass
@@ -41,8 +43,7 @@ class CreateIpAccessListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateIpAccessListResponse':
-        return cls(ip_access_list=IpAccessListInfo.from_dict(d['ip_access_list'])
-                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None)
+        return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
 
 @dataclass
@@ -63,8 +64,7 @@ class FetchIpAccessListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FetchIpAccessListResponse':
-        return cls(ip_access_list=IpAccessListInfo.from_dict(d['ip_access_list'])
-                   if 'ip_access_list' in d and d['ip_access_list'] is not None else None)
+        return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
 
 @dataclass
@@ -85,8 +85,7 @@ class GetIpAccessListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetIpAccessListResponse':
-        return cls(ip_access_lists=[IpAccessListInfo.from_dict(v) for v in d['ip_access_lists']]
-                   if 'ip_access_lists' in d and d['ip_access_lists'] is not None else None)
+        return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
 
 
 @dataclass
@@ -125,7 +124,7 @@ class IpAccessListInfo:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
-                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None,
+                   list_type=_enum(d, 'list_type', ListType),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
 
@@ -163,7 +162,7 @@ class ReplaceIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
-                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None)
+                   list_type=_enum(d, 'list_type', ListType))
 
 
 @dataclass
@@ -192,7 +191,7 @@ class UpdateIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
-                   list_type=ListType.__members__.get(d['list_type'], None) if 'list_type' in d else None)
+                   list_type=_enum(d, 'list_type', ListType))
 
 
 class IpAccessListsAPI:

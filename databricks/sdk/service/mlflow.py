@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
+from ._internal import _enum, _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -39,15 +41,14 @@ class Activity:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Activity':
-        return cls(activity_type=ActivityType.__members__.get(d['activity_type'], None)
-                   if 'activity_type' in d else None,
+        return cls(activity_type=_enum(d, 'activity_type', ActivityType),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
-                   from_stage=Stage.__members__.get(d['from_stage'], None) if 'from_stage' in d else None,
+                   from_stage=_enum(d, 'from_stage', Stage),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    system_comment=d.get('system_comment', None),
-                   to_stage=Stage.__members__.get(d['to_stage'], None) if 'to_stage' in d else None,
+                   to_stage=_enum(d, 'to_stage', Stage),
                    user_id=d.get('user_id', None))
 
 
@@ -82,8 +83,7 @@ class ApproveResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ApproveResponse':
-        return cls(activity=Activity.from_dict(d['activity']
-                                               ) if 'activity' in d and d['activity'] is not None else None)
+        return cls(activity=_from_dict(d, 'activity', Activity))
 
 
 @dataclass
@@ -108,7 +108,7 @@ class ApproveTransitionRequest:
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
+                   stage=_enum(d, 'stage', Stage),
                    version=d.get('version', None))
 
 
@@ -182,8 +182,7 @@ class CreateExperiment:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateExperiment':
         return cls(artifact_location=d.get('artifact_location', None),
                    name=d.get('name', None),
-                   tags=[ExperimentTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
+                   tags=_repeated(d, 'tags', ExperimentTag))
 
 
 @dataclass
@@ -226,8 +225,7 @@ class CreateModelVersionRequest:
                    run_id=d.get('run_id', None),
                    run_link=d.get('run_link', None),
                    source=d.get('source', None),
-                   tags=[ModelVersionTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
+                   tags=_repeated(d, 'tags', ModelVersionTag))
 
 
 @dataclass
@@ -241,8 +239,7 @@ class CreateModelVersionResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateModelVersionResponse':
-        return cls(model_version=ModelVersion.from_dict(d['model_version'])
-                   if 'model_version' in d and d['model_version'] is not None else None)
+        return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
 
 @dataclass
@@ -262,8 +259,7 @@ class CreateRegisteredModelRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelRequest':
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
-                   tags=[RegisteredModelTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
+                   tags=_repeated(d, 'tags', RegisteredModelTag))
 
 
 @dataclass
@@ -277,8 +273,7 @@ class CreateRegisteredModelResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelResponse':
-        return cls(registered_model=RegisteredModel.from_dict(d['registered_model'])
-                   if 'registered_model' in d and d['registered_model'] is not None else None)
+        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModel))
 
 
 @dataclass
@@ -304,12 +299,10 @@ class CreateRegistryWebhook:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegistryWebhook':
         return cls(description=d.get('description', None),
                    events=d.get('events', None),
-                   http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec'])
-                   if 'http_url_spec' in d and d['http_url_spec'] is not None else None,
-                   job_spec=JobSpec.from_dict(d['job_spec'])
-                   if 'job_spec' in d and d['job_spec'] is not None else None,
+                   http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpec),
+                   job_spec=_from_dict(d, 'job_spec', JobSpec),
                    model_name=d.get('model_name', None),
-                   status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
+                   status=_enum(d, 'status', RegistryWebhookStatus))
 
 
 @dataclass
@@ -323,8 +316,7 @@ class CreateResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateResponse':
-        return cls(comment=CommentObject.from_dict(d['comment']
-                                                   ) if 'comment' in d and d['comment'] is not None else None)
+        return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
@@ -346,8 +338,7 @@ class CreateRun:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRun':
         return cls(experiment_id=d.get('experiment_id', None),
                    start_time=d.get('start_time', None),
-                   tags=[RunTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
+                   tags=_repeated(d, 'tags', RunTag),
                    user_id=d.get('user_id', None))
 
 
@@ -362,7 +353,7 @@ class CreateRunResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRunResponse':
-        return cls(run=Run.from_dict(d['run']) if 'run' in d and d['run'] is not None else None)
+        return cls(run=_from_dict(d, 'run', Run))
 
 
 @dataclass
@@ -384,7 +375,7 @@ class CreateTransitionRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateTransitionRequest':
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
+                   stage=_enum(d, 'stage', Stage),
                    version=d.get('version', None))
 
 
@@ -518,8 +509,7 @@ class Experiment:
                    last_update_time=d.get('last_update_time', None),
                    lifecycle_stage=d.get('lifecycle_stage', None),
                    name=d.get('name', None),
-                   tags=[ExperimentTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
+                   tags=_repeated(d, 'tags', ExperimentTag))
 
 
 @dataclass
@@ -574,8 +564,7 @@ class GetExperimentByNameResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentByNameResponse':
-        return cls(experiment=Experiment.
-                   from_dict(d['experiment']) if 'experiment' in d and d['experiment'] is not None else None)
+        return cls(experiment=_from_dict(d, 'experiment', Experiment))
 
 
 @dataclass
@@ -623,8 +612,7 @@ class GetLatestVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetLatestVersionsResponse':
-        return cls(model_versions=[ModelVersion.from_dict(v) for v in d['model_versions']]
-                   if 'model_versions' in d and d['model_versions'] is not None else None)
+        return cls(model_versions=_repeated(d, 'model_versions', ModelVersion))
 
 
 @dataclass
@@ -647,9 +635,7 @@ class GetMetricHistoryResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetMetricHistoryResponse':
-        return cls(metrics=[Metric.from_dict(v)
-                            for v in d['metrics']] if 'metrics' in d and d['metrics'] is not None else None,
-                   next_page_token=d.get('next_page_token', None))
+        return cls(metrics=_repeated(d, 'metrics', Metric), next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -693,8 +679,7 @@ class GetModelVersionResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
-        return cls(model_version=ModelVersion.from_dict(d['model_version'])
-                   if 'model_version' in d and d['model_version'] is not None else None)
+        return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
 
 @dataclass
@@ -715,8 +700,7 @@ class GetRegisteredModelResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelResponse':
-        return cls(registered_model=RegisteredModel.from_dict(d['registered_model'])
-                   if 'registered_model' in d and d['registered_model'] is not None else None)
+        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModel))
 
 
 @dataclass
@@ -730,8 +714,7 @@ class GetResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
-        return cls(registered_model=RegisteredModelDatabricks.from_dict(d['registered_model'])
-                   if 'registered_model' in d and d['registered_model'] is not None else None)
+        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModelDatabricks))
 
 
 @dataclass
@@ -753,7 +736,7 @@ class GetRunResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRunResponse':
-        return cls(run=Run.from_dict(d['run']) if 'run' in d and d['run'] is not None else None)
+        return cls(run=_from_dict(d, 'run', Run))
 
 
 @dataclass
@@ -856,8 +839,7 @@ class ListArtifactsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListArtifactsResponse':
-        return cls(files=[FileInfo.from_dict(v)
-                          for v in d['files']] if 'files' in d and d['files'] is not None else None,
+        return cls(files=_repeated(d, 'files', FileInfo),
                    next_page_token=d.get('next_page_token', None),
                    root_uri=d.get('root_uri', None))
 
@@ -884,8 +866,7 @@ class ListExperimentsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListExperimentsResponse':
-        return cls(experiments=[Experiment.from_dict(v) for v in d['experiments']]
-                   if 'experiments' in d and d['experiments'] is not None else None,
+        return cls(experiments=_repeated(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -911,8 +892,7 @@ class ListRegisteredModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=[RegisteredModel.from_dict(v) for v in d['registered_models']]
-                   if 'registered_models' in d and d['registered_models'] is not None else None)
+                   registered_models=_repeated(d, 'registered_models', RegisteredModel))
 
 
 @dataclass
@@ -928,10 +908,8 @@ class ListRegistryWebhooks:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegistryWebhooks':
-        return cls(
-            next_page_token=d.get('next_page_token', None),
-            webhooks=[RegistryWebhook.from_dict(v)
-                      for v in d['webhooks']] if 'webhooks' in d and d['webhooks'] is not None else None)
+        return cls(next_page_token=d.get('next_page_token', None),
+                   webhooks=_repeated(d, 'webhooks', RegistryWebhook))
 
 
 @dataclass
@@ -954,9 +932,7 @@ class ListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
-        return cls(
-            requests=[Activity.from_dict(v)
-                      for v in d['requests']] if 'requests' in d and d['requests'] is not None else None)
+        return cls(requests=_repeated(d, 'requests', Activity))
 
 
 @dataclass
@@ -984,13 +960,10 @@ class LogBatch:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LogBatch':
-        return cls(metrics=[Metric.from_dict(v)
-                            for v in d['metrics']] if 'metrics' in d and d['metrics'] is not None else None,
-                   params=[Param.from_dict(v)
-                           for v in d['params']] if 'params' in d and d['params'] is not None else None,
+        return cls(metrics=_repeated(d, 'metrics', Metric),
+                   params=_repeated(d, 'params', Param),
                    run_id=d.get('run_id', None),
-                   tags=[RunTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
+                   tags=_repeated(d, 'tags', RunTag))
 
 
 @dataclass
@@ -1127,10 +1100,9 @@ class ModelVersion:
                    run_id=d.get('run_id', None),
                    run_link=d.get('run_link', None),
                    source=d.get('source', None),
-                   status=ModelVersionStatus.__members__.get(d['status'], None) if 'status' in d else None,
+                   status=_enum(d, 'status', ModelVersionStatus),
                    status_message=d.get('status_message', None),
-                   tags=[ModelVersionTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
+                   tags=_repeated(d, 'tags', ModelVersionTag),
                    user_id=d.get('user_id', None),
                    version=d.get('version', None))
 
@@ -1172,23 +1144,20 @@ class ModelVersionDatabricks:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ModelVersionDatabricks':
-        return cls(
-            creation_timestamp=d.get('creation_timestamp', None),
-            current_stage=Stage.__members__.get(d['current_stage'], None) if 'current_stage' in d else None,
-            description=d.get('description', None),
-            last_updated_timestamp=d.get('last_updated_timestamp', None),
-            name=d.get('name', None),
-            permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
-            if 'permission_level' in d else None,
-            run_id=d.get('run_id', None),
-            run_link=d.get('run_link', None),
-            source=d.get('source', None),
-            status=Status.__members__.get(d['status'], None) if 'status' in d else None,
-            status_message=d.get('status_message', None),
-            tags=[ModelVersionTag.from_dict(v)
-                  for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
-            user_id=d.get('user_id', None),
-            version=d.get('version', None))
+        return cls(creation_timestamp=d.get('creation_timestamp', None),
+                   current_stage=_enum(d, 'current_stage', Stage),
+                   description=d.get('description', None),
+                   last_updated_timestamp=d.get('last_updated_timestamp', None),
+                   name=d.get('name', None),
+                   permission_level=_enum(d, 'permission_level', PermissionLevel),
+                   run_id=d.get('run_id', None),
+                   run_link=d.get('run_link', None),
+                   source=d.get('source', None),
+                   status=_enum(d, 'status', Status),
+                   status_message=d.get('status_message', None),
+                   tags=_repeated(d, 'tags', ModelVersionTag),
+                   user_id=d.get('user_id', None),
+                   version=d.get('version', None))
 
 
 class ModelVersionStatus(Enum):
@@ -1268,11 +1237,9 @@ class RegisteredModel:
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=[ModelVersion.from_dict(v) for v in d['latest_versions']]
-                   if 'latest_versions' in d and d['latest_versions'] is not None else None,
+                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
                    name=d.get('name', None),
-                   tags=[RegisteredModelTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
+                   tags=_repeated(d, 'tags', RegisteredModelTag),
                    user_id=d.get('user_id', None))
 
 
@@ -1307,13 +1274,10 @@ class RegisteredModelDatabricks:
                    description=d.get('description', None),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=[ModelVersion.from_dict(v) for v in d['latest_versions']]
-                   if 'latest_versions' in d and d['latest_versions'] is not None else None,
+                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
                    name=d.get('name', None),
-                   permission_level=PermissionLevel.__members__.get(d['permission_level'], None)
-                   if 'permission_level' in d else None,
-                   tags=[RegisteredModelTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None,
+                   permission_level=_enum(d, 'permission_level', PermissionLevel),
+                   tags=_repeated(d, 'tags', RegisteredModelTag),
                    user_id=d.get('user_id', None))
 
 
@@ -1363,14 +1327,12 @@ class RegistryWebhook:
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
                    events=d.get('events', None),
-                   http_url_spec=HttpUrlSpecWithoutSecret.from_dict(d['http_url_spec'])
-                   if 'http_url_spec' in d and d['http_url_spec'] is not None else None,
+                   http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpecWithoutSecret),
                    id=d.get('id', None),
-                   job_spec=JobSpecWithoutSecret.from_dict(d['job_spec'])
-                   if 'job_spec' in d and d['job_spec'] is not None else None,
+                   job_spec=_from_dict(d, 'job_spec', JobSpecWithoutSecret),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    model_name=d.get('model_name', None),
-                   status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
+                   status=_enum(d, 'status', RegistryWebhookStatus))
 
 
 class RegistryWebhookEvent(Enum):
@@ -1408,8 +1370,7 @@ class RejectResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RejectResponse':
-        return cls(activity=Activity.from_dict(d['activity']
-                                               ) if 'activity' in d and d['activity'] is not None else None)
+        return cls(activity=_from_dict(d, 'activity', Activity))
 
 
 @dataclass
@@ -1431,7 +1392,7 @@ class RejectTransitionRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'RejectTransitionRequest':
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
+                   stage=_enum(d, 'stage', Stage),
                    version=d.get('version', None))
 
 
@@ -1462,8 +1423,7 @@ class RenameRegisteredModelResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RenameRegisteredModelResponse':
-        return cls(registered_model=RegisteredModel.from_dict(d['registered_model'])
-                   if 'registered_model' in d and d['registered_model'] is not None else None)
+        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModel))
 
 
 @dataclass
@@ -1507,8 +1467,7 @@ class Run:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Run':
-        return cls(data=RunData.from_dict(d['data']) if 'data' in d and d['data'] is not None else None,
-                   info=RunInfo.from_dict(d['info']) if 'info' in d and d['info'] is not None else None)
+        return cls(data=_from_dict(d, 'data', RunData), info=_from_dict(d, 'info', RunInfo))
 
 
 @dataclass
@@ -1526,12 +1485,9 @@ class RunData:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunData':
-        return cls(metrics=[Metric.from_dict(v)
-                            for v in d['metrics']] if 'metrics' in d and d['metrics'] is not None else None,
-                   params=[Param.from_dict(v)
-                           for v in d['params']] if 'params' in d and d['params'] is not None else None,
-                   tags=[RunTag.from_dict(v)
-                         for v in d['tags']] if 'tags' in d and d['tags'] is not None else None)
+        return cls(metrics=_repeated(d, 'metrics', Metric),
+                   params=_repeated(d, 'params', Param),
+                   tags=_repeated(d, 'tags', RunTag))
 
 
 @dataclass
@@ -1568,7 +1524,7 @@ class RunInfo:
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
                    start_time=d.get('start_time', None),
-                   status=RunInfoStatus.__members__.get(d['status'], None) if 'status' in d else None,
+                   status=_enum(d, 'status', RunInfoStatus),
                    user_id=d.get('user_id', None))
 
 
@@ -1621,8 +1577,7 @@ class SearchExperiments:
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
                    page_token=d.get('page_token', None),
-                   view_type=SearchExperimentsViewType.__members__.get(d['view_type'], None)
-                   if 'view_type' in d else None)
+                   view_type=_enum(d, 'view_type', SearchExperimentsViewType))
 
 
 @dataclass
@@ -1638,8 +1593,7 @@ class SearchExperimentsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchExperimentsResponse':
-        return cls(experiments=[Experiment.from_dict(v) for v in d['experiments']]
-                   if 'experiments' in d and d['experiments'] is not None else None,
+        return cls(experiments=_repeated(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1675,8 +1629,7 @@ class SearchModelVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchModelVersionsResponse':
-        return cls(model_versions=[ModelVersion.from_dict(v) for v in d['model_versions']]
-                   if 'model_versions' in d and d['model_versions'] is not None else None,
+        return cls(model_versions=_repeated(d, 'model_versions', ModelVersion),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1704,8 +1657,7 @@ class SearchRegisteredModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchRegisteredModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=[RegisteredModel.from_dict(v) for v in d['registered_models']]
-                   if 'registered_models' in d and d['registered_models'] is not None else None)
+                   registered_models=_repeated(d, 'registered_models', RegisteredModel))
 
 
 @dataclass
@@ -1734,8 +1686,7 @@ class SearchRuns:
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
                    page_token=d.get('page_token', None),
-                   run_view_type=SearchRunsRunViewType.__members__.get(d['run_view_type'], None)
-                   if 'run_view_type' in d else None)
+                   run_view_type=_enum(d, 'run_view_type', SearchRunsRunViewType))
 
 
 @dataclass
@@ -1751,9 +1702,7 @@ class SearchRunsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchRunsResponse':
-        return cls(next_page_token=d.get('next_page_token', None),
-                   runs=[Run.from_dict(v)
-                         for v in d['runs']] if 'runs' in d and d['runs'] is not None else None)
+        return cls(next_page_token=d.get('next_page_token', None), runs=_repeated(d, 'runs', Run))
 
 
 class SearchRunsRunViewType(Enum):
@@ -1896,8 +1845,7 @@ class TestRegistryWebhookRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhookRequest':
-        return cls(event=RegistryWebhookEvent.__members__.get(d['event'], None) if 'event' in d else None,
-                   id=d.get('id', None))
+        return cls(event=_enum(d, 'event', RegistryWebhookEvent), id=d.get('id', None))
 
 
 @dataclass
@@ -1911,8 +1859,7 @@ class TestRegistryWebhookResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhookResponse':
-        return cls(webhook=TestRegistryWebhook.
-                   from_dict(d['webhook']) if 'webhook' in d and d['webhook'] is not None else None)
+        return cls(webhook=_from_dict(d, 'webhook', TestRegistryWebhook))
 
 
 @dataclass
@@ -1960,7 +1907,7 @@ class TransitionModelVersionStageDatabricks:
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
-                   stage=Stage.__members__.get(d['stage'], None) if 'stage' in d else None,
+                   stage=_enum(d, 'stage', Stage),
                    version=d.get('version', None))
 
 
@@ -1975,8 +1922,7 @@ class TransitionModelVersionStageResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TransitionModelVersionStageResponse':
-        return cls(model_version=ModelVersion.from_dict(d['model_version'])
-                   if 'model_version' in d and d['model_version'] is not None else None)
+        return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
 
 @dataclass
@@ -2003,7 +1949,7 @@ class TransitionRequest:
         return cls(available_actions=d.get('available_actions', None),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
-                   to_stage=Stage.__members__.get(d['to_stage'], None) if 'to_stage' in d else None,
+                   to_stage=_enum(d, 'to_stage', Stage),
                    user_id=d.get('user_id', None))
 
 
@@ -2018,8 +1964,7 @@ class TransitionStageResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TransitionStageResponse':
-        return cls(model_version=ModelVersionDatabricks.from_dict(d['model_version'])
-                   if 'model_version' in d and d['model_version'] is not None else None)
+        return cls(model_version=_from_dict(d, 'model_version', ModelVersionDatabricks))
 
 
 @dataclass
@@ -2113,12 +2058,10 @@ class UpdateRegistryWebhook:
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegistryWebhook':
         return cls(description=d.get('description', None),
                    events=d.get('events', None),
-                   http_url_spec=HttpUrlSpec.from_dict(d['http_url_spec'])
-                   if 'http_url_spec' in d and d['http_url_spec'] is not None else None,
+                   http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpec),
                    id=d.get('id', None),
-                   job_spec=JobSpec.from_dict(d['job_spec'])
-                   if 'job_spec' in d and d['job_spec'] is not None else None,
-                   status=RegistryWebhookStatus.__members__.get(d['status'], None) if 'status' in d else None)
+                   job_spec=_from_dict(d, 'job_spec', JobSpec),
+                   status=_enum(d, 'status', RegistryWebhookStatus))
 
 
 @dataclass
@@ -2132,8 +2075,7 @@ class UpdateResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateResponse':
-        return cls(comment=CommentObject.from_dict(d['comment']
-                                                   ) if 'comment' in d and d['comment'] is not None else None)
+        return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
@@ -2156,7 +2098,7 @@ class UpdateRun:
         return cls(end_time=d.get('end_time', None),
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
-                   status=UpdateRunStatus.__members__.get(d['status'], None) if 'status' in d else None)
+                   status=_enum(d, 'status', UpdateRunStatus))
 
 
 @dataclass
@@ -2170,8 +2112,7 @@ class UpdateRunResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRunResponse':
-        return cls(run_info=RunInfo.from_dict(d['run_info']
-                                              ) if 'run_info' in d and d['run_info'] is not None else None)
+        return cls(run_info=_from_dict(d, 'run_info', RunInfo))
 
 
 class UpdateRunStatus(Enum):

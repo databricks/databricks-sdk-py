@@ -4,6 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
 
+from ._internal import _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -28,8 +30,7 @@ class CreateRepo:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRepo':
         return cls(path=d.get('path', None),
                    provider=d.get('provider', None),
-                   sparse_checkout=SparseCheckout.from_dict(d['sparse_checkout'])
-                   if 'sparse_checkout' in d and d['sparse_checkout'] is not None else None,
+                   sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
                    url=d.get('url', None))
 
 
@@ -68,9 +69,7 @@ class ListReposResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListReposResponse':
-        return cls(next_page_token=d.get('next_page_token', None),
-                   repos=[RepoInfo.from_dict(v)
-                          for v in d['repos']] if 'repos' in d and d['repos'] is not None else None)
+        return cls(next_page_token=d.get('next_page_token', None), repos=_repeated(d, 'repos', RepoInfo))
 
 
 @dataclass
@@ -101,8 +100,7 @@ class RepoInfo:
                    id=d.get('id', None),
                    path=d.get('path', None),
                    provider=d.get('provider', None),
-                   sparse_checkout=SparseCheckout.from_dict(d['sparse_checkout'])
-                   if 'sparse_checkout' in d and d['sparse_checkout'] is not None else None,
+                   sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
                    url=d.get('url', None))
 
 
@@ -153,8 +151,7 @@ class UpdateRepo:
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRepo':
         return cls(branch=d.get('branch', None),
                    repo_id=d.get('repo_id', None),
-                   sparse_checkout=SparseCheckoutUpdate.from_dict(d['sparse_checkout'])
-                   if 'sparse_checkout' in d and d['sparse_checkout'] is not None else None,
+                   sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckoutUpdate),
                    tag=d.get('tag', None))
 
 

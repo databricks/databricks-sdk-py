@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List
 
-from ..errors import OperationFailed, OperationTimeout
+from ..errors import OperationFailed
+from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -25,8 +26,7 @@ class AwsCredentials:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AwsCredentials':
-        return cls(sts_role=StsRole.from_dict(d['sts_role']
-                                              ) if 'sts_role' in d and d['sts_role'] is not None else None)
+        return cls(sts_role=_from_dict(d, 'sts_role', StsRole))
 
 
 @dataclass
@@ -66,8 +66,7 @@ class CloudResourceContainer:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CloudResourceContainer':
-        return cls(gcp=CustomerFacingGcpCloudResourceContainer.
-                   from_dict(d['gcp']) if 'gcp' in d and d['gcp'] is not None else None)
+        return cls(gcp=_from_dict(d, 'gcp', CustomerFacingGcpCloudResourceContainer))
 
 
 @dataclass
@@ -102,8 +101,7 @@ class CreateCredentialAwsCredentials:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialAwsCredentials':
-        return cls(sts_role=CreateCredentialStsRole.
-                   from_dict(d['sts_role']) if 'sts_role' in d and d['sts_role'] is not None else None)
+        return cls(sts_role=_from_dict(d, 'sts_role', CreateCredentialStsRole))
 
 
 @dataclass
@@ -119,8 +117,7 @@ class CreateCredentialRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialRequest':
-        return cls(aws_credentials=CreateCredentialAwsCredentials.from_dict(d['aws_credentials'])
-                   if 'aws_credentials' in d and d['aws_credentials'] is not None else None,
+        return cls(aws_credentials=_from_dict(d, 'aws_credentials', CreateCredentialAwsCredentials),
                    credentials_name=d.get('credentials_name', None))
 
 
@@ -151,8 +148,7 @@ class CreateCustomerManagedKeyRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCustomerManagedKeyRequest':
-        return cls(aws_key_info=CreateAwsKeyInfo.from_dict(d['aws_key_info'])
-                   if 'aws_key_info' in d and d['aws_key_info'] is not None else None,
+        return cls(aws_key_info=_from_dict(d, 'aws_key_info', CreateAwsKeyInfo),
                    use_cases=d.get('use_cases', None))
 
 
@@ -177,13 +173,11 @@ class CreateNetworkRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateNetworkRequest':
-        return cls(gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
-                   if 'gcp_network_info' in d and d['gcp_network_info'] is not None else None,
+        return cls(gcp_network_info=_from_dict(d, 'gcp_network_info', GcpNetworkInfo),
                    network_name=d.get('network_name', None),
                    security_group_ids=d.get('security_group_ids', None),
                    subnet_ids=d.get('subnet_ids', None),
-                   vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints'])
-                   if 'vpc_endpoints' in d and d['vpc_endpoints'] is not None else None,
+                   vpc_endpoints=_from_dict(d, 'vpc_endpoints', NetworkVpcEndpoints),
                    vpc_id=d.get('vpc_id', None))
 
 
@@ -201,8 +195,7 @@ class CreateStorageConfigurationRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateStorageConfigurationRequest':
-        return cls(root_bucket_info=RootBucketInfo.from_dict(d['root_bucket_info'])
-                   if 'root_bucket_info' in d and d['root_bucket_info'] is not None else None,
+        return cls(root_bucket_info=_from_dict(d, 'root_bucket_info', RootBucketInfo),
                    storage_configuration_name=d.get('storage_configuration_name', None))
 
 
@@ -267,16 +260,14 @@ class CreateWorkspaceRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateWorkspaceRequest':
         return cls(aws_region=d.get('aws_region', None),
                    cloud=d.get('cloud', None),
-                   cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
-                   if 'cloud_resource_container' in d and d['cloud_resource_container'] is not None else None,
+                   cloud_resource_container=_from_dict(d, 'cloud_resource_container', CloudResourceContainer),
                    credentials_id=d.get('credentials_id', None),
                    deployment_name=d.get('deployment_name', None),
                    location=d.get('location', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
                    network_id=d.get('network_id', None),
-                   pricing_tier=PricingTier.__members__.get(d['pricing_tier'], None)
-                   if 'pricing_tier' in d else None,
+                   pricing_tier=_enum(d, 'pricing_tier', PricingTier),
                    private_access_settings_id=d.get('private_access_settings_id', None),
                    storage_configuration_id=d.get('storage_configuration_id', None),
                    storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
@@ -303,8 +294,7 @@ class Credential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Credential':
         return cls(account_id=d.get('account_id', None),
-                   aws_credentials=AwsCredentials.from_dict(d['aws_credentials'])
-                   if 'aws_credentials' in d and d['aws_credentials'] is not None else None,
+                   aws_credentials=_from_dict(d, 'aws_credentials', AwsCredentials),
                    creation_time=d.get('creation_time', None),
                    credentials_id=d.get('credentials_id', None),
                    credentials_name=d.get('credentials_name', None))
@@ -346,8 +336,7 @@ class CustomerManagedKey:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CustomerManagedKey':
         return cls(account_id=d.get('account_id', None),
-                   aws_key_info=AwsKeyInfo.from_dict(d['aws_key_info'])
-                   if 'aws_key_info' in d and d['aws_key_info'] is not None else None,
+                   aws_key_info=_from_dict(d, 'aws_key_info', AwsKeyInfo),
                    creation_time=d.get('creation_time', None),
                    customer_managed_key_id=d.get('customer_managed_key_id', None),
                    use_cases=d.get('use_cases', None))
@@ -566,8 +555,7 @@ class GkeConfig:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GkeConfig':
-        return cls(connectivity_type=GkeConfigConnectivityType.__members__.get(d['connectivity_type'], None)
-                   if 'connectivity_type' in d else None,
+        return cls(connectivity_type=_enum(d, 'connectivity_type', GkeConfigConnectivityType),
                    master_ip_range=d.get('master_ip_range', None))
 
 
@@ -628,20 +616,16 @@ class Network:
     def from_dict(cls, d: Dict[str, any]) -> 'Network':
         return cls(account_id=d.get('account_id', None),
                    creation_time=d.get('creation_time', None),
-                   error_messages=[NetworkHealth.from_dict(v) for v in d['error_messages']]
-                   if 'error_messages' in d and d['error_messages'] is not None else None,
-                   gcp_network_info=GcpNetworkInfo.from_dict(d['gcp_network_info'])
-                   if 'gcp_network_info' in d and d['gcp_network_info'] is not None else None,
+                   error_messages=_repeated(d, 'error_messages', NetworkHealth),
+                   gcp_network_info=_from_dict(d, 'gcp_network_info', GcpNetworkInfo),
                    network_id=d.get('network_id', None),
                    network_name=d.get('network_name', None),
                    security_group_ids=d.get('security_group_ids', None),
                    subnet_ids=d.get('subnet_ids', None),
-                   vpc_endpoints=NetworkVpcEndpoints.from_dict(d['vpc_endpoints'])
-                   if 'vpc_endpoints' in d and d['vpc_endpoints'] is not None else None,
+                   vpc_endpoints=_from_dict(d, 'vpc_endpoints', NetworkVpcEndpoints),
                    vpc_id=d.get('vpc_id', None),
-                   vpc_status=VpcStatus.__members__.get(d['vpc_status'], None) if 'vpc_status' in d else None,
-                   warning_messages=[NetworkWarning.from_dict(v) for v in d['warning_messages']]
-                   if 'warning_messages' in d and d['warning_messages'] is not None else None,
+                   vpc_status=_enum(d, 'vpc_status', VpcStatus),
+                   warning_messages=_repeated(d, 'warning_messages', NetworkWarning),
                    workspace_id=d.get('workspace_id', None))
 
 
@@ -658,8 +642,7 @@ class NetworkHealth:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NetworkHealth':
-        return cls(error_message=d.get('error_message', None),
-                   error_type=ErrorType.__members__.get(d['error_type'], None) if 'error_type' in d else None)
+        return cls(error_message=d.get('error_message', None), error_type=_enum(d, 'error_type', ErrorType))
 
 
 @dataclass
@@ -697,8 +680,7 @@ class NetworkWarning:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NetworkWarning':
         return cls(warning_message=d.get('warning_message', None),
-                   warning_type=WarningType.__members__.get(d['warning_type'], None)
-                   if 'warning_type' in d else None)
+                   warning_type=_enum(d, 'warning_type', WarningType))
 
 
 class PricingTier(Enum):
@@ -753,8 +735,7 @@ class PrivateAccessSettings:
     def from_dict(cls, d: Dict[str, any]) -> 'PrivateAccessSettings':
         return cls(account_id=d.get('account_id', None),
                    allowed_vpc_endpoint_ids=d.get('allowed_vpc_endpoint_ids', None),
-                   private_access_level=PrivateAccessLevel.__members__.get(d['private_access_level'], None)
-                   if 'private_access_level' in d else None,
+                   private_access_level=_enum(d, 'private_access_level', PrivateAccessLevel),
                    private_access_settings_id=d.get('private_access_settings_id', None),
                    private_access_settings_name=d.get('private_access_settings_name', None),
                    public_access_enabled=d.get('public_access_enabled', None),
@@ -799,8 +780,7 @@ class StorageConfiguration:
     def from_dict(cls, d: Dict[str, any]) -> 'StorageConfiguration':
         return cls(account_id=d.get('account_id', None),
                    creation_time=d.get('creation_time', None),
-                   root_bucket_info=RootBucketInfo.from_dict(d['root_bucket_info'])
-                   if 'root_bucket_info' in d and d['root_bucket_info'] is not None else None,
+                   root_bucket_info=_from_dict(d, 'root_bucket_info', RootBucketInfo),
                    storage_configuration_id=d.get('storage_configuration_id', None),
                    storage_configuration_name=d.get('storage_configuration_name', None))
 
@@ -881,8 +861,7 @@ class UpsertPrivateAccessSettingsRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpsertPrivateAccessSettingsRequest':
         return cls(allowed_vpc_endpoint_ids=d.get('allowed_vpc_endpoint_ids', None),
-                   private_access_level=PrivateAccessLevel.__members__.get(d['private_access_level'], None)
-                   if 'private_access_level' in d else None,
+                   private_access_level=_enum(d, 'private_access_level', PrivateAccessLevel),
                    private_access_settings_id=d.get('private_access_settings_id', None),
                    private_access_settings_name=d.get('private_access_settings_name', None),
                    public_access_enabled=d.get('public_access_enabled', None),
@@ -922,7 +901,7 @@ class VpcEndpoint:
                    aws_vpc_endpoint_id=d.get('aws_vpc_endpoint_id', None),
                    region=d.get('region', None),
                    state=d.get('state', None),
-                   use_case=EndpointUseCase.__members__.get(d['use_case'], None) if 'use_case' in d else None,
+                   use_case=_enum(d, 'use_case', EndpointUseCase),
                    vpc_endpoint_id=d.get('vpc_endpoint_id', None),
                    vpc_endpoint_name=d.get('vpc_endpoint_name', None))
 
@@ -997,32 +976,28 @@ class Workspace:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Workspace':
-        return cls(
-            account_id=d.get('account_id', None),
-            aws_region=d.get('aws_region', None),
-            cloud=d.get('cloud', None),
-            cloud_resource_container=CloudResourceContainer.from_dict(d['cloud_resource_container'])
-            if 'cloud_resource_container' in d and d['cloud_resource_container'] is not None else None,
-            creation_time=d.get('creation_time', None),
-            credentials_id=d.get('credentials_id', None),
-            deployment_name=d.get('deployment_name', None),
-            gcp_managed_network_config=GcpManagedNetworkConfig.from_dict(d['gcp_managed_network_config'])
-            if 'gcp_managed_network_config' in d and d['gcp_managed_network_config'] is not None else None,
-            gke_config=GkeConfig.from_dict(d['gke_config'])
-            if 'gke_config' in d and d['gke_config'] is not None else None,
-            location=d.get('location', None),
-            managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id', None),
-            network_id=d.get('network_id', None),
-            pricing_tier=PricingTier.__members__.get(d['pricing_tier'], None)
-            if 'pricing_tier' in d else None,
-            private_access_settings_id=d.get('private_access_settings_id', None),
-            storage_configuration_id=d.get('storage_configuration_id', None),
-            storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
-            workspace_id=d.get('workspace_id', None),
-            workspace_name=d.get('workspace_name', None),
-            workspace_status=WorkspaceStatus.__members__.get(d['workspace_status'], None)
-            if 'workspace_status' in d else None,
-            workspace_status_message=d.get('workspace_status_message', None))
+        return cls(account_id=d.get('account_id', None),
+                   aws_region=d.get('aws_region', None),
+                   cloud=d.get('cloud', None),
+                   cloud_resource_container=_from_dict(d, 'cloud_resource_container', CloudResourceContainer),
+                   creation_time=d.get('creation_time', None),
+                   credentials_id=d.get('credentials_id', None),
+                   deployment_name=d.get('deployment_name', None),
+                   gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
+                                                         GcpManagedNetworkConfig),
+                   gke_config=_from_dict(d, 'gke_config', GkeConfig),
+                   location=d.get('location', None),
+                   managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
+                                                                  None),
+                   network_id=d.get('network_id', None),
+                   pricing_tier=_enum(d, 'pricing_tier', PricingTier),
+                   private_access_settings_id=d.get('private_access_settings_id', None),
+                   storage_configuration_id=d.get('storage_configuration_id', None),
+                   storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
+                   workspace_id=d.get('workspace_id', None),
+                   workspace_name=d.get('workspace_name', None),
+                   workspace_status=_enum(d, 'workspace_status', WorkspaceStatus),
+                   workspace_status_message=d.get('workspace_status_message', None))
 
 
 class WorkspaceStatus(Enum):
@@ -1656,7 +1631,7 @@ class WorkspacesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
 
     def delete(self, workspace_id: int, **kwargs):
@@ -1849,7 +1824,7 @@ class WorkspacesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise OperationTimeout(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
                      body=body)

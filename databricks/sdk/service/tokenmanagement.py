@@ -4,6 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List
 
+from ._internal import _from_dict, _repeated
+
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
@@ -42,9 +44,7 @@ class CreateOboTokenResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateOboTokenResponse':
-        return cls(token_info=TokenInfo.from_dict(d['token_info'])
-                   if 'token_info' in d and d['token_info'] is not None else None,
-                   token_value=d.get('token_value', None))
+        return cls(token_info=_from_dict(d, 'token_info', TokenInfo), token_value=d.get('token_value', None))
 
 
 @dataclass
@@ -80,8 +80,7 @@ class ListTokensResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTokensResponse':
-        return cls(token_infos=[TokenInfo.from_dict(v) for v in d['token_infos']]
-                   if 'token_infos' in d and d['token_infos'] is not None else None)
+        return cls(token_infos=_repeated(d, 'token_infos', TokenInfo))
 
 
 @dataclass
