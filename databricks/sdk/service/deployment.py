@@ -1632,6 +1632,37 @@ class WorkspacesAPI:
         op_response = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
         return Wait(self.wait_get_workspace_running, workspace_id=op_response['workspace_id'])
 
+    def create_and_wait(
+        self,
+        workspace_name: str,
+        *,
+        aws_region: str = None,
+        cloud: str = None,
+        cloud_resource_container: CloudResourceContainer = None,
+        credentials_id: str = None,
+        deployment_name: str = None,
+        location: str = None,
+        managed_services_customer_managed_key_id: str = None,
+        network_id: str = None,
+        pricing_tier: PricingTier = None,
+        private_access_settings_id: str = None,
+        storage_configuration_id: str = None,
+        storage_customer_managed_key_id: str = None,
+        timeout=timedelta(minutes=20)) -> Workspace:
+        return self.create(aws_region=aws_region,
+                           cloud=cloud,
+                           cloud_resource_container=cloud_resource_container,
+                           credentials_id=credentials_id,
+                           deployment_name=deployment_name,
+                           location=location,
+                           managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
+                           network_id=network_id,
+                           pricing_tier=pricing_tier,
+                           private_access_settings_id=private_access_settings_id,
+                           storage_configuration_id=storage_configuration_id,
+                           storage_customer_managed_key_id=storage_customer_managed_key_id,
+                           workspace_name=workspace_name).result(timeout=timeout)
+
     def delete(self, workspace_id: int, **kwargs):
         """Delete a workspace.
         
@@ -1798,3 +1829,22 @@ class WorkspacesAPI:
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
                      body=body)
         return Wait(self.wait_get_workspace_running, workspace_id=request.workspace_id)
+
+    def update_and_wait(
+        self,
+        workspace_id: int,
+        *,
+        aws_region: str = None,
+        credentials_id: str = None,
+        managed_services_customer_managed_key_id: str = None,
+        network_id: str = None,
+        storage_configuration_id: str = None,
+        storage_customer_managed_key_id: str = None,
+        timeout=timedelta(minutes=20)) -> Workspace:
+        return self.update(aws_region=aws_region,
+                           credentials_id=credentials_id,
+                           managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
+                           network_id=network_id,
+                           storage_configuration_id=storage_configuration_id,
+                           storage_customer_managed_key_id=storage_customer_managed_key_id,
+                           workspace_id=workspace_id).result(timeout=timeout)

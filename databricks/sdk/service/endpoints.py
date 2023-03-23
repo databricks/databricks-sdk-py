@@ -536,6 +536,11 @@ class ServingEndpointsAPI:
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating, name=op_response['name'])
 
+    def create_and_wait(
+        self, name: str, config: EndpointCoreConfigInput,
+        timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
+        return self.create(config=config, name=name).result(timeout=timeout)
+
     def delete(self, name: str, **kwargs):
         """Delete a serving endpoint."""
         request = kwargs.get('request', None)
@@ -614,3 +619,13 @@ class ServingEndpointsAPI:
         body = request.as_dict()
         op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating, name=op_response['name'])
+
+    def update_config_and_wait(
+        self,
+        served_models: List[ServedModelInput],
+        name: str,
+        *,
+        traffic_config: TrafficConfig = None,
+        timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
+        return self.update_config(name=name, served_models=served_models,
+                                  traffic_config=traffic_config).result(timeout=timeout)

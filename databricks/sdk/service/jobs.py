@@ -2025,6 +2025,9 @@ class JobsAPI:
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=request.run_id)
 
+    def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
+        return self.cancel_run(run_id=run_id).result(timeout=timeout)
+
     def create(self,
                *,
                access_control_list: List[AccessControlRequest] = None,
@@ -2276,6 +2279,34 @@ class JobsAPI:
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=request.run_id)
 
+    def repair_run_and_wait(self,
+                            run_id: int,
+                            *,
+                            dbt_commands: List[str] = None,
+                            jar_params: List[str] = None,
+                            latest_repair_id: int = None,
+                            notebook_params: Dict[str, str] = None,
+                            pipeline_params: PipelineParams = None,
+                            python_named_params: Dict[str, str] = None,
+                            python_params: List[str] = None,
+                            rerun_all_failed_tasks: bool = None,
+                            rerun_tasks: List[str] = None,
+                            spark_submit_params: List[str] = None,
+                            sql_params: Dict[str, str] = None,
+                            timeout=timedelta(minutes=20)) -> Run:
+        return self.repair_run(dbt_commands=dbt_commands,
+                               jar_params=jar_params,
+                               latest_repair_id=latest_repair_id,
+                               notebook_params=notebook_params,
+                               pipeline_params=pipeline_params,
+                               python_named_params=python_named_params,
+                               python_params=python_params,
+                               rerun_all_failed_tasks=rerun_all_failed_tasks,
+                               rerun_tasks=rerun_tasks,
+                               run_id=run_id,
+                               spark_submit_params=spark_submit_params,
+                               sql_params=sql_params).result(timeout=timeout)
+
     def reset(self, job_id: int, new_settings: JobSettings, **kwargs):
         """Overwrites all settings for a job.
         
@@ -2319,6 +2350,30 @@ class JobsAPI:
         op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=op_response['run_id'])
 
+    def run_now_and_wait(self,
+                         job_id: int,
+                         *,
+                         dbt_commands: List[str] = None,
+                         idempotency_token: str = None,
+                         jar_params: List[str] = None,
+                         notebook_params: Dict[str, str] = None,
+                         pipeline_params: PipelineParams = None,
+                         python_named_params: Dict[str, str] = None,
+                         python_params: List[str] = None,
+                         spark_submit_params: List[str] = None,
+                         sql_params: Dict[str, str] = None,
+                         timeout=timedelta(minutes=20)) -> Run:
+        return self.run_now(dbt_commands=dbt_commands,
+                            idempotency_token=idempotency_token,
+                            jar_params=jar_params,
+                            job_id=job_id,
+                            notebook_params=notebook_params,
+                            pipeline_params=pipeline_params,
+                            python_named_params=python_named_params,
+                            python_params=python_params,
+                            spark_submit_params=spark_submit_params,
+                            sql_params=sql_params).result(timeout=timeout)
+
     def submit(self,
                *,
                access_control_list: List[AccessControlRequest] = None,
@@ -2346,6 +2401,25 @@ class JobsAPI:
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=op_response['run_id'])
+
+    def submit_and_wait(
+        self,
+        *,
+        access_control_list: List[AccessControlRequest] = None,
+        git_source: GitSource = None,
+        idempotency_token: str = None,
+        run_name: str = None,
+        tasks: List[RunSubmitTaskSettings] = None,
+        timeout_seconds: int = None,
+        webhook_notifications: JobWebhookNotifications = None,
+        timeout=timedelta(minutes=20)) -> Run:
+        return self.submit(access_control_list=access_control_list,
+                           git_source=git_source,
+                           idempotency_token=idempotency_token,
+                           run_name=run_name,
+                           tasks=tasks,
+                           timeout_seconds=timeout_seconds,
+                           webhook_notifications=webhook_notifications).result(timeout=timeout)
 
     def update(self,
                job_id: int,

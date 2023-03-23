@@ -140,6 +140,13 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-call" .}}
+
+    {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
+    def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
+        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}{{- end}},
+        timeout=timedelta(minutes={{.Wait.Timeout}})) -> {{.Wait.Poll.Response.PascalName}}:
+        return self.{{.SnakeName}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}}).result(timeout=timeout)
+    {{end}}
     {{end -}}
 {{- end}}
 

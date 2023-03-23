@@ -3178,6 +3178,37 @@ class WarehousesAPI:
         op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
         return Wait(self.wait_get_warehouse_running, id=op_response['id'])
 
+    def create_and_wait(
+        self,
+        *,
+        auto_stop_mins: int = None,
+        channel: Channel = None,
+        cluster_size: str = None,
+        creator_name: str = None,
+        enable_photon: bool = None,
+        enable_serverless_compute: bool = None,
+        instance_profile_arn: str = None,
+        max_num_clusters: int = None,
+        min_num_clusters: int = None,
+        name: str = None,
+        spot_instance_policy: SpotInstancePolicy = None,
+        tags: EndpointTags = None,
+        warehouse_type: WarehouseType = None,
+        timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        return self.create(auto_stop_mins=auto_stop_mins,
+                           channel=channel,
+                           cluster_size=cluster_size,
+                           creator_name=creator_name,
+                           enable_photon=enable_photon,
+                           enable_serverless_compute=enable_serverless_compute,
+                           instance_profile_arn=instance_profile_arn,
+                           max_num_clusters=max_num_clusters,
+                           min_num_clusters=min_num_clusters,
+                           name=name,
+                           spot_instance_policy=spot_instance_policy,
+                           tags=tags,
+                           warehouse_type=warehouse_type).result(timeout=timeout)
+
     def delete(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Delete a warehouse.
         
@@ -3188,6 +3219,9 @@ class WarehousesAPI:
 
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
         return Wait(self.wait_get_warehouse_deleted, id=request.id)
+
+    def delete_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        return self.delete(id=id).result(timeout=timeout)
 
     def edit(self,
              id: str,
@@ -3228,6 +3262,39 @@ class WarehousesAPI:
         body = request.as_dict()
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
         return Wait(self.wait_get_warehouse_running, id=request.id)
+
+    def edit_and_wait(
+        self,
+        id: str,
+        *,
+        auto_stop_mins: int = None,
+        channel: Channel = None,
+        cluster_size: str = None,
+        creator_name: str = None,
+        enable_photon: bool = None,
+        enable_serverless_compute: bool = None,
+        instance_profile_arn: str = None,
+        max_num_clusters: int = None,
+        min_num_clusters: int = None,
+        name: str = None,
+        spot_instance_policy: SpotInstancePolicy = None,
+        tags: EndpointTags = None,
+        warehouse_type: WarehouseType = None,
+        timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        return self.edit(auto_stop_mins=auto_stop_mins,
+                         channel=channel,
+                         cluster_size=cluster_size,
+                         creator_name=creator_name,
+                         enable_photon=enable_photon,
+                         enable_serverless_compute=enable_serverless_compute,
+                         id=id,
+                         instance_profile_arn=instance_profile_arn,
+                         max_num_clusters=max_num_clusters,
+                         min_num_clusters=min_num_clusters,
+                         name=name,
+                         spot_instance_policy=spot_instance_policy,
+                         tags=tags,
+                         warehouse_type=warehouse_type).result(timeout=timeout)
 
     def get(self, id: str, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
@@ -3306,6 +3373,9 @@ class WarehousesAPI:
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
         return Wait(self.wait_get_warehouse_running, id=request.id)
 
+    def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        return self.start(id=id).result(timeout=timeout)
+
     def stop(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Stop a warehouse.
         
@@ -3316,3 +3386,6 @@ class WarehousesAPI:
 
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
         return Wait(self.wait_get_warehouse_stopped, id=request.id)
+
+    def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        return self.stop(id=id).result(timeout=timeout)

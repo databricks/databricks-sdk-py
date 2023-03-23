@@ -341,6 +341,15 @@ class CommandExecutionAPI:
                     command_id=request.command_id,
                     context_id=request.context_id)
 
+    def cancel_and_wait(self,
+                        *,
+                        cluster_id: str = None,
+                        command_id: str = None,
+                        context_id: str = None,
+                        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+        return self.cancel(cluster_id=cluster_id, command_id=command_id,
+                           context_id=context_id).result(timeout=timeout)
+
     def command_status(self, cluster_id: str, context_id: str, command_id: str,
                        **kwargs) -> CommandStatusResponse:
         """Get command info.
@@ -396,6 +405,13 @@ class CommandExecutionAPI:
                     cluster_id=request.cluster_id,
                     context_id=op_response['id'])
 
+    def create_and_wait(self,
+                        *,
+                        cluster_id: str = None,
+                        language: Language = None,
+                        timeout=timedelta(minutes=20)) -> ContextStatusResponse:
+        return self.create(cluster_id=cluster_id, language=language).result(timeout=timeout)
+
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
         """Delete an execution context.
         
@@ -430,3 +446,13 @@ class CommandExecutionAPI:
                     cluster_id=request.cluster_id,
                     command_id=op_response['id'],
                     context_id=request.context_id)
+
+    def execute_and_wait(self,
+                         *,
+                         cluster_id: str = None,
+                         command: str = None,
+                         context_id: str = None,
+                         language: Language = None,
+                         timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+        return self.execute(cluster_id=cluster_id, command=command, context_id=context_id,
+                            language=language).result(timeout=timeout)

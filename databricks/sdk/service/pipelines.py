@@ -1216,6 +1216,9 @@ class PipelinesAPI:
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
         return Wait(self.wait_get_pipeline_running, pipeline_id=request.pipeline_id)
 
+    def reset_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+        return self.reset(pipeline_id=pipeline_id).result(timeout=timeout)
+
     def start_update(self,
                      pipeline_id: str,
                      *,
@@ -1249,6 +1252,9 @@ class PipelinesAPI:
 
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
         return Wait(self.wait_get_pipeline_idle, pipeline_id=request.pipeline_id)
+
+    def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+        return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)
 
     def update(self,
                pipeline_id: str,

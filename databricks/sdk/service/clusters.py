@@ -1757,6 +1757,58 @@ class ClustersAPI:
         op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=op_response['cluster_id'])
 
+    def create_and_wait(self,
+                        spark_version: str,
+                        *,
+                        apply_policy_default_values: bool = None,
+                        autoscale: AutoScale = None,
+                        autotermination_minutes: int = None,
+                        aws_attributes: AwsAttributes = None,
+                        azure_attributes: AzureAttributes = None,
+                        cluster_log_conf: ClusterLogConf = None,
+                        cluster_name: str = None,
+                        cluster_source: ClusterSource = None,
+                        custom_tags: Dict[str, str] = None,
+                        driver_instance_pool_id: str = None,
+                        driver_node_type_id: str = None,
+                        enable_elastic_disk: bool = None,
+                        enable_local_disk_encryption: bool = None,
+                        gcp_attributes: GcpAttributes = None,
+                        instance_pool_id: str = None,
+                        node_type_id: str = None,
+                        num_workers: int = None,
+                        policy_id: str = None,
+                        runtime_engine: RuntimeEngine = None,
+                        spark_conf: Dict[str, str] = None,
+                        spark_env_vars: Dict[str, str] = None,
+                        ssh_public_keys: List[str] = None,
+                        workload_type: WorkloadType = None,
+                        timeout=timedelta(minutes=20)) -> ClusterInfo:
+        return self.create(apply_policy_default_values=apply_policy_default_values,
+                           autoscale=autoscale,
+                           autotermination_minutes=autotermination_minutes,
+                           aws_attributes=aws_attributes,
+                           azure_attributes=azure_attributes,
+                           cluster_log_conf=cluster_log_conf,
+                           cluster_name=cluster_name,
+                           cluster_source=cluster_source,
+                           custom_tags=custom_tags,
+                           driver_instance_pool_id=driver_instance_pool_id,
+                           driver_node_type_id=driver_node_type_id,
+                           enable_elastic_disk=enable_elastic_disk,
+                           enable_local_disk_encryption=enable_local_disk_encryption,
+                           gcp_attributes=gcp_attributes,
+                           instance_pool_id=instance_pool_id,
+                           node_type_id=node_type_id,
+                           num_workers=num_workers,
+                           policy_id=policy_id,
+                           runtime_engine=runtime_engine,
+                           spark_conf=spark_conf,
+                           spark_env_vars=spark_env_vars,
+                           spark_version=spark_version,
+                           ssh_public_keys=ssh_public_keys,
+                           workload_type=workload_type).result(timeout=timeout)
+
     def delete(self, cluster_id: str, **kwargs) -> Wait[ClusterInfo]:
         """Terminate cluster.
         
@@ -1769,6 +1821,9 @@ class ClustersAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/clusters/delete', body=body)
         return Wait(self.wait_get_cluster_terminated, cluster_id=request.cluster_id)
+
+    def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterInfo:
+        return self.delete(cluster_id=cluster_id).result(timeout=timeout)
 
     def edit(self,
              cluster_id: str,
@@ -1841,6 +1896,60 @@ class ClustersAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+
+    def edit_and_wait(self,
+                      cluster_id: str,
+                      spark_version: str,
+                      *,
+                      apply_policy_default_values: bool = None,
+                      autoscale: AutoScale = None,
+                      autotermination_minutes: int = None,
+                      aws_attributes: AwsAttributes = None,
+                      azure_attributes: AzureAttributes = None,
+                      cluster_log_conf: ClusterLogConf = None,
+                      cluster_name: str = None,
+                      cluster_source: ClusterSource = None,
+                      custom_tags: Dict[str, str] = None,
+                      driver_instance_pool_id: str = None,
+                      driver_node_type_id: str = None,
+                      enable_elastic_disk: bool = None,
+                      enable_local_disk_encryption: bool = None,
+                      gcp_attributes: GcpAttributes = None,
+                      instance_pool_id: str = None,
+                      node_type_id: str = None,
+                      num_workers: int = None,
+                      policy_id: str = None,
+                      runtime_engine: RuntimeEngine = None,
+                      spark_conf: Dict[str, str] = None,
+                      spark_env_vars: Dict[str, str] = None,
+                      ssh_public_keys: List[str] = None,
+                      workload_type: WorkloadType = None,
+                      timeout=timedelta(minutes=20)) -> ClusterInfo:
+        return self.edit(apply_policy_default_values=apply_policy_default_values,
+                         autoscale=autoscale,
+                         autotermination_minutes=autotermination_minutes,
+                         aws_attributes=aws_attributes,
+                         azure_attributes=azure_attributes,
+                         cluster_id=cluster_id,
+                         cluster_log_conf=cluster_log_conf,
+                         cluster_name=cluster_name,
+                         cluster_source=cluster_source,
+                         custom_tags=custom_tags,
+                         driver_instance_pool_id=driver_instance_pool_id,
+                         driver_node_type_id=driver_node_type_id,
+                         enable_elastic_disk=enable_elastic_disk,
+                         enable_local_disk_encryption=enable_local_disk_encryption,
+                         gcp_attributes=gcp_attributes,
+                         instance_pool_id=instance_pool_id,
+                         node_type_id=node_type_id,
+                         num_workers=num_workers,
+                         policy_id=policy_id,
+                         runtime_engine=runtime_engine,
+                         spark_conf=spark_conf,
+                         spark_env_vars=spark_env_vars,
+                         spark_version=spark_version,
+                         ssh_public_keys=ssh_public_keys,
+                         workload_type=workload_type).result(timeout=timeout)
 
     def events(self,
                cluster_id: str,
@@ -1973,6 +2082,15 @@ class ClustersAPI:
         self._api.do('POST', '/api/2.0/clusters/resize', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
 
+    def resize_and_wait(self,
+                        cluster_id: str,
+                        *,
+                        autoscale: AutoScale = None,
+                        num_workers: int = None,
+                        timeout=timedelta(minutes=20)) -> ClusterInfo:
+        return self.resize(autoscale=autoscale, cluster_id=cluster_id,
+                           num_workers=num_workers).result(timeout=timeout)
+
     def restart(self, cluster_id: str, *, restart_user: str = None, **kwargs) -> Wait[ClusterInfo]:
         """Restart cluster.
         
@@ -1984,6 +2102,13 @@ class ClustersAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/clusters/restart', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+
+    def restart_and_wait(self,
+                         cluster_id: str,
+                         *,
+                         restart_user: str = None,
+                         timeout=timedelta(minutes=20)) -> ClusterInfo:
+        return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
         """List available Spark versions.
@@ -2008,6 +2133,9 @@ class ClustersAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/clusters/start', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+
+    def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterInfo:
+        return self.start(cluster_id=cluster_id).result(timeout=timeout)
 
     def unpin(self, cluster_id: str, **kwargs):
         """Unpin cluster.
