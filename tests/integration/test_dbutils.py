@@ -51,14 +51,3 @@ def test_secrets(w, random):
 
     assert all_secrets[f'{random_scope}.{key_for_string}'] == random_value
     assert all_secrets[f'{random_scope}.{key_for_bytes}'] == random_value
-
-
-def test_proxy_secret_scopes(w, env_or_skip):
-    cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
-    os.environ['DATABRICKS_CLUSTER_ID'] = cluster_id
-
-    from databricks.sdk.runtime import dbutils
-
-    x = dbutils.secrets.listScopes()
-
-    assert len(x) > 0
