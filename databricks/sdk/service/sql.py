@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List
 
 from ..errors import OperationFailed
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -3067,6 +3067,79 @@ class WarehousesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def wait_get_warehouse_deleted(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (State.DELETED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(id=id)
+            status = poll.state
+            status_message = f'current status: {status}'
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            prefix = f"id={id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_warehouse_running(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (State.RUNNING, )
+        failure_states = (State.STOPPED, State.DELETED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(id=id)
+            status = poll.state
+            status_message = f'current status: {status}'
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"id={id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_warehouse_stopped(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (State.STOPPED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(id=id)
+            status = poll.state
+            status_message = f'current status: {status}'
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            prefix = f"id={id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
     def create(self,
                *,
                auto_stop_mins: int = None,
@@ -3082,9 +3155,7 @@ class WarehousesAPI:
                spot_instance_policy: SpotInstancePolicy = None,
                tags: EndpointTags = None,
                warehouse_type: WarehouseType = None,
-               wait=True,
-               timeout=timedelta(minutes=20),
-               **kwargs) -> GetWarehouseResponse:
+               **kwargs) -> Wait[GetWarehouseResponse]:
         """Create a warehouse.
         
         Creates a new SQL warehouse."""
@@ -3104,36 +3175,10 @@ class WarehousesAPI:
                                              tags=tags,
                                              warehouse_type=warehouse_type)
         body = request.as_dict()
-        if wait:
-            op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (State.RUNNING, )
-            failure_states = (State.STOPPED, State.DELETED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(id=op_response['id'])
-                status = poll.state
-                status_message = f'current status: {status}'
-                if poll.health:
-                    status_message = poll.health.summary
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"warehouses.get(id={op_response['id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
+        op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
+        return Wait(self.wait_get_warehouse_running, id=op_response['id'])
 
-    def delete(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
+    def delete(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Delete a warehouse.
         
         Deletes a SQL warehouse."""
@@ -3141,30 +3186,8 @@ class WarehousesAPI:
         if not request: # request is not given through keyed args
             request = DeleteWarehouseRequest(id=id)
 
-        if wait:
-            self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (State.DELETED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(id=request.id)
-                status = poll.state
-                status_message = f'current status: {status}'
-                if poll.health:
-                    status_message = poll.health.summary
-                if status in target_states:
-                    return poll
-                prefix = f"warehouses.get(id={request.id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
+        return Wait(self.wait_get_warehouse_deleted, id=request.id)
 
     def edit(self,
              id: str,
@@ -3182,9 +3205,7 @@ class WarehousesAPI:
              spot_instance_policy: SpotInstancePolicy = None,
              tags: EndpointTags = None,
              warehouse_type: WarehouseType = None,
-             wait=True,
-             timeout=timedelta(minutes=20),
-             **kwargs) -> GetWarehouseResponse:
+             **kwargs) -> Wait[GetWarehouseResponse]:
         """Update a warehouse.
         
         Updates the configuration for a SQL warehouse."""
@@ -3205,70 +3226,16 @@ class WarehousesAPI:
                                            tags=tags,
                                            warehouse_type=warehouse_type)
         body = request.as_dict()
-        if wait:
-            self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (State.RUNNING, )
-            failure_states = (State.STOPPED, State.DELETED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(id=request.id)
-                status = poll.state
-                status_message = f'current status: {status}'
-                if poll.health:
-                    status_message = poll.health.summary
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"warehouses.get(id={request.id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
+        return Wait(self.wait_get_warehouse_running, id=request.id)
 
-    def get(self, id: str, wait=False, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
+    def get(self, id: str, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
         
         Gets the information for a single SQL warehouse."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetWarehouseRequest(id=id)
-
-        if wait:
-            op_response = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (State.RUNNING, )
-            failure_states = (State.STOPPED, State.DELETED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(id=op_response['id'])
-                status = poll.state
-                status_message = f'current status: {status}'
-                if poll.health:
-                    status_message = poll.health.summary
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"warehouses.get(id={op_response['id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
         return GetWarehouseResponse.from_dict(json)
@@ -3328,7 +3295,7 @@ class WarehousesAPI:
         body = request.as_dict()
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)
 
-    def start(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
+    def start(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Start a warehouse.
         
         Starts a SQL warehouse."""
@@ -3336,36 +3303,10 @@ class WarehousesAPI:
         if not request: # request is not given through keyed args
             request = StartRequest(id=id)
 
-        if wait:
-            self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (State.RUNNING, )
-            failure_states = (State.STOPPED, State.DELETED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(id=request.id)
-                status = poll.state
-                status_message = f'current status: {status}'
-                if poll.health:
-                    status_message = poll.health.summary
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"warehouses.get(id={request.id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
+        return Wait(self.wait_get_warehouse_running, id=request.id)
 
-    def stop(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
+    def stop(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Stop a warehouse.
         
         Stops a SQL warehouse."""
@@ -3373,27 +3314,5 @@ class WarehousesAPI:
         if not request: # request is not given through keyed args
             request = StopRequest(id=id)
 
-        if wait:
-            self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (State.STOPPED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(id=request.id)
-                status = poll.state
-                status_message = f'current status: {status}'
-                if poll.health:
-                    status_message = poll.health.summary
-                if status in target_states:
-                    return poll
-                prefix = f"warehouses.get(id={request.id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
+        return Wait(self.wait_get_warehouse_stopped, id=request.id)

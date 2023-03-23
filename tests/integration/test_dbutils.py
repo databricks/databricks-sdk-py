@@ -1,6 +1,5 @@
 import base64
 import logging
-import os
 
 
 def test_rest_dbfs_ls(w, env_or_skip):
@@ -13,9 +12,9 @@ def test_rest_dbfs_ls(w, env_or_skip):
 
 def test_proxy_dbfs_mounts(w, env_or_skip):
     cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
-    os.environ['DATABRICKS_CLUSTER_ID'] = cluster_id
 
-    from databricks.sdk.runtime import dbutils
+    from databricks.sdk.runtime._impl import _RemoteDbUtils
+    dbutils = _RemoteDbUtils(cluster_id=cluster_id)
 
     x = dbutils.fs.mounts()
 
