@@ -1,9 +1,11 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 import logging
+import math
 import random
 import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Dict, Iterator, List
 
@@ -1576,7 +1578,7 @@ class WorkspacesAPI:
                storage_configuration_id: str = None,
                storage_customer_managed_key_id: str = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> Workspace:
         """Create a new workspace.
         
@@ -1609,12 +1611,12 @@ class WorkspacesAPI:
             op_response = self._api.do('POST',
                                        f'/api/2.0/accounts/{self._api.account_id}/workspaces',
                                        body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (WorkspaceStatus.RUNNING, )
             failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(workspace_id=op_response['workspace_id'])
                 status = poll.workspace_status
                 status_message = poll.workspace_status_message
@@ -1631,7 +1633,8 @@ class WorkspacesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(
+                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
         self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
 
     def delete(self, workspace_id: int, **kwargs):
@@ -1693,7 +1696,7 @@ class WorkspacesAPI:
                storage_configuration_id: str = None,
                storage_customer_managed_key_id: str = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> Workspace:
         """Update workspace configuration.
         
@@ -1802,12 +1805,12 @@ class WorkspacesAPI:
             self._api.do('PATCH',
                          f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
                          body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (WorkspaceStatus.RUNNING, )
             failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(workspace_id=request.workspace_id)
                 status = poll.workspace_status
                 status_message = poll.workspace_status_message
@@ -1824,7 +1827,8 @@ class WorkspacesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(
+                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
                      body=body)

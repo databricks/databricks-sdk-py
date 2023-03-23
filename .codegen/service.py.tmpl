@@ -1,7 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
+import math
 from typing import Dict, List, Any, Iterator, Type
 import time
 import random
@@ -92,7 +94,7 @@ class {{.Name}}API:{{if .Description}}
       {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
-      {{- end}}{{if .Wait}}, wait={{if .IsCrudRead}}False{{else}}True{{end}}, timeout={{.Wait.Timeout}}{{end}}, **kwargs
+      {{- end}}{{if .Wait}}, wait={{if .IsCrudRead}}False{{else}}True{{end}}, timeout=timedelta(minutes={{.Wait.Timeout}}){{end}}, **kwargs
     {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}"""{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
@@ -121,12 +123,12 @@ class {{.Name}}API:{{if .Description}}
 {{define "method-call-retried" -}}
         if wait:
           {{if .Response}}op_response = {{end}}{{template "method-do" .}}
-          started = time.time()
+          deadline = time.time() + timeout.total_seconds()
           target_states = ({{range .Wait.Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Wait.Failure}}
           failure_states = ({{range .Wait.Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
           status_message = 'polling...'
           attempt = 1
-          while (started + (timeout*60)) > time.time():
+          while time.time() < deadline:
             poll = self.{{.Wait.Poll.SnakeName}}({{range $i, $b := .Wait.Binding}}{{if $i}}, {{end}}
               {{$b.PollField.SnakeName}}={{if $b.IsResponseBind}}op_response['{{$b.Bind.Name}}']{{else}}request.{{$b.Bind.SnakeName}}{{end}}
             {{- end}})
@@ -156,7 +158,7 @@ class {{.Name}}API:{{if .Description}}
             _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
             time.sleep(sleep + random.random())
             attempt += 1
-          raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+          raise TimeoutError(f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
         {{if .IsCrudRead}}{{template "method-call-default" .}}{{else}}{{template "method-do" .}}{{end}}
 {{- end}}
 
