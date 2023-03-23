@@ -47,8 +47,9 @@ def random():
 
 
 @pytest.fixture
-def a() -> AccountClient:
+def a(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide('account')
+    env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
     if not account_client.config.is_account_client:
         pytest.skip("not Databricks Account client")
@@ -56,16 +57,18 @@ def a() -> AccountClient:
 
 
 @pytest.fixture
-def w() -> WorkspaceClient:
+def w(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('workspace')
+    env_or_skip("CLOUD_ENV")
     if 'DATABRICKS_ACCOUNT_ID' in os.environ:
         pytest.skip("Skipping workspace test on account level")
     return WorkspaceClient()
 
 
 @pytest.fixture
-def ucws() -> WorkspaceClient:
+def ucws(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('ucws')
+    env_or_skip("CLOUD_ENV")
     if 'TEST_METASTORE_ID' not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
     return WorkspaceClient()
@@ -95,4 +98,4 @@ def _load_debug_env_if_runs_from_ide(key):
 
 
 def _is_in_debug() -> bool:
-    return os.path.basename(sys.argv[0]) == '_jb_pytest_runner.py'
+    return os.path.basename(sys.argv[0]) in ['_jb_pytest_runner.py', 'testlauncher.py', ]
