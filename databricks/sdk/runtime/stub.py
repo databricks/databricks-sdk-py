@@ -3,6 +3,7 @@ import typing
 from pyspark.sql.context import SQLContext
 from pyspark.sql.functions import udf as U
 from pyspark.sql.session import SparkSession
+from collections import namedtuple
 
 udf = U
 spark: SparkSession
@@ -10,6 +11,23 @@ sc = spark.sparkContext
 sqlContext: SQLContext
 sql = sqlContext.sql
 table = sqlContext.table
+
+class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
+    pass
+
+
+class MountInfo(namedtuple('MountInfo', ['mountPoint', 'source', 'encryptionType'])):
+    pass
+
+
+class SecretScope(namedtuple('SecretScope', ['name'])):
+    def getName(self):
+        return self.name
+
+
+class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
+    pass
+
 
 
 def displayHTML(html):
@@ -110,7 +128,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def ls(dir: str) -> typing.List[str]:
+        def ls(dir: str) -> typing.List[FileInfo]:
             """
             Lists the contents of a directory
             """
@@ -149,7 +167,7 @@ class dbutils:
                   mountPoint: str,
                   encryptionType: str = "",
                   owner: str = "",
-                  extraConfigs: typing.Map[str, str] = {},
+                  extraConfigs: typing.Mapping[str, str] = None,
                   ) -> bool:
             """
             Mounts the given source directory into DBFS at the given mount point
@@ -176,7 +194,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def mounts() -> typing.List[str]:
+        def mounts() -> typing.List[MountInfo]:
             """
             Displays information about what is mounted within DBFS
             """
@@ -257,14 +275,14 @@ class dbutils:
             ...
 
         @staticmethod
-        def list(scope: str) -> typing.List[str]:
+        def list(scope: str) -> typing.List[SecretMetadata]:
             """
             Lists secret metadata for secrets within a scope
             """
             ...
 
         @staticmethod
-        def listScopes() -> typing.List[str]:
+        def listScopes() -> typing.List[SecretScope]:
             """
             Lists secret scopes
             """
@@ -351,13 +369,6 @@ class dbutils:
         def removeAll():
             """Removes all input widgets in the notebook."""
             ...
-
-    @property
-    def meta() -> MetaUtils:
-        """
-        Methods to hook into the compiler (EXPERIMENTAL)
-        """
-        ...
 
 
 getArgument = dbutils.widgets.getArgument
