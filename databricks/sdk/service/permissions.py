@@ -59,24 +59,6 @@ class AccessControlResponse:
 
 
 @dataclass
-class CreateWorkspaceAssignments:
-    permission_assignments: 'List[PermissionAssignmentInput]'
-    workspace_id: int
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_assignments:
-            body['permission_assignments'] = [v.as_dict() for v in self.permission_assignments]
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateWorkspaceAssignments':
-        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignmentInput),
-                   workspace_id=d.get('workspace_id', None))
-
-
-@dataclass
 class DeleteWorkspaceAssignmentRequest:
     """Delete permissions assignment"""
 
@@ -187,29 +169,6 @@ class PermissionAssignment:
         return cls(error=d.get('error', None),
                    permissions=d.get('permissions', None),
                    principal=_from_dict(d, 'principal', PrincipalOutput))
-
-
-@dataclass
-class PermissionAssignmentInput:
-    permissions: 'List[WorkspacePermission]'
-    group_name: str = None
-    service_principal_name: str = None
-    user_name: str = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.group_name: body['group_name'] = self.group_name
-        if self.permissions: body['permissions'] = [v for v in self.permissions]
-        if self.service_principal_name: body['service_principal_name'] = self.service_principal_name
-        if self.user_name: body['user_name'] = self.user_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignmentInput':
-        return cls(group_name=d.get('group_name', None),
-                   permissions=d.get('permissions', None),
-                   service_principal_name=d.get('service_principal_name', None),
-                   user_name=d.get('user_name', None))
 
 
 @dataclass
@@ -348,21 +307,6 @@ class UpdateWorkspaceAssignments:
                    workspace_id=d.get('workspace_id', None))
 
 
-@dataclass
-class WorkspaceAssignmentsCreated:
-    permission_assignments: 'List[PermissionAssignment]' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_assignments:
-            body['permission_assignments'] = [v.as_dict() for v in self.permission_assignments]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceAssignmentsCreated':
-        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignment))
-
-
 class WorkspacePermission(Enum):
 
     ADMIN = 'ADMIN'
@@ -461,40 +405,24 @@ class PermissionsAPI:
 
 
 class WorkspaceAssignmentAPI:
-    """Databricks Workspace Assignment REST API"""
+    """The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your
+    account."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, permission_assignments: List[PermissionAssignmentInput], workspace_id: int,
-               **kwargs) -> WorkspaceAssignmentsCreated:
-        """Create permission assignments.
-        
-        Create new permission assignments for the specified account and workspace."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateWorkspaceAssignments(permission_assignments=permission_assignments,
-                                                 workspace_id=workspace_id)
-        body = request.as_dict()
-
-        json = self._api.do(
-            'POST',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments',
-            body=body)
-        return WorkspaceAssignmentsCreated.from_dict(json)
-
     def delete(self, workspace_id: int, principal_id: int, **kwargs):
         """Delete permissions assignment.
         
-        Deletes the workspace permissions assignment for a given account and workspace using the specified
-        service principal."""
+        Deletes the workspace permissions assignment in a given account and workspace for the specified
+        principal."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteWorkspaceAssignmentRequest(principal_id=principal_id, workspace_id=workspace_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}'
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}'
         )
 
     def get(self, workspace_id: int, **kwargs) -> WorkspacePermissions:
@@ -507,7 +435,7 @@ class WorkspaceAssignmentAPI:
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/permissions'
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/permissions'
         )
         return WorkspacePermissions.from_dict(json)
 
@@ -521,15 +449,15 @@ class WorkspaceAssignmentAPI:
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments'
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments'
         )
         return [PermissionAssignment.from_dict(v) for v in json.get('permission_assignments', [])]
 
     def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int, **kwargs):
-        """Update permissions assignment.
+        """Create or update permissions assignment.
         
-        Updates the workspace permissions assignment for a given account and workspace using the specified
-        service principal."""
+        Creates or updates the workspace permissions assignment in a given account and workspace for the
+        specified principal."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateWorkspaceAssignments(permissions=permissions,
@@ -538,5 +466,5 @@ class WorkspaceAssignmentAPI:
         body = request.as_dict()
         self._api.do(
             'PUT',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}',
             body=body)

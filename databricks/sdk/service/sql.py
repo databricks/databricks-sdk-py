@@ -162,7 +162,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -588,7 +587,6 @@ class EditWarehouseRequest:
     channel: 'Channel' = None
     cluster_size: str = None
     creator_name: str = None
-    enable_databricks_compute: bool = None
     enable_photon: bool = None
     enable_serverless_compute: bool = None
     instance_profile_arn: str = None
@@ -605,7 +603,6 @@ class EditWarehouseRequest:
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
         if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_databricks_compute: body['enable_databricks_compute'] = self.enable_databricks_compute
         if self.enable_photon: body['enable_photon'] = self.enable_photon
         if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.id: body['id'] = self.id
@@ -624,7 +621,6 @@ class EditWarehouseRequest:
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
                    creator_name=d.get('creator_name', None),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
                    enable_photon=d.get('enable_photon', None),
                    enable_serverless_compute=d.get('enable_serverless_compute', None),
                    id=d.get('id', None),
@@ -685,7 +681,6 @@ class EndpointInfo:
     channel: 'Channel' = None
     cluster_size: str = None
     creator_name: str = None
-    enable_databricks_compute: bool = None
     enable_photon: bool = None
     enable_serverless_compute: bool = None
     health: 'EndpointHealth' = None
@@ -709,7 +704,6 @@ class EndpointInfo:
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
         if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_databricks_compute: body['enable_databricks_compute'] = self.enable_databricks_compute
         if self.enable_photon: body['enable_photon'] = self.enable_photon
         if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.health: body['health'] = self.health.as_dict()
@@ -734,7 +728,6 @@ class EndpointInfo:
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
                    creator_name=d.get('creator_name', None),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
                    enable_photon=d.get('enable_photon', None),
                    enable_serverless_compute=d.get('enable_serverless_compute', None),
                    health=_from_dict(d, 'health', EndpointHealth),
@@ -1008,7 +1001,6 @@ class GetWarehouseResponse:
     channel: 'Channel' = None
     cluster_size: str = None
     creator_name: str = None
-    enable_databricks_compute: bool = None
     enable_photon: bool = None
     enable_serverless_compute: bool = None
     health: 'EndpointHealth' = None
@@ -1032,7 +1024,6 @@ class GetWarehouseResponse:
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
         if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_databricks_compute: body['enable_databricks_compute'] = self.enable_databricks_compute
         if self.enable_photon: body['enable_photon'] = self.enable_photon
         if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.health: body['health'] = self.health.as_dict()
@@ -1057,7 +1048,6 @@ class GetWarehouseResponse:
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
                    creator_name=d.get('creator_name', None),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
                    enable_photon=d.get('enable_photon', None),
                    enable_serverless_compute=d.get('enable_serverless_compute', None),
                    health=_from_dict(d, 'health', EndpointHealth),
@@ -1081,8 +1071,6 @@ class GetWorkspaceWarehouseConfigResponse:
     channel: 'Channel' = None
     config_param: 'RepeatedEndpointConfPairs' = None
     data_access_config: 'List[EndpointConfPair]' = None
-    enable_databricks_compute: bool = None
-    enable_serverless_compute: bool = None
     enabled_warehouse_types: 'List[WarehouseTypePair]' = None
     global_param: 'RepeatedEndpointConfPairs' = None
     google_service_account: str = None
@@ -1096,8 +1084,6 @@ class GetWorkspaceWarehouseConfigResponse:
         if self.config_param: body['config_param'] = self.config_param.as_dict()
         if self.data_access_config:
             body['data_access_config'] = [v.as_dict() for v in self.data_access_config]
-        if self.enable_databricks_compute: body['enable_databricks_compute'] = self.enable_databricks_compute
-        if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.enabled_warehouse_types:
             body['enabled_warehouse_types'] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param: body['global_param'] = self.global_param.as_dict()
@@ -1113,8 +1099,6 @@ class GetWorkspaceWarehouseConfigResponse:
         return cls(channel=_from_dict(d, 'channel', Channel),
                    config_param=_from_dict(d, 'config_param', RepeatedEndpointConfPairs),
                    data_access_config=_repeated(d, 'data_access_config', EndpointConfPair),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
-                   enable_serverless_compute=d.get('enable_serverless_compute', None),
                    enabled_warehouse_types=_repeated(d, 'enabled_warehouse_types', WarehouseTypePair),
                    global_param=_from_dict(d, 'global_param', RepeatedEndpointConfPairs),
                    google_service_account=d.get('google_service_account', None),
@@ -1126,7 +1110,7 @@ class GetWorkspaceWarehouseConfigResponse:
 
 
 class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
-    """Security policy for endpoints"""
+    """Security policy for warehouses"""
 
     DATA_ACCESS_CONTROL = 'DATA_ACCESS_CONTROL'
     NONE = 'NONE'
@@ -1929,8 +1913,6 @@ class SetWorkspaceWarehouseConfigRequest:
     channel: 'Channel' = None
     config_param: 'RepeatedEndpointConfPairs' = None
     data_access_config: 'List[EndpointConfPair]' = None
-    enable_databricks_compute: bool = None
-    enable_serverless_compute: bool = None
     enabled_warehouse_types: 'List[WarehouseTypePair]' = None
     global_param: 'RepeatedEndpointConfPairs' = None
     google_service_account: str = None
@@ -1945,8 +1927,6 @@ class SetWorkspaceWarehouseConfigRequest:
         if self.config_param: body['config_param'] = self.config_param.as_dict()
         if self.data_access_config:
             body['data_access_config'] = [v.as_dict() for v in self.data_access_config]
-        if self.enable_databricks_compute: body['enable_databricks_compute'] = self.enable_databricks_compute
-        if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.enabled_warehouse_types:
             body['enabled_warehouse_types'] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param: body['global_param'] = self.global_param.as_dict()
@@ -1963,8 +1943,6 @@ class SetWorkspaceWarehouseConfigRequest:
         return cls(channel=_from_dict(d, 'channel', Channel),
                    config_param=_from_dict(d, 'config_param', RepeatedEndpointConfPairs),
                    data_access_config=_repeated(d, 'data_access_config', EndpointConfPair),
-                   enable_databricks_compute=d.get('enable_databricks_compute', None),
-                   enable_serverless_compute=d.get('enable_serverless_compute', None),
                    enabled_warehouse_types=_repeated(d, 'enabled_warehouse_types', WarehouseTypePair),
                    global_param=_from_dict(d, 'global_param', RepeatedEndpointConfPairs),
                    google_service_account=d.get('google_service_account', None),
@@ -1977,7 +1955,7 @@ class SetWorkspaceWarehouseConfigRequest:
 
 
 class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
-    """Security policy for endpoints"""
+    """Security policy for warehouses"""
 
     DATA_ACCESS_CONTROL = 'DATA_ACCESS_CONTROL'
     NONE = 'NONE'
@@ -2044,7 +2022,7 @@ class StatementStatus:
 
 
 class Status(Enum):
-    """Health status of the endpoint."""
+    """Health status of the warehouse."""
 
     DEGRADED = 'DEGRADED'
     FAILED = 'FAILED'
@@ -2321,6 +2299,8 @@ class Visualization:
 
 
 class WarehouseType(Enum):
+    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
+    and also set the field `enable_serverless_compute` to `true`."""
 
     CLASSIC = 'CLASSIC'
     PRO = 'PRO'
@@ -2401,7 +2381,7 @@ class WidgetOptions:
 class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    alert destinations if the condition was met."""
+    notification destinations if the condition was met."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2417,7 +2397,7 @@ class AlertsAPI:
         """Create an alert.
         
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
-        condition of its result, and notifies users or alert destinations if the condition was met."""
+        condition of its result, and notifies users or notification destinations if the condition was met."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateAlert(name=name, options=options, parent=parent, query_id=query_id, rearm=rearm)
@@ -3193,7 +3173,6 @@ class WarehousesAPI:
              channel: Channel = None,
              cluster_size: str = None,
              creator_name: str = None,
-             enable_databricks_compute: bool = None,
              enable_photon: bool = None,
              enable_serverless_compute: bool = None,
              instance_profile_arn: str = None,
@@ -3215,7 +3194,6 @@ class WarehousesAPI:
                                            channel=channel,
                                            cluster_size=cluster_size,
                                            creator_name=creator_name,
-                                           enable_databricks_compute=enable_databricks_compute,
                                            enable_photon=enable_photon,
                                            enable_serverless_compute=enable_serverless_compute,
                                            id=id,
@@ -3323,8 +3301,6 @@ class WarehousesAPI:
             channel: Channel = None,
             config_param: RepeatedEndpointConfPairs = None,
             data_access_config: List[EndpointConfPair] = None,
-            enable_databricks_compute: bool = None,
-            enable_serverless_compute: bool = None,
             enabled_warehouse_types: List[WarehouseTypePair] = None,
             global_param: RepeatedEndpointConfPairs = None,
             google_service_account: str = None,
@@ -3342,8 +3318,6 @@ class WarehousesAPI:
                 channel=channel,
                 config_param=config_param,
                 data_access_config=data_access_config,
-                enable_databricks_compute=enable_databricks_compute,
-                enable_serverless_compute=enable_serverless_compute,
                 enabled_warehouse_types=enabled_warehouse_types,
                 global_param=global_param,
                 google_service_account=google_service_account,

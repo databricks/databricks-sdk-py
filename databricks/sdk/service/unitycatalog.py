@@ -214,6 +214,7 @@ class ColumnTypeName(Enum):
     STRUCT = 'STRUCT'
     TABLE_TYPE = 'TABLE_TYPE'
     TIMESTAMP = 'TIMESTAMP'
+    TIMESTAMP_NTZ = 'TIMESTAMP_NTZ'
     USER_DEFINED_TYPE = 'USER_DEFINED_TYPE'
 
 
@@ -1112,7 +1113,6 @@ class GetAccountStorageCredentialRequest:
 
     metastore_id: str
     name: str
-    storage_credential_name: str
 
 
 @dataclass
@@ -3124,21 +3124,18 @@ class AccountStorageCredentialsAPI:
             body=body)
         return StorageCredentialInfo.from_dict(json)
 
-    def get(self, metastore_id: str, name: str, storage_credential_name: str,
-            **kwargs) -> StorageCredentialInfo:
+    def get(self, metastore_id: str, name: str, **kwargs) -> StorageCredentialInfo:
         """Gets the named storage credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have a level of privilege on the storage credential."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetAccountStorageCredentialRequest(metastore_id=metastore_id,
-                                                         name=name,
-                                                         storage_credential_name=storage_credential_name)
+            request = GetAccountStorageCredentialRequest(metastore_id=metastore_id, name=name)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/{request.storage_credential_name}'
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/'
         )
         return StorageCredentialInfo.from_dict(json)
 
