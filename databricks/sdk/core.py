@@ -708,7 +708,7 @@ class ApiClient(requests.Session):
     @staticmethod
     def _mask(m: Dict[str, any]):
         for k in m:
-            if k in {'string_value', 'token_value', 'content'}:
+            if k in {'bytes_value', 'string_value', 'token_value', 'value', 'content'}:
                 m[k] = "**REDACTED**"
 
     @staticmethod

@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import os
 import threading
 import typing
@@ -13,6 +14,16 @@ class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime
 
 
 class MountInfo(namedtuple('MountInfo', ['mountPoint', 'source', 'encryptionType'])):
+    pass
+
+
+class SecretScope(namedtuple('SecretScope', ['name'])):
+
+    def getName(self):
+        return self.name
+
+
+class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
     pass
 
 
@@ -107,6 +118,90 @@ class _FsUtil:
         return self._utils._proxy('fs', 'refreshMounts')()
 
 
+class _RedactingFilter(logging.Filter):
+    """Best-effort secret redaction logger"""
+
+    def __init__(self):
+        super().__init__()
+        self._secrets = set()
+
+    def register_secret(self, secret):
+        _RedactingFilter.register()
+        self._secrets.add(secret)
+
+    def filter(self, record):
+        record.msg = self._redact(record.msg)
+        if isinstance(record.args, dict):
+            for k in record.args.keys():
+                record.args[k] = self._redact(record.args[k])
+        else:
+            record.args = tuple(self._redact(arg) for arg in record.args)
+        return True
+
+    def _redact(self, msg):
+        msg = str(msg)
+        for secrets in self._secrets:
+            msg = msg.replace(secrets, '[REDACTED]')
+        return msg
+
+    @staticmethod
+    def _has_redactor(logger) -> bool:
+        if not hasattr(logger, 'filters'):
+            return True
+        for f in logger.filters:
+            if type(f) == _RedactingFilter:
+                return True
+        return False
+
+    @staticmethod
+    def register():
+        # inject redacting filter into every initialized logger
+        for logger in logging.Logger.manager.loggerDict.values():
+            if _RedactingFilter._has_redactor(logger):
+                # skip adding this filter twice
+                continue
+            logger.filters.append(_FILTER)
+
+
+_FILTER = _RedactingFilter()
+
+
+class _SecretsUtil:
+    """Remote equivalent of secrets util"""
+
+    def __init__(self, utils: '_RemoteDbUtils'):
+        self._api = utils._api.secrets # nolint
+
+    def getBytes(self, scope: str, key: str) -> bytes:
+        """Gets the bytes representation of a secret value for the specified scope and key."""
+        query = {'scope': scope, 'key': key}
+        raw = self._api._api.do('GET', '/api/2.0/secrets/get', query=query)
+        return base64.b64decode(raw['value'])
+
+    def get(self, scope: str, key: str) -> str:
+        """Gets the string representation of a secret value for the specified secrets scope and key."""
+        val = self.getBytes(scope, key)
+        string_value = val.decode()
+
+        # to comply with the expected best-effort behavior from DBR DBUtils,
+        # add secret for redaction only after dbutils.secrets.get()
+        _FILTER.register_secret(string_value)
+
+        return string_value
+
+    def list(self, scope) -> typing.List[SecretMetadata]:
+        """Lists the metadata for secrets within the specified scope."""
+
+        # transform from SDK dataclass to dbutils-compatible namedtuple
+        return [SecretMetadata(v.key) for v in self._api.list_secrets(scope)]
+
+    def listScopes(self) -> typing.List[SecretScope]:
+        """Lists the available scopes."""
+
+        # transform from SDK dataclass to dbutils-compatible namedtuple
+        return [SecretScope(v.name) for v in self._api.list_scopes()]
+
+
 class _RemoteDbUtils:
 
     def __init__(self, *, cluster_id=None):
@@ -119,6 +214,7 @@ class _RemoteDbUtils:
         self._ctx = None
 
         self.fs = _FsUtil(self)
+        self.secrets = _SecretsUtil(self)
 
     def _running_command_context(self) -> commands.ContextStatusResponse:
         if self._ctx:
