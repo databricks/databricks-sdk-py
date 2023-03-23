@@ -1,5 +1,5 @@
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 
 def test_smallest_node_type(w):
