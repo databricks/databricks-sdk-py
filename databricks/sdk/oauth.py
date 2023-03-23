@@ -1,5 +1,4 @@
 import base64
-from datetime import datetime, timedelta
 import functools
 import hashlib
 import logging
@@ -9,6 +8,7 @@ import urllib.parse
 import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Dict, List
 
@@ -45,10 +45,7 @@ class Token:
         return self.access_token and not self.expired
 
     def as_dict(self) -> dict:
-        raw = {
-            'access_token': self.access_token,
-            'token_type': self.token_type,
-        }
+        raw = {'access_token': self.access_token, 'token_type': self.token_type, }
         if self.expires_on:
             raw['expires_on'] = self.expires_on.isoformat()
         if self.refresh_token:
