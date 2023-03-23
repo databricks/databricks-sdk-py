@@ -4,6 +4,7 @@ import logging
 import random
 import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, List
 
@@ -504,7 +505,7 @@ class ServingEndpointsAPI:
                name: str,
                config: EndpointCoreConfigInput,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> ServingEndpointDetailed:
         """Create a new serving endpoint."""
         request = kwargs.get('request', None)
@@ -513,12 +514,12 @@ class ServingEndpointsAPI:
         body = request.as_dict()
         if wait:
             op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (EndpointStateConfigUpdate.NOT_UPDATING, )
             failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(name=op_response['name'])
                 status = poll.state.config_update
                 status_message = f'current status: {status}'
@@ -535,7 +536,7 @@ class ServingEndpointsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
 
     def delete(self, name: str, **kwargs):
@@ -603,7 +604,7 @@ class ServingEndpointsAPI:
                       *,
                       traffic_config: TrafficConfig = None,
                       wait=True,
-                      timeout=20,
+                      timeout=timedelta(minutes=20),
                       **kwargs) -> ServingEndpointDetailed:
         """Update a serving endpoint with a new config.
         
@@ -618,12 +619,12 @@ class ServingEndpointsAPI:
         body = request.as_dict()
         if wait:
             op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (EndpointStateConfigUpdate.NOT_UPDATING, )
             failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(name=op_response['name'])
                 status = poll.state.config_update
                 status_message = f'current status: {status}'
@@ -640,5 +641,5 @@ class ServingEndpointsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)

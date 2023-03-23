@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 
 def test_smallest_node_type(w):
@@ -30,5 +31,5 @@ def test_create_cluster(w, env_or_skip):
                              instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
                              autotermination_minutes=10,
                              num_workers=1,
-                             timeout=10)
+                             timeout=timedelta(minutes=10))
     logging.info(f'Created: {info}')

@@ -4,6 +4,7 @@ import logging
 import random
 import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Dict, Iterator, List
 
@@ -1664,7 +1665,7 @@ class ClustersAPI:
                ssh_public_keys: List[str] = None,
                workload_type: WorkloadType = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> ClusterInfo:
         """Create new cluster.
         
@@ -1707,12 +1708,12 @@ class ClustersAPI:
         body = request.as_dict()
         if wait:
             op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.ERROR, State.TERMINATED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=op_response['cluster_id'])
                 status = poll.state
                 status_message = poll.state_message
@@ -1729,10 +1730,10 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/create', body=body)
 
-    def delete(self, cluster_id: str, wait=True, timeout=20, **kwargs) -> ClusterInfo:
+    def delete(self, cluster_id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> ClusterInfo:
         """Terminate cluster.
         
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
@@ -1744,12 +1745,12 @@ class ClustersAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', '/api/2.0/clusters/delete', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.TERMINATED, )
             failure_states = (State.ERROR, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=request.cluster_id)
                 status = poll.state
                 status_message = poll.state_message
@@ -1766,7 +1767,7 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/delete', body=body)
 
     def edit(self,
@@ -1797,7 +1798,7 @@ class ClustersAPI:
              ssh_public_keys: List[str] = None,
              workload_type: WorkloadType = None,
              wait=True,
-             timeout=20,
+             timeout=timedelta(minutes=20),
              **kwargs) -> ClusterInfo:
         """Update cluster configuration.
         
@@ -1842,12 +1843,12 @@ class ClustersAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', '/api/2.0/clusters/edit', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.ERROR, State.TERMINATED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=request.cluster_id)
                 status = poll.state
                 status_message = poll.state_message
@@ -1864,7 +1865,7 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
 
     def events(self,
@@ -1903,7 +1904,7 @@ class ClustersAPI:
                 return
             body = json['next_page']
 
-    def get(self, cluster_id: str, wait=False, timeout=20, **kwargs) -> ClusterInfo:
+    def get(self, cluster_id: str, wait=False, timeout=timedelta(minutes=20), **kwargs) -> ClusterInfo:
         """Get cluster info.
         
         "Retrieves the information for a cluster given its identifier. Clusters can be described while they
@@ -1917,12 +1918,12 @@ class ClustersAPI:
 
         if wait:
             op_response = self._api.do('GET', '/api/2.0/clusters/get', query=query)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.ERROR, State.TERMINATED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=op_response['cluster_id'])
                 status = poll.state
                 status_message = poll.state_message
@@ -1939,7 +1940,7 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterInfo.from_dict(json)
@@ -2013,7 +2014,7 @@ class ClustersAPI:
                autoscale: AutoScale = None,
                num_workers: int = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> ClusterInfo:
         """Resize cluster.
         
@@ -2025,12 +2026,12 @@ class ClustersAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', '/api/2.0/clusters/resize', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.ERROR, State.TERMINATED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=request.cluster_id)
                 status = poll.state
                 status_message = poll.state_message
@@ -2047,7 +2048,7 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/resize', body=body)
 
     def restart(self,
@@ -2055,7 +2056,7 @@ class ClustersAPI:
                 *,
                 restart_user: str = None,
                 wait=True,
-                timeout=20,
+                timeout=timedelta(minutes=20),
                 **kwargs) -> ClusterInfo:
         """Restart cluster.
         
@@ -2067,12 +2068,12 @@ class ClustersAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', '/api/2.0/clusters/restart', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.ERROR, State.TERMINATED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=request.cluster_id)
                 status = poll.state
                 status_message = poll.state_message
@@ -2089,7 +2090,7 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/restart', body=body)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -2100,7 +2101,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
         return GetSparkVersionsResponse.from_dict(json)
 
-    def start(self, cluster_id: str, wait=True, timeout=20, **kwargs) -> ClusterInfo:
+    def start(self, cluster_id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> ClusterInfo:
         """Start terminated cluster.
         
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
@@ -2115,12 +2116,12 @@ class ClustersAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', '/api/2.0/clusters/start', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.ERROR, State.TERMINATED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(cluster_id=request.cluster_id)
                 status = poll.state
                 status_message = poll.state_message
@@ -2137,7 +2138,7 @@ class ClustersAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/clusters/start', body=body)
 
     def unpin(self, cluster_id: str, **kwargs):

@@ -4,6 +4,7 @@ import logging
 import random
 import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, List
 
@@ -243,7 +244,7 @@ class CommandExecutionAPI:
                command_id: str = None,
                context_id: str = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> CommandStatusResponse:
         """Cancel a command.
         
@@ -256,12 +257,12 @@ class CommandExecutionAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', '/api/1.2/commands/cancel', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (CommandStatus.Cancelled, )
             failure_states = (CommandStatus.Error, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.command_status(cluster_id=request.cluster_id,
                                            command_id=request.command_id,
                                            context_id=request.context_id)
@@ -282,7 +283,7 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/1.2/commands/cancel', body=body)
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str,
@@ -326,7 +327,7 @@ class CommandExecutionAPI:
                cluster_id: str = None,
                language: Language = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> ContextStatusResponse:
         """Create an execution context.
         
@@ -339,12 +340,12 @@ class CommandExecutionAPI:
         body = request.as_dict()
         if wait:
             op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (ContextStatus.Running, )
             failure_states = (ContextStatus.Error, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.context_status(cluster_id=request.cluster_id, context_id=op_response['id'])
                 status = poll.status
                 status_message = f'current status: {status}'
@@ -361,7 +362,7 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/1.2/contexts/create', body=body)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
@@ -381,7 +382,7 @@ class CommandExecutionAPI:
                 context_id: str = None,
                 language: Language = None,
                 wait=True,
-                timeout=20,
+                timeout=timedelta(minutes=20),
                 **kwargs) -> CommandStatusResponse:
         """Run a command.
         
@@ -397,12 +398,12 @@ class CommandExecutionAPI:
         body = request.as_dict()
         if wait:
             op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (CommandStatus.Finished, CommandStatus.Error, )
             failure_states = (CommandStatus.Cancelled, CommandStatus.Cancelling, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.command_status(cluster_id=request.cluster_id,
                                            command_id=op_response['id'],
                                            context_id=request.context_id)
@@ -421,5 +422,5 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/1.2/commands/execute', body=body)

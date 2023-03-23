@@ -4,6 +4,7 @@ import logging
 import random
 import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List
 
@@ -3102,7 +3103,7 @@ class WarehousesAPI:
                tags: EndpointTags = None,
                warehouse_type: WarehouseType = None,
                wait=True,
-               timeout=20,
+               timeout=timedelta(minutes=20),
                **kwargs) -> GetWarehouseResponse:
         """Create a warehouse.
         
@@ -3125,12 +3126,12 @@ class WarehousesAPI:
         body = request.as_dict()
         if wait:
             op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.STOPPED, State.DELETED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(id=op_response['id'])
                 status = poll.state
                 status_message = f'current status: {status}'
@@ -3149,10 +3150,10 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
 
-    def delete(self, id: str, wait=True, timeout=20, **kwargs) -> GetWarehouseResponse:
+    def delete(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
         """Delete a warehouse.
         
         Deletes a SQL warehouse."""
@@ -3162,11 +3163,11 @@ class WarehousesAPI:
 
         if wait:
             self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.DELETED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(id=request.id)
                 status = poll.state
                 status_message = f'current status: {status}'
@@ -3182,7 +3183,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
 
     def edit(self,
@@ -3203,7 +3204,7 @@ class WarehousesAPI:
              tags: EndpointTags = None,
              warehouse_type: WarehouseType = None,
              wait=True,
-             timeout=20,
+             timeout=timedelta(minutes=20),
              **kwargs) -> GetWarehouseResponse:
         """Update a warehouse.
         
@@ -3228,12 +3229,12 @@ class WarehousesAPI:
         body = request.as_dict()
         if wait:
             self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.STOPPED, State.DELETED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(id=request.id)
                 status = poll.state
                 status_message = f'current status: {status}'
@@ -3252,10 +3253,10 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
 
-    def get(self, id: str, wait=False, timeout=20, **kwargs) -> GetWarehouseResponse:
+    def get(self, id: str, wait=False, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
         
         Gets the information for a single SQL warehouse."""
@@ -3265,12 +3266,12 @@ class WarehousesAPI:
 
         if wait:
             op_response = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.STOPPED, State.DELETED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(id=op_response['id'])
                 status = poll.state
                 status_message = f'current status: {status}'
@@ -3289,7 +3290,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
         return GetWarehouseResponse.from_dict(json)
@@ -3353,7 +3354,7 @@ class WarehousesAPI:
         body = request.as_dict()
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)
 
-    def start(self, id: str, wait=True, timeout=20, **kwargs) -> GetWarehouseResponse:
+    def start(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
         """Start a warehouse.
         
         Starts a SQL warehouse."""
@@ -3363,12 +3364,12 @@ class WarehousesAPI:
 
         if wait:
             self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.RUNNING, )
             failure_states = (State.STOPPED, State.DELETED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(id=request.id)
                 status = poll.state
                 status_message = f'current status: {status}'
@@ -3387,10 +3388,10 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
 
-    def stop(self, id: str, wait=True, timeout=20, **kwargs) -> GetWarehouseResponse:
+    def stop(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
         """Stop a warehouse.
         
         Stops a SQL warehouse."""
@@ -3400,11 +3401,11 @@ class WarehousesAPI:
 
         if wait:
             self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
-            started = time.time()
+            deadline = time.time() + timeout.total_seconds()
             target_states = (State.STOPPED, )
             status_message = 'polling...'
             attempt = 1
-            while (started + (timeout * 60)) > time.time():
+            while time.time() < deadline:
                 poll = self.get(id=request.id)
                 status = poll.state
                 status_message = f'current status: {status}'
@@ -3420,5 +3421,5 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(f'timed out after {timeout} minutes: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
