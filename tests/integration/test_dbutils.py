@@ -32,9 +32,9 @@ def test_secrets(w, random):
     logger.info(f'Before loading secret: {random_value}')
 
     w.secrets.create_scope(random_scope)
-    w.secrets.put_secret(random_scope, key_for_string,
-                         string_value=random_value)
-    w.secrets.put_secret(random_scope, key_for_bytes,
+    w.secrets.put_secret(random_scope, key_for_string, string_value=random_value)
+    w.secrets.put_secret(random_scope,
+                         key_for_bytes,
                          bytes_value=base64.b64encode(random_value.encode()).decode())
 
     from databricks.sdk.runtime import dbutils

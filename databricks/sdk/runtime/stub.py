@@ -1,9 +1,9 @@
 import typing
+from collections import namedtuple
 
 from pyspark.sql.context import SQLContext
 from pyspark.sql.functions import udf as U
 from pyspark.sql.session import SparkSession
-from collections import namedtuple
 
 udf = U
 spark: SparkSession
@@ -11,6 +11,7 @@ sc = spark.sparkContext
 sqlContext: SQLContext
 sql = sqlContext.sql
 table = sqlContext.table
+
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
     pass
@@ -21,13 +22,13 @@ class MountInfo(namedtuple('MountInfo', ['mountPoint', 'source', 'encryptionType
 
 
 class SecretScope(namedtuple('SecretScope', ['name'])):
+
     def getName(self):
         return self.name
 
 
 class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
     pass
-
 
 
 def displayHTML(html):

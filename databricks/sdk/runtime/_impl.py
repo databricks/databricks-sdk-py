@@ -1,9 +1,9 @@
 import base64
 import json
+import logging
 import os
 import threading
 import typing
-import logging
 from collections import namedtuple
 
 from databricks.sdk.service import commands
@@ -18,6 +18,7 @@ class MountInfo(namedtuple('MountInfo', ['mountPoint', 'source', 'encryptionType
 
 
 class SecretScope(namedtuple('SecretScope', ['name'])):
+
     def getName(self):
         return self.name
 
