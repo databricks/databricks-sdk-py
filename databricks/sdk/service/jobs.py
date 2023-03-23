@@ -1,7 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 import logging
-import math
 import random
 import time
 from dataclasses import dataclass
@@ -2022,8 +2021,7 @@ class JobsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body)
 
     def create(self,
@@ -2160,8 +2158,7 @@ class JobsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('GET', '/api/2.1/jobs/runs/get', query=query)
 
     def get_run_output(self, run_id: int, **kwargs) -> RunOutput:
@@ -2335,8 +2332,7 @@ class JobsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
 
     def reset(self, job_id: int, new_settings: JobSettings, **kwargs):
@@ -2407,8 +2403,7 @@ class JobsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
 
     def submit(self,
@@ -2464,8 +2459,7 @@ class JobsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
 
     def update(self,

@@ -1,7 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 import logging
-import math
 import random
 import time
 from dataclasses import dataclass
@@ -1076,8 +1075,7 @@ class PipelinesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}')
         return GetPipelineResponse.from_dict(json)
@@ -1222,8 +1220,7 @@ class PipelinesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
 
     def start_update(self,
@@ -1285,8 +1282,7 @@ class PipelinesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
 
     def update(self,

@@ -1,7 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 import logging
-import math
 import random
 import time
 from dataclasses import dataclass
@@ -284,8 +283,7 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/1.2/commands/cancel', body=body)
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str,
@@ -364,8 +362,7 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/1.2/contexts/create', body=body)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
@@ -425,6 +422,5 @@ class CommandExecutionAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/1.2/commands/execute', body=body)

@@ -1,7 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 import logging
-import math
 import random
 import time
 from dataclasses import dataclass
@@ -537,8 +536,7 @@ class ServingEndpointsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
 
     def delete(self, name: str, **kwargs):
@@ -643,6 +641,5 @@ class ServingEndpointsAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)

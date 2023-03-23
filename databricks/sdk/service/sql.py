@@ -1,7 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 import logging
-import math
 import random
 import time
 from dataclasses import dataclass
@@ -3151,8 +3150,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
 
     def delete(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
@@ -3185,8 +3183,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
 
     def edit(self,
@@ -3256,8 +3253,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
 
     def get(self, id: str, wait=False, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
@@ -3294,8 +3290,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
         return GetWarehouseResponse.from_dict(json)
@@ -3393,8 +3388,7 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
 
     def stop(self, id: str, wait=True, timeout=timedelta(minutes=20), **kwargs) -> GetWarehouseResponse:
@@ -3427,6 +3421,5 @@ class WarehousesAPI:
                 _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
                 time.sleep(sleep + random.random())
                 attempt += 1
-            raise TimeoutError(
-                f'timed out after {math.floor(timeout.total_seconds())} seconds: {status_message}')
+            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
