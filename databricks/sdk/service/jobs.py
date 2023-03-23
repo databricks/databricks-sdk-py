@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Dict, Iterator, List
 
 from ..errors import OperationFailed
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -1975,6 +1975,33 @@ class JobsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def wait_get_run_job_terminated_or_skipped(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get_run(run_id=run_id)
+            status = poll.state.life_cycle_state
+            status_message = f'current status: {status}'
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"run_id={run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
     def cancel_all_runs(self, job_id: int, **kwargs):
         """Cancel all runs of a job.
         
@@ -1986,7 +2013,7 @@ class JobsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body)
 
-    def cancel_run(self, run_id: int, wait=True, timeout=timedelta(minutes=20), **kwargs) -> Run:
+    def cancel_run(self, run_id: int, **kwargs) -> Wait[Run]:
         """Cancel a job run.
         
         Cancels a job run. The run is canceled asynchronously, so it may still be running when this request
@@ -1995,34 +2022,11 @@ class JobsAPI:
         if not request: # request is not given through keyed args
             request = CancelRun(run_id=run_id)
         body = request.as_dict()
-        if wait:
-            self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
-            failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get_run(run_id=request.run_id)
-                status = poll.state.life_cycle_state
-                status_message = f'current status: {status}'
-                if poll.state:
-                    status_message = poll.state.state_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"jobs.get_run(run_id={request.run_id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body)
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=request.run_id)
+
+    def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
+        return self.cancel_run(run_id=run_id).result(timeout=timeout)
 
     def create(self,
                *,
@@ -2114,13 +2118,7 @@ class JobsAPI:
         json = self._api.do('GET', '/api/2.1/jobs/get', query=query)
         return Job.from_dict(json)
 
-    def get_run(self,
-                run_id: int,
-                *,
-                include_history: bool = None,
-                wait=True,
-                timeout=timedelta(minutes=20),
-                **kwargs) -> Run:
+    def get_run(self, run_id: int, *, include_history: bool = None, **kwargs) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run."""
@@ -2132,34 +2130,8 @@ class JobsAPI:
         if include_history: query['include_history'] = request.include_history
         if run_id: query['run_id'] = request.run_id
 
-        if wait:
-            op_response = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
-            failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get_run(run_id=op_response['run_id'])
-                status = poll.state.life_cycle_state
-                status_message = f'current status: {status}'
-                if poll.state:
-                    status_message = poll.state.state_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"jobs.get_run(run_id={op_response['run_id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        self._api.do('GET', '/api/2.1/jobs/runs/get', query=query)
+        json = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query)
+        return Run.from_dict(json)
 
     def get_run_output(self, run_id: int, **kwargs) -> RunOutput:
         """Get the output for a single run.
@@ -2284,9 +2256,7 @@ class JobsAPI:
                    rerun_tasks: List[str] = None,
                    spark_submit_params: List[str] = None,
                    sql_params: Dict[str, str] = None,
-                   wait=True,
-                   timeout=timedelta(minutes=20),
-                   **kwargs) -> Run:
+                   **kwargs) -> Wait[Run]:
         """Repair a job run.
         
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
@@ -2306,34 +2276,36 @@ class JobsAPI:
                                 spark_submit_params=spark_submit_params,
                                 sql_params=sql_params)
         body = request.as_dict()
-        if wait:
-            op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
-            failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get_run(run_id=request.run_id)
-                status = poll.state.life_cycle_state
-                status_message = f'current status: {status}'
-                if poll.state:
-                    status_message = poll.state.state_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"jobs.get_run(run_id={request.run_id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
+        op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=request.run_id)
+
+    def repair_run_and_wait(self,
+                            run_id: int,
+                            *,
+                            dbt_commands: List[str] = None,
+                            jar_params: List[str] = None,
+                            latest_repair_id: int = None,
+                            notebook_params: Dict[str, str] = None,
+                            pipeline_params: PipelineParams = None,
+                            python_named_params: Dict[str, str] = None,
+                            python_params: List[str] = None,
+                            rerun_all_failed_tasks: bool = None,
+                            rerun_tasks: List[str] = None,
+                            spark_submit_params: List[str] = None,
+                            sql_params: Dict[str, str] = None,
+                            timeout=timedelta(minutes=20)) -> Run:
+        return self.repair_run(dbt_commands=dbt_commands,
+                               jar_params=jar_params,
+                               latest_repair_id=latest_repair_id,
+                               notebook_params=notebook_params,
+                               pipeline_params=pipeline_params,
+                               python_named_params=python_named_params,
+                               python_params=python_params,
+                               rerun_all_failed_tasks=rerun_all_failed_tasks,
+                               rerun_tasks=rerun_tasks,
+                               run_id=run_id,
+                               spark_submit_params=spark_submit_params,
+                               sql_params=sql_params).result(timeout=timeout)
 
     def reset(self, job_id: int, new_settings: JobSettings, **kwargs):
         """Overwrites all settings for a job.
@@ -2358,9 +2330,7 @@ class JobsAPI:
                 python_params: List[str] = None,
                 spark_submit_params: List[str] = None,
                 sql_params: Dict[str, str] = None,
-                wait=True,
-                timeout=timedelta(minutes=20),
-                **kwargs) -> Run:
+                **kwargs) -> Wait[Run]:
         """Trigger a new job run.
         
         Run a job and return the `run_id` of the triggered run."""
@@ -2377,34 +2347,32 @@ class JobsAPI:
                              spark_submit_params=spark_submit_params,
                              sql_params=sql_params)
         body = request.as_dict()
-        if wait:
-            op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
-            failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get_run(run_id=op_response['run_id'])
-                status = poll.state.life_cycle_state
-                status_message = f'current status: {status}'
-                if poll.state:
-                    status_message = poll.state.state_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"jobs.get_run(run_id={op_response['run_id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
+        op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=op_response['run_id'])
+
+    def run_now_and_wait(self,
+                         job_id: int,
+                         *,
+                         dbt_commands: List[str] = None,
+                         idempotency_token: str = None,
+                         jar_params: List[str] = None,
+                         notebook_params: Dict[str, str] = None,
+                         pipeline_params: PipelineParams = None,
+                         python_named_params: Dict[str, str] = None,
+                         python_params: List[str] = None,
+                         spark_submit_params: List[str] = None,
+                         sql_params: Dict[str, str] = None,
+                         timeout=timedelta(minutes=20)) -> Run:
+        return self.run_now(dbt_commands=dbt_commands,
+                            idempotency_token=idempotency_token,
+                            jar_params=jar_params,
+                            job_id=job_id,
+                            notebook_params=notebook_params,
+                            pipeline_params=pipeline_params,
+                            python_named_params=python_named_params,
+                            python_params=python_params,
+                            spark_submit_params=spark_submit_params,
+                            sql_params=sql_params).result(timeout=timeout)
 
     def submit(self,
                *,
@@ -2415,9 +2383,7 @@ class JobsAPI:
                tasks: List[RunSubmitTaskSettings] = None,
                timeout_seconds: int = None,
                webhook_notifications: JobWebhookNotifications = None,
-               wait=True,
-               timeout=timedelta(minutes=20),
-               **kwargs) -> Run:
+               **kwargs) -> Wait[Run]:
         """Create and trigger a one-time run.
         
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -2433,34 +2399,27 @@ class JobsAPI:
                                 timeout_seconds=timeout_seconds,
                                 webhook_notifications=webhook_notifications)
         body = request.as_dict()
-        if wait:
-            op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
-            failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get_run(run_id=op_response['run_id'])
-                status = poll.state.life_cycle_state
-                status_message = f'current status: {status}'
-                if poll.state:
-                    status_message = poll.state.state_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"jobs.get_run(run_id={op_response['run_id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
+        op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=op_response['run_id'])
+
+    def submit_and_wait(
+        self,
+        *,
+        access_control_list: List[AccessControlRequest] = None,
+        git_source: GitSource = None,
+        idempotency_token: str = None,
+        run_name: str = None,
+        tasks: List[RunSubmitTaskSettings] = None,
+        timeout_seconds: int = None,
+        webhook_notifications: JobWebhookNotifications = None,
+        timeout=timedelta(minutes=20)) -> Run:
+        return self.submit(access_control_list=access_control_list,
+                           git_source=git_source,
+                           idempotency_token=idempotency_token,
+                           run_name=run_name,
+                           tasks=tasks,
+                           timeout_seconds=timeout_seconds,
+                           webhook_notifications=webhook_notifications).result(timeout=timeout)
 
     def update(self,
                job_id: int,

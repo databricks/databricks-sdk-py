@@ -177,10 +177,11 @@ To find code examples that demonstrate how to call the Databricks SDK for Python
 
 ## Long-running operations
 
-When you invoke a long0running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities to reach the correct state or return the error message in case of failure. All long-running operations have 
-the `wait: bool` optional keyword argument, which is enabled by default. These methods return information about 
-the relevant entity once the operation is finished. It is possible to configure a custom timeout by optionally providing 
-a number of minutes in `timeout` keyword argument.
+When you invoke a long-running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities 
+to reach the correct state or return the error message in case of failure. All long-running operations return generic `Wait` instance with `result()` 
+method to get a result of long-running operation, once it's finished. Databricks SDK for Python picks the most reasonable default timeouts for 
+every method, but sometimes you may find yourself in a situation, where you'd want to provide `datatime.timedelta()` as the value of `timeout`
+argument to `result()` method.
 
 There are a number of long-runng opereations in Databricks APIs such as managing:
 * Clusters, 
@@ -200,20 +201,21 @@ the `TERMINATED` or `SKIPPED` state. Also you would likely need the error messag
 operation times out failed with an error code. Other times you may want to configure a custom timeout other than 
 the default of 20 minutes.
 
-In the following example, `CreateAndWait` returns `ClusterInfo` only once the cluster is in the `RUNNING` state, 
+In the following example, `w.clusters.create` returns `ClusterInfo` only once the cluster is in the `RUNNING` state, 
 otherwise it will timeout in 10 minutes:
 
 ```python
+import datetime
 import logging
 from databricks.sdk import WorkspaceClient
+
 w = WorkspaceClient()
-info = w.clusters.create(cluster_name='Created cluster',
-                         spark_version='12.0.x-scala2.12',
-                         node_type_id='m5d.large',
-                         autotermination_minutes=10,
-                         num_workers=1,
-                         wait=True, # not needed as this is default - added for clarity
-                         timeout=10)
+info = w.clusters.create_and_wait(cluster_name='Created cluster',
+                                  spark_version='12.0.x-scala2.12',
+                                  node_type_id='m5d.large',
+                                  autotermination_minutes=10,
+                                  num_workers=1,
+                                  timeout=datetime.timedelta(minutes=10))
 logging.info(f'Created: {info}')
 ```
 

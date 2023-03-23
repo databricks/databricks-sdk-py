@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Dict, Iterator, List
 
 from ..errors import OperationFailed
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -1561,6 +1561,31 @@ class WorkspacesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def wait_get_workspace_running(self, workspace_id: int, timeout=timedelta(minutes=20)) -> Workspace:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (WorkspaceStatus.RUNNING, )
+        failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(workspace_id=workspace_id)
+            status = poll.workspace_status
+            status_message = poll.workspace_status_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"workspace_id={workspace_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
     def create(self,
                workspace_name: str,
                *,
@@ -1576,9 +1601,7 @@ class WorkspacesAPI:
                private_access_settings_id: str = None,
                storage_configuration_id: str = None,
                storage_customer_managed_key_id: str = None,
-               wait=True,
-               timeout=timedelta(minutes=20),
-               **kwargs) -> Workspace:
+               **kwargs) -> Wait[Workspace]:
         """Create a new workspace.
         
         Creates a new workspace.
@@ -1606,34 +1629,39 @@ class WorkspacesAPI:
                 storage_customer_managed_key_id=storage_customer_managed_key_id,
                 workspace_name=workspace_name)
         body = request.as_dict()
-        if wait:
-            op_response = self._api.do('POST',
-                                       f'/api/2.0/accounts/{self._api.account_id}/workspaces',
-                                       body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (WorkspaceStatus.RUNNING, )
-            failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(workspace_id=op_response['workspace_id'])
-                status = poll.workspace_status
-                status_message = poll.workspace_status_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"workspaces.get(workspace_id={op_response['workspace_id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
+        op_response = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
+        return Wait(self.wait_get_workspace_running, workspace_id=op_response['workspace_id'])
+
+    def create_and_wait(
+        self,
+        workspace_name: str,
+        *,
+        aws_region: str = None,
+        cloud: str = None,
+        cloud_resource_container: CloudResourceContainer = None,
+        credentials_id: str = None,
+        deployment_name: str = None,
+        location: str = None,
+        managed_services_customer_managed_key_id: str = None,
+        network_id: str = None,
+        pricing_tier: PricingTier = None,
+        private_access_settings_id: str = None,
+        storage_configuration_id: str = None,
+        storage_customer_managed_key_id: str = None,
+        timeout=timedelta(minutes=20)) -> Workspace:
+        return self.create(aws_region=aws_region,
+                           cloud=cloud,
+                           cloud_resource_container=cloud_resource_container,
+                           credentials_id=credentials_id,
+                           deployment_name=deployment_name,
+                           location=location,
+                           managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
+                           network_id=network_id,
+                           pricing_tier=pricing_tier,
+                           private_access_settings_id=private_access_settings_id,
+                           storage_configuration_id=storage_configuration_id,
+                           storage_customer_managed_key_id=storage_customer_managed_key_id,
+                           workspace_name=workspace_name).result(timeout=timeout)
 
     def delete(self, workspace_id: int, **kwargs):
         """Delete a workspace.
@@ -1693,9 +1721,7 @@ class WorkspacesAPI:
                network_id: str = None,
                storage_configuration_id: str = None,
                storage_customer_managed_key_id: str = None,
-               wait=True,
-               timeout=timedelta(minutes=20),
-               **kwargs) -> Workspace:
+               **kwargs) -> Wait[Workspace]:
         """Update workspace configuration.
         
         Updates a workspace configuration for either a running workspace or a failed workspace. The elements
@@ -1799,33 +1825,26 @@ class WorkspacesAPI:
                 storage_customer_managed_key_id=storage_customer_managed_key_id,
                 workspace_id=workspace_id)
         body = request.as_dict()
-        if wait:
-            self._api.do('PATCH',
-                         f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
-                         body=body)
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (WorkspaceStatus.RUNNING, )
-            failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(workspace_id=request.workspace_id)
-                status = poll.workspace_status
-                status_message = poll.workspace_status_message
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"workspaces.get(workspace_id={request.workspace_id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
                      body=body)
+        return Wait(self.wait_get_workspace_running, workspace_id=request.workspace_id)
+
+    def update_and_wait(
+        self,
+        workspace_id: int,
+        *,
+        aws_region: str = None,
+        credentials_id: str = None,
+        managed_services_customer_managed_key_id: str = None,
+        network_id: str = None,
+        storage_configuration_id: str = None,
+        storage_customer_managed_key_id: str = None,
+        timeout=timedelta(minutes=20)) -> Workspace:
+        return self.update(aws_region=aws_region,
+                           credentials_id=credentials_id,
+                           managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
+                           network_id=network_id,
+                           storage_configuration_id=storage_configuration_id,
+                           storage_customer_managed_key_id=storage_customer_managed_key_id,
+                           workspace_id=workspace_id).result(timeout=timeout)

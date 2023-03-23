@@ -223,9 +223,9 @@ class _RemoteDbUtils:
             if self._ctx:
                 return self._ctx
             self._api.clusters.ensure_cluster_is_running(self._cluster_id)
-            self._ctx = self._api.command_execution.create(cluster_id=self._cluster_id,
-                                                           language=commands.Language.python,
-                                                           wait=True)
+            execution = self._api.command_execution
+            self._ctx = execution.create_and_wait(cluster_id=self._cluster_id,
+                                                  language=commands.Language.python)
         return self._ctx
 
     def _proxy(self, util: str, method: str) -> '_ProxyCall':
@@ -267,11 +267,10 @@ class _ProxyCall:
         result = dbutils.{self._util}.{self._method}(*args, **kwargs)
         dbutils.notebook.exit(json.dumps(result))
         '''
-        result = self._api.execute(cluster_id=self._cluster_id,
-                                   language=commands.Language.python,
-                                   context_id=self._context_id,
-                                   command=code,
-                                   wait=True)
+        result = self._api.execute_and_wait(cluster_id=self._cluster_id,
+                                            language=commands.Language.python,
+                                            context_id=self._context_id,
+                                            command=code)
         if result.status == commands.CommandStatus.Finished:
             raw = result.results.data
             return json.loads(raw)

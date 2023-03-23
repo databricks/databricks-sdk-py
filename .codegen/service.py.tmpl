@@ -8,7 +8,7 @@ import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -88,12 +88,50 @@ class {{.Name}}API:{{if .Description}}
     {{end}}
     def __init__(self, api_client):
         self._api = api_client
+    {{range .Waits}}
+    def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}}, timeout=timedelta(minutes={{.Timeout}})) -> {{.Poll.Response.PascalName}}:
+      deadline = time.time() + timeout.total_seconds()
+      target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Failure}}
+      failure_states = ({{range .Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
+      status_message = 'polling...'
+      attempt = 1
+      while time.time() < deadline:
+        poll = self.{{.Poll.SnakeName}}({{range $i, $b := .Binding}}{{if $i}}, {{end}}{{.PollField.SnakeName}}={{.PollField.SnakeName}}{{- end}})
+        status = poll{{range .StatusPath}}.{{.SnakeName}}{{end}}
+        {{if .ComplexMessagePath -}}
+        status_message = f'current status: {status}'
+        if poll.{{.MessagePathHead.SnakeName}}:
+          status_message = poll{{range .MessagePath}}.{{.SnakeName}}{{end}}
+        {{- else if .MessagePath -}}
+        status_message = poll{{range .MessagePath}}.{{.SnakeName}}{{end}}
+        {{- else -}}
+        status_message = f'current status: {status}'
+        {{- end}}
+        if status in target_states:
+          return poll
+        {{if .Failure -}}
+        if status in failure_states:
+          msg = f'failed to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{$e.Content}}{{end}}, got {status}: {status_message}'
+          raise OperationFailed(msg)
+        {{end}}prefix = f"{{range $i, $b := .Binding}}{{if $i}}, {{end -}}
+           {{.PollField.SnakeName}}={{"{"}}{{.PollField.SnakeName}}{{"}"}}
+        {{- end}}"
+        sleep = attempt
+        if sleep > 10:
+          # sleep 10s max per attempt
+          sleep = 10
+        _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+        time.sleep(sleep + random.random())
+        attempt += 1
+      raise TimeoutError(f'timed out after {timeout}: {status_message}')
+    {{end}}
+
     {{range .Methods}}
     def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}
       {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
-      {{- end}}{{if .Wait}}, wait={{if .IsCrudRead}}False{{else}}True{{end}}, timeout=timedelta(minutes={{.Wait.Timeout}}){{end}}, **kwargs
+      {{- end}}, **kwargs
     {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}"""{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
@@ -102,6 +140,13 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-call" .}}
+
+    {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
+    def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
+        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}{{- end}},
+        timeout=timedelta(minutes={{.Wait.Timeout}})) -> {{.Wait.Poll.Response.PascalName}}:
+        return self.{{.SnakeName}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}}).result(timeout=timeout)
+    {{end}}
     {{end -}}
 {{- end}}
 
@@ -115,50 +160,15 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-call" -}}
         {{if .Pagination -}}{{template "method-call-paginated" .}}
-        {{- else if .Wait -}}{{template "method-call-retried" .}}
+        {{- else if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}{{template "method-call-retried" .}}
         {{- else}}{{template "method-call-default" .}}{{end}}
 {{- end}}
 
 {{define "method-call-retried" -}}
-        if wait:
-          {{if .Response}}op_response = {{end}}{{template "method-do" .}}
-          deadline = time.time() + timeout.total_seconds()
-          target_states = ({{range .Wait.Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Wait.Failure}}
-          failure_states = ({{range .Wait.Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
-          status_message = 'polling...'
-          attempt = 1
-          while time.time() < deadline:
-            poll = self.{{.Wait.Poll.SnakeName}}({{range $i, $b := .Wait.Binding}}{{if $i}}, {{end}}
-              {{$b.PollField.SnakeName}}={{if $b.IsResponseBind}}op_response['{{$b.Bind.Name}}']{{else}}request.{{$b.Bind.SnakeName}}{{end}}
-            {{- end}})
-            status = poll{{range .Wait.StatusPath}}.{{.SnakeName}}{{end}}
-            {{if .Wait.ComplexMessagePath -}}
-            status_message = f'current status: {status}'
-            if poll.{{.Wait.MessagePathHead.SnakeName}}:
-              status_message = poll{{range .Wait.MessagePath}}.{{.SnakeName}}{{end}}
-            {{- else if .Wait.MessagePath -}}
-            status_message = poll{{range .Wait.MessagePath}}.{{.SnakeName}}{{end}}
-            {{- else -}}
-            status_message = f'current status: {status}'
-            {{- end}}
-            if status in target_states:
-              return poll
-            {{if .Wait.Failure -}}
-            if status in failure_states:
-              msg = f'failed to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{$e.Content}}{{end}}, got {status}: {status_message}'
-              raise OperationFailed(msg)
-            {{end}}prefix = f"{{.Service.SnakeName}}.{{.Wait.Poll.SnakeName}}({{range $i, $b := .Wait.Binding}}{{if $i}}, {{end -}}
-               {{$b.PollField.SnakeName}}={{"{"}}{{if $b.IsResponseBind}}op_response['{{$b.Bind.Name}}']{{else}}request.{{$b.Bind.SnakeName}}{{end}}{{"}"}}
-            {{- end}})"
-            sleep = attempt
-            if sleep > 10:
-              # sleep 10s max per attempt
-              sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-          raise TimeoutError(f'timed out after {timeout}: {status_message}')
-        {{if .IsCrudRead}}{{template "method-call-default" .}}{{else}}{{template "method-do" .}}{{end}}
+        {{if .Response}}op_response = {{end}}{{template "method-do" .}}
+        return Wait(self.{{.Wait.SnakeName}}, {{range $i, $b := .Wait.Binding}}{{if $i}}, {{end}}
+          {{.PollField.SnakeName}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}request.{{.Bind.SnakeName}}{{end}}
+        {{- end}})
 {{- end}}
 
 {{define "method-call-paginated" -}}
@@ -218,7 +228,7 @@ self._api.do('{{.Verb}}', {{if .PathParts -}}
 {{- end}}
 
 {{define "method-return-type" -}}
-  {{if .Wait}} -> {{.Wait.Poll.Response.PascalName}}
+  {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }} -> Wait[{{.Wait.Poll.Response.PascalName}}]
   {{- else if .Response}} -> {{if .Response.ArrayValue -}}
     Iterator[{{.Response.ArrayValue.PascalName}}]
   {{- else if .Pagination -}}

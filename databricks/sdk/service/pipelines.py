@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List
 
 from ..errors import OperationFailed
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -983,6 +983,57 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def wait_get_pipeline_idle(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (PipelineState.IDLE, )
+        failure_states = (PipelineState.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(pipeline_id=pipeline_id)
+            status = poll.state
+            status_message = poll.cause
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f'failed to reach IDLE, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"pipeline_id={pipeline_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_pipeline_running(self, pipeline_id: str,
+                                  timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (PipelineState.RUNNING, )
+        failure_states = (PipelineState.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(pipeline_id=pipeline_id)
+            status = poll.state
+            status_message = poll.cause
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"pipeline_id={pipeline_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
     def create(self,
                *,
                allow_duplicate_names: bool = None,
@@ -1041,41 +1092,11 @@ class PipelinesAPI:
 
         self._api.do('DELETE', f'/api/2.0/pipelines/{request.pipeline_id}')
 
-    def get(self,
-            pipeline_id: str,
-            wait=False,
-            timeout=timedelta(minutes=20),
-            **kwargs) -> GetPipelineResponse:
+    def get(self, pipeline_id: str, **kwargs) -> GetPipelineResponse:
         """Get a pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Get(pipeline_id=pipeline_id)
-
-        if wait:
-            op_response = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (PipelineState.RUNNING, )
-            failure_states = (PipelineState.FAILED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(pipeline_id=op_response['pipeline_id'])
-                status = poll.state
-                status_message = poll.cause
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"pipelines.get(pipeline_id={op_response['pipeline_id']})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}')
         return GetPipelineResponse.from_dict(json)
@@ -1184,11 +1205,7 @@ class PipelinesAPI:
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/updates', query=query)
         return ListUpdatesResponse.from_dict(json)
 
-    def reset(self,
-              pipeline_id: str,
-              wait=True,
-              timeout=timedelta(minutes=20),
-              **kwargs) -> GetPipelineResponse:
+    def reset(self, pipeline_id: str, **kwargs) -> Wait[GetPipelineResponse]:
         """Reset a pipeline.
         
         Resets a pipeline."""
@@ -1196,32 +1213,11 @@ class PipelinesAPI:
         if not request: # request is not given through keyed args
             request = Reset(pipeline_id=pipeline_id)
 
-        if wait:
-            self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (PipelineState.RUNNING, )
-            failure_states = (PipelineState.FAILED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(pipeline_id=request.pipeline_id)
-                status = poll.state
-                status_message = poll.cause
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach RUNNING, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"pipelines.get(pipeline_id={request.pipeline_id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
+        return Wait(self.wait_get_pipeline_running, pipeline_id=request.pipeline_id)
+
+    def reset_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+        return self.reset(pipeline_id=pipeline_id).result(timeout=timeout)
 
     def start_update(self,
                      pipeline_id: str,
@@ -1246,11 +1242,7 @@ class PipelinesAPI:
         json = self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/updates', body=body)
         return StartUpdateResponse.from_dict(json)
 
-    def stop(self,
-             pipeline_id: str,
-             wait=True,
-             timeout=timedelta(minutes=20),
-             **kwargs) -> GetPipelineResponse:
+    def stop(self, pipeline_id: str, **kwargs) -> Wait[GetPipelineResponse]:
         """Stop a pipeline.
         
         Stops a pipeline."""
@@ -1258,32 +1250,11 @@ class PipelinesAPI:
         if not request: # request is not given through keyed args
             request = Stop(pipeline_id=pipeline_id)
 
-        if wait:
-            self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
-            deadline = time.time() + timeout.total_seconds()
-            target_states = (PipelineState.IDLE, )
-            failure_states = (PipelineState.FAILED, )
-            status_message = 'polling...'
-            attempt = 1
-            while time.time() < deadline:
-                poll = self.get(pipeline_id=request.pipeline_id)
-                status = poll.state
-                status_message = poll.cause
-                if status in target_states:
-                    return poll
-                if status in failure_states:
-                    msg = f'failed to reach IDLE, got {status}: {status_message}'
-                    raise OperationFailed(msg)
-                prefix = f"pipelines.get(pipeline_id={request.pipeline_id})"
-                sleep = attempt
-                if sleep > 10:
-                    # sleep 10s max per attempt
-                    sleep = 10
-                _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-                time.sleep(sleep + random.random())
-                attempt += 1
-            raise TimeoutError(f'timed out after {timeout}: {status_message}')
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
+        return Wait(self.wait_get_pipeline_idle, pipeline_id=request.pipeline_id)
+
+    def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+        return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)
 
     def update(self,
                pipeline_id: str,
