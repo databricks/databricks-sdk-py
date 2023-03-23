@@ -203,7 +203,7 @@ class AzureCliTokenSource(Refreshable):
             return Token(access_token=it["accessToken"],
                          refresh_token=it.get('refreshToken', None),
                          token_type=it["tokenType"],
-                         expiry=expires_on)
+                         expires_on=expires_on)
         except ValueError as e:
             raise ValueError(f"cannot unmarshal CLI result: {e}")
         except subprocess.CalledProcessError as e:
