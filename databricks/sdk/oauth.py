@@ -1,5 +1,4 @@
 import base64
-import datetime
 import functools
 import hashlib
 import logging
@@ -9,6 +8,7 @@ import urllib.parse
 import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Dict, List
 
@@ -29,14 +29,14 @@ class Token:
     access_token: str
     token_type: str = None
     refresh_token: str = None
-    expiry: datetime.datetime = None
+    expiry: datetime = None
 
     @property
     def expired(self):
         if not self.expiry:
             return False
-        potentially_expired = self.expiry - datetime.timedelta(seconds=10)
-        now = datetime.datetime.now(tz=potentially_expired.tzinfo)
+        potentially_expired = self.expiry - timedelta(seconds=10)
+        now = datetime.now(tz=potentially_expired.tzinfo)
         is_expired = potentially_expired < now
         return is_expired
 
@@ -45,7 +45,9 @@ class Token:
         return self.access_token and not self.expired
 
     def as_dict(self) -> dict:
-        raw = {'access_token': self.access_token, 'token_type': self.token_type, 'expiry': self.expiry}
+        raw = {'access_token': self.access_token, 'token_type': self.token_type}
+        if self.expiry:
+            raw['expiry'] = self.expiry.isoformat()
         if self.refresh_token:
             raw['refresh_token'] = self.refresh_token
         return raw
@@ -54,7 +56,7 @@ class Token:
     def from_dict(raw: dict) -> 'Token':
         return Token(access_token=raw['access_token'],
                      token_type=raw['token_type'],
-                     expiry=raw['expiry'],
+                     expiry=datetime.fromisoformat(raw['expiry']),
                      refresh_token=raw.get('refresh_token'))
 
 
@@ -90,7 +92,7 @@ def retrieve_token(client_id,
     try:
         j = resp.json()
         expires_in = int(j["expires_in"])
-        expiry = datetime.datetime.now() + datetime.timedelta(seconds=expires_in)
+        expiry = datetime.now() + timedelta(seconds=expires_in)
         return Token(access_token=j["access_token"],
                      refresh_token=j.get('refresh_token'),
                      token_type=j["token_type"],
