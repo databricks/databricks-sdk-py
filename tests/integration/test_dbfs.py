@@ -1,4 +1,5 @@
 import pathlib
+from typing import List
 
 import pytest
 
@@ -46,7 +47,7 @@ def junk(w, random):
 @pytest.fixture
 def ls(w):
 
-    def inner(root: str, recursive=False) -> list[str]:
+    def inner(root: str, recursive=False) -> List[str]:
         return [f.path.removeprefix(root) for f in w.dbfs.list(root, recursive=recursive)]
 
     return inner
