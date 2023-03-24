@@ -1,6 +1,10 @@
 import base64
 import logging
 
+import pytest
+
+from databricks.sdk.core import DatabricksError
+
 
 def test_rest_dbfs_ls(w, env_or_skip):
     from databricks.sdk.runtime import dbutils
@@ -43,7 +47,12 @@ def test_secrets(w, random):
         scope = secret_scope.name
         for secret_metadata in dbutils.secrets.list(scope):
             key = secret_metadata.key
-            all_secrets[f'{scope}.{key}'] = dbutils.secrets.get(scope, key)
+            try:
+                all_secrets[f'{scope}.{key}'] = dbutils.secrets.get(scope, key)
+            except DatabricksError as e:
+                if e.error_code == 'BAD_REQUEST':
+                    pytest.skip('dbconnect is not enabled on this workspace')
+                raise e
 
     logger.info(f'After loading secret: {random_value}')
     logging.getLogger('databricks.sdk').info(f'After loading secret: {random_value}')

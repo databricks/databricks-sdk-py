@@ -24,7 +24,7 @@ from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenSource)
 from .version import __version__
 
-__all__ = ['Config']
+__all__ = ['Config', 'DatabricksError']
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -622,8 +622,6 @@ class DatabricksError(IOError):
 class ApiClient(requests.Session):
     _cfg: Config
 
-    _html_pre = re.compile(r"<pre>(.*)</pre>", re.MULTILINE)
-
     def __init__(self, cfg: Config = None):
         super().__init__()
         self._cfg = Config() if not cfg else cfg
@@ -669,12 +667,21 @@ class ApiClient(requests.Session):
                 return {}
             return response.json()
         except requests.exceptions.JSONDecodeError:
-            txt = response.text
-            match = self._html_pre.search(txt)
-            message = match.group(1).strip() if match else txt
+            message = self._make_sense_from_html(response.text)
             if not message:
                 message = response.reason
             raise self._make_nicer_error(message) from None
+
+    @staticmethod
+    def _make_sense_from_html(txt: str) -> str:
+        matchers = [r'<pre>(.*)</pre>', r'<title>(.*)</title>']
+        for attempt in matchers:
+            expr = re.compile(attempt, re.MULTILINE)
+            match = expr.search(txt)
+            if not match:
+                continue
+            return match.group(1).strip()
+        return txt
 
     def _make_nicer_error(self, message: str, status_code: int = 200, **kwargs) -> DatabricksError:
         is_http_unauthorized_or_forbidden = status_code in (401, 403)

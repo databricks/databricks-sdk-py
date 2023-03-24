@@ -91,7 +91,8 @@ class ClustersExt(clusters.ClustersAPI):
             versions = sorted(versions, key=SemVer.parse, reverse=True)
         return versions[0]
 
-    def _node_sorting_tuple(self, item: clusters.NodeType) -> tuple:
+    @staticmethod
+    def _node_sorting_tuple(item: clusters.NodeType) -> tuple:
         local_disks = local_disk_size_gb = local_nvme_disk = local_nvme_disk_size_gb = 0
         if item.node_instance_type is not None:
             local_disks = item.node_instance_type.local_disks
@@ -101,8 +102,11 @@ class ClustersExt(clusters.ClustersAPI):
         return (item.is_deprecated, item.num_cores, item.memory_mb, local_disks, local_disk_size_gb,
                 local_nvme_disk, local_nvme_disk_size_gb, item.num_gpus, item.instance_type_id)
 
-    def _should_node_be_skipped(self, nt: clusters.NodeType) -> bool:
+    @staticmethod
+    def _should_node_be_skipped(nt: clusters.NodeType) -> bool:
         if not nt.node_info:
+            return False
+        if not nt.node_info.status:
             return False
         val = clusters.CloudProviderNodeStatus
         for st in nt.node_info.status:
