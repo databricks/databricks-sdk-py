@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.pyVersion }}
 
       - name: Run tests
-        run: make dev test
+        run: make dev install test
 
       - name: Publish test coverage
         uses: codecov/codecov-action@v1

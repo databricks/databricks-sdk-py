@@ -28,7 +28,7 @@ __all__ = ['Config']
 
 logger = logging.getLogger('databricks.sdk')
 
-RequestVisitor = Callable[[], Dict[str, str]]
+HeaderFactory = Callable[[], Dict[str, str]]
 
 
 class CredentialsProvider(abc.ABC):
@@ -40,7 +40,7 @@ class CredentialsProvider(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def __call__(self, cfg: 'Config') -> RequestVisitor:
+    def __call__(self, cfg: 'Config') -> HeaderFactory:
         ...
 
 
@@ -49,10 +49,10 @@ def credentials_provider(name: str, require: List[str]):
     create CredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called. """
 
-    def inner(func: Callable[['Config'], RequestVisitor]) -> CredentialsProvider:
+    def inner(func: Callable[['Config'], HeaderFactory]) -> CredentialsProvider:
 
         @functools.wraps(func)
-        def wrapper(cfg: 'Config') -> Optional[RequestVisitor]:
+        def wrapper(cfg: 'Config') -> Optional[HeaderFactory]:
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -65,7 +65,7 @@ def credentials_provider(name: str, require: List[str]):
 
 
 @credentials_provider('basic', ['host', 'username', 'password'])
-def basic_auth(cfg: 'Config') -> RequestVisitor:
+def basic_auth(cfg: 'Config') -> HeaderFactory:
     """ Given username and password, add base64-encoded Basic credentials """
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode()).decode()
     static_credentials = {'Authorization': f'Basic {encoded}'}
@@ -77,7 +77,7 @@ def basic_auth(cfg: 'Config') -> RequestVisitor:
 
 
 @credentials_provider('pat', ['host', 'token'])
-def pat_auth(cfg: 'Config') -> RequestVisitor:
+def pat_auth(cfg: 'Config') -> HeaderFactory:
     """ Adds Databricks Personal Access Token to every request """
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
@@ -88,7 +88,7 @@ def pat_auth(cfg: 'Config') -> RequestVisitor:
 
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
-def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
+def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
     # TODO: change to use cfg.oidc_endpoints (and add cache there)
@@ -111,7 +111,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[RequestVisitor]:
 
 
 @credentials_provider('external-browser', ['host', 'auth_type'])
-def external_browser(cfg: 'Config') -> Optional[RequestVisitor]:
+def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
     if cfg.auth_type != 'external-browser':
         return None
     if cfg.is_aws:
@@ -148,7 +148,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
 
 @credentials_provider('azure-client-secret',
                       ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
-def azure_service_principal(cfg: 'Config') -> RequestVisitor:
+def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
 
@@ -211,7 +211,7 @@ class AzureCliTokenSource(Refreshable):
 
 
 @credentials_provider('azure-cli', ['is_azure'])
-def azure_cli(cfg: 'Config') -> Optional[RequestVisitor]:
+def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
     try:
@@ -240,7 +240,7 @@ class DefaultCredentials:
     def auth_type(self) -> str:
         return self._auth_type
 
-    def __call__(self, cfg: 'Config') -> RequestVisitor:
+    def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli,
             external_browser
@@ -640,7 +640,6 @@ class ApiClient(requests.Session):
         self.auth = self._authenticate
 
         self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
-        # https://github.com/tomasbasham/ratelimit/blob/master/ratelimit/decorators.py
 
     @property
     def account_id(self) -> str:
