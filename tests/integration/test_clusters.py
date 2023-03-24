@@ -1,5 +1,7 @@
 import logging
 from datetime import timedelta
+import sys
+from uuid import uuid4
 
 
 def test_smallest_node_type(w):
@@ -24,9 +26,8 @@ def test_ensure_cluster_is_running(w, env_or_skip):
     cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
     w.clusters.ensure_cluster_is_running(cluster_id)
 
-
-def test_create_cluster(w, env_or_skip):
-    info = w.clusters.create(cluster_name='Created cluster',
+def test_create_cluster(w, env_or_skip, random_string):
+    info = w.clusters.create(cluster_name=f'databricks-sdk-py-{random_string}',
                              spark_version=w.clusters.select_spark_version(long_term_support=True),
                              instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
                              autotermination_minutes=10,
