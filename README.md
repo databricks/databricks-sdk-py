@@ -20,7 +20,7 @@ The SDK's internal HTTP client is robust and handles failures on different level
 
 ## Getting started
 
-1. Please install Databricks SDK for Python and instantiate `WorkspaceClient`:
+1. Please install Databricks SDK for Python via `pip install databricks-sdk` and instantiate `WorkspaceClient`:
 
 ```python
 from databricks.sdk import WorkspaceClient
