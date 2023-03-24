@@ -16,6 +16,7 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Single-sign-on with OAuth](#single-sign-on-sso-with-oauth)
 - [Logging](#logging)
 - [Interface stability](#interface-stability)
+- [Disclaimer](#disclaimer)
 
 ## Getting started
 
@@ -400,3 +401,11 @@ the logging output to their specific needs.
 ## Interface stability
 
 During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) backward-incompatible changes, such as renaming the methods or some type names to bring more consistency. 
+
+## Disclaimer
+- The product is in preview and not intended to be used in production;
+- The product may change or may never be released;
+- While we will not charge separately for this product right now, we may charge for it in the future. You will still incur charges for DBUs.
+- There's no formal support or SLAs for the preview - so please reach out to your account or other contact with any questions or feedback; and
+- We may terminate the preview or your access at any time;
+
