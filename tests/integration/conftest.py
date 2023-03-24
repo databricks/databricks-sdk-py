@@ -4,7 +4,6 @@ import os
 import pathlib
 import string
 import sys
-from uuid import uuid4
 
 import pytest
 
@@ -84,11 +83,6 @@ def env_or_skip():
         return os.environ[var]
 
     return inner
-
-
-@pytest.fixture()
-def random_string():
-    return str(uuid4())[:8]
 
 
 def _load_debug_env_if_runs_from_ide(key):

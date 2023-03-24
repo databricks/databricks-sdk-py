@@ -25,8 +25,8 @@ def test_ensure_cluster_is_running(w, env_or_skip):
     w.clusters.ensure_cluster_is_running(cluster_id)
 
 
-def test_create_cluster(w, env_or_skip, random_string):
-    info = w.clusters.create(cluster_name=f'databricks-sdk-py-{random_string}',
+def test_create_cluster(w, env_or_skip, random):
+    info = w.clusters.create(cluster_name=f'databricks-sdk-py-{random(8)}',
                              spark_version=w.clusters.select_spark_version(long_term_support=True),
                              instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
                              autotermination_minutes=10,
