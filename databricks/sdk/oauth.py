@@ -45,7 +45,7 @@ class Token:
         return self.access_token and not self.expired
 
     def as_dict(self) -> dict:
-        raw = {'access_token': self.access_token, 'token_type': self.token_type, }
+        raw = {'access_token': self.access_token, 'token_type': self.token_type}
         if self.expiry:
             raw['expiry'] = self.expiry.isoformat()
         if self.refresh_token:
