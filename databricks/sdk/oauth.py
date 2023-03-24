@@ -29,13 +29,13 @@ class Token:
     access_token: str
     token_type: str = None
     refresh_token: str = None
-    expires_on: datetime = None
+    expiry: datetime = None
 
     @property
     def expired(self):
-        if not self.expires_on:
+        if not self.expiry:
             return False
-        potentially_expired = self.expires_on - timedelta(seconds=10)
+        potentially_expired = self.expiry - timedelta(seconds=10)
         now = datetime.now(tz=potentially_expired.tzinfo)
         is_expired = potentially_expired < now
         return is_expired
@@ -46,8 +46,8 @@ class Token:
 
     def as_dict(self) -> dict:
         raw = {'access_token': self.access_token, 'token_type': self.token_type, }
-        if self.expires_on:
-            raw['expires_on'] = self.expires_on.isoformat()
+        if self.expiry:
+            raw['expiry'] = self.expiry.isoformat()
         if self.refresh_token:
             raw['refresh_token'] = self.refresh_token
         return raw
@@ -56,7 +56,7 @@ class Token:
     def from_dict(raw: dict) -> 'Token':
         return Token(access_token=raw['access_token'],
                      token_type=raw['token_type'],
-                     expires_on=datetime.fromisoformat(raw['expires_on']),
+                     expiry=datetime.fromisoformat(raw['expiry']),
                      refresh_token=raw.get('refresh_token'))
 
 
@@ -92,11 +92,11 @@ def retrieve_token(client_id,
     try:
         j = resp.json()
         expires_in = int(j["expires_in"])
-        expires_on = datetime.now() + timedelta(seconds=expires_in)
+        expiry = datetime.now() + timedelta(seconds=expires_in)
         return Token(access_token=j["access_token"],
                      refresh_token=j.get('refresh_token'),
                      token_type=j["token_type"],
-                     expires_on=expires_on)
+                     expiry=expiry)
     except Exception as e:
         raise NotImplementedError(f"Not supported yet: {e}")
 
