@@ -85,9 +85,11 @@ def env_or_skip():
 
     return inner
 
+
 @pytest.fixture()
 def random_string():
     return str(uuid4())[:8]
+
 
 def _load_debug_env_if_runs_from_ide(key):
     if not _is_in_debug():
