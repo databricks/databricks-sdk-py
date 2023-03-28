@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Callable, Dict, Iterator, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -1561,7 +1561,10 @@ class WorkspacesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_workspace_running(self, workspace_id: int, timeout=timedelta(minutes=20)) -> Workspace:
+    def wait_get_workspace_running(self,
+                                   workspace_id: int,
+                                   timeout=timedelta(minutes=20),
+                                   callback: Callable[[Workspace], None] = None) -> Workspace:
         deadline = time.time() + timeout.total_seconds()
         target_states = (WorkspaceStatus.RUNNING, )
         failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
@@ -1573,6 +1576,8 @@ class WorkspacesAPI:
             status_message = poll.workspace_status_message
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach RUNNING, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -1630,7 +1635,9 @@ class WorkspacesAPI:
                 workspace_name=workspace_name)
         body = request.as_dict()
         op_response = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
-        return Wait(self.wait_get_workspace_running, workspace_id=op_response['workspace_id'])
+        return Wait(self.wait_get_workspace_running,
+                    response=Workspace.from_dict(op_response),
+                    workspace_id=op_response['workspace_id'])
 
     def create_and_wait(
         self,

@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict
@@ -239,8 +239,12 @@ class CommandExecutionAPI:
         self._api = api_client
 
     def wait_command_status_command_execution_cancelled(
-        self, cluster_id: str, command_id: str, context_id: str,
-        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+            self,
+            cluster_id: str,
+            command_id: str,
+            context_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Callable[[CommandStatusResponse], None] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (CommandStatus.Cancelled, )
         failure_states = (CommandStatus.Error, )
@@ -254,6 +258,8 @@ class CommandExecutionAPI:
                 status_message = poll.results.cause
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach Cancelled, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -268,8 +274,12 @@ class CommandExecutionAPI:
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
     def wait_command_status_command_execution_finished_or_error(
-        self, cluster_id: str, command_id: str, context_id: str,
-        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+            self,
+            cluster_id: str,
+            command_id: str,
+            context_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Callable[[CommandStatusResponse], None] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (CommandStatus.Finished, CommandStatus.Error, )
         failure_states = (CommandStatus.Cancelled, CommandStatus.Cancelling, )
@@ -281,6 +291,8 @@ class CommandExecutionAPI:
             status_message = f'current status: {status}'
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach Finished or Error, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -295,7 +307,11 @@ class CommandExecutionAPI:
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
     def wait_context_status_command_execution_running(
-        self, cluster_id: str, context_id: str, timeout=timedelta(minutes=20)) -> ContextStatusResponse:
+            self,
+            cluster_id: str,
+            context_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Callable[[ContextStatusResponse], None] = None) -> ContextStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ContextStatus.Running, )
         failure_states = (ContextStatus.Error, )
@@ -307,6 +323,8 @@ class CommandExecutionAPI:
             status_message = f'current status: {status}'
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach Running, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -402,6 +420,7 @@ class CommandExecutionAPI:
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body)
         return Wait(self.wait_context_status_command_execution_running,
+                    response=Created.from_dict(op_response),
                     cluster_id=request.cluster_id,
                     context_id=op_response['id'])
 
@@ -443,6 +462,7 @@ class CommandExecutionAPI:
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body)
         return Wait(self.wait_command_status_command_execution_finished_or_error,
+                    response=Created.from_dict(op_response),
                     cluster_id=request.cluster_id,
                     command_id=op_response['id'],
                     context_id=request.context_id)

@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -521,14 +521,14 @@ class PipelineCluster:
         body = {}
         if self.apply_policy_default_values:
             body['apply_policy_default_values'] = self.apply_policy_default_values
-        if self.autoscale: body['autoscale'] = self.autoscale
-        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
-        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
-        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
         if self.label: body['label'] = self.label
         if self.node_type_id: body['node_type_id'] = self.node_type_id
@@ -608,7 +608,7 @@ class PipelineLibrary:
     def as_dict(self) -> dict:
         body = {}
         if self.jar: body['jar'] = self.jar
-        if self.maven: body['maven'] = self.maven
+        if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
         if self.whl: body['whl'] = self.whl
         return body
@@ -983,7 +983,10 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_pipeline_idle(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+    def wait_get_pipeline_idle(self,
+                               pipeline_id: str,
+                               timeout=timedelta(minutes=20),
+                               callback: Callable[[GetPipelineResponse], None] = None) -> GetPipelineResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (PipelineState.IDLE, )
         failure_states = (PipelineState.FAILED, )
@@ -995,6 +998,8 @@ class PipelinesAPI:
             status_message = poll.cause
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach IDLE, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -1008,8 +1013,11 @@ class PipelinesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_pipeline_running(self, pipeline_id: str,
-                                  timeout=timedelta(minutes=20)) -> GetPipelineResponse:
+    def wait_get_pipeline_running(
+            self,
+            pipeline_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Callable[[GetPipelineResponse], None] = None) -> GetPipelineResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (PipelineState.RUNNING, )
         failure_states = (PipelineState.FAILED, )
@@ -1021,6 +1029,8 @@ class PipelinesAPI:
             status_message = poll.cause
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach RUNNING, got {status}: {status_message}'
                 raise OperationFailed(msg)

@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Type
+from typing import Dict, List, Any, Iterator, Type, Callable
 import time
 import random
 import logging
@@ -52,7 +52,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "as_request_type" -}}
 	{{- if not .Entity }}None # ERROR: No Type
 	{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in self.{{.SnakeName}}]
-	{{- else if .Entity.IsObject }}self.{{.SnakeName}}.as_dict()
+	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{.SnakeName}}.as_dict()
 	{{- else if .Entity.Enum }}self.{{.SnakeName}}.value
 	{{- else}}self.{{.SnakeName}}{{- end -}}
 {{- end -}}
@@ -89,7 +89,8 @@ class {{.Name}}API:{{if .Description}}
     def __init__(self, api_client):
         self._api = api_client
     {{range .Waits}}
-    def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}}, timeout=timedelta(minutes={{.Timeout}})) -> {{.Poll.Response.PascalName}}:
+    def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}},
+      timeout=timedelta(minutes={{.Timeout}}), callback: Callable[[{{.Poll.Response.PascalName}}], None] = None) -> {{.Poll.Response.PascalName}}:
       deadline = time.time() + timeout.total_seconds()
       target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Failure}}
       failure_states = ({{range .Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
@@ -109,6 +110,8 @@ class {{.Name}}API:{{if .Description}}
         {{- end}}
         if status in target_states:
           return poll
+        if callback:
+          callback(poll)
         {{if .Failure -}}
         if status in failure_states:
           msg = f'failed to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{$e.Content}}{{end}}, got {status}: {status_message}'
@@ -166,8 +169,9 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-call-retried" -}}
         {{if .Response}}op_response = {{end}}{{template "method-do" .}}
-        return Wait(self.{{.Wait.SnakeName}}, {{range $i, $b := .Wait.Binding}}{{if $i}}, {{end}}
-          {{.PollField.SnakeName}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}request.{{.Bind.SnakeName}}{{end}}
+        return Wait(self.{{.Wait.SnakeName}}
+          {{if .Response}}, response = {{.Response.PascalName}}.from_dict(op_response){{end}}
+          {{range .Wait.Binding}}, {{.PollField.SnakeName}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}request.{{.Bind.SnakeName}}{{end}}
         {{- end}})
 {{- end}}
 

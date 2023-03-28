@@ -220,6 +220,8 @@ info = w.clusters.create_and_wait(cluster_name='Created cluster',
 logging.info(f'Created: {info}')
 ```
 
+Please look at the `examples/starting_job_and_waiting.py` for a more advanced usage.
+
 ## Paginated responses
 
 On the platform side the Databricks APIs have different wait to deal with pagination:
@@ -239,6 +241,8 @@ w = WorkspaceClient()
 for repo in w.repos.list():
    logging.info(f'Found repo: {repo.path}')
 ```
+
+Please look at the `examples/last_job_runs.py` for a more advanced usage.
 
 ## Single-Sign-On (SSO) with OAuth
 
