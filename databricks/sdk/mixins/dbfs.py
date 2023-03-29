@@ -317,12 +317,6 @@ class DbfsExt(dbfs.DbfsAPI):
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds.
 
-        TODO: We strongly recommend using list only on directories containing less than 10K files and
-        discourage using the DBFS REST API for operations that list more than 10K files. Instead, we recommend
-        that you perform such operations in the context of a cluster, using the [File system utility
-        (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
-        without timing out.
-
         :param recursive: traverse deep into directory tree
         :returns iterator of metadata for every file
         """

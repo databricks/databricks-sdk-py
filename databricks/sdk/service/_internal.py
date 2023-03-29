@@ -39,7 +39,7 @@ class Wait(Generic[ReturnType]):
         return self._bind
 
     def result(self,
-               timeout: datetime.timedelta = None,
+               timeout: datetime.timedelta = datetime.timedelta(minutes=20),
                callback: Callable[[ReturnType], None] = None) -> ReturnType:
         kwargs = self._bind.copy()
         return self._waiter(callback=callback, timeout=timeout, **kwargs)

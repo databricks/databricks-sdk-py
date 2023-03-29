@@ -2,8 +2,8 @@
 
 **Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
-The Databricks SDK for Python includes functionality to accelerate development with [Python](https://www.python.org/) for the Databricks Lakehouse. 
-It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations. 
+The Databricks SDK for Python includes functionality to accelerate development with [Python](https://www.python.org/) for the Databricks Lakehouse.
+It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations.
 The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
 ## Contents
@@ -31,10 +31,10 @@ for c in w.clusters.list():
 
 ## Authentication
 
-If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) 
-or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables) 
-for [Databricks authentication](https://docs.databricks.com/dev-tools/auth.html), the only code required to start 
-working with a Databricks workspace is the following code snippet, which instructs the Databricks SDK for Python to use 
+If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles)
+or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables)
+for [Databricks authentication](https://docs.databricks.com/dev-tools/auth.html), the only code required to start
+working with a Databricks workspace is the following code snippet, which instructs the Databricks SDK for Python to use
 its [default authentication flow](#default-authentication-flow):
 
 ```python
@@ -55,20 +55,20 @@ The conventional name for the variable that holds the workspace-level client of 
 
 ### Default authentication flow
 
-If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest), 
-the [Databricks SDK for Go](https://github.com/databricks/databricks-sdk-go), the [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html), 
-or applications that target the Databricks SDKs for other languages, most likely they will all interoperate nicely together. 
-By default, the Databricks SDK for Python tries the following [authentication](https://docs.databricks.com/dev-tools/auth.html) methods, 
+If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest),
+the [Databricks SDK for Go](https://github.com/databricks/databricks-sdk-go), the [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html),
+or applications that target the Databricks SDKs for other languages, most likely they will all interoperate nicely together.
+By default, the Databricks SDK for Python tries the following [authentication](https://docs.databricks.com/dev-tools/auth.html) methods,
 in the following order, until it succeeds:
 
 1. [Databricks native authentication](#databricks-native-authentication)
 2. [Azure native authentication](#azure-native-authentication)
 4. If the SDK is unsuccessful at this point, it returns an authentication error and stops running.
 
-You can instruct the Databricks SDK for Python to use a specific authentication method by setting the `auth_type` argument 
+You can instruct the Databricks SDK for Python to use a specific authentication method by setting the `auth_type` argument
 as described in the following sections.
 
-For each authentication method, the SDK searches for compatible authentication credentials in the following locations, 
+For each authentication method, the SDK searches for compatible authentication credentials in the following locations,
 in the following order. Once the SDK finds a compatible set of credentials that it can use, it stops searching:
 
 1. Credentials that are hard-coded into configuration arguments.
@@ -178,31 +178,31 @@ To find code examples that demonstrate how to call the Databricks SDK for Python
 
 ## Long-running operations
 
-When you invoke a long-running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities 
-to reach the correct state or return the error message in case of failure. All long-running operations return generic `Wait` instance with `result()` 
-method to get a result of long-running operation, once it's finished. Databricks SDK for Python picks the most reasonable default timeouts for 
+When you invoke a long-running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities
+to reach the correct state or return the error message in case of failure. All long-running operations return generic `Wait` instance with `result()`
+method to get a result of long-running operation, once it's finished. Databricks SDK for Python picks the most reasonable default timeouts for
 every method, but sometimes you may find yourself in a situation, where you'd want to provide `datatime.timedelta()` as the value of `timeout`
 argument to `result()` method.
 
 There are a number of long-runng opereations in Databricks APIs such as managing:
-* Clusters, 
+* Clusters,
 * Command execution
 * Jobs
-* Libraries 
+* Libraries
 * Delta Live Tables pipelines
-* Databricks SQL warehouses. 
+* Databricks SQL warehouses.
 
-For example, in the Clusters API, once you create a cluster, you receive a cluster ID, and the cluster is in the `PENDING` state Meanwhile 
-Databricks takes care of provisioning virtual machines from the cloud provider in the background. The cluster is 
-only usable in the `RUNNING` state and so you have to wait for that state to be reached. 
+For example, in the Clusters API, once you create a cluster, you receive a cluster ID, and the cluster is in the `PENDING` state Meanwhile
+Databricks takes care of provisioning virtual machines from the cloud provider in the background. The cluster is
+only usable in the `RUNNING` state and so you have to wait for that state to be reached.
 
-Another example is the API for running a job or repairing the run: right after 
+Another example is the API for running a job or repairing the run: right after
 the run starts, the run is in the `PENDING` state. The job is only considered to be finished when it is in either
-the `TERMINATED` or `SKIPPED` state. Also you would likely need the error message if the long-running 
-operation times out failed with an error code. Other times you may want to configure a custom timeout other than 
+the `TERMINATED` or `SKIPPED` state. Also you would likely need the error message if the long-running
+operation times out failed with an error code. Other times you may want to configure a custom timeout other than
 the default of 20 minutes.
 
-In the following example, `w.clusters.create` returns `ClusterInfo` only once the cluster is in the `RUNNING` state, 
+In the following example, `w.clusters.create` returns `ClusterInfo` only once the cluster is in the `RUNNING` state,
 otherwise it will timeout in 10 minutes:
 
 ```python
@@ -230,8 +230,8 @@ On the platform side the Databricks APIs have different wait to deal with pagina
 * Some use the cursor-based iteration
 * Others just return all results in a single response
 
-The Databricks SDK for Python hides this  complexity 
-under `Iterator[T]` abstraction, where multi-page results `yield` items. Python typing helps to auto-complete 
+The Databricks SDK for Python hides this  complexity
+under `Iterator[T]` abstraction, where multi-page results `yield` items. Python typing helps to auto-complete
 the individual item fields.
 
 ```python
@@ -239,7 +239,7 @@ import logging
 from databricks.sdk import WorkspaceClient
 w = WorkspaceClient()
 for repo in w.repos.list():
-   logging.info(f'Found repo: {repo.path}')
+    logging.info(f'Found repo: {repo.path}')
 ```
 
 Please look at the `examples/last_job_runs.py` for a more advanced usage.
@@ -286,27 +286,27 @@ app.secret_key = secrets.token_urlsafe(32)
 
 @app.route('/callback')
 def callback():
-  from databricks.sdk.oauth import Consent
-  consent = Consent.from_dict(oauth_client, session['consent'])
-  session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
-  return redirect(url_for('index'))
+    from databricks.sdk.oauth import Consent
+    consent = Consent.from_dict(oauth_client, session['consent'])
+    session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():
-  if 'creds' not in session:
-      consent = oauth_client.initiate_consent()
-      session['consent'] = consent.as_dict()
-      return redirect(consent.auth_url)
+    if 'creds' not in session:
+        consent = oauth_client.initiate_consent()
+        session['consent'] = consent.as_dict()
+        return redirect(consent.auth_url)
 
-  from databricks.sdk import WorkspaceClient
-  from databricks.sdk.oauth import RefreshableCredentials
+    from databricks.sdk import WorkspaceClient
+    from databricks.sdk.oauth import RefreshableCredentials
 
-  credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
-  workspace_client = WorkspaceClient(host=oauth_client.host,
-                                     product=APP_NAME,
-                                     credentials_provider=credentials_provider)
+    credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
+    workspace_client = WorkspaceClient(host=oauth_client.host,
+                                       product=APP_NAME,
+                                       credentials_provider=credentials_provider)
 
-  return render_template_string('...', w=workspace_client)
+    return render_template_string('...', w=workspace_client)
 ```
 
 ### SSO for local scripts on development machines
@@ -324,7 +324,7 @@ w = WorkspaceClient(host=host, auth_type='external-browser')
 clusters = w.clusters.list()
 
 for cl in clusters:
-  print(f' - {cl.cluster_name} is {cl.state}')
+    print(f' - {cl.cluster_name} is {cl.state}')
 ```
 
 ### Creating custom OAuth applications
@@ -335,9 +335,9 @@ In order to use OAuth with Databricks SDK for Python, you should use `account_cl
 import logging, getpass
 from databricks.sdk import AccountClient
 account_client = AccountClient(host='https://accounts.cloud.databricks.com',
-                             account_id=input('Databricks Account ID: '),
-                             username=input('Username: '),
-                             password=getpass.getpass('Password: '))
+                               account_id=input('Databricks Account ID: '),
+                               username=input('Username: '),
+                               password=getpass.getpass('Password: '))
 
 logging.info('Enrolling all published apps...')
 account_client.o_auth_enrollment.create(enable_all_published_apps=True)
@@ -346,23 +346,23 @@ status = account_client.o_auth_enrollment.get()
 logging.info(f'Enrolled all published apps: {status}')
 
 custom_app = account_client.custom_app_integration.create(
-  name='awesome-app',
-  redirect_urls=[f'https://host.domain/path/to/callback'],
-  confidential=True)
+    name='awesome-app',
+    redirect_urls=[f'https://host.domain/path/to/callback'],
+    confidential=True)
 logging.info(f'Created new custom app: '
-           f'--client_id {custom_app.client_id} '
-           f'--client_secret {custom_app.client_secret}')
+             f'--client_id {custom_app.client_id} '
+             f'--client_secret {custom_app.client_secret}')
 ```
 
 ## Logging
 
-The Databricks SDK for Python seamlessly integrates with the standard [Logging facility for Python](https://docs.python.org/3/library/logging.html). 
-This allows developers to easily enable and customize logging for their Databricks Python projects. 
+The Databricks SDK for Python seamlessly integrates with the standard [Logging facility for Python](https://docs.python.org/3/library/logging.html).
+This allows developers to easily enable and customize logging for their Databricks Python projects.
 To enable debug logging in your Databricks Python project, you can follow the example below:
 
 ```python
 import logging, sys
-logging.basicConfig(stream=sys.stderr, 
+logging.basicConfig(stream=sys.stderr,
                     level=logging.INFO,
                     format='%(asctime)s [%(name)s][%(levelname)s] %(message)s')
 logging.getLogger('databricks.sdk').setLevel(logging.DEBUG)
@@ -370,16 +370,16 @@ logging.getLogger('databricks.sdk').setLevel(logging.DEBUG)
 from databricks.sdk import WorkspaceClient
 w = WorkspaceClient(debug_truncate_bytes=1024, debug_headers=False)
 for cluster in w.clusters.list():
-   logging.info(f'Found cluster: {cluster.cluster_name}')
+    logging.info(f'Found cluster: {cluster.cluster_name}')
 ```
 
-In the above code snippet, the logging module is imported and the `basicConfig()` method is used to set the logging level to `DEBUG`. 
+In the above code snippet, the logging module is imported and the `basicConfig()` method is used to set the logging level to `DEBUG`.
 This will enable logging at the debug level and above. Developers can adjust the logging level as needed to control the verbosity of the logging output.
 The SDK will log all requests and responses to standard error output, using the format `> ` for requests and `< ` for responses.
-In some cases, requests or responses may be truncated due to size considerations. If this occurs, the log message will include 
-the text `... (XXX additional elements)` to indicate that the request or response has been truncated. To increase the truncation limits, 
+In some cases, requests or responses may be truncated due to size considerations. If this occurs, the log message will include
+the text `... (XXX additional elements)` to indicate that the request or response has been truncated. To increase the truncation limits,
 developers can set the `debug_truncate_bytes` configuration property or the `DATABRICKS_DEBUG_TRUNCATE_BYTES` environment variable.
-To protect sensitive data, such as authentication tokens, passwords, or any HTTP headers, the SDK will automatically replace these 
+To protect sensitive data, such as authentication tokens, passwords, or any HTTP headers, the SDK will automatically replace these
 values with `**REDACTED**` in the log output. Developers can disable this redaction by setting the `debug_headers` configuration property to `True`.
 
 ```text
@@ -402,9 +402,36 @@ Overall, the logging capabilities provided by the Databricks SDK for Python can 
 Databricks Python projects. Developers can use the various logging methods and configuration options provided by the SDK to customize
 the logging output to their specific needs.
 
+## Interaction with `dbutils`
+
+You can use the client-side implementation of [`dbutils`](https://docs.databricks.com/dev-tools/databricks-utils.html) by accessing `dbutils` property on the `WorkspaceClient`.
+Most of the `dbutils.fs` operations and `dbutils.secrets` are implemented natively in Python within Databricks SDK. Non-SDK implementations still require a Databricks cluster,
+that you have to specify through `cluster_id` configuration attribute or `DATABRICKS_CLUSTER_ID` environment variable. Don't worry if cluster is not running: internally,
+Databricks SDK for Python calls `w.clusters.ensure_cluster_is_running()`.
+
+```python
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient()
+dbutils = w.dbutils
+
+files_in_root = dbutils.fs.ls('/')
+print(f'number of files in root: {len(files_in_root)}')
+```
+
+Alternatively, you can import `dbutils` from `databricks.sdk.runtime` module, but you have to make sure that all configuration is already [present in the environment variables](#default-authentication-flow):
+
+```python
+from databricks.sdk.runtime import dbutils
+
+for secret_scope in dbutils.secrets.listScopes():
+    for secret_metadata in dbutils.secrets.list(secret_scope.name):
+        print(f'found {secret_metadata.key} secret in {secret_scope.name} scope')
+```
+
 ## Interface stability
 
-During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) backward-incompatible changes, such as renaming the methods or some type names to bring more consistency. 
+During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) backward-incompatible changes, such as renaming the methods or some type names to bring more consistency.
 
 ## Disclaimer
 - The product is in preview and not intended to be used in production;

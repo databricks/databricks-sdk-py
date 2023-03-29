@@ -176,10 +176,10 @@ class ClustersExt(clusters.ClustersAPI):
         state = clusters.State
         info = self.get(cluster_id)
         if info.state == state.TERMINATED:
-            self.start_and_wait(cluster_id)
+            self.start(cluster_id).result()
         elif info.state == state.TERMINATING:
             self.wait_get_cluster_terminated(cluster_id)
-            self.start_and_wait(cluster_id)
+            self.start(cluster_id).result()
         elif info.state in (state.PENDING, state.RESIZING, state.RESTARTING):
             self.wait_get_cluster_running(cluster_id)
         elif info.state in (state.ERROR, state.UNKNOWN):
