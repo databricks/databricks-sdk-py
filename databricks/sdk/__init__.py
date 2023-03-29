@@ -1,4 +1,5 @@
 import databricks.sdk.core as client
+import databricks.sdk.dbutils as dbutils
 import databricks.sdk.mixins.compute as compute_mixin
 import databricks.sdk.mixins.dbfs as dbfs_mixin
 import databricks.sdk.service.billing as billing
@@ -48,23 +49,37 @@ class WorkspaceClient:
                  azure_tenant_id: str = None,
                  azure_environment: str = None,
                  auth_type: str = None,
-                 **kwargs):
-        self.config = client.Config(host=host,
-                                    account_id=account_id,
-                                    username=username,
-                                    password=password,
-                                    client_id=client_id,
-                                    client_secret=client_secret,
-                                    token=token,
-                                    profile=profile,
-                                    config_file=config_file,
-                                    azure_workspace_resource_id=azure_workspace_resource_id,
-                                    azure_client_secret=azure_client_secret,
-                                    azure_client_id=azure_client_id,
-                                    azure_tenant_id=azure_tenant_id,
-                                    azure_environment=azure_environment,
-                                    auth_type=auth_type,
-                                    **kwargs)
+                 cluster_id: str = None,
+                 debug_truncate_bytes: int = None,
+                 debug_headers: int = None,
+                 product="unknown",
+                 product_version="0.0.0",
+                 credentials_provider: client.CredentialsProvider = None,
+                 config: client.Config = None):
+        if not config:
+            config = client.Config(host=host,
+                                   account_id=account_id,
+                                   username=username,
+                                   password=password,
+                                   client_id=client_id,
+                                   client_secret=client_secret,
+                                   token=token,
+                                   profile=profile,
+                                   config_file=config_file,
+                                   azure_workspace_resource_id=azure_workspace_resource_id,
+                                   azure_client_secret=azure_client_secret,
+                                   azure_client_id=azure_client_id,
+                                   azure_tenant_id=azure_tenant_id,
+                                   azure_environment=azure_environment,
+                                   auth_type=auth_type,
+                                   cluster_id=cluster_id,
+                                   credentials_provider=credentials_provider,
+                                   debug_truncate_bytes=debug_truncate_bytes,
+                                   debug_headers=debug_headers,
+                                   product=product,
+                                   product_version=product_version)
+        self.config = config
+        self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.alerts = sql.AlertsAPI(self.api_client)
         self.catalogs = unitycatalog.CatalogsAPI(self.api_client)
@@ -143,23 +158,36 @@ class AccountClient:
                  azure_tenant_id: str = None,
                  azure_environment: str = None,
                  auth_type: str = None,
-                 **kwargs):
-        self.config = client.Config(host=host,
-                                    account_id=account_id,
-                                    username=username,
-                                    password=password,
-                                    client_id=client_id,
-                                    client_secret=client_secret,
-                                    token=token,
-                                    profile=profile,
-                                    config_file=config_file,
-                                    azure_workspace_resource_id=azure_workspace_resource_id,
-                                    azure_client_secret=azure_client_secret,
-                                    azure_client_id=azure_client_id,
-                                    azure_tenant_id=azure_tenant_id,
-                                    azure_environment=azure_environment,
-                                    auth_type=auth_type,
-                                    **kwargs)
+                 cluster_id: str = None,
+                 debug_truncate_bytes: int = None,
+                 debug_headers: int = None,
+                 product="unknown",
+                 product_version="0.0.0",
+                 credentials_provider: client.CredentialsProvider = None,
+                 config: client.Config = None):
+        if not config:
+            config = client.Config(host=host,
+                                   account_id=account_id,
+                                   username=username,
+                                   password=password,
+                                   client_id=client_id,
+                                   client_secret=client_secret,
+                                   token=token,
+                                   profile=profile,
+                                   config_file=config_file,
+                                   azure_workspace_resource_id=azure_workspace_resource_id,
+                                   azure_client_secret=azure_client_secret,
+                                   azure_client_id=azure_client_id,
+                                   azure_tenant_id=azure_tenant_id,
+                                   azure_environment=azure_environment,
+                                   auth_type=auth_type,
+                                   cluster_id=cluster_id,
+                                   credentials_provider=credentials_provider,
+                                   debug_truncate_bytes=debug_truncate_bytes,
+                                   debug_headers=debug_headers,
+                                   product=product,
+                                   product_version=product_version)
+        self.config = config
         self.api_client = client.ApiClient(self.config)
         self.billable_usage = billing.BillableUsageAPI(self.api_client)
         self.budgets = billing.BudgetsAPI(self.api_client)

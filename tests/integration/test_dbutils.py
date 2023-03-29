@@ -15,12 +15,9 @@ def test_rest_dbfs_ls(w, env_or_skip):
 
 
 def test_proxy_dbfs_mounts(w, env_or_skip):
-    cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
+    w.config.cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
 
-    from databricks.sdk.runtime._impl import _RemoteDbUtils
-    dbutils = _RemoteDbUtils(cluster_id=cluster_id)
-
-    x = dbutils.fs.mounts()
+    x = w.dbutils.fs.mounts()
 
     assert len(x) > 1
 

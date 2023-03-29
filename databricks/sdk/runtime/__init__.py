@@ -11,12 +11,14 @@ dbutils = _get_global_dbutils()
 try:
     from .stub import *
 except ImportError:
-    from ._impl import _RemoteDbUtils
+    from databricks.sdk.dbutils import RemoteDbUtils
     if not dbutils:
-        dbutils = _RemoteDbUtils()
+        # this assumes that all environment variables are set
+        dbutils = RemoteDbUtils()
 except NameError:
-    from ._impl import _RemoteDbUtils
+    from databricks.sdk.dbutils import RemoteDbUtils
     if not dbutils:
-        dbutils = _RemoteDbUtils()
+        # this assumes that all environment variables are set
+        dbutils = RemoteDbUtils()
 
 __all__ = ['dbutils']

@@ -308,6 +308,8 @@ class Config:
     azure_login_app_id = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
     bricks_cli_path = ConfigAttribute(env='BRICKS_CLI_PATH')
     auth_type = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
+    cluster_id = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
+    warehouse_id = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
     skip_verify: bool = ConfigAttribute()
     http_timeout_seconds: int = ConfigAttribute()
     debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
@@ -333,11 +335,14 @@ class Config:
             self._product = product
             self._product_version = product_version
         except ValueError as e:
-            message = str(e)
-            debug_string = self.debug_string()
-            if debug_string:
-                message = f'{message}. {debug_string}'
+            message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
+
+    def wrap_debug_info(self, message: str) -> str:
+        debug_string = self.debug_string()
+        if debug_string:
+            message = f'{message.rstrip(".")}. {debug_string}'
+        return message
 
     @staticmethod
     def parse_dsn(dsn: str) -> 'Config':
@@ -467,6 +472,29 @@ class Config:
 
     def to_dict(self) -> Dict[str, any]:
         return self._inner
+
+    @property
+    def sql_http_path(self) -> Optional[str]:
+        """(Experimental) Return HTTP path for SQL Drivers.
+
+        If `cluster_id` or `warehouse_id` are configured, return a valid HTTP Path argument
+        used in construction of JDBC/ODBC DSN string.
+
+        See https://docs.databricks.com/integrations/jdbc-odbc-bi.html
+        """
+        if (not self.cluster_id) and (not self.warehouse_id):
+            return None
+        if self.cluster_id and self.warehouse_id:
+            raise ValueError('cannot have both cluster_id and warehouse_id')
+        headers = self.authenticate()
+        headers['User-Agent'] = f'{self.user_agent} sdk-feature/sql-http-path'
+        if self.cluster_id:
+            response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
+            # get workspace ID from the response header
+            workspace_id = response.headers.get('x-databricks-org-id')
+            return f'sql/protocolv1/o/{workspace_id}/{self.cluster_id}'
+        if self.warehouse_id:
+            return f'/sql/1.0/warehouses/{self.warehouse_id}'
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
@@ -685,9 +713,8 @@ class ApiClient(requests.Session):
 
     def _make_nicer_error(self, message: str, status_code: int = 200, **kwargs) -> DatabricksError:
         is_http_unauthorized_or_forbidden = status_code in (401, 403)
-        debug_string = self._cfg.debug_string()
-        if debug_string and is_http_unauthorized_or_forbidden:
-            message = f'{message}. {debug_string}'
+        if is_http_unauthorized_or_forbidden:
+            message = self._cfg.wrap_debug_info(message)
         return DatabricksError(message, **kwargs)
 
     def _record_request_log(self, response: requests.Response):

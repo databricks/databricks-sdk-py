@@ -1,31 +1,9 @@
 # These are auto-generated tests for Unified Authentication
 # In case of editing this file, make sure the change is propagated to all Databricks SDK codebases
 
-import functools
-import os
-
-import pytest
-
 from databricks.sdk.core import Config
 
-__tests__ = os.path.dirname(__file__)
-
-
-def raises(msg):
-
-    def inner(func):
-
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            with pytest.raises(ValueError) as info:
-                func(*args, **kwargs)
-            exception_str = str(info.value)
-            exception_str = exception_str.replace(__tests__ + '/', '')
-            assert msg in exception_str
-
-        return wrapper
-
-    return inner
+from .conftest import __tests__, raises
 
 
 @raises("default auth: cannot configure default credentials")

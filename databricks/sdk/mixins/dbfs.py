@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import pathlib
+import sys
 from abc import ABC, abstractmethod
 from types import TracebackType
 from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
@@ -250,7 +251,11 @@ class _LocalPath(_Path):
         if self.is_dir():
             if recursive:
                 for leaf in self._list_local(True):
-                    leaf.unlink(missing_ok=True)
+                    kw = {}
+                    if sys.version_info[:2] > (3, 7):
+                        # Python3.7 does not support `missing_ok` keyword
+                        kw['missing_ok'] = True
+                    leaf.unlink(**kw)
             self._path.rmdir()
             return
         self._path.unlink()
@@ -316,12 +321,6 @@ class DbfsExt(dbfs.DbfsAPI):
 
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds.
-
-        TODO: We strongly recommend using list only on directories containing less than 10K files and
-        discourage using the DBFS REST API for operations that list more than 10K files. Instead, we recommend
-        that you perform such operations in the context of a cluster, using the [File system utility
-        (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
-        without timing out.
 
         :param recursive: traverse deep into directory tree
         :returns iterator of metadata for every file

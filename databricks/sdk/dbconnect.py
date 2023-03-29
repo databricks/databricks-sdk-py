@@ -15,17 +15,13 @@ class DatabricksChannelBuilder:
                  channelOptions: Optional[List[Tuple[str, Any]]] = None) -> None:
         if not config:
             config = Config()
+        if not config.cluster_id:
+            message = config.wrap_debug_info('No Cluster ID provided')
+            raise ValueError(message)
         self._cfg = config
 
         self._connection_string = connectionString
         self._channel_options = channelOptions
-
-        a = os.getenv("DATABRICKS_DEFAULT_CLUSTER_ID", None)
-        b = os.getenv("SPARK_CONNECT_CLUSTER_ID", None)
-        self._cluster_id = a or b
-        if not self._cluster_id:
-            # TODO: do we need it?..
-            raise ValueError('No Databricks Cluster ID specified')
 
     @property
     def userId(self) -> str:
@@ -44,7 +40,7 @@ class DatabricksChannelBuilder:
         """
         # TODO: implement the rest of the options
         # self._clusters_api.ensure_cluster_is_running(self._cluster_id)
-        return [('x-databricks-cluster-id', self._cluster_id), ]
+        return [('x-databricks-cluster-id', self._cfg.cluster_id), ]
 
     def toChannel(self) -> grpc.Channel:
         from grpc import _plugin_wrapping  # pylint: disable=cyclic-import
