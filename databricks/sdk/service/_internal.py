@@ -26,12 +26,20 @@ ReturnType = TypeVar('ReturnType')
 
 class Wait(Generic[ReturnType]):
 
-    def __init__(self, waiter: Callable, **kwargs) -> None:
-        self._waiter = waiter
-        self.arguments = kwargs
+    def __init__(self, waiter: Callable, response: any = None, **kwargs) -> None:
+        self.response = response
 
-    def result(self, timeout: datetime.timedelta = None) -> ReturnType:
-        kwargs = self.arguments.copy()
-        if timeout:
-            kwargs['timeout'] = timeout
-        return self._waiter(**kwargs)
+        self._waiter = waiter
+        self._bind = kwargs
+
+    def __getattr__(self, key) -> any:
+        return self._bind[key]
+
+    def bind(self) -> dict:
+        return self._bind
+
+    def result(self,
+               timeout: datetime.timedelta = None,
+               callback: Callable[[ReturnType], None] = None) -> ReturnType:
+        kwargs = self._bind.copy()
+        return self._waiter(callback=callback, timeout=timeout, **kwargs)

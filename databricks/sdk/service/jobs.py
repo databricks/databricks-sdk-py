@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Callable, Dict, Iterator, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -183,7 +183,7 @@ class ClusterSpec:
         body = {}
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
         if self.libraries: body['libraries'] = [v for v in self.libraries]
-        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         return body
 
     @classmethod
@@ -555,7 +555,7 @@ class JobCluster:
     def as_dict(self) -> dict:
         body = {}
         if self.job_cluster_key: body['job_cluster_key'] = self.job_cluster_key
-        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         return body
 
     @classmethod
@@ -679,7 +679,7 @@ class JobTaskSettings:
         if self.libraries: body['libraries'] = [v for v in self.libraries]
         if self.max_retries: body['max_retries'] = self.max_retries
         if self.min_retry_interval_millis: body['min_retry_interval_millis'] = self.min_retry_interval_millis
-        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
@@ -1336,7 +1336,7 @@ class RunSubmitTaskSettings:
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
         if self.libraries: body['libraries'] = [v for v in self.libraries]
-        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
@@ -1403,7 +1403,7 @@ class RunTask:
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.libraries: body['libraries'] = [v for v in self.libraries]
-        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
@@ -1975,7 +1975,10 @@ class JobsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_run_job_terminated_or_skipped(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
+    def wait_get_run_job_terminated_or_skipped(self,
+                                               run_id: int,
+                                               timeout=timedelta(minutes=20),
+                                               callback: Callable[[Run], None] = None) -> Run:
         deadline = time.time() + timeout.total_seconds()
         target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
         failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
@@ -1989,6 +1992,8 @@ class JobsAPI:
                 status_message = poll.state.state_message
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach TERMINATED or SKIPPED, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -2277,7 +2282,9 @@ class JobsAPI:
                                 sql_params=sql_params)
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
-        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=request.run_id)
+        return Wait(self.wait_get_run_job_terminated_or_skipped,
+                    response=RepairRunResponse.from_dict(op_response),
+                    run_id=request.run_id)
 
     def repair_run_and_wait(self,
                             run_id: int,
@@ -2348,7 +2355,9 @@ class JobsAPI:
                              sql_params=sql_params)
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
-        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=op_response['run_id'])
+        return Wait(self.wait_get_run_job_terminated_or_skipped,
+                    response=RunNowResponse.from_dict(op_response),
+                    run_id=op_response['run_id'])
 
     def run_now_and_wait(self,
                          job_id: int,
@@ -2400,7 +2409,9 @@ class JobsAPI:
                                 webhook_notifications=webhook_notifications)
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
-        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=op_response['run_id'])
+        return Wait(self.wait_get_run_job_terminated_or_skipped,
+                    response=SubmitRunResponse.from_dict(op_response),
+                    run_id=op_response['run_id'])
 
     def submit_and_wait(
         self,

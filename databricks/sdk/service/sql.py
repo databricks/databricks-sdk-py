@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -3067,7 +3067,11 @@ class WarehousesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_warehouse_deleted(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+    def wait_get_warehouse_deleted(self,
+                                   id: str,
+                                   timeout=timedelta(minutes=20),
+                                   callback: Callable[[GetWarehouseResponse],
+                                                      None] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.DELETED, )
         status_message = 'polling...'
@@ -3080,6 +3084,8 @@ class WarehousesAPI:
                 status_message = poll.health.summary
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             prefix = f"id={id}"
             sleep = attempt
             if sleep > 10:
@@ -3090,7 +3096,11 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_warehouse_running(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+    def wait_get_warehouse_running(self,
+                                   id: str,
+                                   timeout=timedelta(minutes=20),
+                                   callback: Callable[[GetWarehouseResponse],
+                                                      None] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.STOPPED, State.DELETED, )
@@ -3104,6 +3114,8 @@ class WarehousesAPI:
                 status_message = poll.health.summary
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach RUNNING, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -3117,7 +3129,11 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_warehouse_stopped(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+    def wait_get_warehouse_stopped(self,
+                                   id: str,
+                                   timeout=timedelta(minutes=20),
+                                   callback: Callable[[GetWarehouseResponse],
+                                                      None] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.STOPPED, )
         status_message = 'polling...'
@@ -3130,6 +3146,8 @@ class WarehousesAPI:
                 status_message = poll.health.summary
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             prefix = f"id={id}"
             sleep = attempt
             if sleep > 10:
@@ -3176,7 +3194,9 @@ class WarehousesAPI:
                                              warehouse_type=warehouse_type)
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
-        return Wait(self.wait_get_warehouse_running, id=op_response['id'])
+        return Wait(self.wait_get_warehouse_running,
+                    response=CreateWarehouseResponse.from_dict(op_response),
+                    id=op_response['id'])
 
     def create_and_wait(
         self,

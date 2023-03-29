@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -488,7 +488,10 @@ class ServingEndpointsAPI:
         self._api = api_client
 
     def wait_get_serving_endpoint_not_updating(
-        self, name: str, timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
+            self,
+            name: str,
+            timeout=timedelta(minutes=20),
+            callback: Callable[[ServingEndpointDetailed], None] = None) -> ServingEndpointDetailed:
         deadline = time.time() + timeout.total_seconds()
         target_states = (EndpointStateConfigUpdate.NOT_UPDATING, )
         failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, )
@@ -500,6 +503,8 @@ class ServingEndpointsAPI:
             status_message = f'current status: {status}'
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach NOT_UPDATING, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -534,7 +539,9 @@ class ServingEndpointsAPI:
             request = CreateServingEndpoint(config=config, name=name)
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
-        return Wait(self.wait_get_serving_endpoint_not_updating, name=op_response['name'])
+        return Wait(self.wait_get_serving_endpoint_not_updating,
+                    response=ServingEndpointDetailed.from_dict(op_response),
+                    name=op_response['name'])
 
     def create_and_wait(
         self, name: str, config: EndpointCoreConfigInput,
@@ -618,7 +625,9 @@ class ServingEndpointsAPI:
                                               traffic_config=traffic_config)
         body = request.as_dict()
         op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)
-        return Wait(self.wait_get_serving_endpoint_not_updating, name=op_response['name'])
+        return Wait(self.wait_get_serving_endpoint_not_updating,
+                    response=ServingEndpointDetailed.from_dict(op_response),
+                    name=op_response['name'])
 
     def update_config_and_wait(
         self,

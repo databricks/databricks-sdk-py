@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Callable, Dict, Iterator, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -1628,7 +1628,10 @@ class ClustersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_cluster_running(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def wait_get_cluster_running(self,
+                                 cluster_id: str,
+                                 timeout=timedelta(minutes=20),
+                                 callback: Callable[[ClusterInfo], None] = None) -> ClusterInfo:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.ERROR, State.TERMINATED, )
@@ -1640,6 +1643,8 @@ class ClustersAPI:
             status_message = poll.state_message
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach RUNNING, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -1653,7 +1658,10 @@ class ClustersAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_cluster_terminated(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def wait_get_cluster_terminated(self,
+                                    cluster_id: str,
+                                    timeout=timedelta(minutes=20),
+                                    callback: Callable[[ClusterInfo], None] = None) -> ClusterInfo:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.TERMINATED, )
         failure_states = (State.ERROR, )
@@ -1665,6 +1673,8 @@ class ClustersAPI:
             status_message = poll.state_message
             if status in target_states:
                 return poll
+            if callback:
+                callback(poll)
             if status in failure_states:
                 msg = f'failed to reach TERMINATED, got {status}: {status_message}'
                 raise OperationFailed(msg)
@@ -1755,7 +1765,9 @@ class ClustersAPI:
                                     workload_type=workload_type)
         body = request.as_dict()
         op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
-        return Wait(self.wait_get_cluster_running, cluster_id=op_response['cluster_id'])
+        return Wait(self.wait_get_cluster_running,
+                    response=CreateClusterResponse.from_dict(op_response),
+                    cluster_id=op_response['cluster_id'])
 
     def create_and_wait(self,
                         spark_version: str,
