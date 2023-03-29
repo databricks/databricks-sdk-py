@@ -30,7 +30,7 @@ for c in w.clusters.list():
     print(c.cluster_name)
 ```
 
-Databricks SDK for Python is compatible with Python 3.7 (until 27 June 2023), 3.8, 3.9, 3.10, and 3.11.
+Databricks SDK for Python is compatible with Python 3.7 _(until [June 2023](https://devguide.python.org/versions/))_, 3.8, 3.9, 3.10, and 3.11.
 
 ## Authentication
 
