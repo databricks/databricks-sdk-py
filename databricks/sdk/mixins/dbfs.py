@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import pathlib
+import sys
 from abc import ABC, abstractmethod
 from types import TracebackType
 from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
@@ -250,7 +251,11 @@ class _LocalPath(_Path):
         if self.is_dir():
             if recursive:
                 for leaf in self._list_local(True):
-                    leaf.unlink(missing_ok=True)
+                    kw = {}
+                    if sys.version_info[:2] > (3, 7):
+                        # Python3.7 does not support `missing_ok` keyword
+                        kw['missing_ok'] = True
+                    leaf.unlink(**kw)
             self._path.rmdir()
             return
         self._path.unlink()
