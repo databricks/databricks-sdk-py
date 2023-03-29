@@ -11,10 +11,11 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Getting started](#getting-started)
 - [Authentication](#authentication)
 - [Code examples](#code-examples)
-- [Long running operations](#long-running-operations)
+- [Long-running operations](#long-running-operations)
 - [Paginated responses](#paginated-responses)
 - [Single-sign-on with OAuth](#single-sign-on-sso-with-oauth)
 - [Logging](#logging)
+- [Integration with `dbutils`](#interaction-with-dbutils)
 - [Interface stability](#interface-stability)
 - [Disclaimer](#disclaimer)
 
@@ -28,6 +29,8 @@ w = WorkspaceClient()
 for c in w.clusters.list():
     print(c.cluster_name)
 ```
+
+Databricks SDK for Python is compatible with Python 3.7 (until 27 June 2023), 3.8, 3.9, 3.10, and 3.11.
 
 ## Authentication
 
@@ -220,7 +223,58 @@ info = w.clusters.create_and_wait(cluster_name='Created cluster',
 logging.info(f'Created: {info}')
 ```
 
-Please look at the `examples/starting_job_and_waiting.py` for a more advanced usage.
+Please look at the `examples/starting_job_and_waiting.py` for a more advanced usage:
+
+```python
+import datetime
+import logging
+import time
+
+from databricks.sdk import WorkspaceClient
+import databricks.sdk.service.jobs as j
+
+w = WorkspaceClient()
+
+# create a dummy file on DBFS that just sleeps for 10 seconds
+py_on_dbfs = f'/home/{w.current_user.me().user_name}/sample.py'
+with w.dbfs.open(py_on_dbfs, write=True, overwrite=True) as f:
+    f.write(b'import time; time.sleep(10); print("Hello, World!")')
+
+# trigger one-time-run job and get waiter object
+waiter = w.jobs.submit(run_name=f'py-sdk-run-{time.time()}', tasks=[
+    j.RunSubmitTaskSettings(
+        task_key='hello_world',
+        new_cluster=j.BaseClusterInfo(
+            spark_version=w.clusters.select_spark_version(long_term_support=True),
+            node_type_id=w.clusters.select_node_type(local_disk=True),
+            num_workers=1
+        ),
+        spark_python_task=j.SparkPythonTask(
+            python_file=f'dbfs:{py_on_dbfs}'
+        ),
+    )
+])
+
+logging.info(f'starting to poll: {waiter.run_id}')
+
+# callback, that receives a polled entity between state updates
+def print_status(run: j.Run):
+    statuses = [f'{t.task_key}: {t.state.life_cycle_state}' for t in run.tasks]
+    logging.info(f'workflow intermediate status: {", ".join(statuses)}')
+
+# If you want to perform polling in a separate thread, process, or service,
+# you can use w.jobs.wait_get_run_job_terminated_or_skipped(
+#   run_id=waiter.run_id,
+#   timeout=datetime.timedelta(minutes=15),
+#   callback=print_status) to achieve the same results.
+#
+# Waiter interface allows for `w.jobs.submit(..).result()` simplicity in
+# the scenarios, where you need to block the calling thread for the job to finish.
+run = waiter.result(timeout=datetime.timedelta(minutes=15),
+                    callback=print_status)
+
+logging.info(f'job finished: {run.run_page_url}')
+```
 
 ## Paginated responses
 
@@ -242,7 +296,42 @@ for repo in w.repos.list():
     logging.info(f'Found repo: {repo.path}')
 ```
 
-Please look at the `examples/last_job_runs.py` for a more advanced usage.
+Please look at the `examples/last_job_runs.py` for a more advanced usage:
+
+```python
+import logging
+from collections import defaultdict
+from datetime import datetime, timezone
+from databricks.sdk import WorkspaceClient
+
+latest_state = {}
+all_jobs = {}
+durations = defaultdict(list)
+
+w = WorkspaceClient()
+for job in w.jobs.list():
+    all_jobs[job.job_id] = job
+    for run in w.jobs.list_runs(job_id=job.job_id, expand_tasks=False):
+        durations[job.job_id].append(run.run_duration)
+        if job.job_id not in latest_state:
+            latest_state[job.job_id] = run
+            continue
+        if run.end_time < latest_state[job.job_id].end_time:
+            continue
+        latest_state[job.job_id] = run
+
+summary = []
+for job_id, run in latest_state.items():
+    summary.append({
+        'job_name': all_jobs[job_id].settings.name,
+        'last_status': run.state.result_state,
+        'last_finished': datetime.fromtimestamp(run.end_time/1000, timezone.utc),
+        'average_duration': sum(durations[job_id]) / len(durations[job_id])
+    })
+
+for line in sorted(summary, key=lambda s: s['last_finished'], reverse=True):
+    logging.info(f'Latest: {line}')
+```
 
 ## Single-Sign-On (SSO) with OAuth
 
