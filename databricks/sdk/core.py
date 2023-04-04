@@ -179,7 +179,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
 
 class CliTokenSource(Refreshable):
 
-    def __init__(self, cmd: list[str], token_type_field: str, access_token_field: str, expiry_field: str):
+    def __init__(self, cmd: List[str], token_type_field: str, access_token_field: str, expiry_field: str):
         super().__init__()
         self._cmd = cmd
         self._token_type_field = token_type_field
