@@ -178,6 +178,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
 
 
 class CliTokenSource(Refreshable):
+
     def __init__(self, cmd: list[str], token_type_field: str, access_token_field: str, expiry_field: str):
         super().__init__()
         self._cmd = cmd
@@ -187,9 +188,7 @@ class CliTokenSource(Refreshable):
 
     @staticmethod
     def _parse_expiry(expiry: str) -> datetime:
-        for fmt in ("%Y-%m-%d %H:%M:%S.%f",
-                    "%Y-%m-%d %H:%M:%S",
-                    "%Y-%m-%dT%H:%M:%S.%f%z"):
+        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f%z"):
             try:
                 return datetime.strptime(expiry, fmt)
             except ValueError as e:
