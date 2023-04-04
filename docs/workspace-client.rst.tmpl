@@ -1,0 +1,23 @@
+Workspace-level APIs
+-------------------------
+
+```
+from databricks.sdk import WorkspaceClient
+w = WorkspaceClient()
+w.clusters.list()
+```
+
+.. toctree::
+   :maxdepth: 2
+
+
+   {{- range .Services}}{{if not .IsAccounts}}
+
+           self.{{.SnakeName}} = {{if eq .SnakeName "dbfs"}}dbfs_mixin.DbfsExt{{else if eq .SnakeName "clusters"}}compute_mixin.ClustersExt{{else}}{{.Package.Name}}.{{.Name}}API{{end}}(self.api_client){{end -}}{{end}}
+
+   {{range .Packages}}
+   clusters/index
+
+   {{end}}
+
+

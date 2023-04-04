@@ -1,0 +1,6 @@
+{
+  "formatter": "echo 1",
+  "packages": {
+    "package.rst.tmpl": "service/{{.Name}}.rst"
+  }
+}
