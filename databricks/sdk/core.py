@@ -207,7 +207,8 @@ class CliTokenSource(Refreshable):
         except ValueError as e:
             raise ValueError(f"cannot unmarshal CLI result: {e}")
         except subprocess.CalledProcessError as e:
-            raise IOError(f'cannot get access token: {e.output.decode().strip()}') from e
+            message = e.output.decode().strip()
+            raise IOError(f'cannot get access token: {message}') from e
 
 
 class AzureCliTokenSource(CliTokenSource):
@@ -266,6 +267,11 @@ def bricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     except FileNotFoundError:
         logger.debug(f'Most likely Bricks CLI is not installed.')
         return None
+    except IOError as e:
+        if 'databricks OAuth is not' in str(e):
+            logger.debug(f'OAuth not configured or not available: {e}')
+            return None
+        raise e
 
     logger.info("Using Bricks CLI authentication")
 

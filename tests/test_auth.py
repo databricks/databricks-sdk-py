@@ -180,7 +180,7 @@ def test_config_azure_cli_host(monkeypatch):
 
 
 @raises(
-    "default auth: azure-cli: cannot get access token: This is just a failing script.\n. Config: azure_workspace_resource_id=/sub/rg/ws"
+    "default auth: azure-cli: cannot get access token: This is just a failing script. Config: azure_workspace_resource_id=/sub/rg/ws"
 )
 def test_config_azure_cli_host_fail(monkeypatch):
     monkeypatch.setenv('FAIL', 'yes')
