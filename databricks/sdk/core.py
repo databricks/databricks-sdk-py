@@ -640,6 +640,9 @@ class Config:
             self.__setattr__(k, v)
 
     def _validate(self):
+        if self.auth_type:
+            # client has auth preference set
+            return
         auths_used = set()
         for attr in Config.attributes():
             if attr.name not in self._inner:
@@ -648,9 +651,6 @@ class Config:
                 continue
             auths_used.add(attr.auth)
         if len(auths_used) <= 1:
-            return
-        if self.auth_type:
-            # client has auth preference set
             return
         names = " and ".join(sorted(auths_used))
         raise ValueError(f'validate: more than one authorization method configured: {names}')
