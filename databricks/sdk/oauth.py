@@ -10,7 +10,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import requests
 import requests.auth
@@ -127,6 +127,9 @@ class _OAuthCallback(BaseHTTPRequestHandler):
     def __init__(self, feedback: list, *args):
         self._feedback = feedback
         super().__init__(*args)
+
+    def log_message(self, fmt: str, *args: Any) -> None:
+        logger.debug(fmt, *args)
 
     def do_GET(self):
         from urllib.parse import parse_qsl
