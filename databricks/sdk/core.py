@@ -423,9 +423,9 @@ class Config:
     def is_azure(self) -> bool:
         has_resource_id = self.azure_workspace_resource_id is not None
         has_host = self.host is not None
-        is_public_cloud = ".azuredatabricks.net" in self.host
-        is_china_cloud = ".databricks.azure.cn" in self.host
-        is_gov_cloud = ".databricks.azure.us" in self.host
+        is_public_cloud = has_host and ".azuredatabricks.net" in self.host
+        is_china_cloud = has_host and ".databricks.azure.cn" in self.host
+        is_gov_cloud = has_host and ".databricks.azure.us" in self.host
         is_valid_cloud = is_public_cloud or is_china_cloud or is_gov_cloud
         return has_resource_id or (has_host and is_valid_cloud)
 
