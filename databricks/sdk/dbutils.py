@@ -6,7 +6,8 @@ import typing
 from collections import namedtuple
 
 from .core import ApiClient, Config
-from .mixins import compute as compute_ext, dbfs as dbfs_ext
+from .mixins import compute as compute_ext
+from .mixins import dbfs as dbfs_ext
 from .service import compute, workspace
 
 
@@ -253,8 +254,8 @@ class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[], compute.ContextStatusResponse], cluster_id: str,
-                 name: str):
+                 context_factory: typing.Callable[[],
+                                                  compute.ContextStatusResponse], cluster_id: str, name: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory

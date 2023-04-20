@@ -20,8 +20,8 @@ def test_fs_cp(dbutils, mocker):
 
 
 def test_fs_head(dbutils, mocker):
-    from databricks.sdk.service.dbfs import ReadResponse
-    inner = mocker.patch('databricks.sdk.service.dbfs.DbfsAPI.read',
+    from databricks.sdk.service.files import ReadResponse
+    inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.read',
                          return_value=ReadResponse(data='aGVsbG8='))
 
     result = dbutils.fs.head('a')
@@ -31,7 +31,7 @@ def test_fs_head(dbutils, mocker):
 
 
 def test_fs_ls(dbutils, mocker):
-    from databricks.sdk.service.dbfs import FileInfo
+    from databricks.sdk.service.files import FileInfo
     inner = mocker.patch('databricks.sdk.mixins.dbfs.DbfsExt.list',
                          return_value=[
                              FileInfo(path='b', file_size=10, modification_time=20),
@@ -47,7 +47,7 @@ def test_fs_ls(dbutils, mocker):
 
 
 def test_fs_mkdirs(dbutils, mocker):
-    inner = mocker.patch('databricks.sdk.service.dbfs.DbfsAPI.mkdirs')
+    inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.mkdirs')
 
     dbutils.fs.mkdirs('a')
 
@@ -63,7 +63,7 @@ def test_fs_mv(dbutils, mocker):
 
 
 def test_fs_put(dbutils, mocker):
-    inner = mocker.patch('databricks.sdk.service.dbfs.DbfsAPI.put')
+    inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.put')
 
     dbutils.fs.put('a', 'b')
 
@@ -71,7 +71,7 @@ def test_fs_put(dbutils, mocker):
 
 
 def test_fs_rm(dbutils, mocker):
-    inner = mocker.patch('databricks.sdk.service.dbfs.DbfsAPI.delete')
+    inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.delete')
 
     dbutils.fs.rm('a')
 
@@ -88,22 +88,21 @@ def dbutils_proxy(mocker):
     from databricks.sdk.core import Config
     from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
-    from databricks.sdk.service.clusters import ClusterInfo, State
-    from databricks.sdk.service.commands import (CommandStatus,
-                                                 CommandStatusResponse,
-                                                 Created, Language, Results)
+    from databricks.sdk.service.compute import (ClusterInfo, CommandStatus,
+                                                CommandStatusResponse, Created,
+                                                Language, Results, State)
 
     from .conftest import noop_credentials
 
-    cluster_get = mocker.patch('databricks.sdk.service.clusters.ClustersAPI.get',
+    cluster_get = mocker.patch('databricks.sdk.service.compute.ClustersAPI.get',
                                return_value=ClusterInfo(state=State.RUNNING))
-    context_create = mocker.patch('databricks.sdk.service.commands.CommandExecutionAPI.create',
+    context_create = mocker.patch('databricks.sdk.service.compute.CommandExecutionAPI.create',
                                   return_value=Wait(lambda **kwargs: Created('y')))
 
     def inner(results_data: any, expect_command: str):
         import json
         command_execute = mocker.patch(
-            'databricks.sdk.service.commands.CommandExecutionAPI.execute',
+            'databricks.sdk.service.compute.CommandExecutionAPI.execute',
             return_value=Wait(lambda **kwargs: CommandStatusResponse(
                 results=Results(data=json.dumps(results_data)), status=CommandStatus.Finished)))
 
