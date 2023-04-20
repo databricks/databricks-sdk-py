@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Iterator, List
+from typing import Dict, Iterator, List
 
 from ._internal import _from_dict, _repeated
 
@@ -223,8 +223,8 @@ class OAuthEnrollmentStatus:
 
 @dataclass
 class TokenAccessPolicy:
-    access_token_ttl_in_minutes: Any = None
-    refresh_token_ttl_in_minutes: Any = None
+    access_token_ttl_in_minutes: int = None
+    refresh_token_ttl_in_minutes: int = None
 
     def as_dict(self) -> dict:
         body = {}

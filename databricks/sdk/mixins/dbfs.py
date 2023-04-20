@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
 
 from databricks.sdk.core import DatabricksError
 
-from ..service import dbfs
+from ..service import files
 
 if TYPE_CHECKING:
     from _typeshed import Self
@@ -18,13 +18,13 @@ if TYPE_CHECKING:
 class _DbfsIO(BinaryIO):
     MAX_CHUNK_SIZE = 1024 * 1024
 
-    _status: dbfs.FileInfo = None
-    _created: dbfs.CreateResponse = None
+    _status: files.FileInfo = None
+    _created: files.CreateResponse = None
     _offset = 0
     _closed = False
 
     def __init__(self,
-                 api: dbfs.DbfsAPI,
+                 api: files.DbfsAPI,
                  path: str,
                  *,
                  read: bool = False,
@@ -308,12 +308,12 @@ class _DbfsPath(_Path):
         return f'<_DbfsPath {self._path}>'
 
 
-class DbfsExt(dbfs.DbfsAPI):
+class DbfsExt(files.DbfsAPI):
 
     def open(self, path: str, *, read: bool = False, write: bool = False, overwrite: bool = False) -> _DbfsIO:
         return _DbfsIO(self, path, read=read, write=write, overwrite=overwrite)
 
-    def list(self, path: str, *, recursive=False) -> Iterator[dbfs.FileInfo]:
+    def list(self, path: str, *, recursive=False) -> Iterator[files.FileInfo]:
         """List directory contents or file details.
 
         List the contents of a directory, or details of the file. If the file or directory does not exist,

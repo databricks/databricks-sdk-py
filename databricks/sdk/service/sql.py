@@ -2971,13 +2971,10 @@ class StatementExecutionAPI:
     the final state. - Wait timeouts are approximate, occur server-side, and cannot account for caller delays,
     network latency from caller to service, and similarly. - After a statement has been submitted and a
     statement_id is returned, that statement's status and result will automatically close after either of 2
-    conditions: - The last result chunk is fetched (or resolved to an external link). - Ten (10) minutes pass
-    with no calls to get status or fetch result data. Best practice: in asynchronous clients, poll for status
-    regularly (and with backoff) to keep the statement open and alive. - After a `CANCEL` or `CLOSE`
-    operation, the statement will no longer be visible from the API which means that a subsequent poll request
-    may return an HTTP 404 NOT FOUND error. - After fetching the last result chunk (including chunk_index=0),
-    the statement is closed; shortly after closure the statement will no longer be visible to the API and so,
-    further calls such as :method:statementexecution/getStatement may return an HTTP 404 NOT FOUND error.
+    conditions: - The last result chunk is fetched (or resolved to an external link). - One hour passes with
+    no calls to get the status or fetch the result. Best practice: in asynchronous clients, poll for status
+    regularly (and with backoff) to keep the statement open and alive. - After fetching the last result chunk
+    (including chunk_index=0) the statement is automatically closed.
     
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
     [Public Preview]: https://docs.databricks.com/release-notes/release-types.html
@@ -3031,8 +3028,11 @@ class StatementExecutionAPI:
     def get_statement(self, statement_id: str, **kwargs) -> GetStatementResponse:
         """Get status, manifest, and result first chunk.
         
-        Polls for the statement's status; when `status.state=SUCCEEDED` it will also return the result
-        manifest and the first chunk of the result data.
+        This request can be used to poll for the statement's status. When the `status.state` field is
+        `SUCCEEDED` it will also return the result manifest and the first chunk of the result data. When the
+        statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the
+        state set. After at least 12 hours in terminal state, the statement is removed from the warehouse and
+        further calls will receive an HTTP 404 response.
         
         **NOTE** This call currently may take up to 5 seconds to get the latest status and result."""
         request = kwargs.get('request', None)
@@ -3045,12 +3045,11 @@ class StatementExecutionAPI:
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int, **kwargs) -> ResultData:
         """Get result chunk by index.
         
-        After statement execution has SUCCEEDED, result data can be fetched by chunks.
-        
-        The first chunk (`chunk_index=0`) is typically fetched through `getStatementResult`, and subsequent
-        chunks with this call. The response structure is identical to the nested `result` element described in
-        getStatementResult, and similarly includes `next_chunk_index` and `next_chunk_internal_link` for
-        simple iteration through the result set."""
+        After the statement execution has `SUCCEEDED`, the result data can be fetched by chunks. Whereas the
+        first chuck with `chunk_index=0` is typically fetched through a `get status` request, subsequent
+        chunks can be fetched using a `get result` request. The response structure is identical to the nested
+        `result` element described in the `get status` request, and similarly includes the `next_chunk_index`
+        and `next_chunk_internal_link` fields for simple iteration through the result set."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatementResultChunkNRequest(chunk_index=chunk_index, statement_id=statement_id)
