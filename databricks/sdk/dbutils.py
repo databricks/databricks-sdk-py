@@ -6,8 +6,9 @@ import typing
 from collections import namedtuple
 
 from .core import ApiClient, Config
-from .mixins import compute, dbfs
-from .service import commands, secrets
+from .mixins import compute as compute_ext
+from .mixins import dbfs as dbfs_ext
+from .service import compute, workspace
 
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
@@ -31,7 +32,7 @@ class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
 class _FsUtil:
     """ Manipulates the Databricks filesystem (DBFS) """
 
-    def __init__(self, dbfs_ext: dbfs.DbfsExt, proxy_factory: typing.Callable[[str], '_ProxyUtil']):
+    def __init__(self, dbfs_ext: dbfs_ext.DbfsExt, proxy_factory: typing.Callable[[str], '_ProxyUtil']):
         self._dbfs = dbfs_ext
         self._proxy_factory = proxy_factory
 
@@ -177,7 +178,7 @@ _FILTER = _RedactingFilter()
 class _SecretsUtil:
     """Remote equivalent of secrets util"""
 
-    def __init__(self, secrets_api: secrets.SecretsAPI):
+    def __init__(self, secrets_api: workspace.SecretsAPI):
         self._api = secrets_api # nolint
 
     def getBytes(self, scope: str, key: str) -> bytes:
@@ -215,13 +216,13 @@ class RemoteDbUtils:
     def __init__(self, config: 'Config' = None):
         self._config = Config() if not config else config
         self._client = ApiClient(self._config)
-        self._clusters = compute.ClustersExt(self._client)
-        self._commands = commands.CommandExecutionAPI(self._client)
+        self._clusters = compute_ext.ClustersExt(self._client)
+        self._commands = compute.CommandExecutionAPI(self._client)
         self._lock = threading.Lock()
         self._ctx = None
 
-        self.fs = _FsUtil(dbfs.DbfsExt(self._client), self.__getattr__)
-        self.secrets = _SecretsUtil(secrets.SecretsAPI(self._client))
+        self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
+        self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
 
     @property
     def _cluster_id(self) -> str:
@@ -231,7 +232,7 @@ class RemoteDbUtils:
             raise ValueError(self._config.wrap_debug_info(message))
         return cluster_id
 
-    def _running_command_context(self) -> commands.ContextStatusResponse:
+    def _running_command_context(self) -> compute.ContextStatusResponse:
         if self._ctx:
             return self._ctx
         with self._lock:
@@ -239,7 +240,7 @@ class RemoteDbUtils:
                 return self._ctx
             self._clusters.ensure_cluster_is_running(self._cluster_id)
             self._ctx = self._commands.create(cluster_id=self._cluster_id,
-                                              language=commands.Language.python).result()
+                                              language=compute.Language.python).result()
         return self._ctx
 
     def __getattr__(self, util) -> '_ProxyUtil':
@@ -252,9 +253,9 @@ class RemoteDbUtils:
 class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
-    def __init__(self, *, command_execution: commands.CommandExecutionAPI,
-                 context_factory: typing.Callable[[], commands.ContextStatusResponse], cluster_id: str,
-                 name: str):
+    def __init__(self, *, command_execution: compute.CommandExecutionAPI,
+                 context_factory: typing.Callable[[],
+                                                  compute.ContextStatusResponse], cluster_id: str, name: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
@@ -270,8 +271,8 @@ class _ProxyUtil:
 
 class _ProxyCall:
 
-    def __init__(self, *, command_execution: commands.CommandExecutionAPI,
-                 context_factory: typing.Callable[[], commands.ContextStatusResponse], cluster_id: str,
+    def __init__(self, *, command_execution: compute.CommandExecutionAPI,
+                 context_factory: typing.Callable[[], compute.ContextStatusResponse], cluster_id: str,
                  util: str, method: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
@@ -289,10 +290,10 @@ class _ProxyCall:
         '''
         ctx = self._context_factory()
         result = self._commands.execute(cluster_id=self._cluster_id,
-                                        language=commands.Language.python,
+                                        language=compute.Language.python,
                                         context_id=ctx.id,
                                         command=code).result()
-        if result.status == commands.CommandStatus.Finished:
+        if result.status == compute.CommandStatus.Finished:
             raw = result.results.data
             return json.loads(raw)
         else:

@@ -111,14 +111,14 @@ class FileInfo:
 
 
 @dataclass
-class GetStatus:
+class GetStatusRequest:
     """Get the information of a file or directory"""
 
     path: str
 
 
 @dataclass
-class ListRequest:
+class ListDbfsRequest:
     """List directory contents or file details"""
 
     path: str
@@ -189,7 +189,7 @@ class Put:
 
 
 @dataclass
-class Read:
+class ReadDbfsRequest:
     """Get the contents of a file"""
 
     path: str
@@ -293,7 +293,7 @@ class DbfsAPI:
         throws an exception with `RESOURCE_DOES_NOT_EXIST`."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetStatus(path=path)
+            request = GetStatusRequest(path=path)
 
         query = {}
         if path: query['path'] = request.path
@@ -315,7 +315,7 @@ class DbfsAPI:
         without timing out."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListRequest(path=path)
+            request = ListDbfsRequest(path=path)
 
         query = {}
         if path: query['path'] = request.path
@@ -380,7 +380,7 @@ class DbfsAPI:
         file.","""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = Read(length=length, offset=offset, path=path)
+            request = ReadDbfsRequest(length=length, offset=offset, path=path)
 
         query = {}
         if length: query['length'] = request.length

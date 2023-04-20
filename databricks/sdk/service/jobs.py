@@ -13,9 +13,8 @@ from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from .clusters import BaseClusterInfo
-from .libraries import Library
-from .permissions import AccessControlRequest
+from .compute import BaseClusterInfo, Library
+from .iam import AccessControlRequest
 
 # all definitions in this file are in alphabetical order
 
@@ -391,14 +390,6 @@ class DeleteRun:
 
 
 @dataclass
-class ExportRun:
-    """Export and retrieve a job run"""
-
-    run_id: int
-    views_to_export: 'ViewsToExport' = None
-
-
-@dataclass
 class ExportRunOutput:
     views: 'List[ViewItem]' = None
 
@@ -410,6 +401,14 @@ class ExportRunOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExportRunOutput':
         return cls(views=_repeated(d, 'views', ViewItem))
+
+
+@dataclass
+class ExportRunRequest:
+    """Export and retrieve a job run"""
+
+    run_id: int
+    views_to_export: 'ViewsToExport' = None
 
 
 @dataclass
@@ -435,25 +434,25 @@ class FileArrivalTriggerSettings:
 
 
 @dataclass
-class Get:
+class GetJobRequest:
     """Get a single job"""
 
     job_id: int
 
 
 @dataclass
-class GetRun:
+class GetRunOutputRequest:
+    """Get the output for a single run"""
+
+    run_id: int
+
+
+@dataclass
+class GetRunRequest:
     """Get a single job run"""
 
     run_id: int
     include_history: bool = None
-
-
-@dataclass
-class GetRunOutput:
-    """Get the output for a single run"""
-
-    run_id: int
 
 
 @dataclass
@@ -779,7 +778,7 @@ class JobWebhookNotificationsOnSuccessItem:
 
 
 @dataclass
-class ListRequest:
+class ListJobsRequest:
     """List all jobs"""
 
     expand_tasks: bool = None
@@ -805,7 +804,7 @@ class ListJobsResponse:
 
 
 @dataclass
-class ListRuns:
+class ListRunsRequest:
     """List runs for a job"""
 
     active_only: bool = None
@@ -1478,16 +1477,27 @@ class SparkJarTask:
 class SparkPythonTask:
     python_file: str
     parameters: 'List[str]' = None
+    source: 'SparkPythonTaskSource' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         if self.python_file: body['python_file'] = self.python_file
+        if self.source: body['source'] = self.source.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SparkPythonTask':
-        return cls(parameters=d.get('parameters', None), python_file=d.get('python_file', None))
+        return cls(parameters=d.get('parameters', None),
+                   python_file=d.get('python_file', None),
+                   source=_enum(d, 'source', SparkPythonTaskSource))
+
+
+class SparkPythonTaskSource(Enum):
+    """This describes an enum"""
+
+    GIT = 'GIT'
+    WORKSPACE = 'WORKSPACE'
 
 
 @dataclass
@@ -2100,7 +2110,7 @@ class JobsAPI:
         Export and retrieve the job run task."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ExportRun(run_id=run_id, views_to_export=views_to_export)
+            request = ExportRunRequest(run_id=run_id, views_to_export=views_to_export)
 
         query = {}
         if run_id: query['run_id'] = request.run_id
@@ -2115,7 +2125,7 @@ class JobsAPI:
         Retrieves the details for a single job."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = Get(job_id=job_id)
+            request = GetJobRequest(job_id=job_id)
 
         query = {}
         if job_id: query['job_id'] = request.job_id
@@ -2129,7 +2139,7 @@ class JobsAPI:
         Retrieve the metadata of a run."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetRun(include_history=include_history, run_id=run_id)
+            request = GetRunRequest(include_history=include_history, run_id=run_id)
 
         query = {}
         if include_history: query['include_history'] = request.include_history
@@ -2151,7 +2161,7 @@ class JobsAPI:
         reference them beyond 60 days, you must save old run results before they expire."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetRunOutput(run_id=run_id)
+            request = GetRunOutputRequest(run_id=run_id)
 
         query = {}
         if run_id: query['run_id'] = request.run_id
@@ -2171,7 +2181,7 @@ class JobsAPI:
         Retrieves a list of jobs."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListRequest(expand_tasks=expand_tasks, limit=limit, name=name, offset=offset)
+            request = ListJobsRequest(expand_tasks=expand_tasks, limit=limit, name=name, offset=offset)
 
         query = {}
         if expand_tasks: query['expand_tasks'] = request.expand_tasks
@@ -2211,15 +2221,15 @@ class JobsAPI:
         List runs in descending order by start time."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListRuns(active_only=active_only,
-                               completed_only=completed_only,
-                               expand_tasks=expand_tasks,
-                               job_id=job_id,
-                               limit=limit,
-                               offset=offset,
-                               run_type=run_type,
-                               start_time_from=start_time_from,
-                               start_time_to=start_time_to)
+            request = ListRunsRequest(active_only=active_only,
+                                      completed_only=completed_only,
+                                      expand_tasks=expand_tasks,
+                                      job_id=job_id,
+                                      limit=limit,
+                                      offset=offset,
+                                      run_type=run_type,
+                                      start_time_from=start_time_from,
+                                      start_time_to=start_time_to)
 
         query = {}
         if active_only: query['active_only'] = request.active_only

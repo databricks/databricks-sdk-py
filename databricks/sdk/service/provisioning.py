@@ -203,12 +203,14 @@ class CreateStorageConfigurationRequest:
 @dataclass
 class CreateVpcEndpointRequest:
     vpc_endpoint_name: str
-    aws_vpc_endpoint_id: str
-    region: str
+    aws_vpc_endpoint_id: str = None
+    gcp_vpc_endpoint_info: 'GcpVpcEndpointInfo' = None
+    region: str = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.aws_vpc_endpoint_id: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
         if self.region: body['region'] = self.region
         if self.vpc_endpoint_name: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
@@ -216,6 +218,7 @@ class CreateVpcEndpointRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateVpcEndpointRequest':
         return cls(aws_vpc_endpoint_id=d.get('aws_vpc_endpoint_id', None),
+                   gcp_vpc_endpoint_info=_from_dict(d, 'gcp_vpc_endpoint_info', GcpVpcEndpointInfo),
                    region=d.get('region', None),
                    vpc_endpoint_name=d.get('vpc_endpoint_name', None))
 
@@ -396,14 +399,7 @@ class EndpointUseCase(Enum):
     """This enumeration represents the type of Databricks VPC [endpoint service] that was used when
     creating this VPC endpoint.
     
-    If the VPC endpoint connects to the Databricks control plane for either the front-end connection
-    or the back-end REST API connection, the value is `WORKSPACE_ACCESS`.
-    
-    If the VPC endpoint connects to the Databricks workspace for the back-end [secure cluster
-    connectivity] relay, the value is `DATAPLANE_RELAY_ACCESS`.
-    
-    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
-    [secure cluster connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html"""
+    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html"""
 
     DATAPLANE_RELAY_ACCESS = 'DATAPLANE_RELAY_ACCESS'
     WORKSPACE_ACCESS = 'WORKSPACE_ACCESS'
@@ -490,6 +486,34 @@ class GcpNetworkInfo:
                    subnet_id=d.get('subnet_id', None),
                    subnet_region=d.get('subnet_region', None),
                    vpc_id=d.get('vpc_id', None))
+
+
+@dataclass
+class GcpVpcEndpointInfo:
+    """The Google Cloud specific information for this Private Service Connect endpoint."""
+
+    project_id: str
+    psc_endpoint_name: str
+    endpoint_region: str
+    psc_connection_id: str = None
+    service_attachment_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.endpoint_region: body['endpoint_region'] = self.endpoint_region
+        if self.project_id: body['project_id'] = self.project_id
+        if self.psc_connection_id: body['psc_connection_id'] = self.psc_connection_id
+        if self.psc_endpoint_name: body['psc_endpoint_name'] = self.psc_endpoint_name
+        if self.service_attachment_id: body['service_attachment_id'] = self.service_attachment_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GcpVpcEndpointInfo':
+        return cls(endpoint_region=d.get('endpoint_region', None),
+                   project_id=d.get('project_id', None),
+                   psc_connection_id=d.get('psc_connection_id', None),
+                   psc_endpoint_name=d.get('psc_endpoint_name', None),
+                   service_attachment_id=d.get('service_attachment_id', None))
 
 
 @dataclass
@@ -875,6 +899,7 @@ class VpcEndpoint:
     aws_account_id: str = None
     aws_endpoint_service_id: str = None
     aws_vpc_endpoint_id: str = None
+    gcp_vpc_endpoint_info: 'GcpVpcEndpointInfo' = None
     region: str = None
     state: str = None
     use_case: 'EndpointUseCase' = None
@@ -887,6 +912,7 @@ class VpcEndpoint:
         if self.aws_account_id: body['aws_account_id'] = self.aws_account_id
         if self.aws_endpoint_service_id: body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
         if self.aws_vpc_endpoint_id: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
         if self.region: body['region'] = self.region
         if self.state: body['state'] = self.state
         if self.use_case: body['use_case'] = self.use_case.value
@@ -900,6 +926,7 @@ class VpcEndpoint:
                    aws_account_id=d.get('aws_account_id', None),
                    aws_endpoint_service_id=d.get('aws_endpoint_service_id', None),
                    aws_vpc_endpoint_id=d.get('aws_vpc_endpoint_id', None),
+                   gcp_vpc_endpoint_info=_from_dict(d, 'gcp_vpc_endpoint_info', GcpVpcEndpointInfo),
                    region=d.get('region', None),
                    state=d.get('state', None),
                    use_case=_enum(d, 'use_case', EndpointUseCase),
@@ -1251,13 +1278,7 @@ class NetworksAPI:
 
 
 class PrivateAccessAPI:
-    """These APIs manage private access settings for this account. A private access settings object specifies how
-    your workspace is accessed using AWS PrivateLink. Each workspace that has any PrivateLink connections must
-    include the ID for a private access settings object is in its workspace configuration object. Your account
-    must be enabled for PrivateLink to use these APIs. Before configuring PrivateLink, it is important to read
-    the [Databricks article about PrivateLink].
-    
-    [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+    """These APIs manage private access settings for this account."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1463,19 +1484,18 @@ class StorageAPI:
 
 
 class VpcEndpointsAPI:
-    """These APIs manage VPC endpoint configurations for this account. This object registers an AWS VPC endpoint
-    in your Databricks account so your workspace can use it with AWS PrivateLink. Your VPC endpoint connects
-    to one of two VPC endpoint services -- one for workspace (both for front-end connection and for back-end
-    connection to REST APIs) and one for the back-end secure cluster connectivity relay from the data plane.
-    Your account must be enabled for PrivateLink to use these APIs. Before configuring PrivateLink, it is
-    important to read the [Databricks article about PrivateLink].
-    
-    [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+    """These APIs manage VPC endpoint configurations for this account."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, vpc_endpoint_name: str, aws_vpc_endpoint_id: str, region: str, **kwargs) -> VpcEndpoint:
+    def create(self,
+               vpc_endpoint_name: str,
+               *,
+               aws_vpc_endpoint_id: str = None,
+               gcp_vpc_endpoint_info: GcpVpcEndpointInfo = None,
+               region: str = None,
+               **kwargs) -> VpcEndpoint:
         """Create VPC endpoint configuration.
         
         Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
@@ -1493,6 +1513,7 @@ class VpcEndpointsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateVpcEndpointRequest(aws_vpc_endpoint_id=aws_vpc_endpoint_id,
+                                               gcp_vpc_endpoint_info=gcp_vpc_endpoint_info,
                                                region=region,
                                                vpc_endpoint_name=vpc_endpoint_name)
         body = request.as_dict()
@@ -1505,9 +1526,6 @@ class VpcEndpointsAPI:
         
         Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint] that can communicate
         privately with Databricks over [AWS PrivateLink].
-        
-        Upon deleting a VPC endpoint configuration, the VPC endpoint in AWS changes its state from `accepted`
-        to `rejected`, which means that it is no longer usable from your VPC.
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         

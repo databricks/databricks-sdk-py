@@ -13,9 +13,8 @@ from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from .clusters import (AutoScale, AwsAttributes, AzureAttributes,
-                       ClusterLogConf, GcpAttributes)
-from .libraries import MavenLibrary
+from .compute import (AutoScale, AwsAttributes, AzureAttributes,
+                      ClusterLogConf, GcpAttributes, MavenLibrary)
 
 # all definitions in this file are in alphabetical order
 
@@ -133,7 +132,7 @@ class DataPlaneId:
 
 
 @dataclass
-class Delete:
+class DeletePipelineRequest:
     """Delete a pipeline"""
 
     pipeline_id: str
@@ -230,6 +229,20 @@ class EventLevel(Enum):
 
 
 @dataclass
+class FileLibrary:
+    path: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.path: body['path'] = self.path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'FileLibrary':
+        return cls(path=d.get('path', None))
+
+
+@dataclass
 class Filters:
     exclude: 'List[str]' = None
     include: 'List[str]' = None
@@ -246,7 +259,7 @@ class Filters:
 
 
 @dataclass
-class Get:
+class GetPipelineRequest:
     """Get a pipeline"""
 
     pipeline_id: str
@@ -304,7 +317,7 @@ class GetPipelineResponseHealth(Enum):
 
 
 @dataclass
-class GetUpdate:
+class GetUpdateRequest:
     """Get a pipeline update"""
 
     pipeline_id: str
@@ -326,7 +339,7 @@ class GetUpdateResponse:
 
 
 @dataclass
-class ListPipelineEvents:
+class ListPipelineEventsRequest:
     """List pipeline events"""
 
     pipeline_id: str
@@ -357,7 +370,7 @@ class ListPipelineEventsResponse:
 
 
 @dataclass
-class ListPipelines:
+class ListPipelinesRequest:
     """List pipelines"""
 
     filter: str = None
@@ -384,7 +397,7 @@ class ListPipelinesResponse:
 
 
 @dataclass
-class ListUpdates:
+class ListUpdatesRequest:
     """List pipeline updates"""
 
     pipeline_id: str
@@ -600,6 +613,7 @@ class PipelineEvent:
 
 @dataclass
 class PipelineLibrary:
+    file: 'FileLibrary' = None
     jar: str = None
     maven: 'MavenLibrary' = None
     notebook: 'NotebookLibrary' = None
@@ -607,6 +621,7 @@ class PipelineLibrary:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.file: body['file'] = self.file.as_dict()
         if self.jar: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
@@ -615,7 +630,8 @@ class PipelineLibrary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineLibrary':
-        return cls(jar=d.get('jar', None),
+        return cls(file=_from_dict(d, 'file', FileLibrary),
+                   jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', MavenLibrary),
                    notebook=_from_dict(d, 'notebook', NotebookLibrary),
                    whl=d.get('whl', None))
@@ -740,7 +756,7 @@ class PipelineTrigger:
 
 
 @dataclass
-class Reset:
+class ResetRequest:
     """Reset a pipeline"""
 
     pipeline_id: str
@@ -858,7 +874,7 @@ class StartUpdateResponse:
 
 
 @dataclass
-class Stop:
+class StopRequest:
     """Stop a pipeline"""
 
     pipeline_id: str
@@ -1098,7 +1114,7 @@ class PipelinesAPI:
         Deletes a pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = Delete(pipeline_id=pipeline_id)
+            request = DeletePipelineRequest(pipeline_id=pipeline_id)
 
         self._api.do('DELETE', f'/api/2.0/pipelines/{request.pipeline_id}')
 
@@ -1106,7 +1122,7 @@ class PipelinesAPI:
         """Get a pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = Get(pipeline_id=pipeline_id)
+            request = GetPipelineRequest(pipeline_id=pipeline_id)
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}')
         return GetPipelineResponse.from_dict(json)
@@ -1117,7 +1133,7 @@ class PipelinesAPI:
         Gets an update from an active pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetUpdate(pipeline_id=pipeline_id, update_id=update_id)
+            request = GetUpdateRequest(pipeline_id=pipeline_id, update_id=update_id)
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/updates/{request.update_id}')
         return GetUpdateResponse.from_dict(json)
@@ -1135,11 +1151,11 @@ class PipelinesAPI:
         Retrieves events for a pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListPipelineEvents(filter=filter,
-                                         max_results=max_results,
-                                         order_by=order_by,
-                                         page_token=page_token,
-                                         pipeline_id=pipeline_id)
+            request = ListPipelineEventsRequest(filter=filter,
+                                                max_results=max_results,
+                                                order_by=order_by,
+                                                page_token=page_token,
+                                                pipeline_id=pipeline_id)
 
         query = {}
         if filter: query['filter'] = request.filter
@@ -1169,10 +1185,10 @@ class PipelinesAPI:
         Lists pipelines defined in the Delta Live Tables system."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListPipelines(filter=filter,
-                                    max_results=max_results,
-                                    order_by=order_by,
-                                    page_token=page_token)
+            request = ListPipelinesRequest(filter=filter,
+                                           max_results=max_results,
+                                           order_by=order_by,
+                                           page_token=page_token)
 
         query = {}
         if filter: query['filter'] = request.filter
@@ -1202,10 +1218,10 @@ class PipelinesAPI:
         List updates for an active pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListUpdates(max_results=max_results,
-                                  page_token=page_token,
-                                  pipeline_id=pipeline_id,
-                                  until_update_id=until_update_id)
+            request = ListUpdatesRequest(max_results=max_results,
+                                         page_token=page_token,
+                                         pipeline_id=pipeline_id,
+                                         until_update_id=until_update_id)
 
         query = {}
         if max_results: query['max_results'] = request.max_results
@@ -1221,7 +1237,7 @@ class PipelinesAPI:
         Resets a pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = Reset(pipeline_id=pipeline_id)
+            request = ResetRequest(pipeline_id=pipeline_id)
 
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
         return Wait(self.wait_get_pipeline_running, pipeline_id=request.pipeline_id)
@@ -1258,7 +1274,7 @@ class PipelinesAPI:
         Stops a pipeline."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = Stop(pipeline_id=pipeline_id)
+            request = StopRequest(pipeline_id=pipeline_id)
 
         self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
         return Wait(self.wait_get_pipeline_idle, pipeline_id=request.pipeline_id)

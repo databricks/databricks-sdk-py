@@ -1,5 +1,5 @@
 from databricks.sdk.core import Config, ApiClient, HeaderFactory, credentials_provider
-from databricks.sdk.service.scim import CurrentUserAPI
+from databricks.sdk.service.iam import CurrentUserAPI
 
 
 @credentials_provider('custom', ['host'])

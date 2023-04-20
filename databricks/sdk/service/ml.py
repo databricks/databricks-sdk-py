@@ -73,20 +73,6 @@ class ActivityType(Enum):
 
 
 @dataclass
-class ApproveResponse:
-    activity: 'Activity' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.activity: body['activity'] = self.activity.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ApproveResponse':
-        return cls(activity=_from_dict(d, 'activity', Activity))
-
-
-@dataclass
 class ApproveTransitionRequest:
     name: str
     version: str
@@ -112,6 +98,20 @@ class ApproveTransitionRequest:
                    version=d.get('version', None))
 
 
+@dataclass
+class ApproveTransitionRequestResponse:
+    activity: 'Activity' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.activity: body['activity'] = self.activity.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ApproveTransitionRequestResponse':
+        return cls(activity=_from_dict(d, 'activity', Activity))
+
+
 class CommentActivityAction(Enum):
     """This describes an enum"""
 
@@ -126,6 +126,7 @@ class CommentObject:
     available_actions: 'List[CommentActivityAction]' = None
     comment: str = None
     creation_timestamp: int = None
+    id: str = None
     last_updated_timestamp: int = None
     user_id: str = None
 
@@ -134,6 +135,7 @@ class CommentObject:
         if self.available_actions: body['available_actions'] = [v for v in self.available_actions]
         if self.comment: body['comment'] = self.comment
         if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
+        if self.id: body['id'] = self.id
         if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.user_id: body['user_id'] = self.user_id
         return body
@@ -143,6 +145,7 @@ class CommentObject:
         return cls(available_actions=d.get('available_actions', None),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
+                   id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    user_id=d.get('user_id', None))
 
@@ -163,6 +166,20 @@ class CreateComment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateComment':
         return cls(comment=d.get('comment', None), name=d.get('name', None), version=d.get('version', None))
+
+
+@dataclass
+class CreateCommentResponse:
+    comment: 'CommentObject' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment: body['comment'] = self.comment.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateCommentResponse':
+        return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
@@ -197,6 +214,40 @@ class CreateExperimentResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateExperimentResponse':
         return cls(experiment_id=d.get('experiment_id', None))
+
+
+@dataclass
+class CreateModelRequest:
+    name: str
+    description: str = None
+    tags: 'List[ModelTag]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description: body['description'] = self.description
+        if self.name: body['name'] = self.name
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateModelRequest':
+        return cls(description=d.get('description', None),
+                   name=d.get('name', None),
+                   tags=_repeated(d, 'tags', ModelTag))
+
+
+@dataclass
+class CreateModelResponse:
+    registered_model: 'Model' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateModelResponse':
+        return cls(registered_model=_from_dict(d, 'registered_model', Model))
 
 
 @dataclass
@@ -243,40 +294,6 @@ class CreateModelVersionResponse:
 
 
 @dataclass
-class CreateRegisteredModelRequest:
-    name: str
-    description: str = None
-    tags: 'List[RegisteredModelTag]' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelRequest':
-        return cls(description=d.get('description', None),
-                   name=d.get('name', None),
-                   tags=_repeated(d, 'tags', RegisteredModelTag))
-
-
-@dataclass
-class CreateRegisteredModelResponse:
-    registered_model: 'RegisteredModel' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelResponse':
-        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModel))
-
-
-@dataclass
 class CreateRegistryWebhook:
     events: 'List[RegistryWebhookEvent]'
     description: str = None
@@ -303,20 +320,6 @@ class CreateRegistryWebhook:
                    job_spec=_from_dict(d, 'job_spec', JobSpec),
                    model_name=d.get('model_name', None),
                    status=_enum(d, 'status', RegistryWebhookStatus))
-
-
-@dataclass
-class CreateResponse:
-    comment: 'CommentObject' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.comment: body['comment'] = self.comment.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateResponse':
-        return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
@@ -380,6 +383,41 @@ class CreateTransitionRequest:
 
 
 @dataclass
+class CreateTransitionRequestResponse:
+    request: 'TransitionRequest' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.request: body['request'] = self.request.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateTransitionRequestResponse':
+        return cls(request=_from_dict(d, 'request', TransitionRequest))
+
+
+@dataclass
+class CreateWebhookResponse:
+    webhook: 'RegistryWebhook' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.webhook: body['webhook'] = self.webhook.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateWebhookResponse':
+        return cls(webhook=_from_dict(d, 'webhook', RegistryWebhook))
+
+
+@dataclass
+class DeleteCommentRequest:
+    """Delete a comment"""
+
+    id: str
+
+
+@dataclass
 class DeleteExperiment:
     experiment_id: str
 
@@ -394,10 +432,18 @@ class DeleteExperiment:
 
 
 @dataclass
-class DeleteModelVersionCommentRequest:
-    """Delete a comment"""
+class DeleteModelRequest:
+    """Delete a model"""
 
-    id: str
+    name: str
+
+
+@dataclass
+class DeleteModelTagRequest:
+    """Delete a model tag"""
+
+    name: str
+    key: str
 
 
 @dataclass
@@ -415,28 +461,6 @@ class DeleteModelVersionTagRequest:
     name: str
     version: str
     key: str
-
-
-@dataclass
-class DeleteRegisteredModelRequest:
-    """Delete a model"""
-
-    name: str
-
-
-@dataclass
-class DeleteRegisteredModelTagRequest:
-    """Delete a model tag"""
-
-    name: str
-    key: str
-
-
-@dataclass
-class DeleteRegistryWebhookRequest:
-    """Delete a webhook"""
-
-    id: str = None
 
 
 @dataclass
@@ -478,6 +502,13 @@ class DeleteTransitionRequestRequest:
     stage: str
     creator: str
     comment: str = None
+
+
+@dataclass
+class DeleteWebhookRequest:
+    """Delete a webhook"""
+
+    id: str = None
 
 
 @dataclass
@@ -616,13 +647,6 @@ class GetLatestVersionsResponse:
 
 
 @dataclass
-class GetMLflowDatabrickRequest:
-    """Get model"""
-
-    name: str
-
-
-@dataclass
 class GetMetricHistoryResponse:
     metrics: 'List[Metric]' = None
     next_page_token: str = None
@@ -636,6 +660,27 @@ class GetMetricHistoryResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetMetricHistoryResponse':
         return cls(metrics=_repeated(d, 'metrics', Metric), next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class GetModelRequest:
+    """Get model"""
+
+    name: str
+
+
+@dataclass
+class GetModelResponse:
+    registered_model: 'ModelDatabricks' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetModelResponse':
+        return cls(registered_model=_from_dict(d, 'registered_model', ModelDatabricks))
 
 
 @dataclass
@@ -680,41 +725,6 @@ class GetModelVersionResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
-
-
-@dataclass
-class GetRegisteredModelRequest:
-    """Get a model"""
-
-    name: str
-
-
-@dataclass
-class GetRegisteredModelResponse:
-    registered_model: 'RegisteredModel' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelResponse':
-        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModel))
-
-
-@dataclass
-class GetResponse:
-    registered_model: 'RegisteredModelDatabricks' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
-        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModelDatabricks))
 
 
 @dataclass
@@ -871,7 +881,7 @@ class ListExperimentsResponse:
 
 
 @dataclass
-class ListRegisteredModelsRequest:
+class ListModelsRequest:
     """List models"""
 
     max_results: int = None
@@ -879,9 +889,9 @@ class ListRegisteredModelsRequest:
 
 
 @dataclass
-class ListRegisteredModelsResponse:
+class ListModelsResponse:
     next_page_token: str = None
-    registered_models: 'List[RegisteredModel]' = None
+    registered_models: 'List[Model]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -890,9 +900,9 @@ class ListRegisteredModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> 'ListModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', RegisteredModel))
+                   registered_models=_repeated(d, 'registered_models', Model))
 
 
 @dataclass
@@ -913,16 +923,15 @@ class ListRegistryWebhooks:
 
 
 @dataclass
-class ListRegistryWebhooksRequest:
-    """List registry webhooks"""
+class ListTransitionRequestsRequest:
+    """List transition requests"""
 
-    events: 'List[RegistryWebhookEvent]' = None
-    model_name: str = None
-    page_token: str = None
+    name: str
+    version: str
 
 
 @dataclass
-class ListResponse:
+class ListTransitionRequestsResponse:
     requests: 'List[Activity]' = None
 
     def as_dict(self) -> dict:
@@ -931,16 +940,17 @@ class ListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
+    def from_dict(cls, d: Dict[str, any]) -> 'ListTransitionRequestsResponse':
         return cls(requests=_repeated(d, 'requests', Activity))
 
 
 @dataclass
-class ListTransitionRequestsRequest:
-    """List transition requests"""
+class ListWebhooksRequest:
+    """List registry webhooks"""
 
-    name: str
-    version: str
+    events: 'List[RegistryWebhookEvent]' = None
+    model_name: str = None
+    page_token: str = None
 
 
 @dataclass
@@ -1055,6 +1065,92 @@ class Metric:
                    step=d.get('step', None),
                    timestamp=d.get('timestamp', None),
                    value=d.get('value', None))
+
+
+@dataclass
+class Model:
+    creation_timestamp: int = None
+    description: str = None
+    last_updated_timestamp: int = None
+    latest_versions: 'List[ModelVersion]' = None
+    name: str = None
+    tags: 'List[ModelTag]' = None
+    user_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
+        if self.description: body['description'] = self.description
+        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
+        if self.name: body['name'] = self.name
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.user_id: body['user_id'] = self.user_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Model':
+        return cls(creation_timestamp=d.get('creation_timestamp', None),
+                   description=d.get('description', None),
+                   last_updated_timestamp=d.get('last_updated_timestamp', None),
+                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
+                   name=d.get('name', None),
+                   tags=_repeated(d, 'tags', ModelTag),
+                   user_id=d.get('user_id', None))
+
+
+@dataclass
+class ModelDatabricks:
+    creation_timestamp: int = None
+    description: str = None
+    id: str = None
+    last_updated_timestamp: int = None
+    latest_versions: 'List[ModelVersion]' = None
+    name: str = None
+    permission_level: 'PermissionLevel' = None
+    tags: 'List[ModelTag]' = None
+    user_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
+        if self.description: body['description'] = self.description
+        if self.id: body['id'] = self.id
+        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
+        if self.name: body['name'] = self.name
+        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.user_id: body['user_id'] = self.user_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ModelDatabricks':
+        return cls(creation_timestamp=d.get('creation_timestamp', None),
+                   description=d.get('description', None),
+                   id=d.get('id', None),
+                   last_updated_timestamp=d.get('last_updated_timestamp', None),
+                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
+                   name=d.get('name', None),
+                   permission_level=_enum(d, 'permission_level', PermissionLevel),
+                   tags=_repeated(d, 'tags', ModelTag),
+                   user_id=d.get('user_id', None))
+
+
+@dataclass
+class ModelTag:
+    key: str = None
+    value: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key: body['key'] = self.key
+        if self.value: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ModelTag':
+        return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
@@ -1212,92 +1308,6 @@ class PermissionLevel(Enum):
 
 
 @dataclass
-class RegisteredModel:
-    creation_timestamp: int = None
-    description: str = None
-    last_updated_timestamp: int = None
-    latest_versions: 'List[ModelVersion]' = None
-    name: str = None
-    tags: 'List[RegisteredModelTag]' = None
-    user_id: str = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.description: body['description'] = self.description
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
-        if self.name: body['name'] = self.name
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModel':
-        return cls(creation_timestamp=d.get('creation_timestamp', None),
-                   description=d.get('description', None),
-                   last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
-                   name=d.get('name', None),
-                   tags=_repeated(d, 'tags', RegisteredModelTag),
-                   user_id=d.get('user_id', None))
-
-
-@dataclass
-class RegisteredModelDatabricks:
-    creation_timestamp: int = None
-    description: str = None
-    id: str = None
-    last_updated_timestamp: int = None
-    latest_versions: 'List[ModelVersion]' = None
-    name: str = None
-    permission_level: 'PermissionLevel' = None
-    tags: 'List[RegisteredModelTag]' = None
-    user_id: str = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.description: body['description'] = self.description
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
-        if self.name: body['name'] = self.name
-        if self.permission_level: body['permission_level'] = self.permission_level.value
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelDatabricks':
-        return cls(creation_timestamp=d.get('creation_timestamp', None),
-                   description=d.get('description', None),
-                   id=d.get('id', None),
-                   last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
-                   name=d.get('name', None),
-                   permission_level=_enum(d, 'permission_level', PermissionLevel),
-                   tags=_repeated(d, 'tags', RegisteredModelTag),
-                   user_id=d.get('user_id', None))
-
-
-@dataclass
-class RegisteredModelTag:
-    key: str = None
-    value: str = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelTag':
-        return cls(key=d.get('key', None), value=d.get('value', None))
-
-
-@dataclass
 class RegistryWebhook:
     creation_timestamp: int = None
     description: str = None
@@ -1360,20 +1370,6 @@ class RegistryWebhookStatus(Enum):
 
 
 @dataclass
-class RejectResponse:
-    activity: 'Activity' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.activity: body['activity'] = self.activity.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RejectResponse':
-        return cls(activity=_from_dict(d, 'activity', Activity))
-
-
-@dataclass
 class RejectTransitionRequest:
     name: str
     version: str
@@ -1397,7 +1393,21 @@ class RejectTransitionRequest:
 
 
 @dataclass
-class RenameRegisteredModelRequest:
+class RejectTransitionRequestResponse:
+    activity: 'Activity' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.activity: body['activity'] = self.activity.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RejectTransitionRequestResponse':
+        return cls(activity=_from_dict(d, 'activity', Activity))
+
+
+@dataclass
+class RenameModelRequest:
     name: str
     new_name: str = None
 
@@ -1408,13 +1418,13 @@ class RenameRegisteredModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RenameRegisteredModelRequest':
+    def from_dict(cls, d: Dict[str, any]) -> 'RenameModelRequest':
         return cls(name=d.get('name', None), new_name=d.get('new_name', None))
 
 
 @dataclass
-class RenameRegisteredModelResponse:
-    registered_model: 'RegisteredModel' = None
+class RenameModelResponse:
+    registered_model: 'Model' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1422,8 +1432,8 @@ class RenameRegisteredModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RenameRegisteredModelResponse':
-        return cls(registered_model=_from_dict(d, 'registered_model', RegisteredModel))
+    def from_dict(cls, d: Dict[str, any]) -> 'RenameModelResponse':
+        return cls(registered_model=_from_dict(d, 'registered_model', Model))
 
 
 @dataclass
@@ -1634,7 +1644,7 @@ class SearchModelVersionsResponse:
 
 
 @dataclass
-class SearchRegisteredModelsRequest:
+class SearchModelsRequest:
     """Search models"""
 
     filter: str = None
@@ -1644,9 +1654,9 @@ class SearchRegisteredModelsRequest:
 
 
 @dataclass
-class SearchRegisteredModelsResponse:
+class SearchModelsResponse:
     next_page_token: str = None
-    registered_models: 'List[RegisteredModel]' = None
+    registered_models: 'List[Model]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1655,9 +1665,9 @@ class SearchRegisteredModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchRegisteredModelsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> 'SearchModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', RegisteredModel))
+                   registered_models=_repeated(d, 'registered_models', Model))
 
 
 @dataclass
@@ -1734,6 +1744,24 @@ class SetExperimentTag:
 
 
 @dataclass
+class SetModelTagRequest:
+    name: str
+    key: str
+    value: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key: body['key'] = self.key
+        if self.name: body['name'] = self.name
+        if self.value: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SetModelTagRequest':
+        return cls(key=d.get('key', None), name=d.get('name', None), value=d.get('value', None))
+
+
+@dataclass
 class SetModelVersionTagRequest:
     name: str
     version: str
@@ -1754,24 +1782,6 @@ class SetModelVersionTagRequest:
                    name=d.get('name', None),
                    value=d.get('value', None),
                    version=d.get('version', None))
-
-
-@dataclass
-class SetRegisteredModelTagRequest:
-    name: str
-    key: str
-    value: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.key: body['key'] = self.key
-        if self.name: body['name'] = self.name
-        if self.value: body['value'] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetRegisteredModelTagRequest':
-        return cls(key=d.get('key', None), name=d.get('name', None), value=d.get('value', None))
 
 
 @dataclass
@@ -1863,29 +1873,6 @@ class TestRegistryWebhookResponse:
 
 
 @dataclass
-class TransitionModelVersionStage:
-    name: str
-    version: str
-    stage: str
-    archive_existing_versions: bool
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.archive_existing_versions: body['archive_existing_versions'] = self.archive_existing_versions
-        if self.name: body['name'] = self.name
-        if self.stage: body['stage'] = self.stage
-        if self.version: body['version'] = self.version
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransitionModelVersionStage':
-        return cls(archive_existing_versions=d.get('archive_existing_versions', None),
-                   name=d.get('name', None),
-                   stage=d.get('stage', None),
-                   version=d.get('version', None))
-
-
-@dataclass
 class TransitionModelVersionStageDatabricks:
     name: str
     version: str
@@ -1909,20 +1896,6 @@ class TransitionModelVersionStageDatabricks:
                    name=d.get('name', None),
                    stage=_enum(d, 'stage', Stage),
                    version=d.get('version', None))
-
-
-@dataclass
-class TransitionModelVersionStageResponse:
-    model_version: 'ModelVersion' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.model_version: body['model_version'] = self.model_version.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransitionModelVersionStageResponse':
-        return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
 
 @dataclass
@@ -1984,6 +1957,20 @@ class UpdateComment:
 
 
 @dataclass
+class UpdateCommentResponse:
+    comment: 'CommentObject' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment: body['comment'] = self.comment.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateCommentResponse':
+        return cls(comment=_from_dict(d, 'comment', CommentObject))
+
+
+@dataclass
 class UpdateExperiment:
     experiment_id: str
     new_name: str = None
@@ -1997,6 +1984,22 @@ class UpdateExperiment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateExperiment':
         return cls(experiment_id=d.get('experiment_id', None), new_name=d.get('new_name', None))
+
+
+@dataclass
+class UpdateModelRequest:
+    name: str
+    description: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description: body['description'] = self.description
+        if self.name: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateModelRequest':
+        return cls(description=d.get('description', None), name=d.get('name', None))
 
 
 @dataclass
@@ -2017,22 +2020,6 @@ class UpdateModelVersionRequest:
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
                    version=d.get('version', None))
-
-
-@dataclass
-class UpdateRegisteredModelRequest:
-    name: str
-    description: str = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegisteredModelRequest':
-        return cls(description=d.get('description', None), name=d.get('name', None))
 
 
 @dataclass
@@ -2062,20 +2049,6 @@ class UpdateRegistryWebhook:
                    id=d.get('id', None),
                    job_spec=_from_dict(d, 'job_spec', JobSpec),
                    status=_enum(d, 'status', RegistryWebhookStatus))
-
-
-@dataclass
-class UpdateResponse:
-    comment: 'CommentObject' = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.comment: body['comment'] = self.comment.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateResponse':
-        return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
@@ -2130,12 +2103,12 @@ class ExperimentsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               name: str,
-               *,
-               artifact_location: str = None,
-               tags: List[ExperimentTag] = None,
-               **kwargs) -> CreateExperimentResponse:
+    def create_experiment(self,
+                          name: str,
+                          *,
+                          artifact_location: str = None,
+                          tags: List[ExperimentTag] = None,
+                          **kwargs) -> CreateExperimentResponse:
         """Create experiment.
         
         Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
@@ -2151,7 +2124,30 @@ class ExperimentsAPI:
         json = self._api.do('POST', '/api/2.0/mlflow/experiments/create', body=body)
         return CreateExperimentResponse.from_dict(json)
 
-    def delete(self, experiment_id: str, **kwargs):
+    def create_run(self,
+                   *,
+                   experiment_id: str = None,
+                   start_time: int = None,
+                   tags: List[RunTag] = None,
+                   user_id: str = None,
+                   **kwargs) -> CreateRunResponse:
+        """Create a run.
+        
+        Creates a new run within an experiment. A run is usually a single execution of a machine learning or
+        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag`
+        associated with a single execution."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateRun(experiment_id=experiment_id,
+                                start_time=start_time,
+                                tags=tags,
+                                user_id=user_id)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/runs/create', body=body)
+        return CreateRunResponse.from_dict(json)
+
+    def delete_experiment(self, experiment_id: str, **kwargs):
         """Delete an experiment.
         
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
@@ -2162,19 +2158,26 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/experiments/delete', body=body)
 
-    def get(self, experiment_id: str, **kwargs) -> Experiment:
-        """Get an experiment.
+    def delete_run(self, run_id: str, **kwargs):
+        """Delete a run.
         
-        Gets metadata for an experiment. This method works on deleted experiments."""
+        Marks a run for deletion."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetExperimentRequest(experiment_id=experiment_id)
+            request = DeleteRun(run_id=run_id)
+        body = request.as_dict()
+        self._api.do('POST', '/api/2.0/mlflow/runs/delete', body=body)
 
-        query = {}
-        if experiment_id: query['experiment_id'] = request.experiment_id
-
-        json = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query)
-        return Experiment.from_dict(json)
+    def delete_tag(self, run_id: str, key: str, **kwargs):
+        """Delete a tag.
+        
+        Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
+        completes."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteTag(key=key, run_id=run_id)
+        body = request.as_dict()
+        self._api.do('POST', '/api/2.0/mlflow/runs/delete-tag', body=body)
 
     def get_by_name(self, experiment_name: str, **kwargs) -> GetExperimentByNameResponse:
         """Get metadata.
@@ -2196,195 +2199,19 @@ class ExperimentsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get-by-name', query=query)
         return GetExperimentByNameResponse.from_dict(json)
 
-    def list(self,
-             *,
-             max_results: int = None,
-             page_token: str = None,
-             view_type: str = None,
-             **kwargs) -> Iterator[Experiment]:
-        """List experiments.
+    def get_experiment(self, experiment_id: str, **kwargs) -> Experiment:
+        """Get an experiment.
         
-        Gets a list of all experiments."""
+        Gets metadata for an experiment. This method works on deleted experiments."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListExperimentsRequest(max_results=max_results,
-                                             page_token=page_token,
-                                             view_type=view_type)
+            request = GetExperimentRequest(experiment_id=experiment_id)
 
         query = {}
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
-        if view_type: query['view_type'] = request.view_type
+        if experiment_id: query['experiment_id'] = request.experiment_id
 
-        while True:
-            json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query)
-            if 'experiments' not in json or not json['experiments']:
-                return
-            for v in json['experiments']:
-                yield Experiment.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
-                return
-            query['page_token'] = json['next_page_token']
-
-    def restore(self, experiment_id: str, **kwargs):
-        """Restores an experiment.
-        
-        "Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
-        params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
-        also restored.
-        
-        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.","""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RestoreExperiment(experiment_id=experiment_id)
-        body = request.as_dict()
-        self._api.do('POST', '/api/2.0/mlflow/experiments/restore', body=body)
-
-    def search(self,
-               *,
-               filter: str = None,
-               max_results: int = None,
-               order_by: List[str] = None,
-               page_token: str = None,
-               view_type: SearchExperimentsViewType = None,
-               **kwargs) -> Iterator[Experiment]:
-        """Search experiments.
-        
-        Searches for experiments that satisfy specified search criteria."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SearchExperiments(filter=filter,
-                                        max_results=max_results,
-                                        order_by=order_by,
-                                        page_token=page_token,
-                                        view_type=view_type)
-        body = request.as_dict()
-
-        while True:
-            json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body)
-            if 'experiments' not in json or not json['experiments']:
-                return
-            for v in json['experiments']:
-                yield Experiment.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
-                return
-            body['page_token'] = json['next_page_token']
-
-    def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
-        """Set a tag.
-        
-        Sets a tag on an experiment. Experiment tags are metadata that can be updated."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetExperimentTag(experiment_id=experiment_id, key=key, value=value)
-        body = request.as_dict()
-        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body)
-
-    def update(self, experiment_id: str, *, new_name: str = None, **kwargs):
-        """Update an experiment.
-        
-        Updates experiment metadata."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateExperiment(experiment_id=experiment_id, new_name=new_name)
-        body = request.as_dict()
-        self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body)
-
-
-class MLflowArtifactsAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def list(self,
-             *,
-             page_token: str = None,
-             path: str = None,
-             run_id: str = None,
-             run_uuid: str = None,
-             **kwargs) -> Iterator[FileInfo]:
-        """Get all artifacts.
-        
-        List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
-        contains only artifacts with the specified prefix.","""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListArtifactsRequest(page_token=page_token, path=path, run_id=run_id, run_uuid=run_uuid)
-
-        query = {}
-        if page_token: query['page_token'] = request.page_token
-        if path: query['path'] = request.path
-        if run_id: query['run_id'] = request.run_id
-        if run_uuid: query['run_uuid'] = request.run_uuid
-
-        while True:
-            json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query)
-            if 'files' not in json or not json['files']:
-                return
-            for v in json['files']:
-                yield FileInfo.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
-                return
-            query['page_token'] = json['next_page_token']
-
-
-class MLflowDatabricksAPI:
-    """These endpoints are modified versions of the MLflow API that accept additional input parameters or return
-    additional information."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def get(self, name: str, **kwargs) -> GetResponse:
-        """Get model.
-        
-        Get the details of a model. This is a Databricks Workspace version of the [MLflow endpoint] that also
-        returns the model's Databricks Workspace ID and the permission level of the requesting user on the
-        model.
-        
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel"""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetMLflowDatabrickRequest(name=name)
-
-        query = {}
-        if name: query['name'] = request.name
-
-        json = self._api.do('GET', '/api/2.0/mlflow/databricks/registered-models/get', query=query)
-        return GetResponse.from_dict(json)
-
-    def transition_stage(self,
-                         name: str,
-                         version: str,
-                         stage: Stage,
-                         archive_existing_versions: bool,
-                         *,
-                         comment: str = None,
-                         **kwargs) -> TransitionStageResponse:
-        """Transition a stage.
-        
-        Transition a model version's stage. This is a Databricks Workspace version of the [MLflow endpoint]
-        that also accepts a comment associated with the transition to be recorded.",
-        
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage"""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = TransitionModelVersionStageDatabricks(
-                archive_existing_versions=archive_existing_versions,
-                comment=comment,
-                name=name,
-                stage=stage,
-                version=version)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/databricks/model-versions/transition-stage', body=body)
-        return TransitionStageResponse.from_dict(json)
-
-
-class MLflowMetricsAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
+        json = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query)
+        return Experiment.from_dict(json)
 
     def get_history(self,
                     metric_key: str,
@@ -2415,57 +2242,7 @@ class MLflowMetricsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query)
         return GetMetricHistoryResponse.from_dict(json)
 
-
-class MLflowRunsAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self,
-               *,
-               experiment_id: str = None,
-               start_time: int = None,
-               tags: List[RunTag] = None,
-               user_id: str = None,
-               **kwargs) -> CreateRunResponse:
-        """Create a run.
-        
-        Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag`
-        associated with a single execution."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRun(experiment_id=experiment_id,
-                                start_time=start_time,
-                                tags=tags,
-                                user_id=user_id)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/runs/create', body=body)
-        return CreateRunResponse.from_dict(json)
-
-    def delete(self, run_id: str, **kwargs):
-        """Delete a run.
-        
-        Marks a run for deletion."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRun(run_id=run_id)
-        body = request.as_dict()
-        self._api.do('POST', '/api/2.0/mlflow/runs/delete', body=body)
-
-    def delete_tag(self, run_id: str, key: str, **kwargs):
-        """Delete a tag.
-        
-        Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
-        completes."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTag(key=key, run_id=run_id)
-        body = request.as_dict()
-        self._api.do('POST', '/api/2.0/mlflow/runs/delete-tag', body=body)
-
-    def get(self, run_id: str, *, run_uuid: str = None, **kwargs) -> GetRunResponse:
+    def get_run(self, run_id: str, *, run_uuid: str = None, **kwargs) -> GetRunResponse:
         """Get a run.
         
         "Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
@@ -2482,6 +2259,67 @@ class MLflowRunsAPI:
 
         json = self._api.do('GET', '/api/2.0/mlflow/runs/get', query=query)
         return GetRunResponse.from_dict(json)
+
+    def list_artifacts(self,
+                       *,
+                       page_token: str = None,
+                       path: str = None,
+                       run_id: str = None,
+                       run_uuid: str = None,
+                       **kwargs) -> Iterator[FileInfo]:
+        """Get all artifacts.
+        
+        List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
+        contains only artifacts with the specified prefix.","""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListArtifactsRequest(page_token=page_token, path=path, run_id=run_id, run_uuid=run_uuid)
+
+        query = {}
+        if page_token: query['page_token'] = request.page_token
+        if path: query['path'] = request.path
+        if run_id: query['run_id'] = request.run_id
+        if run_uuid: query['run_uuid'] = request.run_uuid
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query)
+            if 'files' not in json or not json['files']:
+                return
+            for v in json['files']:
+                yield FileInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def list_experiments(self,
+                         *,
+                         max_results: int = None,
+                         page_token: str = None,
+                         view_type: str = None,
+                         **kwargs) -> Iterator[Experiment]:
+        """List experiments.
+        
+        Gets a list of all experiments."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListExperimentsRequest(max_results=max_results,
+                                             page_token=page_token,
+                                             view_type=view_type)
+
+        query = {}
+        if max_results: query['max_results'] = request.max_results
+        if page_token: query['page_token'] = request.page_token
+        if view_type: query['view_type'] = request.view_type
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query)
+            if 'experiments' not in json or not json['experiments']:
+                return
+            for v in json['experiments']:
+                yield Experiment.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def log_batch(self,
                   *,
@@ -2567,7 +2405,7 @@ class MLflowRunsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/log-model', body=body)
 
-    def log_parameter(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
+    def log_param(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
         """Log a param.
         
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
@@ -2579,7 +2417,21 @@ class MLflowRunsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/log-parameter', body=body)
 
-    def restore(self, run_id: str, **kwargs):
+    def restore_experiment(self, experiment_id: str, **kwargs):
+        """Restores an experiment.
+        
+        "Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
+        params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
+        also restored.
+        
+        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.","""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = RestoreExperiment(experiment_id=experiment_id)
+        body = request.as_dict()
+        self._api.do('POST', '/api/2.0/mlflow/experiments/restore', body=body)
+
+    def restore_run(self, run_id: str, **kwargs):
         """Restore a run.
         
         Restores a deleted run."""
@@ -2589,15 +2441,45 @@ class MLflowRunsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/restore', body=body)
 
-    def search(self,
-               *,
-               experiment_ids: List[str] = None,
-               filter: str = None,
-               max_results: int = None,
-               order_by: List[str] = None,
-               page_token: str = None,
-               run_view_type: SearchRunsRunViewType = None,
-               **kwargs) -> Iterator[Run]:
+    def search_experiments(self,
+                           *,
+                           filter: str = None,
+                           max_results: int = None,
+                           order_by: List[str] = None,
+                           page_token: str = None,
+                           view_type: SearchExperimentsViewType = None,
+                           **kwargs) -> Iterator[Experiment]:
+        """Search experiments.
+        
+        Searches for experiments that satisfy specified search criteria."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = SearchExperiments(filter=filter,
+                                        max_results=max_results,
+                                        order_by=order_by,
+                                        page_token=page_token,
+                                        view_type=view_type)
+        body = request.as_dict()
+
+        while True:
+            json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body)
+            if 'experiments' not in json or not json['experiments']:
+                return
+            for v in json['experiments']:
+                yield Experiment.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            body['page_token'] = json['next_page_token']
+
+    def search_runs(self,
+                    *,
+                    experiment_ids: List[str] = None,
+                    filter: str = None,
+                    max_results: int = None,
+                    order_by: List[str] = None,
+                    page_token: str = None,
+                    run_view_type: SearchRunsRunViewType = None,
+                    **kwargs) -> Iterator[Run]:
         """Search for runs.
         
         Searches for runs that satisfy expressions.
@@ -2623,6 +2505,16 @@ class MLflowRunsAPI:
                 return
             body['page_token'] = json['next_page_token']
 
+    def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
+        """Set a tag.
+        
+        Sets a tag on an experiment. Experiment tags are metadata that can be updated."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = SetExperimentTag(experiment_id=experiment_id, key=key, value=value)
+        body = request.as_dict()
+        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body)
+
     def set_tag(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
         """Set a tag.
         
@@ -2633,13 +2525,23 @@ class MLflowRunsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/set-tag', body=body)
 
-    def update(self,
-               *,
-               end_time: int = None,
-               run_id: str = None,
-               run_uuid: str = None,
-               status: UpdateRunStatus = None,
-               **kwargs) -> UpdateRunResponse:
+    def update_experiment(self, experiment_id: str, *, new_name: str = None, **kwargs):
+        """Update an experiment.
+        
+        Updates experiment metadata."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateExperiment(experiment_id=experiment_id, new_name=new_name)
+        body = request.as_dict()
+        self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body)
+
+    def update_run(self,
+                   *,
+                   end_time: int = None,
+                   run_id: str = None,
+                   run_uuid: str = None,
+                   status: UpdateRunStatus = None,
+                   **kwargs) -> UpdateRunResponse:
         """Update a run.
         
         Updates run metadata."""
@@ -2652,12 +2554,35 @@ class MLflowRunsAPI:
         return UpdateRunResponse.from_dict(json)
 
 
-class ModelVersionCommentsAPI:
+class ModelRegistryAPI:
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, version: str, comment: str, **kwargs) -> CreateResponse:
+    def approve_transition_request(self,
+                                   name: str,
+                                   version: str,
+                                   stage: Stage,
+                                   archive_existing_versions: bool,
+                                   *,
+                                   comment: str = None,
+                                   **kwargs) -> ApproveTransitionRequestResponse:
+        """Approve transition request.
+        
+        Approves a model version stage transition request."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ApproveTransitionRequest(archive_existing_versions=archive_existing_versions,
+                                               comment=comment,
+                                               name=name,
+                                               stage=stage,
+                                               version=version)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/approve', body=body)
+        return ApproveTransitionRequestResponse.from_dict(json)
+
+    def create_comment(self, name: str, version: str, comment: str, **kwargs) -> CreateCommentResponse:
         """Post a comment.
         
         Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
@@ -2668,48 +2593,36 @@ class ModelVersionCommentsAPI:
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/mlflow/comments/create', body=body)
-        return CreateResponse.from_dict(json)
+        return CreateCommentResponse.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
-        """Delete a comment.
+    def create_model(self,
+                     name: str,
+                     *,
+                     description: str = None,
+                     tags: List[ModelTag] = None,
+                     **kwargs) -> CreateModelResponse:
+        """Create a model.
         
-        Deletes a comment on a model version."""
+        Creates a new registered model with the name specified in the request body.
+        
+        Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = DeleteModelVersionCommentRequest(id=id)
-
-        query = {}
-        if id: query['id'] = request.id
-
-        self._api.do('DELETE', '/api/2.0/mlflow/comments/delete', query=query)
-
-    def update(self, id: str, comment: str, **kwargs) -> UpdateResponse:
-        """Update a comment.
-        
-        Post an edit to a comment on a model version."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateComment(comment=comment, id=id)
+            request = CreateModelRequest(description=description, name=name, tags=tags)
         body = request.as_dict()
 
-        json = self._api.do('POST', '/api/2.0/mlflow/comments/update', body=body)
-        return UpdateResponse.from_dict(json)
+        json = self._api.do('POST', '/api/2.0/mlflow/registered-models/create', body=body)
+        return CreateModelResponse.from_dict(json)
 
-
-class ModelVersionsAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self,
-               name: str,
-               source: str,
-               *,
-               description: str = None,
-               run_id: str = None,
-               run_link: str = None,
-               tags: List[ModelVersionTag] = None,
-               **kwargs) -> CreateModelVersionResponse:
+    def create_model_version(self,
+                             name: str,
+                             source: str,
+                             *,
+                             description: str = None,
+                             run_id: str = None,
+                             run_link: str = None,
+                             tags: List[ModelVersionTag] = None,
+                             **kwargs) -> CreateModelVersionResponse:
         """Create a model version.
         
         Creates a model version."""
@@ -2726,7 +2639,92 @@ class ModelVersionsAPI:
         json = self._api.do('POST', '/api/2.0/mlflow/model-versions/create', body=body)
         return CreateModelVersionResponse.from_dict(json)
 
-    def delete(self, name: str, version: str, **kwargs):
+    def create_transition_request(self,
+                                  name: str,
+                                  version: str,
+                                  stage: Stage,
+                                  *,
+                                  comment: str = None,
+                                  **kwargs) -> CreateTransitionRequestResponse:
+        """Make a transition request.
+        
+        Creates a model version stage transition request."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateTransitionRequest(comment=comment, name=name, stage=stage, version=version)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/create', body=body)
+        return CreateTransitionRequestResponse.from_dict(json)
+
+    def create_webhook(self,
+                       events: List[RegistryWebhookEvent],
+                       *,
+                       description: str = None,
+                       http_url_spec: HttpUrlSpec = None,
+                       job_spec: JobSpec = None,
+                       model_name: str = None,
+                       status: RegistryWebhookStatus = None,
+                       **kwargs) -> CreateWebhookResponse:
+        """Create a webhook.
+        
+        **NOTE**: This endpoint is in Public Preview.
+        
+        Creates a registry webhook."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateRegistryWebhook(description=description,
+                                            events=events,
+                                            http_url_spec=http_url_spec,
+                                            job_spec=job_spec,
+                                            model_name=model_name,
+                                            status=status)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/create', body=body)
+        return CreateWebhookResponse.from_dict(json)
+
+    def delete_comment(self, id: str, **kwargs):
+        """Delete a comment.
+        
+        Deletes a comment on a model version."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteCommentRequest(id=id)
+
+        query = {}
+        if id: query['id'] = request.id
+
+        self._api.do('DELETE', '/api/2.0/mlflow/comments/delete', query=query)
+
+    def delete_model(self, name: str, **kwargs):
+        """Delete a model.
+        
+        Deletes a registered model."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteModelRequest(name=name)
+
+        query = {}
+        if name: query['name'] = request.name
+
+        self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete', query=query)
+
+    def delete_model_tag(self, name: str, key: str, **kwargs):
+        """Delete a model tag.
+        
+        Deletes the tag for a registered model."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteModelTagRequest(key=key, name=name)
+
+        query = {}
+        if key: query['key'] = request.key
+        if name: query['name'] = request.name
+
+        self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete-tag', query=query)
+
+    def delete_model_version(self, name: str, version: str, **kwargs):
         """Delete a model version.
         
         Deletes a model version."""
@@ -2740,7 +2738,7 @@ class ModelVersionsAPI:
 
         self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete', query=query)
 
-    def delete_tag(self, name: str, version: str, key: str, **kwargs):
+    def delete_model_version_tag(self, name: str, version: str, key: str, **kwargs):
         """Delete a model version tag.
         
         Deletes a model version tag."""
@@ -2755,7 +2753,80 @@ class ModelVersionsAPI:
 
         self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete-tag', query=query)
 
-    def get(self, name: str, version: str, **kwargs) -> GetModelVersionResponse:
+    def delete_transition_request(self,
+                                  name: str,
+                                  version: str,
+                                  stage: str,
+                                  creator: str,
+                                  *,
+                                  comment: str = None,
+                                  **kwargs):
+        """Delete a ransition request.
+        
+        Cancels a model version stage transition request."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteTransitionRequestRequest(comment=comment,
+                                                     creator=creator,
+                                                     name=name,
+                                                     stage=stage,
+                                                     version=version)
+
+        query = {}
+        if comment: query['comment'] = request.comment
+        if creator: query['creator'] = request.creator
+        if name: query['name'] = request.name
+        if stage: query['stage'] = request.stage
+        if version: query['version'] = request.version
+
+        self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
+
+    def delete_webhook(self, *, id: str = None, **kwargs):
+        """Delete a webhook.
+        
+        **NOTE:** This endpoint is in Public Preview.
+        
+        Deletes a registry webhook."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteWebhookRequest(id=id)
+
+        query = {}
+        if id: query['id'] = request.id
+
+        self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query)
+
+    def get_latest_versions(self, name: str, *, stages: List[str] = None, **kwargs) -> Iterator[ModelVersion]:
+        """Get the latest version.
+        
+        Gets the latest version of a registered model."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetLatestVersionsRequest(name=name, stages=stages)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/registered-models/get-latest-versions', body=body)
+        return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
+
+    def get_model(self, name: str, **kwargs) -> GetModelResponse:
+        """Get model.
+        
+        Get the details of a model. This is a Databricks Workspace version of the [MLflow endpoint] that also
+        returns the model's Databricks Workspace ID and the permission level of the requesting user on the
+        model.
+        
+        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel"""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetModelRequest(name=name)
+
+        query = {}
+        if name: query['name'] = request.name
+
+        json = self._api.do('GET', '/api/2.0/mlflow/databricks/registered-models/get', query=query)
+        return GetModelResponse.from_dict(json)
+
+    def get_model_version(self, name: str, version: str, **kwargs) -> GetModelVersionResponse:
         """Get a model version.
         
         Get a model version."""
@@ -2770,7 +2841,8 @@ class ModelVersionsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get', query=query)
         return GetModelVersionResponse.from_dict(json)
 
-    def get_download_uri(self, name: str, version: str, **kwargs) -> GetModelVersionDownloadUriResponse:
+    def get_model_version_download_uri(self, name: str, version: str,
+                                       **kwargs) -> GetModelVersionDownloadUriResponse:
         """Get a model version URI.
         
         Gets a URI to download the model version."""
@@ -2785,13 +2857,110 @@ class ModelVersionsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get-download-uri', query=query)
         return GetModelVersionDownloadUriResponse.from_dict(json)
 
-    def search(self,
-               *,
-               filter: str = None,
-               max_results: int = None,
-               order_by: List[str] = None,
-               page_token: str = None,
-               **kwargs) -> Iterator[ModelVersion]:
+    def list_models(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[Model]:
+        """List models.
+        
+        Lists all available registered models, up to the limit specified in __max_results__."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListModelsRequest(max_results=max_results, page_token=page_token)
+
+        query = {}
+        if max_results: query['max_results'] = request.max_results
+        if page_token: query['page_token'] = request.page_token
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
+            if 'registered_models' not in json or not json['registered_models']:
+                return
+            for v in json['registered_models']:
+                yield Model.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def list_transition_requests(self, name: str, version: str, **kwargs) -> Iterator[Activity]:
+        """List transition requests.
+        
+        Gets a list of all open stage transition requests for the model version."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListTransitionRequestsRequest(name=name, version=version)
+
+        query = {}
+        if name: query['name'] = request.name
+        if version: query['version'] = request.version
+
+        json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query)
+        return [Activity.from_dict(v) for v in json.get('requests', [])]
+
+    def list_webhooks(self,
+                      *,
+                      events: List[RegistryWebhookEvent] = None,
+                      model_name: str = None,
+                      page_token: str = None,
+                      **kwargs) -> Iterator[RegistryWebhook]:
+        """List registry webhooks.
+        
+        **NOTE:** This endpoint is in Public Preview.
+        
+        Lists all registry webhooks."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListWebhooksRequest(events=events, model_name=model_name, page_token=page_token)
+
+        query = {}
+        if events: query['events'] = [v for v in request.events]
+        if model_name: query['model_name'] = request.model_name
+        if page_token: query['page_token'] = request.page_token
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
+            if 'webhooks' not in json or not json['webhooks']:
+                return
+            for v in json['webhooks']:
+                yield RegistryWebhook.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def reject_transition_request(self,
+                                  name: str,
+                                  version: str,
+                                  stage: Stage,
+                                  *,
+                                  comment: str = None,
+                                  **kwargs) -> RejectTransitionRequestResponse:
+        """Reject a transition request.
+        
+        Rejects a model version stage transition request."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = RejectTransitionRequest(comment=comment, name=name, stage=stage, version=version)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/reject', body=body)
+        return RejectTransitionRequestResponse.from_dict(json)
+
+    def rename_model(self, name: str, *, new_name: str = None, **kwargs) -> RenameModelResponse:
+        """Rename a model.
+        
+        Renames a registered model."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = RenameModelRequest(name=name, new_name=new_name)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/registered-models/rename', body=body)
+        return RenameModelResponse.from_dict(json)
+
+    def search_model_versions(self,
+                              *,
+                              filter: str = None,
+                              max_results: int = None,
+                              order_by: List[str] = None,
+                              page_token: str = None,
+                              **kwargs) -> Iterator[ModelVersion]:
         """Searches model versions.
         
         Searches for specific model versions based on the supplied __filter__."""
@@ -2818,170 +2987,22 @@ class ModelVersionsAPI:
                 return
             query['page_token'] = json['next_page_token']
 
-    def set_tag(self, name: str, version: str, key: str, value: str, **kwargs):
-        """Set a version tag.
-        
-        Sets a model version tag."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetModelVersionTagRequest(key=key, name=name, value=value, version=version)
-        body = request.as_dict()
-        self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body)
-
-    def transition_stage(self, name: str, version: str, stage: str, archive_existing_versions: bool,
-                         **kwargs) -> TransitionModelVersionStageResponse:
-        """Transition a stage.
-        
-        Transition to the next model stage."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = TransitionModelVersionStage(archive_existing_versions=archive_existing_versions,
-                                                  name=name,
-                                                  stage=stage,
-                                                  version=version)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/model-versions/transition-stage', body=body)
-        return TransitionModelVersionStageResponse.from_dict(json)
-
-    def update(self, name: str, version: str, *, description: str = None, **kwargs):
-        """Update model version.
-        
-        Updates the model version."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateModelVersionRequest(description=description, name=name, version=version)
-        body = request.as_dict()
-        self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body)
-
-
-class RegisteredModelsAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self,
-               name: str,
-               *,
-               description: str = None,
-               tags: List[RegisteredModelTag] = None,
-               **kwargs) -> CreateRegisteredModelResponse:
-        """Create a model.
-        
-        Creates a new registered model with the name specified in the request body.
-        
-        Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRegisteredModelRequest(description=description, name=name, tags=tags)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/registered-models/create', body=body)
-        return CreateRegisteredModelResponse.from_dict(json)
-
-    def delete(self, name: str, **kwargs):
-        """Delete a model.
-        
-        Deletes a registered model."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRegisteredModelRequest(name=name)
-
-        query = {}
-        if name: query['name'] = request.name
-
-        self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete', query=query)
-
-    def delete_tag(self, name: str, key: str, **kwargs):
-        """Delete a model tag.
-        
-        Deletes the tag for a registered model."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRegisteredModelTagRequest(key=key, name=name)
-
-        query = {}
-        if key: query['key'] = request.key
-        if name: query['name'] = request.name
-
-        self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete-tag', query=query)
-
-    def get(self, name: str, **kwargs) -> GetRegisteredModelResponse:
-        """Get a model.
-        
-        Gets the registered model that matches the specified ID."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRegisteredModelRequest(name=name)
-
-        query = {}
-        if name: query['name'] = request.name
-
-        json = self._api.do('GET', '/api/2.0/mlflow/registered-models/get', query=query)
-        return GetRegisteredModelResponse.from_dict(json)
-
-    def get_latest_versions(self, name: str, *, stages: List[str] = None, **kwargs) -> Iterator[ModelVersion]:
-        """Get the latest version.
-        
-        Gets the latest version of a registered model."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetLatestVersionsRequest(name=name, stages=stages)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/registered-models/get-latest-versions', body=body)
-        return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
-
-    def list(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[RegisteredModel]:
-        """List models.
-        
-        Lists all available registered models, up to the limit specified in __max_results__."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListRegisteredModelsRequest(max_results=max_results, page_token=page_token)
-
-        query = {}
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
-
-        while True:
-            json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
-            if 'registered_models' not in json or not json['registered_models']:
-                return
-            for v in json['registered_models']:
-                yield RegisteredModel.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
-                return
-            query['page_token'] = json['next_page_token']
-
-    def rename(self, name: str, *, new_name: str = None, **kwargs) -> RenameRegisteredModelResponse:
-        """Rename a model.
-        
-        Renames a registered model."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RenameRegisteredModelRequest(name=name, new_name=new_name)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/registered-models/rename', body=body)
-        return RenameRegisteredModelResponse.from_dict(json)
-
-    def search(self,
-               *,
-               filter: str = None,
-               max_results: int = None,
-               order_by: List[str] = None,
-               page_token: str = None,
-               **kwargs) -> Iterator[RegisteredModel]:
+    def search_models(self,
+                      *,
+                      filter: str = None,
+                      max_results: int = None,
+                      order_by: List[str] = None,
+                      page_token: str = None,
+                      **kwargs) -> Iterator[Model]:
         """Search models.
         
         Search for registered models based on the specified __filter__."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = SearchRegisteredModelsRequest(filter=filter,
-                                                    max_results=max_results,
-                                                    order_by=order_by,
-                                                    page_token=page_token)
+            request = SearchModelsRequest(filter=filter,
+                                          max_results=max_results,
+                                          order_by=order_by,
+                                          page_token=page_token)
 
         query = {}
         if filter: query['filter'] = request.filter
@@ -2994,110 +3015,36 @@ class RegisteredModelsAPI:
             if 'registered_models' not in json or not json['registered_models']:
                 return
             for v in json['registered_models']:
-                yield RegisteredModel.from_dict(v)
+                yield Model.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
 
-    def set_tag(self, name: str, key: str, value: str, **kwargs):
+    def set_model_tag(self, name: str, key: str, value: str, **kwargs):
         """Set a tag.
         
         Sets a tag on a registered model."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = SetRegisteredModelTagRequest(key=key, name=name, value=value)
+            request = SetModelTagRequest(key=key, name=name, value=value)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/registered-models/set-tag', body=body)
 
-    def update(self, name: str, *, description: str = None, **kwargs):
-        """Update model.
+    def set_model_version_tag(self, name: str, version: str, key: str, value: str, **kwargs):
+        """Set a version tag.
         
-        Updates a registered model."""
+        Sets a model version tag."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateRegisteredModelRequest(description=description, name=name)
+            request = SetModelVersionTagRequest(key=key, name=name, value=value, version=version)
         body = request.as_dict()
-        self._api.do('PATCH', '/api/2.0/mlflow/registered-models/update', body=body)
+        self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body)
 
-
-class RegistryWebhooksAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self,
-               events: List[RegistryWebhookEvent],
-               *,
-               description: str = None,
-               http_url_spec: HttpUrlSpec = None,
-               job_spec: JobSpec = None,
-               model_name: str = None,
-               status: RegistryWebhookStatus = None,
-               **kwargs) -> CreateResponse:
-        """Create a webhook.
-        
-        **NOTE**: This endpoint is in Public Preview.
-        
-        Creates a registry webhook."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRegistryWebhook(description=description,
-                                            events=events,
-                                            http_url_spec=http_url_spec,
-                                            job_spec=job_spec,
-                                            model_name=model_name,
-                                            status=status)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/create', body=body)
-        return CreateResponse.from_dict(json)
-
-    def delete(self, *, id: str = None, **kwargs):
-        """Delete a webhook.
-        
-        **NOTE:** This endpoint is in Public Preview.
-        
-        Deletes a registry webhook."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRegistryWebhookRequest(id=id)
-
-        query = {}
-        if id: query['id'] = request.id
-
-        self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query)
-
-    def list(self,
-             *,
-             events: List[RegistryWebhookEvent] = None,
-             model_name: str = None,
-             page_token: str = None,
-             **kwargs) -> Iterator[RegistryWebhook]:
-        """List registry webhooks.
-        
-        **NOTE:** This endpoint is in Public Preview.
-        
-        Lists all registry webhooks."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListRegistryWebhooksRequest(events=events, model_name=model_name, page_token=page_token)
-
-        query = {}
-        if events: query['events'] = [v for v in request.events]
-        if model_name: query['model_name'] = request.model_name
-        if page_token: query['page_token'] = request.page_token
-
-        while True:
-            json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
-            if 'webhooks' not in json or not json['webhooks']:
-                return
-            for v in json['webhooks']:
-                yield RegistryWebhook.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
-                return
-            query['page_token'] = json['next_page_token']
-
-    def test(self, id: str, *, event: RegistryWebhookEvent = None, **kwargs) -> TestRegistryWebhookResponse:
+    def test_registry_webhook(self,
+                              id: str,
+                              *,
+                              event: RegistryWebhookEvent = None,
+                              **kwargs) -> TestRegistryWebhookResponse:
         """Test a webhook.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3111,15 +3058,74 @@ class RegistryWebhooksAPI:
         json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/test', body=body)
         return TestRegistryWebhookResponse.from_dict(json)
 
-    def update(self,
-               id: str,
-               *,
-               description: str = None,
-               events: List[RegistryWebhookEvent] = None,
-               http_url_spec: HttpUrlSpec = None,
-               job_spec: JobSpec = None,
-               status: RegistryWebhookStatus = None,
-               **kwargs):
+    def transition_stage(self,
+                         name: str,
+                         version: str,
+                         stage: Stage,
+                         archive_existing_versions: bool,
+                         *,
+                         comment: str = None,
+                         **kwargs) -> TransitionStageResponse:
+        """Transition a stage.
+        
+        Transition a model version's stage. This is a Databricks Workspace version of the [MLflow endpoint]
+        that also accepts a comment associated with the transition to be recorded.",
+        
+        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage"""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = TransitionModelVersionStageDatabricks(
+                archive_existing_versions=archive_existing_versions,
+                comment=comment,
+                name=name,
+                stage=stage,
+                version=version)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.0/mlflow/databricks/model-versions/transition-stage', body=body)
+        return TransitionStageResponse.from_dict(json)
+
+    def update_comment(self, id: str, comment: str, **kwargs) -> UpdateCommentResponse:
+        """Update a comment.
+        
+        Post an edit to a comment on a model version."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateComment(comment=comment, id=id)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH', '/api/2.0/mlflow/comments/update', body=body)
+        return UpdateCommentResponse.from_dict(json)
+
+    def update_model(self, name: str, *, description: str = None, **kwargs):
+        """Update model.
+        
+        Updates a registered model."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateModelRequest(description=description, name=name)
+        body = request.as_dict()
+        self._api.do('PATCH', '/api/2.0/mlflow/registered-models/update', body=body)
+
+    def update_model_version(self, name: str, version: str, *, description: str = None, **kwargs):
+        """Update model version.
+        
+        Updates the model version."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateModelVersionRequest(description=description, name=name, version=version)
+        body = request.as_dict()
+        self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body)
+
+    def update_webhook(self,
+                       id: str,
+                       *,
+                       description: str = None,
+                       events: List[RegistryWebhookEvent] = None,
+                       http_url_spec: HttpUrlSpec = None,
+                       job_spec: JobSpec = None,
+                       status: RegistryWebhookStatus = None,
+                       **kwargs):
         """Update a webhook.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3135,104 +3141,3 @@ class RegistryWebhooksAPI:
                                             status=status)
         body = request.as_dict()
         self._api.do('PATCH', '/api/2.0/mlflow/registry-webhooks/update', body=body)
-
-
-class TransitionRequestsAPI:
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def approve(self,
-                name: str,
-                version: str,
-                stage: Stage,
-                archive_existing_versions: bool,
-                *,
-                comment: str = None,
-                **kwargs) -> ApproveResponse:
-        """Approve transition requests.
-        
-        Approves a model version stage transition request."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ApproveTransitionRequest(archive_existing_versions=archive_existing_versions,
-                                               comment=comment,
-                                               name=name,
-                                               stage=stage,
-                                               version=version)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/approve', body=body)
-        return ApproveResponse.from_dict(json)
-
-    def create(self,
-               name: str,
-               version: str,
-               stage: Stage,
-               *,
-               comment: str = None,
-               **kwargs) -> CreateResponse:
-        """Make a transition request.
-        
-        Creates a model version stage transition request."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateTransitionRequest(comment=comment, name=name, stage=stage, version=version)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/create', body=body)
-        return CreateResponse.from_dict(json)
-
-    def delete(self, name: str, version: str, stage: str, creator: str, *, comment: str = None, **kwargs):
-        """Delete a ransition request.
-        
-        Cancels a model version stage transition request."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTransitionRequestRequest(comment=comment,
-                                                     creator=creator,
-                                                     name=name,
-                                                     stage=stage,
-                                                     version=version)
-
-        query = {}
-        if comment: query['comment'] = request.comment
-        if creator: query['creator'] = request.creator
-        if name: query['name'] = request.name
-        if stage: query['stage'] = request.stage
-        if version: query['version'] = request.version
-
-        self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
-
-    def list(self, name: str, version: str, **kwargs) -> Iterator[Activity]:
-        """List transition requests.
-        
-        Gets a list of all open stage transition requests for the model version."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListTransitionRequestsRequest(name=name, version=version)
-
-        query = {}
-        if name: query['name'] = request.name
-        if version: query['version'] = request.version
-
-        json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query)
-        return [Activity.from_dict(v) for v in json.get('requests', [])]
-
-    def reject(self,
-               name: str,
-               version: str,
-               stage: Stage,
-               *,
-               comment: str = None,
-               **kwargs) -> RejectResponse:
-        """Reject a transition request.
-        
-        Rejects a model version stage transition request."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RejectTransitionRequest(comment=comment, name=name, stage=stage, version=version)
-        body = request.as_dict()
-
-        json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/reject', body=body)
-        return RejectResponse.from_dict(json)

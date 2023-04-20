@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import Optional
 
-from databricks.sdk.service import clusters
+from databricks.sdk.service import compute
 
 
 @dataclass
@@ -54,7 +54,7 @@ class SemVer:
         return self.build < other.build
 
 
-class ClustersExt(clusters.ClustersAPI):
+class ClustersExt(compute.ClustersAPI):
 
     def select_spark_version(self,
                              long_term_support: bool = False,
@@ -92,7 +92,7 @@ class ClustersExt(clusters.ClustersAPI):
         return versions[0]
 
     @staticmethod
-    def _node_sorting_tuple(item: clusters.NodeType) -> tuple:
+    def _node_sorting_tuple(item: compute.NodeType) -> tuple:
         local_disks = local_disk_size_gb = local_nvme_disk = local_nvme_disk_size_gb = 0
         if item.node_instance_type is not None:
             local_disks = item.node_instance_type.local_disks
@@ -103,12 +103,12 @@ class ClustersExt(clusters.ClustersAPI):
                 local_nvme_disk, local_nvme_disk_size_gb, item.num_gpus, item.instance_type_id)
 
     @staticmethod
-    def _should_node_be_skipped(nt: clusters.NodeType) -> bool:
+    def _should_node_be_skipped(nt: compute.NodeType) -> bool:
         if not nt.node_info:
             return False
         if not nt.node_info.status:
             return False
-        val = clusters.CloudProviderNodeStatus
+        val = compute.CloudProviderNodeStatus
         for st in nt.node_info.status:
             if st in (val.NotAvailableInRegion, val.NotEnabledOnSubscription):
                 return True
@@ -173,7 +173,7 @@ class ClustersExt(clusters.ClustersAPI):
         raise ValueError("cannot determine smallest node type")
 
     def ensure_cluster_is_running(self, cluster_id: str):
-        state = clusters.State
+        state = compute.State
         info = self.get(cluster_id)
         if info.state == state.TERMINATED:
             self.start(cluster_id).result()
