@@ -46,7 +46,7 @@ def random():
     return inner
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def a(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide('account')
     env_or_skip("CLOUD_ENV")
@@ -56,7 +56,7 @@ def a(env_or_skip) -> AccountClient:
     return account_client
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def w(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('workspace')
     env_or_skip("CLOUD_ENV")
@@ -65,7 +65,7 @@ def w(env_or_skip) -> WorkspaceClient:
     return WorkspaceClient()
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def ucws(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('ucws')
     env_or_skip("CLOUD_ENV")
@@ -74,7 +74,7 @@ def ucws(env_or_skip) -> WorkspaceClient:
     return WorkspaceClient()
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def env_or_skip():
 
     def inner(var) -> str:
@@ -85,9 +85,9 @@ def env_or_skip():
     return inner
 
 
-def _load_debug_env_if_runs_from_ide(key):
+def _load_debug_env_if_runs_from_ide(key) -> bool:
     if not _is_in_debug():
-        return
+        return False
     conf_file = pathlib.Path.home() / '.databricks/debug-env.json'
     with conf_file.open('r') as f:
         conf = json.load(f)
@@ -95,6 +95,7 @@ def _load_debug_env_if_runs_from_ide(key):
             raise KeyError(f'{key} not found in ~/.databricks/debug-env.json')
         for k, v in conf[key].items():
             os.environ[k] = v
+    return True
 
 
 def _is_in_debug() -> bool:
