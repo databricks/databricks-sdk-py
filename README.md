@@ -137,6 +137,8 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
                     azure_client_secret=input('AAD Client Secret: '))
 ```
 
+Please see more examples in [this document](./docs/azure-ad.md).
+
 ### Overriding `.databrickscfg`
 
 For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior for using `.databrickscfg` as follows:

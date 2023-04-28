@@ -114,7 +114,9 @@ def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
 def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
     if cfg.auth_type != 'external-browser':
         return None
-    if cfg.is_aws:
+    if cfg.client_id:
+        client_id = cfg.client_id
+    elif cfg.is_aws:
         client_id = 'databricks-cli'
     elif cfg.is_azure:
         # Use Azure AD app for cases when Azure CLI is not available on the machine.
@@ -123,7 +125,10 @@ def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
         client_id = '6128a518-99a9-425b-8333-4cc94f04cacd'
     else:
         raise ValueError(f'local browser SSO is not supported')
-    oauth_client = OAuthClient(cfg.host, client_id, 'http://localhost:8020')
+    oauth_client = OAuthClient(host=cfg.host,
+                               client_id=client_id,
+                               redirect_url='http://localhost:8020',
+                               client_secret=cfg.client_secret)
     consent = oauth_client.initiate_consent()
     if not consent:
         return None

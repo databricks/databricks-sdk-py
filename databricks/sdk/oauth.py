@@ -15,6 +15,10 @@ from typing import Any, Dict, List
 import requests
 import requests.auth
 
+# Error code for PKCE flow in Azure Active Directory, that gets additional retry.
+# See https://stackoverflow.com/a/75466778/277035 for more info
+NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
+
 logger = logging.getLogger(__name__)
 
 
@@ -239,24 +243,29 @@ class Consent:
     def exchange(self, code: str, state: str) -> RefreshableCredentials:
         if self._state != state:
             raise ValueError('state mismatch')
-        params = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'code_verifier': self._verifier,
-            'redirect_uri': self._client.redirect_url
-        }
+        params = {'redirect_uri': self._client.redirect_url,
+                  'grant_type': 'authorization_code',
+                  'code_verifier': self._verifier,
+                  'code': code}
         headers = {}
-        if 'microsoft' in self._client.token_url:
-            # Tokens issued for the 'Single-Page Application' client-type may
-            # only be redeemed via cross-origin requests
-            headers = {'Origin': self._client.redirect_url}
-        token = retrieve_token(client_id=self._client.client_id,
-                               client_secret=self._client.client_secret,
-                               token_url=self._client.token_url,
-                               params=params,
-                               headers=headers,
-                               use_params=True)
-        return RefreshableCredentials(self._client, token)
+        while True:
+            try:
+                token = retrieve_token(client_id=self._client.client_id,
+                                       client_secret=self._client.client_secret,
+                                       token_url=self._client.token_url,
+                                       params=params,
+                                       headers=headers,
+                                       use_params=True)
+                return RefreshableCredentials(self._client, token)
+            except ValueError as e:
+                if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
+                    # Retry in cases of 'Single-Page Application' client-type with
+                    # 'Origin' header equal to client's redirect URL.
+                    headers['Origin'] = self._client.redirect_url
+                    msg = f'Retrying OAuth token exchange with {self._client.redirect_url} origin'
+                    logger.debug(msg)
+                    continue
+                raise e
 
 
 class OAuthClient:
