@@ -243,10 +243,12 @@ class Consent:
     def exchange(self, code: str, state: str) -> RefreshableCredentials:
         if self._state != state:
             raise ValueError('state mismatch')
-        params = {'redirect_uri': self._client.redirect_url,
-                  'grant_type': 'authorization_code',
-                  'code_verifier': self._verifier,
-                  'code': code}
+        params = {
+            'redirect_uri': self._client.redirect_url,
+            'grant_type': 'authorization_code',
+            'code_verifier': self._verifier,
+            'code': code
+        }
         headers = {}
         while True:
             try:
