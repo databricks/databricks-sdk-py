@@ -1,5 +1,9 @@
 # Version changelog
 
+## 0.1.1
+
+* Improve Azure AD auth ([#80](https://github.com/databricks/databricks-sdk-py/pull/80)).
+
 ## 0.1.0
 
 * Make code working with new OpenAPI packaging ([#78](https://github.com/databricks/databricks-sdk-py/pull/78)).
