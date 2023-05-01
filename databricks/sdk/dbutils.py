@@ -67,7 +67,8 @@ class _FsUtil:
 
     def put(self, file: str, contents: str, overwrite: bool = False) -> bool:
         """Writes the given String out to a file, encoded in UTF-8 """
-        self._dbfs.put(file, contents=contents, overwrite=overwrite)
+        with self._dbfs.open(file, write=True, overwrite=overwrite) as f:
+            f.write(contents.encode('utf8'))
         return True
 
     def rm(self, dir: str, recurse: bool = False) -> bool:

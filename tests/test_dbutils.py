@@ -63,11 +63,26 @@ def test_fs_mv(dbutils, mocker):
 
 
 def test_fs_put(dbutils, mocker):
-    inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.put')
+
+    class _MockOpen:
+        _written = None
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *ignored):
+            pass
+
+        def write(self, contents):
+            self._written = contents
+
+    mock_open = _MockOpen()
+    inner = mocker.patch('databricks.sdk.mixins.dbfs.DbfsExt.open', return_value=mock_open)
 
     dbutils.fs.put('a', 'b')
 
-    inner.assert_called_with('a', contents='b', overwrite=False)
+    inner.assert_called_with('a', overwrite=False, write=True)
+    assert mock_open._written == b'b'
 
 
 def test_fs_rm(dbutils, mocker):
