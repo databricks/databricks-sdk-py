@@ -22,6 +22,16 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
     assert len(x) > 1
 
 
+def test_dbutils_put(w):
+    fs = w.dbutils.fs
+
+    path = "/tmp/dbc_qa_file"
+    fs.put(path, "test", True)
+    output = fs.head(path)
+
+    assert output == 'test'
+
+
 def test_secrets(w, random):
     random_scope = f'scope-{random()}'
     key_for_string = f'string-{random()}'
