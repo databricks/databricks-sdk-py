@@ -6,6 +6,11 @@ The Databricks SDK for Python includes functionality to accelerate development w
 It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations.
 The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
+For additional and cloud-specific documentation, you can consult the following pages:
+- [AWS Documentation](https://docs.databricks.com/dev-tools/sdk-python.html)
+- [Azure Documentation](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/sdk-python)
+- [GCP Documentation](https://docs.gcp.databricks.com/dev-tools/sdk-python.html)
+
 ## Contents
 
 - [Getting started](#getting-started)
