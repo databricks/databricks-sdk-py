@@ -717,7 +717,7 @@ class ApiClient(requests.Session):
             total=6,
             backoff_factor=1,
             status_forcelist=[429],
-            method_whitelist=set({"POST"}) | set(Retry.DEFAULT_METHOD_WHITELIST),
+            allowed_methods={"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS),
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )
