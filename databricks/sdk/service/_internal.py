@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, Optional, Type, TypeVar, Mapping
 
 
 def _from_dict(d: Dict[str, Any], field: str, cls: Type) -> Any:
@@ -29,7 +29,7 @@ class Wait(Generic[ReturnType]):
     def __init__(self,
                  waiter: Callable,
                  response: Any = None,
-                 **kwargs) -> None: # type: ignore[no-untyped-def]
+                 **kwargs: Mapping[str, Any]) -> None:
         self.response = response
 
         self._waiter = waiter
