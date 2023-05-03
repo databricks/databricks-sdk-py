@@ -1,5 +1,9 @@
 # Version changelog
 
+## 0.1.2
+
+* Fix `dbutils.fs.put()` utility ([#82](https://github.com/databricks/databricks-sdk-py/pull/82)).
+
 ## 0.1.1
 
 * Improve Azure AD auth ([#80](https://github.com/databricks/databricks-sdk-py/pull/80)).
