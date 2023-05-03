@@ -3,8 +3,9 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Any, Dict, Iterator, List, Optional
 
+from ..core import ApiClient
 from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
@@ -19,14 +20,14 @@ class CreateIpAccessList:
     ip_addresses: 'List[str]'
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
         if self.label: body['label'] = self.label
         if self.list_type: body['list_type'] = self.list_type.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateIpAccessList':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateIpAccessList':
         return cls(ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_type=_enum(d, 'list_type', ListType))
@@ -34,15 +35,15 @@ class CreateIpAccessList:
 
 @dataclass
 class CreateIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo' = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateIpAccessListResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateIpAccessListResponse':
         return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
 
@@ -50,17 +51,17 @@ class CreateIpAccessListResponse:
 class CreateOboTokenRequest:
     application_id: str
     lifetime_seconds: int
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.application_id: body['application_id'] = self.application_id
         if self.comment: body['comment'] = self.comment
         if self.lifetime_seconds: body['lifetime_seconds'] = self.lifetime_seconds
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateOboTokenRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateOboTokenRequest':
         return cls(application_id=d.get('application_id', None),
                    comment=d.get('comment', None),
                    lifetime_seconds=d.get('lifetime_seconds', None))
@@ -68,49 +69,49 @@ class CreateOboTokenRequest:
 
 @dataclass
 class CreateOboTokenResponse:
-    token_info: 'TokenInfo' = None
-    token_value: str = None
+    token_info: Optional['TokenInfo'] = None
+    token_value: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
         if self.token_value: body['token_value'] = self.token_value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateOboTokenResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateOboTokenResponse':
         return cls(token_info=_from_dict(d, 'token_info', TokenInfo), token_value=d.get('token_value', None))
 
 
 @dataclass
 class CreateTokenRequest:
-    comment: str = None
-    lifetime_seconds: int = None
+    comment: Optional[str] = None
+    lifetime_seconds: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.comment: body['comment'] = self.comment
         if self.lifetime_seconds: body['lifetime_seconds'] = self.lifetime_seconds
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateTokenRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateTokenRequest':
         return cls(comment=d.get('comment', None), lifetime_seconds=d.get('lifetime_seconds', None))
 
 
 @dataclass
 class CreateTokenResponse:
-    token_info: 'PublicTokenInfo' = None
-    token_value: str = None
+    token_info: Optional['PublicTokenInfo'] = None
+    token_value: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
         if self.token_value: body['token_value'] = self.token_value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateTokenResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateTokenResponse':
         return cls(token_info=_from_dict(d, 'token_info', PublicTokenInfo),
                    token_value=d.get('token_value', None))
 
@@ -138,15 +139,15 @@ class DeleteTokenManagementRequest:
 
 @dataclass
 class FetchIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo' = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FetchIpAccessListResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'FetchIpAccessListResponse':
         return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
 
@@ -166,29 +167,29 @@ class GetIpAccessListRequest:
 
 @dataclass
 class GetIpAccessListResponse:
-    ip_access_lists: 'List[IpAccessListInfo]' = None
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.ip_access_lists: body['ip_access_lists'] = [v.as_dict() for v in self.ip_access_lists]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetIpAccessListResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetIpAccessListResponse':
         return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
 
 
 @dataclass
 class GetIpAccessListsResponse:
-    ip_access_lists: 'List[IpAccessListInfo]' = None
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.ip_access_lists: body['ip_access_lists'] = [v.as_dict() for v in self.ip_access_lists]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetIpAccessListsResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetIpAccessListsResponse':
         return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
 
 
@@ -208,19 +209,19 @@ class GetTokenManagementRequest:
 
 @dataclass
 class IpAccessListInfo:
-    address_count: int = None
-    created_at: int = None
-    created_by: int = None
-    enabled: bool = None
-    ip_addresses: 'List[str]' = None
-    label: str = None
-    list_id: str = None
-    list_type: 'ListType' = None
-    updated_at: int = None
-    updated_by: int = None
+    address_count: Optional[int] = None
+    created_at: Optional[int] = None
+    created_by: Optional[int] = None
+    enabled: Optional[bool] = None
+    ip_addresses: Optional['List[str]'] = None
+    label: Optional[str] = None
+    list_id: Optional[str] = None
+    list_type: Optional['ListType'] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.address_count: body['address_count'] = self.address_count
         if self.created_at: body['created_at'] = self.created_at
         if self.created_by: body['created_by'] = self.created_by
@@ -234,7 +235,7 @@ class IpAccessListInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'IpAccessListInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'IpAccessListInfo':
         return cls(address_count=d.get('address_count', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -251,21 +252,21 @@ class IpAccessListInfo:
 class ListTokenManagementRequest:
     """List all tokens"""
 
-    created_by_id: str = None
-    created_by_username: str = None
+    created_by_id: Optional[str] = None
+    created_by_username: Optional[str] = None
 
 
 @dataclass
 class ListTokensResponse:
-    token_infos: 'List[PublicTokenInfo]' = None
+    token_infos: Optional['List[PublicTokenInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.token_infos: body['token_infos'] = [v.as_dict() for v in self.token_infos]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListTokensResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListTokensResponse':
         return cls(token_infos=_repeated(d, 'token_infos', PublicTokenInfo))
 
 
@@ -278,13 +279,13 @@ class ListType(Enum):
 
 @dataclass
 class PublicTokenInfo:
-    comment: str = None
-    creation_time: int = None
-    expiry_time: int = None
-    token_id: str = None
+    comment: Optional[str] = None
+    creation_time: Optional[int] = None
+    expiry_time: Optional[int] = None
+    token_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.comment: body['comment'] = self.comment
         if self.creation_time: body['creation_time'] = self.creation_time
         if self.expiry_time: body['expiry_time'] = self.expiry_time
@@ -292,7 +293,7 @@ class PublicTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PublicTokenInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'PublicTokenInfo':
         return cls(comment=d.get('comment', None),
                    creation_time=d.get('creation_time', None),
                    expiry_time=d.get('expiry_time', None),
@@ -306,10 +307,10 @@ class ReplaceIpAccessList:
     ip_addresses: 'List[str]'
     enabled: bool
     ip_access_list_id: str
-    list_id: str = None
+    list_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.enabled: body['enabled'] = self.enabled
         if self.ip_access_list_id: body['ip_access_list_id'] = self.ip_access_list_id
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
@@ -319,7 +320,7 @@ class ReplaceIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ReplaceIpAccessList':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ReplaceIpAccessList':
         return cls(enabled=d.get('enabled', None),
                    ip_access_list_id=d.get('ip_access_list_id', None),
                    ip_addresses=d.get('ip_addresses', None),
@@ -333,27 +334,27 @@ class RevokeTokenRequest:
     token_id: str
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.token_id: body['token_id'] = self.token_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RevokeTokenRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'RevokeTokenRequest':
         return cls(token_id=d.get('token_id', None))
 
 
 @dataclass
 class TokenInfo:
-    comment: str = None
-    created_by_id: int = None
-    created_by_username: str = None
-    creation_time: int = None
-    expiry_time: int = None
-    owner_id: int = None
-    token_id: str = None
+    comment: Optional[str] = None
+    created_by_id: Optional[int] = None
+    created_by_username: Optional[str] = None
+    creation_time: Optional[int] = None
+    expiry_time: Optional[int] = None
+    owner_id: Optional[int] = None
+    token_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.comment: body['comment'] = self.comment
         if self.created_by_id: body['created_by_id'] = self.created_by_id
         if self.created_by_username: body['created_by_username'] = self.created_by_username
@@ -364,7 +365,7 @@ class TokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TokenInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'TokenInfo':
         return cls(comment=d.get('comment', None),
                    created_by_id=d.get('created_by_id', None),
                    created_by_username=d.get('created_by_username', None),
@@ -381,10 +382,10 @@ class UpdateIpAccessList:
     ip_addresses: 'List[str]'
     enabled: bool
     ip_access_list_id: str
-    list_id: str = None
+    list_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.enabled: body['enabled'] = self.enabled
         if self.ip_access_list_id: body['ip_access_list_id'] = self.ip_access_list_id
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
@@ -394,7 +395,7 @@ class UpdateIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateIpAccessList':
+    def from_dict(cls, d: Dict[str, Any]) -> 'UpdateIpAccessList':
         return cls(enabled=d.get('enabled', None),
                    ip_access_list_id=d.get('ip_access_list_id', None),
                    ip_addresses=d.get('ip_addresses', None),
@@ -426,11 +427,11 @@ class AccountIpAccessListsAPI:
     
     After changes to the account-level IP access lists, it can take a few minutes for changes to take effect."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self, label: str, list_type: ListType, ip_addresses: List[str],
-               **kwargs) -> CreateIpAccessListResponse:
+               **kwargs: dict) -> CreateIpAccessListResponse:
         """Create access list.
         
         Creates an IP access list for the account.
@@ -456,7 +457,7 @@ class AccountIpAccessListsAPI:
                             body=body)
         return CreateIpAccessListResponse.from_dict(json)
 
-    def delete(self, ip_access_list_id: str, **kwargs):
+    def delete(self, ip_access_list_id: str, **kwargs: dict):
         """Delete access list.
         
         Deletes an IP access list, specified by its list ID."""
@@ -468,7 +469,7 @@ class AccountIpAccessListsAPI:
             'DELETE',
             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{request.ip_access_list_id}')
 
-    def get(self, ip_access_list_id: str, **kwargs) -> GetIpAccessListResponse:
+    def get(self, ip_access_list_id: str, **kwargs: dict) -> GetIpAccessListResponse:
         """Get IP access list.
         
         Gets an IP access list, specified by its list ID."""
@@ -496,8 +497,8 @@ class AccountIpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: str = None,
-                **kwargs):
+                list_id: Optional[str] = None,
+                **kwargs: dict):
         """Replace access list.
         
         Replaces an IP access list, specified by its ID.
@@ -530,8 +531,8 @@ class AccountIpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: str = None,
-               **kwargs):
+               list_id: Optional[str] = None,
+               **kwargs: dict):
         """Update access list.
         
         Updates an existing IP access list, specified by its ID.
@@ -581,11 +582,11 @@ class IpAccessListsAPI:
     
     After changes to the IP access list feature, it can take a few minutes for changes to take effect."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self, label: str, list_type: ListType, ip_addresses: List[str],
-               **kwargs) -> CreateIpAccessListResponse:
+               **kwargs: dict) -> CreateIpAccessListResponse:
         """Create access list.
         
         Creates an IP access list for this workspace.
@@ -610,7 +611,7 @@ class IpAccessListsAPI:
         json = self._api.do('POST', '/api/2.0/ip-access-lists', body=body)
         return CreateIpAccessListResponse.from_dict(json)
 
-    def delete(self, ip_access_list_id: str, **kwargs):
+    def delete(self, ip_access_list_id: str, **kwargs: dict):
         """Delete access list.
         
         Deletes an IP access list, specified by its list ID."""
@@ -620,7 +621,7 @@ class IpAccessListsAPI:
 
         self._api.do('DELETE', f'/api/2.0/ip-access-lists/{request.ip_access_list_id}')
 
-    def get(self, ip_access_list_id: str, **kwargs) -> FetchIpAccessListResponse:
+    def get(self, ip_access_list_id: str, **kwargs: dict) -> FetchIpAccessListResponse:
         """Get access list.
         
         Gets an IP access list, specified by its list ID."""
@@ -646,8 +647,8 @@ class IpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: str = None,
-                **kwargs):
+                list_id: Optional[str] = None,
+                **kwargs: dict):
         """Replace access list.
         
         Replaces an IP access list, specified by its ID.
@@ -678,8 +679,8 @@ class IpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: str = None,
-               **kwargs):
+               list_id: Optional[str] = None,
+               **kwargs: dict):
         """Update access list.
         
         Updates an existing IP access list, specified by its ID.
@@ -712,15 +713,15 @@ class TokenManagementAPI:
     """Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
     token, get a specific token by ID, or get all tokens for a particular user."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create_obo_token(self,
                          application_id: str,
                          lifetime_seconds: int,
                          *,
-                         comment: str = None,
-                         **kwargs) -> CreateOboTokenResponse:
+                         comment: Optional[str] = None,
+                         **kwargs: dict) -> CreateOboTokenResponse:
         """Create on-behalf token.
         
         Creates a token on behalf of a service principal."""
@@ -734,7 +735,7 @@ class TokenManagementAPI:
         json = self._api.do('POST', '/api/2.0/token-management/on-behalf-of/tokens', body=body)
         return CreateOboTokenResponse.from_dict(json)
 
-    def delete(self, token_id: str, **kwargs):
+    def delete(self, token_id: str, **kwargs: dict):
         """Delete a token.
         
         Deletes a token, specified by its ID."""
@@ -744,7 +745,7 @@ class TokenManagementAPI:
 
         self._api.do('DELETE', f'/api/2.0/token-management/tokens/{request.token_id}')
 
-    def get(self, token_id: str, **kwargs) -> TokenInfo:
+    def get(self, token_id: str, **kwargs: dict) -> TokenInfo:
         """Get token info.
         
         Gets information about a token, specified by its ID."""
@@ -757,9 +758,9 @@ class TokenManagementAPI:
 
     def list(self,
              *,
-             created_by_id: str = None,
-             created_by_username: str = None,
-             **kwargs) -> Iterator[PublicTokenInfo]:
+             created_by_id: Optional[str] = None,
+             created_by_username: Optional[str] = None,
+             **kwargs: dict) -> Iterator[PublicTokenInfo]:
         """List all tokens.
         
         Lists all tokens associated with the specified workspace or user."""
@@ -780,10 +781,14 @@ class TokensAPI:
     """The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access
     Databricks REST APIs."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
-    def create(self, *, comment: str = None, lifetime_seconds: int = None, **kwargs) -> CreateTokenResponse:
+    def create(self,
+               *,
+               comment: Optional[str] = None,
+               lifetime_seconds: Optional[int] = None,
+               **kwargs: dict) -> CreateTokenResponse:
         """Create a user token.
         
         Creates and returns a token for a user. If this call is made through token authentication, it creates
@@ -797,7 +802,7 @@ class TokensAPI:
         json = self._api.do('POST', '/api/2.0/token/create', body=body)
         return CreateTokenResponse.from_dict(json)
 
-    def delete(self, token_id: str, **kwargs):
+    def delete(self, token_id: str, **kwargs: dict):
         """Revoke token.
         
         Revokes an access token.
@@ -821,10 +826,10 @@ class TokensAPI:
 class WorkspaceConfAPI:
     """This API allows updating known workspace settings for advanced users."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
-    def get_status(self, keys: str, **kwargs) -> WorkspaceConf:
+    def get_status(self, keys: str, **kwargs: dict) -> WorkspaceConf:
         """Check configuration status.
         
         Gets the configuration status for a workspace."""
@@ -838,7 +843,7 @@ class WorkspaceConfAPI:
         json = self._api.do('GET', '/api/2.0/workspace-conf', query=query)
         return WorkspaceConf.from_dict(json)
 
-    def set_status(self, **kwargs):
+    def set_status(self, **kwargs: dict):
         """Enable/disable features.
         
         Sets the configuration status for a workspace, including enabling or disabling it."""

@@ -6,8 +6,9 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from ..core import ApiClient
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
 
@@ -18,19 +19,19 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AccessControl:
-    group_name: str = None
-    permission_level: 'PermissionLevel' = None
-    user_name: str = None
+    group_name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.group_name: body['group_name'] = self.group_name
         if self.permission_level: body['permission_level'] = self.permission_level.value
         if self.user_name: body['user_name'] = self.user_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AccessControl':
+    def from_dict(cls, d: Dict[str, Any]) -> 'AccessControl':
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel),
                    user_name=d.get('user_name', None))
@@ -38,20 +39,20 @@ class AccessControl:
 
 @dataclass
 class Alert:
-    created_at: str = None
-    id: str = None
-    last_triggered_at: str = None
-    name: str = None
-    options: 'AlertOptions' = None
-    parent: str = None
-    query: 'Query' = None
-    rearm: int = None
-    state: 'AlertState' = None
-    updated_at: str = None
-    user: 'User' = None
+    created_at: Optional[str] = None
+    id: Optional[str] = None
+    last_triggered_at: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional['AlertOptions'] = None
+    parent: Optional[str] = None
+    query: Optional['Query'] = None
+    rearm: Optional[int] = None
+    state: Optional['AlertState'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.created_at: body['created_at'] = self.created_at
         if self.id: body['id'] = self.id
         if self.last_triggered_at: body['last_triggered_at'] = self.last_triggered_at
@@ -66,7 +67,7 @@ class Alert:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Alert':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Alert':
         return cls(created_at=d.get('created_at', None),
                    id=d.get('id', None),
                    last_triggered_at=d.get('last_triggered_at', None),
@@ -87,12 +88,12 @@ class AlertOptions:
     column: str
     op: str
     value: str
-    custom_body: str = None
-    custom_subject: str = None
-    muted: bool = None
+    custom_body: Optional[str] = None
+    custom_subject: Optional[str] = None
+    muted: Optional[bool] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.column: body['column'] = self.column
         if self.custom_body: body['custom_body'] = self.custom_body
         if self.custom_subject: body['custom_subject'] = self.custom_subject
@@ -102,7 +103,7 @@ class AlertOptions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AlertOptions':
+    def from_dict(cls, d: Dict[str, Any]) -> 'AlertOptions':
         return cls(column=d.get('column', None),
                    custom_body=d.get('custom_body', None),
                    custom_subject=d.get('custom_subject', None),
@@ -129,17 +130,17 @@ class CancelExecutionRequest:
 
 @dataclass
 class Channel:
-    dbsql_version: str = None
-    name: 'ChannelName' = None
+    dbsql_version: Optional[str] = None
+    name: Optional['ChannelName'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.dbsql_version: body['dbsql_version'] = self.dbsql_version
         if self.name: body['name'] = self.name.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Channel':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Channel':
         return cls(dbsql_version=d.get('dbsql_version', None), name=_enum(d, 'name', ChannelName))
 
 
@@ -147,22 +148,21 @@ class Channel:
 class ChannelInfo:
     """Channel information for the SQL warehouse at the time of query execution"""
 
-    dbsql_version: str = None
-    name: 'ChannelName' = None
+    dbsql_version: Optional[str] = None
+    name: Optional['ChannelName'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.dbsql_version: body['dbsql_version'] = self.dbsql_version
         if self.name: body['name'] = self.name.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ChannelInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ChannelInfo':
         return cls(dbsql_version=d.get('dbsql_version', None), name=_enum(d, 'name', ChannelName))
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -176,15 +176,15 @@ class ChunkInfo:
     """Describes metadata for a particular chunk, within a result set; this structure is used both
     within a manifest, and when fetching individual chunk data or links."""
 
-    byte_count: int = None
-    chunk_index: int = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.byte_count: body['byte_count'] = self.byte_count
         if self.chunk_index: body['chunk_index'] = self.chunk_index
         if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
@@ -194,7 +194,7 @@ class ChunkInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ChunkInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ChunkInfo':
         return cls(byte_count=d.get('byte_count', None),
                    chunk_index=d.get('chunk_index', None),
                    next_chunk_index=d.get('next_chunk_index', None),
@@ -205,16 +205,16 @@ class ChunkInfo:
 
 @dataclass
 class ColumnInfo:
-    name: str = None
-    position: int = None
-    type_interval_type: str = None
-    type_name: 'ColumnInfoTypeName' = None
-    type_precision: int = None
-    type_scale: int = None
-    type_text: str = None
+    name: Optional[str] = None
+    position: Optional[int] = None
+    type_interval_type: Optional[str] = None
+    type_name: Optional['ColumnInfoTypeName'] = None
+    type_precision: Optional[int] = None
+    type_scale: Optional[int] = None
+    type_text: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.name: body['name'] = self.name
         if self.position: body['position'] = self.position
         if self.type_interval_type: body['type_interval_type'] = self.type_interval_type
@@ -225,7 +225,7 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ColumnInfo':
         return cls(name=d.get('name', None),
                    position=d.get('position', None),
                    type_interval_type=d.get('type_interval_type', None),
@@ -264,11 +264,11 @@ class CreateAlert:
     name: str
     options: 'AlertOptions'
     query_id: str
-    parent: str = None
-    rearm: int = None
+    parent: Optional[str] = None
+    rearm: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.name: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
         if self.parent: body['parent'] = self.parent
@@ -277,7 +277,7 @@ class CreateAlert:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateAlert':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateAlert':
         return cls(name=d.get('name', None),
                    options=_from_dict(d, 'options', AlertOptions),
                    parent=d.get('parent', None),
@@ -289,16 +289,16 @@ class CreateAlert:
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    dashboard_filters_enabled: bool = None
-    is_draft: bool = None
-    is_trashed: bool = None
-    name: str = None
-    parent: str = None
-    tags: 'List[str]' = None
-    widgets: 'List[Widget]' = None
+    dashboard_filters_enabled: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_trashed: Optional[bool] = None
+    name: Optional[str] = None
+    parent: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    widgets: Optional['List[Widget]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.dashboard_filters_enabled: body['dashboard_filters_enabled'] = self.dashboard_filters_enabled
         if self.is_draft: body['is_draft'] = self.is_draft
         if self.is_trashed: body['is_trashed'] = self.is_trashed
@@ -309,7 +309,7 @@ class CreateDashboardRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateDashboardRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateDashboardRequest':
         return cls(dashboard_filters_enabled=d.get('dashboard_filters_enabled', None),
                    is_draft=d.get('is_draft', None),
                    is_trashed=d.get('is_trashed', None),
@@ -321,22 +321,22 @@ class CreateDashboardRequest:
 
 @dataclass
 class CreateWarehouseRequest:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    instance_profile_arn: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    instance_profile_arn: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['WarehouseType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
@@ -353,7 +353,7 @@ class CreateWarehouseRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateWarehouseRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateWarehouseRequest':
         return cls(auto_stop_mins=d.get('auto_stop_mins', None),
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
@@ -371,15 +371,15 @@ class CreateWarehouseRequest:
 
 @dataclass
 class CreateWarehouseResponse:
-    id: str = None
+    id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.id: body['id'] = self.id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateWarehouseResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateWarehouseResponse':
         return cls(id=d.get('id', None))
 
 
@@ -387,26 +387,26 @@ class CreateWarehouseResponse:
 class Dashboard:
     """A JSON representing a dashboard containing widgets of visualizations and text boxes."""
 
-    can_edit: bool = None
-    created_at: str = None
-    dashboard_filters_enabled: bool = None
-    id: str = None
-    is_archived: bool = None
-    is_draft: bool = None
-    is_favorite: bool = None
-    name: str = None
-    options: 'DashboardOptions' = None
-    parent: str = None
-    permission_tier: 'PermissionLevel' = None
-    slug: str = None
-    tags: 'List[str]' = None
-    updated_at: str = None
-    user: 'User' = None
-    user_id: int = None
-    widgets: 'List[Widget]' = None
+    can_edit: Optional[bool] = None
+    created_at: Optional[str] = None
+    dashboard_filters_enabled: Optional[bool] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    name: Optional[str] = None
+    options: Optional['DashboardOptions'] = None
+    parent: Optional[str] = None
+    permission_tier: Optional['PermissionLevel'] = None
+    slug: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
+    user_id: Optional[int] = None
+    widgets: Optional['List[Widget]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.can_edit: body['can_edit'] = self.can_edit
         if self.created_at: body['created_at'] = self.created_at
         if self.dashboard_filters_enabled: body['dashboard_filters_enabled'] = self.dashboard_filters_enabled
@@ -427,7 +427,7 @@ class Dashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Dashboard':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Dashboard':
         return cls(can_edit=d.get('can_edit', None),
                    created_at=d.get('created_at', None),
                    dashboard_filters_enabled=d.get('dashboard_filters_enabled', None),
@@ -449,15 +449,15 @@ class Dashboard:
 
 @dataclass
 class DashboardOptions:
-    moved_to_trash_at: str = None
+    moved_to_trash_at: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.moved_to_trash_at: body['moved_to_trash_at'] = self.moved_to_trash_at
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DashboardOptions':
+    def from_dict(cls, d: Dict[str, Any]) -> 'DashboardOptions':
         return cls(moved_to_trash_at=d.get('moved_to_trash_at', None))
 
 
@@ -465,18 +465,18 @@ class DashboardOptions:
 class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
-    id: str = None
-    name: str = None
-    pause_reason: str = None
-    paused: int = None
-    supports_auto_limit: bool = None
-    syntax: str = None
-    type: str = None
-    view_only: bool = None
-    warehouse_id: str = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    pause_reason: Optional[str] = None
+    paused: Optional[int] = None
+    supports_auto_limit: Optional[bool] = None
+    syntax: Optional[str] = None
+    type: Optional[str] = None
+    view_only: Optional[bool] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.id: body['id'] = self.id
         if self.name: body['name'] = self.name
         if self.pause_reason: body['pause_reason'] = self.pause_reason
@@ -489,7 +489,7 @@ class DataSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DataSource':
+    def from_dict(cls, d: Dict[str, Any]) -> 'DataSource':
         return cls(id=d.get('id', None),
                    name=d.get('name', None),
                    pause_reason=d.get('pause_reason', None),
@@ -561,10 +561,10 @@ class EditAlert:
     options: 'AlertOptions'
     query_id: str
     alert_id: str
-    rearm: int = None
+    rearm: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.alert_id: body['alert_id'] = self.alert_id
         if self.name: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
@@ -573,7 +573,7 @@ class EditAlert:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EditAlert':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EditAlert':
         return cls(alert_id=d.get('alert_id', None),
                    name=d.get('name', None),
                    options=_from_dict(d, 'options', AlertOptions),
@@ -584,22 +584,22 @@ class EditAlert:
 @dataclass
 class EditWarehouseRequest:
     id: str
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    instance_profile_arn: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    instance_profile_arn: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['WarehouseType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
@@ -617,7 +617,7 @@ class EditWarehouseRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EditWarehouseRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EditWarehouseRequest':
         return cls(auto_stop_mins=d.get('auto_stop_mins', None),
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
@@ -636,30 +636,30 @@ class EditWarehouseRequest:
 
 @dataclass
 class EndpointConfPair:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.key: body['key'] = self.key
         if self.value: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointConfPair':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EndpointConfPair':
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class EndpointHealth:
-    details: str = None
-    failure_reason: 'TerminationReason' = None
-    message: str = None
-    status: 'Status' = None
-    summary: str = None
+    details: Optional[str] = None
+    failure_reason: Optional['TerminationReason'] = None
+    message: Optional[str] = None
+    status: Optional['Status'] = None
+    summary: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.details: body['details'] = self.details
         if self.failure_reason: body['failure_reason'] = self.failure_reason.as_dict()
         if self.message: body['message'] = self.message
@@ -668,7 +668,7 @@ class EndpointHealth:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointHealth':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EndpointHealth':
         return cls(details=d.get('details', None),
                    failure_reason=_from_dict(d, 'failure_reason', TerminationReason),
                    message=d.get('message', None),
@@ -678,29 +678,29 @@ class EndpointHealth:
 
 @dataclass
 class EndpointInfo:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    health: 'EndpointHealth' = None
-    id: str = None
-    instance_profile_arn: str = None
-    jdbc_url: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    num_active_sessions: int = None
-    num_clusters: int = None
-    odbc_params: 'OdbcParams' = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    state: 'State' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    health: Optional['EndpointHealth'] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    jdbc_url: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    num_active_sessions: Optional[int] = None
+    num_clusters: Optional[int] = None
+    odbc_params: Optional['OdbcParams'] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    state: Optional['State'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['WarehouseType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
@@ -724,7 +724,7 @@ class EndpointInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EndpointInfo':
         return cls(auto_stop_mins=d.get('auto_stop_mins', None),
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
@@ -749,48 +749,48 @@ class EndpointInfo:
 
 @dataclass
 class EndpointTagPair:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.key: body['key'] = self.key
         if self.value: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointTagPair':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EndpointTagPair':
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class EndpointTags:
-    custom_tags: 'List[EndpointTagPair]' = None
+    custom_tags: Optional['List[EndpointTagPair]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.custom_tags: body['custom_tags'] = [v.as_dict() for v in self.custom_tags]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointTags':
+    def from_dict(cls, d: Dict[str, Any]) -> 'EndpointTags':
         return cls(custom_tags=_repeated(d, 'custom_tags', EndpointTagPair))
 
 
 @dataclass
 class ExecuteStatementRequest:
-    byte_limit: int = None
-    catalog: str = None
-    disposition: 'Disposition' = None
-    format: 'Format' = None
-    on_wait_timeout: 'TimeoutAction' = None
-    schema: str = None
-    statement: str = None
-    wait_timeout: str = None
-    warehouse_id: str = None
+    byte_limit: Optional[int] = None
+    catalog: Optional[str] = None
+    disposition: Optional['Disposition'] = None
+    format: Optional['Format'] = None
+    on_wait_timeout: Optional['TimeoutAction'] = None
+    schema: Optional[str] = None
+    statement: Optional[str] = None
+    wait_timeout: Optional[str] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.byte_limit: body['byte_limit'] = self.byte_limit
         if self.catalog: body['catalog'] = self.catalog
         if self.disposition: body['disposition'] = self.disposition.value
@@ -803,7 +803,7 @@ class ExecuteStatementRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExecuteStatementRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ExecuteStatementRequest':
         return cls(byte_limit=d.get('byte_limit', None),
                    catalog=d.get('catalog', None),
                    disposition=_enum(d, 'disposition', Disposition),
@@ -817,13 +817,13 @@ class ExecuteStatementRequest:
 
 @dataclass
 class ExecuteStatementResponse:
-    manifest: 'ResultManifest' = None
-    result: 'ResultData' = None
-    statement_id: str = None
-    status: 'StatementStatus' = None
+    manifest: Optional['ResultManifest'] = None
+    result: Optional['ResultData'] = None
+    statement_id: Optional[str] = None
+    status: Optional['StatementStatus'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.manifest: body['manifest'] = self.manifest.as_dict()
         if self.result: body['result'] = self.result.as_dict()
         if self.statement_id: body['statement_id'] = self.statement_id
@@ -831,7 +831,7 @@ class ExecuteStatementResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExecuteStatementResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ExecuteStatementResponse':
         return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
                    result=_from_dict(d, 'result', ResultData),
                    statement_id=d.get('statement_id', None),
@@ -840,17 +840,17 @@ class ExecuteStatementResponse:
 
 @dataclass
 class ExternalLink:
-    byte_count: int = None
-    chunk_index: int = None
-    expiration: str = None
-    external_link: str = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    expiration: Optional[str] = None
+    external_link: Optional[str] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.byte_count: body['byte_count'] = self.byte_count
         if self.chunk_index: body['chunk_index'] = self.chunk_index
         if self.expiration: body['expiration'] = self.expiration
@@ -862,7 +862,7 @@ class ExternalLink:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExternalLink':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ExternalLink':
         return cls(byte_count=d.get('byte_count', None),
                    chunk_index=d.get('chunk_index', None),
                    expiration=d.get('expiration', None),
@@ -932,12 +932,12 @@ class GetQueryRequest:
 
 @dataclass
 class GetResponse:
-    access_control_list: 'List[AccessControl]' = None
-    object_id: 'ObjectType' = None
-    object_type: str = None
+    access_control_list: Optional['List[AccessControl]'] = None
+    object_id: Optional['ObjectType'] = None
+    object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.object_id: body['object_id'] = self.object_id.value
@@ -945,7 +945,7 @@ class GetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetResponse':
         return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
                    object_id=_enum(d, 'object_id', ObjectType),
                    object_type=d.get('object_type', None))
@@ -960,13 +960,13 @@ class GetStatementRequest:
 
 @dataclass
 class GetStatementResponse:
-    manifest: 'ResultManifest' = None
-    result: 'ResultData' = None
-    statement_id: str = None
-    status: 'StatementStatus' = None
+    manifest: Optional['ResultManifest'] = None
+    result: Optional['ResultData'] = None
+    statement_id: Optional[str] = None
+    status: Optional['StatementStatus'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.manifest: body['manifest'] = self.manifest.as_dict()
         if self.result: body['result'] = self.result.as_dict()
         if self.statement_id: body['statement_id'] = self.statement_id
@@ -974,7 +974,7 @@ class GetStatementResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetStatementResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetStatementResponse':
         return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
                    result=_from_dict(d, 'result', ResultData),
                    statement_id=d.get('statement_id', None),
@@ -998,29 +998,29 @@ class GetWarehouseRequest:
 
 @dataclass
 class GetWarehouseResponse:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    health: 'EndpointHealth' = None
-    id: str = None
-    instance_profile_arn: str = None
-    jdbc_url: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    num_active_sessions: int = None
-    num_clusters: int = None
-    odbc_params: 'OdbcParams' = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    state: 'State' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    health: Optional['EndpointHealth'] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    jdbc_url: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    num_active_sessions: Optional[int] = None
+    num_clusters: Optional[int] = None
+    odbc_params: Optional['OdbcParams'] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    state: Optional['State'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['WarehouseType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.cluster_size: body['cluster_size'] = self.cluster_size
@@ -1044,7 +1044,7 @@ class GetWarehouseResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetWarehouseResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetWarehouseResponse':
         return cls(auto_stop_mins=d.get('auto_stop_mins', None),
                    channel=_from_dict(d, 'channel', Channel),
                    cluster_size=d.get('cluster_size', None),
@@ -1069,18 +1069,18 @@ class GetWarehouseResponse:
 
 @dataclass
 class GetWorkspaceWarehouseConfigResponse:
-    channel: 'Channel' = None
-    config_param: 'RepeatedEndpointConfPairs' = None
-    data_access_config: 'List[EndpointConfPair]' = None
-    enabled_warehouse_types: 'List[WarehouseTypePair]' = None
-    global_param: 'RepeatedEndpointConfPairs' = None
-    google_service_account: str = None
-    instance_profile_arn: str = None
-    security_policy: 'GetWorkspaceWarehouseConfigResponseSecurityPolicy' = None
-    sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
+    channel: Optional['Channel'] = None
+    config_param: Optional['RepeatedEndpointConfPairs'] = None
+    data_access_config: Optional['List[EndpointConfPair]'] = None
+    enabled_warehouse_types: Optional['List[WarehouseTypePair]'] = None
+    global_param: Optional['RepeatedEndpointConfPairs'] = None
+    google_service_account: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    security_policy: Optional['GetWorkspaceWarehouseConfigResponseSecurityPolicy'] = None
+    sql_configuration_parameters: Optional['RepeatedEndpointConfPairs'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.config_param: body['config_param'] = self.config_param.as_dict()
         if self.data_access_config:
@@ -1096,7 +1096,7 @@ class GetWorkspaceWarehouseConfigResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceWarehouseConfigResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetWorkspaceWarehouseConfigResponse':
         return cls(channel=_from_dict(d, 'channel', Channel),
                    config_param=_from_dict(d, 'config_param', RepeatedEndpointConfPairs),
                    data_access_config=_repeated(d, 'data_access_config', EndpointConfPair),
@@ -1122,10 +1122,10 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
 class ListDashboardsRequest:
     """Get dashboard objects"""
 
-    order: 'ListOrder' = None
-    page: int = None
-    page_size: int = None
-    q: str = None
+    order: Optional['ListOrder'] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    q: Optional[str] = None
 
 
 class ListOrder(Enum):
@@ -1138,27 +1138,27 @@ class ListOrder(Enum):
 class ListQueriesRequest:
     """Get a list of queries"""
 
-    order: str = None
-    page: int = None
-    page_size: int = None
-    q: str = None
+    order: Optional[str] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    q: Optional[str] = None
 
 
 @dataclass
 class ListQueriesResponse:
-    has_next_page: bool = None
-    next_page_token: str = None
-    res: 'List[QueryInfo]' = None
+    has_next_page: Optional[bool] = None
+    next_page_token: Optional[str] = None
+    res: Optional['List[QueryInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.has_next_page: body['has_next_page'] = self.has_next_page
         if self.next_page_token: body['next_page_token'] = self.next_page_token
         if self.res: body['res'] = [v.as_dict() for v in self.res]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListQueriesResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListQueriesResponse':
         return cls(has_next_page=d.get('has_next_page', None),
                    next_page_token=d.get('next_page_token', None),
                    res=_repeated(d, 'res', QueryInfo))
@@ -1168,21 +1168,21 @@ class ListQueriesResponse:
 class ListQueryHistoryRequest:
     """List Queries"""
 
-    filter_by: 'QueryFilter' = None
-    include_metrics: bool = None
-    max_results: int = None
-    page_token: str = None
+    filter_by: Optional['QueryFilter'] = None
+    include_metrics: Optional[bool] = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListResponse:
-    count: int = None
-    page: int = None
-    page_size: int = None
-    results: 'List[Dashboard]' = None
+    count: Optional[int] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    results: Optional['List[Dashboard]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.count: body['count'] = self.count
         if self.page: body['page'] = self.page
         if self.page_size: body['page_size'] = self.page_size
@@ -1190,7 +1190,7 @@ class ListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListResponse':
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
@@ -1201,20 +1201,20 @@ class ListResponse:
 class ListWarehousesRequest:
     """List warehouses"""
 
-    run_as_user_id: int = None
+    run_as_user_id: Optional[int] = None
 
 
 @dataclass
 class ListWarehousesResponse:
-    warehouses: 'List[EndpointInfo]' = None
+    warehouses: Optional['List[EndpointInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.warehouses: body['warehouses'] = [v.as_dict() for v in self.warehouses]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListWarehousesResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListWarehousesResponse':
         return cls(warehouses=_repeated(d, 'warehouses', EndpointInfo))
 
 
@@ -1238,13 +1238,13 @@ class ObjectTypePlural(Enum):
 
 @dataclass
 class OdbcParams:
-    hostname: str = None
-    path: str = None
-    port: int = None
-    protocol: str = None
+    hostname: Optional[str] = None
+    path: Optional[str] = None
+    port: Optional[int] = None
+    protocol: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.hostname: body['hostname'] = self.hostname
         if self.path: body['path'] = self.path
         if self.port: body['port'] = self.port
@@ -1252,7 +1252,7 @@ class OdbcParams:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'OdbcParams':
+    def from_dict(cls, d: Dict[str, Any]) -> 'OdbcParams':
         return cls(hostname=d.get('hostname', None),
                    path=d.get('path', None),
                    port=d.get('port', None),
@@ -1269,13 +1269,13 @@ class OwnableObjectType(Enum):
 
 @dataclass
 class Parameter:
-    name: str = None
-    title: str = None
-    type: 'ParameterType' = None
-    value: Any = None
+    name: Optional[str] = None
+    title: Optional[str] = None
+    type: Optional['ParameterType'] = None
+    value: Optional[Any] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.name: body['name'] = self.name
         if self.title: body['title'] = self.title
         if self.type: body['type'] = self.type.value
@@ -1283,7 +1283,7 @@ class Parameter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Parameter':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Parameter':
         return cls(name=d.get('name', None),
                    title=d.get('title', None),
                    type=_enum(d, 'type', ParameterType),
@@ -1319,32 +1319,32 @@ class PlansState(Enum):
 
 @dataclass
 class Query:
-    can_edit: bool = None
-    created_at: str = None
-    data_source_id: str = None
-    description: str = None
-    id: str = None
-    is_archived: bool = None
-    is_draft: bool = None
-    is_favorite: bool = None
-    is_safe: bool = None
-    last_modified_by: 'User' = None
-    last_modified_by_id: int = None
-    latest_query_data_id: str = None
-    name: str = None
-    options: 'QueryOptions' = None
-    parent: str = None
-    permission_tier: 'PermissionLevel' = None
-    query: str = None
-    query_hash: str = None
-    tags: 'List[str]' = None
-    updated_at: str = None
-    user: 'User' = None
-    user_id: int = None
-    visualizations: 'List[Visualization]' = None
+    can_edit: Optional[bool] = None
+    created_at: Optional[str] = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    is_safe: Optional[bool] = None
+    last_modified_by: Optional['User'] = None
+    last_modified_by_id: Optional[int] = None
+    latest_query_data_id: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional['QueryOptions'] = None
+    parent: Optional[str] = None
+    permission_tier: Optional['PermissionLevel'] = None
+    query: Optional[str] = None
+    query_hash: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
+    user_id: Optional[int] = None
+    visualizations: Optional['List[Visualization]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.can_edit: body['can_edit'] = self.can_edit
         if self.created_at: body['created_at'] = self.created_at
         if self.data_source_id: body['data_source_id'] = self.data_source_id
@@ -1371,7 +1371,7 @@ class Query:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Query':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Query':
         return cls(can_edit=d.get('can_edit', None),
                    created_at=d.get('created_at', None),
                    data_source_id=d.get('data_source_id', None),
@@ -1400,14 +1400,14 @@ class Query:
 @dataclass
 class QueryEditContent:
     query_id: str
-    data_source_id: str = None
-    description: str = None
-    name: str = None
-    options: Any = None
-    query: str = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    query: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.data_source_id: body['data_source_id'] = self.data_source_id
         if self.description: body['description'] = self.description
         if self.name: body['name'] = self.name
@@ -1417,7 +1417,7 @@ class QueryEditContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryEditContent':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryEditContent':
         return cls(data_source_id=d.get('data_source_id', None),
                    description=d.get('description', None),
                    name=d.get('name', None),
@@ -1430,13 +1430,13 @@ class QueryEditContent:
 class QueryFilter:
     """A filter to limit query history results. This field is optional."""
 
-    query_start_time_range: 'TimeRange' = None
-    statuses: 'List[QueryStatus]' = None
-    user_ids: 'List[int]' = None
-    warehouse_ids: 'List[str]' = None
+    query_start_time_range: Optional['TimeRange'] = None
+    statuses: Optional['List[QueryStatus]'] = None
+    user_ids: Optional['List[int]'] = None
+    warehouse_ids: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
         if self.statuses: body['statuses'] = [v for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
@@ -1444,7 +1444,7 @@ class QueryFilter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryFilter':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryFilter':
         return cls(query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
                    statuses=d.get('statuses', None),
                    user_ids=d.get('user_ids', None),
@@ -1453,31 +1453,31 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
-    channel_used: 'ChannelInfo' = None
-    duration: int = None
-    endpoint_id: str = None
-    error_message: str = None
-    executed_as_user_id: int = None
-    executed_as_user_name: str = None
-    execution_end_time_ms: int = None
-    is_final: bool = None
-    lookup_key: str = None
-    metrics: 'QueryMetrics' = None
-    plans_state: 'PlansState' = None
-    query_end_time_ms: int = None
-    query_id: str = None
-    query_start_time_ms: int = None
-    query_text: str = None
-    rows_produced: int = None
-    spark_ui_url: str = None
-    statement_type: 'QueryStatementType' = None
-    status: 'QueryStatus' = None
-    user_id: int = None
-    user_name: str = None
-    warehouse_id: str = None
+    channel_used: Optional['ChannelInfo'] = None
+    duration: Optional[int] = None
+    endpoint_id: Optional[str] = None
+    error_message: Optional[str] = None
+    executed_as_user_id: Optional[int] = None
+    executed_as_user_name: Optional[str] = None
+    execution_end_time_ms: Optional[int] = None
+    is_final: Optional[bool] = None
+    lookup_key: Optional[str] = None
+    metrics: Optional['QueryMetrics'] = None
+    plans_state: Optional['PlansState'] = None
+    query_end_time_ms: Optional[int] = None
+    query_id: Optional[str] = None
+    query_start_time_ms: Optional[int] = None
+    query_text: Optional[str] = None
+    rows_produced: Optional[int] = None
+    spark_ui_url: Optional[str] = None
+    statement_type: Optional['QueryStatementType'] = None
+    status: Optional['QueryStatus'] = None
+    user_id: Optional[int] = None
+    user_name: Optional[str] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.channel_used: body['channel_used'] = self.channel_used.as_dict()
         if self.duration: body['duration'] = self.duration
         if self.endpoint_id: body['endpoint_id'] = self.endpoint_id
@@ -1503,7 +1503,7 @@ class QueryInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryInfo':
         return cls(channel_used=_from_dict(d, 'channel_used', ChannelInfo),
                    duration=d.get('duration', None),
                    endpoint_id=d.get('endpoint_id', None),
@@ -1530,13 +1530,13 @@ class QueryInfo:
 
 @dataclass
 class QueryList:
-    count: int = None
-    page: int = None
-    page_size: int = None
-    results: 'List[Query]' = None
+    count: Optional[int] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    results: Optional['List[Query]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.count: body['count'] = self.count
         if self.page: body['page'] = self.page
         if self.page_size: body['page_size'] = self.page_size
@@ -1544,7 +1544,7 @@ class QueryList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryList':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryList':
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
@@ -1555,30 +1555,30 @@ class QueryList:
 class QueryMetrics:
     """Metrics about query execution."""
 
-    compilation_time_ms: int = None
-    execution_time_ms: int = None
-    network_sent_bytes: int = None
-    photon_total_time_ms: int = None
-    queued_overload_time_ms: int = None
-    queued_provisioning_time_ms: int = None
-    read_bytes: int = None
-    read_cache_bytes: int = None
-    read_files_count: int = None
-    read_partitions_count: int = None
-    read_remote_bytes: int = None
-    result_fetch_time_ms: int = None
-    result_from_cache: bool = None
-    rows_produced_count: int = None
-    rows_read_count: int = None
-    spill_to_disk_bytes: int = None
-    task_total_time_ms: int = None
-    total_files_count: int = None
-    total_partitions_count: int = None
-    total_time_ms: int = None
-    write_remote_bytes: int = None
+    compilation_time_ms: Optional[int] = None
+    execution_time_ms: Optional[int] = None
+    network_sent_bytes: Optional[int] = None
+    photon_total_time_ms: Optional[int] = None
+    queued_overload_time_ms: Optional[int] = None
+    queued_provisioning_time_ms: Optional[int] = None
+    read_bytes: Optional[int] = None
+    read_cache_bytes: Optional[int] = None
+    read_files_count: Optional[int] = None
+    read_partitions_count: Optional[int] = None
+    read_remote_bytes: Optional[int] = None
+    result_fetch_time_ms: Optional[int] = None
+    result_from_cache: Optional[bool] = None
+    rows_produced_count: Optional[int] = None
+    rows_read_count: Optional[int] = None
+    spill_to_disk_bytes: Optional[int] = None
+    task_total_time_ms: Optional[int] = None
+    total_files_count: Optional[int] = None
+    total_partitions_count: Optional[int] = None
+    total_time_ms: Optional[int] = None
+    write_remote_bytes: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.compilation_time_ms: body['compilation_time_ms'] = self.compilation_time_ms
         if self.execution_time_ms: body['execution_time_ms'] = self.execution_time_ms
         if self.network_sent_bytes: body['network_sent_bytes'] = self.network_sent_bytes
@@ -1604,7 +1604,7 @@ class QueryMetrics:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryMetrics':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryMetrics':
         return cls(compilation_time_ms=d.get('compilation_time_ms', None),
                    execution_time_ms=d.get('execution_time_ms', None),
                    network_sent_bytes=d.get('network_sent_bytes', None),
@@ -1630,32 +1630,32 @@ class QueryMetrics:
 
 @dataclass
 class QueryOptions:
-    moved_to_trash_at: str = None
-    parameters: 'List[Parameter]' = None
+    moved_to_trash_at: Optional[str] = None
+    parameters: Optional['List[Parameter]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.moved_to_trash_at: body['moved_to_trash_at'] = self.moved_to_trash_at
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryOptions':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryOptions':
         return cls(moved_to_trash_at=d.get('moved_to_trash_at', None),
                    parameters=_repeated(d, 'parameters', Parameter))
 
 
 @dataclass
 class QueryPostContent:
-    data_source_id: str = None
-    description: str = None
-    name: str = None
-    options: Any = None
-    parent: str = None
-    query: str = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    parent: Optional[str] = None
+    query: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.data_source_id: body['data_source_id'] = self.data_source_id
         if self.description: body['description'] = self.description
         if self.name: body['name'] = self.name
@@ -1665,7 +1665,7 @@ class QueryPostContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryPostContent':
+    def from_dict(cls, d: Dict[str, Any]) -> 'QueryPostContent':
         return cls(data_source_id=d.get('data_source_id', None),
                    description=d.get('description', None),
                    name=d.get('name', None),
@@ -1713,18 +1713,18 @@ class QueryStatus(Enum):
 
 @dataclass
 class RepeatedEndpointConfPairs:
-    config_pair: 'List[EndpointConfPair]' = None
-    configuration_pairs: 'List[EndpointConfPair]' = None
+    config_pair: Optional['List[EndpointConfPair]'] = None
+    configuration_pairs: Optional['List[EndpointConfPair]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.config_pair: body['config_pair'] = [v.as_dict() for v in self.config_pair]
         if self.configuration_pairs:
             body['configuration_pairs'] = [v.as_dict() for v in self.configuration_pairs]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepeatedEndpointConfPairs':
+    def from_dict(cls, d: Dict[str, Any]) -> 'RepeatedEndpointConfPairs':
         return cls(config_pair=_repeated(d, 'config_pair', EndpointConfPair),
                    configuration_pairs=_repeated(d, 'configuration_pairs', EndpointConfPair))
 
@@ -1749,17 +1749,17 @@ class ResultData:
     in the `external_link` field when using `EXTERNAL_LINKS` disposition. Exactly one of these will
     be set."""
 
-    byte_count: int = None
-    chunk_index: int = None
-    data_array: 'List[List[str]]' = None
-    external_links: 'List[ExternalLink]' = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    data_array: Optional['List[List[str]]'] = None
+    external_links: Optional['List[ExternalLink]'] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.byte_count: body['byte_count'] = self.byte_count
         if self.chunk_index: body['chunk_index'] = self.chunk_index
         if self.data_array: body['data_array'] = [v for v in self.data_array]
@@ -1771,7 +1771,7 @@ class ResultData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResultData':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ResultData':
         return cls(byte_count=d.get('byte_count', None),
                    chunk_index=d.get('chunk_index', None),
                    data_array=d.get('data_array', None),
@@ -1786,15 +1786,15 @@ class ResultData:
 class ResultManifest:
     """The result manifest provides schema and metadata for the result set."""
 
-    chunks: 'List[ChunkInfo]' = None
-    format: 'Format' = None
-    schema: 'ResultSchema' = None
-    total_byte_count: int = None
-    total_chunk_count: int = None
-    total_row_count: int = None
+    chunks: Optional['List[ChunkInfo]'] = None
+    format: Optional['Format'] = None
+    schema: Optional['ResultSchema'] = None
+    total_byte_count: Optional[int] = None
+    total_chunk_count: Optional[int] = None
+    total_row_count: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.chunks: body['chunks'] = [v.as_dict() for v in self.chunks]
         if self.format: body['format'] = self.format.value
         if self.schema: body['schema'] = self.schema.as_dict()
@@ -1804,7 +1804,7 @@ class ResultManifest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResultManifest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ResultManifest':
         return cls(chunks=_repeated(d, 'chunks', ChunkInfo),
                    format=_enum(d, 'format', Format),
                    schema=_from_dict(d, 'schema', ResultSchema),
@@ -1817,33 +1817,33 @@ class ResultManifest:
 class ResultSchema:
     """Schema is an ordered list of column descriptions."""
 
-    column_count: int = None
-    columns: 'List[ColumnInfo]' = None
+    column_count: Optional[int] = None
+    columns: Optional['List[ColumnInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.column_count: body['column_count'] = self.column_count
         if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResultSchema':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ResultSchema':
         return cls(column_count=d.get('column_count', None), columns=_repeated(d, 'columns', ColumnInfo))
 
 
 @dataclass
 class ServiceError:
-    error_code: 'ServiceErrorCode' = None
-    message: str = None
+    error_code: Optional['ServiceErrorCode'] = None
+    message: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.error_code: body['error_code'] = self.error_code.value
         if self.message: body['message'] = self.message
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServiceError':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ServiceError':
         return cls(error_code=_enum(d, 'error_code', ServiceErrorCode), message=d.get('message', None))
 
 
@@ -1871,10 +1871,10 @@ class SetRequest:
 
     object_type: 'ObjectTypePlural'
     object_id: str
-    access_control_list: 'List[AccessControl]' = None
+    access_control_list: Optional['List[AccessControl]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.object_id: body['objectId'] = self.object_id
@@ -1882,7 +1882,7 @@ class SetRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SetRequest':
         return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
                    object_id=d.get('objectId', None),
                    object_type=_enum(d, 'objectType', ObjectTypePlural))
@@ -1890,12 +1890,12 @@ class SetRequest:
 
 @dataclass
 class SetResponse:
-    access_control_list: 'List[AccessControl]' = None
-    object_id: 'ObjectType' = None
-    object_type: str = None
+    access_control_list: Optional['List[AccessControl]'] = None
+    object_id: Optional['ObjectType'] = None
+    object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.object_id: body['object_id'] = self.object_id.value
@@ -1903,7 +1903,7 @@ class SetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SetResponse':
         return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
                    object_id=_enum(d, 'object_id', ObjectType),
                    object_type=d.get('object_type', None))
@@ -1911,19 +1911,19 @@ class SetResponse:
 
 @dataclass
 class SetWorkspaceWarehouseConfigRequest:
-    channel: 'Channel' = None
-    config_param: 'RepeatedEndpointConfPairs' = None
-    data_access_config: 'List[EndpointConfPair]' = None
-    enabled_warehouse_types: 'List[WarehouseTypePair]' = None
-    global_param: 'RepeatedEndpointConfPairs' = None
-    google_service_account: str = None
-    instance_profile_arn: str = None
-    security_policy: 'SetWorkspaceWarehouseConfigRequestSecurityPolicy' = None
-    serverless_agreement: bool = None
-    sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
+    channel: Optional['Channel'] = None
+    config_param: Optional['RepeatedEndpointConfPairs'] = None
+    data_access_config: Optional['List[EndpointConfPair]'] = None
+    enabled_warehouse_types: Optional['List[WarehouseTypePair]'] = None
+    global_param: Optional['RepeatedEndpointConfPairs'] = None
+    google_service_account: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    security_policy: Optional['SetWorkspaceWarehouseConfigRequestSecurityPolicy'] = None
+    serverless_agreement: Optional[bool] = None
+    sql_configuration_parameters: Optional['RepeatedEndpointConfPairs'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.channel: body['channel'] = self.channel.as_dict()
         if self.config_param: body['config_param'] = self.config_param.as_dict()
         if self.data_access_config:
@@ -1940,7 +1940,7 @@ class SetWorkspaceWarehouseConfigRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetWorkspaceWarehouseConfigRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SetWorkspaceWarehouseConfigRequest':
         return cls(channel=_from_dict(d, 'channel', Channel),
                    config_param=_from_dict(d, 'config_param', RepeatedEndpointConfPairs),
                    data_access_config=_repeated(d, 'data_access_config', EndpointConfPair),
@@ -2008,17 +2008,17 @@ class StatementState(Enum):
 class StatementStatus:
     """Status response includes execution state and if relevant, error information."""
 
-    error: 'ServiceError' = None
-    state: 'StatementState' = None
+    error: Optional['ServiceError'] = None
+    state: Optional['StatementState'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.error: body['error'] = self.error.as_dict()
         if self.state: body['state'] = self.state.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'StatementStatus':
+    def from_dict(cls, d: Dict[str, Any]) -> 'StatementStatus':
         return cls(error=_from_dict(d, 'error', ServiceError), state=_enum(d, 'state', StatementState))
 
 
@@ -2040,15 +2040,15 @@ class StopRequest:
 
 @dataclass
 class Success:
-    message: 'SuccessMessage' = None
+    message: Optional['SuccessMessage'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.message: body['message'] = self.message.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Success':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Success':
         return cls(message=_enum(d, 'message', SuccessMessage))
 
 
@@ -2059,19 +2059,19 @@ class SuccessMessage(Enum):
 
 @dataclass
 class TerminationReason:
-    code: 'TerminationReasonCode' = None
-    parameters: 'Dict[str,str]' = None
-    type: 'TerminationReasonType' = None
+    code: Optional['TerminationReasonCode'] = None
+    parameters: Optional['Dict[str,str]'] = None
+    type: Optional['TerminationReasonType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.code: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
         if self.type: body['type'] = self.type.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TerminationReason':
+    def from_dict(cls, d: Dict[str, Any]) -> 'TerminationReason':
         return cls(code=_enum(d, 'code', TerminationReasonCode),
                    parameters=d.get('parameters', None),
                    type=_enum(d, 'type', TerminationReasonType))
@@ -2172,17 +2172,17 @@ class TerminationReasonType(Enum):
 
 @dataclass
 class TimeRange:
-    end_time_ms: int = None
-    start_time_ms: int = None
+    end_time_ms: Optional[int] = None
+    start_time_ms: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.end_time_ms: body['end_time_ms'] = self.end_time_ms
         if self.start_time_ms: body['start_time_ms'] = self.start_time_ms
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TimeRange':
+    def from_dict(cls, d: Dict[str, Any]) -> 'TimeRange':
         return cls(end_time_ms=d.get('end_time_ms', None), start_time_ms=d.get('start_time_ms', None))
 
 
@@ -2202,15 +2202,15 @@ class TimeoutAction(Enum):
 
 @dataclass
 class TransferOwnershipObjectId:
-    new_owner: str = None
+    new_owner: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.new_owner: body['new_owner'] = self.new_owner
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransferOwnershipObjectId':
+    def from_dict(cls, d: Dict[str, Any]) -> 'TransferOwnershipObjectId':
         return cls(new_owner=d.get('new_owner', None))
 
 
@@ -2220,17 +2220,17 @@ class TransferOwnershipRequest:
 
     object_type: 'OwnableObjectType'
     object_id: 'TransferOwnershipObjectId'
-    new_owner: str = None
+    new_owner: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.new_owner: body['new_owner'] = self.new_owner
         if self.object_id: body['objectId'] = self.object_id.as_dict()
         if self.object_type: body['objectType'] = self.object_type.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransferOwnershipRequest':
+    def from_dict(cls, d: Dict[str, Any]) -> 'TransferOwnershipRequest':
         return cls(new_owner=d.get('new_owner', None),
                    object_id=_from_dict(d, 'objectId', TransferOwnershipObjectId),
                    object_type=_enum(d, 'objectType', OwnableObjectType))
@@ -2238,14 +2238,14 @@ class TransferOwnershipRequest:
 
 @dataclass
 class User:
-    email: str = None
-    id: int = None
-    is_db_admin: bool = None
-    name: str = None
-    profile_image_url: str = None
+    email: Optional[str] = None
+    id: Optional[int] = None
+    is_db_admin: Optional[bool] = None
+    name: Optional[str] = None
+    profile_image_url: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.email: body['email'] = self.email
         if self.id: body['id'] = self.id
         if self.is_db_admin: body['is_db_admin'] = self.is_db_admin
@@ -2254,7 +2254,7 @@ class User:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'User':
+    def from_dict(cls, d: Dict[str, Any]) -> 'User':
         return cls(email=d.get('email', None),
                    id=d.get('id', None),
                    is_db_admin=d.get('is_db_admin', None),
@@ -2269,16 +2269,16 @@ class Visualization:
     create a new one with a POST request to the same endpoint. Databricks does not recommend
     constructing ad-hoc visualizations entirely in JSON."""
 
-    created_at: str = None
-    description: str = None
-    id: str = None
-    name: str = None
-    options: Any = None
-    type: str = None
-    updated_at: str = None
+    created_at: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    type: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.created_at: body['created_at'] = self.created_at
         if self.description: body['description'] = self.description
         if self.id: body['id'] = self.id
@@ -2289,7 +2289,7 @@ class Visualization:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Visualization':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Visualization':
         return cls(created_at=d.get('created_at', None),
                    description=d.get('description', None),
                    id=d.get('id', None),
@@ -2310,29 +2310,29 @@ class WarehouseType(Enum):
 
 @dataclass
 class WarehouseTypePair:
-    enabled: bool = None
-    warehouse_type: 'WarehouseType' = None
+    enabled: Optional[bool] = None
+    warehouse_type: Optional['WarehouseType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.enabled: body['enabled'] = self.enabled
         if self.warehouse_type: body['warehouse_type'] = self.warehouse_type.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WarehouseTypePair':
+    def from_dict(cls, d: Dict[str, Any]) -> 'WarehouseTypePair':
         return cls(enabled=d.get('enabled', None), warehouse_type=_enum(d, 'warehouse_type', WarehouseType))
 
 
 @dataclass
 class Widget:
-    id: int = None
-    options: 'WidgetOptions' = None
-    visualization: 'Visualization' = None
-    width: int = None
+    id: Optional[int] = None
+    options: Optional['WidgetOptions'] = None
+    visualization: Optional['Visualization'] = None
+    width: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.id: body['id'] = self.id
         if self.options: body['options'] = self.options.as_dict()
         if self.visualization: body['visualization'] = self.visualization.as_dict()
@@ -2340,7 +2340,7 @@ class Widget:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Widget':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Widget':
         return cls(id=d.get('id', None),
                    options=_from_dict(d, 'options', WidgetOptions),
                    visualization=_from_dict(d, 'visualization', Visualization),
@@ -2349,16 +2349,16 @@ class Widget:
 
 @dataclass
 class WidgetOptions:
-    created_at: str = None
-    dashboard_id: str = None
-    is_hidden: bool = None
-    parameter_mappings: Any = None
-    position: Any = None
-    text: str = None
-    updated_at: str = None
+    created_at: Optional[str] = None
+    dashboard_id: Optional[str] = None
+    is_hidden: Optional[bool] = None
+    parameter_mappings: Optional[Any] = None
+    position: Optional[Any] = None
+    text: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.created_at: body['created_at'] = self.created_at
         if self.dashboard_id: body['dashboard_id'] = self.dashboard_id
         if self.is_hidden: body['isHidden'] = self.is_hidden
@@ -2369,7 +2369,7 @@ class WidgetOptions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WidgetOptions':
+    def from_dict(cls, d: Dict[str, Any]) -> 'WidgetOptions':
         return cls(created_at=d.get('created_at', None),
                    dashboard_id=d.get('dashboard_id', None),
                    is_hidden=d.get('isHidden', None),
@@ -2384,7 +2384,7 @@ class AlertsAPI:
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
     notification destinations if the condition was met."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self,
@@ -2392,9 +2392,9 @@ class AlertsAPI:
                options: AlertOptions,
                query_id: str,
                *,
-               parent: str = None,
-               rearm: int = None,
-               **kwargs) -> Alert:
+               parent: Optional[str] = None,
+               rearm: Optional[int] = None,
+               **kwargs: dict) -> Alert:
         """Create an alert.
         
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
@@ -2407,7 +2407,7 @@ class AlertsAPI:
         json = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body)
         return Alert.from_dict(json)
 
-    def delete(self, alert_id: str, **kwargs):
+    def delete(self, alert_id: str, **kwargs: dict):
         """Delete an alert.
         
         Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note:** Unlike
@@ -2418,7 +2418,7 @@ class AlertsAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{request.alert_id}')
 
-    def get(self, alert_id: str, **kwargs) -> Alert:
+    def get(self, alert_id: str, **kwargs: dict) -> Alert:
         """Get an alert.
         
         Gets an alert."""
@@ -2443,8 +2443,8 @@ class AlertsAPI:
                query_id: str,
                alert_id: str,
                *,
-               rearm: int = None,
-               **kwargs):
+               rearm: Optional[int] = None,
+               **kwargs: dict):
         """Update an alert.
         
         Updates an alert."""
@@ -2461,19 +2461,19 @@ class DashboardsAPI:
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
     to create a new one."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self,
                *,
-               dashboard_filters_enabled: bool = None,
-               is_draft: bool = None,
-               is_trashed: bool = None,
-               name: str = None,
-               parent: str = None,
-               tags: List[str] = None,
-               widgets: List[Widget] = None,
-               **kwargs) -> Dashboard:
+               dashboard_filters_enabled: Optional[bool] = None,
+               is_draft: Optional[bool] = None,
+               is_trashed: Optional[bool] = None,
+               name: Optional[str] = None,
+               parent: Optional[str] = None,
+               tags: Optional[List[str]] = None,
+               widgets: Optional[List[Widget]] = None,
+               **kwargs: dict) -> Dashboard:
         """Create a dashboard object."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2489,7 +2489,7 @@ class DashboardsAPI:
         json = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body)
         return Dashboard.from_dict(json)
 
-    def delete(self, dashboard_id: str, **kwargs):
+    def delete(self, dashboard_id: str, **kwargs: dict):
         """Remove a dashboard.
         
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
@@ -2500,7 +2500,7 @@ class DashboardsAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/sql/dashboards/{request.dashboard_id}')
 
-    def get(self, dashboard_id: str, **kwargs) -> Dashboard:
+    def get(self, dashboard_id: str, **kwargs: dict) -> Dashboard:
         """Retrieve a definition.
         
         Returns a JSON representation of a dashboard object, including its visualization and query objects."""
@@ -2513,11 +2513,11 @@ class DashboardsAPI:
 
     def list(self,
              *,
-             order: ListOrder = None,
-             page: int = None,
-             page_size: int = None,
-             q: str = None,
-             **kwargs) -> Iterator[Dashboard]:
+             order: Optional[ListOrder] = None,
+             page: Optional[int] = None,
+             page_size: Optional[int] = None,
+             q: Optional[str] = None,
+             **kwargs: dict) -> Iterator[Dashboard]:
         """Get dashboard objects.
         
         Fetch a paginated list of dashboard objects."""
@@ -2546,7 +2546,7 @@ class DashboardsAPI:
                 yield Dashboard.from_dict(v)
             query['page'] += 1
 
-    def restore(self, dashboard_id: str, **kwargs):
+    def restore(self, dashboard_id: str, **kwargs: dict):
         """Restore a dashboard.
         
         A restored dashboard appears in list views and searches and can be shared."""
@@ -2566,7 +2566,7 @@ class DataSourcesAPI:
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def list(self) -> Iterator[DataSource]:
@@ -2593,10 +2593,10 @@ class DbsqlPermissionsAPI:
     
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)"""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
-    def get(self, object_type: ObjectTypePlural, object_id: str, **kwargs) -> GetResponse:
+    def get(self, object_type: ObjectTypePlural, object_id: str, **kwargs: dict) -> GetResponse:
         """Get object ACL.
         
         Gets a JSON representation of the access control list (ACL) for a specified object."""
@@ -2612,8 +2612,8 @@ class DbsqlPermissionsAPI:
             object_type: ObjectTypePlural,
             object_id: str,
             *,
-            access_control_list: List[AccessControl] = None,
-            **kwargs) -> SetResponse:
+            access_control_list: Optional[List[AccessControl]] = None,
+            **kwargs: dict) -> SetResponse:
         """Set object ACL.
         
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
@@ -2634,8 +2634,8 @@ class DbsqlPermissionsAPI:
                            object_type: OwnableObjectType,
                            object_id: TransferOwnershipObjectId,
                            *,
-                           new_owner: str = None,
-                           **kwargs) -> Success:
+                           new_owner: Optional[str] = None,
+                           **kwargs: dict) -> Success:
         """Transfer object ownership.
         
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key."""
@@ -2657,18 +2657,18 @@ class QueriesAPI:
     """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
     SQL warehouse, query text, name, description, tags, parameters, and visualizations."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self,
                *,
-               data_source_id: str = None,
-               description: str = None,
-               name: str = None,
-               options: Any = None,
-               parent: str = None,
-               query: str = None,
-               **kwargs) -> Query:
+               data_source_id: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               parent: Optional[str] = None,
+               query: Optional[str] = None,
+               **kwargs: dict) -> Query:
         """Create a new query definition.
         
         Creates a new query definition. Queries created with this endpoint belong to the authenticated user
@@ -2692,7 +2692,7 @@ class QueriesAPI:
         json = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body)
         return Query.from_dict(json)
 
-    def delete(self, query_id: str, **kwargs):
+    def delete(self, query_id: str, **kwargs: dict):
         """Delete a query.
         
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
@@ -2703,7 +2703,7 @@ class QueriesAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/sql/queries/{request.query_id}')
 
-    def get(self, query_id: str, **kwargs) -> Query:
+    def get(self, query_id: str, **kwargs: dict) -> Query:
         """Get a query definition.
         
         Retrieve a query object definition along with contextual permissions information about the currently
@@ -2717,11 +2717,11 @@ class QueriesAPI:
 
     def list(self,
              *,
-             order: str = None,
-             page: int = None,
-             page_size: int = None,
-             q: str = None,
-             **kwargs) -> Iterator[Query]:
+             order: Optional[str] = None,
+             page: Optional[int] = None,
+             page_size: Optional[int] = None,
+             q: Optional[str] = None,
+             **kwargs: dict) -> Iterator[Query]:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term."""
@@ -2750,7 +2750,7 @@ class QueriesAPI:
                 yield Query.from_dict(v)
             query['page'] += 1
 
-    def restore(self, query_id: str, **kwargs):
+    def restore(self, query_id: str, **kwargs: dict):
         """Restore a query.
         
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
@@ -2764,12 +2764,12 @@ class QueriesAPI:
     def update(self,
                query_id: str,
                *,
-               data_source_id: str = None,
-               description: str = None,
-               name: str = None,
-               options: Any = None,
-               query: str = None,
-               **kwargs) -> Query:
+               data_source_id: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               query: Optional[str] = None,
+               **kwargs: dict) -> Query:
         """Change a query definition.
         
         Modify this query definition.
@@ -2792,16 +2792,16 @@ class QueriesAPI:
 class QueryHistoryAPI:
     """Access the history of queries through SQL warehouses."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def list(self,
              *,
-             filter_by: QueryFilter = None,
-             include_metrics: bool = None,
-             max_results: int = None,
-             page_token: str = None,
-             **kwargs) -> Iterator[QueryInfo]:
+             filter_by: Optional[QueryFilter] = None,
+             include_metrics: Optional[bool] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
+             **kwargs: dict) -> Iterator[QueryInfo]:
         """List Queries.
         
         List the history of queries through SQL warehouses.
@@ -2981,10 +2981,10 @@ class StatementExecutionAPI:
     [Public Preview]: https://docs.databricks.com/release-notes/release-types.html
     [SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
-    def cancel_execution(self, statement_id: str, **kwargs):
+    def cancel_execution(self, statement_id: str, **kwargs: dict):
         """Cancel statement execution.
         
         Requests that an executing statement be canceled. Callers must poll for status to see the terminal
@@ -2997,16 +2997,16 @@ class StatementExecutionAPI:
 
     def execute_statement(self,
                           *,
-                          byte_limit: int = None,
-                          catalog: str = None,
-                          disposition: Disposition = None,
-                          format: Format = None,
-                          on_wait_timeout: TimeoutAction = None,
-                          schema: str = None,
-                          statement: str = None,
-                          wait_timeout: str = None,
-                          warehouse_id: str = None,
-                          **kwargs) -> ExecuteStatementResponse:
+                          byte_limit: Optional[int] = None,
+                          catalog: Optional[str] = None,
+                          disposition: Optional[Disposition] = None,
+                          format: Optional[Format] = None,
+                          on_wait_timeout: Optional[TimeoutAction] = None,
+                          schema: Optional[str] = None,
+                          statement: Optional[str] = None,
+                          wait_timeout: Optional[str] = None,
+                          warehouse_id: Optional[str] = None,
+                          **kwargs: dict) -> ExecuteStatementResponse:
         """Execute a SQL statement.
         
         Execute a SQL statement, and if flagged as such, await its result for a specified time."""
@@ -3026,7 +3026,7 @@ class StatementExecutionAPI:
         json = self._api.do('POST', '/api/2.0/sql/statements/', body=body)
         return ExecuteStatementResponse.from_dict(json)
 
-    def get_statement(self, statement_id: str, **kwargs) -> GetStatementResponse:
+    def get_statement(self, statement_id: str, **kwargs: dict) -> GetStatementResponse:
         """Get status, manifest, and result first chunk.
         
         This request can be used to poll for the statement's status. When the `status.state` field is
@@ -3043,7 +3043,7 @@ class StatementExecutionAPI:
         json = self._api.do('GET', f'/api/2.0/sql/statements/{request.statement_id}')
         return GetStatementResponse.from_dict(json)
 
-    def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int, **kwargs) -> ResultData:
+    def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int, **kwargs: dict) -> ResultData:
         """Get result chunk by index.
         
         After the statement execution has `SUCCEEDED`, the result data can be fetched by chunks. Whereas the
@@ -3064,14 +3064,14 @@ class WarehousesAPI:
     """A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks
     SQL. Compute resources are infrastructure resources that provide processing capabilities in the cloud."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
-    def wait_get_warehouse_deleted(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_deleted(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.DELETED, )
         status_message = 'polling...'
@@ -3080,7 +3080,7 @@ class WarehousesAPI:
             poll = self.get(id=id)
             status = poll.state
             status_message = f'current status: {status}'
-            if poll.health:
+            if poll.health is not None:
                 status_message = poll.health.summary
             if status in target_states:
                 return poll
@@ -3096,11 +3096,11 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_warehouse_running(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_running(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.STOPPED, State.DELETED, )
@@ -3110,7 +3110,7 @@ class WarehousesAPI:
             poll = self.get(id=id)
             status = poll.state
             status_message = f'current status: {status}'
-            if poll.health:
+            if poll.health is not None:
                 status_message = poll.health.summary
             if status in target_states:
                 return poll
@@ -3129,11 +3129,11 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_warehouse_stopped(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_stopped(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.STOPPED, )
         status_message = 'polling...'
@@ -3142,7 +3142,7 @@ class WarehousesAPI:
             poll = self.get(id=id)
             status = poll.state
             status_message = f'current status: {status}'
-            if poll.health:
+            if poll.health is not None:
                 status_message = poll.health.summary
             if status in target_states:
                 return poll
@@ -3160,20 +3160,20 @@ class WarehousesAPI:
 
     def create(self,
                *,
-               auto_stop_mins: int = None,
-               channel: Channel = None,
-               cluster_size: str = None,
-               creator_name: str = None,
-               enable_photon: bool = None,
-               enable_serverless_compute: bool = None,
-               instance_profile_arn: str = None,
-               max_num_clusters: int = None,
-               min_num_clusters: int = None,
-               name: str = None,
-               spot_instance_policy: SpotInstancePolicy = None,
-               tags: EndpointTags = None,
-               warehouse_type: WarehouseType = None,
-               **kwargs) -> Wait[GetWarehouseResponse]:
+               auto_stop_mins: Optional[int] = None,
+               channel: Optional[Channel] = None,
+               cluster_size: Optional[str] = None,
+               creator_name: Optional[str] = None,
+               enable_photon: Optional[bool] = None,
+               enable_serverless_compute: Optional[bool] = None,
+               instance_profile_arn: Optional[str] = None,
+               max_num_clusters: Optional[int] = None,
+               min_num_clusters: Optional[int] = None,
+               name: Optional[str] = None,
+               spot_instance_policy: Optional[SpotInstancePolicy] = None,
+               tags: Optional[EndpointTags] = None,
+               warehouse_type: Optional[WarehouseType] = None,
+               **kwargs: dict) -> Wait[GetWarehouseResponse]:
         """Create a warehouse.
         
         Creates a new SQL warehouse."""
@@ -3201,19 +3201,19 @@ class WarehousesAPI:
     def create_and_wait(
         self,
         *,
-        auto_stop_mins: int = None,
-        channel: Channel = None,
-        cluster_size: str = None,
-        creator_name: str = None,
-        enable_photon: bool = None,
-        enable_serverless_compute: bool = None,
-        instance_profile_arn: str = None,
-        max_num_clusters: int = None,
-        min_num_clusters: int = None,
-        name: str = None,
-        spot_instance_policy: SpotInstancePolicy = None,
-        tags: EndpointTags = None,
-        warehouse_type: WarehouseType = None,
+        auto_stop_mins: Optional[int] = None,
+        channel: Optional[Channel] = None,
+        cluster_size: Optional[str] = None,
+        creator_name: Optional[str] = None,
+        enable_photon: Optional[bool] = None,
+        enable_serverless_compute: Optional[bool] = None,
+        instance_profile_arn: Optional[str] = None,
+        max_num_clusters: Optional[int] = None,
+        min_num_clusters: Optional[int] = None,
+        name: Optional[str] = None,
+        spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        tags: Optional[EndpointTags] = None,
+        warehouse_type: Optional[WarehouseType] = None,
         timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.create(auto_stop_mins=auto_stop_mins,
                            channel=channel,
@@ -3229,7 +3229,7 @@ class WarehousesAPI:
                            tags=tags,
                            warehouse_type=warehouse_type).result(timeout=timeout)
 
-    def delete(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
+    def delete(self, id: str, **kwargs: dict) -> Wait[GetWarehouseResponse]:
         """Delete a warehouse.
         
         Deletes a SQL warehouse."""
@@ -3246,20 +3246,20 @@ class WarehousesAPI:
     def edit(self,
              id: str,
              *,
-             auto_stop_mins: int = None,
-             channel: Channel = None,
-             cluster_size: str = None,
-             creator_name: str = None,
-             enable_photon: bool = None,
-             enable_serverless_compute: bool = None,
-             instance_profile_arn: str = None,
-             max_num_clusters: int = None,
-             min_num_clusters: int = None,
-             name: str = None,
-             spot_instance_policy: SpotInstancePolicy = None,
-             tags: EndpointTags = None,
-             warehouse_type: WarehouseType = None,
-             **kwargs) -> Wait[GetWarehouseResponse]:
+             auto_stop_mins: Optional[int] = None,
+             channel: Optional[Channel] = None,
+             cluster_size: Optional[str] = None,
+             creator_name: Optional[str] = None,
+             enable_photon: Optional[bool] = None,
+             enable_serverless_compute: Optional[bool] = None,
+             instance_profile_arn: Optional[str] = None,
+             max_num_clusters: Optional[int] = None,
+             min_num_clusters: Optional[int] = None,
+             name: Optional[str] = None,
+             spot_instance_policy: Optional[SpotInstancePolicy] = None,
+             tags: Optional[EndpointTags] = None,
+             warehouse_type: Optional[WarehouseType] = None,
+             **kwargs: dict) -> Wait[GetWarehouseResponse]:
         """Update a warehouse.
         
         Updates the configuration for a SQL warehouse."""
@@ -3287,19 +3287,19 @@ class WarehousesAPI:
         self,
         id: str,
         *,
-        auto_stop_mins: int = None,
-        channel: Channel = None,
-        cluster_size: str = None,
-        creator_name: str = None,
-        enable_photon: bool = None,
-        enable_serverless_compute: bool = None,
-        instance_profile_arn: str = None,
-        max_num_clusters: int = None,
-        min_num_clusters: int = None,
-        name: str = None,
-        spot_instance_policy: SpotInstancePolicy = None,
-        tags: EndpointTags = None,
-        warehouse_type: WarehouseType = None,
+        auto_stop_mins: Optional[int] = None,
+        channel: Optional[Channel] = None,
+        cluster_size: Optional[str] = None,
+        creator_name: Optional[str] = None,
+        enable_photon: Optional[bool] = None,
+        enable_serverless_compute: Optional[bool] = None,
+        instance_profile_arn: Optional[str] = None,
+        max_num_clusters: Optional[int] = None,
+        min_num_clusters: Optional[int] = None,
+        name: Optional[str] = None,
+        spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        tags: Optional[EndpointTags] = None,
+        warehouse_type: Optional[WarehouseType] = None,
         timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.edit(auto_stop_mins=auto_stop_mins,
                          channel=channel,
@@ -3316,7 +3316,7 @@ class WarehousesAPI:
                          tags=tags,
                          warehouse_type=warehouse_type).result(timeout=timeout)
 
-    def get(self, id: str, **kwargs) -> GetWarehouseResponse:
+    def get(self, id: str, **kwargs: dict) -> GetWarehouseResponse:
         """Get warehouse info.
         
         Gets the information for a single SQL warehouse."""
@@ -3335,7 +3335,7 @@ class WarehousesAPI:
         json = self._api.do('GET', '/api/2.0/sql/config/warehouses')
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
 
-    def list(self, *, run_as_user_id: int = None, **kwargs) -> Iterator[EndpointInfo]:
+    def list(self, *, run_as_user_id: Optional[int] = None, **kwargs: dict) -> Iterator[EndpointInfo]:
         """List warehouses.
         
         Lists all SQL warehouses that a user has manager permissions on."""
@@ -3352,17 +3352,17 @@ class WarehousesAPI:
     def set_workspace_warehouse_config(
             self,
             *,
-            channel: Channel = None,
-            config_param: RepeatedEndpointConfPairs = None,
-            data_access_config: List[EndpointConfPair] = None,
-            enabled_warehouse_types: List[WarehouseTypePair] = None,
-            global_param: RepeatedEndpointConfPairs = None,
-            google_service_account: str = None,
-            instance_profile_arn: str = None,
-            security_policy: SetWorkspaceWarehouseConfigRequestSecurityPolicy = None,
-            serverless_agreement: bool = None,
-            sql_configuration_parameters: RepeatedEndpointConfPairs = None,
-            **kwargs):
+            channel: Optional[Channel] = None,
+            config_param: Optional[RepeatedEndpointConfPairs] = None,
+            data_access_config: Optional[List[EndpointConfPair]] = None,
+            enabled_warehouse_types: Optional[List[WarehouseTypePair]] = None,
+            global_param: Optional[RepeatedEndpointConfPairs] = None,
+            google_service_account: Optional[str] = None,
+            instance_profile_arn: Optional[str] = None,
+            security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy] = None,
+            serverless_agreement: Optional[bool] = None,
+            sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None,
+            **kwargs: dict):
         """Set the workspace configuration.
         
         Sets the workspace level configuration that is shared by all SQL warehouses in a workspace."""
@@ -3382,7 +3382,7 @@ class WarehousesAPI:
         body = request.as_dict()
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)
 
-    def start(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
+    def start(self, id: str, **kwargs: dict) -> Wait[GetWarehouseResponse]:
         """Start a warehouse.
         
         Starts a SQL warehouse."""
@@ -3396,7 +3396,7 @@ class WarehousesAPI:
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
 
-    def stop(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
+    def stop(self, id: str, **kwargs: dict) -> Wait[GetWarehouseResponse]:
         """Stop a warehouse.
         
         Stops a SQL warehouse."""

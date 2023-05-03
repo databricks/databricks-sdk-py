@@ -3,8 +3,9 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Any, Dict, Iterator, List, Optional
 
+from ..core import ApiClient
 from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
@@ -18,13 +19,13 @@ class AclItem:
     permission: 'AclPermission'
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.permission: body['permission'] = self.permission.value
         if self.principal: body['principal'] = self.principal
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AclItem':
+    def from_dict(cls, d: Dict[str, Any]) -> 'AclItem':
         return cls(permission=_enum(d, 'permission', AclPermission), principal=d.get('principal', None))
 
 
@@ -41,31 +42,31 @@ class AzureKeyVaultSecretScopeMetadata:
     dns_name: str
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.dns_name: body['dns_name'] = self.dns_name
         if self.resource_id: body['resource_id'] = self.resource_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AzureKeyVaultSecretScopeMetadata':
+    def from_dict(cls, d: Dict[str, Any]) -> 'AzureKeyVaultSecretScopeMetadata':
         return cls(dns_name=d.get('dns_name', None), resource_id=d.get('resource_id', None))
 
 
 @dataclass
 class CreateCredentials:
     git_provider: str
-    git_username: str = None
-    personal_access_token: str = None
+    git_username: Optional[str] = None
+    personal_access_token: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.git_provider: body['git_provider'] = self.git_provider
         if self.git_username: body['git_username'] = self.git_username
         if self.personal_access_token: body['personal_access_token'] = self.personal_access_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentials':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateCredentials':
         return cls(git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
                    personal_access_token=d.get('personal_access_token', None))
@@ -73,19 +74,19 @@ class CreateCredentials:
 
 @dataclass
 class CreateCredentialsResponse:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.credential_id: body['credential_id'] = self.credential_id
         if self.git_provider: body['git_provider'] = self.git_provider
         if self.git_username: body['git_username'] = self.git_username
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialsResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateCredentialsResponse':
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None))
@@ -95,11 +96,11 @@ class CreateCredentialsResponse:
 class CreateRepo:
     url: str
     provider: str
-    path: str = None
-    sparse_checkout: 'SparseCheckout' = None
+    path: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckout'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.path: body['path'] = self.path
         if self.provider: body['provider'] = self.provider
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
@@ -107,7 +108,7 @@ class CreateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRepo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateRepo':
         return cls(path=d.get('path', None),
                    provider=d.get('provider', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
@@ -117,12 +118,12 @@ class CreateRepo:
 @dataclass
 class CreateScope:
     scope: str
-    initial_manage_principal: str = None
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
-    scope_backend_type: 'ScopeBackendType' = None
+    initial_manage_principal: Optional[str] = None
+    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    scope_backend_type: Optional['ScopeBackendType'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.initial_manage_principal: body['initial_manage_principal'] = self.initial_manage_principal
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
         if self.scope: body['scope'] = self.scope
@@ -130,7 +131,7 @@ class CreateScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateScope':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CreateScope':
         return cls(initial_manage_principal=d.get('initial_manage_principal', None),
                    keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
                    scope=d.get('scope', None),
@@ -139,19 +140,19 @@ class CreateScope:
 
 @dataclass
 class CredentialInfo:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.credential_id: body['credential_id'] = self.credential_id
         if self.git_provider: body['git_provider'] = self.git_provider
         if self.git_username: body['git_username'] = self.git_username
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CredentialInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'CredentialInfo':
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None))
@@ -160,16 +161,16 @@ class CredentialInfo:
 @dataclass
 class Delete:
     path: str
-    recursive: bool = None
+    recursive: Optional[bool] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.path: body['path'] = self.path
         if self.recursive: body['recursive'] = self.recursive
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Delete':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Delete':
         return cls(path=d.get('path', None), recursive=d.get('recursive', None))
 
 
@@ -179,13 +180,13 @@ class DeleteAcl:
     principal: str
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.principal: body['principal'] = self.principal
         if self.scope: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteAcl':
+    def from_dict(cls, d: Dict[str, Any]) -> 'DeleteAcl':
         return cls(principal=d.get('principal', None), scope=d.get('scope', None))
 
 
@@ -208,12 +209,12 @@ class DeleteScope:
     scope: str
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.scope: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteScope':
+    def from_dict(cls, d: Dict[str, Any]) -> 'DeleteScope':
         return cls(scope=d.get('scope', None))
 
 
@@ -223,13 +224,13 @@ class DeleteSecret:
     key: str
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.key: body['key'] = self.key
         if self.scope: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteSecret':
+    def from_dict(cls, d: Dict[str, Any]) -> 'DeleteSecret':
         return cls(key=d.get('key', None), scope=d.get('scope', None))
 
 
@@ -254,21 +255,21 @@ class ExportRequest:
     """Export a workspace object"""
 
     path: str
-    direct_download: bool = None
-    format: 'ExportFormat' = None
+    direct_download: Optional[bool] = None
+    format: Optional['ExportFormat'] = None
 
 
 @dataclass
 class ExportResponse:
-    content: str = None
+    content: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.content: body['content'] = self.content
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExportResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ExportResponse':
         return cls(content=d.get('content', None))
 
 
@@ -282,15 +283,15 @@ class GetAclRequest:
 
 @dataclass
 class GetCredentialsResponse:
-    credentials: 'List[CredentialInfo]' = None
+    credentials: Optional['List[CredentialInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.credentials: body['credentials'] = [v.as_dict() for v in self.credentials]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetCredentialsResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'GetCredentialsResponse':
         return cls(credentials=_repeated(d, 'credentials', CredentialInfo))
 
 
@@ -318,13 +319,13 @@ class GetStatusRequest:
 @dataclass
 class Import:
     path: str
-    content: str = None
-    format: 'ExportFormat' = None
-    language: 'Language' = None
-    overwrite: bool = None
+    content: Optional[str] = None
+    format: Optional['ExportFormat'] = None
+    language: Optional['Language'] = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.content: body['content'] = self.content
         if self.format: body['format'] = self.format.value
         if self.language: body['language'] = self.language.value
@@ -333,7 +334,7 @@ class Import:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Import':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Import':
         return cls(content=d.get('content', None),
                    format=_enum(d, 'format', ExportFormat),
                    language=_enum(d, 'language', Language),
@@ -359,15 +360,15 @@ class ListAclsRequest:
 
 @dataclass
 class ListAclsResponse:
-    items: 'List[AclItem]' = None
+    items: Optional['List[AclItem]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.items: body['items'] = [v.as_dict() for v in self.items]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListAclsResponse':
         return cls(items=_repeated(d, 'items', AclItem))
 
 
@@ -375,51 +376,51 @@ class ListAclsResponse:
 class ListReposRequest:
     """Get repos"""
 
-    next_page_token: str = None
-    path_prefix: str = None
+    next_page_token: Optional[str] = None
+    path_prefix: Optional[str] = None
 
 
 @dataclass
 class ListReposResponse:
-    next_page_token: str = None
-    repos: 'List[RepoInfo]' = None
+    next_page_token: Optional[str] = None
+    repos: Optional['List[RepoInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.next_page_token: body['next_page_token'] = self.next_page_token
         if self.repos: body['repos'] = [v.as_dict() for v in self.repos]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListReposResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListReposResponse':
         return cls(next_page_token=d.get('next_page_token', None), repos=_repeated(d, 'repos', RepoInfo))
 
 
 @dataclass
 class ListResponse:
-    objects: 'List[ObjectInfo]' = None
+    objects: Optional['List[ObjectInfo]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListResponse':
         return cls(objects=_repeated(d, 'objects', ObjectInfo))
 
 
 @dataclass
 class ListScopesResponse:
-    scopes: 'List[SecretScope]' = None
+    scopes: Optional['List[SecretScope]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.scopes: body['scopes'] = [v.as_dict() for v in self.scopes]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListScopesResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListScopesResponse':
         return cls(scopes=_repeated(d, 'scopes', SecretScope))
 
 
@@ -432,15 +433,15 @@ class ListSecretsRequest:
 
 @dataclass
 class ListSecretsResponse:
-    secrets: 'List[SecretMetadata]' = None
+    secrets: Optional['List[SecretMetadata]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListSecretsResponse':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ListSecretsResponse':
         return cls(secrets=_repeated(d, 'secrets', SecretMetadata))
 
 
@@ -449,7 +450,7 @@ class ListWorkspaceRequest:
     """List contents"""
 
     path: str
-    notebooks_modified_after: int = None
+    notebooks_modified_after: Optional[int] = None
 
 
 @dataclass
@@ -457,27 +458,27 @@ class Mkdirs:
     path: str
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.path: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Mkdirs':
+    def from_dict(cls, d: Dict[str, Any]) -> 'Mkdirs':
         return cls(path=d.get('path', None))
 
 
 @dataclass
 class ObjectInfo:
-    created_at: int = None
-    language: 'Language' = None
-    modified_at: int = None
-    object_id: int = None
-    object_type: 'ObjectType' = None
-    path: str = None
-    size: int = None
+    created_at: Optional[int] = None
+    language: Optional['Language'] = None
+    modified_at: Optional[int] = None
+    object_id: Optional[int] = None
+    object_type: Optional['ObjectType'] = None
+    path: Optional[str] = None
+    size: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.created_at: body['created_at'] = self.created_at
         if self.language: body['language'] = self.language.value
         if self.modified_at: body['modified_at'] = self.modified_at
@@ -488,7 +489,7 @@ class ObjectInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ObjectInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ObjectInfo':
         return cls(created_at=d.get('created_at', None),
                    language=_enum(d, 'language', Language),
                    modified_at=d.get('modified_at', None),
@@ -515,14 +516,14 @@ class PutAcl:
     permission: 'AclPermission'
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.permission: body['permission'] = self.permission.value
         if self.principal: body['principal'] = self.principal
         if self.scope: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PutAcl':
+    def from_dict(cls, d: Dict[str, Any]) -> 'PutAcl':
         return cls(permission=_enum(d, 'permission', AclPermission),
                    principal=d.get('principal', None),
                    scope=d.get('scope', None))
@@ -532,11 +533,11 @@ class PutAcl:
 class PutSecret:
     scope: str
     key: str
-    bytes_value: str = None
-    string_value: str = None
+    bytes_value: Optional[str] = None
+    string_value: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.bytes_value: body['bytes_value'] = self.bytes_value
         if self.key: body['key'] = self.key
         if self.scope: body['scope'] = self.scope
@@ -544,7 +545,7 @@ class PutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PutSecret':
+    def from_dict(cls, d: Dict[str, Any]) -> 'PutSecret':
         return cls(bytes_value=d.get('bytes_value', None),
                    key=d.get('key', None),
                    scope=d.get('scope', None),
@@ -553,16 +554,16 @@ class PutSecret:
 
 @dataclass
 class RepoInfo:
-    branch: str = None
-    head_commit_id: str = None
-    id: int = None
-    path: str = None
-    provider: str = None
-    sparse_checkout: 'SparseCheckout' = None
-    url: str = None
+    branch: Optional[str] = None
+    head_commit_id: Optional[str] = None
+    id: Optional[int] = None
+    path: Optional[str] = None
+    provider: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckout'] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.branch: body['branch'] = self.branch
         if self.head_commit_id: body['head_commit_id'] = self.head_commit_id
         if self.id: body['id'] = self.id
@@ -573,7 +574,7 @@ class RepoInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoInfo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'RepoInfo':
         return cls(branch=d.get('branch', None),
                    head_commit_id=d.get('head_commit_id', None),
                    id=d.get('id', None),
@@ -591,35 +592,35 @@ class ScopeBackendType(Enum):
 
 @dataclass
 class SecretMetadata:
-    key: str = None
-    last_updated_timestamp: int = None
+    key: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.key: body['key'] = self.key
         if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SecretMetadata':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SecretMetadata':
         return cls(key=d.get('key', None), last_updated_timestamp=d.get('last_updated_timestamp', None))
 
 
 @dataclass
 class SecretScope:
-    backend_type: 'ScopeBackendType' = None
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
-    name: str = None
+    backend_type: Optional['ScopeBackendType'] = None
+    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.backend_type: body['backend_type'] = self.backend_type.value
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
         if self.name: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SecretScope':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SecretScope':
         return cls(backend_type=_enum(d, 'backend_type', ScopeBackendType),
                    keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
                    name=d.get('name', None))
@@ -627,41 +628,41 @@ class SecretScope:
 
 @dataclass
 class SparseCheckout:
-    patterns: 'List[str]' = None
+    patterns: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.patterns: body['patterns'] = [v for v in self.patterns]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparseCheckout':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SparseCheckout':
         return cls(patterns=d.get('patterns', None))
 
 
 @dataclass
 class SparseCheckoutUpdate:
-    patterns: 'List[str]' = None
+    patterns: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.patterns: body['patterns'] = [v for v in self.patterns]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparseCheckoutUpdate':
+    def from_dict(cls, d: Dict[str, Any]) -> 'SparseCheckoutUpdate':
         return cls(patterns=d.get('patterns', None))
 
 
 @dataclass
 class UpdateCredentials:
     credential_id: int
-    git_provider: str = None
-    git_username: str = None
-    personal_access_token: str = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
+    personal_access_token: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.credential_id: body['credential_id'] = self.credential_id
         if self.git_provider: body['git_provider'] = self.git_provider
         if self.git_username: body['git_username'] = self.git_username
@@ -669,7 +670,7 @@ class UpdateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateCredentials':
+    def from_dict(cls, d: Dict[str, Any]) -> 'UpdateCredentials':
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
@@ -679,12 +680,12 @@ class UpdateCredentials:
 @dataclass
 class UpdateRepo:
     repo_id: int
-    branch: str = None
-    sparse_checkout: 'SparseCheckoutUpdate' = None
-    tag: str = None
+    branch: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckoutUpdate'] = None
+    tag: Optional[str] = None
 
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         if self.branch: body['branch'] = self.branch
         if self.repo_id: body['repo_id'] = self.repo_id
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
@@ -692,7 +693,7 @@ class UpdateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRepo':
+    def from_dict(cls, d: Dict[str, Any]) -> 'UpdateRepo':
         return cls(branch=d.get('branch', None),
                    repo_id=d.get('repo_id', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckoutUpdate),
@@ -706,15 +707,15 @@ class GitCredentialsAPI:
     
     [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self,
                git_provider: str,
                *,
-               git_username: str = None,
-               personal_access_token: str = None,
-               **kwargs) -> CreateCredentialsResponse:
+               git_username: Optional[str] = None,
+               personal_access_token: Optional[str] = None,
+               **kwargs: dict) -> CreateCredentialsResponse:
         """Create a credential entry.
         
         Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
@@ -730,7 +731,7 @@ class GitCredentialsAPI:
         json = self._api.do('POST', '/api/2.0/git-credentials', body=body)
         return CreateCredentialsResponse.from_dict(json)
 
-    def delete(self, credential_id: int, **kwargs):
+    def delete(self, credential_id: int, **kwargs: dict):
         """Delete a credential.
         
         Deletes the specified Git credential."""
@@ -740,7 +741,7 @@ class GitCredentialsAPI:
 
         self._api.do('DELETE', f'/api/2.0/git-credentials/{request.credential_id}')
 
-    def get(self, credential_id: int, **kwargs) -> CredentialInfo:
+    def get(self, credential_id: int, **kwargs: dict) -> CredentialInfo:
         """Get a credential entry.
         
         Gets the Git credential with the specified credential ID."""
@@ -762,10 +763,10 @@ class GitCredentialsAPI:
     def update(self,
                credential_id: int,
                *,
-               git_provider: str = None,
-               git_username: str = None,
-               personal_access_token: str = None,
-               **kwargs):
+               git_provider: Optional[str] = None,
+               git_username: Optional[str] = None,
+               personal_access_token: Optional[str] = None,
+               **kwargs: dict):
         """Update a credential.
         
         Updates the specified Git credential."""
@@ -790,16 +791,16 @@ class ReposAPI:
     Within Repos you can develop code in notebooks or other files and follow data science and engineering code
     development best practices using Git for version control, collaboration, and CI/CD."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create(self,
                url: str,
                provider: str,
                *,
-               path: str = None,
-               sparse_checkout: SparseCheckout = None,
-               **kwargs) -> RepoInfo:
+               path: Optional[str] = None,
+               sparse_checkout: Optional[SparseCheckout] = None,
+               **kwargs: dict) -> RepoInfo:
         """Create a repo.
         
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
@@ -812,7 +813,7 @@ class ReposAPI:
         json = self._api.do('POST', '/api/2.0/repos', body=body)
         return RepoInfo.from_dict(json)
 
-    def delete(self, repo_id: int, **kwargs):
+    def delete(self, repo_id: int, **kwargs: dict):
         """Delete a repo.
         
         Deletes the specified repo."""
@@ -822,7 +823,7 @@ class ReposAPI:
 
         self._api.do('DELETE', f'/api/2.0/repos/{request.repo_id}')
 
-    def get(self, repo_id: int, **kwargs) -> RepoInfo:
+    def get(self, repo_id: int, **kwargs: dict) -> RepoInfo:
         """Get a repo.
         
         Returns the repo with the given repo ID."""
@@ -833,7 +834,11 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/repos/{request.repo_id}')
         return RepoInfo.from_dict(json)
 
-    def list(self, *, next_page_token: str = None, path_prefix: str = None, **kwargs) -> Iterator[RepoInfo]:
+    def list(self,
+             *,
+             next_page_token: Optional[str] = None,
+             path_prefix: Optional[str] = None,
+             **kwargs: dict) -> Iterator[RepoInfo]:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
@@ -859,10 +864,10 @@ class ReposAPI:
     def update(self,
                repo_id: int,
                *,
-               branch: str = None,
-               sparse_checkout: SparseCheckoutUpdate = None,
-               tag: str = None,
-               **kwargs):
+               branch: Optional[str] = None,
+               sparse_checkout: Optional[SparseCheckoutUpdate] = None,
+               tag: Optional[str] = None,
+               **kwargs: dict):
         """Update a repo.
         
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
@@ -885,16 +890,16 @@ class SecretsAPI:
     Databricks makes an effort to redact secret values that might be displayed in notebooks, it is not
     possible to prevent such users from reading secrets."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
     def create_scope(self,
                      scope: str,
                      *,
-                     initial_manage_principal: str = None,
-                     keyvault_metadata: AzureKeyVaultSecretScopeMetadata = None,
-                     scope_backend_type: ScopeBackendType = None,
-                     **kwargs):
+                     initial_manage_principal: Optional[str] = None,
+                     keyvault_metadata: Optional[AzureKeyVaultSecretScopeMetadata] = None,
+                     scope_backend_type: Optional[ScopeBackendType] = None,
+                     **kwargs: dict):
         """Create a new secret scope.
         
         The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
@@ -908,7 +913,7 @@ class SecretsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/secrets/scopes/create', body=body)
 
-    def delete_acl(self, scope: str, principal: str, **kwargs):
+    def delete_acl(self, scope: str, principal: str, **kwargs: dict):
         """Delete an ACL.
         
         Deletes the given ACL on the given scope.
@@ -922,7 +927,7 @@ class SecretsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/secrets/acls/delete', body=body)
 
-    def delete_scope(self, scope: str, **kwargs):
+    def delete_scope(self, scope: str, **kwargs: dict):
         """Delete a secret scope.
         
         Deletes a secret scope.
@@ -935,7 +940,7 @@ class SecretsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/secrets/scopes/delete', body=body)
 
-    def delete_secret(self, scope: str, key: str, **kwargs):
+    def delete_secret(self, scope: str, key: str, **kwargs: dict):
         """Delete a secret.
         
         Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
@@ -949,7 +954,7 @@ class SecretsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/secrets/delete', body=body)
 
-    def get_acl(self, scope: str, principal: str, **kwargs) -> AclItem:
+    def get_acl(self, scope: str, principal: str, **kwargs: dict) -> AclItem:
         """Get secret ACL details.
         
         Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
@@ -968,7 +973,7 @@ class SecretsAPI:
         json = self._api.do('GET', '/api/2.0/secrets/acls/get', query=query)
         return AclItem.from_dict(json)
 
-    def list_acls(self, scope: str, **kwargs) -> Iterator[AclItem]:
+    def list_acls(self, scope: str, **kwargs: dict) -> Iterator[AclItem]:
         """Lists ACLs.
         
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
@@ -995,7 +1000,7 @@ class SecretsAPI:
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list')
         return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
 
-    def list_secrets(self, scope: str, **kwargs) -> Iterator[SecretMetadata]:
+    def list_secrets(self, scope: str, **kwargs: dict) -> Iterator[SecretMetadata]:
         """List secret keys.
         
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
@@ -1014,7 +1019,7 @@ class SecretsAPI:
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query)
         return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
 
-    def put_acl(self, scope: str, principal: str, permission: AclPermission, **kwargs):
+    def put_acl(self, scope: str, principal: str, permission: AclPermission, **kwargs: dict):
         """Create/update an ACL.
         
         Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
@@ -1050,9 +1055,9 @@ class SecretsAPI:
                    scope: str,
                    key: str,
                    *,
-                   bytes_value: str = None,
-                   string_value: str = None,
-                   **kwargs):
+                   bytes_value: Optional[str] = None,
+                   string_value: Optional[str] = None,
+                   **kwargs: dict):
         """Add a secret.
         
         Inserts a secret under the provided scope with the given name. If a secret already exists with the
@@ -1083,10 +1088,10 @@ class WorkspaceAPI:
     A notebook is a web-based interface to a document that contains runnable code, visualizations, and
     explanatory text."""
 
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
 
-    def delete(self, path: str, *, recursive: bool = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs: dict):
         """Delete a workspace object.
         
         Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
@@ -1104,9 +1109,9 @@ class WorkspaceAPI:
     def export(self,
                path: str,
                *,
-               direct_download: bool = None,
-               format: ExportFormat = None,
-               **kwargs) -> ExportResponse:
+               direct_download: Optional[bool] = None,
+               format: Optional[ExportFormat] = None,
+               **kwargs: dict) -> ExportResponse:
         """Export a workspace object.
         
         Exports an object or the contents of an entire directory.
@@ -1127,7 +1132,7 @@ class WorkspaceAPI:
         json = self._api.do('GET', '/api/2.0/workspace/export', query=query)
         return ExportResponse.from_dict(json)
 
-    def get_status(self, path: str, **kwargs) -> ObjectInfo:
+    def get_status(self, path: str, **kwargs: dict) -> ObjectInfo:
         """Get status.
         
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
@@ -1145,11 +1150,11 @@ class WorkspaceAPI:
     def import_(self,
                 path: str,
                 *,
-                content: str = None,
-                format: ExportFormat = None,
-                language: Language = None,
-                overwrite: bool = None,
-                **kwargs):
+                content: Optional[str] = None,
+                format: Optional[ExportFormat] = None,
+                language: Optional[Language] = None,
+                overwrite: Optional[bool] = None,
+                **kwargs: dict):
         """Import a workspace object.
         
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
@@ -1165,7 +1170,11 @@ class WorkspaceAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
 
-    def list(self, path: str, *, notebooks_modified_after: int = None, **kwargs) -> Iterator[ObjectInfo]:
+    def list(self,
+             path: str,
+             *,
+             notebooks_modified_after: Optional[int] = None,
+             **kwargs: dict) -> Iterator[ObjectInfo]:
         """List contents.
         
         Lists the contents of a directory, or the object if it is not a directory.If the input path does not
@@ -1181,7 +1190,7 @@ class WorkspaceAPI:
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query)
         return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
 
-    def mkdirs(self, path: str, **kwargs):
+    def mkdirs(self, path: str, **kwargs: dict):
         """Create a directory.
         
         Creates the specified directory (and necessary parent directories if they do not exist). If there is

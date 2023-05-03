@@ -15,6 +15,13 @@ lint:
 	pycodestyle databricks
 	autoflake --check-diff --quiet --recursive databricks
 
+# need to do mypy --install-types
+mypy:
+	@mypy --namespace-packages \
+		--config-file mypy.ini \
+		--cache-dir /tmp/.mypy_cache \
+		databricks
+
 test:
 	pytest -m 'not integration' --cov=databricks --cov-report html tests
 

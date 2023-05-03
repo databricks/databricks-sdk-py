@@ -12,7 +12,7 @@ import subprocess
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Callable, Dict, Iterable, List, Optional
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional
 
 import requests
 import requests.auth
@@ -136,7 +136,7 @@ def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
     return credentials(cfg)
 
 
-def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenSource]):
+def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenSource]) -> None:
     """ Resolves Azure Databricks workspace URL from ARM Resource ID """
     if cfg.host:
         return
@@ -147,7 +147,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
     resp = requests.get(f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
                         headers={"Authorization": f"Bearer {token.access_token}"})
     if not resp.ok:
-        raise ValueError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
+        raise ValueError(f"Cannot resolve Azure Databricks workspace: {resp.text}")
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
@@ -198,8 +198,7 @@ class CliTokenSource(Refreshable):
                 return datetime.strptime(expiry, fmt)
             except ValueError as e:
                 last_e = e
-        if last_e:
-            raise last_e
+        raise last_e
 
     def refresh(self) -> Token:
         try:
@@ -323,20 +322,25 @@ class ConfigAttribute:
     """ Configuration attribute metadata and descriptor protocols. """
 
     # name and transform are discovered from Config.__new__
-    name: str = None
+    name: Optional[str] = None
     transform: type = str
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+    def __init__(self,
+                 env: Optional[str] = None,
+                 auth: Optional[str] = None,
+                 sensitive: Optional[bool] = False):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
 
-    def __get__(self, cfg: 'Config', owner):
+    def __get__(self, cfg: 'Config', owner: Any) -> Any:
         if not cfg:
             return None
+        assert self.name is not None
         return cfg._inner.get(self.name, None)
 
-    def __set__(self, cfg: 'Config', value: any):
+    def __set__(self, cfg: 'Config', value: Any) -> None:
+        assert self.name is not None
         cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
@@ -356,7 +360,7 @@ class Config:
     google_service_account = ConfigAttribute(env='DATABRICKS_GOOGLE_SERVICE_ACCOUNT', auth='google')
     google_credentials = ConfigAttribute(env='GOOGLE_CREDENTIALS', auth='google', sensitive=True)
     azure_workspace_resource_id = ConfigAttribute(env='DATABRICKS_AZURE_RESOURCE_ID', auth='azure')
-    azure_use_msi: bool = ConfigAttribute(env='ARM_USE_MSI', auth='azure')
+    azure_use_msi: bool = ConfigAttribute(env='ARM_USE_MSI', auth='azure') # type: ignore[assignment]
     azure_client_secret = ConfigAttribute(env='ARM_CLIENT_SECRET', auth='azure', sensitive=True)
     azure_client_id = ConfigAttribute(env='ARM_CLIENT_ID', auth='azure')
     azure_tenant_id = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
@@ -366,20 +370,21 @@ class Config:
     auth_type = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
     cluster_id = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
     warehouse_id = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
-    skip_verify: bool = ConfigAttribute()
-    http_timeout_seconds: int = ConfigAttribute()
-    debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
-    debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
-    rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
-    retry_timeout_seconds: int = ConfigAttribute()
+    skip_verify: bool = ConfigAttribute() # type: ignore[assignment]
+    http_timeout_seconds: int = ConfigAttribute() # type: ignore[assignment]
+    debug_truncate_bytes: int = ConfigAttribute(
+        env='DATABRICKS_DEBUG_TRUNCATE_BYTES') # type: ignore[assignment]
+    debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS') # type: ignore[assignment]
+    rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT') # type: ignore[assignment]
+    retry_timeout_seconds: int = ConfigAttribute() # type: ignore[assignment]
 
     def __init__(self,
                  *,
-                 credentials_provider: CredentialsProvider = None,
-                 product="unknown",
-                 product_version="0.0.0",
-                 **kwargs):
-        self._inner = {}
+                 credentials_provider: Optional[CredentialsProvider] = None,
+                 product: Optional[str] = "unknown",
+                 product_version: Optional[str] = "0.0.0",
+                 **kwargs: Mapping[str, Any]):
+        self._inner: Dict[str, Any] = {}
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         try:
             self._set_inner_config(kwargs)
@@ -415,7 +420,7 @@ class Config:
             if attr.name not in query:
                 continue
             kwargs[attr.name] = query[attr.name]
-        return Config(**kwargs)
+        return Config(**kwargs) # type: ignore[arg-type]
 
     def authenticate(self) -> Dict[str, str]:
         """ Returns a list of fresh authentication headers """
@@ -457,7 +462,7 @@ class Config:
             raise ValueError(f"Cannot find Azure {env} Environment")
 
     @property
-    def effective_azure_login_app_id(self):
+    def effective_azure_login_app_id(self) -> str:
         app_id = self.azure_login_app_id
         if app_id:
             return app_id
@@ -473,13 +478,14 @@ class Config:
         for attr in Config.attributes():
             if not attr.auth:
                 continue
+            assert attr.name is not None
             value = self._inner.get(attr.name, None)
             if value:
                 return True
         return False
 
     @property
-    def user_agent(self):
+    def user_agent(self) -> str:
         """ Returns User-Agent header used by this SDK """
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()
@@ -519,6 +525,7 @@ class Config:
         for attr in Config.attributes():
             if attr.env and os.environ.get(attr.env):
                 envs_used.append(attr.env)
+            assert attr.name is not None
             value = getattr(self, attr.name)
             if not value:
                 continue
@@ -530,7 +537,7 @@ class Config:
             buf.append(f'Env: {", ".join(envs_used)}')
         return '. '.join(buf)
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, Any]:
         return self._inner
 
     @property
@@ -555,6 +562,7 @@ class Config:
             return f'sql/protocolv1/o/{workspace_id}/{self.cluster_id}'
         if self.warehouse_id:
             return f'/sql/1.0/warehouses/{self.warehouse_id}'
+        return None
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
@@ -572,10 +580,10 @@ class Config:
             v.name = name
             v.transform = anno.get(name, str)
             attrs.append(v)
-        cls._attributes = attrs
-        return cls._attributes
+        cls._attributes = attrs # type: ignore[attr-defined]
+        return cls._attributes # type: ignore[attr-defined]
 
-    def _fix_host_if_needed(self):
+    def _fix_host_if_needed(self) -> None:
         if not self.host:
             return
         # fix url to remove trailing slash
@@ -586,8 +594,9 @@ class Config:
         else:
             self.host = f"{o.scheme}://{o.netloc}"
 
-    def _set_inner_config(self, keyword_args: Dict[str, any]):
+    def _set_inner_config(self, keyword_args: Dict[str, Any]) -> None:
         for attr in self.attributes():
+            assert attr.name is not None
             if attr.name not in keyword_args:
                 continue
             if keyword_args.get(attr.name, None) is None:
@@ -595,11 +604,12 @@ class Config:
             # make sure that args are of correct type
             self._inner[attr.name] = attr.transform(keyword_args[attr.name])
 
-    def _load_from_env(self):
+    def _load_from_env(self) -> None:
         found = False
         for attr in Config.attributes():
             if not attr.env:
                 continue
+            assert attr.name is not None
             if attr.name in self._inner:
                 continue
             value = os.environ.get(attr.env)
@@ -610,7 +620,7 @@ class Config:
         if found:
             logger.debug('Loaded from environment')
 
-    def _known_file_config_loader(self):
+    def _known_file_config_loader(self) -> None:
         if not self.profile and (self.is_any_auth_configured or self.is_azure):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
@@ -635,7 +645,7 @@ class Config:
             return
         if not has_explicit_profile:
             profile = "DEFAULT"
-        profiles = ini_file._sections
+        profiles = ini_file._sections # type: ignore[attr-defined]
         if ini_file.defaults():
             profiles['DEFAULT'] = ini_file.defaults()
         if profile not in profiles:
@@ -648,7 +658,7 @@ class Config:
                 continue
             self.__setattr__(k, v)
 
-    def _validate(self):
+    def _validate(self) -> None:
         auths_used = set()
         for attr in Config.attributes():
             if attr.name not in self._inner:
@@ -664,7 +674,7 @@ class Config:
         names = " and ".join(sorted(auths_used))
         raise ValueError(f'validate: more than one authorization method configured: {names}')
 
-    def _init_auth(self):
+    def _init_auth(self) -> None:
         try:
             self._header_factory = self._credentials_provider(self)
             self.auth_type = self._credentials_provider.auth_type()
@@ -673,7 +683,7 @@ class Config:
         except ValueError as e:
             raise ValueError(f'{self._credentials_provider.auth_type()} auth: {e}') from e
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<{self.debug_string()}>'
 
 
@@ -681,14 +691,14 @@ class DatabricksError(IOError):
     """ Generic error from Databricks REST API """
 
     def __init__(self,
-                 message: str = None,
+                 message: Optional[str] = None,
                  *,
-                 error_code: str = None,
-                 detail: str = None,
-                 status: str = None,
-                 scimType: str = None,
-                 error: str = None,
-                 **kwargs):
+                 error_code: Optional[str] = None,
+                 detail: Optional[str] = None,
+                 status: Optional[str] = None,
+                 scimType: Optional[str] = None,
+                 error: Optional[str] = None,
+                 **kwargs: Mapping[str, Any]):
         if not message and error:
             # API 1.2 has different response format, let's adapt
             message = error
@@ -710,7 +720,7 @@ class DatabricksError(IOError):
 class ApiClient(requests.Session):
     _cfg: Config
 
-    def __init__(self, cfg: Config = None):
+    def __init__(self, cfg: Optional[Config] = None):
         super().__init__()
         self._cfg = Config() if not cfg else cfg
         retry_strategy = Retry(

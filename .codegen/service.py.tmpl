@@ -3,12 +3,13 @@
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Type, Callable
+from typing import Dict, List, Any, Optional, Iterator, Type, Callable
 import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
 from ._internal import _enum, _from_dict, _repeated, Wait
+from ..core import ApiClient
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -22,16 +23,16 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     """{{.Comment "    " 100}}"""
     {{end}}{{- range .RequiredFields | alphanumOnly}}
     {{.SnakeName}}: {{template "type" .Entity}}{{end}}{{- range .NonRequiredFields | alphanumOnly}}
-    {{.SnakeName}}: {{template "type" .Entity}} = None{{end}}
+    {{.SnakeName}}: Optional[{{template "type" .Entity}}] = None{{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
-        body = {}
+        body: Dict[str, Any] = {}
         {{range .Fields | alphanumOnly}}if self.{{.SnakeName -}}: body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end -}}
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
+    def from_dict(cls, d: Dict[str, Any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
         return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{$f.SnakeName}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
 
@@ -86,11 +87,11 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 class {{.Name}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
     {{end}}
-    def __init__(self, api_client):
+    def __init__(self, api_client: ApiClient):
         self._api = api_client
     {{range .Waits}}
     def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}},
-      timeout=timedelta(minutes={{.Timeout}}), callback: Callable[[{{.Poll.Response.PascalName}}], None] = None) -> {{.Poll.Response.PascalName}}:
+      timeout=timedelta(minutes={{.Timeout}}), callback: Optional[Callable[[{{.Poll.Response.PascalName}}], None]] = None) -> {{.Poll.Response.PascalName}}:
       deadline = time.time() + timeout.total_seconds()
       target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Failure}}
       failure_states = ({{range .Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
@@ -101,7 +102,7 @@ class {{.Name}}API:{{if .Description}}
         status = poll{{range .StatusPath}}.{{.SnakeName}}{{end}}
         {{if .ComplexMessagePath -}}
         status_message = f'current status: {status}'
-        if poll.{{.MessagePathHead.SnakeName}}:
+        if poll.{{.MessagePathHead.SnakeName}} is not None:
           status_message = poll{{range .MessagePath}}.{{.SnakeName}}{{end}}
         {{- else if .MessagePath -}}
         status_message = poll{{range .MessagePath}}.{{.SnakeName}}{{end}}
@@ -133,8 +134,8 @@ class {{.Name}}API:{{if .Description}}
     def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}
       {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
-        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
-      {{- end}}, **kwargs
+        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
+      {{- end}}, **kwargs: dict
     {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}"""{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
@@ -146,7 +147,7 @@ class {{.Name}}API:{{if .Description}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
     def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
-        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}{{- end}},
+        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}{{- end}},
         timeout=timedelta(minutes={{.Wait.Timeout}})) -> {{.Wait.Poll.Response.PascalName}}:
         return self.{{.SnakeName}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}}).result(timeout=timeout)
     {{end}}

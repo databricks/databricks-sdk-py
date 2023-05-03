@@ -10,7 +10,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import requests
 import requests.auth
@@ -31,12 +31,12 @@ class OidcEndpoints:
 @dataclass
 class Token:
     access_token: str
-    token_type: str = None
-    refresh_token: str = None
-    expiry: datetime = None
+    token_type: Optional[str] = None
+    refresh_token: Optional[str] = None
+    expiry: Optional[datetime] = None
 
     @property
-    def expired(self):
+    def expired(self) -> bool:
         if not self.expiry:
             return False
         potentially_expired = self.expiry - timedelta(seconds=10)
@@ -45,8 +45,8 @@ class Token:
         return is_expired
 
     @property
-    def valid(self):
-        return self.access_token and not self.expired
+    def valid(self) -> bool:
+        return self.access_token is not None and not self.expired
 
     def as_dict(self) -> dict:
         raw = {'access_token': self.access_token, 'token_type': self.token_type}
@@ -71,19 +71,21 @@ class TokenSource:
         pass
 
 
-def retrieve_token(client_id,
-                   client_secret,
-                   token_url,
-                   params,
-                   use_params=False,
-                   use_header=False,
-                   headers=None) -> Token:
+def retrieve_token(*,
+                   client_id: str,
+                   token_url: str,
+                   params: Dict[str, str],
+                   client_secret: Optional[str] = None,
+                   use_params: Optional[bool] = False,
+                   use_header: Optional[bool] = False,
+                   headers: Optional[Dict[str, str]] = None) -> Token:
     logger.debug(f'Retrieving token for {client_id}')
     if use_params:
         if client_id: params["client_id"] = client_id
-        if client_secret: params["client_secret"] = client_secret
+        if client_secret is not None: params["client_secret"] = client_secret
     auth = None
     if use_header:
+        assert client_secret is not None
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
@@ -108,7 +110,7 @@ def retrieve_token(client_id,
 
 class Refreshable(TokenSource):
 
-    def __init__(self, token=None):
+    def __init__(self, token: Optional[Token] = None):
         self._lock = threading.Lock() # to guard _token
         self._token = token
 
@@ -129,14 +131,14 @@ class Refreshable(TokenSource):
 
 class _OAuthCallback(BaseHTTPRequestHandler):
 
-    def __init__(self, feedback: list, *args):
+    def __init__(self, feedback: list, *args): # type: ignore[no-untyped-def]
         self._feedback = feedback
         super().__init__(*args)
 
     def log_message(self, fmt: str, *args: Any) -> None:
         logger.debug(fmt, *args)
 
-    def do_GET(self):
+    def do_GET(self) -> None:
         from urllib.parse import parse_qsl
         parts = self.path.split('?')
         if len(parts) != 2:
@@ -164,27 +166,35 @@ class RefreshableCredentials(Refreshable):
         super().__init__(token)
 
     def as_dict(self) -> dict:
+        if not self._token:
+            return {}
         return {'token': self._token.as_dict()}
 
     @staticmethod
     def from_dict(client: 'OAuthClient', raw: dict) -> 'RefreshableCredentials':
         return RefreshableCredentials(client=client, token=Token.from_dict(raw['token']))
 
-    def auth_type(self):
+    def auth_type(self) -> str:
         """Implementing CredentialsProvider protocol"""
         # TODO: distinguish between Databricks IDP and Azure AD
         return 'oauth'
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs): # type: ignore[no-untyped-def]
         """Implementing CredentialsProvider protocol"""
 
         def inner() -> Dict[str, str]:
-            return {'Authorization': f"Bearer {self.token().access_token}"}
+            token = self.token()
+            if token is None:
+                raise ValueError('Missing token')
+            return {'Authorization': f"Bearer {token.access_token}"}
 
         return inner
 
     def refresh(self) -> Token:
-        refresh_token = self._token.refresh_token
+        token = self.token()
+        if token is None:
+            raise ValueError('Missing token')
+        refresh_token = token.refresh_token
         if not refresh_token:
             raise ValueError('oauth2: token expired and refresh token is not set')
         params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
@@ -203,7 +213,11 @@ class RefreshableCredentials(Refreshable):
 
 class Consent:
 
-    def __init__(self, client: 'OAuthClient', state: str, verifier: str, auth_url: str = None) -> None:
+    def __init__(self,
+                 client: 'OAuthClient',
+                 state: str,
+                 verifier: str,
+                 auth_url: Optional[str] = None) -> None:
         self.auth_url = auth_url
 
         self._verifier = verifier
@@ -221,12 +235,13 @@ class Consent:
         redirect_url = urllib.parse.urlparse(self._client.redirect_url)
         if redirect_url.hostname not in ('localhost', '127.0.0.1'):
             raise ValueError(f'cannot listen on {redirect_url.hostname}')
-        feedback = []
+        feedback: List[dict[str, str]] = []
+        assert self.auth_url is not None
         logger.info(f'Opening {self.auth_url} in a browser')
         webbrowser.open_new(self.auth_url)
         port = redirect_url.port
         handler_factory = functools.partial(_OAuthCallback, feedback)
-        with HTTPServer(("localhost", port), handler_factory) as httpd:
+        with HTTPServer(("localhost", port), handler_factory) as httpd: # type: ignore[arg-type]
             logger.info(f'Waiting for redirect to http://localhost:{port}')
             httpd.handle_request()
         if not feedback:
@@ -250,7 +265,7 @@ class Consent:
             'code_verifier': self._verifier,
             'code': code
         }
-        headers = {}
+        headers: Dict[str, str] = {}
         while True:
             try:
                 token = retrieve_token(client_id=self._client.client_id,
@@ -295,13 +310,13 @@ class OAuthClient:
                  client_id: str,
                  redirect_url: str,
                  *,
-                 scopes: List[str] = None,
-                 client_secret: str = None):
+                 scopes: Optional[List[str]] = None,
+                 client_secret: Optional[str] = None):
         # TODO: is it a circular dependency?..
         from .core import Config, credentials_provider
 
         @credentials_provider('noop', [])
-        def noop_credentials(_: any):
+        def noop_credentials(_: Any): # type: ignore[no-untyped-def]
             return lambda: {}
 
         config = Config(host=host, credentials_provider=noop_credentials)
@@ -363,12 +378,12 @@ class ClientCredentials(Refreshable):
     client_id: str
     client_secret: str
     token_url: str
-    endpoint_params: dict = None
-    scopes: List[str] = None
-    use_params: bool = False
-    use_header: bool = False
+    endpoint_params: Optional[Dict[str, str]] = None
+    scopes: Optional[List[str]] = None
+    use_params: Optional[bool] = False
+    use_header: Optional[bool] = False
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         super().__init__()
 
     def refresh(self) -> Token:
@@ -378,9 +393,9 @@ class ClientCredentials(Refreshable):
         if self.endpoint_params:
             for k, v in self.endpoint_params.items():
                 params[k] = v
-        return retrieve_token(self.client_id,
-                              self.client_secret,
-                              self.token_url,
-                              params,
+        return retrieve_token(client_id=self.client_id,
+                              client_secret=self.client_secret,
+                              token_url=self.token_url,
+                              params=params,
                               use_params=self.use_params,
                               use_header=self.use_header)
