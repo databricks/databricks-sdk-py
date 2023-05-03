@@ -91,6 +91,7 @@ def retrieve_token(client_id,
             err = resp.json()
             code = err.get('errorCode', err.get('error', 'unknown'))
             summary = err.get('errorSummary', err.get('error_description', 'unknown'))
+            summary = summary.replace("\r\n", ' ')
             raise ValueError(f'{code}: {summary}')
         raise ValueError(resp.content)
     try:
