@@ -1,5 +1,11 @@
 # Version changelog
 
+## 0.1.3
+
+* Added support for sdist ([#86](https://github.com/databricks/databricks-sdk-py/pull/86)).
+* Removed redundant newlines from AAD OAuth responses ([#85](https://github.com/databricks/databricks-sdk-py/pull/85)).
+* Update README.md with doc links ([#83](https://github.com/databricks/databricks-sdk-py/pull/83)).
+
 ## 0.1.2
 
 * Fix `dbutils.fs.put()` utility ([#82](https://github.com/databricks/databricks-sdk-py/pull/82)).
