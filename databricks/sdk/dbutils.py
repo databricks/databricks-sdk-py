@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod, abstractproperty
 import base64
 import json
 import logging
@@ -9,6 +10,7 @@ from .core import ApiClient, Config
 from .mixins import compute as compute_ext
 from .mixins import dbfs as dbfs_ext
 from .service import compute, workspace
+from ._widgets import _widget_impl
 
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
@@ -212,6 +214,7 @@ class _SecretsUtil:
         return [SecretScope(v.name) for v in self._api.list_scopes()]
 
 
+
 class RemoteDbUtils:
 
     def __init__(self, config: 'Config' = None):
@@ -224,6 +227,7 @@ class RemoteDbUtils:
 
         self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
+        self.widgets = _widget_impl()
 
     @property
     def _cluster_id(self) -> str:
