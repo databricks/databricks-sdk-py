@@ -1,5 +1,11 @@
 # Version changelog
 
+## 0.1.4
+
+* Removed experimental redacting logger filter for `dbutils.secrets.get('scope', 'key')`, that was causing Jupyter Kernels to hang ([#92](https://github.com/databricks/databricks-sdk-py/pull/92)).
+* Fixed error handling for SCIM and CommandExecution APIs ([#94](https://github.com/databricks/databricks-sdk-py/pull/94)).
+* Created `dependabot.yml` ([#89](https://github.com/databricks/databricks-sdk-py/pull/89)).
+
 ## 0.1.3
 
 * Added support for sdist ([#86](https://github.com/databricks/databricks-sdk-py/pull/86)).
