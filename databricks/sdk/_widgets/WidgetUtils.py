@@ -43,6 +43,10 @@ class DefaultWidgetUtils(_WidgetUtils):
     def __init__(self) -> None:
         self.__widgets: typing.Dict[str, str] = {}
 
+    @property
+    def _widgetNames(self):
+        return list(self.__widgets.keys())
+    
     def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):
         self.__widgets[name] = defaultValue
 
