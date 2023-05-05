@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod, abstractproperty
 import base64
 import json
-import logging
 import threading
 import typing
 from collections import namedtuple
@@ -128,56 +127,6 @@ class _FsUtil:
         return fs.refreshMounts()
 
 
-class _RedactingFilter(logging.Filter):
-    """Best-effort secret redaction logger"""
-
-    def __init__(self):
-        super().__init__()
-        self._secrets = set()
-
-    def register_secret(self, secret):
-        _RedactingFilter.register()
-        self._secrets.add(secret)
-
-    def filter(self, record):
-        record.msg = self._redact(record.msg)
-        if isinstance(record.args, dict):
-            for k in record.args.keys():
-                record.args[k] = self._redact(record.args[k])
-        else:
-            record.args = tuple(self._redact(arg) for arg in record.args)
-        return True
-
-    def _redact(self, msg):
-        msg = str(msg)
-        for secrets in self._secrets:
-            msg = msg.replace(secrets, '[REDACTED]')
-        return msg
-
-    @staticmethod
-    def _has_redactor(logger) -> bool:
-        if not hasattr(logger, 'filters'):
-            return True
-        for f in logger.filters:
-            if type(f) == _RedactingFilter:
-                return True
-        return False
-
-    @staticmethod
-    def register():
-        other_loggers = list(logging.Logger.manager.loggerDict.values())
-        all_loggers = [logging.Logger.manager.root] + other_loggers
-        # inject redacting filter into every initialized logger
-        for logger in all_loggers:
-            if _RedactingFilter._has_redactor(logger):
-                # skip adding this filter twice
-                continue
-            logger.filters.append(_FILTER)
-
-
-_FILTER = _RedactingFilter()
-
-
 class _SecretsUtil:
     """Remote equivalent of secrets util"""
 
@@ -194,11 +143,6 @@ class _SecretsUtil:
         """Gets the string representation of a secret value for the specified secrets scope and key."""
         val = self.getBytes(scope, key)
         string_value = val.decode()
-
-        # to comply with the expected best-effort behavior from DBR DBUtils,
-        # add secret for redaction only after dbutils.secrets.get()
-        _FILTER.register_secret(string_value)
-
         return string_value
 
     def list(self, scope) -> typing.List[SecretMetadata]:

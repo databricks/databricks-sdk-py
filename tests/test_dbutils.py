@@ -1,5 +1,3 @@
-import logging
-
 import pytest as pytest
 
 from .conftest import raises
@@ -202,13 +200,11 @@ def test_any_proxy(dbutils_proxy):
     assertions()
 
 
-def test_secrets_get_and_redacting_logs(dbutils, mocker, caplog):
+def test_secrets_get_and_redacting_logs(dbutils, mocker):
     inner = mocker.patch('databricks.sdk.core.ApiClient.do', return_value={'value': 'aGVsbG8='})
 
     value = dbutils.secrets.get('foo', 'bar')
-    logging.info(f'Secret is {value}')
 
     inner.assert_called_with('GET', '/api/2.0/secrets/get', query={'key': 'bar', 'scope': 'foo'})
 
     assert value == 'hello'
-    assert 'Secret is [REDACTED]' in caplog.text
