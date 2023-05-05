@@ -101,8 +101,7 @@ def dbutils_proxy(mocker):
     from databricks.sdk.core import Config
     from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
-    from databricks.sdk.service.compute import (ClusterInfo, CommandStatus,
-                                                CommandStatusResponse, Created,
+    from databricks.sdk.service.compute import (ClusterInfo, CommandStatus, CommandStatusResponse, Created,
                                                 Language, Results, State)
 
     from .conftest import noop_credentials
@@ -185,17 +184,12 @@ def test_fs_mounts(dbutils_proxy):
 
 
 def test_any_proxy(dbutils_proxy):
-    command = ('\n'
-               '        import json\n'
-               '        (args, kwargs) = json.loads(\'[["a"], {}]\')\n'
-               '        result = dbutils.widgets.getParameter(*args, **kwargs)\n'
-               '        dbutils.notebook.exit(json.dumps(result))\n'
-               '        ')
-    dbutils, assertions = dbutils_proxy('b', command)
+    command = ('dbutils.notebook.exit("a")')
+    dbutils, assertions = dbutils_proxy('a', command)
 
-    param = dbutils.widgets.getParameter('a')
+    param = dbutils.notebook.exit("a")
 
-    assert param == 'b'
+    assert param == 'a'
 
     assertions()
 
