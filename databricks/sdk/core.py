@@ -689,10 +689,10 @@ class DatabricksError(IOError):
                  scimType: str = None,
                  error: str = None,
                  **kwargs):
-        if not message and error:
+        if error:
             # API 1.2 has different response format, let's adapt
             message = error
-        if not message and detail:
+        if detail:
             # Handle SCIM error message details
             # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
             if detail == "null":
@@ -758,7 +758,7 @@ class ApiClient(requests.Session):
             message = self._make_sense_from_html(response.text)
             if not message:
                 message = response.reason
-            raise self._make_nicer_error(message) from None
+            raise self._make_nicer_error(message=message) from None
 
     @staticmethod
     def _make_sense_from_html(txt: str) -> str:
@@ -771,11 +771,13 @@ class ApiClient(requests.Session):
             return match.group(1).strip()
         return txt
 
-    def _make_nicer_error(self, message: str, status_code: int = 200, **kwargs) -> DatabricksError:
+    def _make_nicer_error(self, status_code: int = 200, **kwargs) -> DatabricksError:
+        message = kwargs.get('message', 'request failed')
         is_http_unauthorized_or_forbidden = status_code in (401, 403)
         if is_http_unauthorized_or_forbidden:
             message = self._cfg.wrap_debug_info(message)
-        return DatabricksError(message, **kwargs)
+        kwargs['message'] = message
+        return DatabricksError(**kwargs)
 
     def _record_request_log(self, response: requests.Response):
         if not logger.isEnabledFor(logging.DEBUG):
