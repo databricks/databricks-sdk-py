@@ -1,9 +1,14 @@
-from ipywidgets.widgets import widget_string, Widget, widget_box, widget_selection, ValueWidget
-from IPython.core.display_functions import display
 import typing
+
+from IPython.core.display_functions import display
+from ipywidgets.widgets import (ValueWidget, Widget, widget_box,
+                                widget_selection, widget_string)
+
 from .WidgetUtils import _WidgetUtils
 
+
 class DbUtilsWidget:
+
     def __init__(self, label: str, valueWidget: ValueWidget) -> None:
         self.lavelWidget = widget_string.Label(label)
         self.valueWidget = valueWidget
@@ -27,10 +32,9 @@ class DbUtilsWidget:
             return value
         if type(value) == list or type(value) == tuple:
             return ','.join(value)
-        
-        raise ValueError("The returned value has invalid type ("+ type(value) +").")
-        
-        
+
+        raise ValueError("The returned value has invalid type (" + type(value) + ").")
+
 
 class IPyWidgetUtil(_WidgetUtils):
 

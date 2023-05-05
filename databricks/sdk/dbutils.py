@@ -1,15 +1,14 @@
-from abc import ABC, abstractmethod, abstractproperty
 import base64
 import json
 import threading
 import typing
 from collections import namedtuple
 
+from ._widgets import _widget_impl
 from .core import ApiClient, Config
 from .mixins import compute as compute_ext
 from .mixins import dbfs as dbfs_ext
 from .service import compute, workspace
-from ._widgets import _widget_impl
 
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
@@ -156,7 +155,6 @@ class _SecretsUtil:
 
         # transform from SDK dataclass to dbutils-compatible namedtuple
         return [SecretScope(v.name) for v in self._api.list_scopes()]
-
 
 
 class RemoteDbUtils:

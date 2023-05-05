@@ -1,7 +1,5 @@
-
-
-from abc import ABC, abstractmethod
 import typing
+from abc import ABC, abstractmethod
 
 
 class _WidgetUtils(ABC):
@@ -17,7 +15,7 @@ class _WidgetUtils(ABC):
     def getArgument(self, name: str, defaultValue: typing.Optional[str] = None):
         try:
             return self.get(name)
-        except Exception as e:
+        except Exception:
             return defaultValue
 
     @abstractmethod
@@ -40,13 +38,14 @@ class _WidgetUtils(ABC):
 
 
 class DefaultWidgetUtils(_WidgetUtils):
+
     def __init__(self) -> None:
         self.__widgets: typing.Dict[str, str] = {}
 
     @property
     def _widgetNames(self):
         return list(self.__widgets.keys())
-    
+
     def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):
         self.__widgets[name] = defaultValue
 
@@ -71,10 +70,9 @@ class DefaultWidgetUtils(_WidgetUtils):
                     label: typing.Optional[str] = None):
         self.__widgets[name] = defaultValue
 
- 
     def _get(self, name: str) -> str:
         return self.__widgets[name]
-    
+
     def _remove(self, name: str):
         del self.__widgets[name]
 
