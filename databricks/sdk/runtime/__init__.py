@@ -31,12 +31,7 @@ except ImportError:
 
     try:
         from .stub import *
-    except ImportError:
-        from databricks.sdk.dbutils import RemoteDbUtils
-        if not dbutils:
-            # this assumes that all environment variables are set
-            dbutils = RemoteDbUtils()
-    except NameError:
+    except (ImportError, NameError):
         from databricks.sdk.dbutils import RemoteDbUtils
         if not dbutils:
             # this assumes that all environment variables are set
