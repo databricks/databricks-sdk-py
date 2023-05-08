@@ -1,12 +1,4 @@
-def _get_global_dbutils():
-    try:
-        global dbutils
-        return dbutils
-    except NameError:
-        return None
-
-
-is_oss_implementation = True
+is_local_implementation = True
 
 try:
     # Internal implementation
@@ -23,20 +15,19 @@ try:
     _globals = globals()
     for var in __all__:
         _globals[var] = userNamespaceGlobals[var]
-    is_oss_implementation = False
+    is_local_implementation = False
 except ImportError:
     # OSS implementation
-    is_oss_implementation = True
-    dbutils = _get_global_dbutils()
+    is_local_implementation = True
 
     try:
         from .stub import *
     except (ImportError, NameError):
         from databricks.sdk.dbutils import RemoteDbUtils
-        if not dbutils:
-            # this assumes that all environment variables are set
-            dbutils = RemoteDbUtils()
 
-__all__ = ['dbutils'] if is_oss_implementation else [
+        # this assumes that all environment variables are set
+        dbutils = RemoteDbUtils()
+
+__all__ = ['dbutils'] if is_local_implementation else [
     "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark"
 ]
