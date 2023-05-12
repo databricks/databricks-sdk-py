@@ -21,6 +21,7 @@ NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
 
 logger = logging.getLogger(__name__)
 
+
 class IgnoreNetrcAuth(requests.auth.AuthBase):
     """This auth method is a no-op.
 
