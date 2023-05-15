@@ -21,7 +21,7 @@ from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
-                    Token, TokenSource)
+                    Token, TokenCache, TokenSource)
 from .version import __version__
 
 __all__ = ['Config', 'DatabricksError']
@@ -129,10 +129,20 @@ def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
                                client_id=client_id,
                                redirect_url='http://localhost:8020',
                                client_secret=cfg.client_secret)
-    consent = oauth_client.initiate_consent()
-    if not consent:
-        return None
-    credentials = consent.launch_external_browser()
+
+    # Load cached credentials from disk if they exist.
+    # Note that these are local to the Python SDK and not reused by other SDKs.
+    token_cache = TokenCache(oauth_client)
+    credentials = token_cache.load()
+    if credentials:
+        # Force a refresh in case the loaded credentials are expired.
+        credentials.token()
+    else:
+        consent = oauth_client.initiate_consent()
+        if not consent:
+            return None
+        credentials = consent.launch_external_browser()
+    token_cache.save(credentials)
     return credentials(cfg)
 
 

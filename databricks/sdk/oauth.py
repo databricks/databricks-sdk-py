@@ -1,7 +1,9 @@
 import base64
 import functools
 import hashlib
+import json
 import logging
+import os
 import secrets
 import threading
 import urllib.parse
@@ -10,7 +12,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import requests
 import requests.auth
@@ -384,3 +386,41 @@ class ClientCredentials(Refreshable):
                               params,
                               use_params=self.use_params,
                               use_header=self.use_header)
+
+
+class TokenCache():
+    BASE_PATH = "~/.config/databricks-sdk-py/oauth"
+
+    def __init__(self, client: OAuthClient) -> None:
+        self.client = client
+
+    @property
+    def filename(self) -> str:
+        # Include host, client_id, and scopes in the cache filename to make it unique.
+        hash = hashlib.sha256()
+        for chunk in [self.client.host, self.client.client_id, ",".join(self.client._scopes), ]:
+            hash.update(chunk.encode('utf-8'))
+        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
+
+    def load(self) -> Optional[RefreshableCredentials]:
+        """
+        Load credentials from cache file. Return None if the cache file does not exist or is invalid.
+        """
+        if not os.path.exists(self.filename):
+            return None
+
+        try:
+            with open(self.filename, 'r') as f:
+                raw = json.load(f)
+                return RefreshableCredentials.from_dict(self.client, raw)
+        except Exception:
+            return None
+
+    def save(self, credentials: RefreshableCredentials) -> None:
+        """
+        Save credentials to cache file.
+        """
+        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        with open(self.filename, 'w') as f:
+            json.dump(credentials.as_dict(), f)
+        os.chmod(self.filename, 0o600)
