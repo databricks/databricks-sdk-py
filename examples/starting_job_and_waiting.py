@@ -39,40 +39,42 @@ import logging
 import sys
 import time
 
-from databricks.sdk import WorkspaceClient
 import databricks.sdk.service.jobs as j
+from databricks.sdk import WorkspaceClient
 
-if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
-                        format='%(asctime)s [%(name)s][%(levelname)s] %(message)s')
+if __name__ == "__main__":
+    logging.basicConfig(stream=sys.stdout,
+                        level=logging.INFO,
+                        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
+                        )
 
     w = WorkspaceClient()
 
     # create a dummy file on DBFS that just sleeps for 10 seconds
-    py_on_dbfs = f'/home/{w.current_user.me().user_name}/sample.py'
+    py_on_dbfs = f"/home/{w.current_user.me().user_name}/sample.py"
     with w.dbfs.open(py_on_dbfs, write=True, overwrite=True) as f:
         f.write(b'import time; time.sleep(10); print("Hello, World!")')
 
     # trigger one-time-run job and get waiter object
-    waiter = w.jobs.submit(run_name=f'py-sdk-run-{time.time()}', tasks=[
-        j.RunSubmitTaskSettings(
-            task_key='hello_world',
-            new_cluster=j.BaseClusterInfo(
-                spark_version=w.clusters.select_spark_version(long_term_support=True),
-                node_type_id=w.clusters.select_node_type(local_disk=True),
-                num_workers=1
-            ),
-            spark_python_task=j.SparkPythonTask(
-                python_file=f'dbfs:{py_on_dbfs}'
-            ),
-        )
-    ])
+    waiter = w.jobs.submit(run_name=f"py-sdk-run-{time.time()}",
+                           tasks=[
+                               j.RunSubmitTaskSettings(
+                                   task_key="hello_world",
+                                   new_cluster=j.BaseClusterInfo(
+                                       spark_version=w.clusters.select_spark_version(long_term_support=True),
+                                       node_type_id=w.clusters.select_node_type(local_disk=True),
+                                       num_workers=1,
+                                   ),
+                                   spark_python_task=j.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
+                               )
+                           ],
+                           )
 
-    logging.info(f'starting to poll: {waiter.run_id}')
+    logging.info(f"starting to poll: {waiter.run_id}")
 
     # callback, that receives a polled entity between state updates
     def print_status(run: j.Run):
-        statuses = [f'{t.task_key}: {t.state.life_cycle_state}' for t in run.tasks]
+        statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
 
     # If you want to perform polling in a separate thread, process, or service,
@@ -83,7 +85,6 @@ if __name__ == '__main__':
     #
     # Waiter interface allows for `w.jobs.submit(..).result()` simplicity in
     # the scenarios, where you need to block the calling thread for the job to finish.
-    run = waiter.result(timeout=datetime.timedelta(minutes=15),
-                        callback=print_status)
+    run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
 
-    logging.info(f'job finished: {run.run_page_url}')
+    logging.info(f"job finished: {run.run_page_url}")

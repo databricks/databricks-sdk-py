@@ -11,6 +11,11 @@ fmt:
 	autoflake -ri databricks tests
 	isort databricks tests
 
+fmte:
+	yapf -pri examples
+	autoflake -ri examples
+	isort examples
+
 lint:
 	pycodestyle databricks
 	autoflake --check-diff --quiet --recursive databricks
