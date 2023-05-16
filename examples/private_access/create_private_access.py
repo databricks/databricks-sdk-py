@@ -1,0 +1,12 @@
+import os
+import time
+
+from databricks.sdk import AccountClient
+
+a = AccountClient()
+
+created = a.private_access.create(private_access_settings_name=f'sdk-{time.time_ns()}',
+                                  region=os.environ["AWS_REGION"])
+
+# cleanup
+a.private_access.delete(delete=created.private_access_settings_id)
