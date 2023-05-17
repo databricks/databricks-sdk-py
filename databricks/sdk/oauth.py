@@ -177,7 +177,7 @@ class _OAuthCallback(BaseHTTPRequestHandler):
         self.wfile.write(b'You can close this tab.')
 
 
-class RefreshableCredentials(Refreshable):
+class SessionCredentials(Refreshable):
 
     def __init__(self, client: 'OAuthClient', token: Token):
         self._client = client
@@ -187,8 +187,8 @@ class RefreshableCredentials(Refreshable):
         return {'token': self._token.as_dict()}
 
     @staticmethod
-    def from_dict(client: 'OAuthClient', raw: dict) -> 'RefreshableCredentials':
-        return RefreshableCredentials(client=client, token=Token.from_dict(raw['token']))
+    def from_dict(client: 'OAuthClient', raw: dict) -> 'SessionCredentials':
+        return SessionCredentials(client=client, token=Token.from_dict(raw['token']))
 
     def auth_type(self):
         """Implementing CredentialsProvider protocol"""
@@ -237,7 +237,7 @@ class Consent:
     def from_dict(client: 'OAuthClient', raw: dict) -> 'Consent':
         return Consent(client, raw['state'], raw['verifier'])
 
-    def launch_external_browser(self) -> RefreshableCredentials:
+    def launch_external_browser(self) -> SessionCredentials:
         redirect_url = urllib.parse.urlparse(self._client.redirect_url)
         if redirect_url.hostname not in ('localhost', '127.0.0.1'):
             raise ValueError(f'cannot listen on {redirect_url.hostname}')
@@ -254,14 +254,14 @@ class Consent:
         query = feedback.pop()
         return self.exchange_callback_parameters(query)
 
-    def exchange_callback_parameters(self, query: Dict[str, str]) -> RefreshableCredentials:
+    def exchange_callback_parameters(self, query: Dict[str, str]) -> SessionCredentials:
         if 'error' in query:
             raise ValueError('{error}: {error_description}'.format(**query))
         if 'code' not in query or 'state' not in query:
             raise ValueError('No code returned in callback')
         return self.exchange(query['code'], query['state'])
 
-    def exchange(self, code: str, state: str) -> RefreshableCredentials:
+    def exchange(self, code: str, state: str) -> SessionCredentials:
         if self._state != state:
             raise ValueError('state mismatch')
         params = {
@@ -279,7 +279,7 @@ class Consent:
                                        params=params,
                                        headers=headers,
                                        use_params=True)
-                return RefreshableCredentials(self._client, token)
+                return SessionCredentials(self._client, token)
             except ValueError as e:
                 if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
                     # Retry in cases of 'Single-Page Application' client-type with
@@ -420,7 +420,7 @@ class TokenCache():
             hash.update(chunk.encode('utf-8'))
         return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
 
-    def load(self) -> Optional[RefreshableCredentials]:
+    def load(self) -> Optional[SessionCredentials]:
         """
         Load credentials from cache file. Return None if the cache file does not exist or is invalid.
         """
@@ -430,11 +430,11 @@ class TokenCache():
         try:
             with open(self.filename, 'r') as f:
                 raw = json.load(f)
-                return RefreshableCredentials.from_dict(self.client, raw)
+                return SessionCredentials.from_dict(self.client, raw)
         except Exception:
             return None
 
-    def save(self, credentials: RefreshableCredentials) -> None:
+    def save(self, credentials: SessionCredentials) -> None:
         """
         Save credentials to cache file.
         """

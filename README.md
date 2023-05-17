@@ -368,6 +368,7 @@ Works for both AWS and Azure. Not supported for GCP at the moment.
 
 ```python
 from databricks.sdk.oauth import OAuthClient
+
 oauth_client = OAuthClient(host='<workspace-url>',
                            client_id='<oauth client ID>',
                            redirect_url=f'http://host.domain/callback',
@@ -380,29 +381,31 @@ APP_NAME = 'flask-demo'
 app = Flask(APP_NAME)
 app.secret_key = secrets.token_urlsafe(32)
 
+
 @app.route('/callback')
 def callback():
-    from databricks.sdk.oauth import Consent
-    consent = Consent.from_dict(oauth_client, session['consent'])
-    session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
-    return redirect(url_for('index'))
+   from databricks.sdk.oauth import Consent
+   consent = Consent.from_dict(oauth_client, session['consent'])
+   session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
+   return redirect(url_for('index'))
+
 
 @app.route('/')
 def index():
-    if 'creds' not in session:
-        consent = oauth_client.initiate_consent()
-        session['consent'] = consent.as_dict()
-        return redirect(consent.auth_url)
+   if 'creds' not in session:
+      consent = oauth_client.initiate_consent()
+      session['consent'] = consent.as_dict()
+      return redirect(consent.auth_url)
 
-    from databricks.sdk import WorkspaceClient
-    from databricks.sdk.oauth import RefreshableCredentials
+   from databricks.sdk import WorkspaceClient
+   from databricks.sdk.oauth import SessionCredentials
 
-    credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
-    workspace_client = WorkspaceClient(host=oauth_client.host,
-                                       product=APP_NAME,
-                                       credentials_provider=credentials_provider)
+   credentials_provider = SessionCredentials.from_dict(oauth_client, session['creds'])
+   workspace_client = WorkspaceClient(host=oauth_client.host,
+                                      product=APP_NAME,
+                                      credentials_provider=credentials_provider)
 
-    return render_template_string('...', w=workspace_client)
+   return render_template_string('...', w=workspace_client)
 ```
 
 ### SSO for local scripts on development machines
