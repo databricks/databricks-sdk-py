@@ -226,8 +226,8 @@ class CliTokenSource(Refreshable):
     def refresh(self) -> Token:
         try:
             is_windows = sys.platform.startswith('win')
-            #windows requires shell=True to be able to execute 'az login' or other commands
-            #cannot use shell=True all the time, as it breaks macOS
+            # windows requires shell=True to be able to execute 'az login' or other commands
+            # cannot use shell=True all the time, as it breaks macOS
             out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=is_windows)
             it = json.loads(out.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
