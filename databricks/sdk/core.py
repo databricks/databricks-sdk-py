@@ -717,12 +717,14 @@ class DatabricksError(IOError):
         self.kwargs = kwargs
 
 
-class ApiClient(requests.Session):
+class ApiClient:
     _cfg: Config
 
     def __init__(self, cfg: Config = None):
-        super().__init__()
         self._cfg = Config() if not cfg else cfg
+        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
+        self._user_agent_base = cfg.user_agent
+
         retry_strategy = Retry(
             total=6,
             backoff_factor=1,
@@ -731,11 +733,10 @@ class ApiClient(requests.Session):
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )
-        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
-        self._user_agent_base = cfg.user_agent
-        self.auth = self._authenticate
 
-        self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
+        self._session = requests.Session()
+        self._session.auth = self._authenticate
+        self._session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
 
     @property
     def account_id(self) -> str:
@@ -753,7 +754,7 @@ class ApiClient(requests.Session):
 
     def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
-        response = self.request(method, f"{self._cfg.host}{path}", params=query, json=body, headers=headers)
+        response = self._session.request(method, f"{self._cfg.host}{path}", params=query, json=body, headers=headers)
         try:
             self._record_request_log(response)
             if not response.ok:
