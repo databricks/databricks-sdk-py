@@ -22,6 +22,22 @@ NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
 logger = logging.getLogger(__name__)
 
 
+class IgnoreNetrcAuth(requests.auth.AuthBase):
+    """This auth method is a no-op.
+
+    We use it to force requestslib to not use .netrc to write auth headers
+    when making .post() requests to the oauth token endpoints, since these
+    don't require authentication.
+
+    In cases where .netrc is outdated or corrupt, these requests will fail.
+
+    See issue #121
+    """
+
+    def __call__(self, r):
+        return r
+
+
 @dataclass
 class OidcEndpoints:
     authorization_endpoint: str # ../v1/authorize
@@ -85,6 +101,8 @@ def retrieve_token(client_id,
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
+    else:
+        auth = IgnoreNetrcAuth()
     resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
         if resp.headers['Content-Type'].startswith('application/json'):
