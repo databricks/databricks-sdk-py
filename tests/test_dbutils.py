@@ -178,7 +178,7 @@ def test_fs_mounts(dbutils_proxy):
     mounts = dbutils.fs.mounts()
 
     assert len(mounts) == 2
-    assert mounts[0].mountPoint == 'a'
+    assert mounts[0].mount_point == 'a'
     assert mounts[0].source == 'b'
 
     assertions()
