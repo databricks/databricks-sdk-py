@@ -87,6 +87,17 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
     return inner
 
 
+@credentials_provider('runtime', [])
+def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
+    from databricks.sdk.runtime import init_runtime_native_auth
+    try:
+        host, inner = init_runtime_native_auth()
+        cfg.host = host
+        return inner
+    except NotImplementedError:
+        return None
+
+
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
 def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
@@ -309,7 +320,7 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli,
-            external_browser, bricks_cli
+            external_browser, bricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -754,7 +765,11 @@ class ApiClient:
 
     def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
-        response = self._session.request(method, f"{self._cfg.host}{path}", params=query, json=body, headers=headers)
+        response = self._session.request(method,
+                                         f"{self._cfg.host}{path}",
+                                         params=query,
+                                         json=body,
+                                         headers=headers)
         try:
             self._record_request_log(response)
             if not response.ok:
