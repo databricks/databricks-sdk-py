@@ -4,12 +4,12 @@ import configparser
 import functools
 import json
 import logging
-import sys
 import os
 import pathlib
 import platform
 import re
 import subprocess
+import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
