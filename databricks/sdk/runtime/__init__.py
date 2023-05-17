@@ -1,3 +1,5 @@
+from typing import Callable, Dict, Tuple
+
 is_local_implementation = True
 
 # All objects that are injected into the Notebook's user namespace should also be made
@@ -7,13 +9,11 @@ dbruntime_objects = [
     "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark"
 ]
 
-from typing import Callable, Dict, Tuple
-
 RuntimeAuth = Tuple[str, Callable[[], Dict[str, str]]]
 
 
 def init_runtime_native_auth() -> RuntimeAuth:
-    raise NotImplemented
+    raise NotImplementedError
 
 
 try:

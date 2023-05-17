@@ -94,7 +94,7 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
         host, inner = init_runtime_native_auth()
         cfg.host = host
         return inner
-    except NotImplemented:
+    except NotImplementedError:
         return None
 
 
