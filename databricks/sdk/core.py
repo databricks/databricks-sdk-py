@@ -4,6 +4,7 @@ import configparser
 import functools
 import json
 import logging
+import sys
 import os
 import pathlib
 import platform
@@ -224,7 +225,10 @@ class CliTokenSource(Refreshable):
 
     def refresh(self) -> Token:
         try:
-            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=True)
+            is_windows = sys.platform.startswith('win')
+            #windows requires shell=True to be able to execute 'az login' or other commands
+            #cannot use shell=True all the time, as it breaks macOS
+            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=is_windows)
             it = json.loads(out.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
