@@ -765,7 +765,11 @@ class ApiClient:
 
     def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
-        response = self._session.request(method, f"{self._cfg.host}{path}", params=query, json=body, headers=headers)
+        response = self._session.request(method,
+                                         f"{self._cfg.host}{path}",
+                                         params=query,
+                                         json=body,
+                                         headers=headers)
         try:
             self._record_request_log(response)
             if not response.ok:
