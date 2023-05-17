@@ -224,7 +224,7 @@ class CliTokenSource(Refreshable):
 
     def refresh(self) -> Token:
         try:
-            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT)
+            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=True)
             it = json.loads(out.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
