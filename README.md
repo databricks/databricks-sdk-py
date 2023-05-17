@@ -1,15 +1,16 @@
 # Databricks SDK for Python
 
-**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html)
+**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html) 
+| Code [examples](https://github.com/databricks/databricks-sdk-py/tree/main/examples) 
+| See also the [SDK for Go](https://github.com/databricks/databricks-sdk-go) 
+| See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
+| See also cloud-specific docs ([AWS](https://docs.databricks.com/dev-tools/sdk-python.html), 
+   [Azure](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/sdk-python), 
+   [GCP](https://docs.gcp.databricks.com/dev-tools/sdk-python.html)) 
 
 The Databricks SDK for Python includes functionality to accelerate development with [Python](https://www.python.org/) for the Databricks Lakehouse.
 It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations.
 The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
-
-For additional and cloud-specific documentation, you can consult the following pages:
-- [AWS Documentation](https://docs.databricks.com/dev-tools/sdk-python.html)
-- [Azure Documentation](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/sdk-python)
-- [GCP Documentation](https://docs.gcp.databricks.com/dev-tools/sdk-python.html)
 
 ## Contents
 
