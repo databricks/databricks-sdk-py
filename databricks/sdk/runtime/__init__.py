@@ -7,6 +7,14 @@ dbruntime_objects = [
     "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark"
 ]
 
+from typing import Dict, Tuple, Callable
+
+RuntimeAuth = Tuple[str, Callable[[], Dict[str, str]]]
+
+
+def init_runtime_native_auth() -> RuntimeAuth:
+    raise NotImplemented
+
 try:
     # Internal implementation
     from dbruntime import UserNamespaceInitializer
