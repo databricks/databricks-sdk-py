@@ -137,9 +137,7 @@ def dbutils_proxy(mocker):
 def test_fs_mount(dbutils_proxy):
     command = ('\n'
                '        import json\n'
-               '        (args, kwargs) = json.loads(\'[[], {"source": "s3://foo", '
-               '"mountPoint": "bar", "encryptionType": "", "owner": "", '
-               '"extraConfigs": null}]\')\n'
+               '        (args, kwargs) = json.loads(\'[["s3://foo", "bar"], {}]\')\n'
                '        result = dbutils.fs.mount(*args, **kwargs)\n'
                '        dbutils.notebook.exit(json.dumps(result))\n'
                '        ')
@@ -153,9 +151,7 @@ def test_fs_mount(dbutils_proxy):
 def test_fs_update_mount(dbutils_proxy):
     command = ('\n'
                '        import json\n'
-               '        (args, kwargs) = json.loads(\'[[], {"source": '
-               '"s3://foo2", "mountPoint": "bar", "encryptionType": "", "owner": '
-               '"", "extraConfigs": null}]\')\n'
+               '        (args, kwargs) = json.loads(\'[["s3://foo2", "bar"], {}]\')\n'
                '        result = dbutils.fs.updateMount(*args, **kwargs)\n'
                '        dbutils.notebook.exit(json.dumps(result))\n'
                '        ')
@@ -178,7 +174,7 @@ def test_fs_mounts(dbutils_proxy):
     mounts = dbutils.fs.mounts()
 
     assert len(mounts) == 2
-    assert mounts[0].mount_point == 'a'
+    assert mounts[0].mountPoint == 'a'
     assert mounts[0].source == 'b'
 
     assertions()
