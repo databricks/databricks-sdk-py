@@ -744,7 +744,7 @@ class ApiClient:
             self._cfg = Config()
             self._debug_truncate_bytes = 96
             self._user_agent_base = None
-        
+
         retry_strategy = Retry(
             total=6,
             backoff_factor=1,
