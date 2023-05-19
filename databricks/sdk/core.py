@@ -736,10 +736,15 @@ class ApiClient:
     _cfg: Config
 
     def __init__(self, cfg: Config = None):
-        self._cfg = Config() if not cfg else cfg
-        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
-        self._user_agent_base = cfg.user_agent
-
+        if cfg:
+            self._cfg = cfg
+            self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
+            self._user_agent_base = cfg.user_agent
+        else:
+            self._cfg = Config()
+            self._debug_truncate_bytes = 96
+            self._user_agent_base = None
+        
         retry_strategy = Retry(
             total=6,
             backoff_factor=1,

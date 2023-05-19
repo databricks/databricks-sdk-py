@@ -71,3 +71,42 @@ def test_last_job_runs(w):
 
     for line in sorted(summary, key=lambda s: s['last_finished'], reverse=True):
         logging.info(f'Latest: {line}')
+
+
+def test_create_job():
+
+    from databricks.sdk import JobsAPI
+    from databricks.sdk.service.jobs import (
+        JobCluster,
+        JobTaskSettings,
+        BaseClusterInfo,
+        PythonWheelTask
+    )
+    from databricks.sdk.core import ApiClient
+
+    client = ApiClient()
+    api = JobsAPI(client)
+    cluster = JobCluster(
+        job_cluster_key = "cluster1",
+        new_cluster = BaseClusterInfo(
+            num_workers = 2,
+            spark_version = "13.0.x-cpu-ml-scala2.12",
+            node_type_id = "Standard_L16s"
+        )
+    )
+
+    task1 = JobTaskSettings(
+        task_key = "task1",
+        job_cluster_key = "cluster1",
+        python_wheel_task = PythonWheelTask(
+            entry_point = "test",
+            package_name = "deepspeed"
+        )
+    )
+
+    api.create(
+        job_clusters = [cluster],
+        tasks = [task1]
+    )
+
+
