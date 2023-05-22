@@ -739,7 +739,7 @@ class ApiClient:
 
         if cfg is None:
             cfg = Config()
-        
+
         self._cfg = cfg
         self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
         self._user_agent_base = cfg.user_agent if cfg.user_agent else None

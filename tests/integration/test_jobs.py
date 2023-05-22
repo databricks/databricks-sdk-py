@@ -75,8 +75,6 @@ def test_last_job_runs(w):
 
 def test_create_job(w):
 
-    from databricks.sdk import JobsAPI
-    from databricks.sdk.core import ApiClient
     from databricks.sdk.service.jobs import (BaseClusterInfo, JobCluster,
                                              JobTaskSettings, PythonWheelTask)
 
