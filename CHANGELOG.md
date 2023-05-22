@@ -1,5 +1,12 @@
 # Version changelog
 
+## 0.1.8
+
+ * Regenerated from OpenAPI spec ([#124](https://github.com/databricks/databricks-sdk-py/pull/124)).
+ * Added `codecov.io` badge ([#126](https://github.com/databricks/databricks-sdk-py/pull/126)).
+ * Improved readme with links to examples ([#125](https://github.com/databricks/databricks-sdk-py/pull/125)).
+ * Fixed `AttributeError: 'NoneType' object has no attribute 'debug_truncate_bytes' when instantiating an ApiClient` with empty config ([#123](https://github.com/databricks/databricks-sdk-py/pull/123)).
+
 ## 0.1.7
 
 * Added an extensive set of examples ([#113](https://github.com/databricks/databricks-sdk-py/pull/113)).
