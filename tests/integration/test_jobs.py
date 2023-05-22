@@ -80,8 +80,8 @@ def test_create_job(w):
 
     cluster = JobCluster(job_cluster_key="cluster1",
                          new_cluster=BaseClusterInfo(num_workers=2,
-                                                     spark_version="13.0.x-cpu-ml-scala2.12",
-                                                     node_type_id="Standard_L16s"))
+                                                     spark_version = w.clusters.select_spark_version(),
+                                                     node_type_id = w.clusters.select_node_type()))
 
     task1 = JobTaskSettings(task_key="task1",
                             job_cluster_key="cluster1",
