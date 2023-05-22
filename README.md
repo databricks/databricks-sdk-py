@@ -2,8 +2,9 @@
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)
 ![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)
-![PyPI](https://img.shields.io/pypi/v/databricks-sdk)
 [![databricks-sdk](https://snyk.io/advisor/python/databricks-sdk/badge.svg)](https://snyk.io/advisor/python/databricks-sdk)
+![PyPI](https://img.shields.io/pypi/v/databricks-sdk)
+[![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
 
 **Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html) 
 | See also the [SDK for Java](https://github.com/databricks/databricks-sdk-java) 
