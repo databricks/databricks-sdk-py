@@ -162,7 +162,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -289,34 +288,25 @@ class CreateAlert:
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    dashboard_filters_enabled: bool = None
-    is_draft: bool = None
-    is_trashed: bool = None
+    is_favorite: bool = None
     name: str = None
     parent: str = None
     tags: 'List[str]' = None
-    widgets: 'List[Widget]' = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dashboard_filters_enabled: body['dashboard_filters_enabled'] = self.dashboard_filters_enabled
-        if self.is_draft: body['is_draft'] = self.is_draft
-        if self.is_trashed: body['is_trashed'] = self.is_trashed
+        if self.is_favorite: body['is_favorite'] = self.is_favorite
         if self.name: body['name'] = self.name
         if self.parent: body['parent'] = self.parent
         if self.tags: body['tags'] = [v for v in self.tags]
-        if self.widgets: body['widgets'] = [v.as_dict() for v in self.widgets]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateDashboardRequest':
-        return cls(dashboard_filters_enabled=d.get('dashboard_filters_enabled', None),
-                   is_draft=d.get('is_draft', None),
-                   is_trashed=d.get('is_trashed', None),
+        return cls(is_favorite=d.get('is_favorite', None),
                    name=d.get('name', None),
                    parent=d.get('parent', None),
-                   tags=d.get('tags', None),
-                   widgets=_repeated(d, 'widgets', Widget))
+                   tags=d.get('tags', None))
 
 
 @dataclass
@@ -333,7 +323,7 @@ class CreateWarehouseRequest:
     name: str = None
     spot_instance_policy: 'SpotInstancePolicy' = None
     tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    warehouse_type: 'CreateWarehouseRequestWarehouseType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -366,7 +356,16 @@ class CreateWarehouseRequest:
                    name=d.get('name', None),
                    spot_instance_policy=_enum(d, 'spot_instance_policy', SpotInstancePolicy),
                    tags=_from_dict(d, 'tags', EndpointTags),
-                   warehouse_type=_enum(d, 'warehouse_type', WarehouseType))
+                   warehouse_type=_enum(d, 'warehouse_type', CreateWarehouseRequestWarehouseType))
+
+
+class CreateWarehouseRequestWarehouseType(Enum):
+    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
+    and also set the field `enable_serverless_compute` to `true`."""
+
+    CLASSIC = 'CLASSIC'
+    PRO = 'PRO'
+    TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
 
 
 @dataclass
@@ -596,7 +595,7 @@ class EditWarehouseRequest:
     name: str = None
     spot_instance_policy: 'SpotInstancePolicy' = None
     tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    warehouse_type: 'EditWarehouseRequestWarehouseType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -631,7 +630,16 @@ class EditWarehouseRequest:
                    name=d.get('name', None),
                    spot_instance_policy=_enum(d, 'spot_instance_policy', SpotInstancePolicy),
                    tags=_from_dict(d, 'tags', EndpointTags),
-                   warehouse_type=_enum(d, 'warehouse_type', WarehouseType))
+                   warehouse_type=_enum(d, 'warehouse_type', EditWarehouseRequestWarehouseType))
+
+
+class EditWarehouseRequestWarehouseType(Enum):
+    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
+    and also set the field `enable_serverless_compute` to `true`."""
+
+    CLASSIC = 'CLASSIC'
+    PRO = 'PRO'
+    TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
 
 
 @dataclass
@@ -697,7 +705,7 @@ class EndpointInfo:
     spot_instance_policy: 'SpotInstancePolicy' = None
     state: 'State' = None
     tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    warehouse_type: 'EndpointInfoWarehouseType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -744,7 +752,16 @@ class EndpointInfo:
                    spot_instance_policy=_enum(d, 'spot_instance_policy', SpotInstancePolicy),
                    state=_enum(d, 'state', State),
                    tags=_from_dict(d, 'tags', EndpointTags),
-                   warehouse_type=_enum(d, 'warehouse_type', WarehouseType))
+                   warehouse_type=_enum(d, 'warehouse_type', EndpointInfoWarehouseType))
+
+
+class EndpointInfoWarehouseType(Enum):
+    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
+    and also set the field `enable_serverless_compute` to `true`."""
+
+    CLASSIC = 'CLASSIC'
+    PRO = 'PRO'
+    TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
 
 
 @dataclass
@@ -876,11 +893,6 @@ class ExternalLink:
 class Format(Enum):
     """Statement execution supports two result formats: `JSON_ARRAY` (default), and `ARROW_STREAM`.
     
-    **NOTE**
-    
-    Currently `JSON_ARRAY` is only available for requests with `disposition=INLINE`, and
-    `ARROW_STREAM` is only available for requests with `disposition=EXTERNAL_LINKS`.
-    
     When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of
     values, where each value is either the *string representation* of a value, or `null`. For
     example, the output of `SELECT concat('id-', id) AS strId, id AS intId FROM range(3)` would look
@@ -888,14 +900,19 @@ class Format(Enum):
     
     ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
     
-    `INLINE` `JSON_ARRAY` data can be found within `StatementResponse.result.chunk.data_array` or
-    `ResultData.chunk.data_array`.
+    `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
     
-    When specifying `format=ARROW_STREAM`, results fetched through `external_links` will be chunks
-    of result data, formatted as Apache Arrow Stream. See [Apache Arrow Streaming Format] for more
-    details.
+    `INLINE` `JSON_ARRAY` data can be found at the path `StatementResponse.result.data_array`.
     
-    [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format"""
+    For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud storage that
+    contains compact JSON with no indentation or extra whitespace.
+    
+    When specifying `format=ARROW_STREAM`, each chunk in the result will be formatted as Apache
+    Arrow Stream. See the [Apache Arrow streaming format].
+    
+    IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS` disposition.
+    
+    [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format"""
 
     ARROW_STREAM = 'ARROW_STREAM'
     JSON_ARRAY = 'JSON_ARRAY'
@@ -933,22 +950,22 @@ class GetQueryRequest:
 @dataclass
 class GetResponse:
     access_control_list: 'List[AccessControl]' = None
-    object_id: 'ObjectType' = None
-    object_type: str = None
+    object_id: str = None
+    object_type: 'ObjectType' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id: body['object_id'] = self.object_id.value
-        if self.object_type: body['object_type'] = self.object_type
+        if self.object_id: body['object_id'] = self.object_id
+        if self.object_type: body['object_type'] = self.object_type.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
         return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
-                   object_id=_enum(d, 'object_id', ObjectType),
-                   object_type=d.get('object_type', None))
+                   object_id=d.get('object_id', None),
+                   object_type=_enum(d, 'object_type', ObjectType))
 
 
 @dataclass
@@ -1017,7 +1034,7 @@ class GetWarehouseResponse:
     spot_instance_policy: 'SpotInstancePolicy' = None
     state: 'State' = None
     tags: 'EndpointTags' = None
-    warehouse_type: 'WarehouseType' = None
+    warehouse_type: 'GetWarehouseResponseWarehouseType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1064,7 +1081,16 @@ class GetWarehouseResponse:
                    spot_instance_policy=_enum(d, 'spot_instance_policy', SpotInstancePolicy),
                    state=_enum(d, 'state', State),
                    tags=_from_dict(d, 'tags', EndpointTags),
-                   warehouse_type=_enum(d, 'warehouse_type', WarehouseType))
+                   warehouse_type=_enum(d, 'warehouse_type', GetWarehouseResponseWarehouseType))
+
+
+class GetWarehouseResponseWarehouseType(Enum):
+    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
+    and also set the field `enable_serverless_compute` to `true`."""
+
+    CLASSIC = 'CLASSIC'
+    PRO = 'PRO'
+    TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
 
 
 @dataclass
@@ -1891,22 +1917,22 @@ class SetRequest:
 @dataclass
 class SetResponse:
     access_control_list: 'List[AccessControl]' = None
-    object_id: 'ObjectType' = None
-    object_type: str = None
+    object_id: str = None
+    object_type: 'ObjectType' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id: body['object_id'] = self.object_id.value
-        if self.object_type: body['object_type'] = self.object_type
+        if self.object_id: body['object_id'] = self.object_id
+        if self.object_type: body['object_type'] = self.object_type.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetResponse':
         return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
-                   object_id=_enum(d, 'object_id', ObjectType),
-                   object_type=d.get('object_type', None))
+                   object_id=d.get('object_id', None),
+                   object_type=_enum(d, 'object_type', ObjectType))
 
 
 @dataclass
@@ -1919,7 +1945,6 @@ class SetWorkspaceWarehouseConfigRequest:
     google_service_account: str = None
     instance_profile_arn: str = None
     security_policy: 'SetWorkspaceWarehouseConfigRequestSecurityPolicy' = None
-    serverless_agreement: bool = None
     sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
 
     def as_dict(self) -> dict:
@@ -1934,7 +1959,6 @@ class SetWorkspaceWarehouseConfigRequest:
         if self.google_service_account: body['google_service_account'] = self.google_service_account
         if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
         if self.security_policy: body['security_policy'] = self.security_policy.value
-        if self.serverless_agreement: body['serverless_agreement'] = self.serverless_agreement
         if self.sql_configuration_parameters:
             body['sql_configuration_parameters'] = self.sql_configuration_parameters.as_dict()
         return body
@@ -1950,7 +1974,6 @@ class SetWorkspaceWarehouseConfigRequest:
                    instance_profile_arn=d.get('instance_profile_arn', None),
                    security_policy=_enum(d, 'security_policy',
                                          SetWorkspaceWarehouseConfigRequestSecurityPolicy),
-                   serverless_agreement=d.get('serverless_agreement', None),
                    sql_configuration_parameters=_from_dict(d, 'sql_configuration_parameters',
                                                            RepeatedEndpointConfPairs))
 
@@ -2299,19 +2322,10 @@ class Visualization:
                    updated_at=d.get('updated_at', None))
 
 
-class WarehouseType(Enum):
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
-
-    CLASSIC = 'CLASSIC'
-    PRO = 'PRO'
-    TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
-
-
 @dataclass
 class WarehouseTypePair:
     enabled: bool = None
-    warehouse_type: 'WarehouseType' = None
+    warehouse_type: 'WarehouseTypePairWarehouseType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2321,7 +2335,16 @@ class WarehouseTypePair:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WarehouseTypePair':
-        return cls(enabled=d.get('enabled', None), warehouse_type=_enum(d, 'warehouse_type', WarehouseType))
+        return cls(enabled=d.get('enabled', None),
+                   warehouse_type=_enum(d, 'warehouse_type', WarehouseTypePairWarehouseType))
+
+
+class WarehouseTypePairWarehouseType(Enum):
+    """Warehouse type: `PRO` or `CLASSIC`."""
+
+    CLASSIC = 'CLASSIC'
+    PRO = 'PRO'
+    TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
 
 
 @dataclass
@@ -2382,7 +2405,8 @@ class WidgetOptions:
 class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met."""
+    notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
+    the Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2459,31 +2483,23 @@ class DashboardsAPI:
     """In general, there is little need to modify dashboards using the API. However, it can be useful to use
     dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
-    to create a new one."""
+    to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
+    :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(self,
                *,
-               dashboard_filters_enabled: bool = None,
-               is_draft: bool = None,
-               is_trashed: bool = None,
+               is_favorite: bool = None,
                name: str = None,
                parent: str = None,
                tags: List[str] = None,
-               widgets: List[Widget] = None,
                **kwargs) -> Dashboard:
         """Create a dashboard object."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateDashboardRequest(dashboard_filters_enabled=dashboard_filters_enabled,
-                                             is_draft=is_draft,
-                                             is_trashed=is_trashed,
-                                             name=name,
-                                             parent=parent,
-                                             tags=tags,
-                                             widgets=widgets)
+            request = CreateDashboardRequest(is_favorite=is_favorite, name=name, parent=parent, tags=tags)
         body = request.as_dict()
 
         json = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body)
@@ -2655,7 +2671,8 @@ class DbsqlPermissionsAPI:
 
 class QueriesAPI:
     """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
-    SQL warehouse, query text, name, description, tags, parameters, and visualizations."""
+    SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
+    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2892,14 +2909,21 @@ class StatementExecutionAPI:
     
     **Fetching result data: format and disposition**
     
-    Result data from statement execution is available in two formats: JSON, and [Apache Arrow Columnar].
-    Statements producing a result set smaller than 16 MiB can be fetched as `format=JSON_ARRAY`, using the
-    `disposition=INLINE`. When a statement executed in `INLINE` disposition exceeds this limit, the execution
-    is aborted, and no result can be fetched. Using `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`
-    allows large result sets, and with higher throughput.
+    To specify the result data format, set the `format` field to `JSON_ARRAY` (JSON) or `ARROW_STREAM`
+    ([Apache Arrow Columnar]).
     
-    The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`. `We advise explicitly setting
-    format and disposition in all production use cases.
+    You can also configure how to fetch the result data in two different modes by setting the `disposition`
+    field to `INLINE` or `EXTERNAL_LINKS`.
+    
+    The `INLINE` disposition can only be used with the `JSON_ARRAY` format and allows results up to 16 MiB.
+    When a statement executed with `INLINE` disposition exceeds this limit, the execution is aborted, and no
+    result can be fetched.
+    
+    The `EXTERNAL_LINKS` disposition allows fetching large result sets in both `JSON_ARRAY` and `ARROW_STREAM`
+    formats, and with higher throughput.
+    
+    The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`. Databricks recommends that you
+    explicit setting the format and the disposition for all production use cases.
     
     **Statement response: statement_id, status, manifest, and result**
     
@@ -3172,7 +3196,7 @@ class WarehousesAPI:
                name: str = None,
                spot_instance_policy: SpotInstancePolicy = None,
                tags: EndpointTags = None,
-               warehouse_type: WarehouseType = None,
+               warehouse_type: CreateWarehouseRequestWarehouseType = None,
                **kwargs) -> Wait[GetWarehouseResponse]:
         """Create a warehouse.
         
@@ -3213,8 +3237,9 @@ class WarehousesAPI:
         name: str = None,
         spot_instance_policy: SpotInstancePolicy = None,
         tags: EndpointTags = None,
-        warehouse_type: WarehouseType = None,
-        timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        warehouse_type: CreateWarehouseRequestWarehouseType = None,
+        timeout=timedelta(minutes=20)
+    ) -> GetWarehouseResponse:
         return self.create(auto_stop_mins=auto_stop_mins,
                            channel=channel,
                            cluster_size=cluster_size,
@@ -3258,7 +3283,7 @@ class WarehousesAPI:
              name: str = None,
              spot_instance_policy: SpotInstancePolicy = None,
              tags: EndpointTags = None,
-             warehouse_type: WarehouseType = None,
+             warehouse_type: EditWarehouseRequestWarehouseType = None,
              **kwargs) -> Wait[GetWarehouseResponse]:
         """Update a warehouse.
         
@@ -3299,8 +3324,9 @@ class WarehousesAPI:
         name: str = None,
         spot_instance_policy: SpotInstancePolicy = None,
         tags: EndpointTags = None,
-        warehouse_type: WarehouseType = None,
-        timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
+        warehouse_type: EditWarehouseRequestWarehouseType = None,
+        timeout=timedelta(minutes=20)
+    ) -> GetWarehouseResponse:
         return self.edit(auto_stop_mins=auto_stop_mins,
                          channel=channel,
                          cluster_size=cluster_size,
@@ -3360,7 +3386,6 @@ class WarehousesAPI:
             google_service_account: str = None,
             instance_profile_arn: str = None,
             security_policy: SetWorkspaceWarehouseConfigRequestSecurityPolicy = None,
-            serverless_agreement: bool = None,
             sql_configuration_parameters: RepeatedEndpointConfPairs = None,
             **kwargs):
         """Set the workspace configuration.
@@ -3377,7 +3402,6 @@ class WarehousesAPI:
                 google_service_account=google_service_account,
                 instance_profile_arn=instance_profile_arn,
                 security_policy=security_policy,
-                serverless_agreement=serverless_agreement,
                 sql_configuration_parameters=sql_configuration_parameters)
         body = request.as_dict()
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)

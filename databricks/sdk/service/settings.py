@@ -257,7 +257,7 @@ class ListTokenManagementRequest:
 
 @dataclass
 class ListTokensResponse:
-    token_infos: 'List[PublicTokenInfo]' = None
+    token_infos: 'List[TokenInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -266,7 +266,7 @@ class ListTokensResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTokensResponse':
-        return cls(token_infos=_repeated(d, 'token_infos', PublicTokenInfo))
+        return cls(token_infos=_repeated(d, 'token_infos', TokenInfo))
 
 
 class ListType(Enum):
@@ -759,7 +759,7 @@ class TokenManagementAPI:
              *,
              created_by_id: str = None,
              created_by_username: str = None,
-             **kwargs) -> Iterator[PublicTokenInfo]:
+             **kwargs) -> Iterator[TokenInfo]:
         """List all tokens.
         
         Lists all tokens associated with the specified workspace or user."""
@@ -773,7 +773,7 @@ class TokenManagementAPI:
         if created_by_username: query['created_by_username'] = request.created_by_username
 
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query)
-        return [PublicTokenInfo.from_dict(v) for v in json.get('token_infos', [])]
+        return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
 
 
 class TokensAPI:
@@ -809,13 +809,13 @@ class TokensAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/token/delete', body=body)
 
-    def list(self) -> Iterator[PublicTokenInfo]:
+    def list(self) -> Iterator[TokenInfo]:
         """List tokens.
         
         Lists all the valid tokens for a user-workspace pair."""
 
         json = self._api.do('GET', '/api/2.0/token/list')
-        return [PublicTokenInfo.from_dict(v) for v in json.get('token_infos', [])]
+        return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
 
 
 class WorkspaceConfAPI:

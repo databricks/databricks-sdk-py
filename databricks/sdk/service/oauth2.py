@@ -100,6 +100,42 @@ class CreatePublishedAppIntegrationOutput:
 
 
 @dataclass
+class CreateServicePrincipalSecretRequest:
+    """Create service principal secret"""
+
+    service_principal_id: int
+
+
+@dataclass
+class CreateServicePrincipalSecretResponse:
+    create_time: str = None
+    id: str = None
+    secret: str = None
+    secret_hash: str = None
+    status: str = None
+    update_time: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.create_time: body['create_time'] = self.create_time
+        if self.id: body['id'] = self.id
+        if self.secret: body['secret'] = self.secret
+        if self.secret_hash: body['secret_hash'] = self.secret_hash
+        if self.status: body['status'] = self.status
+        if self.update_time: body['update_time'] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateServicePrincipalSecretResponse':
+        return cls(create_time=d.get('create_time', None),
+                   id=d.get('id', None),
+                   secret=d.get('secret', None),
+                   secret_hash=d.get('secret_hash', None),
+                   status=d.get('status', None),
+                   update_time=d.get('update_time', None))
+
+
+@dataclass
 class DeleteCustomAppIntegrationRequest:
     """Delete Custom OAuth App Integration"""
 
@@ -111,6 +147,14 @@ class DeletePublishedAppIntegrationRequest:
     """Delete Published OAuth App Integration"""
 
     integration_id: str
+
+
+@dataclass
+class DeleteServicePrincipalSecretRequest:
+    """Delete service principal secret"""
+
+    service_principal_id: int
+    secret_id: str
 
 
 @dataclass
@@ -208,6 +252,27 @@ class GetPublishedAppIntegrationsOutput:
 
 
 @dataclass
+class ListServicePrincipalSecretsRequest:
+    """List service principal secrets"""
+
+    service_principal_id: int
+
+
+@dataclass
+class ListServicePrincipalSecretsResponse:
+    secrets: 'List[SecretInfo]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalSecretsResponse':
+        return cls(secrets=_repeated(d, 'secrets', SecretInfo))
+
+
+@dataclass
 class OAuthEnrollmentStatus:
     is_enabled: bool = None
 
@@ -219,6 +284,32 @@ class OAuthEnrollmentStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'OAuthEnrollmentStatus':
         return cls(is_enabled=d.get('is_enabled', None))
+
+
+@dataclass
+class SecretInfo:
+    create_time: str = None
+    id: str = None
+    secret_hash: str = None
+    status: str = None
+    update_time: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.create_time: body['create_time'] = self.create_time
+        if self.id: body['id'] = self.id
+        if self.secret_hash: body['secret_hash'] = self.secret_hash
+        if self.status: body['status'] = self.status
+        if self.update_time: body['update_time'] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SecretInfo':
+        return cls(create_time=d.get('create_time', None),
+                   id=d.get('id', None),
+                   secret_hash=d.get('secret_hash', None),
+                   status=d.get('status', None),
+                   update_time=d.get('update_time', None))
 
 
 @dataclass
@@ -298,7 +389,7 @@ class CustomAppIntegrationAPI:
         
         Create Custom OAuth App Integration.
         
-        You can retrieve the custom oauth app integration via :method:get."""
+        You can retrieve the custom oauth app integration via :method:CustomAppIntegration/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCustomAppIntegration(confidential=confidential,
@@ -316,7 +407,7 @@ class CustomAppIntegrationAPI:
         """Delete Custom OAuth App Integration.
         
         Delete an existing Custom OAuth App Integration. You can retrieve the custom oauth app integration via
-        :method:get."""
+        :method:CustomAppIntegration/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCustomAppIntegrationRequest(integration_id=integration_id)
@@ -343,7 +434,7 @@ class CustomAppIntegrationAPI:
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
         """Get custom oauth app integrations.
         
-        Get the list of custom oauth app integrations for the specified Databricks Account"""
+        Get the list of custom oauth app integrations for the specified Databricks account"""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations')
         return [GetCustomAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
@@ -357,7 +448,7 @@ class CustomAppIntegrationAPI:
         """Updates Custom OAuth App Integration.
         
         Updates an existing custom OAuth App Integration. You can retrieve the custom oauth app integration
-        via :method:get."""
+        via :method:CustomAppIntegration/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateCustomAppIntegration(integration_id=integration_id,
@@ -389,7 +480,7 @@ class OAuthEnrollmentAPI:
         The parter applications are: - Power BI - Tableau Desktop - Databricks CLI
         
         The enrollment is executed asynchronously, so the API will return 204 immediately. The actual
-        enrollment take a few minutes, you can check the status via API :method:get."""
+        enrollment take a few minutes, you can check the status via API :method:OAuthEnrollment/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateOAuthEnrollment(enable_all_published_apps=enable_all_published_apps)
@@ -427,7 +518,7 @@ class PublishedAppIntegrationAPI:
         
         Create Published OAuth App Integration.
         
-        You can retrieve the published oauth app integration via :method:get."""
+        You can retrieve the published oauth app integration via :method:PublishedAppIntegration/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreatePublishedAppIntegration(app_id=app_id, token_access_policy=token_access_policy)
@@ -442,7 +533,7 @@ class PublishedAppIntegrationAPI:
         """Delete Published OAuth App Integration.
         
         Delete an existing Published OAuth App Integration. You can retrieve the published oauth app
-        integration via :method:get."""
+        integration via :method:PublishedAppIntegration/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeletePublishedAppIntegrationRequest(integration_id=integration_id)
@@ -469,7 +560,7 @@ class PublishedAppIntegrationAPI:
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
         """Get published oauth app integrations.
         
-        Get the list of published oauth app integrations for the specified Databricks Account"""
+        Get the list of published oauth app integrations for the specified Databricks account"""
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations')
@@ -479,7 +570,7 @@ class PublishedAppIntegrationAPI:
         """Updates Published OAuth App Integration.
         
         Updates an existing published OAuth App Integration. You can retrieve the published oauth app
-        integration via :method:get."""
+        integration via :method:PublishedAppIntegration/get."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdatePublishedAppIntegration(integration_id=integration_id,
@@ -489,3 +580,63 @@ class PublishedAppIntegrationAPI:
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}',
             body=body)
+
+
+class ServicePrincipalSecretsAPI:
+    """These APIs enable administrators to manage service principal secrets.
+    
+    You can use the generated secrets to obtain OAuth access tokens for a service principal, which can then be
+    used to access Databricks Accounts and Workspace APIs. For more information, see [Authentication using
+    OAuth tokens for service principals],
+    
+    In addition, the generated secrets can be used to configure the Databricks Terraform Provider to
+    authenticate with the service principal. For more information, see [Databricks Terraform Provider].
+    
+    [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
+    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, service_principal_id: int, **kwargs) -> CreateServicePrincipalSecretResponse:
+        """Create service principal secret.
+        
+        Create a secret for the given service principal."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateServicePrincipalSecretRequest(service_principal_id=service_principal_id)
+
+        json = self._api.do(
+            'POST',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{request.service_principal_id}/credentials/secrets'
+        )
+        return CreateServicePrincipalSecretResponse.from_dict(json)
+
+    def delete(self, service_principal_id: int, secret_id: str, **kwargs):
+        """Delete service principal secret.
+        
+        Delete a secret from the given service principal."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteServicePrincipalSecretRequest(secret_id=secret_id,
+                                                          service_principal_id=service_principal_id)
+
+        self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{request.service_principal_id}/credentials/secrets/{request.secret_id},'
+        )
+
+    def list(self, service_principal_id: int, **kwargs) -> Iterator[SecretInfo]:
+        """List service principal secrets.
+        
+        List all secrets associated with the given service principal. This operation only returns information
+        about the secrets themselves and does not include the secret values."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListServicePrincipalSecretsRequest(service_principal_id=service_principal_id)
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{request.service_principal_id}/credentials/secrets'
+        )
+        return [SecretInfo.from_dict(v) for v in json.get('secrets', [])]

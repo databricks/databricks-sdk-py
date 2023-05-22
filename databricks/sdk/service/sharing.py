@@ -52,7 +52,7 @@ class CreateRecipient:
     data_recipient_global_metastore_id: Any = None
     ip_access_list: 'IpAccessList' = None
     owner: str = None
-    properties_kvpairs: Any = None
+    properties_kvpairs: 'SecurablePropertiesKvPairs' = None
     sharing_code: str = None
 
     def as_dict(self) -> dict:
@@ -64,7 +64,7 @@ class CreateRecipient:
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
         if self.sharing_code: body['sharing_code'] = self.sharing_code
         return body
 
@@ -76,7 +76,7 @@ class CreateRecipient:
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
                    sharing_code=d.get('sharing_code', None))
 
 
@@ -427,7 +427,7 @@ class RecipientInfo:
     metastore_id: str = None
     name: str = None
     owner: str = None
-    properties_kvpairs: Any = None
+    properties_kvpairs: 'SecurablePropertiesKvPairs' = None
     region: str = None
     sharing_code: str = None
     tokens: 'List[RecipientTokenInfo]' = None
@@ -449,7 +449,7 @@ class RecipientInfo:
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
         if self.region: body['region'] = self.region
         if self.sharing_code: body['sharing_code'] = self.sharing_code
         if self.tokens: body['tokens'] = [v.as_dict() for v in self.tokens]
@@ -471,7 +471,7 @@ class RecipientInfo:
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
                    region=d.get('region', None),
                    sharing_code=d.get('sharing_code', None),
                    tokens=_repeated(d, 'tokens', RecipientTokenInfo),
@@ -577,6 +577,25 @@ class RotateRecipientToken:
     def from_dict(cls, d: Dict[str, any]) -> 'RotateRecipientToken':
         return cls(existing_token_expire_in_seconds=d.get('existing_token_expire_in_seconds', None),
                    name=d.get('name', None))
+
+
+@dataclass
+class SecurablePropertiesKvPairs:
+    """An object with __properties__ containing map of key-value properties attached to the securable."""
+
+    properties: 'Dict[str,str]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.properties: body['properties'] = self.properties
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SecurablePropertiesKvPairs':
+        return cls(properties=d.get('properties', None))
+
+
+SecurablePropertiesMap = Dict[str, str]
 
 
 @dataclass
@@ -741,7 +760,7 @@ class UpdateRecipient:
     comment: str = None
     ip_access_list: 'IpAccessList' = None
     owner: str = None
-    properties_kvpairs: Any = None
+    properties_kvpairs: 'SecurablePropertiesKvPairs' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -749,7 +768,7 @@ class UpdateRecipient:
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
         return body
 
     @classmethod
@@ -758,7 +777,7 @@ class UpdateRecipient:
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None))
+                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs))
 
 
 @dataclass
@@ -950,7 +969,7 @@ class RecipientsAPI:
                data_recipient_global_metastore_id: Any = None,
                ip_access_list: IpAccessList = None,
                owner: str = None,
-               properties_kvpairs: Any = None,
+               properties_kvpairs: SecurablePropertiesKvPairs = None,
                sharing_code: str = None,
                **kwargs) -> RecipientInfo:
         """Create a share recipient.
@@ -1048,7 +1067,7 @@ class RecipientsAPI:
                comment: str = None,
                ip_access_list: IpAccessList = None,
                owner: str = None,
-               properties_kvpairs: Any = None,
+               properties_kvpairs: SecurablePropertiesKvPairs = None,
                **kwargs):
         """Update a share recipient.
         

@@ -411,6 +411,51 @@ class CreateWebhookResponse:
 
 
 @dataclass
+class Dataset:
+    digest: str = None
+    name: str = None
+    profile: str = None
+    schema: str = None
+    source: str = None
+    source_type: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.digest: body['digest'] = self.digest
+        if self.name: body['name'] = self.name
+        if self.profile: body['profile'] = self.profile
+        if self.schema: body['schema'] = self.schema
+        if self.source: body['source'] = self.source
+        if self.source_type: body['source_type'] = self.source_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Dataset':
+        return cls(digest=d.get('digest', None),
+                   name=d.get('name', None),
+                   profile=d.get('profile', None),
+                   schema=d.get('schema', None),
+                   source=d.get('source', None),
+                   source_type=d.get('source_type', None))
+
+
+@dataclass
+class DatasetInput:
+    dataset: 'Dataset' = None
+    tags: 'List[InputTag]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dataset: body['dataset'] = self.dataset.as_dict()
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DatasetInput':
+        return cls(dataset=_from_dict(d, 'dataset', Dataset), tags=_repeated(d, 'tags', InputTag))
+
+
+@dataclass
 class DeleteCommentRequest:
     """Delete a comment"""
 
@@ -499,9 +544,17 @@ class DeleteTransitionRequestRequest:
 
     name: str
     version: str
-    stage: str
+    stage: 'DeleteTransitionRequestStage'
     creator: str
     comment: str = None
+
+
+class DeleteTransitionRequestStage(Enum):
+
+    Archived = 'Archived'
+    None_ = 'None'
+    Production = 'Production'
+    Staging = 'Staging'
 
 
 @dataclass
@@ -789,6 +842,22 @@ class HttpUrlSpecWithoutSecret:
 
 
 @dataclass
+class InputTag:
+    key: str = None
+    value: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key: body['key'] = self.key
+        if self.value: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InputTag':
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
 class JobSpec:
     job_id: str
     access_token: str
@@ -974,6 +1043,22 @@ class LogBatch:
                    params=_repeated(d, 'params', Param),
                    run_id=d.get('run_id', None),
                    tags=_repeated(d, 'tags', RunTag))
+
+
+@dataclass
+class LogInputs:
+    datasets: 'List[DatasetInput]' = None
+    run_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.datasets: body['datasets'] = [v.as_dict() for v in self.datasets]
+        if self.run_id: body['run_id'] = self.run_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'LogInputs':
+        return cls(datasets=_repeated(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
 
 
 @dataclass
@@ -1468,16 +1553,20 @@ class RestoreRun:
 class Run:
     data: 'RunData' = None
     info: 'RunInfo' = None
+    inputs: 'RunInputs' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.data: body['data'] = self.data.as_dict()
         if self.info: body['info'] = self.info.as_dict()
+        if self.inputs: body['inputs'] = self.inputs.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Run':
-        return cls(data=_from_dict(d, 'data', RunData), info=_from_dict(d, 'info', RunInfo))
+        return cls(data=_from_dict(d, 'data', RunData),
+                   info=_from_dict(d, 'info', RunInfo),
+                   inputs=_from_dict(d, 'inputs', RunInputs))
 
 
 @dataclass
@@ -1546,6 +1635,20 @@ class RunInfoStatus(Enum):
     KILLED = 'KILLED'
     RUNNING = 'RUNNING'
     SCHEDULED = 'SCHEDULED'
+
+
+@dataclass
+class RunInputs:
+    dataset_inputs: 'List[DatasetInput]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dataset_inputs: body['dataset_inputs'] = [v.as_dict() for v in self.dataset_inputs]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RunInputs':
+        return cls(dataset_inputs=_repeated(d, 'dataset_inputs', DatasetInput))
 
 
 @dataclass
@@ -2182,13 +2285,13 @@ class ExperimentsAPI:
     def get_by_name(self, experiment_name: str, **kwargs) -> GetExperimentByNameResponse:
         """Get metadata.
         
-        "Gets metadata for an experiment.
+        Gets metadata for an experiment.
         
         This endpoint will return deleted experiments, but prefers the active experiment if an active and
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
         will return one of them.
         
-        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.S"""
+        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetByNameRequest(experiment_name=experiment_name)
@@ -2245,7 +2348,7 @@ class ExperimentsAPI:
     def get_run(self, run_id: str, *, run_uuid: str = None, **kwargs) -> GetRunResponse:
         """Get a run.
         
-        "Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
+        Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
         same key are logged for a run, return only the value with the latest timestamp.
         
         If there are multiple values with the latest timestamp, return the maximum of these values."""
@@ -2370,6 +2473,16 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/log-batch', body=body)
 
+    def log_inputs(self, *, datasets: List[DatasetInput] = None, run_id: str = None, **kwargs):
+        """Log inputs to a run.
+        
+        **NOTE:** Experimental: This API may change or be removed in a future release without warning."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = LogInputs(datasets=datasets, run_id=run_id)
+        body = request.as_dict()
+        self._api.do('POST', '/api/2.0/mlflow/runs/log-inputs', body=body)
+
     def log_metric(self,
                    key: str,
                    value: float,
@@ -2420,11 +2533,11 @@ class ExperimentsAPI:
     def restore_experiment(self, experiment_id: str, **kwargs):
         """Restores an experiment.
         
-        "Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
+        Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
         
-        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.","""
+        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestoreExperiment(experiment_id=experiment_id)
@@ -2756,7 +2869,7 @@ class ModelRegistryAPI:
     def delete_transition_request(self,
                                   name: str,
                                   version: str,
-                                  stage: str,
+                                  stage: DeleteTransitionRequestStage,
                                   creator: str,
                                   *,
                                   comment: str = None,
@@ -2776,7 +2889,7 @@ class ModelRegistryAPI:
         if comment: query['comment'] = request.comment
         if creator: query['creator'] = request.creator
         if name: query['name'] = request.name
-        if stage: query['stage'] = request.stage
+        if stage: query['stage'] = request.stage.value
         if version: query['version'] = request.version
 
         self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
@@ -2811,8 +2924,8 @@ class ModelRegistryAPI:
     def get_model(self, name: str, **kwargs) -> GetModelResponse:
         """Get model.
         
-        Get the details of a model. This is a Databricks Workspace version of the [MLflow endpoint] that also
-        returns the model's Databricks Workspace ID and the permission level of the requesting user on the
+        Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
+        returns the model's Databricks workspace ID and the permission level of the requesting user on the
         model.
         
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel"""
@@ -3068,7 +3181,7 @@ class ModelRegistryAPI:
                          **kwargs) -> TransitionStageResponse:
         """Transition a stage.
         
-        Transition a model version's stage. This is a Databricks Workspace version of the [MLflow endpoint]
+        Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
         that also accepts a comment associated with the transition to be recorded.",
         
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage"""

@@ -223,6 +223,7 @@ class CreateJob:
     job_clusters: 'List[JobCluster]' = None
     max_concurrent_runs: int = None
     name: str = None
+    notification_settings: 'JobNotificationSettings' = None
     schedule: 'CronSchedule' = None
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
@@ -240,6 +241,7 @@ class CreateJob:
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs: body['max_concurrent_runs'] = self.max_concurrent_runs
         if self.name: body['name'] = self.name
+        if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
@@ -258,6 +260,7 @@ class CreateJob:
                    job_clusters=_repeated(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
+                   notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
                    tasks=_repeated(d, 'tasks', JobTaskSettings),
@@ -587,6 +590,24 @@ class JobEmailNotifications:
 
 
 @dataclass
+class JobNotificationSettings:
+    no_alert_for_canceled_runs: bool = None
+    no_alert_for_skipped_runs: bool = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.no_alert_for_canceled_runs:
+            body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
+        if self.no_alert_for_skipped_runs: body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobNotificationSettings':
+        return cls(no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
+                   no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
+
+
+@dataclass
 class JobSettings:
     continuous: 'Continuous' = None
     email_notifications: 'JobEmailNotifications' = None
@@ -595,6 +616,7 @@ class JobSettings:
     job_clusters: 'List[JobCluster]' = None
     max_concurrent_runs: int = None
     name: str = None
+    notification_settings: 'JobNotificationSettings' = None
     schedule: 'CronSchedule' = None
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
@@ -611,6 +633,7 @@ class JobSettings:
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs: body['max_concurrent_runs'] = self.max_concurrent_runs
         if self.name: body['name'] = self.name
+        if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
@@ -628,6 +651,7 @@ class JobSettings:
                    job_clusters=_repeated(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
+                   notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
                    tasks=_repeated(d, 'tasks', JobTaskSettings),
@@ -650,7 +674,7 @@ class JobTaskSettings:
     dbt_task: 'DbtTask' = None
     depends_on: 'List[TaskDependenciesItem]' = None
     description: str = None
-    email_notifications: 'JobEmailNotifications' = None
+    email_notifications: 'TaskEmailNotifications' = None
     existing_cluster_id: str = None
     job_cluster_key: str = None
     libraries: 'List[Library]' = None
@@ -658,6 +682,7 @@ class JobTaskSettings:
     min_retry_interval_millis: int = None
     new_cluster: 'BaseClusterInfo' = None
     notebook_task: 'NotebookTask' = None
+    notification_settings: 'TaskNotificationSettings' = None
     pipeline_task: 'PipelineTask' = None
     python_wheel_task: 'PythonWheelTask' = None
     retry_on_timeout: bool = None
@@ -680,6 +705,7 @@ class JobTaskSettings:
         if self.min_retry_interval_millis: body['min_retry_interval_millis'] = self.min_retry_interval_millis
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
+        if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
         if self.retry_on_timeout: body['retry_on_timeout'] = self.retry_on_timeout
@@ -696,7 +722,7 @@ class JobTaskSettings:
         return cls(dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated(d, 'depends_on', TaskDependenciesItem),
                    description=d.get('description', None),
-                   email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
+                   email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    job_cluster_key=d.get('job_cluster_key', None),
                    libraries=d.get('libraries', None),
@@ -704,6 +730,7 @@ class JobTaskSettings:
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
+                   notification_settings=_from_dict(d, 'notification_settings', TaskNotificationSettings),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
                    retry_on_timeout=d.get('retry_on_timeout', None),
@@ -1328,6 +1355,7 @@ class RunSubmitTaskSettings:
     spark_jar_task: 'SparkJarTask' = None
     spark_python_task: 'SparkPythonTask' = None
     spark_submit_task: 'SparkSubmitTask' = None
+    sql_task: 'SqlTask' = None
     timeout_seconds: int = None
 
     def as_dict(self) -> dict:
@@ -1342,6 +1370,7 @@ class RunSubmitTaskSettings:
         if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task.as_dict()
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
+        if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.task_key: body['task_key'] = self.task_key
         if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
         return body
@@ -1358,6 +1387,7 @@ class RunSubmitTaskSettings:
                    spark_jar_task=_from_dict(d, 'spark_jar_task', SparkJarTask),
                    spark_python_task=_from_dict(d, 'spark_python_task', SparkPythonTask),
                    spark_submit_task=_from_dict(d, 'spark_submit_task', SparkSubmitTask),
+                   sql_task=_from_dict(d, 'sql_task', SqlTask),
                    task_key=d.get('task_key', None),
                    timeout_seconds=d.get('timeout_seconds', None))
 
@@ -1686,6 +1716,7 @@ class SqlTask:
     warehouse_id: str
     alert: 'SqlTaskAlert' = None
     dashboard: 'SqlTaskDashboard' = None
+    file: 'SqlTaskFile' = None
     parameters: 'Dict[str,str]' = None
     query: 'SqlTaskQuery' = None
 
@@ -1693,6 +1724,7 @@ class SqlTask:
         body = {}
         if self.alert: body['alert'] = self.alert.as_dict()
         if self.dashboard: body['dashboard'] = self.dashboard.as_dict()
+        if self.file: body['file'] = self.file.as_dict()
         if self.parameters: body['parameters'] = self.parameters
         if self.query: body['query'] = self.query.as_dict()
         if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
@@ -1702,6 +1734,7 @@ class SqlTask:
     def from_dict(cls, d: Dict[str, any]) -> 'SqlTask':
         return cls(alert=_from_dict(d, 'alert', SqlTaskAlert),
                    dashboard=_from_dict(d, 'dashboard', SqlTaskDashboard),
+                   file=_from_dict(d, 'file', SqlTaskFile),
                    parameters=d.get('parameters', None),
                    query=_from_dict(d, 'query', SqlTaskQuery),
                    warehouse_id=d.get('warehouse_id', None))
@@ -1751,6 +1784,20 @@ class SqlTaskDashboard:
 
 
 @dataclass
+class SqlTaskFile:
+    path: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.path: body['path'] = self.path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskFile':
+        return cls(path=d.get('path', None))
+
+
+@dataclass
 class SqlTaskQuery:
     query_id: str
 
@@ -1785,6 +1832,7 @@ class SubmitRun:
     access_control_list: 'List[AccessControlRequest]' = None
     git_source: 'GitSource' = None
     idempotency_token: str = None
+    notification_settings: 'JobNotificationSettings' = None
     run_name: str = None
     tasks: 'List[RunSubmitTaskSettings]' = None
     timeout_seconds: int = None
@@ -1795,6 +1843,7 @@ class SubmitRun:
         if self.access_control_list: body['access_control_list'] = [v for v in self.access_control_list]
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.idempotency_token: body['idempotency_token'] = self.idempotency_token
+        if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.run_name: body['run_name'] = self.run_name
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
@@ -1806,6 +1855,7 @@ class SubmitRun:
         return cls(access_control_list=d.get('access_control_list', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    idempotency_token=d.get('idempotency_token', None),
+                   notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    run_name=d.get('run_name', None),
                    tasks=_repeated(d, 'tasks', RunSubmitTaskSettings),
                    timeout_seconds=d.get('timeout_seconds', None),
@@ -1838,6 +1888,47 @@ class TaskDependenciesItem:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TaskDependenciesItem':
         return cls(task_key=d.get('task_key', None))
+
+
+@dataclass
+class TaskEmailNotifications:
+    on_failure: 'List[str]' = None
+    on_start: 'List[str]' = None
+    on_success: 'List[str]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.on_failure: body['on_failure'] = [v for v in self.on_failure]
+        if self.on_start: body['on_start'] = [v for v in self.on_start]
+        if self.on_success: body['on_success'] = [v for v in self.on_success]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TaskEmailNotifications':
+        return cls(on_failure=d.get('on_failure', None),
+                   on_start=d.get('on_start', None),
+                   on_success=d.get('on_success', None))
+
+
+@dataclass
+class TaskNotificationSettings:
+    alert_on_last_attempt: bool = None
+    no_alert_for_canceled_runs: bool = None
+    no_alert_for_skipped_runs: bool = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.alert_on_last_attempt: body['alert_on_last_attempt'] = self.alert_on_last_attempt
+        if self.no_alert_for_canceled_runs:
+            body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
+        if self.no_alert_for_skipped_runs: body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TaskNotificationSettings':
+        return cls(alert_on_last_attempt=d.get('alert_on_last_attempt', None),
+                   no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
+                   no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
 
 
 @dataclass
@@ -1976,10 +2067,11 @@ class JobsAPI:
     scheduling system. You can implement job tasks using notebooks, JARS, Delta Live Tables pipelines, or
     Python, Scala, Spark submit, and Java applications.
     
-    You should never hard code secrets or store them in plain text. Use the :service:secrets to manage secrets
-    in the [Databricks CLI]. Use the [Secrets utility] to reference secrets in notebooks and jobs.
+    You should never hard code secrets or store them in plain text. Use the [Secrets CLI] to manage secrets in
+    the [Databricks CLI]. Use the [Secrets utility] to reference secrets in notebooks and jobs.
     
     [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
+    [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
     [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets"""
 
     def __init__(self, api_client):
@@ -2053,6 +2145,7 @@ class JobsAPI:
                job_clusters: List[JobCluster] = None,
                max_concurrent_runs: int = None,
                name: str = None,
+               notification_settings: JobNotificationSettings = None,
                schedule: CronSchedule = None,
                tags: Dict[str, str] = None,
                tasks: List[JobTaskSettings] = None,
@@ -2073,6 +2166,7 @@ class JobsAPI:
                                 job_clusters=job_clusters,
                                 max_concurrent_runs=max_concurrent_runs,
                                 name=name,
+                                notification_settings=notification_settings,
                                 schedule=schedule,
                                 tags=tags,
                                 tasks=tasks,
@@ -2398,6 +2492,7 @@ class JobsAPI:
                access_control_list: List[AccessControlRequest] = None,
                git_source: GitSource = None,
                idempotency_token: str = None,
+               notification_settings: JobNotificationSettings = None,
                run_name: str = None,
                tasks: List[RunSubmitTaskSettings] = None,
                timeout_seconds: int = None,
@@ -2413,6 +2508,7 @@ class JobsAPI:
             request = SubmitRun(access_control_list=access_control_list,
                                 git_source=git_source,
                                 idempotency_token=idempotency_token,
+                                notification_settings=notification_settings,
                                 run_name=run_name,
                                 tasks=tasks,
                                 timeout_seconds=timeout_seconds,
@@ -2429,6 +2525,7 @@ class JobsAPI:
         access_control_list: List[AccessControlRequest] = None,
         git_source: GitSource = None,
         idempotency_token: str = None,
+        notification_settings: JobNotificationSettings = None,
         run_name: str = None,
         tasks: List[RunSubmitTaskSettings] = None,
         timeout_seconds: int = None,
@@ -2437,6 +2534,7 @@ class JobsAPI:
         return self.submit(access_control_list=access_control_list,
                            git_source=git_source,
                            idempotency_token=idempotency_token,
+                           notification_settings=notification_settings,
                            run_name=run_name,
                            tasks=tasks,
                            timeout_seconds=timeout_seconds,
@@ -2448,7 +2546,7 @@ class JobsAPI:
                fields_to_remove: List[str] = None,
                new_settings: JobSettings = None,
                **kwargs):
-        """Partially updates a job.
+        """Partially update a job.
         
         Add, update, or remove specific settings of an existing job. Use the ResetJob to overwrite all job
         settings."""

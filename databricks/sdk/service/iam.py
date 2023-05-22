@@ -755,11 +755,11 @@ class WorkspacePermissions:
 
 
 class AccountGroupsAPI:
-    """Groups simplify identity management, making it easier to assign access to Databricks Account, data, and
+    """Groups simplify identity management, making it easier to assign access to Databricks account, data, and
     other securable objects.
     
     It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
-    instead of to users individually. All Databricks Account identities can be assigned as members of groups,
+    instead of to users individually. All Databricks account identities can be assigned as members of groups,
     and members inherit permissions that are assigned to their group."""
 
     def __init__(self, api_client):
@@ -777,7 +777,7 @@ class AccountGroupsAPI:
                **kwargs) -> Group:
         """Create a new group.
         
-        Creates a group in the Databricks Account with a unique name, using the supplied group details."""
+        Creates a group in the Databricks account with a unique name, using the supplied group details."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Group(display_name=display_name,
@@ -795,7 +795,7 @@ class AccountGroupsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a group.
         
-        Deletes a group from the Databricks Account."""
+        Deletes a group from the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountGroupRequest(id=id)
@@ -805,7 +805,7 @@ class AccountGroupsAPI:
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
         
-        Gets the information for a specific group in the Databricks Account."""
+        Gets the information for a specific group in the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountGroupRequest(id=id)
@@ -825,7 +825,7 @@ class AccountGroupsAPI:
              **kwargs) -> Iterator[Group]:
         """List group details.
         
-        Gets all details of the groups associated with the Databricks Account."""
+        Gets all details of the groups associated with the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountGroupsRequest(attributes=attributes,
@@ -911,7 +911,7 @@ class AccountServicePrincipalsAPI:
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
         
-        Creates a new service principal in the Databricks Account."""
+        Creates a new service principal in the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ServicePrincipal(active=active,
@@ -932,7 +932,7 @@ class AccountServicePrincipalsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a service principal.
         
-        Delete a single service principal in the Databricks Account."""
+        Delete a single service principal in the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountServicePrincipalRequest(id=id)
@@ -943,7 +943,7 @@ class AccountServicePrincipalsAPI:
     def get(self, id: str, **kwargs) -> ServicePrincipal:
         """Get service principal details.
         
-        Gets the details for a single service principal define in the Databricks Account."""
+        Gets the details for a single service principal define in the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountServicePrincipalRequest(id=id)
@@ -964,7 +964,7 @@ class AccountServicePrincipalsAPI:
              **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
-        Gets the set of service principals associated with a Databricks Account."""
+        Gets the set of service principals associated with a Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountServicePrincipalsRequest(attributes=attributes,
@@ -992,7 +992,7 @@ class AccountServicePrincipalsAPI:
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
         
-        Partially updates the details of a single service principal in the Databricks Account."""
+        Partially updates the details of a single service principal in the Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1037,11 +1037,11 @@ class AccountUsersAPI:
     """User identities recognized by Databricks and represented by email addresses.
     
     Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
-    provider to your Databricks Account. SCIM streamlines onboarding a new employee or team by using your
-    identity provider to create users and groups in Databricks Account and give them the proper level of
-    access. When a user leaves your organization or no longer needs access to Databricks Account, admins can
+    provider to your Databricks account. SCIM streamlines onboarding a new employee or team by using your
+    identity provider to create users and groups in Databricks account and give them the proper level of
+    access. When a user leaves your organization or no longer needs access to Databricks account, admins can
     terminate the user in your identity provider and that user’s account will also be removed from
-    Databricks Account. This ensures a consistent offboarding process and prevents unauthorized users from
+    Databricks account. This ensures a consistent offboarding process and prevents unauthorized users from
     accessing sensitive data."""
 
     def __init__(self, api_client):
@@ -1062,7 +1062,7 @@ class AccountUsersAPI:
                **kwargs) -> User:
         """Create a new user.
         
-        Creates a new user in the Databricks Account. This new user will also be added to the Databricks
+        Creates a new user in the Databricks account. This new user will also be added to the Databricks
         account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -1084,7 +1084,7 @@ class AccountUsersAPI:
     def delete(self, id: str, **kwargs):
         """Delete a user.
         
-        Deletes a user. Deleting a user from a Databricks Account also removes objects associated with the
+        Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
         user."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -1095,7 +1095,7 @@ class AccountUsersAPI:
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
         
-        Gets information for a specific user in Databricks Account."""
+        Gets information for a specific user in Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountUserRequest(id=id)
@@ -1115,7 +1115,7 @@ class AccountUsersAPI:
              **kwargs) -> Iterator[User]:
         """List users.
         
-        Gets details for all the users associated with a Databricks Account."""
+        Gets details for all the users associated with a Databricks account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountUsersRequest(attributes=attributes,
@@ -1198,11 +1198,11 @@ class CurrentUserAPI:
 
 
 class GroupsAPI:
-    """Groups simplify identity management, making it easier to assign access to Databricks Workspace, data, and
+    """Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and
     other securable objects.
     
     It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
-    instead of to users individually. All Databricks Workspace identities can be assigned as members of
+    instead of to users individually. All Databricks workspace identities can be assigned as members of
     groups, and members inherit permissions that are assigned to their group."""
 
     def __init__(self, api_client):
@@ -1220,7 +1220,7 @@ class GroupsAPI:
                **kwargs) -> Group:
         """Create a new group.
         
-        Creates a group in the Databricks Workspace with a unique name, using the supplied group details."""
+        Creates a group in the Databricks workspace with a unique name, using the supplied group details."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Group(display_name=display_name,
@@ -1238,7 +1238,7 @@ class GroupsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a group.
         
-        Deletes a group from the Databricks Workspace."""
+        Deletes a group from the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteGroupRequest(id=id)
@@ -1248,7 +1248,7 @@ class GroupsAPI:
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
         
-        Gets the information for a specific group in the Databricks Workspace."""
+        Gets the information for a specific group in the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetGroupRequest(id=id)
@@ -1268,7 +1268,7 @@ class GroupsAPI:
              **kwargs) -> Iterator[Group]:
         """List group details.
         
-        Gets all details of the groups associated with the Databricks Workspace."""
+        Gets all details of the groups associated with the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListGroupsRequest(attributes=attributes,
@@ -1427,7 +1427,7 @@ class ServicePrincipalsAPI:
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
         
-        Creates a new service principal in the Databricks Workspace."""
+        Creates a new service principal in the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ServicePrincipal(active=active,
@@ -1446,7 +1446,7 @@ class ServicePrincipalsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a service principal.
         
-        Delete a single service principal in the Databricks Workspace."""
+        Delete a single service principal in the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteServicePrincipalRequest(id=id)
@@ -1456,7 +1456,7 @@ class ServicePrincipalsAPI:
     def get(self, id: str, **kwargs) -> ServicePrincipal:
         """Get service principal details.
         
-        Gets the details for a single service principal define in the Databricks Workspace."""
+        Gets the details for a single service principal define in the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetServicePrincipalRequest(id=id)
@@ -1476,7 +1476,7 @@ class ServicePrincipalsAPI:
              **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
-        Gets the set of service principals associated with a Databricks Workspace."""
+        Gets the set of service principals associated with a Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListServicePrincipalsRequest(attributes=attributes,
@@ -1502,7 +1502,7 @@ class ServicePrincipalsAPI:
     def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
         """Update service principal details.
         
-        Partially updates the details of a single service principal in the Databricks Workspace."""
+        Partially updates the details of a single service principal in the Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1543,11 +1543,11 @@ class UsersAPI:
     """User identities recognized by Databricks and represented by email addresses.
     
     Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
-    provider to your Databricks Workspace. SCIM streamlines onboarding a new employee or team by using your
-    identity provider to create users and groups in Databricks Workspace and give them the proper level of
-    access. When a user leaves your organization or no longer needs access to Databricks Workspace, admins can
+    provider to your Databricks workspace. SCIM streamlines onboarding a new employee or team by using your
+    identity provider to create users and groups in Databricks workspace and give them the proper level of
+    access. When a user leaves your organization or no longer needs access to Databricks workspace, admins can
     terminate the user in your identity provider and that user’s account will also be removed from
-    Databricks Workspace. This ensures a consistent offboarding process and prevents unauthorized users from
+    Databricks workspace. This ensures a consistent offboarding process and prevents unauthorized users from
     accessing sensitive data."""
 
     def __init__(self, api_client):
@@ -1568,7 +1568,7 @@ class UsersAPI:
                **kwargs) -> User:
         """Create a new user.
         
-        Creates a new user in the Databricks Workspace. This new user will also be added to the Databricks
+        Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
         account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -1590,7 +1590,7 @@ class UsersAPI:
     def delete(self, id: str, **kwargs):
         """Delete a user.
         
-        Deletes a user. Deleting a user from a Databricks Workspace also removes objects associated with the
+        Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
         user."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -1601,7 +1601,7 @@ class UsersAPI:
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
         
-        Gets information for a specific user in Databricks Workspace."""
+        Gets information for a specific user in Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetUserRequest(id=id)
@@ -1621,7 +1621,7 @@ class UsersAPI:
              **kwargs) -> Iterator[User]:
         """List users.
         
-        Gets details for all the users associated with a Databricks Workspace."""
+        Gets details for all the users associated with a Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListUsersRequest(attributes=attributes,
@@ -1724,7 +1724,7 @@ class WorkspaceAssignmentAPI:
     def list(self, workspace_id: int, **kwargs) -> Iterator[PermissionAssignment]:
         """Get permission assignments.
         
-        Get the permission assignments for the specified Databricks Account and Databricks Workspace."""
+        Get the permission assignments for the specified Databricks account and Databricks workspace."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListWorkspaceAssignmentRequest(workspace_id=workspace_id)
