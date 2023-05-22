@@ -35,6 +35,7 @@ class CreatePipeline:
     libraries: 'List[PipelineLibrary]' = None
     name: str = None
     photon: bool = None
+    serverless: bool = None
     storage: str = None
     target: str = None
     trigger: 'PipelineTrigger' = None
@@ -55,6 +56,7 @@ class CreatePipeline:
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.name: body['name'] = self.name
         if self.photon: body['photon'] = self.photon
+        if self.serverless: body['serverless'] = self.serverless
         if self.storage: body['storage'] = self.storage
         if self.target: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
@@ -76,6 +78,7 @@ class CreatePipeline:
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    photon=d.get('photon', None),
+                   serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
@@ -155,6 +158,7 @@ class EditPipeline:
     libraries: 'List[PipelineLibrary]' = None
     name: str = None
     photon: bool = None
+    serverless: bool = None
     storage: str = None
     target: str = None
     trigger: 'PipelineTrigger' = None
@@ -176,6 +180,7 @@ class EditPipeline:
         if self.name: body['name'] = self.name
         if self.photon: body['photon'] = self.photon
         if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.serverless: body['serverless'] = self.serverless
         if self.storage: body['storage'] = self.storage
         if self.target: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
@@ -198,6 +203,7 @@ class EditPipeline:
                    name=d.get('name', None),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
+                   serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
@@ -651,6 +657,7 @@ class PipelineSpec:
     libraries: 'List[PipelineLibrary]' = None
     name: str = None
     photon: bool = None
+    serverless: bool = None
     storage: str = None
     target: str = None
     trigger: 'PipelineTrigger' = None
@@ -669,6 +676,7 @@ class PipelineSpec:
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.name: body['name'] = self.name
         if self.photon: body['photon'] = self.photon
+        if self.serverless: body['serverless'] = self.serverless
         if self.storage: body['storage'] = self.storage
         if self.target: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
@@ -688,6 +696,7 @@ class PipelineSpec:
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    photon=d.get('photon', None),
+                   serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
@@ -1076,6 +1085,7 @@ class PipelinesAPI:
                libraries: List[PipelineLibrary] = None,
                name: str = None,
                photon: bool = None,
+               serverless: bool = None,
                storage: str = None,
                target: str = None,
                trigger: PipelineTrigger = None,
@@ -1100,6 +1110,7 @@ class PipelinesAPI:
                                      libraries=libraries,
                                      name=name,
                                      photon=photon,
+                                     serverless=serverless,
                                      storage=storage,
                                      target=target,
                                      trigger=trigger)
@@ -1299,6 +1310,7 @@ class PipelinesAPI:
                libraries: List[PipelineLibrary] = None,
                name: str = None,
                photon: bool = None,
+               serverless: bool = None,
                storage: str = None,
                target: str = None,
                trigger: PipelineTrigger = None,
@@ -1323,6 +1335,7 @@ class PipelinesAPI:
                                    name=name,
                                    photon=photon,
                                    pipeline_id=pipeline_id,
+                                   serverless=serverless,
                                    storage=storage,
                                    target=target,
                                    trigger=trigger)

@@ -154,6 +154,7 @@ class BaseClusterInfo:
     enable_elastic_disk: bool = None
     enable_local_disk_encryption: bool = None
     gcp_attributes: 'GcpAttributes' = None
+    init_scripts: 'List[InitScriptInfo]' = None
     instance_pool_id: str = None
     node_type_id: str = None
     num_workers: int = None
@@ -181,6 +182,7 @@ class BaseClusterInfo:
         if self.enable_local_disk_encryption:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
         if self.node_type_id: body['node_type_id'] = self.node_type_id
         if self.num_workers: body['num_workers'] = self.num_workers
@@ -208,6 +210,7 @@ class BaseClusterInfo:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -307,6 +310,7 @@ class ClusterAttributes:
     enable_elastic_disk: bool = None
     enable_local_disk_encryption: bool = None
     gcp_attributes: 'GcpAttributes' = None
+    init_scripts: 'List[InitScriptInfo]' = None
     instance_pool_id: str = None
     node_type_id: str = None
     policy_id: str = None
@@ -331,6 +335,7 @@ class ClusterAttributes:
         if self.enable_local_disk_encryption:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
         if self.node_type_id: body['node_type_id'] = self.node_type_id
         if self.policy_id: body['policy_id'] = self.policy_id
@@ -356,6 +361,7 @@ class ClusterAttributes:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
@@ -418,6 +424,7 @@ class ClusterInfo:
     enable_local_disk_encryption: bool = None
     executors: 'List[SparkNode]' = None
     gcp_attributes: 'GcpAttributes' = None
+    init_scripts: 'List[InitScriptInfo]' = None
     instance_pool_id: str = None
     jdbc_port: int = None
     last_restarted_time: int = None
@@ -464,6 +471,7 @@ class ClusterInfo:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.executors: body['executors'] = [v.as_dict() for v in self.executors]
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
         if self.jdbc_port: body['jdbc_port'] = self.jdbc_port
         if self.last_restarted_time: body['last_restarted_time'] = self.last_restarted_time
@@ -510,6 +518,7 @@ class ClusterInfo:
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    executors=_repeated(d, 'executors', SparkNode),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    jdbc_port=d.get('jdbc_port', None),
                    last_restarted_time=d.get('last_restarted_time', None),
@@ -711,6 +720,7 @@ class CreateCluster:
     enable_elastic_disk: bool = None
     enable_local_disk_encryption: bool = None
     gcp_attributes: 'GcpAttributes' = None
+    init_scripts: 'List[InitScriptInfo]' = None
     instance_pool_id: str = None
     node_type_id: str = None
     num_workers: int = None
@@ -739,6 +749,7 @@ class CreateCluster:
         if self.enable_local_disk_encryption:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
         if self.node_type_id: body['node_type_id'] = self.node_type_id
         if self.num_workers: body['num_workers'] = self.num_workers
@@ -767,6 +778,7 @@ class CreateCluster:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -1182,6 +1194,7 @@ class EditCluster:
     enable_elastic_disk: bool = None
     enable_local_disk_encryption: bool = None
     gcp_attributes: 'GcpAttributes' = None
+    init_scripts: 'List[InitScriptInfo]' = None
     instance_pool_id: str = None
     node_type_id: str = None
     num_workers: int = None
@@ -1211,6 +1224,7 @@ class EditCluster:
         if self.enable_local_disk_encryption:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
         if self.node_type_id: body['node_type_id'] = self.node_type_id
         if self.num_workers: body['num_workers'] = self.num_workers
@@ -1240,6 +1254,7 @@ class EditCluster:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -1859,6 +1874,26 @@ class GlobalInitScriptUpdateRequest:
                    position=d.get('position', None),
                    script=d.get('script', None),
                    script_id=d.get('script_id', None))
+
+
+@dataclass
+class InitScriptInfo:
+    dbfs: 'DbfsStorageInfo' = None
+    s3: 'S3StorageInfo' = None
+    workspace: 'WorkspaceStorageInfo' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dbfs: body['dbfs'] = self.dbfs.as_dict()
+        if self.s3: body['s3'] = self.s3.as_dict()
+        if self.workspace: body['workspace'] = self.workspace.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InitScriptInfo':
+        return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
+                   s3=_from_dict(d, 's3', S3StorageInfo),
+                   workspace=_from_dict(d, 'workspace', WorkspaceStorageInfo))
 
 
 @dataclass
@@ -3007,6 +3042,20 @@ class WorkloadType:
         return cls(clients=_from_dict(d, 'clients', ClientsTypes))
 
 
+@dataclass
+class WorkspaceStorageInfo:
+    destination: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.destination: body['destination'] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceStorageInfo':
+        return cls(destination=d.get('destination', None))
+
+
 class ClusterPoliciesAPI:
     """Cluster policy limits the ability to configure clusters based on a set of rules. The policy rules limit
     the attributes or attribute values available for cluster creation. Cluster policies have ACLs that limit
@@ -3238,6 +3287,7 @@ class ClustersAPI:
                enable_elastic_disk: bool = None,
                enable_local_disk_encryption: bool = None,
                gcp_attributes: GcpAttributes = None,
+               init_scripts: List[InitScriptInfo] = None,
                instance_pool_id: str = None,
                node_type_id: str = None,
                num_workers: int = None,
@@ -3276,6 +3326,7 @@ class ClustersAPI:
                                     enable_elastic_disk=enable_elastic_disk,
                                     enable_local_disk_encryption=enable_local_disk_encryption,
                                     gcp_attributes=gcp_attributes,
+                                    init_scripts=init_scripts,
                                     instance_pool_id=instance_pool_id,
                                     node_type_id=node_type_id,
                                     num_workers=num_workers,
@@ -3309,6 +3360,7 @@ class ClustersAPI:
                         enable_elastic_disk: bool = None,
                         enable_local_disk_encryption: bool = None,
                         gcp_attributes: GcpAttributes = None,
+                        init_scripts: List[InitScriptInfo] = None,
                         instance_pool_id: str = None,
                         node_type_id: str = None,
                         num_workers: int = None,
@@ -3333,6 +3385,7 @@ class ClustersAPI:
                            enable_elastic_disk=enable_elastic_disk,
                            enable_local_disk_encryption=enable_local_disk_encryption,
                            gcp_attributes=gcp_attributes,
+                           init_scripts=init_scripts,
                            instance_pool_id=instance_pool_id,
                            node_type_id=node_type_id,
                            num_workers=num_workers,
@@ -3378,6 +3431,7 @@ class ClustersAPI:
              enable_elastic_disk: bool = None,
              enable_local_disk_encryption: bool = None,
              gcp_attributes: GcpAttributes = None,
+             init_scripts: List[InitScriptInfo] = None,
              instance_pool_id: str = None,
              node_type_id: str = None,
              num_workers: int = None,
@@ -3418,6 +3472,7 @@ class ClustersAPI:
                                   enable_elastic_disk=enable_elastic_disk,
                                   enable_local_disk_encryption=enable_local_disk_encryption,
                                   gcp_attributes=gcp_attributes,
+                                  init_scripts=init_scripts,
                                   instance_pool_id=instance_pool_id,
                                   node_type_id=node_type_id,
                                   num_workers=num_workers,
@@ -3450,6 +3505,7 @@ class ClustersAPI:
                       enable_elastic_disk: bool = None,
                       enable_local_disk_encryption: bool = None,
                       gcp_attributes: GcpAttributes = None,
+                      init_scripts: List[InitScriptInfo] = None,
                       instance_pool_id: str = None,
                       node_type_id: str = None,
                       num_workers: int = None,
@@ -3475,6 +3531,7 @@ class ClustersAPI:
                          enable_elastic_disk=enable_elastic_disk,
                          enable_local_disk_encryption=enable_local_disk_encryption,
                          gcp_attributes=gcp_attributes,
+                         init_scripts=init_scripts,
                          instance_pool_id=instance_pool_id,
                          node_type_id=node_type_id,
                          num_workers=num_workers,
@@ -3525,8 +3582,8 @@ class ClustersAPI:
     def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
         """Get cluster info.
         
-        "Retrieves the information for a cluster given its identifier. Clusters can be described while they
-        are running, or up to 60 days after they are terminated."""
+        Retrieves the information for a cluster given its identifier. Clusters can be described while they are
+        running, or up to 60 days after they are terminated."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetClusterRequest(cluster_id=cluster_id)
@@ -3988,7 +4045,7 @@ class GlobalInitScriptsAPI:
     def list(self) -> Iterator[GlobalInitScriptDetails]:
         """Get init scripts.
         
-        "Get a list of all global init scripts for this workspace. This returns all properties for each script
+        Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
         script](#operation/get-script) operation."""
 

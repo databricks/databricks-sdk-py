@@ -138,19 +138,36 @@ class CreateCredentialStsRole:
 
 @dataclass
 class CreateCustomerManagedKeyRequest:
-    aws_key_info: 'CreateAwsKeyInfo'
     use_cases: 'List[KeyUseCase]'
+    aws_key_info: 'CreateAwsKeyInfo' = None
+    gcp_key_info: 'CreateGcpKeyInfo' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
+        if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
         if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCustomerManagedKeyRequest':
         return cls(aws_key_info=_from_dict(d, 'aws_key_info', CreateAwsKeyInfo),
+                   gcp_key_info=_from_dict(d, 'gcp_key_info', CreateGcpKeyInfo),
                    use_cases=d.get('use_cases', None))
+
+
+@dataclass
+class CreateGcpKeyInfo:
+    kms_key_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.kms_key_id: body['kms_key_id'] = self.kms_key_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateGcpKeyInfo':
+        return cls(kms_key_id=d.get('kms_key_id', None))
 
 
 @dataclass
@@ -326,6 +343,7 @@ class CustomerManagedKey:
     aws_key_info: 'AwsKeyInfo' = None
     creation_time: int = None
     customer_managed_key_id: str = None
+    gcp_key_info: 'GcpKeyInfo' = None
     use_cases: 'List[KeyUseCase]' = None
 
     def as_dict(self) -> dict:
@@ -334,6 +352,7 @@ class CustomerManagedKey:
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
         if self.creation_time: body['creation_time'] = self.creation_time
         if self.customer_managed_key_id: body['customer_managed_key_id'] = self.customer_managed_key_id
+        if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
         if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
         return body
 
@@ -343,6 +362,7 @@ class CustomerManagedKey:
                    aws_key_info=_from_dict(d, 'aws_key_info', AwsKeyInfo),
                    creation_time=d.get('creation_time', None),
                    customer_managed_key_id=d.get('customer_managed_key_id', None),
+                   gcp_key_info=_from_dict(d, 'gcp_key_info', GcpKeyInfo),
                    use_cases=d.get('use_cases', None))
 
 
@@ -414,6 +434,20 @@ class ErrorType(Enum):
     securityGroup = 'securityGroup'
     subnet = 'subnet'
     vpc = 'vpc'
+
+
+@dataclass
+class GcpKeyInfo:
+    kms_key_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.kms_key_id: body['kms_key_id'] = self.kms_key_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GcpKeyInfo':
+        return cls(kms_key_id=d.get('kms_key_id', None))
 
 
 @dataclass
@@ -1125,7 +1159,11 @@ class EncryptionKeysAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, aws_key_info: CreateAwsKeyInfo, use_cases: List[KeyUseCase],
+    def create(self,
+               use_cases: List[KeyUseCase],
+               *,
+               aws_key_info: CreateAwsKeyInfo = None,
+               gcp_key_info: CreateGcpKeyInfo = None,
                **kwargs) -> CustomerManagedKey:
         """Create encryption key configuration.
         
@@ -1138,13 +1176,15 @@ class EncryptionKeysAPI:
         cluster EBS volume data.
         
         **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
-        and AWS regions.
+        and AWS regions that currently support creation of Databricks workspaces.
         
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateCustomerManagedKeyRequest(aws_key_info=aws_key_info, use_cases=use_cases)
+            request = CreateCustomerManagedKeyRequest(aws_key_info=aws_key_info,
+                                                      gcp_key_info=gcp_key_info,
+                                                      use_cases=use_cases)
         body = request.as_dict()
 
         json = self._api.do('POST',
@@ -1180,7 +1220,7 @@ class EncryptionKeysAPI:
         **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
         and AWS regions.
         
-        This operation is available only if your account is on the E2 version of the platform."""
+        This operation is available only if your account is on the E2 version of the platform.","""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetEncryptionKeyRequest(customer_managed_key_id=customer_managed_key_id)

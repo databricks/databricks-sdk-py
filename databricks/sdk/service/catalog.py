@@ -60,6 +60,7 @@ class CatalogInfo:
     created_by: str = None
     effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
     enable_auto_maintenance: 'EnableAutoMaintenance' = None
+    isolation_mode: 'IsolationMode' = None
     metastore_id: str = None
     name: str = None
     owner: str = None
@@ -80,6 +81,7 @@ class CatalogInfo:
         if self.effective_auto_maintenance_flag:
             body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
         if self.enable_auto_maintenance: body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
+        if self.isolation_mode: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
@@ -101,6 +103,7 @@ class CatalogInfo:
                    effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
                                                               EffectiveAutoMaintenanceFlag),
                    enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -523,6 +526,22 @@ class CreateVolumeRequestContent:
                    volume_type=_enum(d, 'volume_type', VolumeType))
 
 
+@dataclass
+class CurrentWorkspaceBindings:
+    """Currently assigned workspaces"""
+
+    workspaces: 'List[int]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.workspaces: body['workspaces'] = [v for v in self.workspaces]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CurrentWorkspaceBindings':
+        return cls(workspaces=d.get('workspaces', None))
+
+
 class DataSourceFormat(Enum):
     """Data source format"""
 
@@ -550,6 +569,14 @@ class DeleteAccountMetastoreRequest:
     """Delete a metastore"""
 
     metastore_id: str
+
+
+@dataclass
+class DeleteAccountStorageCredentialRequest:
+    """Delete a storage credential"""
+
+    metastore_id: str
+    name: str
 
 
 @dataclass
@@ -620,6 +647,24 @@ class DeleteVolumeRequest:
     """Delete a Volume"""
 
     full_name_arg: str
+
+
+@dataclass
+class DeltaRuntimePropertiesKvPairs:
+    """Properties pertaining to the current state of the delta table as given by the commit server.
+    
+    This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
+
+    delta_runtime_properties: 'Dict[str,str]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.delta_runtime_properties: body['delta_runtime_properties'] = self.delta_runtime_properties
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeltaRuntimePropertiesKvPairs':
+        return cls(delta_runtime_properties=d.get('delta_runtime_properties', None))
 
 
 @dataclass
@@ -1197,6 +1242,20 @@ class GetTableRequest:
 
 
 @dataclass
+class GetWorkspaceBindingRequest:
+    """Get catalog workspace bindings"""
+
+    name: str
+
+
+class IsolationMode(Enum):
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+
+    ISOLATED = 'ISOLATED'
+    OPEN = 'OPEN'
+
+
+@dataclass
 class ListAccountMetastoreAssignmentsRequest:
     """Get all workspaces assigned to a metastore"""
 
@@ -1294,6 +1353,21 @@ class ListSchemasResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSchemasResponse':
         return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
+
+
+@dataclass
+class ListStorageCredentialsResponse:
+    storage_credentials: 'List[StorageCredentialInfo]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.storage_credentials:
+            body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListStorageCredentialsResponse':
+        return cls(storage_credentials=_repeated(d, 'storage_credentials', StorageCredentialInfo))
 
 
 @dataclass
@@ -1789,7 +1863,7 @@ class TableInfo:
     data_access_configuration_id: str = None
     data_source_format: 'DataSourceFormat' = None
     deleted_at: int = None
-    delta_runtime_properties_kvpairs: Any = None
+    delta_runtime_properties_kvpairs: 'DeltaRuntimePropertiesKvPairs' = None
     effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
     enable_auto_maintenance: 'EnableAutoMaintenance' = None
     full_name: str = None
@@ -1822,7 +1896,7 @@ class TableInfo:
         if self.data_source_format: body['data_source_format'] = self.data_source_format.value
         if self.deleted_at: body['deleted_at'] = self.deleted_at
         if self.delta_runtime_properties_kvpairs:
-            body['delta_runtime_properties_kvpairs'] = self.delta_runtime_properties_kvpairs
+            body['delta_runtime_properties_kvpairs'] = self.delta_runtime_properties_kvpairs.as_dict()
         if self.effective_auto_maintenance_flag:
             body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
         if self.enable_auto_maintenance: body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
@@ -1855,7 +1929,8 @@ class TableInfo:
                    data_access_configuration_id=d.get('data_access_configuration_id', None),
                    data_source_format=_enum(d, 'data_source_format', DataSourceFormat),
                    deleted_at=d.get('deleted_at', None),
-                   delta_runtime_properties_kvpairs=d.get('delta_runtime_properties_kvpairs', None),
+                   delta_runtime_properties_kvpairs=_from_dict(d, 'delta_runtime_properties_kvpairs',
+                                                               DeltaRuntimePropertiesKvPairs),
                    effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
                                                               EffectiveAutoMaintenanceFlag),
                    enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
@@ -1967,12 +2042,14 @@ class UpdateAutoMaintenanceResponse:
 class UpdateCatalog:
     name: str
     comment: str = None
+    isolation_mode: 'IsolationMode' = None
     owner: str = None
     properties: 'Dict[str,str]' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.comment: body['comment'] = self.comment
+        if self.isolation_mode: body['isolation_mode'] = self.isolation_mode.value
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
@@ -1981,6 +2058,7 @@ class UpdateCatalog:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateCatalog':
         return cls(comment=d.get('comment', None),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
@@ -2152,6 +2230,7 @@ class UpdateSchema:
 
 @dataclass
 class UpdateStorageCredential:
+    metastore_id: str
     name: str
     aws_iam_role: 'AwsIamRole' = None
     azure_service_principal: 'AzureServicePrincipal' = None
@@ -2171,6 +2250,7 @@ class UpdateStorageCredential:
         if self.force: body['force'] = self.force
         if self.gcp_service_account_key:
             body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
+        if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
         if self.read_only: body['read_only'] = self.read_only
@@ -2184,6 +2264,7 @@ class UpdateStorageCredential:
                    comment=d.get('comment', None),
                    force=d.get('force', None),
                    gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
+                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
@@ -2211,6 +2292,26 @@ class UpdateVolumeRequestContent:
                    full_name_arg=d.get('full_name_arg', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None))
+
+
+@dataclass
+class UpdateWorkspaceBindings:
+    name: str
+    assign_workspaces: 'List[int]' = None
+    unassign_workspaces: 'List[int]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.assign_workspaces: body['assign_workspaces'] = [v for v in self.assign_workspaces]
+        if self.name: body['name'] = self.name
+        if self.unassign_workspaces: body['unassign_workspaces'] = [v for v in self.unassign_workspaces]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceBindings':
+        return cls(assign_workspaces=d.get('assign_workspaces', None),
+                   name=d.get('name', None),
+                   unassign_workspaces=d.get('unassign_workspaces', None))
 
 
 @dataclass
@@ -2469,7 +2570,7 @@ class AccountMetastoresAPI:
     def delete(self, metastore_id: str, **kwargs):
         """Delete a metastore.
         
-        Deletes a Databricks Unity Catalog metastore for an account, both specified by ID."""
+        Deletes a Unity Catalog metastore for an account, both specified by ID."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountMetastoreRequest(metastore_id=metastore_id)
@@ -2479,7 +2580,7 @@ class AccountMetastoresAPI:
     def get(self, metastore_id: str, **kwargs) -> MetastoreInfo:
         """Get a metastore.
         
-        Gets a Databricks Unity Catalog metastore from an account, both specified by ID."""
+        Gets a Unity Catalog metastore from an account, both specified by ID."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountMetastoreRequest(metastore_id=metastore_id)
@@ -2575,6 +2676,20 @@ class AccountStorageCredentialsAPI:
             body=body)
         return StorageCredentialInfo.from_dict(json)
 
+    def delete(self, metastore_id: str, name: str, **kwargs):
+        """Delete a storage credential.
+        
+        Deletes a storage credential from the metastore. The caller must be an owner of the storage
+        credential."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteAccountStorageCredentialRequest(metastore_id=metastore_id, name=name)
+
+        self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/'
+        )
+
     def get(self, metastore_id: str, name: str, **kwargs) -> StorageCredentialInfo:
         """Gets the named storage credential.
         
@@ -2590,7 +2705,7 @@ class AccountStorageCredentialsAPI:
         )
         return StorageCredentialInfo.from_dict(json)
 
-    def list(self, metastore_id: str, **kwargs) -> Iterator[StorageCredentialInfo]:
+    def list(self, metastore_id: str, **kwargs) -> ListStorageCredentialsResponse:
         """Get all storage credentials assigned to a metastore.
         
         Gets a list of all storage credentials that have been assigned to given metastore."""
@@ -2601,7 +2716,44 @@ class AccountStorageCredentialsAPI:
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials')
-        return [StorageCredentialInfo.from_dict(v) for v in json]
+        return ListStorageCredentialsResponse.from_dict(json)
+
+    def update(self,
+               metastore_id: str,
+               name: str,
+               *,
+               aws_iam_role: AwsIamRole = None,
+               azure_service_principal: AzureServicePrincipal = None,
+               comment: str = None,
+               force: bool = None,
+               gcp_service_account_key: GcpServiceAccountKey = None,
+               owner: str = None,
+               read_only: bool = None,
+               skip_validation: bool = None,
+               **kwargs) -> StorageCredentialInfo:
+        """Updates a storage credential.
+        
+        Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
+        If the caller is a metastore admin, only the __owner__ credential can be changed."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateStorageCredential(aws_iam_role=aws_iam_role,
+                                              azure_service_principal=azure_service_principal,
+                                              comment=comment,
+                                              force=force,
+                                              gcp_service_account_key=gcp_service_account_key,
+                                              metastore_id=metastore_id,
+                                              name=name,
+                                              owner=owner,
+                                              read_only=read_only,
+                                              skip_validation=skip_validation)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'PUT',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/',
+            body=body)
+        return StorageCredentialInfo.from_dict(json)
 
 
 class CatalogsAPI:
@@ -2682,6 +2834,7 @@ class CatalogsAPI:
                name: str,
                *,
                comment: str = None,
+               isolation_mode: IsolationMode = None,
                owner: str = None,
                properties: Dict[str, str] = None,
                **kwargs) -> CatalogInfo:
@@ -2691,7 +2844,11 @@ class CatalogsAPI:
         catalog, or a metastore admin (when changing the owner field of the catalog)."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateCatalog(comment=comment, name=name, owner=owner, properties=properties)
+            request = UpdateCatalog(comment=comment,
+                                    isolation_mode=isolation_mode,
+                                    name=name,
+                                    owner=owner,
+                                    properties=properties)
         body = request.as_dict()
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{request.name}', body=body)
@@ -3386,9 +3543,10 @@ class StorageCredentialsAPI:
         elements in the array."""
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials')
-        return [StorageCredentialInfo.from_dict(v) for v in json]
+        return [StorageCredentialInfo.from_dict(v) for v in json.get('storage_credentials', [])]
 
     def update(self,
+               metastore_id: str,
                name: str,
                *,
                aws_iam_role: AwsIamRole = None,
@@ -3412,6 +3570,7 @@ class StorageCredentialsAPI:
                                               comment=comment,
                                               force=force,
                                               gcp_service_account_key=gcp_service_account_key,
+                                              metastore_id=metastore_id,
                                               name=name,
                                               owner=owner,
                                               read_only=read_only,
@@ -3765,3 +3924,47 @@ class VolumesAPI:
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/volumes/{request.full_name_arg}', body=body)
         return VolumeInfo.from_dict(json)
+
+
+class WorkspaceBindingsAPI:
+    """A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ catalog can be accessed
+    from any workspace, while an __ISOLATED__ catalog can only be access from a configured list of workspaces.
+    
+    A catalog's workspace bindings can be configured by a metastore admin or the owner of the catalog."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, name: str, **kwargs) -> CurrentWorkspaceBindings:
+        """Get catalog workspace bindings.
+        
+        Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
+        catalog."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetWorkspaceBindingRequest(name=name)
+
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{request.name}')
+        return CurrentWorkspaceBindings.from_dict(json)
+
+    def update(self,
+               name: str,
+               *,
+               assign_workspaces: List[int] = None,
+               unassign_workspaces: List[int] = None,
+               **kwargs) -> CurrentWorkspaceBindings:
+        """Update catalog workspace bindings.
+        
+        Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
+        catalog."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateWorkspaceBindings(assign_workspaces=assign_workspaces,
+                                              name=name,
+                                              unassign_workspaces=unassign_workspaces)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH',
+                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{request.name}',
+                            body=body)
+        return CurrentWorkspaceBindings.from_dict(json)

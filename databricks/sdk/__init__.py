@@ -12,7 +12,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             MetastoresAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             TableConstraintsAPI, TablesAPI,
-                                            VolumesAPI)
+                                            VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
                                             GlobalInitScriptsAPI,
@@ -30,7 +30,8 @@ from databricks.sdk.service.jobs import JobsAPI
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
 from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
                                            OAuthEnrollmentAPI,
-                                           PublishedAppIntegrationAPI)
+                                           PublishedAppIntegrationAPI,
+                                           ServicePrincipalSecretsAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
@@ -152,6 +153,7 @@ class WorkspaceClient:
         self.volumes = VolumesAPI(self.api_client)
         self.warehouses = WarehousesAPI(self.api_client)
         self.workspace = WorkspaceAPI(self.api_client)
+        self.workspace_bindings = WorkspaceBindingsAPI(self.api_client)
         self.workspace_conf = WorkspaceConfAPI(self.api_client)
 
 
@@ -219,6 +221,7 @@ class AccountClient:
         self.o_auth_enrollment = OAuthEnrollmentAPI(self.api_client)
         self.private_access = PrivateAccessAPI(self.api_client)
         self.published_app_integration = PublishedAppIntegrationAPI(self.api_client)
+        self.service_principal_secrets = ServicePrincipalSecretsAPI(self.api_client)
         self.service_principals = AccountServicePrincipalsAPI(self.api_client)
         self.storage = StorageAPI(self.api_client)
         self.storage_credentials = AccountStorageCredentialsAPI(self.api_client)
