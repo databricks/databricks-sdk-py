@@ -78,9 +78,10 @@ def test_create_job(w):
                                              JobTaskSettings, PythonWheelTask)
 
     cluster = JobCluster(job_cluster_key="cluster1",
-                         new_cluster=BaseClusterInfo(num_workers=2,
-                                                     spark_version=w.clusters.select_spark_version(),
-                                                     node_type_id=w.clusters.select_node_type(local_disk=True)))
+                         new_cluster=BaseClusterInfo(
+                             num_workers=2,
+                             spark_version=w.clusters.select_spark_version(),
+                             node_type_id=w.clusters.select_node_type(local_disk=True)))
 
     task1 = JobTaskSettings(task_key="task1",
                             job_cluster_key="cluster1",
