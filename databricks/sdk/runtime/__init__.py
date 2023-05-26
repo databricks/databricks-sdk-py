@@ -6,7 +6,8 @@ is_local_implementation = True
 # available to be imported from databricks.sdk.runtime.globals. This import can be used
 # in Python modules so users can access these objects from Files more easily.
 dbruntime_objects = [
-    "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark"
+    "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark",
+    "init_runtime_native_auth"
 ]
 
 RuntimeAuth = Tuple[str, Callable[[], Dict[str, str]]]
