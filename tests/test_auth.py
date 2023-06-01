@@ -267,12 +267,12 @@ def get_test_server(host: str, token: str, expires_after: int):
     def inner(*args, **kwargs):
         nonlocal counter
         headers = kwargs['headers']
-        if headers.get(MetadataServiceTokenSource.MetadataServiceVersionHeader
-                       ) != MetadataServiceTokenSource.MetadataServiceVersion:
+        if headers.get(MetadataServiceTokenSource.METADATA_SERVICE_VERSION_HEADER
+                       ) != MetadataServiceTokenSource.METADATA_SERVICE_VERSION:
             resp = requests.Response()
             resp.status_code = 400
             return resp
-        if headers.get(MetadataServiceTokenSource.MetadataServiceHostHeader) != host:
+        if headers.get(MetadataServiceTokenSource.METADATA_SERVICE_HOST_HEADER) != host:
             resp = requests.Response()
             resp.status_code = 404
             return resp

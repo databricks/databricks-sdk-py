@@ -314,9 +314,9 @@ def bricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
 
 class MetadataServiceTokenSource(Refreshable):
     """ Obtain the token granted by Databricks Metadata Service """
-    MetadataServiceVersion = "1"
-    MetadataServiceVersionHeader = "X-Databricks-Metadata-Version"
-    MetadataServiceHostHeader = "X-Databricks-Host"
+    METADATA_SERVICE_VERSION = "1"
+    METADATA_SERVICE_VERSION_HEADER = "X-Databricks-Metadata-Version"
+    METADATA_SERVICE_HOST_HEADER = "X-Databricks-Host"
     _metadata_service_timeout = 10 # seconds
 
     def __init__(self, cfg: 'Config'):
@@ -328,8 +328,8 @@ class MetadataServiceTokenSource(Refreshable):
         resp = requests.get(self.url,
                             timeout=self._metadata_service_timeout,
                             headers={
-                                self.MetadataServiceVersionHeader: self.MetadataServiceVersion,
-                                self.MetadataServiceHostHeader: self.host
+                                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
+                                self.METADATA_SERVICE_HOST_HEADER: self.host
                             })
         json_resp: dict[str, str] = resp.json()
         access_token = json_resp.get("access_token", None)
