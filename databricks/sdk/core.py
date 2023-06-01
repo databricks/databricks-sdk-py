@@ -448,7 +448,7 @@ class Config:
     debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
-    metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL', auth='metadata-service')
+    metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL', auth='metadata-service', sensitive=True)
 
     def __init__(self,
                  *,
