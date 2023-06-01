@@ -6,7 +6,8 @@ is_local_implementation = True
 # available to be imported from databricks.sdk.runtime.globals. This import can be used
 # in Python modules so users can access these objects from Files more easily.
 dbruntime_objects = [
-    "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark"
+    "display", "displayHTML", "dbutils", "table", "sql", "udf", "getArgument", "sc", "sqlContext", "spark",
+    "init_runtime_native_auth"
 ]
 
 RuntimeAuth = Tuple[str, Callable[[], Dict[str, str]]]
@@ -23,6 +24,8 @@ try:
     userNamespaceGlobals = UserNamespaceInitializer.getOrCreate().get_namespace_globals()
     _globals = globals()
     for var in dbruntime_objects:
+        if var not in userNamespaceGlobals:
+            continue
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
 except ImportError:
