@@ -24,6 +24,8 @@ try:
     userNamespaceGlobals = UserNamespaceInitializer.getOrCreate().get_namespace_globals()
     _globals = globals()
     for var in dbruntime_objects:
+        if var not in userNamespaceGlobals:
+            continue
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
 except ImportError:
