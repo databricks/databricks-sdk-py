@@ -564,7 +564,7 @@ class RetrieveTokenResponse:
 @dataclass
 class RotateRecipientToken:
     existing_token_expire_in_seconds: int
-    name: str
+    name: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -733,8 +733,8 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class UpdateProvider:
-    name: str
     comment: str = None
+    name: str = None
     owner: str = None
     recipient_profile_str: str = None
 
@@ -756,9 +756,9 @@ class UpdateProvider:
 
 @dataclass
 class UpdateRecipient:
-    name: str
     comment: str = None
     ip_access_list: 'IpAccessList' = None
+    name: str = None
     owner: str = None
     properties_kvpairs: 'SecurablePropertiesKvPairs' = None
 
@@ -782,8 +782,8 @@ class UpdateRecipient:
 
 @dataclass
 class UpdateShare:
-    name: str
     comment: str = None
+    name: str = None
     owner: str = None
     updates: 'List[SharedDataObjectUpdate]' = None
 
@@ -805,8 +805,8 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    name: str
     changes: 'List[PermissionsChange]' = None
+    name: str = None
 
     def as_dict(self) -> dict:
         body = {}

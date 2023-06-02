@@ -540,7 +540,7 @@ class DeleteTag:
 
 @dataclass
 class DeleteTransitionRequestRequest:
-    """Delete a ransition request"""
+    """Delete a transition request"""
 
     name: str
     version: str
@@ -724,16 +724,17 @@ class GetModelRequest:
 
 @dataclass
 class GetModelResponse:
-    registered_model: 'ModelDatabricks' = None
+    registered_model_databricks: 'ModelDatabricks' = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        if self.registered_model_databricks:
+            body['registered_model_databricks'] = self.registered_model_databricks.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelResponse':
-        return cls(registered_model=_from_dict(d, 'registered_model', ModelDatabricks))
+        return cls(registered_model_databricks=_from_dict(d, 'registered_model_databricks', ModelDatabricks))
 
 
 @dataclass
@@ -2202,6 +2203,12 @@ class UpdateRunStatus(Enum):
 
 
 class ExperimentsAPI:
+    """Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment. Each
+    experiment lets you visualize, search, and compare runs, as well as download run artifacts or metadata for
+    analysis in other tools. Experiments are maintained in a Databricks hosted MLflow tracking server.
+    
+    Experiments are located in the workspace file tree. You manage experiments using the same tools you use to
+    manage other workspace objects such as folders, notebooks, and libraries."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2457,7 +2464,7 @@ class ExperimentsAPI:
         Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB
         in size and contain:
         
-        * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics - Up to 100 params * Up to
+        * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics * Up to 100 params * Up to
         100 tags
         
         For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900
@@ -2668,6 +2675,8 @@ class ExperimentsAPI:
 
 
 class ModelRegistryAPI:
+    """MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage
+    the full lifecycle of MLflow Models."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2874,7 +2883,7 @@ class ModelRegistryAPI:
                                   *,
                                   comment: str = None,
                                   **kwargs):
-        """Delete a ransition request.
+        """Delete a transition request.
         
         Cancels a model version stage transition request."""
         request = kwargs.get('request', None)

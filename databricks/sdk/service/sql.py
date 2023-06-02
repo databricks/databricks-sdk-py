@@ -559,7 +559,7 @@ class EditAlert:
     name: str
     options: 'AlertOptions'
     query_id: str
-    alert_id: str
+    alert_id: str = None
     rearm: int = None
 
     def as_dict(self) -> dict:
@@ -582,13 +582,13 @@ class EditAlert:
 
 @dataclass
 class EditWarehouseRequest:
-    id: str
     auto_stop_mins: int = None
     channel: 'Channel' = None
     cluster_size: str = None
     creator_name: str = None
     enable_photon: bool = None
     enable_serverless_compute: bool = None
+    id: str = None
     instance_profile_arn: str = None
     max_num_clusters: int = None
     min_num_clusters: int = None
@@ -891,14 +891,15 @@ class ExternalLink:
 
 
 class Format(Enum):
-    """Statement execution supports two result formats: `JSON_ARRAY` (default), and `ARROW_STREAM`.
+    """Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
+    `CSV`.
     
     When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of
     values, where each value is either the *string representation* of a value, or `null`. For
-    example, the output of `SELECT concat('id-', id) AS strId, id AS intId FROM range(3)` would look
-    like this:
+    example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM
+    range(3)` would look like this:
     
-    ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
+    ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
     
     `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
     
@@ -912,9 +913,21 @@ class Format(Enum):
     
     IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS` disposition.
     
-    [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format"""
+    When specifying `format=CSV`, each chunk in the result will be a CSV according to [RFC 4180]
+    standard. All the columns values will have *string representation* similar to the `JSON_ARRAY`
+    format, and `null` values will be encoded as “null”. Only the first chunk in the result
+    would contain a header row with column names. For example, the output of `SELECT concat('id-',
+    id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
+    
+    ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+    
+    IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS` disposition.
+    
+    [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+    [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180"""
 
     ARROW_STREAM = 'ARROW_STREAM'
+    CSV = 'CSV'
     JSON_ARRAY = 'JSON_ARRAY'
 
 
@@ -1425,12 +1438,12 @@ class Query:
 
 @dataclass
 class QueryEditContent:
-    query_id: str
     data_source_id: str = None
     description: str = None
     name: str = None
     options: Any = None
     query: str = None
+    query_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2909,8 +2922,8 @@ class StatementExecutionAPI:
     
     **Fetching result data: format and disposition**
     
-    To specify the result data format, set the `format` field to `JSON_ARRAY` (JSON) or `ARROW_STREAM`
-    ([Apache Arrow Columnar]).
+    To specify the result data format, set the `format` field to `JSON_ARRAY` (JSON), `ARROW_STREAM` ([Apache
+    Arrow Columnar]), or `CSV`.
     
     You can also configure how to fetch the result data in two different modes by setting the `disposition`
     field to `INLINE` or `EXTERNAL_LINKS`.
@@ -2919,8 +2932,8 @@ class StatementExecutionAPI:
     When a statement executed with `INLINE` disposition exceeds this limit, the execution is aborted, and no
     result can be fetched.
     
-    The `EXTERNAL_LINKS` disposition allows fetching large result sets in both `JSON_ARRAY` and `ARROW_STREAM`
-    formats, and with higher throughput.
+    The `EXTERNAL_LINKS` disposition allows fetching large result sets in `JSON_ARRAY`, `ARROW_STREAM` and
+    `CSV` formats, and with higher throughput.
     
     The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`. Databricks recommends that you
     explicit setting the format and the disposition for all production use cases.

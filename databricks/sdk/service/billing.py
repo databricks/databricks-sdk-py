@@ -353,7 +353,7 @@ class OutputFormat(Enum):
 @dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
     status: 'LogDeliveryConfigStatus'
-    log_delivery_configuration_id: str
+    log_delivery_configuration_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -371,7 +371,7 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 @dataclass
 class WrappedBudget:
     budget: 'Budget'
-    budget_id: str
+    budget_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -481,13 +481,13 @@ class BudgetsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, budget: Budget, budget_id: str, **kwargs) -> WrappedBudgetWithStatus:
+    def create(self, budget: Budget, **kwargs) -> WrappedBudgetWithStatus:
         """Create a new budget.
         
         Creates a new budget in the specified account."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = WrappedBudget(budget=budget, budget_id=budget_id)
+            request = WrappedBudget(budget=budget)
         body = request.as_dict()
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/budget', body=body)

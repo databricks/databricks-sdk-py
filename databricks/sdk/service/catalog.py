@@ -33,6 +33,26 @@ class AwsIamRole:
 
 
 @dataclass
+class AzureManagedIdentity:
+    access_connector_id: str
+    credential_id: str = None
+    managed_identity_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_connector_id: body['access_connector_id'] = self.access_connector_id
+        if self.credential_id: body['credential_id'] = self.credential_id
+        if self.managed_identity_id: body['managed_identity_id'] = self.managed_identity_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AzureManagedIdentity':
+        return cls(access_connector_id=d.get('access_connector_id', None),
+                   credential_id=d.get('credential_id', None),
+                   managed_identity_id=d.get('managed_identity_id', None))
+
+
+@dataclass
 class AzureServicePrincipal:
     directory_id: str
     application_id: str
@@ -401,7 +421,7 @@ class CreateMetastore:
 class CreateMetastoreAssignment:
     metastore_id: str
     default_catalog_name: str
-    workspace_id: int
+    workspace_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -446,22 +466,24 @@ class CreateSchema:
 @dataclass
 class CreateStorageCredential:
     name: str
-    metastore_id: str
     aws_iam_role: 'AwsIamRole' = None
+    azure_managed_identity: 'AzureManagedIdentity' = None
     azure_service_principal: 'AzureServicePrincipal' = None
     comment: str = None
-    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    databricks_gcp_service_account: Any = None
+    metastore_id: str = None
     read_only: bool = None
     skip_validation: bool = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.comment: body['comment'] = self.comment
-        if self.gcp_service_account_key:
-            body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
+        if self.databricks_gcp_service_account:
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.read_only: body['read_only'] = self.read_only
@@ -471,9 +493,10 @@ class CreateStorageCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateStorageCredential':
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
-                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
+                   databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
@@ -554,6 +577,22 @@ class DataSourceFormat(Enum):
     PARQUET = 'PARQUET'
     TEXT = 'TEXT'
     UNITY_CATALOG = 'UNITY_CATALOG'
+
+
+@dataclass
+class DatabricksGcpServiceAccountResponse:
+    credential_id: str = None
+    email: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.credential_id: body['credential_id'] = self.credential_id
+        if self.email: body['email'] = self.email
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DatabricksGcpServiceAccountResponse':
+        return cls(credential_id=d.get('credential_id', None), email=d.get('email', None))
 
 
 @dataclass
@@ -652,7 +691,6 @@ class DeleteVolumeRequest:
 @dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
-    
     This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
 
     delta_runtime_properties: 'Dict[str,str]'
@@ -1052,26 +1090,6 @@ class FunctionParameterType(Enum):
 
 
 @dataclass
-class GcpServiceAccountKey:
-    email: str
-    private_key_id: str
-    private_key: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.email: body['email'] = self.email
-        if self.private_key: body['private_key'] = self.private_key
-        if self.private_key_id: body['private_key_id'] = self.private_key_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GcpServiceAccountKey':
-        return cls(email=d.get('email', None),
-                   private_key=d.get('private_key', None),
-                   private_key_id=d.get('private_key_id', None))
-
-
-@dataclass
 class GetAccountMetastoreAssignmentRequest:
     """Gets the metastore assignment for a workspace"""
 
@@ -1308,16 +1326,16 @@ class ListFunctionsRequest:
 
 @dataclass
 class ListFunctionsResponse:
-    schemas: 'List[FunctionInfo]' = None
+    functions: 'List[FunctionInfo]' = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
+        if self.functions: body['functions'] = [v.as_dict() for v in self.functions]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListFunctionsResponse':
-        return cls(schemas=_repeated(d, 'schemas', FunctionInfo))
+        return cls(functions=_repeated(d, 'functions', FunctionInfo))
 
 
 @dataclass
@@ -1748,11 +1766,12 @@ class SecurableType(Enum):
 @dataclass
 class StorageCredentialInfo:
     aws_iam_role: 'AwsIamRole' = None
+    azure_managed_identity: 'AzureManagedIdentity' = None
     azure_service_principal: 'AzureServicePrincipal' = None
     comment: str = None
     created_at: int = None
     created_by: str = None
-    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    databricks_gcp_service_account: 'DatabricksGcpServiceAccountResponse' = None
     id: str = None
     metastore_id: str = None
     name: str = None
@@ -1765,13 +1784,14 @@ class StorageCredentialInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.comment: body['comment'] = self.comment
         if self.created_at: body['created_at'] = self.created_at
         if self.created_by: body['created_by'] = self.created_by
-        if self.gcp_service_account_key:
-            body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
+        if self.databricks_gcp_service_account:
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.id: body['id'] = self.id
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
@@ -1785,11 +1805,13 @@ class StorageCredentialInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StorageCredentialInfo':
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
+                   databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
+                                                             DatabricksGcpServiceAccountResponse),
                    id=d.get('id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2040,9 +2062,9 @@ class UpdateAutoMaintenanceResponse:
 
 @dataclass
 class UpdateCatalog:
-    name: str
     comment: str = None
     isolation_mode: 'IsolationMode' = None
+    name: str = None
     owner: str = None
     properties: 'Dict[str,str]' = None
 
@@ -2066,10 +2088,10 @@ class UpdateCatalog:
 
 @dataclass
 class UpdateExternalLocation:
-    name: str
     comment: str = None
     credential_name: str = None
     force: bool = None
+    name: str = None
     owner: str = None
     read_only: bool = None
     url: str = None
@@ -2098,7 +2120,7 @@ class UpdateExternalLocation:
 
 @dataclass
 class UpdateFunction:
-    name: str
+    name: str = None
     owner: str = None
 
     def as_dict(self) -> dict:
@@ -2114,11 +2136,11 @@ class UpdateFunction:
 
 @dataclass
 class UpdateMetastore:
-    metastore_id: str
-    id: str
     delta_sharing_organization_name: str = None
     delta_sharing_recipient_token_lifetime_in_seconds: int = None
     delta_sharing_scope: 'UpdateMetastoreDeltaSharingScope' = None
+    id: str = None
+    metastore_id: str = None
     name: str = None
     owner: str = None
     privilege_model_version: str = None
@@ -2157,9 +2179,9 @@ class UpdateMetastore:
 
 @dataclass
 class UpdateMetastoreAssignment:
-    workspace_id: int
-    metastore_id: str
     default_catalog_name: str = None
+    metastore_id: str = None
+    workspace_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2184,9 +2206,9 @@ class UpdateMetastoreDeltaSharingScope(Enum):
 
 @dataclass
 class UpdatePermissions:
-    securable_type: 'SecurableType'
-    full_name: str
     changes: 'List[PermissionsChange]' = None
+    full_name: str = None
+    securable_type: 'SecurableType' = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2204,8 +2226,8 @@ class UpdatePermissions:
 
 @dataclass
 class UpdateSchema:
-    full_name: str
     comment: str = None
+    full_name: str = None
     name: str = None
     owner: str = None
     properties: 'Dict[str,str]' = None
@@ -2230,13 +2252,14 @@ class UpdateSchema:
 
 @dataclass
 class UpdateStorageCredential:
-    metastore_id: str
-    name: str
     aws_iam_role: 'AwsIamRole' = None
+    azure_managed_identity: 'AzureManagedIdentity' = None
     azure_service_principal: 'AzureServicePrincipal' = None
     comment: str = None
+    databricks_gcp_service_account: Any = None
     force: bool = None
-    gcp_service_account_key: 'GcpServiceAccountKey' = None
+    metastore_id: str = None
+    name: str = None
     owner: str = None
     read_only: bool = None
     skip_validation: bool = None
@@ -2244,12 +2267,13 @@ class UpdateStorageCredential:
     def as_dict(self) -> dict:
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.comment: body['comment'] = self.comment
+        if self.databricks_gcp_service_account:
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.force: body['force'] = self.force
-        if self.gcp_service_account_key:
-            body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
         if self.metastore_id: body['metastore_id'] = self.metastore_id
         if self.name: body['name'] = self.name
         if self.owner: body['owner'] = self.owner
@@ -2260,10 +2284,11 @@ class UpdateStorageCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateStorageCredential':
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
+                   databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    force=d.get('force', None),
-                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -2273,8 +2298,8 @@ class UpdateStorageCredential:
 
 @dataclass
 class UpdateVolumeRequestContent:
-    full_name_arg: str
     comment: str = None
+    full_name_arg: str = None
     name: str = None
     owner: str = None
 
@@ -2296,8 +2321,8 @@ class UpdateVolumeRequestContent:
 
 @dataclass
 class UpdateWorkspaceBindings:
-    name: str
     assign_workspaces: 'List[int]' = None
+    name: str = None
     unassign_workspaces: 'List[int]' = None
 
     def as_dict(self) -> dict:
@@ -2317,9 +2342,10 @@ class UpdateWorkspaceBindings:
 @dataclass
 class ValidateStorageCredential:
     aws_iam_role: 'AwsIamRole' = None
+    azure_managed_identity: 'AzureManagedIdentity' = None
     azure_service_principal: 'AzureServicePrincipal' = None
+    databricks_gcp_service_account: Any = None
     external_location_name: str = None
-    gcp_service_account_key: 'GcpServiceAccountKey' = None
     read_only: bool = None
     storage_credential_name: Any = None
     url: str = None
@@ -2327,11 +2353,12 @@ class ValidateStorageCredential:
     def as_dict(self) -> dict:
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
+        if self.databricks_gcp_service_account:
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.external_location_name: body['external_location_name'] = self.external_location_name
-        if self.gcp_service_account_key:
-            body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
         if self.read_only: body['read_only'] = self.read_only
         if self.storage_credential_name: body['storage_credential_name'] = self.storage_credential_name
         if self.url: body['url'] = self.url
@@ -2340,9 +2367,10 @@ class ValidateStorageCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidateStorageCredential':
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+                   azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
+                   databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    external_location_name=d.get('external_location_name', None),
-                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    read_only=d.get('read_only', None),
                    storage_credential_name=d.get('storage_credential_name', None),
                    url=d.get('url', None))
@@ -2599,7 +2627,6 @@ class AccountMetastoresAPI:
 
     def update(self,
                metastore_id: str,
-               id: str,
                *,
                delta_sharing_organization_name: str = None,
                delta_sharing_recipient_token_lifetime_in_seconds: int = None,
@@ -2618,7 +2645,6 @@ class AccountMetastoresAPI:
                 delta_sharing_organization_name=delta_sharing_organization_name,
                 delta_sharing_recipient_token_lifetime_in_seconds=delta_sharing_recipient_token_lifetime_in_seconds,
                 delta_sharing_scope=delta_sharing_scope,
-                id=id,
                 metastore_id=metastore_id,
                 name=name,
                 owner=owner,
@@ -2643,9 +2669,10 @@ class AccountStorageCredentialsAPI:
                metastore_id: str,
                *,
                aws_iam_role: AwsIamRole = None,
+               azure_managed_identity: AzureManagedIdentity = None,
                azure_service_principal: AzureServicePrincipal = None,
                comment: str = None,
-               gcp_service_account_key: GcpServiceAccountKey = None,
+               databricks_gcp_service_account: Any = None,
                read_only: bool = None,
                skip_validation: bool = None,
                **kwargs) -> StorageCredentialInfo:
@@ -2661,9 +2688,10 @@ class AccountStorageCredentialsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateStorageCredential(aws_iam_role=aws_iam_role,
+                                              azure_managed_identity=azure_managed_identity,
                                               azure_service_principal=azure_service_principal,
                                               comment=comment,
-                                              gcp_service_account_key=gcp_service_account_key,
+                                              databricks_gcp_service_account=databricks_gcp_service_account,
                                               metastore_id=metastore_id,
                                               name=name,
                                               read_only=read_only,
@@ -2723,10 +2751,11 @@ class AccountStorageCredentialsAPI:
                name: str,
                *,
                aws_iam_role: AwsIamRole = None,
+               azure_managed_identity: AzureManagedIdentity = None,
                azure_service_principal: AzureServicePrincipal = None,
                comment: str = None,
+               databricks_gcp_service_account: Any = None,
                force: bool = None,
-               gcp_service_account_key: GcpServiceAccountKey = None,
                owner: str = None,
                read_only: bool = None,
                skip_validation: bool = None,
@@ -2738,10 +2767,11 @@ class AccountStorageCredentialsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateStorageCredential(aws_iam_role=aws_iam_role,
+                                              azure_managed_identity=azure_managed_identity,
                                               azure_service_principal=azure_service_principal,
                                               comment=comment,
+                                              databricks_gcp_service_account=databricks_gcp_service_account,
                                               force=force,
-                                              gcp_service_account_key=gcp_service_account_key,
                                               metastore_id=metastore_id,
                                               name=name,
                                               owner=owner,
@@ -3304,7 +3334,6 @@ class MetastoresAPI:
                      query=query)
 
     def update(self,
-               metastore_id: str,
                id: str,
                *,
                delta_sharing_organization_name: str = None,
@@ -3325,7 +3354,6 @@ class MetastoresAPI:
                 delta_sharing_recipient_token_lifetime_in_seconds=delta_sharing_recipient_token_lifetime_in_seconds,
                 delta_sharing_scope=delta_sharing_scope,
                 id=id,
-                metastore_id=metastore_id,
                 name=name,
                 owner=owner,
                 privilege_model_version=privilege_model_version,
@@ -3337,9 +3365,9 @@ class MetastoresAPI:
 
     def update_assignment(self,
                           workspace_id: int,
-                          metastore_id: str,
                           *,
                           default_catalog_name: str = None,
+                          metastore_id: str = None,
                           **kwargs):
         """Update an assignment.
         
@@ -3475,12 +3503,12 @@ class StorageCredentialsAPI:
 
     def create(self,
                name: str,
-               metastore_id: str,
                *,
                aws_iam_role: AwsIamRole = None,
+               azure_managed_identity: AzureManagedIdentity = None,
                azure_service_principal: AzureServicePrincipal = None,
                comment: str = None,
-               gcp_service_account_key: GcpServiceAccountKey = None,
+               databricks_gcp_service_account: Any = None,
                read_only: bool = None,
                skip_validation: bool = None,
                **kwargs) -> StorageCredentialInfo:
@@ -3488,18 +3516,19 @@ class StorageCredentialsAPI:
         
         Creates a new storage credential. The request object is specific to the cloud:
         
-        * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure credentials *
-        **GcpServiceAcountKey** for GCP credentials.
+        * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for Azure credentials. *
+        **AzureManagedIdentity** for Azure managed credentials. * **DatabricksGcpServiceAccount** for GCP
+        managed credentials.
         
         The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
         metastore."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateStorageCredential(aws_iam_role=aws_iam_role,
+                                              azure_managed_identity=azure_managed_identity,
                                               azure_service_principal=azure_service_principal,
                                               comment=comment,
-                                              gcp_service_account_key=gcp_service_account_key,
-                                              metastore_id=metastore_id,
+                                              databricks_gcp_service_account=databricks_gcp_service_account,
                                               name=name,
                                               read_only=read_only,
                                               skip_validation=skip_validation)
@@ -3546,14 +3575,14 @@ class StorageCredentialsAPI:
         return [StorageCredentialInfo.from_dict(v) for v in json.get('storage_credentials', [])]
 
     def update(self,
-               metastore_id: str,
                name: str,
                *,
                aws_iam_role: AwsIamRole = None,
+               azure_managed_identity: AzureManagedIdentity = None,
                azure_service_principal: AzureServicePrincipal = None,
                comment: str = None,
+               databricks_gcp_service_account: Any = None,
                force: bool = None,
-               gcp_service_account_key: GcpServiceAccountKey = None,
                owner: str = None,
                read_only: bool = None,
                skip_validation: bool = None,
@@ -3566,11 +3595,11 @@ class StorageCredentialsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateStorageCredential(aws_iam_role=aws_iam_role,
+                                              azure_managed_identity=azure_managed_identity,
                                               azure_service_principal=azure_service_principal,
                                               comment=comment,
+                                              databricks_gcp_service_account=databricks_gcp_service_account,
                                               force=force,
-                                              gcp_service_account_key=gcp_service_account_key,
-                                              metastore_id=metastore_id,
                                               name=name,
                                               owner=owner,
                                               read_only=read_only,
@@ -3583,9 +3612,10 @@ class StorageCredentialsAPI:
     def validate(self,
                  *,
                  aws_iam_role: AwsIamRole = None,
+                 azure_managed_identity: AzureManagedIdentity = None,
                  azure_service_principal: AzureServicePrincipal = None,
+                 databricks_gcp_service_account: Any = None,
                  external_location_name: str = None,
-                 gcp_service_account_key: GcpServiceAccountKey = None,
                  read_only: bool = None,
                  storage_credential_name: Any = None,
                  url: str = None,
@@ -3604,9 +3634,10 @@ class StorageCredentialsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ValidateStorageCredential(aws_iam_role=aws_iam_role,
+                                                azure_managed_identity=azure_managed_identity,
                                                 azure_service_principal=azure_service_principal,
+                                                databricks_gcp_service_account=databricks_gcp_service_account,
                                                 external_location_name=external_location_name,
-                                                gcp_service_account_key=gcp_service_account_key,
                                                 read_only=read_only,
                                                 storage_credential_name=storage_credential_name,
                                                 url=url)

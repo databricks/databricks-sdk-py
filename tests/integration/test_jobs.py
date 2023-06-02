@@ -74,8 +74,7 @@ def test_last_job_runs(w):
 
 
 def test_create_job(w):
-    from databricks.sdk.service.jobs import (BaseClusterInfo, JobCluster,
-                                             JobTaskSettings, PythonWheelTask)
+    from databricks.sdk.service.jobs import (BaseClusterInfo, JobCluster, JobTaskSettings, PythonWheelTask)
 
     cluster = JobCluster(job_cluster_key="cluster1",
                          new_cluster=BaseClusterInfo(

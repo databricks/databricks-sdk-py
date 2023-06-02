@@ -65,7 +65,7 @@ class DeleteServingEndpointRequest:
 @dataclass
 class EndpointCoreConfigInput:
     served_models: 'List[ServedModelInput]'
-    name: str
+    name: str = None
     traffic_config: 'TrafficConfig' = None
 
     def as_dict(self) -> dict:

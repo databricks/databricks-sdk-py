@@ -277,6 +277,27 @@ class ListType(Enum):
 
 
 @dataclass
+class PersonalComputeMessage:
+    value: 'PersonalComputeMessageEnum'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.value: body['value'] = self.value.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PersonalComputeMessage':
+        return cls(value=_enum(d, 'value', PersonalComputeMessageEnum))
+
+
+class PersonalComputeMessageEnum(Enum):
+    """TBD"""
+
+    DELEGATE = 'DELEGATE'
+    ON = 'ON'
+
+
+@dataclass
 class PublicTokenInfo:
     comment: str = None
     creation_time: int = None
@@ -300,12 +321,39 @@ class PublicTokenInfo:
 
 
 @dataclass
+class ReadPersonalComputeSettingRequest:
+    """Get Personal Compute setting"""
+
+    etag: str = None
+
+
+@dataclass
+class ReadPersonalComputeSettingResponse:
+    setting_name: str
+    personal_compute: 'PersonalComputeMessage'
+    etag: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag: body['etag'] = self.etag
+        if self.personal_compute: body['personal_compute'] = self.personal_compute.as_dict()
+        if self.setting_name: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ReadPersonalComputeSettingResponse':
+        return cls(etag=d.get('etag', None),
+                   personal_compute=_from_dict(d, 'personal_compute', PersonalComputeMessage),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
 class ReplaceIpAccessList:
     label: str
     list_type: 'ListType'
     ip_addresses: 'List[str]'
     enabled: bool
-    ip_access_list_id: str
+    ip_access_list_id: str = None
     list_id: str = None
 
     def as_dict(self) -> dict:
@@ -380,7 +428,7 @@ class UpdateIpAccessList:
     list_type: 'ListType'
     ip_addresses: 'List[str]'
     enabled: bool
-    ip_access_list_id: str
+    ip_access_list_id: str = None
     list_id: str = None
 
     def as_dict(self) -> dict:
@@ -560,6 +608,33 @@ class AccountIpAccessListsAPI:
             'PATCH',
             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{request.ip_access_list_id}',
             body=body)
+
+
+class AccountSettingsAPI:
+    """TBD"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def read_personal_compute_setting(self,
+                                      *,
+                                      etag: str = None,
+                                      **kwargs) -> ReadPersonalComputeSettingResponse:
+        """Get Personal Compute setting.
+        
+        TBD"""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ReadPersonalComputeSettingRequest(etag=etag)
+
+        query = {}
+        if etag: query['etag'] = request.etag
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            query=query)
+        return ReadPersonalComputeSettingResponse.from_dict(json)
 
 
 class IpAccessListsAPI:
