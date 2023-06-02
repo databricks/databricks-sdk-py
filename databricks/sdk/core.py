@@ -825,7 +825,7 @@ class ApiClient:
             r.headers[k] = v
         return r
 
-    def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
+    def do(self, method: str, path: str, query: dict = None, body: dict = None, raw: bool = False) -> dict:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
@@ -833,7 +833,8 @@ class ApiClient:
                                          json=body,
                                          headers=headers)
         try:
-            self._record_request_log(response)
+            if not raw:
+                self._record_request_log(response)
             if not response.ok:
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
@@ -841,6 +842,9 @@ class ApiClient:
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
             if not len(response.content):
                 return {}
+            if raw:
+                # TODO: make it "more typesafe"
+                return response.content
             return response.json()
         except requests.exceptions.JSONDecodeError:
             message = self._make_sense_from_html(response.text)
