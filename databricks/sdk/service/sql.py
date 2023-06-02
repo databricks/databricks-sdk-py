@@ -24,9 +24,9 @@ class AccessControl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name: body['group_name'] = self.group_name
-        if self.permission_level: body['permission_level'] = self.permission_level.value
-        if self.user_name: body['user_name'] = self.user_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
     @classmethod
@@ -52,16 +52,16 @@ class Alert:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.id: body['id'] = self.id
-        if self.last_triggered_at: body['last_triggered_at'] = self.last_triggered_at
-        if self.name: body['name'] = self.name
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.id is not None: body['id'] = self.id
+        if self.last_triggered_at is not None: body['last_triggered_at'] = self.last_triggered_at
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
-        if self.parent: body['parent'] = self.parent
+        if self.parent is not None: body['parent'] = self.parent
         if self.query: body['query'] = self.query.as_dict()
-        if self.rearm: body['rearm'] = self.rearm
-        if self.state: body['state'] = self.state.value
-        if self.updated_at: body['updated_at'] = self.updated_at
+        if self.rearm is not None: body['rearm'] = self.rearm
+        if self.state is not None: body['state'] = self.state.value
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.user: body['user'] = self.user.as_dict()
         return body
 
@@ -93,12 +93,12 @@ class AlertOptions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.column: body['column'] = self.column
-        if self.custom_body: body['custom_body'] = self.custom_body
-        if self.custom_subject: body['custom_subject'] = self.custom_subject
-        if self.muted: body['muted'] = self.muted
-        if self.op: body['op'] = self.op
-        if self.value: body['value'] = self.value
+        if self.column is not None: body['column'] = self.column
+        if self.custom_body is not None: body['custom_body'] = self.custom_body
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.muted is not None: body['muted'] = self.muted
+        if self.op is not None: body['op'] = self.op
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -134,8 +134,8 @@ class Channel:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dbsql_version: body['dbsql_version'] = self.dbsql_version
-        if self.name: body['name'] = self.name.value
+        if self.dbsql_version is not None: body['dbsql_version'] = self.dbsql_version
+        if self.name is not None: body['name'] = self.name.value
         return body
 
     @classmethod
@@ -152,8 +152,8 @@ class ChannelInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dbsql_version: body['dbsql_version'] = self.dbsql_version
-        if self.name: body['name'] = self.name.value
+        if self.dbsql_version is not None: body['dbsql_version'] = self.dbsql_version
+        if self.name is not None: body['name'] = self.name.value
         return body
 
     @classmethod
@@ -162,7 +162,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -185,12 +184,13 @@ class ChunkInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.byte_count: body['byte_count'] = self.byte_count
-        if self.chunk_index: body['chunk_index'] = self.chunk_index
-        if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
-        if self.next_chunk_internal_link: body['next_chunk_internal_link'] = self.next_chunk_internal_link
-        if self.row_count: body['row_count'] = self.row_count
-        if self.row_offset: body['row_offset'] = self.row_offset
+        if self.byte_count is not None: body['byte_count'] = self.byte_count
+        if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
+        if self.next_chunk_index is not None: body['next_chunk_index'] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body['next_chunk_internal_link'] = self.next_chunk_internal_link
+        if self.row_count is not None: body['row_count'] = self.row_count
+        if self.row_offset is not None: body['row_offset'] = self.row_offset
         return body
 
     @classmethod
@@ -215,13 +215,13 @@ class ColumnInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.type_interval_type: body['type_interval_type'] = self.type_interval_type
-        if self.type_name: body['type_name'] = self.type_name.value
-        if self.type_precision: body['type_precision'] = self.type_precision
-        if self.type_scale: body['type_scale'] = self.type_scale
-        if self.type_text: body['type_text'] = self.type_text
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
+        if self.type_name is not None: body['type_name'] = self.type_name.value
+        if self.type_precision is not None: body['type_precision'] = self.type_precision
+        if self.type_scale is not None: body['type_scale'] = self.type_scale
+        if self.type_text is not None: body['type_text'] = self.type_text
         return body
 
     @classmethod
@@ -269,11 +269,11 @@ class CreateAlert:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
-        if self.parent: body['parent'] = self.parent
-        if self.query_id: body['query_id'] = self.query_id
-        if self.rearm: body['rearm'] = self.rearm
+        if self.parent is not None: body['parent'] = self.parent
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.rearm is not None: body['rearm'] = self.rearm
         return body
 
     @classmethod
@@ -296,9 +296,9 @@ class CreateDashboardRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_favorite: body['is_favorite'] = self.is_favorite
-        if self.name: body['name'] = self.name
-        if self.parent: body['parent'] = self.parent
+        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
+        if self.name is not None: body['name'] = self.name
+        if self.parent is not None: body['parent'] = self.parent
         if self.tags: body['tags'] = [v for v in self.tags]
         return body
 
@@ -328,19 +328,21 @@ class CreateWarehouseRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
+        if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
-        if self.cluster_size: body['cluster_size'] = self.cluster_size
-        if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_photon: body['enable_photon'] = self.enable_photon
-        if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.max_num_clusters: body['max_num_clusters'] = self.max_num_clusters
-        if self.min_num_clusters: body['min_num_clusters'] = self.min_num_clusters
-        if self.name: body['name'] = self.name
-        if self.spot_instance_policy: body['spot_instance_policy'] = self.spot_instance_policy.value
+        if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
+        if self.creator_name is not None: body['creator_name'] = self.creator_name
+        if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
+        if self.enable_serverless_compute is not None:
+            body['enable_serverless_compute'] = self.enable_serverless_compute
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_num_clusters is not None: body['max_num_clusters'] = self.max_num_clusters
+        if self.min_num_clusters is not None: body['min_num_clusters'] = self.min_num_clusters
+        if self.name is not None: body['name'] = self.name
+        if self.spot_instance_policy is not None:
+            body['spot_instance_policy'] = self.spot_instance_policy.value
         if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type: body['warehouse_type'] = self.warehouse_type.value
+        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
         return body
 
     @classmethod
@@ -375,7 +377,7 @@ class CreateWarehouseResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -407,22 +409,23 @@ class Dashboard:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.can_edit: body['can_edit'] = self.can_edit
-        if self.created_at: body['created_at'] = self.created_at
-        if self.dashboard_filters_enabled: body['dashboard_filters_enabled'] = self.dashboard_filters_enabled
-        if self.id: body['id'] = self.id
-        if self.is_archived: body['is_archived'] = self.is_archived
-        if self.is_draft: body['is_draft'] = self.is_draft
-        if self.is_favorite: body['is_favorite'] = self.is_favorite
-        if self.name: body['name'] = self.name
+        if self.can_edit is not None: body['can_edit'] = self.can_edit
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.dashboard_filters_enabled is not None:
+            body['dashboard_filters_enabled'] = self.dashboard_filters_enabled
+        if self.id is not None: body['id'] = self.id
+        if self.is_archived is not None: body['is_archived'] = self.is_archived
+        if self.is_draft is not None: body['is_draft'] = self.is_draft
+        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
-        if self.parent: body['parent'] = self.parent
-        if self.permission_tier: body['permission_tier'] = self.permission_tier.value
-        if self.slug: body['slug'] = self.slug
+        if self.parent is not None: body['parent'] = self.parent
+        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
+        if self.slug is not None: body['slug'] = self.slug
         if self.tags: body['tags'] = [v for v in self.tags]
-        if self.updated_at: body['updated_at'] = self.updated_at
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.user: body['user'] = self.user.as_dict()
-        if self.user_id: body['user_id'] = self.user_id
+        if self.user_id is not None: body['user_id'] = self.user_id
         if self.widgets: body['widgets'] = [v.as_dict() for v in self.widgets]
         return body
 
@@ -453,7 +456,7 @@ class DashboardOptions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.moved_to_trash_at: body['moved_to_trash_at'] = self.moved_to_trash_at
+        if self.moved_to_trash_at is not None: body['moved_to_trash_at'] = self.moved_to_trash_at
         return body
 
     @classmethod
@@ -477,15 +480,15 @@ class DataSource:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
-        if self.name: body['name'] = self.name
-        if self.pause_reason: body['pause_reason'] = self.pause_reason
-        if self.paused: body['paused'] = self.paused
-        if self.supports_auto_limit: body['supports_auto_limit'] = self.supports_auto_limit
-        if self.syntax: body['syntax'] = self.syntax
-        if self.type: body['type'] = self.type
-        if self.view_only: body['view_only'] = self.view_only
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.id is not None: body['id'] = self.id
+        if self.name is not None: body['name'] = self.name
+        if self.pause_reason is not None: body['pause_reason'] = self.pause_reason
+        if self.paused is not None: body['paused'] = self.paused
+        if self.supports_auto_limit is not None: body['supports_auto_limit'] = self.supports_auto_limit
+        if self.syntax is not None: body['syntax'] = self.syntax
+        if self.type is not None: body['type'] = self.type
+        if self.view_only is not None: body['view_only'] = self.view_only
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -565,11 +568,11 @@ class EditAlert:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alert_id: body['alert_id'] = self.alert_id
-        if self.name: body['name'] = self.name
+        if self.alert_id is not None: body['alert_id'] = self.alert_id
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
-        if self.query_id: body['query_id'] = self.query_id
-        if self.rearm: body['rearm'] = self.rearm
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.rearm is not None: body['rearm'] = self.rearm
         return body
 
     @classmethod
@@ -600,20 +603,22 @@ class EditWarehouseRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
+        if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
-        if self.cluster_size: body['cluster_size'] = self.cluster_size
-        if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_photon: body['enable_photon'] = self.enable_photon
-        if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
-        if self.id: body['id'] = self.id
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.max_num_clusters: body['max_num_clusters'] = self.max_num_clusters
-        if self.min_num_clusters: body['min_num_clusters'] = self.min_num_clusters
-        if self.name: body['name'] = self.name
-        if self.spot_instance_policy: body['spot_instance_policy'] = self.spot_instance_policy.value
+        if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
+        if self.creator_name is not None: body['creator_name'] = self.creator_name
+        if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
+        if self.enable_serverless_compute is not None:
+            body['enable_serverless_compute'] = self.enable_serverless_compute
+        if self.id is not None: body['id'] = self.id
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_num_clusters is not None: body['max_num_clusters'] = self.max_num_clusters
+        if self.min_num_clusters is not None: body['min_num_clusters'] = self.min_num_clusters
+        if self.name is not None: body['name'] = self.name
+        if self.spot_instance_policy is not None:
+            body['spot_instance_policy'] = self.spot_instance_policy.value
         if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type: body['warehouse_type'] = self.warehouse_type.value
+        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
         return body
 
     @classmethod
@@ -650,8 +655,8 @@ class EndpointConfPair:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -669,11 +674,11 @@ class EndpointHealth:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.details: body['details'] = self.details
+        if self.details is not None: body['details'] = self.details
         if self.failure_reason: body['failure_reason'] = self.failure_reason.as_dict()
-        if self.message: body['message'] = self.message
-        if self.status: body['status'] = self.status.value
-        if self.summary: body['summary'] = self.summary
+        if self.message is not None: body['message'] = self.message
+        if self.status is not None: body['status'] = self.status.value
+        if self.summary is not None: body['summary'] = self.summary
         return body
 
     @classmethod
@@ -710,26 +715,28 @@ class EndpointInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
+        if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
-        if self.cluster_size: body['cluster_size'] = self.cluster_size
-        if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_photon: body['enable_photon'] = self.enable_photon
-        if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
+        if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
+        if self.creator_name is not None: body['creator_name'] = self.creator_name
+        if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
+        if self.enable_serverless_compute is not None:
+            body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.health: body['health'] = self.health.as_dict()
-        if self.id: body['id'] = self.id
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.jdbc_url: body['jdbc_url'] = self.jdbc_url
-        if self.max_num_clusters: body['max_num_clusters'] = self.max_num_clusters
-        if self.min_num_clusters: body['min_num_clusters'] = self.min_num_clusters
-        if self.name: body['name'] = self.name
-        if self.num_active_sessions: body['num_active_sessions'] = self.num_active_sessions
-        if self.num_clusters: body['num_clusters'] = self.num_clusters
+        if self.id is not None: body['id'] = self.id
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.jdbc_url is not None: body['jdbc_url'] = self.jdbc_url
+        if self.max_num_clusters is not None: body['max_num_clusters'] = self.max_num_clusters
+        if self.min_num_clusters is not None: body['min_num_clusters'] = self.min_num_clusters
+        if self.name is not None: body['name'] = self.name
+        if self.num_active_sessions is not None: body['num_active_sessions'] = self.num_active_sessions
+        if self.num_clusters is not None: body['num_clusters'] = self.num_clusters
         if self.odbc_params: body['odbc_params'] = self.odbc_params.as_dict()
-        if self.spot_instance_policy: body['spot_instance_policy'] = self.spot_instance_policy.value
-        if self.state: body['state'] = self.state.value
+        if self.spot_instance_policy is not None:
+            body['spot_instance_policy'] = self.spot_instance_policy.value
+        if self.state is not None: body['state'] = self.state.value
         if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type: body['warehouse_type'] = self.warehouse_type.value
+        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
         return body
 
     @classmethod
@@ -772,8 +779,8 @@ class EndpointTagPair:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -809,15 +816,15 @@ class ExecuteStatementRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.byte_limit: body['byte_limit'] = self.byte_limit
-        if self.catalog: body['catalog'] = self.catalog
-        if self.disposition: body['disposition'] = self.disposition.value
-        if self.format: body['format'] = self.format.value
-        if self.on_wait_timeout: body['on_wait_timeout'] = self.on_wait_timeout.value
-        if self.schema: body['schema'] = self.schema
-        if self.statement: body['statement'] = self.statement
-        if self.wait_timeout: body['wait_timeout'] = self.wait_timeout
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.byte_limit is not None: body['byte_limit'] = self.byte_limit
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.disposition is not None: body['disposition'] = self.disposition.value
+        if self.format is not None: body['format'] = self.format.value
+        if self.on_wait_timeout is not None: body['on_wait_timeout'] = self.on_wait_timeout.value
+        if self.schema is not None: body['schema'] = self.schema
+        if self.statement is not None: body['statement'] = self.statement
+        if self.wait_timeout is not None: body['wait_timeout'] = self.wait_timeout
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -844,7 +851,7 @@ class ExecuteStatementResponse:
         body = {}
         if self.manifest: body['manifest'] = self.manifest.as_dict()
         if self.result: body['result'] = self.result.as_dict()
-        if self.statement_id: body['statement_id'] = self.statement_id
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
         if self.status: body['status'] = self.status.as_dict()
         return body
 
@@ -869,14 +876,15 @@ class ExternalLink:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.byte_count: body['byte_count'] = self.byte_count
-        if self.chunk_index: body['chunk_index'] = self.chunk_index
-        if self.expiration: body['expiration'] = self.expiration
-        if self.external_link: body['external_link'] = self.external_link
-        if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
-        if self.next_chunk_internal_link: body['next_chunk_internal_link'] = self.next_chunk_internal_link
-        if self.row_count: body['row_count'] = self.row_count
-        if self.row_offset: body['row_offset'] = self.row_offset
+        if self.byte_count is not None: body['byte_count'] = self.byte_count
+        if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
+        if self.expiration is not None: body['expiration'] = self.expiration
+        if self.external_link is not None: body['external_link'] = self.external_link
+        if self.next_chunk_index is not None: body['next_chunk_index'] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body['next_chunk_internal_link'] = self.next_chunk_internal_link
+        if self.row_count is not None: body['row_count'] = self.row_count
+        if self.row_offset is not None: body['row_offset'] = self.row_offset
         return body
 
     @classmethod
@@ -971,8 +979,8 @@ class GetResponse:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id: body['object_id'] = self.object_id
-        if self.object_type: body['object_type'] = self.object_type.value
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type.value
         return body
 
     @classmethod
@@ -1000,7 +1008,7 @@ class GetStatementResponse:
         body = {}
         if self.manifest: body['manifest'] = self.manifest.as_dict()
         if self.result: body['result'] = self.result.as_dict()
-        if self.statement_id: body['statement_id'] = self.statement_id
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
         if self.status: body['status'] = self.status.as_dict()
         return body
 
@@ -1052,26 +1060,28 @@ class GetWarehouseResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.auto_stop_mins: body['auto_stop_mins'] = self.auto_stop_mins
+        if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
         if self.channel: body['channel'] = self.channel.as_dict()
-        if self.cluster_size: body['cluster_size'] = self.cluster_size
-        if self.creator_name: body['creator_name'] = self.creator_name
-        if self.enable_photon: body['enable_photon'] = self.enable_photon
-        if self.enable_serverless_compute: body['enable_serverless_compute'] = self.enable_serverless_compute
+        if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
+        if self.creator_name is not None: body['creator_name'] = self.creator_name
+        if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
+        if self.enable_serverless_compute is not None:
+            body['enable_serverless_compute'] = self.enable_serverless_compute
         if self.health: body['health'] = self.health.as_dict()
-        if self.id: body['id'] = self.id
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.jdbc_url: body['jdbc_url'] = self.jdbc_url
-        if self.max_num_clusters: body['max_num_clusters'] = self.max_num_clusters
-        if self.min_num_clusters: body['min_num_clusters'] = self.min_num_clusters
-        if self.name: body['name'] = self.name
-        if self.num_active_sessions: body['num_active_sessions'] = self.num_active_sessions
-        if self.num_clusters: body['num_clusters'] = self.num_clusters
+        if self.id is not None: body['id'] = self.id
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.jdbc_url is not None: body['jdbc_url'] = self.jdbc_url
+        if self.max_num_clusters is not None: body['max_num_clusters'] = self.max_num_clusters
+        if self.min_num_clusters is not None: body['min_num_clusters'] = self.min_num_clusters
+        if self.name is not None: body['name'] = self.name
+        if self.num_active_sessions is not None: body['num_active_sessions'] = self.num_active_sessions
+        if self.num_clusters is not None: body['num_clusters'] = self.num_clusters
         if self.odbc_params: body['odbc_params'] = self.odbc_params.as_dict()
-        if self.spot_instance_policy: body['spot_instance_policy'] = self.spot_instance_policy.value
-        if self.state: body['state'] = self.state.value
+        if self.spot_instance_policy is not None:
+            body['spot_instance_policy'] = self.spot_instance_policy.value
+        if self.state is not None: body['state'] = self.state.value
         if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type: body['warehouse_type'] = self.warehouse_type.value
+        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
         return body
 
     @classmethod
@@ -1128,9 +1138,10 @@ class GetWorkspaceWarehouseConfigResponse:
         if self.enabled_warehouse_types:
             body['enabled_warehouse_types'] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param: body['global_param'] = self.global_param.as_dict()
-        if self.google_service_account: body['google_service_account'] = self.google_service_account
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.security_policy: body['security_policy'] = self.security_policy.value
+        if self.google_service_account is not None:
+            body['google_service_account'] = self.google_service_account
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.security_policy is not None: body['security_policy'] = self.security_policy.value
         if self.sql_configuration_parameters:
             body['sql_configuration_parameters'] = self.sql_configuration_parameters.as_dict()
         return body
@@ -1192,8 +1203,8 @@ class ListQueriesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.has_next_page: body['has_next_page'] = self.has_next_page
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.has_next_page is not None: body['has_next_page'] = self.has_next_page
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.res: body['res'] = [v.as_dict() for v in self.res]
         return body
 
@@ -1223,9 +1234,9 @@ class ListResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.count: body['count'] = self.count
-        if self.page: body['page'] = self.page
-        if self.page_size: body['page_size'] = self.page_size
+        if self.count is not None: body['count'] = self.count
+        if self.page is not None: body['page'] = self.page
+        if self.page_size is not None: body['page_size'] = self.page_size
         if self.results: body['results'] = [v.as_dict() for v in self.results]
         return body
 
@@ -1285,10 +1296,10 @@ class OdbcParams:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.hostname: body['hostname'] = self.hostname
-        if self.path: body['path'] = self.path
-        if self.port: body['port'] = self.port
-        if self.protocol: body['protocol'] = self.protocol
+        if self.hostname is not None: body['hostname'] = self.hostname
+        if self.path is not None: body['path'] = self.path
+        if self.port is not None: body['port'] = self.port
+        if self.protocol is not None: body['protocol'] = self.protocol
         return body
 
     @classmethod
@@ -1316,9 +1327,9 @@ class Parameter:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
-        if self.title: body['title'] = self.title
-        if self.type: body['type'] = self.type.value
+        if self.name is not None: body['name'] = self.name
+        if self.title is not None: body['title'] = self.title
+        if self.type is not None: body['type'] = self.type.value
         if self.value: body['value'] = self.value
         return body
 
@@ -1385,28 +1396,28 @@ class Query:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.can_edit: body['can_edit'] = self.can_edit
-        if self.created_at: body['created_at'] = self.created_at
-        if self.data_source_id: body['data_source_id'] = self.data_source_id
-        if self.description: body['description'] = self.description
-        if self.id: body['id'] = self.id
-        if self.is_archived: body['is_archived'] = self.is_archived
-        if self.is_draft: body['is_draft'] = self.is_draft
-        if self.is_favorite: body['is_favorite'] = self.is_favorite
-        if self.is_safe: body['is_safe'] = self.is_safe
+        if self.can_edit is not None: body['can_edit'] = self.can_edit
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.is_archived is not None: body['is_archived'] = self.is_archived
+        if self.is_draft is not None: body['is_draft'] = self.is_draft
+        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
+        if self.is_safe is not None: body['is_safe'] = self.is_safe
         if self.last_modified_by: body['last_modified_by'] = self.last_modified_by.as_dict()
-        if self.last_modified_by_id: body['last_modified_by_id'] = self.last_modified_by_id
-        if self.latest_query_data_id: body['latest_query_data_id'] = self.latest_query_data_id
-        if self.name: body['name'] = self.name
+        if self.last_modified_by_id is not None: body['last_modified_by_id'] = self.last_modified_by_id
+        if self.latest_query_data_id is not None: body['latest_query_data_id'] = self.latest_query_data_id
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options.as_dict()
-        if self.parent: body['parent'] = self.parent
-        if self.permission_tier: body['permission_tier'] = self.permission_tier.value
-        if self.query: body['query'] = self.query
-        if self.query_hash: body['query_hash'] = self.query_hash
+        if self.parent is not None: body['parent'] = self.parent
+        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
+        if self.query is not None: body['query'] = self.query
+        if self.query_hash is not None: body['query_hash'] = self.query_hash
         if self.tags: body['tags'] = [v for v in self.tags]
-        if self.updated_at: body['updated_at'] = self.updated_at
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.user: body['user'] = self.user.as_dict()
-        if self.user_id: body['user_id'] = self.user_id
+        if self.user_id is not None: body['user_id'] = self.user_id
         if self.visualizations: body['visualizations'] = [v.as_dict() for v in self.visualizations]
         return body
 
@@ -1448,12 +1459,12 @@ class QueryEditContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.data_source_id: body['data_source_id'] = self.data_source_id
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
+        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
-        if self.query: body['query'] = self.query
-        if self.query_id: body['query_id'] = self.query_id
+        if self.query is not None: body['query'] = self.query
+        if self.query_id is not None: body['query_id'] = self.query_id
         return body
 
     @classmethod
@@ -1519,27 +1530,27 @@ class QueryInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.channel_used: body['channel_used'] = self.channel_used.as_dict()
-        if self.duration: body['duration'] = self.duration
-        if self.endpoint_id: body['endpoint_id'] = self.endpoint_id
-        if self.error_message: body['error_message'] = self.error_message
-        if self.executed_as_user_id: body['executed_as_user_id'] = self.executed_as_user_id
-        if self.executed_as_user_name: body['executed_as_user_name'] = self.executed_as_user_name
-        if self.execution_end_time_ms: body['execution_end_time_ms'] = self.execution_end_time_ms
-        if self.is_final: body['is_final'] = self.is_final
-        if self.lookup_key: body['lookup_key'] = self.lookup_key
+        if self.duration is not None: body['duration'] = self.duration
+        if self.endpoint_id is not None: body['endpoint_id'] = self.endpoint_id
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.executed_as_user_id is not None: body['executed_as_user_id'] = self.executed_as_user_id
+        if self.executed_as_user_name is not None: body['executed_as_user_name'] = self.executed_as_user_name
+        if self.execution_end_time_ms is not None: body['execution_end_time_ms'] = self.execution_end_time_ms
+        if self.is_final is not None: body['is_final'] = self.is_final
+        if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
         if self.metrics: body['metrics'] = self.metrics.as_dict()
-        if self.plans_state: body['plans_state'] = self.plans_state.value
-        if self.query_end_time_ms: body['query_end_time_ms'] = self.query_end_time_ms
-        if self.query_id: body['query_id'] = self.query_id
-        if self.query_start_time_ms: body['query_start_time_ms'] = self.query_start_time_ms
-        if self.query_text: body['query_text'] = self.query_text
-        if self.rows_produced: body['rows_produced'] = self.rows_produced
-        if self.spark_ui_url: body['spark_ui_url'] = self.spark_ui_url
-        if self.statement_type: body['statement_type'] = self.statement_type.value
-        if self.status: body['status'] = self.status.value
-        if self.user_id: body['user_id'] = self.user_id
-        if self.user_name: body['user_name'] = self.user_name
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.plans_state is not None: body['plans_state'] = self.plans_state.value
+        if self.query_end_time_ms is not None: body['query_end_time_ms'] = self.query_end_time_ms
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.query_start_time_ms is not None: body['query_start_time_ms'] = self.query_start_time_ms
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.rows_produced is not None: body['rows_produced'] = self.rows_produced
+        if self.spark_ui_url is not None: body['spark_ui_url'] = self.spark_ui_url
+        if self.statement_type is not None: body['statement_type'] = self.statement_type.value
+        if self.status is not None: body['status'] = self.status.value
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.user_name is not None: body['user_name'] = self.user_name
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -1577,9 +1588,9 @@ class QueryList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.count: body['count'] = self.count
-        if self.page: body['page'] = self.page
-        if self.page_size: body['page_size'] = self.page_size
+        if self.count is not None: body['count'] = self.count
+        if self.page is not None: body['page'] = self.page
+        if self.page_size is not None: body['page_size'] = self.page_size
         if self.results: body['results'] = [v.as_dict() for v in self.results]
         return body
 
@@ -1619,28 +1630,30 @@ class QueryMetrics:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.compilation_time_ms: body['compilation_time_ms'] = self.compilation_time_ms
-        if self.execution_time_ms: body['execution_time_ms'] = self.execution_time_ms
-        if self.network_sent_bytes: body['network_sent_bytes'] = self.network_sent_bytes
-        if self.photon_total_time_ms: body['photon_total_time_ms'] = self.photon_total_time_ms
-        if self.queued_overload_time_ms: body['queued_overload_time_ms'] = self.queued_overload_time_ms
-        if self.queued_provisioning_time_ms:
+        if self.compilation_time_ms is not None: body['compilation_time_ms'] = self.compilation_time_ms
+        if self.execution_time_ms is not None: body['execution_time_ms'] = self.execution_time_ms
+        if self.network_sent_bytes is not None: body['network_sent_bytes'] = self.network_sent_bytes
+        if self.photon_total_time_ms is not None: body['photon_total_time_ms'] = self.photon_total_time_ms
+        if self.queued_overload_time_ms is not None:
+            body['queued_overload_time_ms'] = self.queued_overload_time_ms
+        if self.queued_provisioning_time_ms is not None:
             body['queued_provisioning_time_ms'] = self.queued_provisioning_time_ms
-        if self.read_bytes: body['read_bytes'] = self.read_bytes
-        if self.read_cache_bytes: body['read_cache_bytes'] = self.read_cache_bytes
-        if self.read_files_count: body['read_files_count'] = self.read_files_count
-        if self.read_partitions_count: body['read_partitions_count'] = self.read_partitions_count
-        if self.read_remote_bytes: body['read_remote_bytes'] = self.read_remote_bytes
-        if self.result_fetch_time_ms: body['result_fetch_time_ms'] = self.result_fetch_time_ms
-        if self.result_from_cache: body['result_from_cache'] = self.result_from_cache
-        if self.rows_produced_count: body['rows_produced_count'] = self.rows_produced_count
-        if self.rows_read_count: body['rows_read_count'] = self.rows_read_count
-        if self.spill_to_disk_bytes: body['spill_to_disk_bytes'] = self.spill_to_disk_bytes
-        if self.task_total_time_ms: body['task_total_time_ms'] = self.task_total_time_ms
-        if self.total_files_count: body['total_files_count'] = self.total_files_count
-        if self.total_partitions_count: body['total_partitions_count'] = self.total_partitions_count
-        if self.total_time_ms: body['total_time_ms'] = self.total_time_ms
-        if self.write_remote_bytes: body['write_remote_bytes'] = self.write_remote_bytes
+        if self.read_bytes is not None: body['read_bytes'] = self.read_bytes
+        if self.read_cache_bytes is not None: body['read_cache_bytes'] = self.read_cache_bytes
+        if self.read_files_count is not None: body['read_files_count'] = self.read_files_count
+        if self.read_partitions_count is not None: body['read_partitions_count'] = self.read_partitions_count
+        if self.read_remote_bytes is not None: body['read_remote_bytes'] = self.read_remote_bytes
+        if self.result_fetch_time_ms is not None: body['result_fetch_time_ms'] = self.result_fetch_time_ms
+        if self.result_from_cache is not None: body['result_from_cache'] = self.result_from_cache
+        if self.rows_produced_count is not None: body['rows_produced_count'] = self.rows_produced_count
+        if self.rows_read_count is not None: body['rows_read_count'] = self.rows_read_count
+        if self.spill_to_disk_bytes is not None: body['spill_to_disk_bytes'] = self.spill_to_disk_bytes
+        if self.task_total_time_ms is not None: body['task_total_time_ms'] = self.task_total_time_ms
+        if self.total_files_count is not None: body['total_files_count'] = self.total_files_count
+        if self.total_partitions_count is not None:
+            body['total_partitions_count'] = self.total_partitions_count
+        if self.total_time_ms is not None: body['total_time_ms'] = self.total_time_ms
+        if self.write_remote_bytes is not None: body['write_remote_bytes'] = self.write_remote_bytes
         return body
 
     @classmethod
@@ -1675,7 +1688,7 @@ class QueryOptions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.moved_to_trash_at: body['moved_to_trash_at'] = self.moved_to_trash_at
+        if self.moved_to_trash_at is not None: body['moved_to_trash_at'] = self.moved_to_trash_at
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
         return body
 
@@ -1696,12 +1709,12 @@ class QueryPostContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.data_source_id: body['data_source_id'] = self.data_source_id
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
+        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
-        if self.parent: body['parent'] = self.parent
-        if self.query: body['query'] = self.query
+        if self.parent is not None: body['parent'] = self.parent
+        if self.query is not None: body['query'] = self.query
         return body
 
     @classmethod
@@ -1800,14 +1813,15 @@ class ResultData:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.byte_count: body['byte_count'] = self.byte_count
-        if self.chunk_index: body['chunk_index'] = self.chunk_index
+        if self.byte_count is not None: body['byte_count'] = self.byte_count
+        if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
         if self.data_array: body['data_array'] = [v for v in self.data_array]
         if self.external_links: body['external_links'] = [v.as_dict() for v in self.external_links]
-        if self.next_chunk_index: body['next_chunk_index'] = self.next_chunk_index
-        if self.next_chunk_internal_link: body['next_chunk_internal_link'] = self.next_chunk_internal_link
-        if self.row_count: body['row_count'] = self.row_count
-        if self.row_offset: body['row_offset'] = self.row_offset
+        if self.next_chunk_index is not None: body['next_chunk_index'] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body['next_chunk_internal_link'] = self.next_chunk_internal_link
+        if self.row_count is not None: body['row_count'] = self.row_count
+        if self.row_offset is not None: body['row_offset'] = self.row_offset
         return body
 
     @classmethod
@@ -1836,11 +1850,11 @@ class ResultManifest:
     def as_dict(self) -> dict:
         body = {}
         if self.chunks: body['chunks'] = [v.as_dict() for v in self.chunks]
-        if self.format: body['format'] = self.format.value
+        if self.format is not None: body['format'] = self.format.value
         if self.schema: body['schema'] = self.schema.as_dict()
-        if self.total_byte_count: body['total_byte_count'] = self.total_byte_count
-        if self.total_chunk_count: body['total_chunk_count'] = self.total_chunk_count
-        if self.total_row_count: body['total_row_count'] = self.total_row_count
+        if self.total_byte_count is not None: body['total_byte_count'] = self.total_byte_count
+        if self.total_chunk_count is not None: body['total_chunk_count'] = self.total_chunk_count
+        if self.total_row_count is not None: body['total_row_count'] = self.total_row_count
         return body
 
     @classmethod
@@ -1862,7 +1876,7 @@ class ResultSchema:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.column_count: body['column_count'] = self.column_count
+        if self.column_count is not None: body['column_count'] = self.column_count
         if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
         return body
 
@@ -1878,8 +1892,8 @@ class ServiceError:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error_code: body['error_code'] = self.error_code.value
-        if self.message: body['message'] = self.message
+        if self.error_code is not None: body['error_code'] = self.error_code.value
+        if self.message is not None: body['message'] = self.message
         return body
 
     @classmethod
@@ -1917,8 +1931,8 @@ class SetRequest:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id: body['objectId'] = self.object_id
-        if self.object_type: body['objectType'] = self.object_type.value
+        if self.object_id is not None: body['objectId'] = self.object_id
+        if self.object_type is not None: body['objectType'] = self.object_type.value
         return body
 
     @classmethod
@@ -1938,8 +1952,8 @@ class SetResponse:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id: body['object_id'] = self.object_id
-        if self.object_type: body['object_type'] = self.object_type.value
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type.value
         return body
 
     @classmethod
@@ -1970,9 +1984,10 @@ class SetWorkspaceWarehouseConfigRequest:
         if self.enabled_warehouse_types:
             body['enabled_warehouse_types'] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param: body['global_param'] = self.global_param.as_dict()
-        if self.google_service_account: body['google_service_account'] = self.google_service_account
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.security_policy: body['security_policy'] = self.security_policy.value
+        if self.google_service_account is not None:
+            body['google_service_account'] = self.google_service_account
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.security_policy is not None: body['security_policy'] = self.security_policy.value
         if self.sql_configuration_parameters:
             body['sql_configuration_parameters'] = self.sql_configuration_parameters.as_dict()
         return body
@@ -2051,7 +2066,7 @@ class StatementStatus:
     def as_dict(self) -> dict:
         body = {}
         if self.error: body['error'] = self.error.as_dict()
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
@@ -2081,7 +2096,7 @@ class Success:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.message: body['message'] = self.message.value
+        if self.message is not None: body['message'] = self.message.value
         return body
 
     @classmethod
@@ -2102,9 +2117,9 @@ class TerminationReason:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.code: body['code'] = self.code.value
+        if self.code is not None: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
-        if self.type: body['type'] = self.type.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -2214,8 +2229,8 @@ class TimeRange:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time_ms: body['end_time_ms'] = self.end_time_ms
-        if self.start_time_ms: body['start_time_ms'] = self.start_time_ms
+        if self.end_time_ms is not None: body['end_time_ms'] = self.end_time_ms
+        if self.start_time_ms is not None: body['start_time_ms'] = self.start_time_ms
         return body
 
     @classmethod
@@ -2243,7 +2258,7 @@ class TransferOwnershipObjectId:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.new_owner: body['new_owner'] = self.new_owner
+        if self.new_owner is not None: body['new_owner'] = self.new_owner
         return body
 
     @classmethod
@@ -2261,9 +2276,9 @@ class TransferOwnershipRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.new_owner: body['new_owner'] = self.new_owner
+        if self.new_owner is not None: body['new_owner'] = self.new_owner
         if self.object_id: body['objectId'] = self.object_id.as_dict()
-        if self.object_type: body['objectType'] = self.object_type.value
+        if self.object_type is not None: body['objectType'] = self.object_type.value
         return body
 
     @classmethod
@@ -2283,11 +2298,11 @@ class User:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.email: body['email'] = self.email
-        if self.id: body['id'] = self.id
-        if self.is_db_admin: body['is_db_admin'] = self.is_db_admin
-        if self.name: body['name'] = self.name
-        if self.profile_image_url: body['profile_image_url'] = self.profile_image_url
+        if self.email is not None: body['email'] = self.email
+        if self.id is not None: body['id'] = self.id
+        if self.is_db_admin is not None: body['is_db_admin'] = self.is_db_admin
+        if self.name is not None: body['name'] = self.name
+        if self.profile_image_url is not None: body['profile_image_url'] = self.profile_image_url
         return body
 
     @classmethod
@@ -2316,13 +2331,13 @@ class Visualization:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.description: body['description'] = self.description
-        if self.id: body['id'] = self.id
-        if self.name: body['name'] = self.name
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
-        if self.type: body['type'] = self.type
-        if self.updated_at: body['updated_at'] = self.updated_at
+        if self.type is not None: body['type'] = self.type
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
         return body
 
     @classmethod
@@ -2343,8 +2358,8 @@ class WarehouseTypePair:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.warehouse_type: body['warehouse_type'] = self.warehouse_type.value
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
         return body
 
     @classmethod
@@ -2370,10 +2385,10 @@ class Widget:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.options: body['options'] = self.options.as_dict()
         if self.visualization: body['visualization'] = self.visualization.as_dict()
-        if self.width: body['width'] = self.width
+        if self.width is not None: body['width'] = self.width
         return body
 
     @classmethod
@@ -2396,13 +2411,13 @@ class WidgetOptions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.dashboard_id: body['dashboard_id'] = self.dashboard_id
-        if self.is_hidden: body['isHidden'] = self.is_hidden
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.is_hidden is not None: body['isHidden'] = self.is_hidden
         if self.parameter_mappings: body['parameterMappings'] = self.parameter_mappings
         if self.position: body['position'] = self.position
-        if self.text: body['text'] = self.text
-        if self.updated_at: body['updated_at'] = self.updated_at
+        if self.text is not None: body['text'] = self.text
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
         return body
 
     @classmethod

@@ -19,8 +19,8 @@ class AclItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission: body['permission'] = self.permission.value
-        if self.principal: body['principal'] = self.principal
+        if self.permission is not None: body['permission'] = self.permission.value
+        if self.principal is not None: body['principal'] = self.principal
         return body
 
     @classmethod
@@ -42,8 +42,8 @@ class AzureKeyVaultSecretScopeMetadata:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dns_name: body['dns_name'] = self.dns_name
-        if self.resource_id: body['resource_id'] = self.resource_id
+        if self.dns_name is not None: body['dns_name'] = self.dns_name
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
         return body
 
     @classmethod
@@ -59,9 +59,9 @@ class CreateCredentials:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
-        if self.personal_access_token: body['personal_access_token'] = self.personal_access_token
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
+        if self.personal_access_token is not None: body['personal_access_token'] = self.personal_access_token
         return body
 
     @classmethod
@@ -79,9 +79,9 @@ class CreateCredentialsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id: body['credential_id'] = self.credential_id
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
         return body
 
     @classmethod
@@ -100,10 +100,10 @@ class CreateRepo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
-        if self.provider: body['provider'] = self.provider
+        if self.path is not None: body['path'] = self.path
+        if self.provider is not None: body['provider'] = self.provider
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
-        if self.url: body['url'] = self.url
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -123,10 +123,11 @@ class CreateScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.initial_manage_principal: body['initial_manage_principal'] = self.initial_manage_principal
+        if self.initial_manage_principal is not None:
+            body['initial_manage_principal'] = self.initial_manage_principal
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
-        if self.scope: body['scope'] = self.scope
-        if self.scope_backend_type: body['scope_backend_type'] = self.scope_backend_type.value
+        if self.scope is not None: body['scope'] = self.scope
+        if self.scope_backend_type is not None: body['scope_backend_type'] = self.scope_backend_type.value
         return body
 
     @classmethod
@@ -145,9 +146,9 @@ class CredentialInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id: body['credential_id'] = self.credential_id
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
         return body
 
     @classmethod
@@ -164,8 +165,8 @@ class Delete:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
-        if self.recursive: body['recursive'] = self.recursive
+        if self.path is not None: body['path'] = self.path
+        if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
     @classmethod
@@ -180,8 +181,8 @@ class DeleteAcl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal: body['principal'] = self.principal
-        if self.scope: body['scope'] = self.scope
+        if self.principal is not None: body['principal'] = self.principal
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -209,7 +210,7 @@ class DeleteScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.scope: body['scope'] = self.scope
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -224,8 +225,8 @@ class DeleteSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.scope: body['scope'] = self.scope
+        if self.key is not None: body['key'] = self.key
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -264,7 +265,7 @@ class ExportResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content: body['content'] = self.content
+        if self.content is not None: body['content'] = self.content
         return body
 
     @classmethod
@@ -325,11 +326,11 @@ class Import:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content: body['content'] = self.content
-        if self.format: body['format'] = self.format.value
-        if self.language: body['language'] = self.language.value
-        if self.overwrite: body['overwrite'] = self.overwrite
-        if self.path: body['path'] = self.path
+        if self.content is not None: body['content'] = self.content
+        if self.format is not None: body['format'] = self.format.value
+        if self.language is not None: body['language'] = self.language.value
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -386,7 +387,7 @@ class ListReposResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.repos: body['repos'] = [v.as_dict() for v in self.repos]
         return body
 
@@ -458,7 +459,7 @@ class Mkdirs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -478,13 +479,13 @@ class ObjectInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.language: body['language'] = self.language.value
-        if self.modified_at: body['modified_at'] = self.modified_at
-        if self.object_id: body['object_id'] = self.object_id
-        if self.object_type: body['object_type'] = self.object_type.value
-        if self.path: body['path'] = self.path
-        if self.size: body['size'] = self.size
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.language is not None: body['language'] = self.language.value
+        if self.modified_at is not None: body['modified_at'] = self.modified_at
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type.value
+        if self.path is not None: body['path'] = self.path
+        if self.size is not None: body['size'] = self.size
         return body
 
     @classmethod
@@ -516,9 +517,9 @@ class PutAcl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission: body['permission'] = self.permission.value
-        if self.principal: body['principal'] = self.principal
-        if self.scope: body['scope'] = self.scope
+        if self.permission is not None: body['permission'] = self.permission.value
+        if self.principal is not None: body['principal'] = self.principal
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -537,10 +538,10 @@ class PutSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bytes_value: body['bytes_value'] = self.bytes_value
-        if self.key: body['key'] = self.key
-        if self.scope: body['scope'] = self.scope
-        if self.string_value: body['string_value'] = self.string_value
+        if self.bytes_value is not None: body['bytes_value'] = self.bytes_value
+        if self.key is not None: body['key'] = self.key
+        if self.scope is not None: body['scope'] = self.scope
+        if self.string_value is not None: body['string_value'] = self.string_value
         return body
 
     @classmethod
@@ -563,13 +564,13 @@ class RepoInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.branch: body['branch'] = self.branch
-        if self.head_commit_id: body['head_commit_id'] = self.head_commit_id
-        if self.id: body['id'] = self.id
-        if self.path: body['path'] = self.path
-        if self.provider: body['provider'] = self.provider
+        if self.branch is not None: body['branch'] = self.branch
+        if self.head_commit_id is not None: body['head_commit_id'] = self.head_commit_id
+        if self.id is not None: body['id'] = self.id
+        if self.path is not None: body['path'] = self.path
+        if self.provider is not None: body['provider'] = self.provider
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
-        if self.url: body['url'] = self.url
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -596,8 +597,9 @@ class SecretMetadata:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.key is not None: body['key'] = self.key
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
         return body
 
     @classmethod
@@ -613,9 +615,9 @@ class SecretScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.backend_type: body['backend_type'] = self.backend_type.value
+        if self.backend_type is not None: body['backend_type'] = self.backend_type.value
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -662,10 +664,10 @@ class UpdateCredentials:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id: body['credential_id'] = self.credential_id
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
-        if self.personal_access_token: body['personal_access_token'] = self.personal_access_token
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
+        if self.personal_access_token is not None: body['personal_access_token'] = self.personal_access_token
         return body
 
     @classmethod
@@ -685,10 +687,10 @@ class UpdateRepo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.branch: body['branch'] = self.branch
-        if self.repo_id: body['repo_id'] = self.repo_id
+        if self.branch is not None: body['branch'] = self.branch
+        if self.repo_id is not None: body['repo_id'] = self.repo_id
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
-        if self.tag: body['tag'] = self.tag
+        if self.tag is not None: body['tag'] = self.tag
         return body
 
     @classmethod

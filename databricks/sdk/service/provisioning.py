@@ -39,10 +39,10 @@ class AwsKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key_alias: body['key_alias'] = self.key_alias
-        if self.key_arn: body['key_arn'] = self.key_arn
-        if self.key_region: body['key_region'] = self.key_region
-        if self.reuse_key_for_cluster_volumes:
+        if self.key_alias is not None: body['key_alias'] = self.key_alias
+        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.key_region is not None: body['key_region'] = self.key_region
+        if self.reuse_key_for_cluster_volumes is not None:
             body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
         return body
 
@@ -78,9 +78,9 @@ class CreateAwsKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key_alias: body['key_alias'] = self.key_alias
-        if self.key_arn: body['key_arn'] = self.key_arn
-        if self.reuse_key_for_cluster_volumes:
+        if self.key_alias is not None: body['key_alias'] = self.key_alias
+        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.reuse_key_for_cluster_volumes is not None:
             body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
         return body
 
@@ -113,7 +113,7 @@ class CreateCredentialRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.aws_credentials: body['aws_credentials'] = self.aws_credentials.as_dict()
-        if self.credentials_name: body['credentials_name'] = self.credentials_name
+        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
         return body
 
     @classmethod
@@ -128,7 +128,7 @@ class CreateCredentialStsRole:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.role_arn: body['role_arn'] = self.role_arn
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
         return body
 
     @classmethod
@@ -162,7 +162,7 @@ class CreateGcpKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.kms_key_id: body['kms_key_id'] = self.kms_key_id
+        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
         return body
 
     @classmethod
@@ -182,11 +182,11 @@ class CreateNetworkRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.gcp_network_info: body['gcp_network_info'] = self.gcp_network_info.as_dict()
-        if self.network_name: body['network_name'] = self.network_name
+        if self.network_name is not None: body['network_name'] = self.network_name
         if self.security_group_ids: body['security_group_ids'] = [v for v in self.security_group_ids]
         if self.subnet_ids: body['subnet_ids'] = [v for v in self.subnet_ids]
         if self.vpc_endpoints: body['vpc_endpoints'] = self.vpc_endpoints.as_dict()
-        if self.vpc_id: body['vpc_id'] = self.vpc_id
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
         return body
 
     @classmethod
@@ -207,7 +207,7 @@ class CreateStorageConfigurationRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info.as_dict()
-        if self.storage_configuration_name:
+        if self.storage_configuration_name is not None:
             body['storage_configuration_name'] = self.storage_configuration_name
         return body
 
@@ -226,10 +226,10 @@ class CreateVpcEndpointRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_vpc_endpoint_id: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
-        if self.region: body['region'] = self.region
-        if self.vpc_endpoint_name: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        if self.region is not None: body['region'] = self.region
+        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
 
     @classmethod
@@ -258,23 +258,24 @@ class CreateWorkspaceRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_region: body['aws_region'] = self.aws_region
-        if self.cloud: body['cloud'] = self.cloud
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.cloud is not None: body['cloud'] = self.cloud
         if self.cloud_resource_container:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.deployment_name: body['deployment_name'] = self.deployment_name
-        if self.location: body['location'] = self.location
-        if self.managed_services_customer_managed_key_id:
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.location is not None: body['location'] = self.location
+        if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id: body['network_id'] = self.network_id
-        if self.pricing_tier: body['pricing_tier'] = self.pricing_tier.value
-        if self.private_access_settings_id:
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.pricing_tier is not None: body['pricing_tier'] = self.pricing_tier.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_customer_managed_key_id:
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_name: body['workspace_name'] = self.workspace_name
+        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
         return body
 
     @classmethod
@@ -305,11 +306,11 @@ class Credential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = self.account_id
         if self.aws_credentials: body['aws_credentials'] = self.aws_credentials.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.credentials_name: body['credentials_name'] = self.credentials_name
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
         return body
 
     @classmethod
@@ -329,7 +330,7 @@ class CustomerFacingGcpCloudResourceContainer:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.project_id: body['project_id'] = self.project_id
+        if self.project_id is not None: body['project_id'] = self.project_id
         return body
 
     @classmethod
@@ -348,10 +349,11 @@ class CustomerManagedKey:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = self.account_id
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.customer_managed_key_id: body['customer_managed_key_id'] = self.customer_managed_key_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.customer_managed_key_id is not None:
+            body['customer_managed_key_id'] = self.customer_managed_key_id
         if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
         if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
         return body
@@ -442,7 +444,7 @@ class GcpKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.kms_key_id: body['kms_key_id'] = self.kms_key_id
+        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
         return body
 
     @classmethod
@@ -477,10 +479,11 @@ class GcpManagedNetworkConfig:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.gke_cluster_pod_ip_range: body['gke_cluster_pod_ip_range'] = self.gke_cluster_pod_ip_range
-        if self.gke_cluster_service_ip_range:
+        if self.gke_cluster_pod_ip_range is not None:
+            body['gke_cluster_pod_ip_range'] = self.gke_cluster_pod_ip_range
+        if self.gke_cluster_service_ip_range is not None:
             body['gke_cluster_service_ip_range'] = self.gke_cluster_service_ip_range
-        if self.subnet_cidr: body['subnet_cidr'] = self.subnet_cidr
+        if self.subnet_cidr is not None: body['subnet_cidr'] = self.subnet_cidr
         return body
 
     @classmethod
@@ -504,12 +507,12 @@ class GcpNetworkInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.network_project_id: body['network_project_id'] = self.network_project_id
-        if self.pod_ip_range_name: body['pod_ip_range_name'] = self.pod_ip_range_name
-        if self.service_ip_range_name: body['service_ip_range_name'] = self.service_ip_range_name
-        if self.subnet_id: body['subnet_id'] = self.subnet_id
-        if self.subnet_region: body['subnet_region'] = self.subnet_region
-        if self.vpc_id: body['vpc_id'] = self.vpc_id
+        if self.network_project_id is not None: body['network_project_id'] = self.network_project_id
+        if self.pod_ip_range_name is not None: body['pod_ip_range_name'] = self.pod_ip_range_name
+        if self.service_ip_range_name is not None: body['service_ip_range_name'] = self.service_ip_range_name
+        if self.subnet_id is not None: body['subnet_id'] = self.subnet_id
+        if self.subnet_region is not None: body['subnet_region'] = self.subnet_region
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
         return body
 
     @classmethod
@@ -534,11 +537,11 @@ class GcpVpcEndpointInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.endpoint_region: body['endpoint_region'] = self.endpoint_region
-        if self.project_id: body['project_id'] = self.project_id
-        if self.psc_connection_id: body['psc_connection_id'] = self.psc_connection_id
-        if self.psc_endpoint_name: body['psc_endpoint_name'] = self.psc_endpoint_name
-        if self.service_attachment_id: body['service_attachment_id'] = self.service_attachment_id
+        if self.endpoint_region is not None: body['endpoint_region'] = self.endpoint_region
+        if self.project_id is not None: body['project_id'] = self.project_id
+        if self.psc_connection_id is not None: body['psc_connection_id'] = self.psc_connection_id
+        if self.psc_endpoint_name is not None: body['psc_endpoint_name'] = self.psc_endpoint_name
+        if self.service_attachment_id is not None: body['service_attachment_id'] = self.service_attachment_id
         return body
 
     @classmethod
@@ -608,8 +611,8 @@ class GkeConfig:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.connectivity_type: body['connectivity_type'] = self.connectivity_type.value
-        if self.master_ip_range: body['master_ip_range'] = self.master_ip_range
+        if self.connectivity_type is not None: body['connectivity_type'] = self.connectivity_type.value
+        if self.master_ip_range is not None: body['master_ip_range'] = self.master_ip_range
         return body
 
     @classmethod
@@ -656,19 +659,19 @@ class Network:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.creation_time: body['creation_time'] = self.creation_time
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.error_messages: body['error_messages'] = [v.as_dict() for v in self.error_messages]
         if self.gcp_network_info: body['gcp_network_info'] = self.gcp_network_info.as_dict()
-        if self.network_id: body['network_id'] = self.network_id
-        if self.network_name: body['network_name'] = self.network_name
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.network_name is not None: body['network_name'] = self.network_name
         if self.security_group_ids: body['security_group_ids'] = [v for v in self.security_group_ids]
         if self.subnet_ids: body['subnet_ids'] = [v for v in self.subnet_ids]
         if self.vpc_endpoints: body['vpc_endpoints'] = self.vpc_endpoints.as_dict()
-        if self.vpc_id: body['vpc_id'] = self.vpc_id
-        if self.vpc_status: body['vpc_status'] = self.vpc_status.value
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        if self.vpc_status is not None: body['vpc_status'] = self.vpc_status.value
         if self.warning_messages: body['warning_messages'] = [v.as_dict() for v in self.warning_messages]
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -695,8 +698,8 @@ class NetworkHealth:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error_message: body['error_message'] = self.error_message
-        if self.error_type: body['error_type'] = self.error_type.value
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.error_type is not None: body['error_type'] = self.error_type.value
         return body
 
     @classmethod
@@ -732,8 +735,8 @@ class NetworkWarning:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.warning_message: body['warning_message'] = self.warning_message
-        if self.warning_type: body['warning_type'] = self.warning_type.value
+        if self.warning_message is not None: body['warning_message'] = self.warning_message
+        if self.warning_type is not None: body['warning_type'] = self.warning_type.value
         return body
 
     @classmethod
@@ -778,16 +781,17 @@ class PrivateAccessSettings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = self.account_id
         if self.allowed_vpc_endpoint_ids:
             body['allowed_vpc_endpoint_ids'] = [v for v in self.allowed_vpc_endpoint_ids]
-        if self.private_access_level: body['private_access_level'] = self.private_access_level.value
-        if self.private_access_settings_id:
+        if self.private_access_level is not None:
+            body['private_access_level'] = self.private_access_level.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.private_access_settings_name:
+        if self.private_access_settings_name is not None:
             body['private_access_settings_name'] = self.private_access_settings_name
-        if self.public_access_enabled: body['public_access_enabled'] = self.public_access_enabled
-        if self.region: body['region'] = self.region
+        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
+        if self.region is not None: body['region'] = self.region
         return body
 
     @classmethod
@@ -809,7 +813,7 @@ class RootBucketInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bucket_name: body['bucket_name'] = self.bucket_name
+        if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
         return body
 
     @classmethod
@@ -827,11 +831,12 @@ class StorageConfiguration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.creation_time: body['creation_time'] = self.creation_time
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info.as_dict()
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_configuration_name:
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_configuration_name is not None:
             body['storage_configuration_name'] = self.storage_configuration_name
         return body
 
@@ -851,8 +856,8 @@ class StsRole:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.external_id: body['external_id'] = self.external_id
-        if self.role_arn: body['role_arn'] = self.role_arn
+        if self.external_id is not None: body['external_id'] = self.external_id
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
         return body
 
     @classmethod
@@ -872,15 +877,16 @@ class UpdateWorkspaceRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_region: body['aws_region'] = self.aws_region
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.managed_services_customer_managed_key_id:
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id: body['network_id'] = self.network_id
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_customer_managed_key_id:
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -908,13 +914,14 @@ class UpsertPrivateAccessSettingsRequest:
         body = {}
         if self.allowed_vpc_endpoint_ids:
             body['allowed_vpc_endpoint_ids'] = [v for v in self.allowed_vpc_endpoint_ids]
-        if self.private_access_level: body['private_access_level'] = self.private_access_level.value
-        if self.private_access_settings_id:
+        if self.private_access_level is not None:
+            body['private_access_level'] = self.private_access_level.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.private_access_settings_name:
+        if self.private_access_settings_name is not None:
             body['private_access_settings_name'] = self.private_access_settings_name
-        if self.public_access_enabled: body['public_access_enabled'] = self.public_access_enabled
-        if self.region: body['region'] = self.region
+        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
+        if self.region is not None: body['region'] = self.region
         return body
 
     @classmethod
@@ -942,16 +949,17 @@ class VpcEndpoint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.aws_account_id: body['aws_account_id'] = self.aws_account_id
-        if self.aws_endpoint_service_id: body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
-        if self.aws_vpc_endpoint_id: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_account_id is not None: body['aws_account_id'] = self.aws_account_id
+        if self.aws_endpoint_service_id is not None:
+            body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
+        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
-        if self.region: body['region'] = self.region
-        if self.state: body['state'] = self.state
-        if self.use_case: body['use_case'] = self.use_case.value
-        if self.vpc_endpoint_id: body['vpc_endpoint_id'] = self.vpc_endpoint_id
-        if self.vpc_endpoint_name: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        if self.region is not None: body['region'] = self.region
+        if self.state is not None: body['state'] = self.state
+        if self.use_case is not None: body['use_case'] = self.use_case.value
+        if self.vpc_endpoint_id is not None: body['vpc_endpoint_id'] = self.vpc_endpoint_id
+        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
 
     @classmethod
@@ -1009,31 +1017,33 @@ class Workspace:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.aws_region: body['aws_region'] = self.aws_region
-        if self.cloud: body['cloud'] = self.cloud
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.cloud is not None: body['cloud'] = self.cloud
         if self.cloud_resource_container:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.deployment_name: body['deployment_name'] = self.deployment_name
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
         if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
-        if self.location: body['location'] = self.location
-        if self.managed_services_customer_managed_key_id:
+        if self.location is not None: body['location'] = self.location
+        if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id: body['network_id'] = self.network_id
-        if self.pricing_tier: body['pricing_tier'] = self.pricing_tier.value
-        if self.private_access_settings_id:
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.pricing_tier is not None: body['pricing_tier'] = self.pricing_tier.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_customer_managed_key_id:
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
-        if self.workspace_name: body['workspace_name'] = self.workspace_name
-        if self.workspace_status: body['workspace_status'] = self.workspace_status.value
-        if self.workspace_status_message: body['workspace_status_message'] = self.workspace_status_message
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
+        if self.workspace_status is not None: body['workspace_status'] = self.workspace_status.value
+        if self.workspace_status_message is not None:
+            body['workspace_status_message'] = self.workspace_status_message
         return body
 
     @classmethod

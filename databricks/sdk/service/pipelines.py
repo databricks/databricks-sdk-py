@@ -42,23 +42,23 @@ class CreatePipeline:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allow_duplicate_names: body['allow_duplicate_names'] = self.allow_duplicate_names
-        if self.catalog: body['catalog'] = self.catalog
-        if self.channel: body['channel'] = self.channel
+        if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
-        if self.continuous: body['continuous'] = self.continuous
-        if self.development: body['development'] = self.development
-        if self.dry_run: body['dry_run'] = self.dry_run
-        if self.edition: body['edition'] = self.edition
+        if self.continuous is not None: body['continuous'] = self.continuous
+        if self.development is not None: body['development'] = self.development
+        if self.dry_run is not None: body['dry_run'] = self.dry_run
+        if self.edition is not None: body['edition'] = self.edition
         if self.filters: body['filters'] = self.filters.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
-        if self.name: body['name'] = self.name
-        if self.photon: body['photon'] = self.photon
-        if self.serverless: body['serverless'] = self.serverless
-        if self.storage: body['storage'] = self.storage
-        if self.target: body['target'] = self.target
+        if self.name is not None: body['name'] = self.name
+        if self.photon is not None: body['photon'] = self.photon
+        if self.serverless is not None: body['serverless'] = self.serverless
+        if self.storage is not None: body['storage'] = self.storage
+        if self.target is not None: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         return body
 
@@ -92,7 +92,7 @@ class CreatePipelineResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.effective_settings: body['effective_settings'] = self.effective_settings.as_dict()
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
     @classmethod
@@ -108,8 +108,8 @@ class CronTrigger:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.quartz_cron_schedule: body['quartz_cron_schedule'] = self.quartz_cron_schedule
-        if self.timezone_id: body['timezone_id'] = self.timezone_id
+        if self.quartz_cron_schedule is not None: body['quartz_cron_schedule'] = self.quartz_cron_schedule
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
         return body
 
     @classmethod
@@ -125,7 +125,7 @@ class DataPlaneId:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance: body['instance'] = self.instance
+        if self.instance is not None: body['instance'] = self.instance
         if self.seq_no: body['seq_no'] = self.seq_no
         return body
 
@@ -165,24 +165,25 @@ class EditPipeline:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allow_duplicate_names: body['allow_duplicate_names'] = self.allow_duplicate_names
-        if self.catalog: body['catalog'] = self.catalog
-        if self.channel: body['channel'] = self.channel
+        if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
-        if self.continuous: body['continuous'] = self.continuous
-        if self.development: body['development'] = self.development
-        if self.edition: body['edition'] = self.edition
-        if self.expected_last_modified: body['expected_last_modified'] = self.expected_last_modified
+        if self.continuous is not None: body['continuous'] = self.continuous
+        if self.development is not None: body['development'] = self.development
+        if self.edition is not None: body['edition'] = self.edition
+        if self.expected_last_modified is not None:
+            body['expected_last_modified'] = self.expected_last_modified
         if self.filters: body['filters'] = self.filters.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
-        if self.name: body['name'] = self.name
-        if self.photon: body['photon'] = self.photon
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.serverless: body['serverless'] = self.serverless
-        if self.storage: body['storage'] = self.storage
-        if self.target: body['target'] = self.target
+        if self.name is not None: body['name'] = self.name
+        if self.photon is not None: body['photon'] = self.photon
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.serverless is not None: body['serverless'] = self.serverless
+        if self.storage is not None: body['storage'] = self.storage
+        if self.target is not None: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         return body
 
@@ -217,7 +218,7 @@ class ErrorDetail:
     def as_dict(self) -> dict:
         body = {}
         if self.exceptions: body['exceptions'] = [v.as_dict() for v in self.exceptions]
-        if self.fatal: body['fatal'] = self.fatal
+        if self.fatal is not None: body['fatal'] = self.fatal
         return body
 
     @classmethod
@@ -240,7 +241,7 @@ class FileLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -287,17 +288,17 @@ class GetPipelineResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.health: body['health'] = self.health.value
-        if self.last_modified: body['last_modified'] = self.last_modified
+        if self.cause is not None: body['cause'] = self.cause
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.health is not None: body['health'] = self.health.value
+        if self.last_modified is not None: body['last_modified'] = self.last_modified
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
-        if self.name: body['name'] = self.name
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.run_as_user_name: body['run_as_user_name'] = self.run_as_user_name
+        if self.name is not None: body['name'] = self.name
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.spec: body['spec'] = self.spec.as_dict()
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
@@ -364,8 +365,8 @@ class ListPipelineEventsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
 
     @classmethod
@@ -392,7 +393,7 @@ class ListPipelinesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.statuses: body['statuses'] = [v.as_dict() for v in self.statuses]
         return body
 
@@ -420,8 +421,8 @@ class ListUpdatesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
         return body
 
@@ -446,7 +447,7 @@ class NotebookLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -476,23 +477,23 @@ class Origin:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.batch_id: body['batch_id'] = self.batch_id
-        if self.cloud: body['cloud'] = self.cloud
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.dataset_name: body['dataset_name'] = self.dataset_name
-        if self.flow_id: body['flow_id'] = self.flow_id
-        if self.flow_name: body['flow_name'] = self.flow_name
-        if self.host: body['host'] = self.host
-        if self.maintenance_id: body['maintenance_id'] = self.maintenance_id
-        if self.materialization_name: body['materialization_name'] = self.materialization_name
-        if self.org_id: body['org_id'] = self.org_id
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.pipeline_name: body['pipeline_name'] = self.pipeline_name
-        if self.region: body['region'] = self.region
-        if self.request_id: body['request_id'] = self.request_id
-        if self.table_id: body['table_id'] = self.table_id
-        if self.uc_resource_id: body['uc_resource_id'] = self.uc_resource_id
-        if self.update_id: body['update_id'] = self.update_id
+        if self.batch_id is not None: body['batch_id'] = self.batch_id
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.dataset_name is not None: body['dataset_name'] = self.dataset_name
+        if self.flow_id is not None: body['flow_id'] = self.flow_id
+        if self.flow_name is not None: body['flow_name'] = self.flow_name
+        if self.host is not None: body['host'] = self.host
+        if self.maintenance_id is not None: body['maintenance_id'] = self.maintenance_id
+        if self.materialization_name is not None: body['materialization_name'] = self.materialization_name
+        if self.org_id is not None: body['org_id'] = self.org_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_name is not None: body['pipeline_name'] = self.pipeline_name
+        if self.region is not None: body['region'] = self.region
+        if self.request_id is not None: body['request_id'] = self.request_id
+        if self.table_id is not None: body['table_id'] = self.table_id
+        if self.uc_resource_id is not None: body['uc_resource_id'] = self.uc_resource_id
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -538,21 +539,22 @@ class PipelineCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apply_policy_default_values:
+        if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.label: body['label'] = self.label
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.label is not None: body['label'] = self.label
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
@@ -594,14 +596,14 @@ class PipelineEvent:
     def as_dict(self) -> dict:
         body = {}
         if self.error: body['error'] = self.error.as_dict()
-        if self.event_type: body['event_type'] = self.event_type
-        if self.id: body['id'] = self.id
-        if self.level: body['level'] = self.level.value
-        if self.maturity_level: body['maturity_level'] = self.maturity_level.value
-        if self.message: body['message'] = self.message
+        if self.event_type is not None: body['event_type'] = self.event_type
+        if self.id is not None: body['id'] = self.id
+        if self.level is not None: body['level'] = self.level.value
+        if self.maturity_level is not None: body['maturity_level'] = self.maturity_level.value
+        if self.message is not None: body['message'] = self.message
         if self.origin: body['origin'] = self.origin.as_dict()
         if self.sequence: body['sequence'] = self.sequence.as_dict()
-        if self.timestamp: body['timestamp'] = self.timestamp
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
     @classmethod
@@ -628,10 +630,10 @@ class PipelineLibrary:
     def as_dict(self) -> dict:
         body = {}
         if self.file: body['file'] = self.file.as_dict()
-        if self.jar: body['jar'] = self.jar
+        if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
-        if self.whl: body['whl'] = self.whl
+        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -664,21 +666,21 @@ class PipelineSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog: body['catalog'] = self.catalog
-        if self.channel: body['channel'] = self.channel
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
-        if self.continuous: body['continuous'] = self.continuous
-        if self.development: body['development'] = self.development
-        if self.edition: body['edition'] = self.edition
+        if self.continuous is not None: body['continuous'] = self.continuous
+        if self.development is not None: body['development'] = self.development
+        if self.edition is not None: body['edition'] = self.edition
         if self.filters: body['filters'] = self.filters.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
-        if self.name: body['name'] = self.name
-        if self.photon: body['photon'] = self.photon
-        if self.serverless: body['serverless'] = self.serverless
-        if self.storage: body['storage'] = self.storage
-        if self.target: body['target'] = self.target
+        if self.name is not None: body['name'] = self.name
+        if self.photon is not None: body['photon'] = self.photon
+        if self.serverless is not None: body['serverless'] = self.serverless
+        if self.storage is not None: body['storage'] = self.storage
+        if self.target is not None: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         return body
 
@@ -728,13 +730,13 @@ class PipelineStateInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
-        if self.name: body['name'] = self.name
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.run_as_user_name: body['run_as_user_name'] = self.run_as_user_name
-        if self.state: body['state'] = self.state.value
+        if self.name is not None: body['name'] = self.name
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
+        if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
@@ -778,7 +780,7 @@ class Sequencing:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.control_plane_seq_no: body['control_plane_seq_no'] = self.control_plane_seq_no
+        if self.control_plane_seq_no is not None: body['control_plane_seq_no'] = self.control_plane_seq_no
         if self.data_plane_id: body['data_plane_id'] = self.data_plane_id.as_dict()
         return body
 
@@ -796,8 +798,8 @@ class SerializedException:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.class_name: body['class_name'] = self.class_name
-        if self.message: body['message'] = self.message
+        if self.class_name is not None: body['class_name'] = self.class_name
+        if self.message is not None: body['message'] = self.message
         if self.stack: body['stack'] = [v.as_dict() for v in self.stack]
         return body
 
@@ -817,10 +819,10 @@ class StackFrame:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.declaring_class: body['declaring_class'] = self.declaring_class
-        if self.file_name: body['file_name'] = self.file_name
-        if self.line_number: body['line_number'] = self.line_number
-        if self.method_name: body['method_name'] = self.method_name
+        if self.declaring_class is not None: body['declaring_class'] = self.declaring_class
+        if self.file_name is not None: body['file_name'] = self.file_name
+        if self.line_number is not None: body['line_number'] = self.line_number
+        if self.method_name is not None: body['method_name'] = self.method_name
         return body
 
     @classmethod
@@ -841,11 +843,11 @@ class StartUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause.value
-        if self.full_refresh: body['full_refresh'] = self.full_refresh
+        if self.cause is not None: body['cause'] = self.cause.value
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.full_refresh_selection:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
         return body
 
@@ -874,7 +876,7 @@ class StartUpdateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.update_id: body['update_id'] = self.update_id
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -904,17 +906,17 @@ class UpdateInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause.value
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cause is not None: body['cause'] = self.cause.value
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.config: body['config'] = self.config.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.full_refresh: body['full_refresh'] = self.full_refresh
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.full_refresh_selection:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
-        if self.state: body['state'] = self.state.value
-        if self.update_id: body['update_id'] = self.update_id
+        if self.state is not None: body['state'] = self.state.value
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -966,9 +968,9 @@ class UpdateStateInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.state: body['state'] = self.state.value
-        if self.update_id: body['update_id'] = self.update_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.state is not None: body['state'] = self.state.value
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
