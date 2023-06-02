@@ -181,7 +181,7 @@ class ClusterSpec:
     def as_dict(self) -> dict:
         body = {}
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         return body
 
@@ -234,7 +234,8 @@ class CreateJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_control_list: body['access_control_list'] = [v for v in self.access_control_list]
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format: body['format'] = self.format.value
@@ -730,7 +731,7 @@ class JobTaskSettings:
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
         if self.job_cluster_key: body['job_cluster_key'] = self.job_cluster_key
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.max_retries: body['max_retries'] = self.max_retries
         if self.min_retry_interval_millis: body['min_retry_interval_millis'] = self.min_retry_interval_millis
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
@@ -1392,7 +1393,7 @@ class RunSubmitTaskSettings:
         body = {}
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
@@ -1461,7 +1462,7 @@ class RunTask:
         if self.execution_duration: body['execution_duration'] = self.execution_duration
         if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
         if self.git_source: body['git_source'] = self.git_source.as_dict()
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
@@ -1870,7 +1871,8 @@ class SubmitRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_control_list: body['access_control_list'] = [v for v in self.access_control_list]
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.idempotency_token: body['idempotency_token'] = self.idempotency_token
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
