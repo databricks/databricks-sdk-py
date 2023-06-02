@@ -28,9 +28,9 @@ class BaseJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_time: body['created_time'] = self.created_time
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.job_id: body['job_id'] = self.job_id
+        if self.created_time is not None: body['created_time'] = self.created_time
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.job_id is not None: body['job_id'] = self.job_id
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
 
@@ -72,31 +72,32 @@ class BaseRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.attempt_number: body['attempt_number'] = self.attempt_number
-        if self.cleanup_duration: body['cleanup_duration'] = self.cleanup_duration
+        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
         if self.continuous: body['continuous'] = self.continuous.as_dict()
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.end_time: body['end_time'] = self.end_time
-        if self.execution_duration: body['execution_duration'] = self.execution_duration
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
-        if self.job_id: body['job_id'] = self.job_id
-        if self.number_in_job: body['number_in_job'] = self.number_in_job
-        if self.original_attempt_run_id: body['original_attempt_run_id'] = self.original_attempt_run_id
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.original_attempt_run_id is not None:
+            body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
-        if self.run_duration: body['run_duration'] = self.run_duration
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_name: body['run_name'] = self.run_name
-        if self.run_page_url: body['run_page_url'] = self.run_page_url
-        if self.run_type: body['run_type'] = self.run_type.value
+        if self.run_duration is not None: body['run_duration'] = self.run_duration
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_name is not None: body['run_name'] = self.run_name
+        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.run_type is not None: body['run_type'] = self.run_type.value
         if self.schedule: body['schedule'] = self.schedule.as_dict()
-        if self.setup_duration: body['setup_duration'] = self.setup_duration
-        if self.start_time: body['start_time'] = self.start_time
+        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
-        if self.trigger: body['trigger'] = self.trigger.value
+        if self.trigger is not None: body['trigger'] = self.trigger.value
         return body
 
     @classmethod
@@ -134,7 +135,7 @@ class CancelAllRuns:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
@@ -148,7 +149,7 @@ class CancelRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -163,8 +164,8 @@ class ClusterInstance:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.spark_context_id: body['spark_context_id'] = self.spark_context_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
         return body
 
     @classmethod
@@ -180,8 +181,8 @@ class ClusterSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         return body
 
@@ -198,7 +199,7 @@ class Continuous:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.pause_status: body['pause_status'] = self.pause_status.value
+        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         return body
 
     @classmethod
@@ -224,6 +225,7 @@ class CreateJob:
     max_concurrent_runs: int = None
     name: str = None
     notification_settings: 'JobNotificationSettings' = None
+    run_as: 'JobRunAs' = None
     schedule: 'CronSchedule' = None
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
@@ -233,19 +235,21 @@ class CreateJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_control_list: body['access_control_list'] = [v for v in self.access_control_list]
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
-        if self.format: body['format'] = self.format.value
+        if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
-        if self.max_concurrent_runs: body['max_concurrent_runs'] = self.max_concurrent_runs
-        if self.name: body['name'] = self.name
+        if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
+        if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
-        if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
@@ -261,6 +265,7 @@ class CreateJob:
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
+                   run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
                    tasks=_repeated(d, 'tasks', JobTaskSettings),
@@ -283,7 +288,7 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
@@ -299,9 +304,10 @@ class CronSchedule:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.pause_status: body['pause_status'] = self.pause_status.value
-        if self.quartz_cron_expression: body['quartz_cron_expression'] = self.quartz_cron_expression
-        if self.timezone_id: body['timezone_id'] = self.timezone_id
+        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
+        if self.quartz_cron_expression is not None:
+            body['quartz_cron_expression'] = self.quartz_cron_expression
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
         return body
 
     @classmethod
@@ -326,7 +332,7 @@ class DbtOutput:
     def as_dict(self) -> dict:
         body = {}
         if self.artifacts_headers: body['artifacts_headers'] = self.artifacts_headers
-        if self.artifacts_link: body['artifacts_link'] = self.artifacts_link
+        if self.artifacts_link is not None: body['artifacts_link'] = self.artifacts_link
         return body
 
     @classmethod
@@ -346,12 +352,12 @@ class DbtTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog: body['catalog'] = self.catalog
+        if self.catalog is not None: body['catalog'] = self.catalog
         if self.commands: body['commands'] = [v for v in self.commands]
-        if self.profiles_directory: body['profiles_directory'] = self.profiles_directory
-        if self.project_directory: body['project_directory'] = self.project_directory
-        if self.schema: body['schema'] = self.schema
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.profiles_directory is not None: body['profiles_directory'] = self.profiles_directory
+        if self.project_directory is not None: body['project_directory'] = self.project_directory
+        if self.schema is not None: body['schema'] = self.schema
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -370,7 +376,7 @@ class DeleteJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
@@ -384,7 +390,7 @@ class DeleteRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -422,10 +428,10 @@ class FileArrivalTriggerSettings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.min_time_between_trigger_seconds:
+        if self.min_time_between_trigger_seconds is not None:
             body['min_time_between_trigger_seconds'] = self.min_time_between_trigger_seconds
-        if self.url: body['url'] = self.url
-        if self.wait_after_last_change_seconds:
+        if self.url is not None: body['url'] = self.url
+        if self.wait_after_last_change_seconds is not None:
             body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
         return body
 
@@ -467,7 +473,7 @@ class GitSnapshot:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.used_commit: body['used_commit'] = self.used_commit
+        if self.used_commit is not None: body['used_commit'] = self.used_commit
         return body
 
     @classmethod
@@ -489,12 +495,12 @@ class GitSource:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.git_branch: body['git_branch'] = self.git_branch
-        if self.git_commit: body['git_commit'] = self.git_commit
-        if self.git_provider: body['git_provider'] = self.git_provider.value
+        if self.git_branch is not None: body['git_branch'] = self.git_branch
+        if self.git_commit is not None: body['git_commit'] = self.git_commit
+        if self.git_provider is not None: body['git_provider'] = self.git_provider.value
         if self.git_snapshot: body['git_snapshot'] = self.git_snapshot.as_dict()
-        if self.git_tag: body['git_tag'] = self.git_tag
-        if self.git_url: body['git_url'] = self.git_url
+        if self.git_tag is not None: body['git_tag'] = self.git_tag
+        if self.git_url is not None: body['git_url'] = self.git_url
         return body
 
     @classmethod
@@ -531,10 +537,10 @@ class Job:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_time: body['created_time'] = self.created_time
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.job_id: body['job_id'] = self.job_id
-        if self.run_as_user_name: body['run_as_user_name'] = self.run_as_user_name
+        if self.created_time is not None: body['created_time'] = self.created_time
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
         if self.trigger_history: body['trigger_history'] = self.trigger_history.as_dict()
         return body
@@ -556,7 +562,7 @@ class JobCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_cluster_key: body['job_cluster_key'] = self.job_cluster_key
+        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         return body
 
@@ -575,7 +581,8 @@ class JobEmailNotifications:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.no_alert_for_skipped_runs: body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
         if self.on_failure: body['on_failure'] = [v for v in self.on_failure]
         if self.on_start: body['on_start'] = [v for v in self.on_start]
         if self.on_success: body['on_success'] = [v for v in self.on_success]
@@ -596,15 +603,41 @@ class JobNotificationSettings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.no_alert_for_canceled_runs:
+        if self.no_alert_for_canceled_runs is not None:
             body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
-        if self.no_alert_for_skipped_runs: body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobNotificationSettings':
         return cls(no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
                    no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
+
+
+@dataclass
+class JobRunAs:
+    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
+    or service principal that the job runs as. If not specified, the job runs as the user who
+    created the job.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
+
+    service_principal_name: str = None
+    user_name: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobRunAs':
+        return cls(service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
 
 
 @dataclass
@@ -617,6 +650,7 @@ class JobSettings:
     max_concurrent_runs: int = None
     name: str = None
     notification_settings: 'JobNotificationSettings' = None
+    run_as: 'JobRunAs' = None
     schedule: 'CronSchedule' = None
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
@@ -628,16 +662,17 @@ class JobSettings:
         body = {}
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
-        if self.format: body['format'] = self.format.value
+        if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
-        if self.max_concurrent_runs: body['max_concurrent_runs'] = self.max_concurrent_runs
-        if self.name: body['name'] = self.name
+        if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
+        if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
-        if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
@@ -652,6 +687,7 @@ class JobSettings:
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
+                   run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
                    tasks=_repeated(d, 'tasks', JobTaskSettings),
@@ -696,25 +732,26 @@ class JobTaskSettings:
         body = {}
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
-        if self.description: body['description'] = self.description
+        if self.description is not None: body['description'] = self.description
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
-        if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
-        if self.job_cluster_key: body['job_cluster_key'] = self.job_cluster_key
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
-        if self.max_retries: body['max_retries'] = self.max_retries
-        if self.min_retry_interval_millis: body['min_retry_interval_millis'] = self.min_retry_interval_millis
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
+        if self.max_retries is not None: body['max_retries'] = self.max_retries
+        if self.min_retry_interval_millis is not None:
+            body['min_retry_interval_millis'] = self.min_retry_interval_millis
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
-        if self.retry_on_timeout: body['retry_on_timeout'] = self.retry_on_timeout
+        if self.retry_on_timeout is not None: body['retry_on_timeout'] = self.retry_on_timeout
         if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task.as_dict()
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
-        if self.task_key: body['task_key'] = self.task_key
-        if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         return body
 
     @classmethod
@@ -768,7 +805,7 @@ class JobWebhookNotificationsOnFailureItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -782,7 +819,7 @@ class JobWebhookNotificationsOnStartItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -796,7 +833,7 @@ class JobWebhookNotificationsOnSuccessItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -821,7 +858,7 @@ class ListJobsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.has_more: body['has_more'] = self.has_more
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
         return body
 
@@ -852,7 +889,7 @@ class ListRunsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.has_more: body['has_more'] = self.has_more
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
         return body
 
@@ -876,8 +913,8 @@ class NotebookOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.result: body['result'] = self.result
-        if self.truncated: body['truncated'] = self.truncated
+        if self.result is not None: body['result'] = self.result
+        if self.truncated is not None: body['truncated'] = self.truncated
         return body
 
     @classmethod
@@ -894,8 +931,8 @@ class NotebookTask:
     def as_dict(self) -> dict:
         body = {}
         if self.base_parameters: body['base_parameters'] = self.base_parameters
-        if self.notebook_path: body['notebook_path'] = self.notebook_path
-        if self.source: body['source'] = self.source.value
+        if self.notebook_path is not None: body['notebook_path'] = self.notebook_path
+        if self.source is not None: body['source'] = self.source.value
         return body
 
     @classmethod
@@ -918,7 +955,7 @@ class PipelineParams:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.full_refresh: body['full_refresh'] = self.full_refresh
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         return body
 
     @classmethod
@@ -933,8 +970,8 @@ class PipelineTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.full_refresh: body['full_refresh'] = self.full_refresh
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
     @classmethod
@@ -951,9 +988,9 @@ class PythonWheelTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.entry_point: body['entry_point'] = self.entry_point
+        if self.entry_point is not None: body['entry_point'] = self.entry_point
         if self.named_parameters: body['named_parameters'] = self.named_parameters
-        if self.package_name: body['package_name'] = self.package_name
+        if self.package_name is not None: body['package_name'] = self.package_name
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
@@ -976,12 +1013,12 @@ class RepairHistoryItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time: body['end_time'] = self.end_time
-        if self.id: body['id'] = self.id
-        if self.start_time: body['start_time'] = self.start_time
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.id is not None: body['id'] = self.id
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
         if self.task_run_ids: body['task_run_ids'] = [v for v in self.task_run_ids]
-        if self.type: body['type'] = self.type.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -1020,14 +1057,15 @@ class RepairRun:
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
-        if self.latest_repair_id: body['latest_repair_id'] = self.latest_repair_id
+        if self.latest_repair_id is not None: body['latest_repair_id'] = self.latest_repair_id
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
-        if self.rerun_all_failed_tasks: body['rerun_all_failed_tasks'] = self.rerun_all_failed_tasks
+        if self.rerun_all_failed_tasks is not None:
+            body['rerun_all_failed_tasks'] = self.rerun_all_failed_tasks
         if self.rerun_tasks: body['rerun_tasks'] = [v for v in self.rerun_tasks]
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
@@ -1054,7 +1092,7 @@ class RepairRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.repair_id: body['repair_id'] = self.repair_id
+        if self.repair_id is not None: body['repair_id'] = self.repair_id
         return body
 
     @classmethod
@@ -1069,7 +1107,7 @@ class ResetJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = self.job_id
         if self.new_settings: body['new_settings'] = self.new_settings.as_dict()
         return body
 
@@ -1109,32 +1147,33 @@ class Run:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.attempt_number: body['attempt_number'] = self.attempt_number
-        if self.cleanup_duration: body['cleanup_duration'] = self.cleanup_duration
+        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
         if self.continuous: body['continuous'] = self.continuous.as_dict()
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.end_time: body['end_time'] = self.end_time
-        if self.execution_duration: body['execution_duration'] = self.execution_duration
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
-        if self.job_id: body['job_id'] = self.job_id
-        if self.number_in_job: body['number_in_job'] = self.number_in_job
-        if self.original_attempt_run_id: body['original_attempt_run_id'] = self.original_attempt_run_id
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.original_attempt_run_id is not None:
+            body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
         if self.repair_history: body['repair_history'] = [v.as_dict() for v in self.repair_history]
-        if self.run_duration: body['run_duration'] = self.run_duration
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_name: body['run_name'] = self.run_name
-        if self.run_page_url: body['run_page_url'] = self.run_page_url
-        if self.run_type: body['run_type'] = self.run_type.value
+        if self.run_duration is not None: body['run_duration'] = self.run_duration
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_name is not None: body['run_name'] = self.run_name
+        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.run_type is not None: body['run_type'] = self.run_type.value
         if self.schedule: body['schedule'] = self.schedule.as_dict()
-        if self.setup_duration: body['setup_duration'] = self.setup_duration
-        if self.start_time: body['start_time'] = self.start_time
+        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
-        if self.trigger: body['trigger'] = self.trigger.value
+        if self.trigger is not None: body['trigger'] = self.trigger.value
         return body
 
     @classmethod
@@ -1196,9 +1235,9 @@ class RunNow:
     def as_dict(self) -> dict:
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
-        if self.idempotency_token: body['idempotency_token'] = self.idempotency_token
+        if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
-        if self.job_id: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = self.job_id
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
@@ -1228,8 +1267,8 @@ class RunNowResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.number_in_job: body['number_in_job'] = self.number_in_job
-        if self.run_id: body['run_id'] = self.run_id
+        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -1251,10 +1290,10 @@ class RunOutput:
     def as_dict(self) -> dict:
         body = {}
         if self.dbt_output: body['dbt_output'] = self.dbt_output.as_dict()
-        if self.error: body['error'] = self.error
-        if self.error_trace: body['error_trace'] = self.error_trace
-        if self.logs: body['logs'] = self.logs
-        if self.logs_truncated: body['logs_truncated'] = self.logs_truncated
+        if self.error is not None: body['error'] = self.error
+        if self.error_trace is not None: body['error_trace'] = self.error_trace
+        if self.logs is not None: body['logs'] = self.logs
+        if self.logs_truncated is not None: body['logs_truncated'] = self.logs_truncated
         if self.metadata: body['metadata'] = self.metadata.as_dict()
         if self.notebook_output: body['notebook_output'] = self.notebook_output.as_dict()
         if self.sql_output: body['sql_output'] = self.sql_output.as_dict()
@@ -1327,10 +1366,10 @@ class RunState:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.life_cycle_state: body['life_cycle_state'] = self.life_cycle_state.value
-        if self.result_state: body['result_state'] = self.result_state.value
-        if self.state_message: body['state_message'] = self.state_message
-        if self.user_cancelled_or_timedout:
+        if self.life_cycle_state is not None: body['life_cycle_state'] = self.life_cycle_state.value
+        if self.result_state is not None: body['result_state'] = self.result_state.value
+        if self.state_message is not None: body['state_message'] = self.state_message
+        if self.user_cancelled_or_timedout is not None:
             body['user_cancelled_or_timedout'] = self.user_cancelled_or_timedout
         return body
 
@@ -1361,8 +1400,8 @@ class RunSubmitTaskSettings:
     def as_dict(self) -> dict:
         body = {}
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
-        if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
@@ -1371,8 +1410,8 @@ class RunSubmitTaskSettings:
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
-        if self.task_key: body['task_key'] = self.task_key
-        if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         return body
 
     @classmethod
@@ -1421,30 +1460,30 @@ class RunTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.attempt_number: body['attempt_number'] = self.attempt_number
-        if self.cleanup_duration: body['cleanup_duration'] = self.cleanup_duration
+        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
-        if self.description: body['description'] = self.description
-        if self.end_time: body['end_time'] = self.end_time
-        if self.execution_duration: body['execution_duration'] = self.execution_duration
-        if self.existing_cluster_id: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.description is not None: body['description'] = self.description
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
         if self.git_source: body['git_source'] = self.git_source.as_dict()
-        if self.libraries: body['libraries'] = [v for v in self.libraries]
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
-        if self.run_id: body['run_id'] = self.run_id
-        if self.setup_duration: body['setup_duration'] = self.setup_duration
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
         if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task.as_dict()
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
-        if self.start_time: body['start_time'] = self.start_time
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
-        if self.task_key: body['task_key'] = self.task_key
+        if self.task_key is not None: body['task_key'] = self.task_key
         return body
 
     @classmethod
@@ -1491,8 +1530,8 @@ class SparkJarTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.jar_uri: body['jar_uri'] = self.jar_uri
-        if self.main_class_name: body['main_class_name'] = self.main_class_name
+        if self.jar_uri is not None: body['jar_uri'] = self.jar_uri
+        if self.main_class_name is not None: body['main_class_name'] = self.main_class_name
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
@@ -1512,8 +1551,8 @@ class SparkPythonTask:
     def as_dict(self) -> dict:
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
-        if self.python_file: body['python_file'] = self.python_file
-        if self.source: body['source'] = self.source.value
+        if self.python_file is not None: body['python_file'] = self.python_file
+        if self.source is not None: body['source'] = self.source.value
         return body
 
     @classmethod
@@ -1554,11 +1593,11 @@ class SqlAlertOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alert_state: body['alert_state'] = self.alert_state.value
-        if self.output_link: body['output_link'] = self.output_link
-        if self.query_text: body['query_text'] = self.query_text
+        if self.alert_state is not None: body['alert_state'] = self.alert_state.value
+        if self.output_link is not None: body['output_link'] = self.output_link
+        if self.query_text is not None: body['query_text'] = self.query_text
         if self.sql_statements: body['sql_statements'] = [v.as_dict() for v in self.sql_statements]
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -1588,7 +1627,7 @@ class SqlDashboardOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         if self.widgets: body['widgets'] = self.widgets.as_dict()
         return body
 
@@ -1610,13 +1649,13 @@ class SqlDashboardWidgetOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time: body['end_time'] = self.end_time
+        if self.end_time is not None: body['end_time'] = self.end_time
         if self.error: body['error'] = self.error.as_dict()
-        if self.output_link: body['output_link'] = self.output_link
-        if self.start_time: body['start_time'] = self.start_time
-        if self.status: body['status'] = self.status.value
-        if self.widget_id: body['widget_id'] = self.widget_id
-        if self.widget_title: body['widget_title'] = self.widget_title
+        if self.output_link is not None: body['output_link'] = self.output_link
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.status is not None: body['status'] = self.status.value
+        if self.widget_id is not None: body['widget_id'] = self.widget_id
+        if self.widget_title is not None: body['widget_title'] = self.widget_title
         return body
 
     @classmethod
@@ -1666,7 +1705,7 @@ class SqlOutputError:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.message: body['message'] = self.message
+        if self.message is not None: body['message'] = self.message
         return body
 
     @classmethod
@@ -1683,10 +1722,10 @@ class SqlQueryOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.output_link: body['output_link'] = self.output_link
-        if self.query_text: body['query_text'] = self.query_text
+        if self.output_link is not None: body['output_link'] = self.output_link
+        if self.query_text is not None: body['query_text'] = self.query_text
         if self.sql_statements: body['sql_statements'] = [v.as_dict() for v in self.sql_statements]
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -1703,7 +1742,7 @@ class SqlStatementOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.lookup_key: body['lookup_key'] = self.lookup_key
+        if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
         return body
 
     @classmethod
@@ -1727,7 +1766,7 @@ class SqlTask:
         if self.file: body['file'] = self.file.as_dict()
         if self.parameters: body['parameters'] = self.parameters
         if self.query: body['query'] = self.query.as_dict()
-        if self.warehouse_id: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -1748,8 +1787,8 @@ class SqlTaskAlert:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alert_id: body['alert_id'] = self.alert_id
-        if self.pause_subscriptions: body['pause_subscriptions'] = self.pause_subscriptions
+        if self.alert_id is not None: body['alert_id'] = self.alert_id
+        if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
         if self.subscriptions: body['subscriptions'] = [v.as_dict() for v in self.subscriptions]
         return body
 
@@ -1769,9 +1808,9 @@ class SqlTaskDashboard:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.custom_subject: body['custom_subject'] = self.custom_subject
-        if self.dashboard_id: body['dashboard_id'] = self.dashboard_id
-        if self.pause_subscriptions: body['pause_subscriptions'] = self.pause_subscriptions
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
         if self.subscriptions: body['subscriptions'] = [v.as_dict() for v in self.subscriptions]
         return body
 
@@ -1789,7 +1828,7 @@ class SqlTaskFile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -1803,7 +1842,7 @@ class SqlTaskQuery:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.query_id: body['query_id'] = self.query_id
+        if self.query_id is not None: body['query_id'] = self.query_id
         return body
 
     @classmethod
@@ -1818,8 +1857,8 @@ class SqlTaskSubscription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination_id: body['destination_id'] = self.destination_id
-        if self.user_name: body['user_name'] = self.user_name
+        if self.destination_id is not None: body['destination_id'] = self.destination_id
+        if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
     @classmethod
@@ -1840,13 +1879,14 @@ class SubmitRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_control_list: body['access_control_list'] = [v for v in self.access_control_list]
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.git_source: body['git_source'] = self.git_source.as_dict()
-        if self.idempotency_token: body['idempotency_token'] = self.idempotency_token
+        if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
-        if self.run_name: body['run_name'] = self.run_name
+        if self.run_name is not None: body['run_name'] = self.run_name
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
-        if self.timeout_seconds: body['timeout_seconds'] = self.timeout_seconds
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
@@ -1868,7 +1908,7 @@ class SubmitRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -1882,7 +1922,7 @@ class TaskDependenciesItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.task_key: body['task_key'] = self.task_key
+        if self.task_key is not None: body['task_key'] = self.task_key
         return body
 
     @classmethod
@@ -1918,10 +1958,11 @@ class TaskNotificationSettings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alert_on_last_attempt: body['alert_on_last_attempt'] = self.alert_on_last_attempt
-        if self.no_alert_for_canceled_runs:
+        if self.alert_on_last_attempt is not None: body['alert_on_last_attempt'] = self.alert_on_last_attempt
+        if self.no_alert_for_canceled_runs is not None:
             body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
-        if self.no_alert_for_skipped_runs: body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
         return body
 
     @classmethod
@@ -1939,9 +1980,9 @@ class TriggerEvaluation:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.run_id: body['run_id'] = self.run_id
-        if self.timestamp: body['timestamp'] = self.timestamp
+        if self.description is not None: body['description'] = self.description
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
     @classmethod
@@ -1979,7 +2020,7 @@ class TriggerSettings:
     def as_dict(self) -> dict:
         body = {}
         if self.file_arrival: body['file_arrival'] = self.file_arrival.as_dict()
-        if self.pause_status: body['pause_status'] = self.pause_status.value
+        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         return body
 
     @classmethod
@@ -2013,7 +2054,7 @@ class UpdateJob:
     def as_dict(self) -> dict:
         body = {}
         if self.fields_to_remove: body['fields_to_remove'] = [v for v in self.fields_to_remove]
-        if self.job_id: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = self.job_id
         if self.new_settings: body['new_settings'] = self.new_settings.as_dict()
         return body
 
@@ -2032,9 +2073,9 @@ class ViewItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content: body['content'] = self.content
-        if self.name: body['name'] = self.name
-        if self.type: body['type'] = self.type.value
+        if self.content is not None: body['content'] = self.content
+        if self.name is not None: body['name'] = self.name
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -2146,6 +2187,7 @@ class JobsAPI:
                max_concurrent_runs: int = None,
                name: str = None,
                notification_settings: JobNotificationSettings = None,
+               run_as: JobRunAs = None,
                schedule: CronSchedule = None,
                tags: Dict[str, str] = None,
                tasks: List[JobTaskSettings] = None,
@@ -2167,6 +2209,7 @@ class JobsAPI:
                                 max_concurrent_runs=max_concurrent_runs,
                                 name=name,
                                 notification_settings=notification_settings,
+                                run_as=run_as,
                                 schedule=schedule,
                                 tags=tags,
                                 tasks=tasks,

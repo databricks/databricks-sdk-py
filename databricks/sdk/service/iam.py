@@ -21,10 +21,11 @@ class AccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name: body['group_name'] = self.group_name
-        if self.permission_level: body['permission_level'] = self.permission_level.value
-        if self.service_principal_name: body['service_principal_name'] = self.service_principal_name
-        if self.user_name: body['user_name'] = self.user_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
     @classmethod
@@ -45,9 +46,10 @@ class AccessControlResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
-        if self.group_name: body['group_name'] = self.group_name
-        if self.service_principal_name: body['service_principal_name'] = self.service_principal_name
-        if self.user_name: body['user_name'] = self.user_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
     @classmethod
@@ -67,10 +69,10 @@ class ComplexValue:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.display: body['display'] = self.display
-        if self.primary: body['primary'] = self.primary
-        if self.type: body['type'] = self.type
-        if self.value: body['value'] = self.value
+        if self.display is not None: body['display'] = self.display
+        if self.primary is not None: body['primary'] = self.primary
+        if self.type is not None: body['type'] = self.type
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -132,6 +134,14 @@ class DeleteWorkspaceAssignmentRequest:
 
 
 @dataclass
+class GetAccountAccessControlRequest:
+    """Get a rule set"""
+
+    name: str
+    etag: str
+
+
+@dataclass
 class GetAccountGroupRequest:
     """Get group details"""
 
@@ -150,6 +160,20 @@ class GetAccountUserRequest:
     """Get user details"""
 
     id: str
+
+
+@dataclass
+class GetAssignableRolesForResourceResponse:
+    roles: 'List[str]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.roles: body['roles'] = [v for v in self.roles]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetAssignableRolesForResourceResponse':
+        return cls(roles=d.get('roles', None))
 
 
 @dataclass
@@ -211,22 +235,38 @@ class GetWorkspaceAssignmentRequest:
 
 
 @dataclass
+class GrantRule:
+    role: str
+    principals: 'List[str]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.principals: body['principals'] = [v for v in self.principals]
+        if self.role is not None: body['role'] = self.role
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GrantRule':
+        return cls(principals=d.get('principals', None), role=d.get('role', None))
+
+
+@dataclass
 class Group:
-    id: str
     display_name: str = None
     entitlements: 'List[ComplexValue]' = None
     external_id: str = None
     groups: 'List[ComplexValue]' = None
+    id: str = None
     members: 'List[ComplexValue]' = None
     roles: 'List[ComplexValue]' = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.display_name: body['displayName'] = self.display_name
+        if self.display_name is not None: body['displayName'] = self.display_name
         if self.entitlements: body['entitlements'] = [v.as_dict() for v in self.entitlements]
-        if self.external_id: body['externalId'] = self.external_id
+        if self.external_id is not None: body['externalId'] = self.external_id
         if self.groups: body['groups'] = [v.as_dict() for v in self.groups]
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.members: body['members'] = [v.as_dict() for v in self.members]
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
         return body
@@ -240,6 +280,13 @@ class Group:
                    id=d.get('id', None),
                    members=_repeated(d, 'members', ComplexValue),
                    roles=_repeated(d, 'roles', ComplexValue))
+
+
+@dataclass
+class ListAccountAccessControlRequest:
+    """List assignable roles on a resource"""
+
+    name: str
 
 
 @dataclass
@@ -303,10 +350,10 @@ class ListGroupsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items_per_page: body['itemsPerPage'] = self.items_per_page
+        if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
-        if self.start_index: body['startIndex'] = self.start_index
-        if self.total_results: body['totalResults'] = self.total_results
+        if self.start_index is not None: body['startIndex'] = self.start_index
+        if self.total_results is not None: body['totalResults'] = self.total_results
         return body
 
     @classmethod
@@ -326,10 +373,10 @@ class ListServicePrincipalResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items_per_page: body['itemsPerPage'] = self.items_per_page
+        if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
-        if self.start_index: body['startIndex'] = self.start_index
-        if self.total_results: body['totalResults'] = self.total_results
+        if self.start_index is not None: body['startIndex'] = self.start_index
+        if self.total_results is not None: body['totalResults'] = self.total_results
         return body
 
     @classmethod
@@ -381,10 +428,10 @@ class ListUsersResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items_per_page: body['itemsPerPage'] = self.items_per_page
+        if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
-        if self.start_index: body['startIndex'] = self.start_index
-        if self.total_results: body['totalResults'] = self.total_results
+        if self.start_index is not None: body['startIndex'] = self.start_index
+        if self.total_results is not None: body['totalResults'] = self.total_results
         return body
 
     @classmethod
@@ -409,8 +456,8 @@ class Name:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.family_name: body['familyName'] = self.family_name
-        if self.given_name: body['givenName'] = self.given_name
+        if self.family_name is not None: body['familyName'] = self.family_name
+        if self.given_name is not None: body['givenName'] = self.given_name
         return body
 
     @classmethod
@@ -428,8 +475,8 @@ class ObjectPermissions:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id: body['object_id'] = self.object_id
-        if self.object_type: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
     @classmethod
@@ -441,12 +488,12 @@ class ObjectPermissions:
 
 @dataclass
 class PartialUpdate:
-    id: str
+    id: str = None
     operations: 'List[Patch]' = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.operations: body['operations'] = [v.as_dict() for v in self.operations]
         return body
 
@@ -463,9 +510,9 @@ class Patch:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.op: body['op'] = self.op.value
-        if self.path: body['path'] = self.path
-        if self.value: body['value'] = self.value
+        if self.op is not None: body['op'] = self.op.value
+        if self.path is not None: body['path'] = self.path
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -489,9 +536,9 @@ class Permission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited: body['inherited'] = self.inherited
+        if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
@@ -509,7 +556,7 @@ class PermissionAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error: body['error'] = self.error
+        if self.error is not None: body['error'] = self.error
         if self.permissions: body['permissions'] = [v for v in self.permissions]
         if self.principal: body['principal'] = self.principal.as_dict()
         return body
@@ -563,8 +610,8 @@ class PermissionOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
@@ -580,8 +627,8 @@ class PermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
@@ -592,16 +639,16 @@ class PermissionsDescription:
 
 @dataclass
 class PermissionsRequest:
-    request_object_type: str
-    request_object_id: str
     access_control_list: 'List[AccessControlRequest]' = None
+    request_object_id: str = None
+    request_object_type: str = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.request_object_id: body['request_object_id'] = self.request_object_id
-        if self.request_object_type: body['request_object_type'] = self.request_object_type
+        if self.request_object_id is not None: body['request_object_id'] = self.request_object_id
+        if self.request_object_type is not None: body['request_object_type'] = self.request_object_type
         return body
 
     @classmethod
@@ -621,11 +668,12 @@ class PrincipalOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.display_name: body['display_name'] = self.display_name
-        if self.group_name: body['group_name'] = self.group_name
-        if self.principal_id: body['principal_id'] = self.principal_id
-        if self.service_principal_name: body['service_principal_name'] = self.service_principal_name
-        if self.user_name: body['user_name'] = self.user_name
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.principal_id is not None: body['principal_id'] = self.principal_id
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
     @classmethod
@@ -638,25 +686,65 @@ class PrincipalOutput:
 
 
 @dataclass
+class RuleSetResponse:
+    etag: str = None
+    grant_rules: 'List[GrantRule]' = None
+    name: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.grant_rules: body['grant_rules'] = [v.as_dict() for v in self.grant_rules]
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RuleSetResponse':
+        return cls(etag=d.get('etag', None),
+                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   name=d.get('name', None))
+
+
+@dataclass
+class RuleSetUpdateRequest:
+    name: str
+    etag: str
+    grant_rules: 'List[GrantRule]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.grant_rules: body['grant_rules'] = [v.as_dict() for v in self.grant_rules]
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RuleSetUpdateRequest':
+        return cls(etag=d.get('etag', None),
+                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   name=d.get('name', None))
+
+
+@dataclass
 class ServicePrincipal:
-    id: str
     active: bool = None
     application_id: str = None
     display_name: str = None
     entitlements: 'List[ComplexValue]' = None
     external_id: str = None
     groups: 'List[ComplexValue]' = None
+    id: str = None
     roles: 'List[ComplexValue]' = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.active: body['active'] = self.active
-        if self.application_id: body['applicationId'] = self.application_id
-        if self.display_name: body['displayName'] = self.display_name
+        if self.active is not None: body['active'] = self.active
+        if self.application_id is not None: body['applicationId'] = self.application_id
+        if self.display_name is not None: body['displayName'] = self.display_name
         if self.entitlements: body['entitlements'] = [v.as_dict() for v in self.entitlements]
-        if self.external_id: body['externalId'] = self.external_id
+        if self.external_id is not None: body['externalId'] = self.external_id
         if self.groups: body['groups'] = [v.as_dict() for v in self.groups]
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
         return body
 
@@ -673,16 +761,36 @@ class ServicePrincipal:
 
 
 @dataclass
+class UpdateRuleSetRequest:
+    name: str
+    rule_set: 'RuleSetUpdateRequest'
+    etag: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.name is not None: body['name'] = self.name
+        if self.rule_set: body['rule_set'] = self.rule_set.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRuleSetRequest':
+        return cls(etag=d.get('etag', None),
+                   name=d.get('name', None),
+                   rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
+
+
+@dataclass
 class UpdateWorkspaceAssignments:
     permissions: 'List[WorkspacePermission]'
-    workspace_id: int
-    principal_id: int
+    principal_id: int = None
+    workspace_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.permissions: body['permissions'] = [v for v in self.permissions]
-        if self.principal_id: body['principal_id'] = self.principal_id
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        if self.principal_id is not None: body['principal_id'] = self.principal_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -694,29 +802,29 @@ class UpdateWorkspaceAssignments:
 
 @dataclass
 class User:
-    id: str
     active: bool = None
     display_name: str = None
     emails: 'List[ComplexValue]' = None
     entitlements: 'List[ComplexValue]' = None
     external_id: str = None
     groups: 'List[ComplexValue]' = None
+    id: str = None
     name: 'Name' = None
     roles: 'List[ComplexValue]' = None
     user_name: str = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.active: body['active'] = self.active
-        if self.display_name: body['displayName'] = self.display_name
+        if self.active is not None: body['active'] = self.active
+        if self.display_name is not None: body['displayName'] = self.display_name
         if self.emails: body['emails'] = [v.as_dict() for v in self.emails]
         if self.entitlements: body['entitlements'] = [v.as_dict() for v in self.entitlements]
-        if self.external_id: body['externalId'] = self.external_id
+        if self.external_id is not None: body['externalId'] = self.external_id
         if self.groups: body['groups'] = [v.as_dict() for v in self.groups]
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.name: body['name'] = self.name.as_dict()
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
-        if self.user_name: body['userName'] = self.user_name
+        if self.user_name is not None: body['userName'] = self.user_name
         return body
 
     @classmethod
@@ -754,6 +862,69 @@ class WorkspacePermissions:
         return cls(permissions=_repeated(d, 'permissions', PermissionOutput))
 
 
+class AccountAccessControlAPI:
+    """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
+    grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
+    called a rule set."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+        """Get a rule set.
+        
+        Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
+        rules on the said resource. Currently only a default rule set for each resource is supported."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAccountAccessControlRequest(etag=etag, name=name)
+
+        query = {}
+        if etag: query['etag'] = request.etag
+        if name: query['name'] = request.name
+
+        json = self._api.do('GET',
+                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            query=query)
+        return RuleSetResponse.from_dict(json)
+
+    def list(self, name: str, **kwargs) -> GetAssignableRolesForResourceResponse:
+        """List assignable roles on a resource.
+        
+        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
+        set on the resource can contain an access rule of the role."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListAccountAccessControlRequest(name=name)
+
+        query = {}
+        if name: query['name'] = request.name
+
+        json = self._api.do('GET',
+                            f'/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
+                            query=query)
+        return GetAssignableRolesForResourceResponse.from_dict(json)
+
+    def update(self, name: str, rule_set: RuleSetUpdateRequest, etag: str, **kwargs) -> RuleSetResponse:
+        """Update a rule set.
+        
+        Replace the rules of a rule set. First, use get to read the current version of the rule set before
+        modifying it. This pattern helps prevent conflicts between concurrent updates."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateRuleSetRequest(etag=etag, name=name, rule_set=rule_set)
+        body = request.as_dict()
+        query = {}
+        if etag: query['etag'] = request.etag
+        if name: query['name'] = request.name
+
+        json = self._api.do('PUT',
+                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            query=query,
+                            body=body)
+        return RuleSetResponse.from_dict(json)
+
+
 class AccountGroupsAPI:
     """Groups simplify identity management, making it easier to assign access to Databricks account, data, and
     other securable objects.
@@ -766,12 +937,12 @@ class AccountGroupsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                display_name: str = None,
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                members: List[ComplexValue] = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> Group:
@@ -899,7 +1070,6 @@ class AccountServicePrincipalsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                application_id: str = None,
@@ -907,6 +1077,7 @@ class AccountServicePrincipalsAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
@@ -1048,7 +1219,6 @@ class AccountUsersAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                display_name: str = None,
@@ -1056,6 +1226,7 @@ class AccountUsersAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                name: Name = None,
                roles: List[ComplexValue] = None,
                user_name: str = None,
@@ -1209,12 +1380,12 @@ class GroupsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                display_name: str = None,
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                members: List[ComplexValue] = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> Group:
@@ -1415,7 +1586,6 @@ class ServicePrincipalsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                application_id: str = None,
@@ -1423,6 +1593,7 @@ class ServicePrincipalsAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
@@ -1554,7 +1725,6 @@ class UsersAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                display_name: str = None,
@@ -1562,6 +1732,7 @@ class UsersAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                name: Name = None,
                roles: List[ComplexValue] = None,
                user_name: str = None,

@@ -18,8 +18,8 @@ class AddBlock:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.data: body['data'] = self.data
-        if self.handle: body['handle'] = self.handle
+        if self.data is not None: body['data'] = self.data
+        if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
@@ -33,7 +33,7 @@ class Close:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.handle: body['handle'] = self.handle
+        if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
@@ -48,8 +48,8 @@ class Create:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.overwrite: body['overwrite'] = self.overwrite
-        if self.path: body['path'] = self.path
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -63,7 +63,7 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.handle: body['handle'] = self.handle
+        if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
@@ -78,8 +78,8 @@ class Delete:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
-        if self.recursive: body['recursive'] = self.recursive
+        if self.path is not None: body['path'] = self.path
+        if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
     @classmethod
@@ -96,10 +96,10 @@ class FileInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.file_size: body['file_size'] = self.file_size
-        if self.is_dir: body['is_dir'] = self.is_dir
-        if self.modification_time: body['modification_time'] = self.modification_time
-        if self.path: body['path'] = self.path
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_dir is not None: body['is_dir'] = self.is_dir
+        if self.modification_time is not None: body['modification_time'] = self.modification_time
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -144,7 +144,7 @@ class MkDirs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -159,8 +159,8 @@ class Move:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination_path: body['destination_path'] = self.destination_path
-        if self.source_path: body['source_path'] = self.source_path
+        if self.destination_path is not None: body['destination_path'] = self.destination_path
+        if self.source_path is not None: body['source_path'] = self.source_path
         return body
 
     @classmethod
@@ -176,9 +176,9 @@ class Put:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.contents: body['contents'] = self.contents
-        if self.overwrite: body['overwrite'] = self.overwrite
-        if self.path: body['path'] = self.path
+        if self.contents is not None: body['contents'] = self.contents
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -204,8 +204,8 @@ class ReadResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bytes_read: body['bytes_read'] = self.bytes_read
-        if self.data: body['data'] = self.data
+        if self.bytes_read is not None: body['bytes_read'] = self.bytes_read
+        if self.data is not None: body['data'] = self.data
         return body
 
     @classmethod

@@ -25,10 +25,11 @@ class AddInstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.iam_role_arn: body['iam_role_arn'] = self.iam_role_arn
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.is_meta_instance_profile: body['is_meta_instance_profile'] = self.is_meta_instance_profile
-        if self.skip_validation: body['skip_validation'] = self.skip_validation
+        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = self.is_meta_instance_profile
+        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
         return body
 
     @classmethod
@@ -46,8 +47,8 @@ class AutoScale:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.max_workers: body['max_workers'] = self.max_workers
-        if self.min_workers: body['min_workers'] = self.min_workers
+        if self.max_workers is not None: body['max_workers'] = self.max_workers
+        if self.min_workers is not None: body['min_workers'] = self.min_workers
         return body
 
     @classmethod
@@ -70,16 +71,17 @@ class AwsAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.ebs_volume_count: body['ebs_volume_count'] = self.ebs_volume_count
-        if self.ebs_volume_iops: body['ebs_volume_iops'] = self.ebs_volume_iops
-        if self.ebs_volume_size: body['ebs_volume_size'] = self.ebs_volume_size
-        if self.ebs_volume_throughput: body['ebs_volume_throughput'] = self.ebs_volume_throughput
-        if self.ebs_volume_type: body['ebs_volume_type'] = self.ebs_volume_type.value
-        if self.first_on_demand: body['first_on_demand'] = self.first_on_demand
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.spot_bid_price_percent: body['spot_bid_price_percent'] = self.spot_bid_price_percent
-        if self.zone_id: body['zone_id'] = self.zone_id
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.ebs_volume_count is not None: body['ebs_volume_count'] = self.ebs_volume_count
+        if self.ebs_volume_iops is not None: body['ebs_volume_iops'] = self.ebs_volume_iops
+        if self.ebs_volume_size is not None: body['ebs_volume_size'] = self.ebs_volume_size
+        if self.ebs_volume_throughput is not None: body['ebs_volume_throughput'] = self.ebs_volume_throughput
+        if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type.value
+        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.spot_bid_price_percent is not None:
+            body['spot_bid_price_percent'] = self.spot_bid_price_percent
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
     @classmethod
@@ -115,10 +117,10 @@ class AzureAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.first_on_demand: body['first_on_demand'] = self.first_on_demand
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
         if self.log_analytics_info: body['log_analytics_info'] = self.log_analytics_info.as_dict()
-        if self.spot_bid_max_price: body['spot_bid_max_price'] = self.spot_bid_max_price
+        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
         return body
 
     @classmethod
@@ -149,6 +151,8 @@ class BaseClusterInfo:
     cluster_name: str = None
     cluster_source: 'ClusterSource' = None
     custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    docker_image: 'DockerImage' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
     enable_elastic_disk: bool = None
@@ -160,6 +164,7 @@ class BaseClusterInfo:
     num_workers: int = None
     policy_id: str = None
     runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
     spark_conf: 'Dict[str,str]' = None
     spark_env_vars: 'Dict[str,str]' = None
     spark_version: str = None
@@ -169,28 +174,33 @@ class BaseClusterInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -205,6 +215,8 @@ class BaseClusterInfo:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -216,6 +228,7 @@ class BaseClusterInfo:
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -231,9 +244,9 @@ class CancelCommand:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.command_id: body['commandId'] = self.command_id
-        if self.context_id: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.command_id is not None: body['commandId'] = self.command_id
+        if self.context_id is not None: body['contextId'] = self.context_id
         return body
 
     @classmethod
@@ -250,8 +263,8 @@ class ChangeClusterOwner:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.owner_username: body['owner_username'] = self.owner_username
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.owner_username is not None: body['owner_username'] = self.owner_username
         return body
 
     @classmethod
@@ -266,8 +279,8 @@ class ClientsTypes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.jobs: body['jobs'] = self.jobs
-        if self.notebooks: body['notebooks'] = self.notebooks
+        if self.jobs is not None: body['jobs'] = self.jobs
+        if self.notebooks is not None: body['notebooks'] = self.notebooks
         return body
 
     @classmethod
@@ -305,6 +318,8 @@ class ClusterAttributes:
     cluster_name: str = None
     cluster_source: 'ClusterSource' = None
     custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    docker_image: 'DockerImage' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
     enable_elastic_disk: bool = None
@@ -315,6 +330,7 @@ class ClusterAttributes:
     node_type_id: str = None
     policy_id: str = None
     runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
     spark_conf: 'Dict[str,str]' = None
     spark_env_vars: 'Dict[str,str]' = None
     ssh_public_keys: 'List[str]' = None
@@ -322,27 +338,32 @@ class ClusterAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -356,6 +377,8 @@ class ClusterAttributes:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -366,6 +389,7 @@ class ClusterAttributes:
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -383,12 +407,12 @@ class ClusterEvent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.data_plane_event_details:
             body['data_plane_event_details'] = self.data_plane_event_details.as_dict()
         if self.details: body['details'] = self.details.as_dict()
-        if self.timestamp: body['timestamp'] = self.timestamp
-        if self.type: body['type'] = self.type.value
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -417,6 +441,7 @@ class ClusterInfo:
     custom_tags: 'Dict[str,str]' = None
     data_security_mode: 'DataSecurityMode' = None
     default_tags: 'Dict[str,str]' = None
+    docker_image: 'DockerImage' = None
     driver: 'SparkNode' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
@@ -449,47 +474,50 @@ class ClusterInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
-        if self.cluster_cores: body['cluster_cores'] = self.cluster_cores
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_cores is not None: body['cluster_cores'] = self.cluster_cores
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_log_status: body['cluster_log_status'] = self.cluster_log_status.as_dict()
-        if self.cluster_memory_mb: body['cluster_memory_mb'] = self.cluster_memory_mb
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
+        if self.cluster_memory_mb is not None: body['cluster_memory_mb'] = self.cluster_memory_mb
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.data_security_mode: body['data_security_mode'] = self.data_security_mode.value
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
         if self.default_tags: body['default_tags'] = self.default_tags
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver: body['driver'] = self.driver.as_dict()
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.executors: body['executors'] = [v.as_dict() for v in self.executors]
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.jdbc_port: body['jdbc_port'] = self.jdbc_port
-        if self.last_restarted_time: body['last_restarted_time'] = self.last_restarted_time
-        if self.last_state_loss_time: body['last_state_loss_time'] = self.last_state_loss_time
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
-        if self.single_user_name: body['single_user_name'] = self.single_user_name
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
+        if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
+        if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_context_id: body['spark_context_id'] = self.spark_context_id
+        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
-        if self.start_time: body['start_time'] = self.start_time
-        if self.state: body['state'] = self.state.value
-        if self.state_message: body['state_message'] = self.state_message
-        if self.terminated_time: body['terminated_time'] = self.terminated_time
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state is not None: body['state'] = self.state.value
+        if self.state_message is not None: body['state_message'] = self.state_message
+        if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
         if self.termination_reason: body['termination_reason'] = self.termination_reason.as_dict()
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -511,6 +539,7 @@ class ClusterInfo:
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    default_tags=d.get('default_tags', None),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver=_from_dict(d, 'driver', SparkNode),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
@@ -548,7 +577,7 @@ class ClusterLibraryStatuses:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.library_statuses: body['library_statuses'] = [v.as_dict() for v in self.library_statuses]
         return body
 
@@ -582,7 +611,7 @@ class ClusterSize:
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.num_workers: body['num_workers'] = self.num_workers
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
         return body
 
     @classmethod
@@ -619,10 +648,10 @@ class Command:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.command: body['command'] = self.command
-        if self.context_id: body['contextId'] = self.context_id
-        if self.language: body['language'] = self.language.value
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.command is not None: body['command'] = self.command
+        if self.context_id is not None: body['contextId'] = self.context_id
+        if self.language is not None: body['language'] = self.language.value
         return body
 
     @classmethod
@@ -660,9 +689,9 @@ class CommandStatusResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.results: body['results'] = self.results.as_dict()
-        if self.status: body['status'] = self.status.value
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -694,8 +723,8 @@ class ContextStatusResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
-        if self.status: body['status'] = self.status.value
+        if self.id is not None: body['id'] = self.id
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -733,31 +762,33 @@ class CreateCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apply_policy_default_values:
+        if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -797,7 +828,7 @@ class CreateClusterResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -812,8 +843,8 @@ class CreateContext:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.language: body['language'] = self.language.value
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.language is not None: body['language'] = self.language.value
         return body
 
     @classmethod
@@ -843,15 +874,15 @@ class CreateInstancePool:
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
@@ -882,7 +913,7 @@ class CreateInstancePoolResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
 
     @classmethod
@@ -901,13 +932,13 @@ class CreatePolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name: body['name'] = self.name
-        if self.policy_family_definition_overrides:
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
         return body
 
     @classmethod
@@ -926,7 +957,7 @@ class CreatePolicyResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -940,7 +971,7 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.script_id: body['script_id'] = self.script_id
+        if self.script_id is not None: body['script_id'] = self.script_id
         return body
 
     @classmethod
@@ -954,7 +985,7 @@ class Created:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -971,10 +1002,10 @@ class DataPlaneEventDetails:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.event_type: body['event_type'] = self.event_type.value
-        if self.executor_failures: body['executor_failures'] = self.executor_failures
-        if self.host_id: body['host_id'] = self.host_id
-        if self.timestamp: body['timestamp'] = self.timestamp
+        if self.event_type is not None: body['event_type'] = self.event_type.value
+        if self.executor_failures is not None: body['executor_failures'] = self.executor_failures
+        if self.host_id is not None: body['host_id'] = self.host_id
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
     @classmethod
@@ -1009,7 +1040,7 @@ class DbfsStorageInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination: body['destination'] = self.destination
+        if self.destination is not None: body['destination'] = self.destination
         return body
 
     @classmethod
@@ -1023,7 +1054,7 @@ class DeleteCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -1044,7 +1075,7 @@ class DeleteInstancePool:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
 
     @classmethod
@@ -1058,7 +1089,7 @@ class DeletePolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -1073,8 +1104,8 @@ class DestroyContext:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.context_id: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.context_id is not None: body['contextId'] = self.context_id
         return body
 
     @classmethod
@@ -1092,10 +1123,10 @@ class DiskSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.disk_count: body['disk_count'] = self.disk_count
-        if self.disk_iops: body['disk_iops'] = self.disk_iops
-        if self.disk_size: body['disk_size'] = self.disk_size
-        if self.disk_throughput: body['disk_throughput'] = self.disk_throughput
+        if self.disk_count is not None: body['disk_count'] = self.disk_count
+        if self.disk_iops is not None: body['disk_iops'] = self.disk_iops
+        if self.disk_size is not None: body['disk_size'] = self.disk_size
+        if self.disk_throughput is not None: body['disk_throughput'] = self.disk_throughput
         if self.disk_type: body['disk_type'] = self.disk_type.as_dict()
         return body
 
@@ -1115,8 +1146,9 @@ class DiskType:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.azure_disk_volume_type: body['azure_disk_volume_type'] = self.azure_disk_volume_type.value
-        if self.ebs_volume_type: body['ebs_volume_type'] = self.ebs_volume_type.value
+        if self.azure_disk_volume_type is not None:
+            body['azure_disk_volume_type'] = self.azure_disk_volume_type.value
+        if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type.value
         return body
 
     @classmethod
@@ -1144,8 +1176,8 @@ class DockerBasicAuth:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.password: body['password'] = self.password
-        if self.username: body['username'] = self.username
+        if self.password is not None: body['password'] = self.password
+        if self.username is not None: body['username'] = self.username
         return body
 
     @classmethod
@@ -1161,7 +1193,7 @@ class DockerImage:
     def as_dict(self) -> dict:
         body = {}
         if self.basic_auth: body['basic_auth'] = self.basic_auth.as_dict()
-        if self.url: body['url'] = self.url
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -1189,6 +1221,8 @@ class EditCluster:
     cluster_name: str = None
     cluster_source: 'ClusterSource' = None
     custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    docker_image: 'DockerImage' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
     enable_elastic_disk: bool = None
@@ -1200,6 +1234,7 @@ class EditCluster:
     num_workers: int = None
     policy_id: str = None
     runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
     spark_conf: 'Dict[str,str]' = None
     spark_env_vars: 'Dict[str,str]' = None
     ssh_public_keys: 'List[str]' = None
@@ -1207,32 +1242,37 @@ class EditCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apply_policy_default_values:
+        if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -1249,6 +1289,8 @@ class EditCluster:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -1260,6 +1302,7 @@ class EditCluster:
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -1290,16 +1333,16 @@ class EditInstancePool:
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
@@ -1337,14 +1380,14 @@ class EditPolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name: body['name'] = self.name
-        if self.policy_family_definition_overrides:
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -1383,25 +1426,25 @@ class EventDetails:
     def as_dict(self) -> dict:
         body = {}
         if self.attributes: body['attributes'] = self.attributes.as_dict()
-        if self.cause: body['cause'] = self.cause.value
+        if self.cause is not None: body['cause'] = self.cause.value
         if self.cluster_size: body['cluster_size'] = self.cluster_size.as_dict()
-        if self.current_num_vcpus: body['current_num_vcpus'] = self.current_num_vcpus
-        if self.current_num_workers: body['current_num_workers'] = self.current_num_workers
-        if self.did_not_expand_reason: body['did_not_expand_reason'] = self.did_not_expand_reason
-        if self.disk_size: body['disk_size'] = self.disk_size
-        if self.driver_state_message: body['driver_state_message'] = self.driver_state_message
-        if self.enable_termination_for_node_blocklisted:
+        if self.current_num_vcpus is not None: body['current_num_vcpus'] = self.current_num_vcpus
+        if self.current_num_workers is not None: body['current_num_workers'] = self.current_num_workers
+        if self.did_not_expand_reason is not None: body['did_not_expand_reason'] = self.did_not_expand_reason
+        if self.disk_size is not None: body['disk_size'] = self.disk_size
+        if self.driver_state_message is not None: body['driver_state_message'] = self.driver_state_message
+        if self.enable_termination_for_node_blocklisted is not None:
             body['enable_termination_for_node_blocklisted'] = self.enable_termination_for_node_blocklisted
-        if self.free_space: body['free_space'] = self.free_space
-        if self.instance_id: body['instance_id'] = self.instance_id
-        if self.job_run_name: body['job_run_name'] = self.job_run_name
+        if self.free_space is not None: body['free_space'] = self.free_space
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.job_run_name is not None: body['job_run_name'] = self.job_run_name
         if self.previous_attributes: body['previous_attributes'] = self.previous_attributes.as_dict()
         if self.previous_cluster_size: body['previous_cluster_size'] = self.previous_cluster_size.as_dict()
-        if self.previous_disk_size: body['previous_disk_size'] = self.previous_disk_size
+        if self.previous_disk_size is not None: body['previous_disk_size'] = self.previous_disk_size
         if self.reason: body['reason'] = self.reason.as_dict()
-        if self.target_num_vcpus: body['target_num_vcpus'] = self.target_num_vcpus
-        if self.target_num_workers: body['target_num_workers'] = self.target_num_workers
-        if self.user: body['user'] = self.user
+        if self.target_num_vcpus is not None: body['target_num_vcpus'] = self.target_num_vcpus
+        if self.target_num_workers is not None: body['target_num_workers'] = self.target_num_workers
+        if self.user is not None: body['user'] = self.user
         return body
 
     @classmethod
@@ -1475,10 +1518,10 @@ class FleetLaunchTemplateOverride:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability_zone: body['availability_zone'] = self.availability_zone
-        if self.instance_type: body['instance_type'] = self.instance_type
-        if self.max_price: body['max_price'] = self.max_price
-        if self.priority: body['priority'] = self.priority
+        if self.availability_zone is not None: body['availability_zone'] = self.availability_zone
+        if self.instance_type is not None: body['instance_type'] = self.instance_type
+        if self.max_price is not None: body['max_price'] = self.max_price
+        if self.priority is not None: body['priority'] = self.priority
         return body
 
     @classmethod
@@ -1497,9 +1540,9 @@ class FleetOnDemandOption:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allocation_strategy: body['allocation_strategy'] = self.allocation_strategy.value
-        if self.max_total_price: body['max_total_price'] = self.max_total_price
-        if self.use_capacity_reservations_first:
+        if self.allocation_strategy is not None: body['allocation_strategy'] = self.allocation_strategy.value
+        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
+        if self.use_capacity_reservations_first is not None:
             body['use_capacity_reservations_first'] = self.use_capacity_reservations_first
         return body
 
@@ -1527,10 +1570,10 @@ class FleetSpotOption:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allocation_strategy: body['allocation_strategy'] = self.allocation_strategy.value
-        if self.instance_pools_to_use_count:
+        if self.allocation_strategy is not None: body['allocation_strategy'] = self.allocation_strategy.value
+        if self.instance_pools_to_use_count is not None:
             body['instance_pools_to_use_count'] = self.instance_pools_to_use_count
-        if self.max_total_price: body['max_total_price'] = self.max_total_price
+        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
         return body
 
     @classmethod
@@ -1557,9 +1600,10 @@ class GcpAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.boot_disk_size: body['boot_disk_size'] = self.boot_disk_size
-        if self.google_service_account: body['google_service_account'] = self.google_service_account
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.boot_disk_size is not None: body['boot_disk_size'] = self.boot_disk_size
+        if self.google_service_account is not None:
+            body['google_service_account'] = self.google_service_account
         return body
 
     @classmethod
@@ -1604,13 +1648,13 @@ class GetEvents:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.end_time: body['end_time'] = self.end_time
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.end_time is not None: body['end_time'] = self.end_time
         if self.event_types: body['event_types'] = [v for v in self.event_types]
-        if self.limit: body['limit'] = self.limit
-        if self.offset: body['offset'] = self.offset
-        if self.order: body['order'] = self.order.value
-        if self.start_time: body['start_time'] = self.start_time
+        if self.limit is not None: body['limit'] = self.limit
+        if self.offset is not None: body['offset'] = self.offset
+        if self.order is not None: body['order'] = self.order.value
+        if self.start_time is not None: body['start_time'] = self.start_time
         return body
 
     @classmethod
@@ -1641,7 +1685,7 @@ class GetEventsResponse:
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
         if self.next_page: body['next_page'] = self.next_page.as_dict()
-        if self.total_count: body['total_count'] = self.total_count
+        if self.total_count is not None: body['total_count'] = self.total_count
         return body
 
     @classmethod
@@ -1686,21 +1730,21 @@ class GetInstancePool:
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.default_tags: body['default_tags'] = self.default_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         if self.stats: body['stats'] = self.stats.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         return body
@@ -1763,10 +1807,10 @@ class GlobalInitScriptCreateRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script: body['script'] = self.script
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
         return body
 
     @classmethod
@@ -1790,14 +1834,14 @@ class GlobalInitScriptDetails:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script_id: body['script_id'] = self.script_id
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -1826,15 +1870,15 @@ class GlobalInitScriptDetailsWithContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script: body['script'] = self.script
-        if self.script_id: body['script_id'] = self.script_id
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -1854,17 +1898,17 @@ class GlobalInitScriptDetailsWithContent:
 class GlobalInitScriptUpdateRequest:
     name: str
     script: str
-    script_id: str
     enabled: bool = None
     position: int = None
+    script_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script: body['script'] = self.script
-        if self.script_id: body['script_id'] = self.script_id
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        if self.script_id is not None: body['script_id'] = self.script_id
         return body
 
     @classmethod
@@ -1903,7 +1947,7 @@ class InstallLibraries:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         return body
 
@@ -1940,21 +1984,21 @@ class InstancePoolAndStats:
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.default_tags: body['default_tags'] = self.default_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         if self.stats: body['stats'] = self.stats.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         return body
@@ -1990,9 +2034,10 @@ class InstancePoolAwsAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.spot_bid_price_percent: body['spot_bid_price_percent'] = self.spot_bid_price_percent
-        if self.zone_id: body['zone_id'] = self.zone_id
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.spot_bid_price_percent is not None:
+            body['spot_bid_price_percent'] = self.spot_bid_price_percent
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
     @classmethod
@@ -2019,8 +2064,8 @@ class InstancePoolAzureAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.spot_bid_max_price: body['spot_bid_max_price'] = self.spot_bid_max_price
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
         return body
 
     @classmethod
@@ -2078,10 +2123,10 @@ class InstancePoolStats:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.idle_count: body['idle_count'] = self.idle_count
-        if self.pending_idle_count: body['pending_idle_count'] = self.pending_idle_count
-        if self.pending_used_count: body['pending_used_count'] = self.pending_used_count
-        if self.used_count: body['used_count'] = self.used_count
+        if self.idle_count is not None: body['idle_count'] = self.idle_count
+        if self.pending_idle_count is not None: body['pending_idle_count'] = self.pending_idle_count
+        if self.pending_used_count is not None: body['pending_used_count'] = self.pending_used_count
+        if self.used_count is not None: body['used_count'] = self.used_count
         return body
 
     @classmethod
@@ -2115,9 +2160,10 @@ class InstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.iam_role_arn: body['iam_role_arn'] = self.iam_role_arn
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.is_meta_instance_profile: body['is_meta_instance_profile'] = self.is_meta_instance_profile
+        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = self.is_meta_instance_profile
         return body
 
     @classmethod
@@ -2146,11 +2192,11 @@ class Library:
     def as_dict(self) -> dict:
         body = {}
         if self.cran: body['cran'] = self.cran.as_dict()
-        if self.egg: body['egg'] = self.egg
-        if self.jar: body['jar'] = self.jar
+        if self.egg is not None: body['egg'] = self.egg
+        if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.pypi: body['pypi'] = self.pypi.as_dict()
-        if self.whl: body['whl'] = self.whl
+        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -2172,11 +2218,11 @@ class LibraryFullStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_library_for_all_clusters:
+        if self.is_library_for_all_clusters is not None:
             body['is_library_for_all_clusters'] = self.is_library_for_all_clusters
         if self.library: body['library'] = self.library.as_dict()
         if self.messages: body['messages'] = [v for v in self.messages]
-        if self.status: body['status'] = self.status.value
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -2220,7 +2266,7 @@ class ListAvailableZonesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default_zone: body['default_zone'] = self.default_zone
+        if self.default_zone is not None: body['default_zone'] = self.default_zone
         if self.zones: body['zones'] = [v for v in self.zones]
         return body
 
@@ -2341,7 +2387,7 @@ class ListPolicyFamiliesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.policy_families: body['policy_families'] = [v.as_dict() for v in self.policy_families]
         return body
 
@@ -2370,8 +2416,9 @@ class LogAnalyticsInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.log_analytics_primary_key: body['log_analytics_primary_key'] = self.log_analytics_primary_key
-        if self.log_analytics_workspace_id:
+        if self.log_analytics_primary_key is not None:
+            body['log_analytics_primary_key'] = self.log_analytics_primary_key
+        if self.log_analytics_workspace_id is not None:
             body['log_analytics_workspace_id'] = self.log_analytics_workspace_id
         return body
 
@@ -2388,8 +2435,8 @@ class LogSyncStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.last_attempted: body['last_attempted'] = self.last_attempted
-        if self.last_exception: body['last_exception'] = self.last_exception
+        if self.last_attempted is not None: body['last_attempted'] = self.last_attempted
+        if self.last_exception is not None: body['last_exception'] = self.last_exception
         return body
 
     @classmethod
@@ -2405,9 +2452,9 @@ class MavenLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.coordinates: body['coordinates'] = self.coordinates
+        if self.coordinates is not None: body['coordinates'] = self.coordinates
         if self.exclusions: body['exclusions'] = [v for v in self.exclusions]
-        if self.repo: body['repo'] = self.repo
+        if self.repo is not None: body['repo'] = self.repo
         return body
 
     @classmethod
@@ -2427,11 +2474,12 @@ class NodeInstanceType:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_type_id: body['instance_type_id'] = self.instance_type_id
-        if self.local_disk_size_gb: body['local_disk_size_gb'] = self.local_disk_size_gb
-        if self.local_disks: body['local_disks'] = self.local_disks
-        if self.local_nvme_disk_size_gb: body['local_nvme_disk_size_gb'] = self.local_nvme_disk_size_gb
-        if self.local_nvme_disks: body['local_nvme_disks'] = self.local_nvme_disks
+        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
+        if self.local_disk_size_gb is not None: body['local_disk_size_gb'] = self.local_disk_size_gb
+        if self.local_disks is not None: body['local_disks'] = self.local_disks
+        if self.local_nvme_disk_size_gb is not None:
+            body['local_nvme_disk_size_gb'] = self.local_nvme_disk_size_gb
+        if self.local_nvme_disks is not None: body['local_nvme_disks'] = self.local_nvme_disks
         return body
 
     @classmethod
@@ -2468,26 +2516,28 @@ class NodeType:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.category: body['category'] = self.category
-        if self.description: body['description'] = self.description
-        if self.display_order: body['display_order'] = self.display_order
-        if self.instance_type_id: body['instance_type_id'] = self.instance_type_id
-        if self.is_deprecated: body['is_deprecated'] = self.is_deprecated
-        if self.is_encrypted_in_transit: body['is_encrypted_in_transit'] = self.is_encrypted_in_transit
-        if self.is_graviton: body['is_graviton'] = self.is_graviton
-        if self.is_hidden: body['is_hidden'] = self.is_hidden
-        if self.is_io_cache_enabled: body['is_io_cache_enabled'] = self.is_io_cache_enabled
-        if self.memory_mb: body['memory_mb'] = self.memory_mb
+        if self.category is not None: body['category'] = self.category
+        if self.description is not None: body['description'] = self.description
+        if self.display_order is not None: body['display_order'] = self.display_order
+        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
+        if self.is_deprecated is not None: body['is_deprecated'] = self.is_deprecated
+        if self.is_encrypted_in_transit is not None:
+            body['is_encrypted_in_transit'] = self.is_encrypted_in_transit
+        if self.is_graviton is not None: body['is_graviton'] = self.is_graviton
+        if self.is_hidden is not None: body['is_hidden'] = self.is_hidden
+        if self.is_io_cache_enabled is not None: body['is_io_cache_enabled'] = self.is_io_cache_enabled
+        if self.memory_mb is not None: body['memory_mb'] = self.memory_mb
         if self.node_info: body['node_info'] = self.node_info.as_dict()
         if self.node_instance_type: body['node_instance_type'] = self.node_instance_type.as_dict()
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_cores: body['num_cores'] = self.num_cores
-        if self.num_gpus: body['num_gpus'] = self.num_gpus
-        if self.photon_driver_capable: body['photon_driver_capable'] = self.photon_driver_capable
-        if self.photon_worker_capable: body['photon_worker_capable'] = self.photon_worker_capable
-        if self.support_cluster_tags: body['support_cluster_tags'] = self.support_cluster_tags
-        if self.support_ebs_volumes: body['support_ebs_volumes'] = self.support_ebs_volumes
-        if self.support_port_forwarding: body['support_port_forwarding'] = self.support_port_forwarding
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_cores is not None: body['num_cores'] = self.num_cores
+        if self.num_gpus is not None: body['num_gpus'] = self.num_gpus
+        if self.photon_driver_capable is not None: body['photon_driver_capable'] = self.photon_driver_capable
+        if self.photon_worker_capable is not None: body['photon_worker_capable'] = self.photon_worker_capable
+        if self.support_cluster_tags is not None: body['support_cluster_tags'] = self.support_cluster_tags
+        if self.support_ebs_volumes is not None: body['support_ebs_volumes'] = self.support_ebs_volumes
+        if self.support_port_forwarding is not None:
+            body['support_port_forwarding'] = self.support_port_forwarding
         return body
 
     @classmethod
@@ -2521,8 +2571,8 @@ class PendingInstanceError:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_id: body['instance_id'] = self.instance_id
-        if self.message: body['message'] = self.message
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.message is not None: body['message'] = self.message
         return body
 
     @classmethod
@@ -2536,7 +2586,7 @@ class PermanentDeleteCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2550,7 +2600,7 @@ class PinCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2573,17 +2623,17 @@ class Policy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at_timestamp: body['created_at_timestamp'] = self.created_at_timestamp
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.is_default: body['is_default'] = self.is_default
-        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name: body['name'] = self.name
-        if self.policy_family_definition_overrides:
+        if self.created_at_timestamp is not None: body['created_at_timestamp'] = self.created_at_timestamp
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.is_default is not None: body['is_default'] = self.is_default
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -2609,10 +2659,10 @@ class PolicyFamily:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
         return body
 
     @classmethod
@@ -2630,8 +2680,8 @@ class PythonPyPiLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.package: body['package'] = self.package
-        if self.repo: body['repo'] = self.repo
+        if self.package is not None: body['package'] = self.package
+        if self.repo is not None: body['repo'] = self.repo
         return body
 
     @classmethod
@@ -2646,8 +2696,8 @@ class RCranLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.package: body['package'] = self.package
-        if self.repo: body['repo'] = self.repo
+        if self.package is not None: body['package'] = self.package
+        if self.repo is not None: body['repo'] = self.repo
         return body
 
     @classmethod
@@ -2661,7 +2711,7 @@ class RemoveInstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         return body
 
     @classmethod
@@ -2678,8 +2728,8 @@ class ResizeCluster:
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.num_workers: body['num_workers'] = self.num_workers
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
         return body
 
     @classmethod
@@ -2696,8 +2746,8 @@ class RestartCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.restart_user: body['restart_user'] = self.restart_user
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.restart_user is not None: body['restart_user'] = self.restart_user
         return body
 
     @classmethod
@@ -2729,16 +2779,16 @@ class Results:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause
+        if self.cause is not None: body['cause'] = self.cause
         if self.data: body['data'] = self.data
-        if self.file_name: body['fileName'] = self.file_name
+        if self.file_name is not None: body['fileName'] = self.file_name
         if self.file_names: body['fileNames'] = [v for v in self.file_names]
-        if self.is_json_schema: body['isJsonSchema'] = self.is_json_schema
-        if self.pos: body['pos'] = self.pos
-        if self.result_type: body['resultType'] = self.result_type.value
+        if self.is_json_schema is not None: body['isJsonSchema'] = self.is_json_schema
+        if self.pos is not None: body['pos'] = self.pos
+        if self.result_type is not None: body['resultType'] = self.result_type.value
         if self.schema: body['schema'] = [v for v in self.schema]
-        if self.summary: body['summary'] = self.summary
-        if self.truncated: body['truncated'] = self.truncated
+        if self.summary is not None: body['summary'] = self.summary
+        if self.truncated is not None: body['truncated'] = self.truncated
         return body
 
     @classmethod
@@ -2776,13 +2826,13 @@ class S3StorageInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.canned_acl: body['canned_acl'] = self.canned_acl
-        if self.destination: body['destination'] = self.destination
-        if self.enable_encryption: body['enable_encryption'] = self.enable_encryption
-        if self.encryption_type: body['encryption_type'] = self.encryption_type
-        if self.endpoint: body['endpoint'] = self.endpoint
-        if self.kms_key: body['kms_key'] = self.kms_key
-        if self.region: body['region'] = self.region
+        if self.canned_acl is not None: body['canned_acl'] = self.canned_acl
+        if self.destination is not None: body['destination'] = self.destination
+        if self.enable_encryption is not None: body['enable_encryption'] = self.enable_encryption
+        if self.encryption_type is not None: body['encryption_type'] = self.encryption_type
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.kms_key is not None: body['kms_key'] = self.kms_key
+        if self.region is not None: body['region'] = self.region
         return body
 
     @classmethod
@@ -2808,13 +2858,13 @@ class SparkNode:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.host_private_ip: body['host_private_ip'] = self.host_private_ip
-        if self.instance_id: body['instance_id'] = self.instance_id
+        if self.host_private_ip is not None: body['host_private_ip'] = self.host_private_ip
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
         if self.node_aws_attributes: body['node_aws_attributes'] = self.node_aws_attributes.as_dict()
-        if self.node_id: body['node_id'] = self.node_id
-        if self.private_ip: body['private_ip'] = self.private_ip
-        if self.public_dns: body['public_dns'] = self.public_dns
-        if self.start_timestamp: body['start_timestamp'] = self.start_timestamp
+        if self.node_id is not None: body['node_id'] = self.node_id
+        if self.private_ip is not None: body['private_ip'] = self.private_ip
+        if self.public_dns is not None: body['public_dns'] = self.public_dns
+        if self.start_timestamp is not None: body['start_timestamp'] = self.start_timestamp
         return body
 
     @classmethod
@@ -2834,7 +2884,7 @@ class SparkNodeAwsAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_spot: body['is_spot'] = self.is_spot
+        if self.is_spot is not None: body['is_spot'] = self.is_spot
         return body
 
     @classmethod
@@ -2849,8 +2899,8 @@ class SparkVersion:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.name: body['name'] = self.name
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -2864,7 +2914,7 @@ class StartCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2893,9 +2943,9 @@ class TerminationReason:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.code: body['code'] = self.code.value
+        if self.code is not None: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
-        if self.type: body['type'] = self.type.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -3005,7 +3055,7 @@ class UninstallLibraries:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         return body
 
@@ -3020,7 +3070,7 @@ class UnpinCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -3048,7 +3098,7 @@ class WorkspaceStorageInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination: body['destination'] = self.destination
+        if self.destination is not None: body['destination'] = self.destination
         return body
 
     @classmethod
@@ -3426,6 +3476,8 @@ class ClustersAPI:
              cluster_name: str = None,
              cluster_source: ClusterSource = None,
              custom_tags: Dict[str, str] = None,
+             data_security_mode: DataSecurityMode = None,
+             docker_image: DockerImage = None,
              driver_instance_pool_id: str = None,
              driver_node_type_id: str = None,
              enable_elastic_disk: bool = None,
@@ -3437,6 +3489,7 @@ class ClustersAPI:
              num_workers: int = None,
              policy_id: str = None,
              runtime_engine: RuntimeEngine = None,
+             single_user_name: str = None,
              spark_conf: Dict[str, str] = None,
              spark_env_vars: Dict[str, str] = None,
              ssh_public_keys: List[str] = None,
@@ -3467,6 +3520,8 @@ class ClustersAPI:
                                   cluster_name=cluster_name,
                                   cluster_source=cluster_source,
                                   custom_tags=custom_tags,
+                                  data_security_mode=data_security_mode,
+                                  docker_image=docker_image,
                                   driver_instance_pool_id=driver_instance_pool_id,
                                   driver_node_type_id=driver_node_type_id,
                                   enable_elastic_disk=enable_elastic_disk,
@@ -3478,6 +3533,7 @@ class ClustersAPI:
                                   num_workers=num_workers,
                                   policy_id=policy_id,
                                   runtime_engine=runtime_engine,
+                                  single_user_name=single_user_name,
                                   spark_conf=spark_conf,
                                   spark_env_vars=spark_env_vars,
                                   spark_version=spark_version,
@@ -3500,6 +3556,8 @@ class ClustersAPI:
                       cluster_name: str = None,
                       cluster_source: ClusterSource = None,
                       custom_tags: Dict[str, str] = None,
+                      data_security_mode: DataSecurityMode = None,
+                      docker_image: DockerImage = None,
                       driver_instance_pool_id: str = None,
                       driver_node_type_id: str = None,
                       enable_elastic_disk: bool = None,
@@ -3511,6 +3569,7 @@ class ClustersAPI:
                       num_workers: int = None,
                       policy_id: str = None,
                       runtime_engine: RuntimeEngine = None,
+                      single_user_name: str = None,
                       spark_conf: Dict[str, str] = None,
                       spark_env_vars: Dict[str, str] = None,
                       ssh_public_keys: List[str] = None,
@@ -3526,6 +3585,8 @@ class ClustersAPI:
                          cluster_name=cluster_name,
                          cluster_source=cluster_source,
                          custom_tags=custom_tags,
+                         data_security_mode=data_security_mode,
+                         docker_image=docker_image,
                          driver_instance_pool_id=driver_instance_pool_id,
                          driver_node_type_id=driver_node_type_id,
                          enable_elastic_disk=enable_elastic_disk,
@@ -3537,6 +3598,7 @@ class ClustersAPI:
                          num_workers=num_workers,
                          policy_id=policy_id,
                          runtime_engine=runtime_engine,
+                         single_user_name=single_user_name,
                          spark_conf=spark_conf,
                          spark_env_vars=spark_env_vars,
                          spark_version=spark_version,
