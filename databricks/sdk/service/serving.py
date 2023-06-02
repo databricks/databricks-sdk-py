@@ -31,7 +31,7 @@ class BuildLogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.logs: body['logs'] = self.logs
+        if self.logs is not None: body['logs'] = self.logs
         return body
 
     @classmethod
@@ -47,7 +47,7 @@ class CreateServingEndpoint:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -70,7 +70,7 @@ class EndpointCoreConfigInput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
@@ -90,7 +90,7 @@ class EndpointCoreConfigOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_version: body['config_version'] = self.config_version
+        if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
@@ -125,9 +125,9 @@ class EndpointPendingConfig:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_version: body['config_version'] = self.config_version
+        if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
-        if self.start_time: body['start_time'] = self.start_time
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
 
@@ -146,8 +146,8 @@ class EndpointState:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_update: body['config_update'] = self.config_update.value
-        if self.ready: body['ready'] = self.ready.value
+        if self.config_update is not None: body['config_update'] = self.config_update.value
+        if self.ready is not None: body['ready'] = self.ready.value
         return body
 
     @classmethod
@@ -241,8 +241,8 @@ class Route:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.served_model_name: body['served_model_name'] = self.served_model_name
-        if self.traffic_percentage: body['traffic_percentage'] = self.traffic_percentage
+        if self.served_model_name is not None: body['served_model_name'] = self.served_model_name
+        if self.traffic_percentage is not None: body['traffic_percentage'] = self.traffic_percentage
         return body
 
     @classmethod
@@ -261,11 +261,11 @@ class ServedModelInput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_name: body['model_name'] = self.model_name
-        if self.model_version: body['model_version'] = self.model_version
-        if self.name: body['name'] = self.name
-        if self.scale_to_zero_enabled: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
-        if self.workload_size: body['workload_size'] = self.workload_size
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
         return body
 
     @classmethod
@@ -290,14 +290,14 @@ class ServedModelOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator: body['creator'] = self.creator
-        if self.model_name: body['model_name'] = self.model_name
-        if self.model_version: body['model_version'] = self.model_version
-        if self.name: body['name'] = self.name
-        if self.scale_to_zero_enabled: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
-        if self.workload_size: body['workload_size'] = self.workload_size
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
         return body
 
     @classmethod
@@ -320,9 +320,9 @@ class ServedModelSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_name: body['model_name'] = self.model_name
-        if self.model_version: body['model_version'] = self.model_version
-        if self.name: body['name'] = self.name
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -339,8 +339,9 @@ class ServedModelState:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.deployment: body['deployment'] = self.deployment.value
-        if self.deployment_state_message: body['deployment_state_message'] = self.deployment_state_message
+        if self.deployment is not None: body['deployment'] = self.deployment.value
+        if self.deployment_state_message is not None:
+            body['deployment_state_message'] = self.deployment_state_message
         return body
 
     @classmethod
@@ -373,7 +374,7 @@ class ServerLogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.logs: body['logs'] = self.logs
+        if self.logs is not None: body['logs'] = self.logs
         return body
 
     @classmethod
@@ -394,11 +395,12 @@ class ServingEndpoint:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator: body['creator'] = self.creator
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name: body['name'] = self.name
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
         if self.state: body['state'] = self.state.as_dict()
         return body
 
@@ -428,13 +430,14 @@ class ServingEndpointDetailed:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator: body['creator'] = self.creator
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name: body['name'] = self.name
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
         if self.pending_config: body['pending_config'] = self.pending_config.as_dict()
-        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         if self.state: body['state'] = self.state.as_dict()
         return body
 

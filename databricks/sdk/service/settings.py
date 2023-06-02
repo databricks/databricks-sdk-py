@@ -21,8 +21,8 @@ class CreateIpAccessList:
     def as_dict(self) -> dict:
         body = {}
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label: body['label'] = self.label
-        if self.list_type: body['list_type'] = self.list_type.value
+        if self.label is not None: body['label'] = self.label
+        if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
     @classmethod
@@ -54,9 +54,9 @@ class CreateOboTokenRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.application_id: body['application_id'] = self.application_id
-        if self.comment: body['comment'] = self.comment
-        if self.lifetime_seconds: body['lifetime_seconds'] = self.lifetime_seconds
+        if self.application_id is not None: body['application_id'] = self.application_id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
         return body
 
     @classmethod
@@ -74,7 +74,7 @@ class CreateOboTokenResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
-        if self.token_value: body['token_value'] = self.token_value
+        if self.token_value is not None: body['token_value'] = self.token_value
         return body
 
     @classmethod
@@ -89,8 +89,8 @@ class CreateTokenRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.lifetime_seconds: body['lifetime_seconds'] = self.lifetime_seconds
+        if self.comment is not None: body['comment'] = self.comment
+        if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
         return body
 
     @classmethod
@@ -106,7 +106,7 @@ class CreateTokenResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
-        if self.token_value: body['token_value'] = self.token_value
+        if self.token_value is not None: body['token_value'] = self.token_value
         return body
 
     @classmethod
@@ -221,16 +221,16 @@ class IpAccessListInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.address_count: body['address_count'] = self.address_count
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.enabled: body['enabled'] = self.enabled
+        if self.address_count is not None: body['address_count'] = self.address_count
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label: body['label'] = self.label
-        if self.list_id: body['list_id'] = self.list_id
-        if self.list_type: body['list_type'] = self.list_type.value
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.label is not None: body['label'] = self.label
+        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.list_type is not None: body['list_type'] = self.list_type.value
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -282,7 +282,7 @@ class PersonalComputeMessage:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.value: body['value'] = self.value.value
+        if self.value is not None: body['value'] = self.value.value
         return body
 
     @classmethod
@@ -306,10 +306,10 @@ class PublicTokenInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.expiry_time: body['expiry_time'] = self.expiry_time
-        if self.token_id: body['token_id'] = self.token_id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
+        if self.token_id is not None: body['token_id'] = self.token_id
         return body
 
     @classmethod
@@ -335,9 +335,9 @@ class ReadPersonalComputeSettingResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag: body['etag'] = self.etag
+        if self.etag is not None: body['etag'] = self.etag
         if self.personal_compute: body['personal_compute'] = self.personal_compute.as_dict()
-        if self.setting_name: body['setting_name'] = self.setting_name
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
     @classmethod
@@ -358,12 +358,12 @@ class ReplaceIpAccessList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.ip_access_list_id: body['ip_access_list_id'] = self.ip_access_list_id
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label: body['label'] = self.label
-        if self.list_id: body['list_id'] = self.list_id
-        if self.list_type: body['list_type'] = self.list_type.value
+        if self.label is not None: body['label'] = self.label
+        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
     @classmethod
@@ -382,7 +382,7 @@ class RevokeTokenRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.token_id: body['token_id'] = self.token_id
+        if self.token_id is not None: body['token_id'] = self.token_id
         return body
 
     @classmethod
@@ -402,13 +402,13 @@ class TokenInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.created_by_id: body['created_by_id'] = self.created_by_id
-        if self.created_by_username: body['created_by_username'] = self.created_by_username
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.expiry_time: body['expiry_time'] = self.expiry_time
-        if self.owner_id: body['owner_id'] = self.owner_id
-        if self.token_id: body['token_id'] = self.token_id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_by_id is not None: body['created_by_id'] = self.created_by_id
+        if self.created_by_username is not None: body['created_by_username'] = self.created_by_username
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
+        if self.owner_id is not None: body['owner_id'] = self.owner_id
+        if self.token_id is not None: body['token_id'] = self.token_id
         return body
 
     @classmethod
@@ -433,12 +433,12 @@ class UpdateIpAccessList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.ip_access_list_id: body['ip_access_list_id'] = self.ip_access_list_id
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label: body['label'] = self.label
-        if self.list_id: body['list_id'] = self.list_id
-        if self.list_type: body['list_type'] = self.list_type.value
+        if self.label is not None: body['label'] = self.label
+        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
     @classmethod

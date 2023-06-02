@@ -27,12 +27,12 @@ class Budget:
     def as_dict(self) -> dict:
         body = {}
         if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
-        if self.end_date: body['end_date'] = self.end_date
-        if self.filter: body['filter'] = self.filter
-        if self.name: body['name'] = self.name
-        if self.period: body['period'] = self.period
-        if self.start_date: body['start_date'] = self.start_date
-        if self.target_amount: body['target_amount'] = self.target_amount
+        if self.end_date is not None: body['end_date'] = self.end_date
+        if self.filter is not None: body['filter'] = self.filter
+        if self.name is not None: body['name'] = self.name
+        if self.period is not None: body['period'] = self.period
+        if self.start_date is not None: body['start_date'] = self.start_date
+        if self.target_amount is not None: body['target_amount'] = self.target_amount
         return body
 
     @classmethod
@@ -54,7 +54,7 @@ class BudgetAlert:
     def as_dict(self) -> dict:
         body = {}
         if self.email_notifications: body['email_notifications'] = [v for v in self.email_notifications]
-        if self.min_percentage: body['min_percentage'] = self.min_percentage
+        if self.min_percentage is not None: body['min_percentage'] = self.min_percentage
         return body
 
     @classmethod
@@ -98,16 +98,16 @@ class BudgetWithStatus:
     def as_dict(self) -> dict:
         body = {}
         if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
-        if self.budget_id: body['budget_id'] = self.budget_id
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.end_date: body['end_date'] = self.end_date
-        if self.filter: body['filter'] = self.filter
-        if self.name: body['name'] = self.name
-        if self.period: body['period'] = self.period
-        if self.start_date: body['start_date'] = self.start_date
+        if self.budget_id is not None: body['budget_id'] = self.budget_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.end_date is not None: body['end_date'] = self.end_date
+        if self.filter is not None: body['filter'] = self.filter
+        if self.name is not None: body['name'] = self.name
+        if self.period is not None: body['period'] = self.period
+        if self.start_date is not None: body['start_date'] = self.start_date
         if self.status_daily: body['status_daily'] = [v.as_dict() for v in self.status_daily]
-        if self.target_amount: body['target_amount'] = self.target_amount
-        if self.update_time: body['update_time'] = self.update_time
+        if self.target_amount is not None: body['target_amount'] = self.target_amount
+        if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
@@ -132,8 +132,8 @@ class BudgetWithStatusStatusDailyItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.amount: body['amount'] = self.amount
-        if self.date: body['date'] = self.date
+        if self.amount is not None: body['amount'] = self.amount
+        if self.date is not None: body['date'] = self.date
         return body
 
     @classmethod
@@ -155,14 +155,15 @@ class CreateLogDeliveryConfigurationParams:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_name: body['config_name'] = self.config_name
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.delivery_path_prefix: body['delivery_path_prefix'] = self.delivery_path_prefix
-        if self.delivery_start_time: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_type: body['log_type'] = self.log_type.value
-        if self.output_format: body['output_format'] = self.output_format.value
-        if self.status: body['status'] = self.status.value
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
+        if self.config_name is not None: body['config_name'] = self.config_name
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
+        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
+        if self.log_type is not None: body['log_type'] = self.log_type.value
+        if self.output_format is not None: body['output_format'] = self.output_format.value
+        if self.status is not None: body['status'] = self.status.value
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
         if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
         return body
 
@@ -257,19 +258,20 @@ class LogDeliveryConfiguration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.config_id: body['config_id'] = self.config_id
-        if self.config_name: body['config_name'] = self.config_name
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.delivery_path_prefix: body['delivery_path_prefix'] = self.delivery_path_prefix
-        if self.delivery_start_time: body['delivery_start_time'] = self.delivery_start_time
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.config_id is not None: body['config_id'] = self.config_id
+        if self.config_name is not None: body['config_name'] = self.config_name
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
+        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
         if self.log_delivery_status: body['log_delivery_status'] = self.log_delivery_status.as_dict()
-        if self.log_type: body['log_type'] = self.log_type.value
-        if self.output_format: body['output_format'] = self.output_format.value
-        if self.status: body['status'] = self.status.value
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.update_time: body['update_time'] = self.update_time
+        if self.log_type is not None: body['log_type'] = self.log_type.value
+        if self.output_format is not None: body['output_format'] = self.output_format.value
+        if self.status is not None: body['status'] = self.status.value
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.update_time is not None: body['update_time'] = self.update_time
         if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
         return body
 
@@ -302,11 +304,11 @@ class LogDeliveryStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.last_attempt_time: body['last_attempt_time'] = self.last_attempt_time
-        if self.last_successful_attempt_time:
+        if self.last_attempt_time is not None: body['last_attempt_time'] = self.last_attempt_time
+        if self.last_successful_attempt_time is not None:
             body['last_successful_attempt_time'] = self.last_successful_attempt_time
-        if self.message: body['message'] = self.message
-        if self.status: body['status'] = self.status.value
+        if self.message is not None: body['message'] = self.message
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -357,9 +359,9 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.log_delivery_configuration_id:
+        if self.log_delivery_configuration_id is not None:
             body['log_delivery_configuration_id'] = self.log_delivery_configuration_id
-        if self.status: body['status'] = self.status.value
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -376,7 +378,7 @@ class WrappedBudget:
     def as_dict(self) -> dict:
         body = {}
         if self.budget: body['budget'] = self.budget.as_dict()
-        if self.budget_id: body['budget_id'] = self.budget_id
+        if self.budget_id is not None: body['budget_id'] = self.budget_id
         return body
 
     @classmethod

@@ -20,8 +20,8 @@ class CreateCustomAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.confidential: body['confidential'] = self.confidential
-        if self.name: body['name'] = self.name
+        if self.confidential is not None: body['confidential'] = self.confidential
+        if self.name is not None: body['name'] = self.name
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
@@ -42,9 +42,9 @@ class CreateCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.client_id: body['client_id'] = self.client_id
-        if self.client_secret: body['client_secret'] = self.client_secret
-        if self.integration_id: body['integration_id'] = self.integration_id
+        if self.client_id is not None: body['client_id'] = self.client_id
+        if self.client_secret is not None: body['client_secret'] = self.client_secret
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
         return body
 
     @classmethod
@@ -60,7 +60,8 @@ class CreateOAuthEnrollment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enable_all_published_apps: body['enable_all_published_apps'] = self.enable_all_published_apps
+        if self.enable_all_published_apps is not None:
+            body['enable_all_published_apps'] = self.enable_all_published_apps
         return body
 
     @classmethod
@@ -75,7 +76,7 @@ class CreatePublishedAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.app_id: body['app_id'] = self.app_id
+        if self.app_id is not None: body['app_id'] = self.app_id
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
@@ -91,7 +92,7 @@ class CreatePublishedAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.integration_id: body['integration_id'] = self.integration_id
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
         return body
 
     @classmethod
@@ -117,12 +118,12 @@ class CreateServicePrincipalSecretResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.create_time: body['create_time'] = self.create_time
-        if self.id: body['id'] = self.id
-        if self.secret: body['secret'] = self.secret
-        if self.secret_hash: body['secret_hash'] = self.secret_hash
-        if self.status: body['status'] = self.status
-        if self.update_time: body['update_time'] = self.update_time
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.id is not None: body['id'] = self.id
+        if self.secret is not None: body['secret'] = self.secret
+        if self.secret_hash is not None: body['secret_hash'] = self.secret_hash
+        if self.status is not None: body['status'] = self.status
+        if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
@@ -168,10 +169,10 @@ class GetCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.client_id: body['client_id'] = self.client_id
-        if self.confidential: body['confidential'] = self.confidential
-        if self.integration_id: body['integration_id'] = self.integration_id
-        if self.name: body['name'] = self.name
+        if self.client_id is not None: body['client_id'] = self.client_id
+        if self.confidential is not None: body['confidential'] = self.confidential
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.name is not None: body['name'] = self.name
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
@@ -216,9 +217,9 @@ class GetPublishedAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.app_id: body['app_id'] = self.app_id
-        if self.integration_id: body['integration_id'] = self.integration_id
-        if self.name: body['name'] = self.name
+        if self.app_id is not None: body['app_id'] = self.app_id
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.name is not None: body['name'] = self.name
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
@@ -278,7 +279,7 @@ class OAuthEnrollmentStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_enabled: body['is_enabled'] = self.is_enabled
+        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
         return body
 
     @classmethod
@@ -296,11 +297,11 @@ class SecretInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.create_time: body['create_time'] = self.create_time
-        if self.id: body['id'] = self.id
-        if self.secret_hash: body['secret_hash'] = self.secret_hash
-        if self.status: body['status'] = self.status
-        if self.update_time: body['update_time'] = self.update_time
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.id is not None: body['id'] = self.id
+        if self.secret_hash is not None: body['secret_hash'] = self.secret_hash
+        if self.status is not None: body['status'] = self.status
+        if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
@@ -319,9 +320,9 @@ class TokenAccessPolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_token_ttl_in_minutes:
+        if self.access_token_ttl_in_minutes is not None:
             body['access_token_ttl_in_minutes'] = self.access_token_ttl_in_minutes
-        if self.refresh_token_ttl_in_minutes:
+        if self.refresh_token_ttl_in_minutes is not None:
             body['refresh_token_ttl_in_minutes'] = self.refresh_token_ttl_in_minutes
         return body
 
@@ -339,7 +340,7 @@ class UpdateCustomAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.integration_id: body['integration_id'] = self.integration_id
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
@@ -358,7 +359,7 @@ class UpdatePublishedAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.integration_id: body['integration_id'] = self.integration_id
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 

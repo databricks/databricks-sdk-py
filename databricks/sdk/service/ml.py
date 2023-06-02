@@ -28,15 +28,16 @@ class Activity:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activity_type: body['activity_type'] = self.activity_type.value
-        if self.comment: body['comment'] = self.comment
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.from_stage: body['from_stage'] = self.from_stage.value
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.system_comment: body['system_comment'] = self.system_comment
-        if self.to_stage: body['to_stage'] = self.to_stage.value
-        if self.user_id: body['user_id'] = self.user_id
+        if self.activity_type is not None: body['activity_type'] = self.activity_type.value
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.from_stage is not None: body['from_stage'] = self.from_stage.value
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.system_comment is not None: body['system_comment'] = self.system_comment
+        if self.to_stage is not None: body['to_stage'] = self.to_stage.value
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -82,11 +83,12 @@ class ApproveTransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.archive_existing_versions: body['archive_existing_versions'] = self.archive_existing_versions
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.stage: body['stage'] = self.stage.value
-        if self.version: body['version'] = self.version
+        if self.archive_existing_versions is not None:
+            body['archive_existing_versions'] = self.archive_existing_versions
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage.value
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -133,11 +135,12 @@ class CommentObject:
     def as_dict(self) -> dict:
         body = {}
         if self.available_actions: body['available_actions'] = [v for v in self.available_actions]
-        if self.comment: body['comment'] = self.comment
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.user_id: body['user_id'] = self.user_id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -158,9 +161,9 @@ class CreateComment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.version: body['version'] = self.version
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -190,8 +193,8 @@ class CreateExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_location: body['artifact_location'] = self.artifact_location
-        if self.name: body['name'] = self.name
+        if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
+        if self.name is not None: body['name'] = self.name
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -208,7 +211,7 @@ class CreateExperimentResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
     @classmethod
@@ -224,8 +227,8 @@ class CreateModelRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -261,11 +264,11 @@ class CreateModelVersionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_link: body['run_link'] = self.run_link
-        if self.source: body['source'] = self.source
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_link is not None: body['run_link'] = self.run_link
+        if self.source is not None: body['source'] = self.source
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -304,12 +307,12 @@ class CreateRegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
+        if self.description is not None: body['description'] = self.description
         if self.events: body['events'] = [v for v in self.events]
         if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
         if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
-        if self.model_name: body['model_name'] = self.model_name
-        if self.status: body['status'] = self.status.value
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -331,10 +334,10 @@ class CreateRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
-        if self.start_time: body['start_time'] = self.start_time
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -368,10 +371,10 @@ class CreateTransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.stage: body['stage'] = self.stage.value
-        if self.version: body['version'] = self.version
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage.value
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -421,12 +424,12 @@ class Dataset:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.digest: body['digest'] = self.digest
-        if self.name: body['name'] = self.name
-        if self.profile: body['profile'] = self.profile
-        if self.schema: body['schema'] = self.schema
-        if self.source: body['source'] = self.source
-        if self.source_type: body['source_type'] = self.source_type
+        if self.digest is not None: body['digest'] = self.digest
+        if self.name is not None: body['name'] = self.name
+        if self.profile is not None: body['profile'] = self.profile
+        if self.schema is not None: body['schema'] = self.schema
+        if self.source is not None: body['source'] = self.source
+        if self.source_type is not None: body['source_type'] = self.source_type
         return body
 
     @classmethod
@@ -468,7 +471,7 @@ class DeleteExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
     @classmethod
@@ -514,7 +517,7 @@ class DeleteRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -529,8 +532,8 @@ class DeleteTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.run_id: body['run_id'] = self.run_id
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -576,12 +579,12 @@ class Experiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_location: body['artifact_location'] = self.artifact_location
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
-        if self.last_update_time: body['last_update_time'] = self.last_update_time
-        if self.lifecycle_stage: body['lifecycle_stage'] = self.lifecycle_stage
-        if self.name: body['name'] = self.name
+        if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.last_update_time is not None: body['last_update_time'] = self.last_update_time
+        if self.lifecycle_stage is not None: body['lifecycle_stage'] = self.lifecycle_stage
+        if self.name is not None: body['name'] = self.name
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -603,8 +606,8 @@ class ExperimentTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -620,9 +623,9 @@ class FileInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.file_size: body['file_size'] = self.file_size
-        if self.is_dir: body['is_dir'] = self.is_dir
-        if self.path: body['path'] = self.path
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_dir is not None: body['is_dir'] = self.is_dir
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -676,7 +679,7 @@ class GetLatestVersionsRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         if self.stages: body['stages'] = [v for v in self.stages]
         return body
 
@@ -707,7 +710,7 @@ class GetMetricHistoryResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
@@ -751,7 +754,7 @@ class GetModelVersionDownloadUriResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_uri: body['artifact_uri'] = self.artifact_uri
+        if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
         return body
 
     @classmethod
@@ -812,10 +815,11 @@ class HttpUrlSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authorization: body['authorization'] = self.authorization
-        if self.enable_ssl_verification: body['enable_ssl_verification'] = self.enable_ssl_verification
-        if self.secret: body['secret'] = self.secret
-        if self.url: body['url'] = self.url
+        if self.authorization is not None: body['authorization'] = self.authorization
+        if self.enable_ssl_verification is not None:
+            body['enable_ssl_verification'] = self.enable_ssl_verification
+        if self.secret is not None: body['secret'] = self.secret
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -833,8 +837,9 @@ class HttpUrlSpecWithoutSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enable_ssl_verification: body['enable_ssl_verification'] = self.enable_ssl_verification
-        if self.url: body['url'] = self.url
+        if self.enable_ssl_verification is not None:
+            body['enable_ssl_verification'] = self.enable_ssl_verification
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -849,8 +854,8 @@ class InputTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -866,9 +871,9 @@ class JobSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_token: body['access_token'] = self.access_token
-        if self.job_id: body['job_id'] = self.job_id
-        if self.workspace_url: body['workspace_url'] = self.workspace_url
+        if self.access_token is not None: body['access_token'] = self.access_token
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
         return body
 
     @classmethod
@@ -885,8 +890,8 @@ class JobSpecWithoutSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id: body['job_id'] = self.job_id
-        if self.workspace_url: body['workspace_url'] = self.workspace_url
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
         return body
 
     @classmethod
@@ -913,8 +918,8 @@ class ListArtifactsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.files: body['files'] = [v.as_dict() for v in self.files]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
-        if self.root_uri: body['root_uri'] = self.root_uri
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.root_uri is not None: body['root_uri'] = self.root_uri
         return body
 
     @classmethod
@@ -941,7 +946,7 @@ class ListExperimentsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
@@ -965,7 +970,7 @@ class ListModelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
         return body
 
@@ -982,7 +987,7 @@ class ListRegistryWebhooks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.webhooks: body['webhooks'] = [v.as_dict() for v in self.webhooks]
         return body
 
@@ -1034,7 +1039,7 @@ class LogBatch:
         body = {}
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
         if self.params: body['params'] = [v.as_dict() for v in self.params]
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -1054,7 +1059,7 @@ class LogInputs:
     def as_dict(self) -> dict:
         body = {}
         if self.datasets: body['datasets'] = [v.as_dict() for v in self.datasets]
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -1073,12 +1078,12 @@ class LogMetric:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_uuid: body['run_uuid'] = self.run_uuid
-        if self.step: body['step'] = self.step
-        if self.timestamp: body['timestamp'] = self.timestamp
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.step is not None: body['step'] = self.step
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1098,8 +1103,8 @@ class LogModel:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_json: body['model_json'] = self.model_json
-        if self.run_id: body['run_id'] = self.run_id
+        if self.model_json is not None: body['model_json'] = self.model_json
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -1116,10 +1121,10 @@ class LogParam:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_uuid: body['run_uuid'] = self.run_uuid
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1139,10 +1144,10 @@ class Metric:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.step: body['step'] = self.step
-        if self.timestamp: body['timestamp'] = self.timestamp
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.step is not None: body['step'] = self.step
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1165,13 +1170,14 @@ class Model:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.description: body['description'] = self.description
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.description is not None: body['description'] = self.description
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -1199,15 +1205,16 @@ class ModelDatabricks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.description: body['description'] = self.description
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
-        if self.name: body['name'] = self.name
-        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.name is not None: body['name'] = self.name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -1230,8 +1237,8 @@ class ModelTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1257,19 +1264,20 @@ class ModelVersion:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.current_stage: body['current_stage'] = self.current_stage
-        if self.description: body['description'] = self.description
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name: body['name'] = self.name
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_link: body['run_link'] = self.run_link
-        if self.source: body['source'] = self.source
-        if self.status: body['status'] = self.status.value
-        if self.status_message: body['status_message'] = self.status_message
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.current_stage is not None: body['current_stage'] = self.current_stage
+        if self.description is not None: body['description'] = self.description
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_link is not None: body['run_link'] = self.run_link
+        if self.source is not None: body['source'] = self.source
+        if self.status is not None: body['status'] = self.status.value
+        if self.status_message is not None: body['status_message'] = self.status_message
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
-        if self.version: body['version'] = self.version
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -1308,20 +1316,21 @@ class ModelVersionDatabricks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.current_stage: body['current_stage'] = self.current_stage.value
-        if self.description: body['description'] = self.description
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name: body['name'] = self.name
-        if self.permission_level: body['permission_level'] = self.permission_level.value
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_link: body['run_link'] = self.run_link
-        if self.source: body['source'] = self.source
-        if self.status: body['status'] = self.status.value
-        if self.status_message: body['status_message'] = self.status_message
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.current_stage is not None: body['current_stage'] = self.current_stage.value
+        if self.description is not None: body['description'] = self.description
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_link is not None: body['run_link'] = self.run_link
+        if self.source is not None: body['source'] = self.source
+        if self.status is not None: body['status'] = self.status.value
+        if self.status_message is not None: body['status_message'] = self.status_message
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id: body['user_id'] = self.user_id
-        if self.version: body['version'] = self.version
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -1357,8 +1366,8 @@ class ModelVersionTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1373,8 +1382,8 @@ class Param:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1407,15 +1416,16 @@ class RegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.description: body['description'] = self.description
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.description is not None: body['description'] = self.description
         if self.events: body['events'] = [v for v in self.events]
         if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.model_name: body['model_name'] = self.model_name
-        if self.status: body['status'] = self.status.value
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -1464,10 +1474,10 @@ class RejectTransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.stage: body['stage'] = self.stage.value
-        if self.version: body['version'] = self.version
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage.value
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -1499,8 +1509,8 @@ class RenameModelRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
-        if self.new_name: body['new_name'] = self.new_name
+        if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         return body
 
     @classmethod
@@ -1528,7 +1538,7 @@ class RestoreExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
     @classmethod
@@ -1542,7 +1552,7 @@ class RestoreRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
@@ -1604,15 +1614,15 @@ class RunInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_uri: body['artifact_uri'] = self.artifact_uri
-        if self.end_time: body['end_time'] = self.end_time
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
-        if self.lifecycle_stage: body['lifecycle_stage'] = self.lifecycle_stage
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_uuid: body['run_uuid'] = self.run_uuid
-        if self.start_time: body['start_time'] = self.start_time
-        if self.status: body['status'] = self.status.value
-        if self.user_id: body['user_id'] = self.user_id
+        if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.lifecycle_stage is not None: body['lifecycle_stage'] = self.lifecycle_stage
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.status is not None: body['status'] = self.status.value
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -1659,8 +1669,8 @@ class RunTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1678,11 +1688,11 @@ class SearchExperiments:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.filter: body['filter'] = self.filter
-        if self.max_results: body['max_results'] = self.max_results
+        if self.filter is not None: body['filter'] = self.filter
+        if self.max_results is not None: body['max_results'] = self.max_results
         if self.order_by: body['order_by'] = [v for v in self.order_by]
-        if self.page_token: body['page_token'] = self.page_token
-        if self.view_type: body['view_type'] = self.view_type.value
+        if self.page_token is not None: body['page_token'] = self.page_token
+        if self.view_type is not None: body['view_type'] = self.view_type.value
         return body
 
     @classmethod
@@ -1702,7 +1712,7 @@ class SearchExperimentsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
@@ -1738,7 +1748,7 @@ class SearchModelVersionsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
@@ -1764,7 +1774,7 @@ class SearchModelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
         return body
 
@@ -1786,11 +1796,11 @@ class SearchRuns:
     def as_dict(self) -> dict:
         body = {}
         if self.experiment_ids: body['experiment_ids'] = [v for v in self.experiment_ids]
-        if self.filter: body['filter'] = self.filter
-        if self.max_results: body['max_results'] = self.max_results
+        if self.filter is not None: body['filter'] = self.filter
+        if self.max_results is not None: body['max_results'] = self.max_results
         if self.order_by: body['order_by'] = [v for v in self.order_by]
-        if self.page_token: body['page_token'] = self.page_token
-        if self.run_view_type: body['run_view_type'] = self.run_view_type.value
+        if self.page_token is not None: body['page_token'] = self.page_token
+        if self.run_view_type is not None: body['run_view_type'] = self.run_view_type.value
         return body
 
     @classmethod
@@ -1810,7 +1820,7 @@ class SearchRunsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
         return body
 
@@ -1835,9 +1845,9 @@ class SetExperimentTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
-        if self.key: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1855,9 +1865,9 @@ class SetModelTagRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.name: body['name'] = self.name
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1874,10 +1884,10 @@ class SetModelVersionTagRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.name: body['name'] = self.name
-        if self.value: body['value'] = self.value
-        if self.version: body['version'] = self.version
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
+        if self.value is not None: body['value'] = self.value
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -1897,10 +1907,10 @@ class SetTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_uuid: body['run_uuid'] = self.run_uuid
-        if self.value: body['value'] = self.value
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1937,8 +1947,8 @@ class TestRegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.body: body['body'] = self.body
-        if self.status_code: body['status_code'] = self.status_code
+        if self.body is not None: body['body'] = self.body
+        if self.status_code is not None: body['status_code'] = self.status_code
         return body
 
     @classmethod
@@ -1953,8 +1963,8 @@ class TestRegistryWebhookRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.event: body['event'] = self.event.value
-        if self.id: body['id'] = self.id
+        if self.event is not None: body['event'] = self.event.value
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -1986,11 +1996,12 @@ class TransitionModelVersionStageDatabricks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.archive_existing_versions: body['archive_existing_versions'] = self.archive_existing_versions
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.stage: body['stage'] = self.stage.value
-        if self.version: body['version'] = self.version
+        if self.archive_existing_versions is not None:
+            body['archive_existing_versions'] = self.archive_existing_versions
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage.value
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -2015,10 +2026,10 @@ class TransitionRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.available_actions: body['available_actions'] = [v for v in self.available_actions]
-        if self.comment: body['comment'] = self.comment
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.to_stage: body['to_stage'] = self.to_stage.value
-        if self.user_id: body['user_id'] = self.user_id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.to_stage is not None: body['to_stage'] = self.to_stage.value
+        if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
     @classmethod
@@ -2051,8 +2062,8 @@ class UpdateComment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.id: body['id'] = self.id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -2081,8 +2092,8 @@ class UpdateExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id: body['experiment_id'] = self.experiment_id
-        if self.new_name: body['new_name'] = self.new_name
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.new_name is not None: body['new_name'] = self.new_name
         return body
 
     @classmethod
@@ -2097,8 +2108,8 @@ class UpdateModelRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -2114,9 +2125,9 @@ class UpdateModelVersionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
-        if self.version: body['version'] = self.version
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.version is not None: body['version'] = self.version
         return body
 
     @classmethod
@@ -2137,12 +2148,12 @@ class UpdateRegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description: body['description'] = self.description
+        if self.description is not None: body['description'] = self.description
         if self.events: body['events'] = [v for v in self.events]
         if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
-        if self.status: body['status'] = self.status.value
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -2164,10 +2175,10 @@ class UpdateRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time: body['end_time'] = self.end_time
-        if self.run_id: body['run_id'] = self.run_id
-        if self.run_uuid: body['run_uuid'] = self.run_uuid
-        if self.status: body['status'] = self.status.value
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod

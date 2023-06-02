@@ -30,10 +30,10 @@ class CreateProvider:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.recipient_profile_str: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
         return body
 
     @classmethod
@@ -57,15 +57,15 @@ class CreateRecipient:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.comment: body['comment'] = self.comment
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.comment is not None: body['comment'] = self.comment
         if self.data_recipient_global_metastore_id:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
-        if self.sharing_code: body['sharing_code'] = self.sharing_code
+        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
         return body
 
     @classmethod
@@ -87,8 +87,8 @@ class CreateShare:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -274,10 +274,11 @@ class PartitionValue:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
-        if self.op: body['op'] = self.op.value
-        if self.recipient_property_key: body['recipient_property_key'] = self.recipient_property_key
-        if self.value: body['value'] = self.value
+        if self.name is not None: body['name'] = self.name
+        if self.op is not None: body['op'] = self.op.value
+        if self.recipient_property_key is not None:
+            body['recipient_property_key'] = self.recipient_property_key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -336,7 +337,7 @@ class PrivilegeAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal: body['principal'] = self.principal
+        if self.principal is not None: body['principal'] = self.principal
         if self.privileges: body['privileges'] = [v for v in self.privileges]
         return body
 
@@ -364,21 +365,21 @@ class ProviderInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.cloud: body['cloud'] = self.cloud
-        if self.comment: body['comment'] = self.comment
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.data_provider_global_metastore_id:
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.data_provider_global_metastore_id is not None:
             body['data_provider_global_metastore_id'] = self.data_provider_global_metastore_id
-        if self.metastore_id: body['metastore_id'] = self.metastore_id
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.recipient_profile: body['recipient_profile'] = self.recipient_profile.as_dict()
-        if self.recipient_profile_str: body['recipient_profile_str'] = self.recipient_profile_str
-        if self.region: body['region'] = self.region
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.region is not None: body['region'] = self.region
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -405,7 +406,7 @@ class ProviderShare:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -436,25 +437,25 @@ class RecipientInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activated: body['activated'] = self.activated
-        if self.activation_url: body['activation_url'] = self.activation_url
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.cloud: body['cloud'] = self.cloud
-        if self.comment: body['comment'] = self.comment
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
+        if self.activated is not None: body['activated'] = self.activated
+        if self.activation_url is not None: body['activation_url'] = self.activation_url
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
         if self.data_recipient_global_metastore_id:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.metastore_id: body['metastore_id'] = self.metastore_id
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
-        if self.region: body['region'] = self.region
-        if self.sharing_code: body['sharing_code'] = self.sharing_code
+        if self.region is not None: body['region'] = self.region
+        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
         if self.tokens: body['tokens'] = [v.as_dict() for v in self.tokens]
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -487,9 +488,10 @@ class RecipientProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearer_token: body['bearer_token'] = self.bearer_token
-        if self.endpoint: body['endpoint'] = self.endpoint
-        if self.share_credentials_version: body['share_credentials_version'] = self.share_credentials_version
+        if self.bearer_token is not None: body['bearer_token'] = self.bearer_token
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.share_credentials_version is not None:
+            body['share_credentials_version'] = self.share_credentials_version
         return body
 
     @classmethod
@@ -511,13 +513,13 @@ class RecipientTokenInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activation_url: body['activation_url'] = self.activation_url
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.expiration_time: body['expiration_time'] = self.expiration_time
-        if self.id: body['id'] = self.id
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.activation_url is not None: body['activation_url'] = self.activation_url
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.id is not None: body['id'] = self.id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -547,10 +549,11 @@ class RetrieveTokenResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearer_token: body['bearerToken'] = self.bearer_token
-        if self.endpoint: body['endpoint'] = self.endpoint
-        if self.expiration_time: body['expirationTime'] = self.expiration_time
-        if self.share_credentials_version: body['shareCredentialsVersion'] = self.share_credentials_version
+        if self.bearer_token is not None: body['bearerToken'] = self.bearer_token
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.expiration_time is not None: body['expirationTime'] = self.expiration_time
+        if self.share_credentials_version is not None:
+            body['shareCredentialsVersion'] = self.share_credentials_version
         return body
 
     @classmethod
@@ -568,9 +571,9 @@ class RotateRecipientToken:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.existing_token_expire_in_seconds:
+        if self.existing_token_expire_in_seconds is not None:
             body['existing_token_expire_in_seconds'] = self.existing_token_expire_in_seconds
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -611,14 +614,14 @@ class ShareInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.name: body['name'] = self.name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.name is not None: body['name'] = self.name
         if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
-        if self.owner: body['owner'] = self.owner
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.owner is not None: body['owner'] = self.owner
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -649,7 +652,7 @@ class ShareToPrivilegeAssignment:
         body = {}
         if self.privilege_assignments:
             body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
-        if self.share_name: body['share_name'] = self.share_name
+        if self.share_name is not None: body['share_name'] = self.share_name
         return body
 
     @classmethod
@@ -673,16 +676,16 @@ class SharedDataObject:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.added_at: body['added_at'] = self.added_at
-        if self.added_by: body['added_by'] = self.added_by
-        if self.cdf_enabled: body['cdf_enabled'] = self.cdf_enabled
-        if self.comment: body['comment'] = self.comment
-        if self.data_object_type: body['data_object_type'] = self.data_object_type
-        if self.name: body['name'] = self.name
+        if self.added_at is not None: body['added_at'] = self.added_at
+        if self.added_by is not None: body['added_by'] = self.added_by
+        if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
+        if self.comment is not None: body['comment'] = self.comment
+        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type
+        if self.name is not None: body['name'] = self.name
         if self.partitions: body['partitions'] = [v.as_dict() for v in self.partitions]
-        if self.shared_as: body['shared_as'] = self.shared_as
-        if self.start_version: body['start_version'] = self.start_version
-        if self.status: body['status'] = self.status.value
+        if self.shared_as is not None: body['shared_as'] = self.shared_as
+        if self.start_version is not None: body['start_version'] = self.start_version
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -713,7 +716,7 @@ class SharedDataObjectUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.action: body['action'] = self.action.value
+        if self.action is not None: body['action'] = self.action.value
         if self.data_object: body['data_object'] = self.data_object.as_dict()
         return body
 
@@ -740,10 +743,10 @@ class UpdateProvider:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
-        if self.recipient_profile_str: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
         return body
 
     @classmethod
@@ -764,10 +767,10 @@ class UpdateRecipient:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = self.comment
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
         return body
 
@@ -789,9 +792,9 @@ class UpdateShare:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
         return body
 
@@ -811,7 +814,7 @@ class UpdateSharePermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
