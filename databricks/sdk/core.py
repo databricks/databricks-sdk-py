@@ -91,12 +91,12 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     from databricks.sdk.runtime import init_runtime_native_auth
-    try:
+    if init_runtime_native_auth is None:
+        return None
+    else:
         host, inner = init_runtime_native_auth()
         cfg.host = host
         return inner
-    except NotImplementedError:
-        return None
 
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
