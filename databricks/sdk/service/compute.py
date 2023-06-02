@@ -149,6 +149,8 @@ class BaseClusterInfo:
     cluster_name: str = None
     cluster_source: 'ClusterSource' = None
     custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    docker_image: 'DockerImage' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
     enable_elastic_disk: bool = None
@@ -160,6 +162,7 @@ class BaseClusterInfo:
     num_workers: int = None
     policy_id: str = None
     runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
     spark_conf: 'Dict[str,str]' = None
     spark_env_vars: 'Dict[str,str]' = None
     spark_version: str = None
@@ -176,6 +179,8 @@ class BaseClusterInfo:
         if self.cluster_name: body['cluster_name'] = self.cluster_name
         if self.cluster_source: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
         if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
@@ -188,6 +193,7 @@ class BaseClusterInfo:
         if self.num_workers: body['num_workers'] = self.num_workers
         if self.policy_id: body['policy_id'] = self.policy_id
         if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version: body['spark_version'] = self.spark_version
@@ -205,6 +211,8 @@ class BaseClusterInfo:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -216,6 +224,7 @@ class BaseClusterInfo:
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -305,6 +314,8 @@ class ClusterAttributes:
     cluster_name: str = None
     cluster_source: 'ClusterSource' = None
     custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    docker_image: 'DockerImage' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
     enable_elastic_disk: bool = None
@@ -315,6 +326,7 @@ class ClusterAttributes:
     node_type_id: str = None
     policy_id: str = None
     runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
     spark_conf: 'Dict[str,str]' = None
     spark_env_vars: 'Dict[str,str]' = None
     ssh_public_keys: 'List[str]' = None
@@ -329,6 +341,8 @@ class ClusterAttributes:
         if self.cluster_name: body['cluster_name'] = self.cluster_name
         if self.cluster_source: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
         if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
@@ -340,6 +354,7 @@ class ClusterAttributes:
         if self.node_type_id: body['node_type_id'] = self.node_type_id
         if self.policy_id: body['policy_id'] = self.policy_id
         if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version: body['spark_version'] = self.spark_version
@@ -356,6 +371,8 @@ class ClusterAttributes:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -366,6 +383,7 @@ class ClusterAttributes:
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -417,6 +435,7 @@ class ClusterInfo:
     custom_tags: 'Dict[str,str]' = None
     data_security_mode: 'DataSecurityMode' = None
     default_tags: 'Dict[str,str]' = None
+    docker_image: 'DockerImage' = None
     driver: 'SparkNode' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
@@ -463,6 +482,7 @@ class ClusterInfo:
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.data_security_mode: body['data_security_mode'] = self.data_security_mode.value
         if self.default_tags: body['default_tags'] = self.default_tags
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver: body['driver'] = self.driver.as_dict()
         if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
@@ -511,6 +531,7 @@ class ClusterInfo:
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    default_tags=d.get('default_tags', None),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver=_from_dict(d, 'driver', SparkNode),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
@@ -1189,6 +1210,8 @@ class EditCluster:
     cluster_name: str = None
     cluster_source: 'ClusterSource' = None
     custom_tags: 'Dict[str,str]' = None
+    data_security_mode: 'DataSecurityMode' = None
+    docker_image: 'DockerImage' = None
     driver_instance_pool_id: str = None
     driver_node_type_id: str = None
     enable_elastic_disk: bool = None
@@ -1200,6 +1223,7 @@ class EditCluster:
     num_workers: int = None
     policy_id: str = None
     runtime_engine: 'RuntimeEngine' = None
+    single_user_name: str = None
     spark_conf: 'Dict[str,str]' = None
     spark_env_vars: 'Dict[str,str]' = None
     ssh_public_keys: 'List[str]' = None
@@ -1218,6 +1242,8 @@ class EditCluster:
         if self.cluster_name: body['cluster_name'] = self.cluster_name
         if self.cluster_source: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
         if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
@@ -1230,6 +1256,7 @@ class EditCluster:
         if self.num_workers: body['num_workers'] = self.num_workers
         if self.policy_id: body['policy_id'] = self.policy_id
         if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version: body['spark_version'] = self.spark_version
@@ -1249,6 +1276,8 @@ class EditCluster:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -1260,6 +1289,7 @@ class EditCluster:
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -1854,9 +1884,9 @@ class GlobalInitScriptDetailsWithContent:
 class GlobalInitScriptUpdateRequest:
     name: str
     script: str
-    script_id: str
     enabled: bool = None
     position: int = None
+    script_id: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -3426,6 +3456,8 @@ class ClustersAPI:
              cluster_name: str = None,
              cluster_source: ClusterSource = None,
              custom_tags: Dict[str, str] = None,
+             data_security_mode: DataSecurityMode = None,
+             docker_image: DockerImage = None,
              driver_instance_pool_id: str = None,
              driver_node_type_id: str = None,
              enable_elastic_disk: bool = None,
@@ -3437,6 +3469,7 @@ class ClustersAPI:
              num_workers: int = None,
              policy_id: str = None,
              runtime_engine: RuntimeEngine = None,
+             single_user_name: str = None,
              spark_conf: Dict[str, str] = None,
              spark_env_vars: Dict[str, str] = None,
              ssh_public_keys: List[str] = None,
@@ -3467,6 +3500,8 @@ class ClustersAPI:
                                   cluster_name=cluster_name,
                                   cluster_source=cluster_source,
                                   custom_tags=custom_tags,
+                                  data_security_mode=data_security_mode,
+                                  docker_image=docker_image,
                                   driver_instance_pool_id=driver_instance_pool_id,
                                   driver_node_type_id=driver_node_type_id,
                                   enable_elastic_disk=enable_elastic_disk,
@@ -3478,6 +3513,7 @@ class ClustersAPI:
                                   num_workers=num_workers,
                                   policy_id=policy_id,
                                   runtime_engine=runtime_engine,
+                                  single_user_name=single_user_name,
                                   spark_conf=spark_conf,
                                   spark_env_vars=spark_env_vars,
                                   spark_version=spark_version,
@@ -3500,6 +3536,8 @@ class ClustersAPI:
                       cluster_name: str = None,
                       cluster_source: ClusterSource = None,
                       custom_tags: Dict[str, str] = None,
+                      data_security_mode: DataSecurityMode = None,
+                      docker_image: DockerImage = None,
                       driver_instance_pool_id: str = None,
                       driver_node_type_id: str = None,
                       enable_elastic_disk: bool = None,
@@ -3511,6 +3549,7 @@ class ClustersAPI:
                       num_workers: int = None,
                       policy_id: str = None,
                       runtime_engine: RuntimeEngine = None,
+                      single_user_name: str = None,
                       spark_conf: Dict[str, str] = None,
                       spark_env_vars: Dict[str, str] = None,
                       ssh_public_keys: List[str] = None,
@@ -3526,6 +3565,8 @@ class ClustersAPI:
                          cluster_name=cluster_name,
                          cluster_source=cluster_source,
                          custom_tags=custom_tags,
+                         data_security_mode=data_security_mode,
+                         docker_image=docker_image,
                          driver_instance_pool_id=driver_instance_pool_id,
                          driver_node_type_id=driver_node_type_id,
                          enable_elastic_disk=enable_elastic_disk,
@@ -3537,6 +3578,7 @@ class ClustersAPI:
                          num_workers=num_workers,
                          policy_id=policy_id,
                          runtime_engine=runtime_engine,
+                         single_user_name=single_user_name,
                          spark_conf=spark_conf,
                          spark_env_vars=spark_env_vars,
                          spark_version=spark_version,

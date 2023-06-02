@@ -655,7 +655,7 @@ class SparseCheckoutUpdate:
 
 @dataclass
 class UpdateCredentials:
-    credential_id: int
+    credential_id: int = None
     git_provider: str = None
     git_username: str = None
     personal_access_token: str = None
@@ -678,8 +678,8 @@ class UpdateCredentials:
 
 @dataclass
 class UpdateRepo:
-    repo_id: int
     branch: str = None
+    repo_id: int = None
     sparse_checkout: 'SparseCheckoutUpdate' = None
     tag: str = None
 

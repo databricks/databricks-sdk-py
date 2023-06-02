@@ -143,7 +143,6 @@ class DeletePipelineRequest:
 
 @dataclass
 class EditPipeline:
-    pipeline_id: str
     allow_duplicate_names: bool = None
     catalog: str = None
     channel: str = None
@@ -158,6 +157,7 @@ class EditPipeline:
     libraries: 'List[PipelineLibrary]' = None
     name: str = None
     photon: bool = None
+    pipeline_id: str = None
     serverless: bool = None
     storage: str = None
     target: str = None
@@ -833,10 +833,10 @@ class StackFrame:
 
 @dataclass
 class StartUpdate:
-    pipeline_id: str
     cause: 'StartUpdateCause' = None
     full_refresh: bool = None
     full_refresh_selection: 'List[str]' = None
+    pipeline_id: str = None
     refresh_selection: 'List[str]' = None
 
     def as_dict(self) -> dict:

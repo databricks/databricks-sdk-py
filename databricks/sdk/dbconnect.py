@@ -2,7 +2,7 @@
 import os
 from typing import Any, Iterable, List, Optional, Tuple
 
-import grpc  # TODO: check if it's duck-typed
+import grpc # TODO: check if it's duck-typed
 
 from databricks.sdk.core import Config
 
@@ -43,7 +43,7 @@ class DatabricksChannelBuilder:
         return [('x-databricks-cluster-id', self._cfg.cluster_id), ]
 
     def toChannel(self) -> grpc.Channel:
-        from grpc import _plugin_wrapping  # pylint: disable=cyclic-import
+        from grpc import _plugin_wrapping # pylint: disable=cyclic-import
 
         ssl_creds = grpc.ssl_channel_credentials()
         databricks_creds = _plugin_wrapping.metadata_plugin_call_credentials(

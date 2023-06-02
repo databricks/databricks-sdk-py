@@ -862,13 +862,13 @@ class StsRole:
 
 @dataclass
 class UpdateWorkspaceRequest:
-    workspace_id: int
     aws_region: str = None
     credentials_id: str = None
     managed_services_customer_managed_key_id: str = None
     network_id: str = None
     storage_configuration_id: str = None
     storage_customer_managed_key_id: str = None
+    workspace_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -899,9 +899,9 @@ class UpdateWorkspaceRequest:
 class UpsertPrivateAccessSettingsRequest:
     private_access_settings_name: str
     region: str
-    private_access_settings_id: str
     allowed_vpc_endpoint_ids: 'List[str]' = None
     private_access_level: 'PrivateAccessLevel' = None
+    private_access_settings_id: str = None
     public_access_enabled: bool = None
 
     def as_dict(self) -> dict:
@@ -1326,7 +1326,6 @@ class PrivateAccessAPI:
     def create(self,
                private_access_settings_name: str,
                region: str,
-               private_access_settings_id: str,
                *,
                allowed_vpc_endpoint_ids: List[str] = None,
                private_access_level: PrivateAccessLevel = None,
@@ -1351,7 +1350,6 @@ class PrivateAccessAPI:
             request = UpsertPrivateAccessSettingsRequest(
                 allowed_vpc_endpoint_ids=allowed_vpc_endpoint_ids,
                 private_access_level=private_access_level,
-                private_access_settings_id=private_access_settings_id,
                 private_access_settings_name=private_access_settings_name,
                 public_access_enabled=public_access_enabled,
                 region=region)

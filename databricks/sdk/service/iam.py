@@ -132,6 +132,14 @@ class DeleteWorkspaceAssignmentRequest:
 
 
 @dataclass
+class GetAccountAccessControlRequest:
+    """Get a rule set"""
+
+    name: str
+    etag: str
+
+
+@dataclass
 class GetAccountGroupRequest:
     """Get group details"""
 
@@ -150,6 +158,20 @@ class GetAccountUserRequest:
     """Get user details"""
 
     id: str
+
+
+@dataclass
+class GetAssignableRolesForResourceResponse:
+    roles: 'List[str]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.roles: body['roles'] = [v for v in self.roles]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetAssignableRolesForResourceResponse':
+        return cls(roles=d.get('roles', None))
 
 
 @dataclass
@@ -211,12 +233,28 @@ class GetWorkspaceAssignmentRequest:
 
 
 @dataclass
+class GrantRule:
+    role: str
+    principals: 'List[str]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.principals: body['principals'] = [v for v in self.principals]
+        if self.role: body['role'] = self.role
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GrantRule':
+        return cls(principals=d.get('principals', None), role=d.get('role', None))
+
+
+@dataclass
 class Group:
-    id: str
     display_name: str = None
     entitlements: 'List[ComplexValue]' = None
     external_id: str = None
     groups: 'List[ComplexValue]' = None
+    id: str = None
     members: 'List[ComplexValue]' = None
     roles: 'List[ComplexValue]' = None
 
@@ -240,6 +278,13 @@ class Group:
                    id=d.get('id', None),
                    members=_repeated(d, 'members', ComplexValue),
                    roles=_repeated(d, 'roles', ComplexValue))
+
+
+@dataclass
+class ListAccountAccessControlRequest:
+    """List assignable roles on a resource"""
+
+    name: str
 
 
 @dataclass
@@ -441,7 +486,7 @@ class ObjectPermissions:
 
 @dataclass
 class PartialUpdate:
-    id: str
+    id: str = None
     operations: 'List[Patch]' = None
 
     def as_dict(self) -> dict:
@@ -592,9 +637,9 @@ class PermissionsDescription:
 
 @dataclass
 class PermissionsRequest:
-    request_object_type: str
-    request_object_id: str
     access_control_list: 'List[AccessControlRequest]' = None
+    request_object_id: str = None
+    request_object_type: str = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -638,14 +683,54 @@ class PrincipalOutput:
 
 
 @dataclass
+class RuleSetResponse:
+    etag: str = None
+    grant_rules: 'List[GrantRule]' = None
+    name: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag: body['etag'] = self.etag
+        if self.grant_rules: body['grant_rules'] = [v.as_dict() for v in self.grant_rules]
+        if self.name: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RuleSetResponse':
+        return cls(etag=d.get('etag', None),
+                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   name=d.get('name', None))
+
+
+@dataclass
+class RuleSetUpdateRequest:
+    name: str
+    etag: str
+    grant_rules: 'List[GrantRule]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag: body['etag'] = self.etag
+        if self.grant_rules: body['grant_rules'] = [v.as_dict() for v in self.grant_rules]
+        if self.name: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RuleSetUpdateRequest':
+        return cls(etag=d.get('etag', None),
+                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   name=d.get('name', None))
+
+
+@dataclass
 class ServicePrincipal:
-    id: str
     active: bool = None
     application_id: str = None
     display_name: str = None
     entitlements: 'List[ComplexValue]' = None
     external_id: str = None
     groups: 'List[ComplexValue]' = None
+    id: str = None
     roles: 'List[ComplexValue]' = None
 
     def as_dict(self) -> dict:
@@ -673,10 +758,30 @@ class ServicePrincipal:
 
 
 @dataclass
+class UpdateRuleSetRequest:
+    name: str
+    rule_set: 'RuleSetUpdateRequest'
+    etag: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag: body['etag'] = self.etag
+        if self.name: body['name'] = self.name
+        if self.rule_set: body['rule_set'] = self.rule_set.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRuleSetRequest':
+        return cls(etag=d.get('etag', None),
+                   name=d.get('name', None),
+                   rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
+
+
+@dataclass
 class UpdateWorkspaceAssignments:
     permissions: 'List[WorkspacePermission]'
-    workspace_id: int
-    principal_id: int
+    principal_id: int = None
+    workspace_id: int = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -694,13 +799,13 @@ class UpdateWorkspaceAssignments:
 
 @dataclass
 class User:
-    id: str
     active: bool = None
     display_name: str = None
     emails: 'List[ComplexValue]' = None
     entitlements: 'List[ComplexValue]' = None
     external_id: str = None
     groups: 'List[ComplexValue]' = None
+    id: str = None
     name: 'Name' = None
     roles: 'List[ComplexValue]' = None
     user_name: str = None
@@ -754,6 +859,69 @@ class WorkspacePermissions:
         return cls(permissions=_repeated(d, 'permissions', PermissionOutput))
 
 
+class AccountAccessControlAPI:
+    """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
+    grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
+    called a rule set."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+        """Get a rule set.
+        
+        Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
+        rules on the said resource. Currently only a default rule set for each resource is supported."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAccountAccessControlRequest(etag=etag, name=name)
+
+        query = {}
+        if etag: query['etag'] = request.etag
+        if name: query['name'] = request.name
+
+        json = self._api.do('GET',
+                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            query=query)
+        return RuleSetResponse.from_dict(json)
+
+    def list(self, name: str, **kwargs) -> GetAssignableRolesForResourceResponse:
+        """List assignable roles on a resource.
+        
+        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
+        set on the resource can contain an access rule of the role."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListAccountAccessControlRequest(name=name)
+
+        query = {}
+        if name: query['name'] = request.name
+
+        json = self._api.do('GET',
+                            f'/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
+                            query=query)
+        return GetAssignableRolesForResourceResponse.from_dict(json)
+
+    def update(self, name: str, rule_set: RuleSetUpdateRequest, etag: str, **kwargs) -> RuleSetResponse:
+        """Update a rule set.
+        
+        Replace the rules of a rule set. First, use get to read the current version of the rule set before
+        modifying it. This pattern helps prevent conflicts between concurrent updates."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateRuleSetRequest(etag=etag, name=name, rule_set=rule_set)
+        body = request.as_dict()
+        query = {}
+        if etag: query['etag'] = request.etag
+        if name: query['name'] = request.name
+
+        json = self._api.do('PUT',
+                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            query=query,
+                            body=body)
+        return RuleSetResponse.from_dict(json)
+
+
 class AccountGroupsAPI:
     """Groups simplify identity management, making it easier to assign access to Databricks account, data, and
     other securable objects.
@@ -766,12 +934,12 @@ class AccountGroupsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                display_name: str = None,
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                members: List[ComplexValue] = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> Group:
@@ -899,7 +1067,6 @@ class AccountServicePrincipalsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                application_id: str = None,
@@ -907,6 +1074,7 @@ class AccountServicePrincipalsAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
@@ -1048,7 +1216,6 @@ class AccountUsersAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                display_name: str = None,
@@ -1056,6 +1223,7 @@ class AccountUsersAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                name: Name = None,
                roles: List[ComplexValue] = None,
                user_name: str = None,
@@ -1209,12 +1377,12 @@ class GroupsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                display_name: str = None,
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                members: List[ComplexValue] = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> Group:
@@ -1415,7 +1583,6 @@ class ServicePrincipalsAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                application_id: str = None,
@@ -1423,6 +1590,7 @@ class ServicePrincipalsAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                roles: List[ComplexValue] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
@@ -1554,7 +1722,6 @@ class UsersAPI:
         self._api = api_client
 
     def create(self,
-               id: str,
                *,
                active: bool = None,
                display_name: str = None,
@@ -1562,6 +1729,7 @@ class UsersAPI:
                entitlements: List[ComplexValue] = None,
                external_id: str = None,
                groups: List[ComplexValue] = None,
+               id: str = None,
                name: Name = None,
                roles: List[ComplexValue] = None,
                user_name: str = None,

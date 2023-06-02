@@ -224,6 +224,7 @@ class CreateJob:
     max_concurrent_runs: int = None
     name: str = None
     notification_settings: 'JobNotificationSettings' = None
+    run_as: 'JobRunAs' = None
     schedule: 'CronSchedule' = None
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
@@ -242,6 +243,7 @@ class CreateJob:
         if self.max_concurrent_runs: body['max_concurrent_runs'] = self.max_concurrent_runs
         if self.name: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
@@ -261,6 +263,7 @@ class CreateJob:
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
+                   run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
                    tasks=_repeated(d, 'tasks', JobTaskSettings),
@@ -608,6 +611,30 @@ class JobNotificationSettings:
 
 
 @dataclass
+class JobRunAs:
+    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
+    or service principal that the job runs as. If not specified, the job runs as the user who
+    created the job.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
+
+    service_principal_name: str = None
+    user_name: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.service_principal_name: body['service_principal_name'] = self.service_principal_name
+        if self.user_name: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobRunAs':
+        return cls(service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class JobSettings:
     continuous: 'Continuous' = None
     email_notifications: 'JobEmailNotifications' = None
@@ -617,6 +644,7 @@ class JobSettings:
     max_concurrent_runs: int = None
     name: str = None
     notification_settings: 'JobNotificationSettings' = None
+    run_as: 'JobRunAs' = None
     schedule: 'CronSchedule' = None
     tags: 'Dict[str,str]' = None
     tasks: 'List[JobTaskSettings]' = None
@@ -634,6 +662,7 @@ class JobSettings:
         if self.max_concurrent_runs: body['max_concurrent_runs'] = self.max_concurrent_runs
         if self.name: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
@@ -652,6 +681,7 @@ class JobSettings:
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
+                   run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
                    tasks=_repeated(d, 'tasks', JobTaskSettings),
@@ -2146,6 +2176,7 @@ class JobsAPI:
                max_concurrent_runs: int = None,
                name: str = None,
                notification_settings: JobNotificationSettings = None,
+               run_as: JobRunAs = None,
                schedule: CronSchedule = None,
                tags: Dict[str, str] = None,
                tasks: List[JobTaskSettings] = None,
@@ -2167,6 +2198,7 @@ class JobsAPI:
                                 max_concurrent_runs=max_concurrent_runs,
                                 name=name,
                                 notification_settings=notification_settings,
+                                run_as=run_as,
                                 schedule=schedule,
                                 tags=tags,
                                 tasks=tasks,

@@ -333,7 +333,7 @@ class TokenAccessPolicy:
 
 @dataclass
 class UpdateCustomAppIntegration:
-    integration_id: str
+    integration_id: str = None
     redirect_urls: 'List[str]' = None
     token_access_policy: 'TokenAccessPolicy' = None
 
@@ -353,7 +353,7 @@ class UpdateCustomAppIntegration:
 
 @dataclass
 class UpdatePublishedAppIntegration:
-    integration_id: str
+    integration_id: str = None
     token_access_policy: 'TokenAccessPolicy' = None
 
     def as_dict(self) -> dict:
