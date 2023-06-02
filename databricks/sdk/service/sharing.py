@@ -810,7 +810,7 @@ class UpdateSharePermissions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.changes: body['changes'] = [v for v in self.changes]
+        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
         if self.name: body['name'] = self.name
         return body
 
