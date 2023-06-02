@@ -26,7 +26,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}
-        {{range .Fields | alphanumOnly}}if self.{{.SnakeName -}}: body['{{.Name}}'] = {{template "as_request_type" .}}
+        {{range .Fields | alphanumOnly}}if self.{{.SnakeName}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end -}}
         return body
 
@@ -51,7 +51,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 {{- define "as_request_type" -}}
 	{{- if not .Entity }}None # ERROR: No Type
-	{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in self.{{.SnakeName}}]
+	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{else}}v{{end}} for v in self.{{.SnakeName}}]
 	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{.SnakeName}}.as_dict()
 	{{- else if .Entity.Enum }}self.{{.SnakeName}}.value
 	{{- else}}self.{{.SnakeName}}{{- end -}}

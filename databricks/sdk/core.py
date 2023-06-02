@@ -312,6 +312,57 @@ def bricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     return inner
 
 
+class MetadataServiceTokenSource(Refreshable):
+    """ Obtain the token granted by Databricks Metadata Service """
+    METADATA_SERVICE_VERSION = "1"
+    METADATA_SERVICE_VERSION_HEADER = "X-Databricks-Metadata-Version"
+    METADATA_SERVICE_HOST_HEADER = "X-Databricks-Host"
+    _metadata_service_timeout = 10 # seconds
+
+    def __init__(self, cfg: 'Config'):
+        super().__init__()
+        self.url = cfg.metadata_service_url
+        self.host = cfg.host
+
+    def refresh(self) -> Token:
+        resp = requests.get(self.url,
+                            timeout=self._metadata_service_timeout,
+                            headers={
+                                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
+                                self.METADATA_SERVICE_HOST_HEADER: self.host
+                            })
+        json_resp: dict[str, str] = resp.json()
+        access_token = json_resp.get("access_token", None)
+        if access_token is None:
+            raise ValueError("Metadata Service returned empty token")
+        token_type = json_resp.get("token_type", None)
+        if token_type is None:
+            raise ValueError("Metadata Service returned empty token type")
+        if json_resp["expires_on"] in ["", None]:
+            raise ValueError("Metadata Service returned invalid expiry")
+        try:
+            expiry = datetime.fromtimestamp(json_resp["expires_on"])
+        except:
+            raise ValueError("Metadata Service returned invalid expiry")
+
+        return Token(access_token=access_token, token_type=token_type, expiry=expiry)
+
+
+@credentials_provider('metadata-service', ['host', 'metadata_service_url'])
+def metadata_service(cfg: 'Config') -> Optional[HeaderFactory]:
+    """ Adds refreshed token granted by Databricks Metadata Service to every request. """
+
+    token_source = MetadataServiceTokenSource(cfg)
+    token_source.token()
+    logger.info("Using Databricks Metadata Service authentication")
+
+    def inner() -> Dict[str, str]:
+        token = token_source.token()
+        return {'Authorization': f'{token.token_type} {token.access_token}'}
+
+    return inner
+
+
 class DefaultCredentials:
     """ Select the first applicable credential provider from the chain """
 
@@ -323,8 +374,8 @@ class DefaultCredentials:
 
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
-            pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli,
-            external_browser, bricks_cli, runtime_native_auth
+            pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
+            azure_cli, external_browser, bricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -397,6 +448,9 @@ class Config:
     debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
+    metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL',
+                                           auth='metadata-service',
+                                           sensitive=True)
 
     def __init__(self,
                  *,

@@ -20,7 +20,8 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.files import DbfsAPI
-from databricks.sdk.service.iam import (AccountGroupsAPI,
+from databricks.sdk.service.iam import (AccountAccessControlAPI,
+                                        AccountGroupsAPI,
                                         AccountServicePrincipalsAPI,
                                         AccountUsersAPI, CurrentUserAPI,
                                         GroupsAPI, PermissionsAPI,
@@ -40,6 +41,7 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  WorkspacesAPI)
 from databricks.sdk.service.serving import ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
+                                             AccountSettingsAPI,
                                              IpAccessListsAPI,
                                              TokenManagementAPI, TokensAPI,
                                              WorkspaceConfAPI)
@@ -207,6 +209,7 @@ class AccountClient:
                                    product_version=product_version)
         self.config = config
         self.api_client = client.ApiClient(self.config)
+        self.access_control = AccountAccessControlAPI(self.api_client)
         self.billable_usage = BillableUsageAPI(self.api_client)
         self.budgets = BudgetsAPI(self.api_client)
         self.credentials = CredentialsAPI(self.api_client)
@@ -223,6 +226,7 @@ class AccountClient:
         self.published_app_integration = PublishedAppIntegrationAPI(self.api_client)
         self.service_principal_secrets = ServicePrincipalSecretsAPI(self.api_client)
         self.service_principals = AccountServicePrincipalsAPI(self.api_client)
+        self.settings = AccountSettingsAPI(self.api_client)
         self.storage = StorageAPI(self.api_client)
         self.storage_credentials = AccountStorageCredentialsAPI(self.api_client)
         self.users = AccountUsersAPI(self.api_client)
