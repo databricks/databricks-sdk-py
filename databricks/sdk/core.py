@@ -273,37 +273,64 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     return inner
 
 
-class BricksCliTokenSource(CliTokenSource):
-    """ Obtain the token granted by `bricks auth login` CLI command """
+class DatabricksCliTokenSource(CliTokenSource):
+    """ Obtain the token granted by `databricks auth login` CLI command """
 
     def __init__(self, cfg: 'Config'):
-        cli_path = cfg.bricks_cli_path
-        if not cli_path:
-            cli_path = 'bricks'
-        cmd = [cli_path, 'auth', 'token', '--host', cfg.host]
+        args = ['auth', 'token', '--host', cfg.host]
         if cfg.is_account_client:
-            cmd += ['--account-id', cfg.account_id]
-        super().__init__(cmd=cmd,
+            args += ['--account-id', cfg.account_id]
+
+        cli_path = cfg.databricks_cli_path
+        if not cli_path:
+            cli_path = 'databricks'
+
+        # If the path is unqualified, look it up in PATH.
+        if cli_path.count("/") == 0:
+            cli_path = self.__class__._find_executable(cli_path)
+
+        super().__init__(cmd=[cli_path, *args],
                          token_type_field='token_type',
                          access_token_field='access_token',
                          expiry_field='expiry')
 
+    @staticmethod
+    def _find_executable(name) -> str:
+        err = FileNotFoundError("Most likely the Databricks CLI is not installed")
+        for dir in os.getenv("PATH", default="").split(os.path.pathsep):
+            path = pathlib.Path(dir).joinpath(name).resolve()
+            if not path.is_file():
+                continue
 
-@credentials_provider('bricks-cli', ['host', 'is_aws'])
-def bricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
-    token_source = BricksCliTokenSource(cfg)
+            # The new Databricks CLI is a single binary with size > 1MB.
+            # We use the size as a signal to determine which Databricks CLI is installed.
+            stat = path.stat()
+            if stat.st_size < (1024 * 1024):
+                err = FileNotFoundError("Databricks CLI version <0.100.0 detected")
+                continue
+
+            return str(path)
+
+        raise err
+
+
+@credentials_provider('databricks-cli', ['host', 'is_aws'])
+def databricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
+    try:
+        token_source = DatabricksCliTokenSource(cfg)
+    except FileNotFoundError as e:
+        logger.debug(e)
+        return None
+
     try:
         token_source.token()
-    except FileNotFoundError:
-        logger.debug(f'Most likely Bricks CLI is not installed.')
-        return None
     except IOError as e:
         if 'databricks OAuth is not' in str(e):
             logger.debug(f'OAuth not configured or not available: {e}')
             return None
         raise e
 
-    logger.info("Using Bricks CLI authentication")
+    logger.info("Using Databricks CLI authentication")
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
@@ -375,7 +402,7 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            azure_cli, external_browser, bricks_cli, runtime_native_auth
+            azure_cli, external_browser, databricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -438,7 +465,7 @@ class Config:
     azure_tenant_id = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
     azure_environment = ConfigAttribute(env='ARM_ENVIRONMENT')
     azure_login_app_id = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
-    bricks_cli_path = ConfigAttribute(env='BRICKS_CLI_PATH')
+    databricks_cli_path = ConfigAttribute(env='DATABRICKS_CLI_PATH')
     auth_type = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
     cluster_id = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
     warehouse_id = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
