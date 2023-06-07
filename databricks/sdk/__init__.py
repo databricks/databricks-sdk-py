@@ -1,7 +1,7 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
-from databricks.sdk.mixins.dbfs import DbfsExt
+from databricks.sdk.mixins.files import DbfsExt, FilesMixin
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
                                             LogDeliveryAPI)
@@ -108,6 +108,7 @@ class WorkspaceClient:
         self.config = config
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
+        self.files = FilesMixin(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)

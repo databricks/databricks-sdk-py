@@ -1,7 +1,7 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 
-from databricks.sdk.mixins.dbfs import DbfsExt
+from databricks.sdk.mixins.files import DbfsExt, FilesMixin
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 {{- range .Services}}
@@ -35,6 +35,7 @@ class WorkspaceClient:
         self.config = config
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
+        self.files = FilesMixin(self.api_client)
         {{- range .Services}}{{if not .IsAccounts}}
         self.{{.SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
 

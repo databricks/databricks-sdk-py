@@ -7,7 +7,7 @@ from collections import namedtuple
 
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
-from .mixins import dbfs as dbfs_ext
+from .mixins import files as dbfs_ext
 from .service import compute, workspace
 
 _LOG = logging.getLogger('databricks.sdk')
