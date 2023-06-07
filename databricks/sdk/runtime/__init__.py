@@ -16,6 +16,18 @@ try:
 except ImportError:
     init_runtime_native_auth = None
 
+if init_runtime_native_auth is None:
+    try:
+        from dbruntime.databricks_repl_context import get_context
+        ctx = get_context()
+        if ctx is not None:
+
+            def init_runtime_native_auth():
+                inner = lambda: {'Authorization': f'Bearer {ctx.apiToken}'}
+                return f'https://{ctx.browserHostName}', inner
+    except ImportError:
+        init_runtime_native_auth = None
+
 globals()["init_runtime_native_auth"] = init_runtime_native_auth
 
 try:
