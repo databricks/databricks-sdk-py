@@ -896,7 +896,8 @@ class ApiClient:
         if request.body:
             sb.append("> [raw stream]" if raw else self._redacted_dump("> ", request.body))
         sb.append(f'< {response.status_code} {response.reason}')
-        if raw and 'Content-Type' in response.headers:
+        if raw and response.headers.get('Content-Type', None) != 'application/json':
+            # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
             sb.append("< [raw stream]")
         elif response.content:
             sb.append(self._redacted_dump("< ", response.content))

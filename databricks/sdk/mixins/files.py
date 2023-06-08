@@ -401,7 +401,7 @@ class FilesMixin:
         self._api = api_client
 
     def upload(self, path: str, src: BinaryIO):
-        self._api.do('PUT', f'/api/2.0/fs/files{path}', data=src) # files for the workspace upload
+        self._api.do('PUT', f'/api/2.0/fs/files{path}', data=src)
 
     def download(self, path: str) -> BinaryIO:
         return self._api.do('GET', f'/api/2.0/fs/files{path}', raw=True)
