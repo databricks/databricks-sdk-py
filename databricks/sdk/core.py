@@ -852,6 +852,15 @@ class ApiClient:
             r.headers[k] = v
         return r
 
+    @staticmethod
+    def _fix_query_string(query: Optional[dict] = None) -> Optional[dict]:
+        # Convert True -> "true" for Databricks APIs to understand booleans.
+        # See: https://github.com/databricks/databricks-sdk-py/issues/142
+        if query is None:
+            return None
+        return {k: v if type(v) != bool else ('true' if v else 'false')
+                for k, v in query.items()}
+
     def do(self,
            method: str,
            path: str,
@@ -863,7 +872,7 @@ class ApiClient:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
-                                         params=query,
+                                         params=self._fix_query_string(query),
                                          json=body,
                                          headers=headers,
                                          files=files,
