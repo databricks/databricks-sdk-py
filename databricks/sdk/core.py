@@ -858,8 +858,7 @@ class ApiClient:
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
             return None
-        return {k: v if type(v) != bool else ('true' if v else 'false')
-                for k, v in query.items()}
+        return {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
 
     def do(self,
            method: str,
