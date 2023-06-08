@@ -91,12 +91,24 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     from databricks.sdk.runtime import init_runtime_native_auth
-    if init_runtime_native_auth is None:
-        return None
-    else:
+    if init_runtime_native_auth is not None:
         host, inner = init_runtime_native_auth()
         cfg.host = host
         return inner
+    try:
+        from dbruntime.databricks_repl_context import get_context
+        ctx = get_context()
+        if ctx is None:
+            logger.debug('Empty REPL context returned, skipping runtime auth')
+            return None
+        cfg.host = f'https://{ctx.browserHostName}'
+
+        def inner() -> Dict[str, str]:
+            return {'Authorization': f'Bearer {ctx.apiToken}'}
+
+        return inner
+    except ImportError:
+        return None
 
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
