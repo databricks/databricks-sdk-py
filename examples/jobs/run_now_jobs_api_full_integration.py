@@ -21,7 +21,7 @@ created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                     timeout_seconds=0)
                             ])
 
-run_by_id = w.jobs.run_now(job_id=created_job.job_id).result()
+run_by_id = w.jobs.run_now_and_wait(job_id=created_job.job_id).result()
 
 # cleanup
 w.jobs.delete(delete=created_job.job_id)
