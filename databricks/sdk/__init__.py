@@ -1,7 +1,8 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
-from databricks.sdk.mixins.dbfs import DbfsExt
+from databricks.sdk.mixins.files import DbfsExt, FilesMixin
+from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
                                             LogDeliveryAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
@@ -107,6 +108,7 @@ class WorkspaceClient:
         self.config = config
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
+        self.files = FilesMixin(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
@@ -154,7 +156,7 @@ class WorkspaceClient:
         self.users = UsersAPI(self.api_client)
         self.volumes = VolumesAPI(self.api_client)
         self.warehouses = WarehousesAPI(self.api_client)
-        self.workspace = WorkspaceAPI(self.api_client)
+        self.workspace = WorkspaceExt(self.api_client)
         self.workspace_bindings = WorkspaceBindingsAPI(self.api_client)
         self.workspace_conf = WorkspaceConfAPI(self.api_client)
 

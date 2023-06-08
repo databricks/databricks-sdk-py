@@ -852,20 +852,32 @@ class ApiClient:
             r.headers[k] = v
         return r
 
-    def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
+    def do(self,
+           method: str,
+           path: str,
+           query: dict = None,
+           body: dict = None,
+           raw: bool = False,
+           files=None,
+           data=None) -> dict:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=query,
                                          json=body,
-                                         headers=headers)
+                                         headers=headers,
+                                         files=files,
+                                         data=data,
+                                         stream=True if raw else False)
         try:
-            self._record_request_log(response)
+            self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok:
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
                 payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
+            if raw:
+                return response.raw
             if not len(response.content):
                 return {}
             return response.json()
@@ -894,7 +906,7 @@ class ApiClient:
         kwargs['message'] = message
         return DatabricksError(**kwargs)
 
-    def _record_request_log(self, response: requests.Response):
+    def _record_request_log(self, response: requests.Response, raw=False):
         if not logger.isEnabledFor(logging.DEBUG):
             return
         request = response.request
@@ -909,9 +921,12 @@ class ApiClient:
             for k, v in request.headers.items():
                 sb.append(f'> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}')
         if request.body:
-            sb.append(self._redacted_dump("> ", request.body))
+            sb.append("> [raw stream]" if raw else self._redacted_dump("> ", request.body))
         sb.append(f'< {response.status_code} {response.reason}')
-        if response.content:
+        if raw and response.headers.get('Content-Type', None) != 'application/json':
+            # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
+            sb.append("< [raw stream]")
+        elif response.content:
             sb.append(self._redacted_dump("< ", response.content))
         logger.debug("\n".join(sb))
 

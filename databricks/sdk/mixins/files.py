@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import base64
 import pathlib
+import shutil
 import sys
 from abc import ABC, abstractmethod
 from types import TracebackType
 from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
 
-from databricks.sdk.core import DatabricksError
+from databricks.sdk.core import ApiClient, DatabricksError
 
 from ..service import files
 
@@ -313,6 +314,13 @@ class DbfsExt(files.DbfsAPI):
     def open(self, path: str, *, read: bool = False, write: bool = False, overwrite: bool = False) -> _DbfsIO:
         return _DbfsIO(self, path, read=read, write=write, overwrite=overwrite)
 
+    def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
+        with self.open(path, write=True, overwrite=overwrite) as dst:
+            shutil.copyfileobj(src, dst)
+
+    def download(self, path: str) -> BinaryIO:
+        return self.open(path, read=True)
+
     def list(self, path: str, *, recursive=False) -> Iterator[files.FileInfo]:
         """List directory contents or file details.
 
@@ -385,3 +393,18 @@ class DbfsExt(files.DbfsAPI):
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         source.delete(recursive=recursive)
+
+
+class FilesMixin:
+
+    def __init__(self, api_client: ApiClient):
+        self._api = api_client
+
+    def upload(self, path: str, src: BinaryIO):
+        self._api.do('PUT', f'/api/2.0/fs/files{path}', data=src)
+
+    def download(self, path: str) -> BinaryIO:
+        return self._api.do('GET', f'/api/2.0/fs/files{path}', raw=True)
+
+    def delete(self, path: str):
+        self._api.do('DELETE', f'/api/2.0/fs/files{path}')

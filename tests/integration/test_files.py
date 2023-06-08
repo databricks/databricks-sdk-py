@@ -1,3 +1,4 @@
+import io
 import pathlib
 from typing import List
 
@@ -170,3 +171,25 @@ def test_move_from_dbfs_to_local(w, random, junk, tmp_path):
         assert f.read() == payload_02
     with (tmp_path / root.name / 'a/b/03').open('rb') as f:
         assert f.read() == payload_03
+
+
+def test_dbfs_upload_download(w, random, junk, tmp_path):
+    root = pathlib.Path(f'/tmp/{random()}')
+
+    f = io.BytesIO(b"some text data")
+    w.dbfs.upload(f'{root}/01', f)
+
+    with w.dbfs.download(f'{root}/01') as f:
+        assert f.read() == b"some text data"
+
+
+def test_files_api_upload_download(w, random):
+    pytest.skip()
+    f = io.BytesIO(b"some text data")
+    target_file = f'/Volumes/bogdanghita/default/v3_shared/sdk-testing/{random(10)}.txt'
+    w.files.upload(target_file, f)
+
+    with w.files.download(target_file) as f:
+        assert f.read() == b"some text data"
+
+    w.files.delete(target_file)
