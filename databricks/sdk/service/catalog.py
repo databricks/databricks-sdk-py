@@ -3498,7 +3498,7 @@ class GrantsAPI:
 
         json = self._api.do(
             'GET',
-            f'/api/2.1/unity-catalog/permissions/{request.securable_type}/{request.full_name}',
+            f'/api/2.1/unity-catalog/permissions/{request.securable_type.value}/{request.full_name}',
             query=query)
         return PermissionsList.from_dict(json)
 
@@ -3522,7 +3522,7 @@ class GrantsAPI:
 
         json = self._api.do(
             'GET',
-            f'/api/2.1/unity-catalog/effective-permissions/{request.securable_type}/{request.full_name}',
+            f'/api/2.1/unity-catalog/effective-permissions/{request.securable_type.value}/{request.full_name}',
             query=query)
         return EffectivePermissionsList.from_dict(json)
 
@@ -3542,7 +3542,7 @@ class GrantsAPI:
 
         json = self._api.do(
             'PATCH',
-            f'/api/2.1/unity-catalog/permissions/{request.securable_type}/{request.full_name}',
+            f'/api/2.1/unity-catalog/permissions/{request.securable_type.value}/{request.full_name}',
             body=body)
         return PermissionsList.from_dict(json)
 
