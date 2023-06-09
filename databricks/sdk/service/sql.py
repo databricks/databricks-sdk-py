@@ -162,7 +162,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -3121,35 +3120,6 @@ class WarehousesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_warehouse_deleted(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (State.DELETED, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(id=id)
-            status = poll.state
-            status_message = f'current status: {status}'
-            if poll.health:
-                status_message = poll.health.summary
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            prefix = f"id={id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
     def wait_get_warehouse_running(self,
                                    id: str,
                                    timeout=timedelta(minutes=20),
@@ -3284,7 +3254,7 @@ class WarehousesAPI:
                            tags=tags,
                            warehouse_type=warehouse_type).result(timeout=timeout)
 
-    def delete(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
+    def delete(self, id: str, **kwargs):
         """Delete a warehouse.
         
         Deletes a SQL warehouse."""
@@ -3293,10 +3263,6 @@ class WarehousesAPI:
             request = DeleteWarehouseRequest(id=id)
 
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
-        return Wait(self.wait_get_warehouse_deleted, id=request.id)
-
-    def delete_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
-        return self.delete(id=id).result(timeout=timeout)
 
     def edit(self,
              id: str,

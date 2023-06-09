@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, Iterator, List
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -582,11 +582,11 @@ class ServingEndpointsAPI:
         json = self._api.do('GET', f'/api/2.0/serving-endpoints/{request.name}')
         return ServingEndpointDetailed.from_dict(json)
 
-    def list(self) -> ListEndpointsResponse:
+    def list(self) -> Iterator[ServingEndpoint]:
         """Retrieve all serving endpoints."""
 
         json = self._api.do('GET', '/api/2.0/serving-endpoints')
-        return ListEndpointsResponse.from_dict(json)
+        return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
 
     def logs(self, name: str, served_model_name: str, **kwargs) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.

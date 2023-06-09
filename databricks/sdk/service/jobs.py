@@ -849,22 +849,30 @@ class ListJobsRequest:
     limit: int = None
     name: str = None
     offset: int = None
+    page_token: str = None
 
 
 @dataclass
 class ListJobsResponse:
     has_more: bool = None
     jobs: 'List[BaseJob]' = None
+    next_page_token: str = None
+    prev_page_token: str = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.has_more is not None: body['has_more'] = self.has_more
         if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListJobsResponse':
-        return cls(has_more=d.get('has_more', None), jobs=_repeated(d, 'jobs', BaseJob))
+        return cls(has_more=d.get('has_more', None),
+                   jobs=_repeated(d, 'jobs', BaseJob),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
 
 
 @dataclass
@@ -877,6 +885,7 @@ class ListRunsRequest:
     job_id: int = None
     limit: int = None
     offset: int = None
+    page_token: str = None
     run_type: 'ListRunsRunType' = None
     start_time_from: int = None
     start_time_to: int = None
@@ -885,17 +894,24 @@ class ListRunsRequest:
 @dataclass
 class ListRunsResponse:
     has_more: bool = None
+    next_page_token: str = None
+    prev_page_token: str = None
     runs: 'List[BaseRun]' = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.has_more is not None: body['has_more'] = self.has_more
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRunsResponse':
-        return cls(has_more=d.get('has_more', None), runs=_repeated(d, 'runs', BaseRun))
+        return cls(has_more=d.get('has_more', None),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None),
+                   runs=_repeated(d, 'runs', BaseRun))
 
 
 class ListRunsRunType(Enum):
@@ -2312,34 +2328,35 @@ class JobsAPI:
              limit: int = None,
              name: str = None,
              offset: int = None,
+             page_token: str = None,
              **kwargs) -> Iterator[BaseJob]:
         """List all jobs.
         
         Retrieves a list of jobs."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ListJobsRequest(expand_tasks=expand_tasks, limit=limit, name=name, offset=offset)
+            request = ListJobsRequest(expand_tasks=expand_tasks,
+                                      limit=limit,
+                                      name=name,
+                                      offset=offset,
+                                      page_token=page_token)
 
         query = {}
         if expand_tasks: query['expand_tasks'] = request.expand_tasks
         if limit: query['limit'] = request.limit
         if name: query['name'] = request.name
         if offset: query['offset'] = request.offset
+        if page_token: query['page_token'] = request.page_token
 
-        # deduplicate items that may have been added during iteration
-        seen = set()
-        query['offset'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
             if 'jobs' not in json or not json['jobs']:
                 return
             for v in json['jobs']:
-                i = v['job_id']
-                if i in seen:
-                    continue
-                seen.add(i)
                 yield BaseJob.from_dict(v)
-            query['offset'] += len(json['jobs'])
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def list_runs(self,
                   *,
@@ -2349,6 +2366,7 @@ class JobsAPI:
                   job_id: int = None,
                   limit: int = None,
                   offset: int = None,
+                  page_token: str = None,
                   run_type: ListRunsRunType = None,
                   start_time_from: int = None,
                   start_time_to: int = None,
@@ -2364,6 +2382,7 @@ class JobsAPI:
                                       job_id=job_id,
                                       limit=limit,
                                       offset=offset,
+                                      page_token=page_token,
                                       run_type=run_type,
                                       start_time_from=start_time_from,
                                       start_time_to=start_time_to)
@@ -2375,24 +2394,20 @@ class JobsAPI:
         if job_id: query['job_id'] = request.job_id
         if limit: query['limit'] = request.limit
         if offset: query['offset'] = request.offset
+        if page_token: query['page_token'] = request.page_token
         if run_type: query['run_type'] = request.run_type.value
         if start_time_from: query['start_time_from'] = request.start_time_from
         if start_time_to: query['start_time_to'] = request.start_time_to
 
-        # deduplicate items that may have been added during iteration
-        seen = set()
-        query['offset'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query)
             if 'runs' not in json or not json['runs']:
                 return
             for v in json['runs']:
-                i = v['run_id']
-                if i in seen:
-                    continue
-                seen.add(i)
                 yield BaseRun.from_dict(v)
-            query['offset'] += len(json['runs'])
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def repair_run(self,
                    run_id: int,

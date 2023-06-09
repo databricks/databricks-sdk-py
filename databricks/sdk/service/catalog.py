@@ -13,6 +13,114 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
+class AccountsCreateMetastore:
+    metastore_info: 'CreateMetastore' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metastore_info: body['metastore_info'] = self.metastore_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsCreateMetastore':
+        return cls(metastore_info=_from_dict(d, 'metastore_info', CreateMetastore))
+
+
+@dataclass
+class AccountsCreateMetastoreAssignment:
+    metastore_assignment: 'CreateMetastoreAssignment' = None
+    metastore_id: str = None
+    workspace_id: int = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsCreateMetastoreAssignment':
+        return cls(metastore_assignment=_from_dict(d, 'metastore_assignment', CreateMetastoreAssignment),
+                   metastore_id=d.get('metastore_id', None),
+                   workspace_id=d.get('workspace_id', None))
+
+
+@dataclass
+class AccountsCreateStorageCredential:
+    credential_info: 'CreateStorageCredential' = None
+    metastore_id: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.credential_info: body['credential_info'] = self.credential_info.as_dict()
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsCreateStorageCredential':
+        return cls(credential_info=_from_dict(d, 'credential_info', CreateStorageCredential),
+                   metastore_id=d.get('metastore_id', None))
+
+
+@dataclass
+class AccountsUpdateMetastore:
+    metastore_id: str = None
+    metastore_info: 'UpdateMetastore' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.metastore_info: body['metastore_info'] = self.metastore_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsUpdateMetastore':
+        return cls(metastore_id=d.get('metastore_id', None),
+                   metastore_info=_from_dict(d, 'metastore_info', UpdateMetastore))
+
+
+@dataclass
+class AccountsUpdateMetastoreAssignment:
+    metastore_assignment: 'UpdateMetastoreAssignment' = None
+    metastore_id: str = None
+    workspace_id: int = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsUpdateMetastoreAssignment':
+        return cls(metastore_assignment=_from_dict(d, 'metastore_assignment', UpdateMetastoreAssignment),
+                   metastore_id=d.get('metastore_id', None),
+                   workspace_id=d.get('workspace_id', None))
+
+
+@dataclass
+class AccountsUpdateStorageCredential:
+    credential_info: 'UpdateStorageCredential' = None
+    metastore_id: str = None
+    name: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.credential_info: body['credential_info'] = self.credential_info.as_dict()
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsUpdateStorageCredential':
+        return cls(credential_info=_from_dict(d, 'credential_info', UpdateStorageCredential),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None))
+
+
+@dataclass
 class AwsIamRole:
     role_arn: str
     external_id: str = None
@@ -236,6 +344,77 @@ class ColumnTypeName(Enum):
 
 
 @dataclass
+class ConnectionInfo:
+    comment: str = None
+    connection_id: str = None
+    connection_type: 'ConnectionType' = None
+    created_at: int = None
+    created_by: str = None
+    credential_type: 'CredentialType' = None
+    full_name: str = None
+    metastore_id: str = None
+    name: str = None
+    options_kvpairs: 'OptionsKvPairs' = None
+    owner: str = None
+    properties_kvpairs: 'Dict[str,str]' = None
+    read_only: bool = None
+    updated_at: int = None
+    updated_by: str = None
+    url: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.connection_id is not None: body['connection_id'] = self.connection_id
+        if self.connection_type is not None: body['connection_type'] = self.connection_type.value
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.credential_type is not None: body['credential_type'] = self.credential_type.value
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs.as_dict()
+        if self.owner is not None: body['owner'] = self.owner
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.read_only is not None: body['read_only'] = self.read_only
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ConnectionInfo':
+        return cls(comment=d.get('comment', None),
+                   connection_id=d.get('connection_id', None),
+                   connection_type=_enum(d, 'connection_type', ConnectionType),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   credential_type=_enum(d, 'credential_type', CredentialType),
+                   full_name=d.get('full_name', None),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   options_kvpairs=_from_dict(d, 'options_kvpairs', OptionsKvPairs),
+                   owner=d.get('owner', None),
+                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   read_only=d.get('read_only', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None),
+                   url=d.get('url', None))
+
+
+class ConnectionType(Enum):
+    """The type of connection."""
+
+    DATABRICKS = 'DATABRICKS'
+    MYSQL = 'MYSQL'
+    POSTGRESQL = 'POSTGRESQL'
+    REDSHIFT = 'REDSHIFT'
+    SNOWFLAKE = 'SNOWFLAKE'
+    SQLDW = 'SQLDW'
+    SQLSERVER = 'SQLSERVER'
+
+
+@dataclass
 class CreateCatalog:
     name: str
     comment: str = None
@@ -262,6 +441,38 @@ class CreateCatalog:
                    provider_name=d.get('provider_name', None),
                    share_name=d.get('share_name', None),
                    storage_root=d.get('storage_root', None))
+
+
+@dataclass
+class CreateConnection:
+    name: str
+    connection_type: 'ConnectionType'
+    options_kvpairs: 'OptionsKvPairs'
+    comment: str = None
+    owner: str = None
+    properties_kvpairs: 'Dict[str,str]' = None
+    read_only: bool = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.connection_type is not None: body['connection_type'] = self.connection_type.value
+        if self.name is not None: body['name'] = self.name
+        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs.as_dict()
+        if self.owner is not None: body['owner'] = self.owner
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.read_only is not None: body['read_only'] = self.read_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateConnection':
+        return cls(comment=d.get('comment', None),
+                   connection_type=_enum(d, 'connection_type', ConnectionType),
+                   name=d.get('name', None),
+                   options_kvpairs=_from_dict(d, 'options_kvpairs', OptionsKvPairs),
+                   owner=d.get('owner', None),
+                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   read_only=d.get('read_only', None))
 
 
 @dataclass
@@ -472,7 +683,6 @@ class CreateStorageCredential:
     azure_service_principal: 'AzureServicePrincipal' = None
     comment: str = None
     databricks_gcp_service_account: Any = None
-    metastore_id: str = None
     read_only: bool = None
     skip_validation: bool = None
 
@@ -485,7 +695,6 @@ class CreateStorageCredential:
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -498,7 +707,6 @@ class CreateStorageCredential:
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
                    databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
-                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
@@ -548,6 +756,12 @@ class CreateVolumeRequestContent:
                    schema_name=d.get('schema_name', None),
                    storage_location=d.get('storage_location', None),
                    volume_type=_enum(d, 'volume_type', VolumeType))
+
+
+class CredentialType(Enum):
+    """The type of credential."""
+
+    USERNAME_PASSWORD = 'USERNAME_PASSWORD'
 
 
 @dataclass
@@ -625,6 +839,13 @@ class DeleteCatalogRequest:
 
     name: str
     force: bool = None
+
+
+@dataclass
+class DeleteConnectionRequest:
+    """Delete a connection"""
+
+    name_arg: str
 
 
 @dataclass
@@ -1120,6 +1341,13 @@ class GetCatalogRequest:
 
 
 @dataclass
+class GetConnectionRequest:
+    """Get a connection"""
+
+    name_arg: str
+
+
+@dataclass
 class GetEffectiveRequest:
     """Get effective permissions"""
 
@@ -1301,6 +1529,20 @@ class ListCatalogsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListCatalogsResponse':
         return cls(catalogs=_repeated(d, 'catalogs', CatalogInfo))
+
+
+@dataclass
+class ListConnectionsResponse:
+    connections: 'List[ConnectionInfo]' = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.connections: body['connections'] = [v.as_dict() for v in self.connections]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListConnectionsResponse':
+        return cls(connections=_repeated(d, 'connections', ConnectionInfo))
 
 
 @dataclass
@@ -1582,6 +1824,22 @@ class NamedTableConstraint:
 
 
 @dataclass
+class OptionsKvPairs:
+    """Object properties as map of string key-value pairs."""
+
+    host: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.host is not None: body['host'] = self.host
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'OptionsKvPairs':
+        return cls(host=d.get('host', None))
+
+
+@dataclass
 class PermissionsChange:
     add: 'List[Privilege]' = None
     principal: str = None
@@ -1678,6 +1936,9 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PrivilegeAssignment':
         return cls(principal=d.get('principal', None), privileges=d.get('privileges', None))
+
+
+PropertiesKvPairs = Dict[str, str]
 
 
 @dataclass
@@ -2094,6 +2355,26 @@ class UpdateCatalog:
 
 
 @dataclass
+class UpdateConnection:
+    name: str
+    options_kvpairs: 'OptionsKvPairs'
+    name_arg: str = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.name_arg is not None: body['name_arg'] = self.name_arg
+        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateConnection':
+        return cls(name=d.get('name', None),
+                   name_arg=d.get('name_arg', None),
+                   options_kvpairs=_from_dict(d, 'options_kvpairs', OptionsKvPairs))
+
+
+@dataclass
 class UpdateExternalLocation:
     comment: str = None
     credential_name: str = None
@@ -2147,7 +2428,6 @@ class UpdateMetastore:
     delta_sharing_recipient_token_lifetime_in_seconds: int = None
     delta_sharing_scope: 'UpdateMetastoreDeltaSharingScope' = None
     id: str = None
-    metastore_id: str = None
     name: str = None
     owner: str = None
     privilege_model_version: str = None
@@ -2162,7 +2442,6 @@ class UpdateMetastore:
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
         if self.id is not None: body['id'] = self.id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.privilege_model_version is not None:
@@ -2178,7 +2457,6 @@ class UpdateMetastore:
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope', UpdateMetastoreDeltaSharingScope),
                    id=d.get('id', None),
-                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    privilege_model_version=d.get('privilege_model_version', None),
@@ -2266,7 +2544,6 @@ class UpdateStorageCredential:
     comment: str = None
     databricks_gcp_service_account: Any = None
     force: bool = None
-    metastore_id: str = None
     name: str = None
     owner: str = None
     read_only: bool = None
@@ -2282,7 +2559,6 @@ class UpdateStorageCredential:
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.force is not None: body['force'] = self.force
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.read_only is not None: body['read_only'] = self.read_only
@@ -2297,7 +2573,6 @@ class UpdateStorageCredential:
                    comment=d.get('comment', None),
                    databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    force=d.get('force', None),
-                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
@@ -2503,16 +2778,21 @@ class AccountMetastoreAssignmentsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, metastore_id: str, default_catalog_name: str, workspace_id: int,
+    def create(self,
+               workspace_id: int,
+               metastore_id: str,
+               *,
+               metastore_assignment: CreateMetastoreAssignment = None,
                **kwargs) -> MetastoreAssignment:
         """Assigns a workspace to a metastore.
         
-        Creates an assignment to a metastore for a workspace"""
+        Creates an assignment to a metastore for a workspace Please add a header
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateMetastoreAssignment(default_catalog_name=default_catalog_name,
-                                                metastore_id=metastore_id,
-                                                workspace_id=workspace_id)
+            request = AccountsCreateMetastoreAssignment(metastore_assignment=metastore_assignment,
+                                                        metastore_id=metastore_id,
+                                                        workspace_id=workspace_id)
         body = request.as_dict()
 
         json = self._api.do(
@@ -2524,7 +2804,8 @@ class AccountMetastoreAssignmentsAPI:
     def delete(self, workspace_id: int, metastore_id: str, **kwargs):
         """Delete a metastore assignment.
         
-        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore."""
+        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore. Please add a
+        header X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountMetastoreAssignmentRequest(metastore_id=metastore_id,
@@ -2540,7 +2821,8 @@ class AccountMetastoreAssignmentsAPI:
         
         Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
         a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
-        will not be found and a 404 returned."""
+        will not be found and a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
+        2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountMetastoreAssignmentRequest(workspace_id=workspace_id)
@@ -2552,7 +2834,8 @@ class AccountMetastoreAssignmentsAPI:
     def list(self, metastore_id: str, **kwargs) -> Iterator[MetastoreAssignment]:
         """Get all workspaces assigned to a metastore.
         
-        Gets a list of all Databricks workspace IDs that have been assigned to given metastore."""
+        Gets a list of all Databricks workspace IDs that have been assigned to given metastore. Please add a
+        header X-Databricks-Account-Console-API-Version: 2.0 to access this API"""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountMetastoreAssignmentsRequest(metastore_id=metastore_id)
@@ -2565,17 +2848,17 @@ class AccountMetastoreAssignmentsAPI:
                workspace_id: int,
                metastore_id: str,
                *,
-               default_catalog_name: str = None,
+               metastore_assignment: UpdateMetastoreAssignment = None,
                **kwargs) -> MetastoreAssignment:
         """Updates a metastore assignment to a workspaces.
         
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
-        updated"""
+        updated. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateMetastoreAssignment(default_catalog_name=default_catalog_name,
-                                                metastore_id=metastore_id,
-                                                workspace_id=workspace_id)
+            request = AccountsUpdateMetastoreAssignment(metastore_assignment=metastore_assignment,
+                                                        metastore_id=metastore_id,
+                                                        workspace_id=workspace_id)
         body = request.as_dict()
 
         json = self._api.do(
@@ -2592,13 +2875,14 @@ class AccountMetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, storage_root: str, *, region: str = None, **kwargs) -> MetastoreInfo:
+    def create(self, *, metastore_info: CreateMetastore = None, **kwargs) -> MetastoreInfo:
         """Create metastore.
         
-        Creates a Unity Catalog metastore."""
+        Creates a Unity Catalog metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
+        to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateMetastore(name=name, region=region, storage_root=storage_root)
+            request = AccountsCreateMetastore(metastore_info=metastore_info)
         body = request.as_dict()
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/metastores', body=body)
@@ -2607,7 +2891,8 @@ class AccountMetastoresAPI:
     def delete(self, metastore_id: str, **kwargs):
         """Delete a metastore.
         
-        Deletes a Unity Catalog metastore for an account, both specified by ID."""
+        Deletes a Unity Catalog metastore for an account, both specified by ID. Please add a header
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountMetastoreRequest(metastore_id=metastore_id)
@@ -2617,7 +2902,8 @@ class AccountMetastoresAPI:
     def get(self, metastore_id: str, **kwargs) -> MetastoreInfo:
         """Get a metastore.
         
-        Gets a Unity Catalog metastore from an account, both specified by ID."""
+        Gets a Unity Catalog metastore from an account, both specified by ID. Please add a header
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountMetastoreRequest(metastore_id=metastore_id)
@@ -2629,36 +2915,20 @@ class AccountMetastoresAPI:
     def list(self) -> ListMetastoresResponse:
         """Get all metastores associated with an account.
         
-        Gets all Unity Catalog metastores associated with an account specified by ID."""
+        Gets all Unity Catalog metastores associated with an account specified by ID. Please add a header
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores')
         return ListMetastoresResponse.from_dict(json)
 
-    def update(self,
-               metastore_id: str,
-               *,
-               delta_sharing_organization_name: str = None,
-               delta_sharing_recipient_token_lifetime_in_seconds: int = None,
-               delta_sharing_scope: UpdateMetastoreDeltaSharingScope = None,
-               name: str = None,
-               owner: str = None,
-               privilege_model_version: str = None,
-               storage_root_credential_id: str = None,
-               **kwargs) -> MetastoreInfo:
+    def update(self, metastore_id: str, *, metastore_info: UpdateMetastore = None, **kwargs) -> MetastoreInfo:
         """Update a metastore.
         
-        Updates an existing Unity Catalog metastore."""
+        Updates an existing Unity Catalog metastore. Please add a header
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateMetastore(
-                delta_sharing_organization_name=delta_sharing_organization_name,
-                delta_sharing_recipient_token_lifetime_in_seconds=delta_sharing_recipient_token_lifetime_in_seconds,
-                delta_sharing_scope=delta_sharing_scope,
-                metastore_id=metastore_id,
-                name=name,
-                owner=owner,
-                privilege_model_version=privilege_model_version,
-                storage_root_credential_id=storage_root_credential_id)
+            request = AccountsUpdateMetastore(metastore_id=metastore_id, metastore_info=metastore_info)
         body = request.as_dict()
 
         json = self._api.do('PUT',
@@ -2674,16 +2944,9 @@ class AccountStorageCredentialsAPI:
         self._api = api_client
 
     def create(self,
-               name: str,
                metastore_id: str,
                *,
-               aws_iam_role: AwsIamRole = None,
-               azure_managed_identity: AzureManagedIdentity = None,
-               azure_service_principal: AzureServicePrincipal = None,
-               comment: str = None,
-               databricks_gcp_service_account: Any = None,
-               read_only: bool = None,
-               skip_validation: bool = None,
+               credential_info: CreateStorageCredential = None,
                **kwargs) -> StorageCredentialInfo:
         """Create a storage credential.
         
@@ -2696,15 +2959,8 @@ class AccountStorageCredentialsAPI:
         metastore."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateStorageCredential(aws_iam_role=aws_iam_role,
-                                              azure_managed_identity=azure_managed_identity,
-                                              azure_service_principal=azure_service_principal,
-                                              comment=comment,
-                                              databricks_gcp_service_account=databricks_gcp_service_account,
-                                              metastore_id=metastore_id,
-                                              name=name,
-                                              read_only=read_only,
-                                              skip_validation=skip_validation)
+            request = AccountsCreateStorageCredential(credential_info=credential_info,
+                                                      metastore_id=metastore_id)
         body = request.as_dict()
 
         json = self._api.do(
@@ -2759,15 +3015,7 @@ class AccountStorageCredentialsAPI:
                metastore_id: str,
                name: str,
                *,
-               aws_iam_role: AwsIamRole = None,
-               azure_managed_identity: AzureManagedIdentity = None,
-               azure_service_principal: AzureServicePrincipal = None,
-               comment: str = None,
-               databricks_gcp_service_account: Any = None,
-               force: bool = None,
-               owner: str = None,
-               read_only: bool = None,
-               skip_validation: bool = None,
+               credential_info: UpdateStorageCredential = None,
                **kwargs) -> StorageCredentialInfo:
         """Updates a storage credential.
         
@@ -2775,17 +3023,9 @@ class AccountStorageCredentialsAPI:
         If the caller is a metastore admin, only the __owner__ credential can be changed."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateStorageCredential(aws_iam_role=aws_iam_role,
-                                              azure_managed_identity=azure_managed_identity,
-                                              azure_service_principal=azure_service_principal,
-                                              comment=comment,
-                                              databricks_gcp_service_account=databricks_gcp_service_account,
-                                              force=force,
-                                              metastore_id=metastore_id,
-                                              name=name,
-                                              owner=owner,
-                                              read_only=read_only,
-                                              skip_validation=skip_validation)
+            request = AccountsUpdateStorageCredential(credential_info=credential_info,
+                                                      metastore_id=metastore_id,
+                                                      name=name)
         body = request.as_dict()
 
         json = self._api.do(
@@ -2892,6 +3132,91 @@ class CatalogsAPI:
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{request.name}', body=body)
         return CatalogInfo.from_dict(json)
+
+
+class ConnectionsAPI:
+    """Connections allow for creating a connection to an external data source.
+    
+    A connection is an abstraction of an external data source that can be connected from Databricks Compute.
+    Creating a connection object is the first step to managing external data sources within Unity Catalog,
+    with the second step being creating a data object (catalog, schema, or table) using the connection. Data
+    objects derived from a connection can be written to or read from similar to other Unity Catalog data
+    objects based on cloud storage. Users may create different types of connections with each connection
+    having a unique set of configuration options to support credential management and other settings."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               name: str,
+               connection_type: ConnectionType,
+               options_kvpairs: OptionsKvPairs,
+               *,
+               comment: str = None,
+               owner: str = None,
+               properties_kvpairs: Dict[str, str] = None,
+               read_only: bool = None,
+               **kwargs) -> ConnectionInfo:
+        """Create a connection.
+        
+        Creates a new connection
+        
+        Creates a new connection to an external data source. It allows users to specify connection details and
+        configurations for interaction with the external server."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = CreateConnection(comment=comment,
+                                       connection_type=connection_type,
+                                       name=name,
+                                       options_kvpairs=options_kvpairs,
+                                       owner=owner,
+                                       properties_kvpairs=properties_kvpairs,
+                                       read_only=read_only)
+        body = request.as_dict()
+
+        json = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body)
+        return ConnectionInfo.from_dict(json)
+
+    def delete(self, name_arg: str, **kwargs):
+        """Delete a connection.
+        
+        Deletes the connection that matches the supplied name."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeleteConnectionRequest(name_arg=name_arg)
+
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/connections/{request.name_arg}')
+
+    def get(self, name_arg: str, **kwargs) -> ConnectionInfo:
+        """Get a connection.
+        
+        Gets a connection from it's name."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetConnectionRequest(name_arg=name_arg)
+
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{request.name_arg}')
+        return ConnectionInfo.from_dict(json)
+
+    def list(self) -> Iterator[ConnectionInfo]:
+        """List connections.
+        
+        List all connections."""
+
+        json = self._api.do('GET', '/api/2.1/unity-catalog/connections')
+        return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
+
+    def update(self, name: str, options_kvpairs: OptionsKvPairs, name_arg: str, **kwargs) -> ConnectionInfo:
+        """Update a connection.
+        
+        Updates the connection that matches the supplied name."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateConnection(name=name, name_arg=name_arg, options_kvpairs=options_kvpairs)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{request.name_arg}', body=body)
+        return ConnectionInfo.from_dict(json)
 
 
 class ExternalLocationsAPI:
@@ -3104,7 +3429,7 @@ class FunctionsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{request.name}')
         return FunctionInfo.from_dict(json)
 
-    def list(self, catalog_name: str, schema_name: str, **kwargs) -> ListFunctionsResponse:
+    def list(self, catalog_name: str, schema_name: str, **kwargs) -> Iterator[FunctionInfo]:
         """List functions.
         
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
@@ -3121,7 +3446,7 @@ class FunctionsAPI:
         if schema_name: query['schema_name'] = request.schema_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query)
-        return ListFunctionsResponse.from_dict(json)
+        return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
 
     def update(self, name: str, *, owner: str = None, **kwargs) -> FunctionInfo:
         """Update a function.
