@@ -8,10 +8,10 @@ from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
-                                            CatalogsAPI, ExternalLocationsAPI,
-                                            FunctionsAPI, GrantsAPI,
-                                            MetastoresAPI, SchemasAPI,
-                                            StorageCredentialsAPI,
+                                            CatalogsAPI, ConnectionsAPI,
+                                            ExternalLocationsAPI, FunctionsAPI,
+                                            GrantsAPI, MetastoresAPI,
+                                            SchemasAPI, StorageCredentialsAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
@@ -114,6 +114,7 @@ class WorkspaceClient:
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
         self.clusters = ClustersExt(self.api_client)
         self.command_execution = CommandExecutionAPI(self.api_client)
+        self.connections = ConnectionsAPI(self.api_client)
         self.current_user = CurrentUserAPI(self.api_client)
         self.dashboards = DashboardsAPI(self.api_client)
         self.data_sources = DataSourcesAPI(self.api_client)
