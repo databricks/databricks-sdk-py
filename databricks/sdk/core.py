@@ -486,6 +486,7 @@ class Config:
                  product_version="0.0.0",
                  **kwargs):
         self._inner = {}
+        self._extra_user_agents = []
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         try:
             self._set_inner_config(kwargs)
@@ -589,8 +590,29 @@ class Config:
         """ Returns User-Agent header used by this SDK """
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()
-        return (f"{self._product}/{self._product_version} databricks-sdk-py/{__version__}"
-                f" python/{py_version} os/{os_name} auth/{self.auth_type}")
+
+        ua = [
+            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
+            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
+        ]
+        if len(self._extra_user_agents) > 0:
+            ua.append(' '.join(self._extra_user_agents))
+        if len(self._upstream_user_agent) > 0:
+            ua.append(self._upstream_user_agent)
+
+        return ' '.join(ua)
+
+    @property
+    def _upstream_user_agent(self) -> str:
+        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
+        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
+        if product is not None and product_version is not None:
+            return f"upstream/{product} upstream-version/{product_version}"
+        return ""
+
+    def with_user_agent_extra(self, key: str, value: str) -> 'Config':
+        self._extra_user_agents.append(f"{key}/{value}")
+        return self
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
