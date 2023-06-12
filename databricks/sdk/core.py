@@ -104,6 +104,7 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
         cfg.host = f'https://{ctx.browserHostName}'
 
         def inner() -> Dict[str, str]:
+            ctx = get_context()
             return {'Authorization': f'Bearer {ctx.apiToken}'}
 
         return inner
