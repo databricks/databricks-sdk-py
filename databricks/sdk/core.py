@@ -717,7 +717,8 @@ class Config:
             logger.debug('Loaded from environment')
 
     def _known_file_config_loader(self):
-        if not self.profile and (self.is_any_auth_configured or self.host or self.azure_workspace_resource_id):
+        if not self.profile and (self.is_any_auth_configured or self.host
+                                 or self.azure_workspace_resource_id):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
             return
