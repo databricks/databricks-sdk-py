@@ -5,7 +5,7 @@ from .conftest import raises, __tests__
 
 {{range .}}{{- with .AssertError}}@raises("{{.}}"){{end}}
 def {{.SnakeName}}({{if .Env}}monkeypatch{{end}}):{{range $k,$v := .Env}}
-    monkeypatch.setenv('{{$k}}', {{if eq $k "HOME"}}__tests__ + '/{{$v}}'{{else}}'{{$v}}'{{end}}){{end}}
+    monkeypatch.setenv('{{$k}}', {{if or (eq $k "HOME") (eq $k "PATH")}}__tests__ + '/{{$v}}'{{else}}'{{$v}}'{{end}}){{end}}
     cfg = Config({{range $i,$v := .Fields}}{{if $i}}, {{end}}{{.Key}}='{{.Value}}'{{end}})
     {{with .AssertAuth}}
     assert cfg.auth_type == '{{.}}'{{end}}{{with .AssertHost}}
