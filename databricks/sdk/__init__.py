@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
@@ -105,7 +107,7 @@ class WorkspaceClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self.config = config
+        self.config = deepcopy(config)
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
@@ -210,7 +212,7 @@ class AccountClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self.config = config
+        self.config = deepcopy(config)
         self.api_client = client.ApiClient(self.config)
         self.access_control = AccountAccessControlAPI(self.api_client)
         self.billable_usage = BillableUsageAPI(self.api_client)
