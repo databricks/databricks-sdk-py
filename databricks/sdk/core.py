@@ -1,5 +1,6 @@
 import abc
 import base64
+import collections
 import configparser
 import functools
 import json
@@ -10,6 +11,8 @@ import platform
 import re
 import subprocess
 import sys
+import threading
+import time
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
@@ -849,6 +852,30 @@ class DatabricksError(IOError):
         self.kwargs = kwargs
 
 
+class RateLimiter:
+    def __init__(self, max_requests: int):
+        if max_requests is None:
+            max_requests = 30
+        self._max_requests = int(max_requests)
+        self._lock = threading.Lock()
+        self._requests = collections.deque()
+
+    def _window_size(self):
+        return self._requests[-1] - self._requests[0]
+
+    def throttle(self):
+        with self._lock:
+            burst_period_seconds = 1
+            if len(self._requests) >= self._max_requests:
+                sleep = self._window_size()
+                logger.debug(f'Request throttled. Sleeping for {sleep}s')
+                time.sleep(sleep)
+            self._requests.append(time.time())
+            while self._window_size() >= burst_period_seconds:
+                self._requests.popleft()
+            return self
+
+
 class ApiClient:
     _cfg: Config
 
@@ -873,6 +900,7 @@ class ApiClient:
         self._session = requests.Session()
         self._session.auth = self._authenticate
         self._session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
+        self._rate_limiter = RateLimiter(cfg.rate_limit)
 
     @property
     def account_id(self) -> str:
@@ -904,6 +932,7 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None) -> dict:
+        self._rate_limiter.throttle()
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
