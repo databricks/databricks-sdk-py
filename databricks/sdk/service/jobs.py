@@ -189,7 +189,7 @@ class ClusterSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo))
 
 
@@ -620,7 +620,7 @@ class JobRunAs:
     """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
     or service principal that the job runs as. If not specified, the job runs as the user who
     created the job.
-    
+
     Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
     is thrown."""
 
@@ -762,7 +762,7 @@ class JobTaskSettings:
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    job_cluster_key=d.get('job_cluster_key', None),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    max_retries=d.get('max_retries', None),
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
@@ -1434,7 +1434,7 @@ class RunSubmitTaskSettings:
     def from_dict(cls, d: Dict[str, any]) -> 'RunSubmitTaskSettings':
         return cls(depends_on=_repeated(d, 'depends_on', TaskDependenciesItem),
                    existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -1514,7 +1514,7 @@ class RunTask:
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -1627,7 +1627,7 @@ class SqlAlertOutput:
 
 class SqlAlertState(Enum):
     """The state of the SQL alert.
-    
+
     * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger
     conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions"""
 
@@ -2116,17 +2116,17 @@ class ViewsToExport(Enum):
 
 class JobsAPI:
     """The Jobs API allows you to create, edit, and delete jobs.
-    
+
     You can use a Databricks job to run a data processing or data analysis task in a Databricks cluster with
     scalable resources. Your job can consist of a single task or can be a large, multi-task workflow with
     complex dependencies. Databricks manages the task orchestration, cluster management, monitoring, and error
     reporting for all of your jobs. You can run your jobs immediately or periodically through an easy-to-use
     scheduling system. You can implement job tasks using notebooks, JARS, Delta Live Tables pipelines, or
     Python, Scala, Spark submit, and Java applications.
-    
+
     You should never hard code secrets or store them in plain text. Use the [Secrets CLI] to manage secrets in
     the [Databricks CLI]. Use the [Secrets utility] to reference secrets in notebooks and jobs.
-    
+
     [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
     [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
     [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets"""
@@ -2168,7 +2168,7 @@ class JobsAPI:
 
     def cancel_all_runs(self, job_id: int, **kwargs):
         """Cancel all runs of a job.
-        
+
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started."""
         request = kwargs.get('request', None)
@@ -2179,7 +2179,7 @@ class JobsAPI:
 
     def cancel_run(self, run_id: int, **kwargs) -> Wait[Run]:
         """Cancel a job run.
-        
+
         Cancels a job run. The run is canceled asynchronously, so it may still be running when this request
         completes."""
         request = kwargs.get('request', None)
@@ -2212,7 +2212,7 @@ class JobsAPI:
                webhook_notifications: JobWebhookNotifications = None,
                **kwargs) -> CreateResponse:
         """Create a new job.
-        
+
         Create a new job."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2239,7 +2239,7 @@ class JobsAPI:
 
     def delete(self, job_id: int, **kwargs):
         """Delete a job.
-        
+
         Deletes a job."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2249,7 +2249,7 @@ class JobsAPI:
 
     def delete_run(self, run_id: int, **kwargs):
         """Delete a job run.
-        
+
         Deletes a non-active run. Returns an error if the run is active."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2259,7 +2259,7 @@ class JobsAPI:
 
     def export_run(self, run_id: int, *, views_to_export: ViewsToExport = None, **kwargs) -> ExportRunOutput:
         """Export and retrieve a job run.
-        
+
         Export and retrieve the job run task."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2274,7 +2274,7 @@ class JobsAPI:
 
     def get(self, job_id: int, **kwargs) -> Job:
         """Get a single job.
-        
+
         Retrieves the details for a single job."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2288,7 +2288,7 @@ class JobsAPI:
 
     def get_run(self, run_id: int, *, include_history: bool = None, **kwargs) -> Run:
         """Get a single job run.
-        
+
         Retrieve the metadata of a run."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2303,12 +2303,12 @@ class JobsAPI:
 
     def get_run_output(self, run_id: int, **kwargs) -> RunOutput:
         """Get the output for a single run.
-        
+
         Retrieve the output and metadata of a single task run. When a notebook task returns a value through
         the `dbutils.notebook.exit()` call, you can use this endpoint to retrieve that value. Databricks
         restricts this API to returning the first 5 MB of the output. To return a larger result, you can store
         job results in a cloud storage service.
-        
+
         This endpoint validates that the __run_id__ parameter is valid and returns an HTTP status code 400 if
         the __run_id__ parameter is invalid. Runs are automatically removed after 60 days. If you to want to
         reference them beyond 60 days, you must save old run results before they expire."""
@@ -2331,7 +2331,7 @@ class JobsAPI:
              page_token: str = None,
              **kwargs) -> Iterator[BaseJob]:
         """List all jobs.
-        
+
         Retrieves a list of jobs."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2372,7 +2372,7 @@ class JobsAPI:
                   start_time_to: int = None,
                   **kwargs) -> Iterator[BaseRun]:
         """List runs for a job.
-        
+
         List runs in descending order by start time."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2425,7 +2425,7 @@ class JobsAPI:
                    sql_params: Dict[str, str] = None,
                    **kwargs) -> Wait[Run]:
         """Repair a job run.
-        
+
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
         and task settings, and can be viewed in the history for the original job run."""
         request = kwargs.get('request', None)
@@ -2478,7 +2478,7 @@ class JobsAPI:
 
     def reset(self, job_id: int, new_settings: JobSettings, **kwargs):
         """Overwrites all settings for a job.
-        
+
         Overwrites all the settings for a specific job. Use the Update endpoint to update job settings
         partially."""
         request = kwargs.get('request', None)
@@ -2501,7 +2501,7 @@ class JobsAPI:
                 sql_params: Dict[str, str] = None,
                 **kwargs) -> Wait[Run]:
         """Trigger a new job run.
-        
+
         Run a job and return the `run_id` of the triggered run."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2557,7 +2557,7 @@ class JobsAPI:
                webhook_notifications: JobWebhookNotifications = None,
                **kwargs) -> Wait[Run]:
         """Create and trigger a one-time run.
-        
+
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted."""
@@ -2605,7 +2605,7 @@ class JobsAPI:
                new_settings: JobSettings = None,
                **kwargs):
         """Partially update a job.
-        
+
         Add, update, or remove specific settings of an existing job. Use the ResetJob to overwrite all job
         settings."""
         request = kwargs.get('request', None)
