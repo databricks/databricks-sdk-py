@@ -90,7 +90,7 @@ class {{.Name}}API:{{if .Description}}
         self._api = api_client
     {{range .Waits}}
     def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}},
-      timeout=timedelta(minutes={{.Timeout}}), callback: Callable[[{{.Poll.Response.PascalName}}], None] = None) -> {{.Poll.Response.PascalName}}:
+      timeout=timedelta(minutes={{.Timeout}}), callback: Optional[Callable[[{{.Poll.Response.PascalName}}], None]] = None) -> {{.Poll.Response.PascalName}}:
       deadline = time.time() + timeout.total_seconds()
       target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Failure}}
       failure_states = ({{range .Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
@@ -133,7 +133,7 @@ class {{.Name}}API:{{if .Description}}
     def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}
       {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
-        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}
+        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
       {{- end}}, **kwargs
     {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}"""{{end}}
@@ -146,7 +146,7 @@ class {{.Name}}API:{{if .Description}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
     def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
-        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}} = None{{end}}{{- end}},
+        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}{{- end}},
         timeout=timedelta(minutes={{.Wait.Timeout}})) -> {{.Wait.Poll.Response.PascalName}}:
         return self.{{.SnakeName}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}}).result(timeout=timeout)
     {{end}}
