@@ -486,7 +486,7 @@ class Config:
                  product_version="0.0.0",
                  **kwargs):
         self._inner = {}
-        self._extra_user_agents = []
+        self._user_agent_other_info = []
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         try:
             self._set_inner_config(kwargs)
@@ -595,8 +595,8 @@ class Config:
             f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
             f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
         ]
-        if len(self._extra_user_agents) > 0:
-            ua.append(' '.join(self._extra_user_agents))
+        if len(self._user_agent_other_info) > 0:
+            ua.append(' '.join(self._user_agent_other_info))
         if len(self._upstream_user_agent) > 0:
             ua.append(self._upstream_user_agent)
 
@@ -611,7 +611,7 @@ class Config:
         return ""
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
-        self._extra_user_agents.append(f"{key}/{value}")
+        self._user_agent_other_info.append(f"{key}/{value}")
         return self
 
     @property
