@@ -60,11 +60,6 @@ from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
 
 
 class WorkspaceClient:
-    _config: client.Config
-
-    @property
-    def config(self):
-        return deepcopy(self._config)
 
     def __init__(self,
                  *,
@@ -112,7 +107,7 @@ class WorkspaceClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self._config = deepcopy(config)
+        self.config = deepcopy(config)
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
@@ -170,11 +165,6 @@ class WorkspaceClient:
 
 
 class AccountClient:
-    _config: client.Config
-
-    @property
-    def config(self):
-        return deepcopy(self._config)
 
     def __init__(self,
                  *,
@@ -222,7 +212,7 @@ class AccountClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self._config = deepcopy(config)
+        self.config = deepcopy(config)
         self.api_client = client.ApiClient(self.config)
         self.access_control = AccountAccessControlAPI(self.api_client)
         self.billable_usage = BillableUsageAPI(self.api_client)
