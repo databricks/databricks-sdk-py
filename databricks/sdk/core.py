@@ -91,12 +91,25 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     from databricks.sdk.runtime import init_runtime_native_auth
-    if init_runtime_native_auth is None:
-        return None
-    else:
+    if init_runtime_native_auth is not None:
         host, inner = init_runtime_native_auth()
         cfg.host = host
         return inner
+    try:
+        from dbruntime.databricks_repl_context import get_context
+        ctx = get_context()
+        if ctx is None:
+            logger.debug('Empty REPL context returned, skipping runtime auth')
+            return None
+        cfg.host = f'https://{ctx.browserHostName}'
+
+        def inner() -> Dict[str, str]:
+            ctx = get_context()
+            return {'Authorization': f'Bearer {ctx.apiToken}'}
+
+        return inner
+    except ImportError:
+        return None
 
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
@@ -739,7 +752,8 @@ class Config:
             logger.debug('Loaded from environment')
 
     def _known_file_config_loader(self):
-        if not self.profile and (self.is_any_auth_configured or self.is_azure):
+        if not self.profile and (self.is_any_auth_configured or self.host
+                                 or self.azure_workspace_resource_id):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
             return
