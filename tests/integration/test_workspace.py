@@ -1,6 +1,6 @@
 import io
 
-from databricks.sdk.service.workspace import ExportFormat, Language
+from databricks.sdk.service.workspace import Language, ImportFormat
 
 
 def test_workspace_recursive_list(w, random):
@@ -24,7 +24,7 @@ def test_workspace_upload_download_notebooks(w, random):
 def test_workspace_upload_download_files(w, random):
     py_file = f'/Users/{w.current_user.me().user_name}/file-{random(12)}.py'
 
-    w.workspace.upload(py_file, io.BytesIO(b'print(1)'), format=ExportFormat.AUTO)
+    w.workspace.upload(py_file, io.BytesIO(b'print(1)'), format=ImportFormat.AUTO)
     with w.workspace.download(py_file) as f:
         content = f.read()
         assert content == b'print(1)'
@@ -35,7 +35,7 @@ def test_workspace_upload_download_files(w, random):
 def test_workspace_upload_download_txt_files(w, random):
     txt_file = f'/Users/{w.current_user.me().user_name}/txt-{random(12)}.txt'
 
-    w.workspace.upload(txt_file, io.BytesIO(b'print(1)'), format=ExportFormat.AUTO)
+    w.workspace.upload(txt_file, io.BytesIO(b'print(1)'), format=ImportFormat.AUTO)
     with w.workspace.download(txt_file) as f:
         content = f.read()
         assert content == b'print(1)'
@@ -46,7 +46,7 @@ def test_workspace_upload_download_txt_files(w, random):
 def test_workspace_upload_download_notebooks_no_extension(w, random):
     nb = f'/Users/{w.current_user.me().user_name}/notebook-{random(12)}'
 
-    w.workspace.upload(nb, io.BytesIO(b'print(1)'), format=ExportFormat.SOURCE, language=Language.PYTHON)
+    w.workspace.upload(nb, io.BytesIO(b'print(1)'), format=ImportFormat.SOURCE, language=Language.PYTHON)
     with w.workspace.download(nb) as f:
         content = f.read()
         assert content == b'# Databricks notebook source\nprint(1)'

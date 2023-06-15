@@ -2,7 +2,7 @@ from typing import BinaryIO, Iterator, Optional
 
 from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, Language, ObjectInfo,
-                                 ObjectType, WorkspaceAPI)
+                                 ObjectType, WorkspaceAPI, ImportFormat)
 
 
 def _fqcn(x: any) -> str:
@@ -31,7 +31,7 @@ class WorkspaceExt(WorkspaceAPI):
                path: str,
                content: BinaryIO,
                *,
-               format: Optional[ExportFormat] = None,
+               format: Optional[ImportFormat] = None,
                language: Optional[Language] = None,
                overwrite: Optional[bool] = False) -> None:
         """
@@ -44,17 +44,17 @@ class WorkspaceExt(WorkspaceAPI):
 
         :param path:     target location of the file on workspace.
         :param content:  file-like `io.BinaryIO` of the `path` contents.
-        :param format:   By default, `ExportFormat.SOURCE`. If using `ExportFormat.AUTO` the `path`
+        :param format:   By default, `ImportFormat.SOURCE`. If using `ImportFormat.AUTO` the `path`
                          is imported or exported as either a workspace file or a notebook, depending
                          on an analysis of the `item`’s extension and the header content provided in
                          the request. In addition, if the `path` is imported as a notebook, then
                          the `item`’s extension is automatically removed.
         :param language: Only required if using `ExportFormat.SOURCE`.
         """
-        if format is not None and not isinstance(format, ExportFormat):
+        if format is not None and not isinstance(format, ImportFormat):
             raise ValueError(
-                f'format is expected to be {_fqcn(ExportFormat)}, but got {_fqcn(format.__class__)}')
-        if (not format or format == ExportFormat.SOURCE) and not language:
+                f'format is expected to be {_fqcn(ImportFormat)}, but got {_fqcn(format.__class__)}')
+        if (not format or format == ImportFormat.SOURCE) and not language:
             suffixes = {
                 '.py': Language.PYTHON,
                 '.sql': Language.SQL,
