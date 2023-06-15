@@ -5,8 +5,7 @@
 * Regenerate from OpenAPI spec ([#176](https://github.com/databricks/databricks-sdk-py/pull/176)).
 * Added improved notebook-native authentication ([#152](https://github.com/databricks/databricks-sdk-py/pull/152)).
 * Added methods to provide extra user agent and upstream user agent to SDK config ([#163](https://github.com/databricks/databricks-sdk-py/pull/163)).
-* Added more missing `Optional` type hints ([#171](https://github.com/databricks/databricks-sdk-py/pull/171)).
-* Add more missing optional fields ([#177](https://github.com/databricks/databricks-sdk-py/pull/177)).
+* Added more missing `Optional` type hints ([#171](https://github.com/databricks/databricks-sdk-py/pull/171), [#177](https://github.com/databricks/databricks-sdk-py/pull/177)).
 * Correctly serialize external entities ([#178](https://github.com/databricks/databricks-sdk-py/pull/178)).
 * Correctly serialize external enum values in paths ([#179](https://github.com/databricks/databricks-sdk-py/pull/179)).
 * Mark non-required fields as `Optional` ([#170](https://github.com/databricks/databricks-sdk-py/pull/170)).
