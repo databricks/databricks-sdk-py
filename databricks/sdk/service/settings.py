@@ -544,7 +544,7 @@ class AccountIpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: str = None,
+                list_id: Optional[str] = None,
                 **kwargs):
         """Replace access list.
         
@@ -578,7 +578,7 @@ class AccountIpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: str = None,
+               list_id: Optional[str] = None,
                **kwargs):
         """Update access list.
         
@@ -618,7 +618,7 @@ class AccountSettingsAPI:
 
     def read_personal_compute_setting(self,
                                       *,
-                                      etag: str = None,
+                                      etag: Optional[str] = None,
                                       **kwargs) -> ReadPersonalComputeSettingResponse:
         """Get Personal Compute setting.
         
@@ -721,7 +721,7 @@ class IpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: str = None,
+                list_id: Optional[str] = None,
                 **kwargs):
         """Replace access list.
         
@@ -753,7 +753,7 @@ class IpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: str = None,
+               list_id: Optional[str] = None,
                **kwargs):
         """Update access list.
         
@@ -794,7 +794,7 @@ class TokenManagementAPI:
                          application_id: str,
                          lifetime_seconds: int,
                          *,
-                         comment: str = None,
+                         comment: Optional[str] = None,
                          **kwargs) -> CreateOboTokenResponse:
         """Create on-behalf token.
         
@@ -832,8 +832,8 @@ class TokenManagementAPI:
 
     def list(self,
              *,
-             created_by_id: str = None,
-             created_by_username: str = None,
+             created_by_id: Optional[str] = None,
+             created_by_username: Optional[str] = None,
              **kwargs) -> Iterator[TokenInfo]:
         """List all tokens.
         
@@ -858,7 +858,11 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, comment: str = None, lifetime_seconds: int = None, **kwargs) -> CreateTokenResponse:
+    def create(self,
+               *,
+               comment: Optional[str] = None,
+               lifetime_seconds: Optional[int] = None,
+               **kwargs) -> CreateTokenResponse:
         """Create a user token.
         
         Creates and returns a token for a user. If this call is made through token authentication, it creates

@@ -494,7 +494,7 @@ class ServingEndpointsAPI:
             self,
             name: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[ServingEndpointDetailed], None] = None) -> ServingEndpointDetailed:
+            callback: Optional[Callable[[ServingEndpointDetailed], None]] = None) -> ServingEndpointDetailed:
         deadline = time.time() + timeout.total_seconds()
         target_states = (EndpointStateConfigUpdate.NOT_UPDATING, )
         failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, )
@@ -614,7 +614,7 @@ class ServingEndpointsAPI:
                       served_models: List[ServedModelInput],
                       name: str,
                       *,
-                      traffic_config: TrafficConfig = None,
+                      traffic_config: Optional[TrafficConfig] = None,
                       **kwargs) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
         
@@ -637,7 +637,7 @@ class ServingEndpointsAPI:
         served_models: List[ServedModelInput],
         name: str,
         *,
-        traffic_config: TrafficConfig = None,
+        traffic_config: Optional[TrafficConfig] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
         return self.update_config(name=name, served_models=served_models,
                                   traffic_config=traffic_config).result(timeout=timeout)

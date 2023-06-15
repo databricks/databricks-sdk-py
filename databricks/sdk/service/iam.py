@@ -986,13 +986,13 @@ class AccountGroupsAPI:
 
     def create(self,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> Group:
         """Create a new group.
         
@@ -1034,13 +1034,13 @@ class AccountGroupsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[Group]:
         """List group details.
         
@@ -1067,7 +1067,7 @@ class AccountGroupsAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update group details.
         
         Partially updates the details of a group."""
@@ -1082,12 +1082,12 @@ class AccountGroupsAPI:
     def update(self,
                id: str,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace a group.
         
@@ -1119,14 +1119,14 @@ class AccountServicePrincipalsAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
         
@@ -1173,13 +1173,13 @@ class AccountServicePrincipalsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
@@ -1208,7 +1208,7 @@ class AccountServicePrincipalsAPI:
                             query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks account."""
@@ -1223,13 +1223,13 @@ class AccountServicePrincipalsAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace service principal.
         
@@ -1268,16 +1268,16 @@ class AccountUsersAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs) -> User:
         """Create a new user.
         
@@ -1324,13 +1324,13 @@ class AccountUsersAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[User]:
         """List users.
         
@@ -1357,7 +1357,7 @@ class AccountUsersAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes."""
@@ -1372,15 +1372,15 @@ class AccountUsersAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs):
         """Replace a user.
         
@@ -1429,13 +1429,13 @@ class GroupsAPI:
 
     def create(self,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> Group:
         """Create a new group.
         
@@ -1477,13 +1477,13 @@ class GroupsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[Group]:
         """List group details.
         
@@ -1510,7 +1510,7 @@ class GroupsAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update group details.
         
         Partially updates the details of a group."""
@@ -1523,12 +1523,12 @@ class GroupsAPI:
     def update(self,
                id: str,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace a group.
         
@@ -1587,7 +1587,7 @@ class PermissionsAPI:
             request_object_type: str,
             request_object_id: str,
             *,
-            access_control_list: List[AccessControlRequest] = None,
+            access_control_list: Optional[List[AccessControlRequest]] = None,
             **kwargs):
         """Set permissions.
         
@@ -1607,7 +1607,7 @@ class PermissionsAPI:
                request_object_type: str,
                request_object_id: str,
                *,
-               access_control_list: List[AccessControlRequest] = None,
+               access_control_list: Optional[List[AccessControlRequest]] = None,
                **kwargs):
         """Update permission.
         
@@ -1635,14 +1635,14 @@ class ServicePrincipalsAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
         
@@ -1685,13 +1685,13 @@ class ServicePrincipalsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
@@ -1718,7 +1718,7 @@ class ServicePrincipalsAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks workspace."""
@@ -1731,13 +1731,13 @@ class ServicePrincipalsAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace service principal.
         
@@ -1774,16 +1774,16 @@ class UsersAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs) -> User:
         """Create a new user.
         
@@ -1830,13 +1830,13 @@ class UsersAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[User]:
         """List users.
         
@@ -1863,7 +1863,7 @@ class UsersAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes."""
@@ -1876,15 +1876,15 @@ class UsersAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs):
         """Replace a user.
         

@@ -3164,11 +3164,11 @@ class ClusterPoliciesAPI:
     def create(self,
                name: str,
                *,
-               definition: str = None,
-               description: str = None,
-               max_clusters_per_user: int = None,
-               policy_family_definition_overrides: str = None,
-               policy_family_id: str = None,
+               definition: Optional[str] = None,
+               description: Optional[str] = None,
+               max_clusters_per_user: Optional[int] = None,
+               policy_family_definition_overrides: Optional[str] = None,
+               policy_family_id: Optional[str] = None,
                **kwargs) -> CreatePolicyResponse:
         """Create a new policy.
         
@@ -3200,11 +3200,11 @@ class ClusterPoliciesAPI:
              policy_id: str,
              name: str,
              *,
-             definition: str = None,
-             description: str = None,
-             max_clusters_per_user: int = None,
-             policy_family_definition_overrides: str = None,
-             policy_family_id: str = None,
+             definition: Optional[str] = None,
+             description: Optional[str] = None,
+             max_clusters_per_user: Optional[int] = None,
+             policy_family_definition_overrides: Optional[str] = None,
+             policy_family_id: Optional[str] = None,
              **kwargs):
         """Update a cluster policy.
         
@@ -3238,8 +3238,8 @@ class ClusterPoliciesAPI:
 
     def list(self,
              *,
-             sort_column: ListSortColumn = None,
-             sort_order: ListSortOrder = None,
+             sort_column: Optional[ListSortColumn] = None,
+             sort_order: Optional[ListSortOrder] = None,
              **kwargs) -> Iterator[Policy]:
         """Get a cluster policy.
         
@@ -3285,7 +3285,7 @@ class ClustersAPI:
     def wait_get_cluster_running(self,
                                  cluster_id: str,
                                  timeout=timedelta(minutes=20),
-                                 callback: Callable[[ClusterInfo], None] = None) -> ClusterInfo:
+                                 callback: Optional[Callable[[ClusterInfo], None]] = None) -> ClusterInfo:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.ERROR, State.TERMINATED, )
@@ -3315,7 +3315,7 @@ class ClustersAPI:
     def wait_get_cluster_terminated(self,
                                     cluster_id: str,
                                     timeout=timedelta(minutes=20),
-                                    callback: Callable[[ClusterInfo], None] = None) -> ClusterInfo:
+                                    callback: Optional[Callable[[ClusterInfo], None]] = None) -> ClusterInfo:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.TERMINATED, )
         failure_states = (State.ERROR, )
@@ -3355,30 +3355,30 @@ class ClustersAPI:
     def create(self,
                spark_version: str,
                *,
-               apply_policy_default_values: bool = None,
-               autoscale: AutoScale = None,
-               autotermination_minutes: int = None,
-               aws_attributes: AwsAttributes = None,
-               azure_attributes: AzureAttributes = None,
-               cluster_log_conf: ClusterLogConf = None,
-               cluster_name: str = None,
-               cluster_source: ClusterSource = None,
-               custom_tags: Dict[str, str] = None,
-               driver_instance_pool_id: str = None,
-               driver_node_type_id: str = None,
-               enable_elastic_disk: bool = None,
-               enable_local_disk_encryption: bool = None,
-               gcp_attributes: GcpAttributes = None,
-               init_scripts: List[InitScriptInfo] = None,
-               instance_pool_id: str = None,
-               node_type_id: str = None,
-               num_workers: int = None,
-               policy_id: str = None,
-               runtime_engine: RuntimeEngine = None,
-               spark_conf: Dict[str, str] = None,
-               spark_env_vars: Dict[str, str] = None,
-               ssh_public_keys: List[str] = None,
-               workload_type: WorkloadType = None,
+               apply_policy_default_values: Optional[bool] = None,
+               autoscale: Optional[AutoScale] = None,
+               autotermination_minutes: Optional[int] = None,
+               aws_attributes: Optional[AwsAttributes] = None,
+               azure_attributes: Optional[AzureAttributes] = None,
+               cluster_log_conf: Optional[ClusterLogConf] = None,
+               cluster_name: Optional[str] = None,
+               cluster_source: Optional[ClusterSource] = None,
+               custom_tags: Optional[Dict[str, str]] = None,
+               driver_instance_pool_id: Optional[str] = None,
+               driver_node_type_id: Optional[str] = None,
+               enable_elastic_disk: Optional[bool] = None,
+               enable_local_disk_encryption: Optional[bool] = None,
+               gcp_attributes: Optional[GcpAttributes] = None,
+               init_scripts: Optional[List[InitScriptInfo]] = None,
+               instance_pool_id: Optional[str] = None,
+               node_type_id: Optional[str] = None,
+               num_workers: Optional[int] = None,
+               policy_id: Optional[str] = None,
+               runtime_engine: Optional[RuntimeEngine] = None,
+               spark_conf: Optional[Dict[str, str]] = None,
+               spark_env_vars: Optional[Dict[str, str]] = None,
+               ssh_public_keys: Optional[List[str]] = None,
+               workload_type: Optional[WorkloadType] = None,
                **kwargs) -> Wait[ClusterInfo]:
         """Create new cluster.
         
@@ -3425,34 +3425,35 @@ class ClustersAPI:
                     response=CreateClusterResponse.from_dict(op_response),
                     cluster_id=op_response['cluster_id'])
 
-    def create_and_wait(self,
-                        spark_version: str,
-                        *,
-                        apply_policy_default_values: bool = None,
-                        autoscale: AutoScale = None,
-                        autotermination_minutes: int = None,
-                        aws_attributes: AwsAttributes = None,
-                        azure_attributes: AzureAttributes = None,
-                        cluster_log_conf: ClusterLogConf = None,
-                        cluster_name: str = None,
-                        cluster_source: ClusterSource = None,
-                        custom_tags: Dict[str, str] = None,
-                        driver_instance_pool_id: str = None,
-                        driver_node_type_id: str = None,
-                        enable_elastic_disk: bool = None,
-                        enable_local_disk_encryption: bool = None,
-                        gcp_attributes: GcpAttributes = None,
-                        init_scripts: List[InitScriptInfo] = None,
-                        instance_pool_id: str = None,
-                        node_type_id: str = None,
-                        num_workers: int = None,
-                        policy_id: str = None,
-                        runtime_engine: RuntimeEngine = None,
-                        spark_conf: Dict[str, str] = None,
-                        spark_env_vars: Dict[str, str] = None,
-                        ssh_public_keys: List[str] = None,
-                        workload_type: WorkloadType = None,
-                        timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def create_and_wait(
+        self,
+        spark_version: str,
+        *,
+        apply_policy_default_values: Optional[bool] = None,
+        autoscale: Optional[AutoScale] = None,
+        autotermination_minutes: Optional[int] = None,
+        aws_attributes: Optional[AwsAttributes] = None,
+        azure_attributes: Optional[AzureAttributes] = None,
+        cluster_log_conf: Optional[ClusterLogConf] = None,
+        cluster_name: Optional[str] = None,
+        cluster_source: Optional[ClusterSource] = None,
+        custom_tags: Optional[Dict[str, str]] = None,
+        driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_id: Optional[str] = None,
+        enable_elastic_disk: Optional[bool] = None,
+        enable_local_disk_encryption: Optional[bool] = None,
+        gcp_attributes: Optional[GcpAttributes] = None,
+        init_scripts: Optional[List[InitScriptInfo]] = None,
+        instance_pool_id: Optional[str] = None,
+        node_type_id: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        policy_id: Optional[str] = None,
+        runtime_engine: Optional[RuntimeEngine] = None,
+        spark_conf: Optional[Dict[str, str]] = None,
+        spark_env_vars: Optional[Dict[str, str]] = None,
+        ssh_public_keys: Optional[List[str]] = None,
+        workload_type: Optional[WorkloadType] = None,
+        timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.create(apply_policy_default_values=apply_policy_default_values,
                            autoscale=autoscale,
                            autotermination_minutes=autotermination_minutes,
@@ -3499,33 +3500,33 @@ class ClustersAPI:
              cluster_id: str,
              spark_version: str,
              *,
-             apply_policy_default_values: bool = None,
-             autoscale: AutoScale = None,
-             autotermination_minutes: int = None,
-             aws_attributes: AwsAttributes = None,
-             azure_attributes: AzureAttributes = None,
-             cluster_log_conf: ClusterLogConf = None,
-             cluster_name: str = None,
-             cluster_source: ClusterSource = None,
-             custom_tags: Dict[str, str] = None,
-             data_security_mode: DataSecurityMode = None,
-             docker_image: DockerImage = None,
-             driver_instance_pool_id: str = None,
-             driver_node_type_id: str = None,
-             enable_elastic_disk: bool = None,
-             enable_local_disk_encryption: bool = None,
-             gcp_attributes: GcpAttributes = None,
-             init_scripts: List[InitScriptInfo] = None,
-             instance_pool_id: str = None,
-             node_type_id: str = None,
-             num_workers: int = None,
-             policy_id: str = None,
-             runtime_engine: RuntimeEngine = None,
-             single_user_name: str = None,
-             spark_conf: Dict[str, str] = None,
-             spark_env_vars: Dict[str, str] = None,
-             ssh_public_keys: List[str] = None,
-             workload_type: WorkloadType = None,
+             apply_policy_default_values: Optional[bool] = None,
+             autoscale: Optional[AutoScale] = None,
+             autotermination_minutes: Optional[int] = None,
+             aws_attributes: Optional[AwsAttributes] = None,
+             azure_attributes: Optional[AzureAttributes] = None,
+             cluster_log_conf: Optional[ClusterLogConf] = None,
+             cluster_name: Optional[str] = None,
+             cluster_source: Optional[ClusterSource] = None,
+             custom_tags: Optional[Dict[str, str]] = None,
+             data_security_mode: Optional[DataSecurityMode] = None,
+             docker_image: Optional[DockerImage] = None,
+             driver_instance_pool_id: Optional[str] = None,
+             driver_node_type_id: Optional[str] = None,
+             enable_elastic_disk: Optional[bool] = None,
+             enable_local_disk_encryption: Optional[bool] = None,
+             gcp_attributes: Optional[GcpAttributes] = None,
+             init_scripts: Optional[List[InitScriptInfo]] = None,
+             instance_pool_id: Optional[str] = None,
+             node_type_id: Optional[str] = None,
+             num_workers: Optional[int] = None,
+             policy_id: Optional[str] = None,
+             runtime_engine: Optional[RuntimeEngine] = None,
+             single_user_name: Optional[str] = None,
+             spark_conf: Optional[Dict[str, str]] = None,
+             spark_env_vars: Optional[Dict[str, str]] = None,
+             ssh_public_keys: Optional[List[str]] = None,
+             workload_type: Optional[WorkloadType] = None,
              **kwargs) -> Wait[ClusterInfo]:
         """Update cluster configuration.
         
@@ -3575,38 +3576,39 @@ class ClustersAPI:
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
 
-    def edit_and_wait(self,
-                      cluster_id: str,
-                      spark_version: str,
-                      *,
-                      apply_policy_default_values: bool = None,
-                      autoscale: AutoScale = None,
-                      autotermination_minutes: int = None,
-                      aws_attributes: AwsAttributes = None,
-                      azure_attributes: AzureAttributes = None,
-                      cluster_log_conf: ClusterLogConf = None,
-                      cluster_name: str = None,
-                      cluster_source: ClusterSource = None,
-                      custom_tags: Dict[str, str] = None,
-                      data_security_mode: DataSecurityMode = None,
-                      docker_image: DockerImage = None,
-                      driver_instance_pool_id: str = None,
-                      driver_node_type_id: str = None,
-                      enable_elastic_disk: bool = None,
-                      enable_local_disk_encryption: bool = None,
-                      gcp_attributes: GcpAttributes = None,
-                      init_scripts: List[InitScriptInfo] = None,
-                      instance_pool_id: str = None,
-                      node_type_id: str = None,
-                      num_workers: int = None,
-                      policy_id: str = None,
-                      runtime_engine: RuntimeEngine = None,
-                      single_user_name: str = None,
-                      spark_conf: Dict[str, str] = None,
-                      spark_env_vars: Dict[str, str] = None,
-                      ssh_public_keys: List[str] = None,
-                      workload_type: WorkloadType = None,
-                      timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def edit_and_wait(
+        self,
+        cluster_id: str,
+        spark_version: str,
+        *,
+        apply_policy_default_values: Optional[bool] = None,
+        autoscale: Optional[AutoScale] = None,
+        autotermination_minutes: Optional[int] = None,
+        aws_attributes: Optional[AwsAttributes] = None,
+        azure_attributes: Optional[AzureAttributes] = None,
+        cluster_log_conf: Optional[ClusterLogConf] = None,
+        cluster_name: Optional[str] = None,
+        cluster_source: Optional[ClusterSource] = None,
+        custom_tags: Optional[Dict[str, str]] = None,
+        data_security_mode: Optional[DataSecurityMode] = None,
+        docker_image: Optional[DockerImage] = None,
+        driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_id: Optional[str] = None,
+        enable_elastic_disk: Optional[bool] = None,
+        enable_local_disk_encryption: Optional[bool] = None,
+        gcp_attributes: Optional[GcpAttributes] = None,
+        init_scripts: Optional[List[InitScriptInfo]] = None,
+        instance_pool_id: Optional[str] = None,
+        node_type_id: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        policy_id: Optional[str] = None,
+        runtime_engine: Optional[RuntimeEngine] = None,
+        single_user_name: Optional[str] = None,
+        spark_conf: Optional[Dict[str, str]] = None,
+        spark_env_vars: Optional[Dict[str, str]] = None,
+        ssh_public_keys: Optional[List[str]] = None,
+        workload_type: Optional[WorkloadType] = None,
+        timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.edit(apply_policy_default_values=apply_policy_default_values,
                          autoscale=autoscale,
                          autotermination_minutes=autotermination_minutes,
@@ -3640,12 +3642,12 @@ class ClustersAPI:
     def events(self,
                cluster_id: str,
                *,
-               end_time: int = None,
-               event_types: List[EventType] = None,
-               limit: int = None,
-               offset: int = None,
-               order: GetEventsOrder = None,
-               start_time: int = None,
+               end_time: Optional[int] = None,
+               event_types: Optional[List[EventType]] = None,
+               limit: Optional[int] = None,
+               offset: Optional[int] = None,
+               order: Optional[GetEventsOrder] = None,
+               start_time: Optional[int] = None,
                **kwargs) -> Iterator[ClusterEvent]:
         """List cluster activity events.
         
@@ -3688,7 +3690,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterInfo.from_dict(json)
 
-    def list(self, *, can_use_client: str = None, **kwargs) -> Iterator[ClusterInfo]:
+    def list(self, *, can_use_client: Optional[str] = None, **kwargs) -> Iterator[ClusterInfo]:
         """List all clusters.
         
         Return information about all pinned clusters, active clusters, up to 200 of the most recently
@@ -3754,8 +3756,8 @@ class ClustersAPI:
     def resize(self,
                cluster_id: str,
                *,
-               autoscale: AutoScale = None,
-               num_workers: int = None,
+               autoscale: Optional[AutoScale] = None,
+               num_workers: Optional[int] = None,
                **kwargs) -> Wait[ClusterInfo]:
         """Resize cluster.
         
@@ -3771,13 +3773,13 @@ class ClustersAPI:
     def resize_and_wait(self,
                         cluster_id: str,
                         *,
-                        autoscale: AutoScale = None,
-                        num_workers: int = None,
+                        autoscale: Optional[AutoScale] = None,
+                        num_workers: Optional[int] = None,
                         timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.resize(autoscale=autoscale, cluster_id=cluster_id,
                            num_workers=num_workers).result(timeout=timeout)
 
-    def restart(self, cluster_id: str, *, restart_user: str = None, **kwargs) -> Wait[ClusterInfo]:
+    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None, **kwargs) -> Wait[ClusterInfo]:
         """Restart cluster.
         
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
@@ -3792,7 +3794,7 @@ class ClustersAPI:
     def restart_and_wait(self,
                          cluster_id: str,
                          *,
-                         restart_user: str = None,
+                         restart_user: Optional[str] = None,
                          timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
@@ -3848,7 +3850,7 @@ class CommandExecutionAPI:
             command_id: str,
             context_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[CommandStatusResponse], None] = None) -> CommandStatusResponse:
+            callback: Optional[Callable[[CommandStatusResponse], None]] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (CommandStatus.Cancelled, )
         failure_states = (CommandStatus.Error, )
@@ -3883,7 +3885,7 @@ class CommandExecutionAPI:
             command_id: str,
             context_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[CommandStatusResponse], None] = None) -> CommandStatusResponse:
+            callback: Optional[Callable[[CommandStatusResponse], None]] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (CommandStatus.Finished, CommandStatus.Error, )
         failure_states = (CommandStatus.Cancelled, CommandStatus.Cancelling, )
@@ -3915,7 +3917,7 @@ class CommandExecutionAPI:
             cluster_id: str,
             context_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[ContextStatusResponse], None] = None) -> ContextStatusResponse:
+            callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ContextStatus.Running, )
         failure_states = (ContextStatus.Error, )
@@ -3944,9 +3946,9 @@ class CommandExecutionAPI:
 
     def cancel(self,
                *,
-               cluster_id: str = None,
-               command_id: str = None,
-               context_id: str = None,
+               cluster_id: Optional[str] = None,
+               command_id: Optional[str] = None,
+               context_id: Optional[str] = None,
                **kwargs) -> Wait[CommandStatusResponse]:
         """Cancel a command.
         
@@ -3963,12 +3965,13 @@ class CommandExecutionAPI:
                     command_id=request.command_id,
                     context_id=request.context_id)
 
-    def cancel_and_wait(self,
-                        *,
-                        cluster_id: str = None,
-                        command_id: str = None,
-                        context_id: str = None,
-                        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+    def cancel_and_wait(
+        self,
+        *,
+        cluster_id: Optional[str] = None,
+        command_id: Optional[str] = None,
+        context_id: Optional[str] = None,
+        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
         return self.cancel(cluster_id=cluster_id, command_id=command_id,
                            context_id=context_id).result(timeout=timeout)
 
@@ -4010,8 +4013,8 @@ class CommandExecutionAPI:
 
     def create(self,
                *,
-               cluster_id: str = None,
-               language: Language = None,
+               cluster_id: Optional[str] = None,
+               language: Optional[Language] = None,
                **kwargs) -> Wait[ContextStatusResponse]:
         """Create an execution context.
         
@@ -4028,11 +4031,12 @@ class CommandExecutionAPI:
                     cluster_id=request.cluster_id,
                     context_id=op_response['id'])
 
-    def create_and_wait(self,
-                        *,
-                        cluster_id: str = None,
-                        language: Language = None,
-                        timeout=timedelta(minutes=20)) -> ContextStatusResponse:
+    def create_and_wait(
+        self,
+        *,
+        cluster_id: Optional[str] = None,
+        language: Optional[Language] = None,
+        timeout=timedelta(minutes=20)) -> ContextStatusResponse:
         return self.create(cluster_id=cluster_id, language=language).result(timeout=timeout)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
@@ -4047,10 +4051,10 @@ class CommandExecutionAPI:
 
     def execute(self,
                 *,
-                cluster_id: str = None,
-                command: str = None,
-                context_id: str = None,
-                language: Language = None,
+                cluster_id: Optional[str] = None,
+                command: Optional[str] = None,
+                context_id: Optional[str] = None,
+                language: Optional[Language] = None,
                 **kwargs) -> Wait[CommandStatusResponse]:
         """Run a command.
         
@@ -4071,13 +4075,14 @@ class CommandExecutionAPI:
                     command_id=op_response['id'],
                     context_id=request.context_id)
 
-    def execute_and_wait(self,
-                         *,
-                         cluster_id: str = None,
-                         command: str = None,
-                         context_id: str = None,
-                         language: Language = None,
-                         timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+    def execute_and_wait(
+        self,
+        *,
+        cluster_id: Optional[str] = None,
+        command: Optional[str] = None,
+        context_id: Optional[str] = None,
+        language: Optional[Language] = None,
+        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
         return self.execute(cluster_id=cluster_id, command=command, context_id=context_id,
                             language=language).result(timeout=timeout)
 
@@ -4098,8 +4103,8 @@ class GlobalInitScriptsAPI:
                name: str,
                script: str,
                *,
-               enabled: bool = None,
-               position: int = None,
+               enabled: Optional[bool] = None,
+               position: Optional[int] = None,
                **kwargs) -> CreateResponse:
         """Create init script.
         
@@ -4151,8 +4156,8 @@ class GlobalInitScriptsAPI:
                script: str,
                script_id: str,
                *,
-               enabled: bool = None,
-               position: int = None,
+               enabled: Optional[bool] = None,
+               position: Optional[int] = None,
                **kwargs):
         """Update init script.
         
@@ -4192,18 +4197,18 @@ class InstancePoolsAPI:
                instance_pool_name: str,
                node_type_id: str,
                *,
-               aws_attributes: InstancePoolAwsAttributes = None,
-               azure_attributes: InstancePoolAzureAttributes = None,
-               custom_tags: Dict[str, str] = None,
-               disk_spec: DiskSpec = None,
-               enable_elastic_disk: bool = None,
-               gcp_attributes: InstancePoolGcpAttributes = None,
-               idle_instance_autotermination_minutes: int = None,
-               instance_pool_fleet_attributes: InstancePoolFleetAttributes = None,
-               max_capacity: int = None,
-               min_idle_instances: int = None,
-               preloaded_docker_images: List[DockerImage] = None,
-               preloaded_spark_versions: List[str] = None,
+               aws_attributes: Optional[InstancePoolAwsAttributes] = None,
+               azure_attributes: Optional[InstancePoolAzureAttributes] = None,
+               custom_tags: Optional[Dict[str, str]] = None,
+               disk_spec: Optional[DiskSpec] = None,
+               enable_elastic_disk: Optional[bool] = None,
+               gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
+               idle_instance_autotermination_minutes: Optional[int] = None,
+               instance_pool_fleet_attributes: Optional[InstancePoolFleetAttributes] = None,
+               max_capacity: Optional[int] = None,
+               min_idle_instances: Optional[int] = None,
+               preloaded_docker_images: Optional[List[DockerImage]] = None,
+               preloaded_spark_versions: Optional[List[str]] = None,
                **kwargs) -> CreateInstancePoolResponse:
         """Create a new instance pool.
         
@@ -4245,18 +4250,18 @@ class InstancePoolsAPI:
              instance_pool_name: str,
              node_type_id: str,
              *,
-             aws_attributes: InstancePoolAwsAttributes = None,
-             azure_attributes: InstancePoolAzureAttributes = None,
-             custom_tags: Dict[str, str] = None,
-             disk_spec: DiskSpec = None,
-             enable_elastic_disk: bool = None,
-             gcp_attributes: InstancePoolGcpAttributes = None,
-             idle_instance_autotermination_minutes: int = None,
-             instance_pool_fleet_attributes: InstancePoolFleetAttributes = None,
-             max_capacity: int = None,
-             min_idle_instances: int = None,
-             preloaded_docker_images: List[DockerImage] = None,
-             preloaded_spark_versions: List[str] = None,
+             aws_attributes: Optional[InstancePoolAwsAttributes] = None,
+             azure_attributes: Optional[InstancePoolAzureAttributes] = None,
+             custom_tags: Optional[Dict[str, str]] = None,
+             disk_spec: Optional[DiskSpec] = None,
+             enable_elastic_disk: Optional[bool] = None,
+             gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
+             idle_instance_autotermination_minutes: Optional[int] = None,
+             instance_pool_fleet_attributes: Optional[InstancePoolFleetAttributes] = None,
+             max_capacity: Optional[int] = None,
+             min_idle_instances: Optional[int] = None,
+             preloaded_docker_images: Optional[List[DockerImage]] = None,
+             preloaded_spark_versions: Optional[List[str]] = None,
              **kwargs):
         """Edit an existing instance pool.
         
@@ -4318,9 +4323,9 @@ class InstanceProfilesAPI:
     def add(self,
             instance_profile_arn: str,
             *,
-            iam_role_arn: str = None,
-            is_meta_instance_profile: bool = None,
-            skip_validation: bool = None,
+            iam_role_arn: Optional[str] = None,
+            is_meta_instance_profile: Optional[bool] = None,
+            skip_validation: Optional[bool] = None,
             **kwargs):
         """Register an instance profile.
         
@@ -4338,8 +4343,8 @@ class InstanceProfilesAPI:
     def edit(self,
              instance_profile_arn: str,
              *,
-             iam_role_arn: str = None,
-             is_meta_instance_profile: bool = None,
+             iam_role_arn: Optional[str] = None,
+             is_meta_instance_profile: Optional[bool] = None,
              **kwargs):
         """Edit an instance profile.
         
@@ -4493,7 +4498,11 @@ class PolicyFamiliesAPI:
         json = self._api.do('GET', f'/api/2.0/policy-families/{request.policy_family_id}')
         return PolicyFamily.from_dict(json)
 
-    def list(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[PolicyFamily]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
+             **kwargs) -> Iterator[PolicyFamily]:
 
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args

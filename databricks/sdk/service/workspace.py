@@ -729,8 +729,8 @@ class GitCredentialsAPI:
     def create(self,
                git_provider: str,
                *,
-               git_username: str = None,
-               personal_access_token: str = None,
+               git_username: Optional[str] = None,
+               personal_access_token: Optional[str] = None,
                **kwargs) -> CreateCredentialsResponse:
         """Create a credential entry.
         
@@ -779,9 +779,9 @@ class GitCredentialsAPI:
     def update(self,
                credential_id: int,
                *,
-               git_provider: str = None,
-               git_username: str = None,
-               personal_access_token: str = None,
+               git_provider: Optional[str] = None,
+               git_username: Optional[str] = None,
+               personal_access_token: Optional[str] = None,
                **kwargs):
         """Update a credential.
         
@@ -814,8 +814,8 @@ class ReposAPI:
                url: str,
                provider: str,
                *,
-               path: str = None,
-               sparse_checkout: SparseCheckout = None,
+               path: Optional[str] = None,
+               sparse_checkout: Optional[SparseCheckout] = None,
                **kwargs) -> RepoInfo:
         """Create a repo.
         
@@ -850,7 +850,11 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/repos/{request.repo_id}')
         return RepoInfo.from_dict(json)
 
-    def list(self, *, next_page_token: str = None, path_prefix: str = None, **kwargs) -> Iterator[RepoInfo]:
+    def list(self,
+             *,
+             next_page_token: Optional[str] = None,
+             path_prefix: Optional[str] = None,
+             **kwargs) -> Iterator[RepoInfo]:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
@@ -876,9 +880,9 @@ class ReposAPI:
     def update(self,
                repo_id: int,
                *,
-               branch: str = None,
-               sparse_checkout: SparseCheckoutUpdate = None,
-               tag: str = None,
+               branch: Optional[str] = None,
+               sparse_checkout: Optional[SparseCheckoutUpdate] = None,
+               tag: Optional[str] = None,
                **kwargs):
         """Update a repo.
         
@@ -908,9 +912,9 @@ class SecretsAPI:
     def create_scope(self,
                      scope: str,
                      *,
-                     initial_manage_principal: str = None,
-                     keyvault_metadata: AzureKeyVaultSecretScopeMetadata = None,
-                     scope_backend_type: ScopeBackendType = None,
+                     initial_manage_principal: Optional[str] = None,
+                     keyvault_metadata: Optional[AzureKeyVaultSecretScopeMetadata] = None,
+                     scope_backend_type: Optional[ScopeBackendType] = None,
                      **kwargs):
         """Create a new secret scope.
         
@@ -1067,8 +1071,8 @@ class SecretsAPI:
                    scope: str,
                    key: str,
                    *,
-                   bytes_value: str = None,
-                   string_value: str = None,
+                   bytes_value: Optional[str] = None,
+                   string_value: Optional[str] = None,
                    **kwargs):
         """Add a secret.
         
@@ -1103,7 +1107,7 @@ class WorkspaceAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, path: str, *, recursive: bool = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs):
         """Delete a workspace object.
         
         Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
@@ -1118,7 +1122,7 @@ class WorkspaceAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/delete', body=body)
 
-    def export(self, path: str, *, format: ExportFormat = None, **kwargs) -> ExportResponse:
+    def export(self, path: str, *, format: Optional[ExportFormat] = None, **kwargs) -> ExportResponse:
         """Export a workspace object.
         
         Exports an object or the contents of an entire directory.
@@ -1156,10 +1160,10 @@ class WorkspaceAPI:
     def import_(self,
                 path: str,
                 *,
-                content: str = None,
-                format: ImportFormat = None,
-                language: Language = None,
-                overwrite: bool = None,
+                content: Optional[str] = None,
+                format: Optional[ImportFormat] = None,
+                language: Optional[Language] = None,
+                overwrite: Optional[bool] = None,
                 **kwargs):
         """Import a workspace object.
         
@@ -1176,7 +1180,11 @@ class WorkspaceAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
 
-    def list(self, path: str, *, notebooks_modified_after: int = None, **kwargs) -> Iterator[ObjectInfo]:
+    def list(self,
+             path: str,
+             *,
+             notebooks_modified_after: Optional[int] = None,
+             **kwargs) -> Iterator[ObjectInfo]:
         """List contents.
         
         Lists the contents of a directory, or the object if it is not a directory. If the input path does not

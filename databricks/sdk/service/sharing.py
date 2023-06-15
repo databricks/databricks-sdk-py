@@ -832,8 +832,8 @@ class ProvidersAPI:
                name: str,
                authentication_type: AuthenticationType,
                *,
-               comment: str = None,
-               recipient_profile_str: str = None,
+               comment: Optional[str] = None,
+               recipient_profile_str: Optional[str] = None,
                **kwargs) -> ProviderInfo:
         """Create an auth provider.
         
@@ -873,7 +873,10 @@ class ProvidersAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}')
         return ProviderInfo.from_dict(json)
 
-    def list(self, *, data_provider_global_metastore_id: str = None, **kwargs) -> Iterator[ProviderInfo]:
+    def list(self,
+             *,
+             data_provider_global_metastore_id: Optional[str] = None,
+             **kwargs) -> Iterator[ProviderInfo]:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a metastore admin or
@@ -907,9 +910,9 @@ class ProvidersAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               owner: str = None,
-               recipient_profile_str: str = None,
+               comment: Optional[str] = None,
+               owner: Optional[str] = None,
+               recipient_profile_str: Optional[str] = None,
                **kwargs) -> ProviderInfo:
         """Update a provider.
         
@@ -968,12 +971,12 @@ class RecipientsAPI:
                name: str,
                authentication_type: AuthenticationType,
                *,
-               comment: str = None,
-               data_recipient_global_metastore_id: Any = None,
-               ip_access_list: IpAccessList = None,
-               owner: str = None,
-               properties_kvpairs: SecurablePropertiesKvPairs = None,
-               sharing_code: str = None,
+               comment: Optional[str] = None,
+               data_recipient_global_metastore_id: Optional[Any] = None,
+               ip_access_list: Optional[IpAccessList] = None,
+               owner: Optional[str] = None,
+               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
+               sharing_code: Optional[str] = None,
                **kwargs) -> RecipientInfo:
         """Create a share recipient.
         
@@ -1017,7 +1020,10 @@ class RecipientsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{request.name}')
         return RecipientInfo.from_dict(json)
 
-    def list(self, *, data_recipient_global_metastore_id: str = None, **kwargs) -> Iterator[RecipientInfo]:
+    def list(self,
+             *,
+             data_recipient_global_metastore_id: Optional[str] = None,
+             **kwargs) -> Iterator[RecipientInfo]:
         """List share recipients.
         
         Gets an array of all share recipients within the current metastore where:
@@ -1067,10 +1073,10 @@ class RecipientsAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               ip_access_list: IpAccessList = None,
-               owner: str = None,
-               properties_kvpairs: SecurablePropertiesKvPairs = None,
+               comment: Optional[str] = None,
+               ip_access_list: Optional[IpAccessList] = None,
+               owner: Optional[str] = None,
+               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
                **kwargs):
         """Update a share recipient.
         
@@ -1094,7 +1100,7 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: str = None, **kwargs) -> ShareInfo:
+    def create(self, name: str, *, comment: Optional[str] = None, **kwargs) -> ShareInfo:
         """Create a share.
         
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
@@ -1117,7 +1123,7 @@ class SharesAPI:
 
         self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{request.name}')
 
-    def get(self, name: str, *, include_shared_data: bool = None, **kwargs) -> ShareInfo:
+    def get(self, name: str, *, include_shared_data: Optional[bool] = None, **kwargs) -> ShareInfo:
         """Get a share.
         
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
@@ -1156,9 +1162,9 @@ class SharesAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               owner: str = None,
-               updates: List[SharedDataObjectUpdate] = None,
+               comment: Optional[str] = None,
+               owner: Optional[str] = None,
+               updates: Optional[List[SharedDataObjectUpdate]] = None,
                **kwargs) -> ShareInfo:
         """Update a share.
         
@@ -1183,7 +1189,7 @@ class SharesAPI:
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{request.name}', body=body)
         return ShareInfo.from_dict(json)
 
-    def update_permissions(self, name: str, *, changes: List[PermissionsChange] = None, **kwargs):
+    def update_permissions(self, name: str, *, changes: Optional[List[PermissionsChange]] = None, **kwargs):
         """Update permissions.
         
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
