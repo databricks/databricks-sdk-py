@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -25,8 +25,8 @@ class AuthenticationType(Enum):
 class CreateProvider:
     name: str
     authentication_type: 'AuthenticationType'
-    comment: str = None
-    recipient_profile_str: str = None
+    comment: Optional[str] = None
+    recipient_profile_str: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -48,12 +48,12 @@ class CreateProvider:
 class CreateRecipient:
     name: str
     authentication_type: 'AuthenticationType'
-    comment: str = None
-    data_recipient_global_metastore_id: Any = None
-    ip_access_list: 'IpAccessList' = None
-    owner: str = None
-    properties_kvpairs: 'SecurablePropertiesKvPairs' = None
-    sharing_code: str = None
+    comment: Optional[str] = None
+    data_recipient_global_metastore_id: Optional[Any] = None
+    ip_access_list: Optional['IpAccessList'] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    sharing_code: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -83,7 +83,7 @@ class CreateRecipient:
 @dataclass
 class CreateShare:
     name: str
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -140,7 +140,7 @@ class GetRecipientRequest:
 
 @dataclass
 class GetRecipientSharePermissionsResponse:
-    permissions_out: 'List[ShareToPrivilegeAssignment]' = None
+    permissions_out: Optional['List[ShareToPrivilegeAssignment]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -157,12 +157,12 @@ class GetShareRequest:
     """Get a share"""
 
     name: str
-    include_shared_data: bool = None
+    include_shared_data: Optional[bool] = None
 
 
 @dataclass
 class IpAccessList:
-    allowed_ip_addresses: 'List[str]' = None
+    allowed_ip_addresses: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -176,7 +176,7 @@ class IpAccessList:
 
 @dataclass
 class ListProviderSharesResponse:
-    shares: 'List[ProviderShare]' = None
+    shares: Optional['List[ProviderShare]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -192,12 +192,12 @@ class ListProviderSharesResponse:
 class ListProvidersRequest:
     """List providers"""
 
-    data_provider_global_metastore_id: str = None
+    data_provider_global_metastore_id: Optional[str] = None
 
 
 @dataclass
 class ListProvidersResponse:
-    providers: 'List[ProviderInfo]' = None
+    providers: Optional['List[ProviderInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -213,12 +213,12 @@ class ListProvidersResponse:
 class ListRecipientsRequest:
     """List share recipients"""
 
-    data_recipient_global_metastore_id: str = None
+    data_recipient_global_metastore_id: Optional[str] = None
 
 
 @dataclass
 class ListRecipientsResponse:
-    recipients: 'List[RecipientInfo]' = None
+    recipients: Optional['List[RecipientInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -239,7 +239,7 @@ class ListSharesRequest:
 
 @dataclass
 class ListSharesResponse:
-    shares: 'List[ShareInfo]' = None
+    shares: Optional['List[ShareInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -253,7 +253,7 @@ class ListSharesResponse:
 
 @dataclass
 class Partition:
-    values: 'List[PartitionValue]' = None
+    values: Optional['List[PartitionValue]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -267,10 +267,10 @@ class Partition:
 
 @dataclass
 class PartitionValue:
-    name: str = None
-    op: 'PartitionValueOp' = None
-    recipient_property_key: str = None
-    value: str = None
+    name: Optional[str] = None
+    op: Optional['PartitionValueOp'] = None
+    recipient_property_key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -332,8 +332,8 @@ class Privilege(Enum):
 
 @dataclass
 class PrivilegeAssignment:
-    principal: str = None
-    privileges: 'List[Privilege]' = None
+    principal: Optional[str] = None
+    privileges: Optional['List[Privilege]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -348,20 +348,20 @@ class PrivilegeAssignment:
 
 @dataclass
 class ProviderInfo:
-    authentication_type: 'AuthenticationType' = None
-    cloud: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    data_provider_global_metastore_id: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    recipient_profile: 'RecipientProfile' = None
-    recipient_profile_str: str = None
-    region: str = None
-    updated_at: int = None
-    updated_by: str = None
+    authentication_type: Optional['AuthenticationType'] = None
+    cloud: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    data_provider_global_metastore_id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    recipient_profile: Optional['RecipientProfile'] = None
+    recipient_profile_str: Optional[str] = None
+    region: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -402,7 +402,7 @@ class ProviderInfo:
 
 @dataclass
 class ProviderShare:
-    name: str = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -416,24 +416,24 @@ class ProviderShare:
 
 @dataclass
 class RecipientInfo:
-    activated: bool = None
-    activation_url: str = None
-    authentication_type: 'AuthenticationType' = None
-    cloud: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    data_recipient_global_metastore_id: Any = None
-    ip_access_list: 'IpAccessList' = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    properties_kvpairs: 'SecurablePropertiesKvPairs' = None
-    region: str = None
-    sharing_code: str = None
-    tokens: 'List[RecipientTokenInfo]' = None
-    updated_at: int = None
-    updated_by: str = None
+    activated: Optional[bool] = None
+    activation_url: Optional[str] = None
+    authentication_type: Optional['AuthenticationType'] = None
+    cloud: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    data_recipient_global_metastore_id: Optional[Any] = None
+    ip_access_list: Optional['IpAccessList'] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    region: Optional[str] = None
+    sharing_code: Optional[str] = None
+    tokens: Optional['List[RecipientTokenInfo]'] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -482,9 +482,9 @@ class RecipientInfo:
 
 @dataclass
 class RecipientProfile:
-    bearer_token: str = None
-    endpoint: str = None
-    share_credentials_version: int = None
+    bearer_token: Optional[str] = None
+    endpoint: Optional[str] = None
+    share_credentials_version: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -503,13 +503,13 @@ class RecipientProfile:
 
 @dataclass
 class RecipientTokenInfo:
-    activation_url: str = None
-    created_at: int = None
-    created_by: str = None
-    expiration_time: int = None
-    id: str = None
-    updated_at: int = None
-    updated_by: str = None
+    activation_url: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    expiration_time: Optional[int] = None
+    id: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -542,10 +542,10 @@ class RetrieveTokenRequest:
 
 @dataclass
 class RetrieveTokenResponse:
-    bearer_token: str = None
-    endpoint: str = None
-    expiration_time: str = None
-    share_credentials_version: int = None
+    bearer_token: Optional[str] = None
+    endpoint: Optional[str] = None
+    expiration_time: Optional[str] = None
+    share_credentials_version: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -567,7 +567,7 @@ class RetrieveTokenResponse:
 @dataclass
 class RotateRecipientToken:
     existing_token_expire_in_seconds: int
-    name: str = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -603,14 +603,14 @@ SecurablePropertiesMap = Dict[str, str]
 
 @dataclass
 class ShareInfo:
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    name: str = None
-    objects: 'List[SharedDataObject]' = None
-    owner: str = None
-    updated_at: int = None
-    updated_by: str = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    name: Optional[str] = None
+    objects: Optional['List[SharedDataObject]'] = None
+    owner: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -645,8 +645,8 @@ class SharePermissionsRequest:
 
 @dataclass
 class ShareToPrivilegeAssignment:
-    privilege_assignments: 'List[PrivilegeAssignment]' = None
-    share_name: str = None
+    privilege_assignments: Optional['List[PrivilegeAssignment]'] = None
+    share_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -664,15 +664,15 @@ class ShareToPrivilegeAssignment:
 @dataclass
 class SharedDataObject:
     name: str
-    added_at: int = None
-    added_by: str = None
-    cdf_enabled: bool = None
-    comment: str = None
-    data_object_type: str = None
-    partitions: 'List[Partition]' = None
-    shared_as: str = None
-    start_version: int = None
-    status: 'SharedDataObjectStatus' = None
+    added_at: Optional[int] = None
+    added_by: Optional[str] = None
+    cdf_enabled: Optional[bool] = None
+    comment: Optional[str] = None
+    data_object_type: Optional[str] = None
+    partitions: Optional['List[Partition]'] = None
+    shared_as: Optional[str] = None
+    start_version: Optional[int] = None
+    status: Optional['SharedDataObjectStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -711,8 +711,8 @@ class SharedDataObjectStatus(Enum):
 
 @dataclass
 class SharedDataObjectUpdate:
-    action: 'SharedDataObjectUpdateAction' = None
-    data_object: 'SharedDataObject' = None
+    action: Optional['SharedDataObjectUpdateAction'] = None
+    data_object: Optional['SharedDataObject'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -736,10 +736,10 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class UpdateProvider:
-    comment: str = None
-    name: str = None
-    owner: str = None
-    recipient_profile_str: str = None
+    comment: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    recipient_profile_str: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -759,11 +759,11 @@ class UpdateProvider:
 
 @dataclass
 class UpdateRecipient:
-    comment: str = None
-    ip_access_list: 'IpAccessList' = None
-    name: str = None
-    owner: str = None
-    properties_kvpairs: 'SecurablePropertiesKvPairs' = None
+    comment: Optional[str] = None
+    ip_access_list: Optional['IpAccessList'] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -785,10 +785,10 @@ class UpdateRecipient:
 
 @dataclass
 class UpdateShare:
-    comment: str = None
-    name: str = None
-    owner: str = None
-    updates: 'List[SharedDataObjectUpdate]' = None
+    comment: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    updates: Optional['List[SharedDataObjectUpdate]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -808,8 +808,8 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    changes: 'List[PermissionsChange]' = None
-    name: str = None
+    changes: Optional['List[PermissionsChange]'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -891,7 +891,7 @@ class ProvidersAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
         return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
 
-    def list_shares(self, name: str, **kwargs) -> ListProviderSharesResponse:
+    def list_shares(self, name: str, **kwargs) -> Iterator[ProviderShare]:
         """List shares by Provider.
         
         Gets an array of a specified provider's shares within the metastore where:
@@ -902,7 +902,7 @@ class ProvidersAPI:
             request = ListSharesRequest(name=name)
 
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}/shares')
-        return ListProviderSharesResponse.from_dict(json)
+        return [ProviderShare.from_dict(v) for v in json.get('shares', [])]
 
     def update(self,
                name: str,

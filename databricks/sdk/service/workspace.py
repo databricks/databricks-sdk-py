@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -54,8 +54,8 @@ class AzureKeyVaultSecretScopeMetadata:
 @dataclass
 class CreateCredentials:
     git_provider: str
-    git_username: str = None
-    personal_access_token: str = None
+    git_username: Optional[str] = None
+    personal_access_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -73,9 +73,9 @@ class CreateCredentials:
 
 @dataclass
 class CreateCredentialsResponse:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -95,8 +95,8 @@ class CreateCredentialsResponse:
 class CreateRepo:
     url: str
     provider: str
-    path: str = None
-    sparse_checkout: 'SparseCheckout' = None
+    path: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckout'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -117,9 +117,9 @@ class CreateRepo:
 @dataclass
 class CreateScope:
     scope: str
-    initial_manage_principal: str = None
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
-    scope_backend_type: 'ScopeBackendType' = None
+    initial_manage_principal: Optional[str] = None
+    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    scope_backend_type: Optional['ScopeBackendType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -140,9 +140,9 @@ class CreateScope:
 
 @dataclass
 class CredentialInfo:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -161,7 +161,7 @@ class CredentialInfo:
 @dataclass
 class Delete:
     path: str
-    recursive: bool = None
+    recursive: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -235,14 +235,7 @@ class DeleteSecret:
 
 
 class ExportFormat(Enum):
-    """This specifies the format of the file to be imported. By default, this is `SOURCE`.
-    
-    If using `AUTO` the item is imported or exported as either a workspace file or a
-    notebook,depending on an analysis of the item’s extension and the header content provided in
-    the request. The value is case sensitive. In addition, if the item is imported as a notebook,
-    then the item’s extension is automatically removed."""
 
-    AUTO = 'AUTO'
     DBC = 'DBC'
     HTML = 'HTML'
     JUPYTER = 'JUPYTER'
@@ -255,13 +248,12 @@ class ExportRequest:
     """Export a workspace object"""
 
     path: str
-    direct_download: bool = None
-    format: 'ExportFormat' = None
+    format: Optional['ExportFormat'] = None
 
 
 @dataclass
 class ExportResponse:
-    content: str = None
+    content: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -283,7 +275,7 @@ class GetAclRequest:
 
 @dataclass
 class GetCredentialsResponse:
-    credentials: 'List[CredentialInfo]' = None
+    credentials: Optional['List[CredentialInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -319,10 +311,10 @@ class GetStatusRequest:
 @dataclass
 class Import:
     path: str
-    content: str = None
-    format: 'ExportFormat' = None
-    language: 'Language' = None
-    overwrite: bool = None
+    content: Optional[str] = None
+    format: Optional['ImportFormat'] = None
+    language: Optional['Language'] = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -336,10 +328,30 @@ class Import:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Import':
         return cls(content=d.get('content', None),
-                   format=_enum(d, 'format', ExportFormat),
+                   format=_enum(d, 'format', ImportFormat),
                    language=_enum(d, 'language', Language),
                    overwrite=d.get('overwrite', None),
                    path=d.get('path', None))
+
+
+class ImportFormat(Enum):
+    """This specifies the format of the file to be imported.
+    
+    The value is case sensitive.
+    
+    - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
+    content provided in the request. If the item is imported as a notebook, then the item's
+    extension is automatically removed. - `SOURCE`: The notebook is imported as source code. -
+    `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a
+    Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive format.
+    Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format."""
+
+    AUTO = 'AUTO'
+    DBC = 'DBC'
+    HTML = 'HTML'
+    JUPYTER = 'JUPYTER'
+    R_MARKDOWN = 'R_MARKDOWN'
+    SOURCE = 'SOURCE'
 
 
 class Language(Enum):
@@ -360,7 +372,7 @@ class ListAclsRequest:
 
 @dataclass
 class ListAclsResponse:
-    items: 'List[AclItem]' = None
+    items: Optional['List[AclItem]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -376,14 +388,14 @@ class ListAclsResponse:
 class ListReposRequest:
     """Get repos"""
 
-    next_page_token: str = None
-    path_prefix: str = None
+    next_page_token: Optional[str] = None
+    path_prefix: Optional[str] = None
 
 
 @dataclass
 class ListReposResponse:
-    next_page_token: str = None
-    repos: 'List[RepoInfo]' = None
+    next_page_token: Optional[str] = None
+    repos: Optional['List[RepoInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -398,7 +410,7 @@ class ListReposResponse:
 
 @dataclass
 class ListResponse:
-    objects: 'List[ObjectInfo]' = None
+    objects: Optional['List[ObjectInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -412,7 +424,7 @@ class ListResponse:
 
 @dataclass
 class ListScopesResponse:
-    scopes: 'List[SecretScope]' = None
+    scopes: Optional['List[SecretScope]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -433,7 +445,7 @@ class ListSecretsRequest:
 
 @dataclass
 class ListSecretsResponse:
-    secrets: 'List[SecretMetadata]' = None
+    secrets: Optional['List[SecretMetadata]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -450,7 +462,7 @@ class ListWorkspaceRequest:
     """List contents"""
 
     path: str
-    notebooks_modified_after: int = None
+    notebooks_modified_after: Optional[int] = None
 
 
 @dataclass
@@ -469,13 +481,13 @@ class Mkdirs:
 
 @dataclass
 class ObjectInfo:
-    created_at: int = None
-    language: 'Language' = None
-    modified_at: int = None
-    object_id: int = None
-    object_type: 'ObjectType' = None
-    path: str = None
-    size: int = None
+    created_at: Optional[int] = None
+    language: Optional['Language'] = None
+    modified_at: Optional[int] = None
+    object_id: Optional[int] = None
+    object_type: Optional['ObjectType'] = None
+    path: Optional[str] = None
+    size: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -500,7 +512,10 @@ class ObjectInfo:
 
 
 class ObjectType(Enum):
-    """The type of the object in workspace."""
+    """The type of the object in workspace.
+    
+    - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
+    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository"""
 
     DIRECTORY = 'DIRECTORY'
     FILE = 'FILE'
@@ -533,8 +548,8 @@ class PutAcl:
 class PutSecret:
     scope: str
     key: str
-    bytes_value: str = None
-    string_value: str = None
+    bytes_value: Optional[str] = None
+    string_value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -554,13 +569,13 @@ class PutSecret:
 
 @dataclass
 class RepoInfo:
-    branch: str = None
-    head_commit_id: str = None
-    id: int = None
-    path: str = None
-    provider: str = None
-    sparse_checkout: 'SparseCheckout' = None
-    url: str = None
+    branch: Optional[str] = None
+    head_commit_id: Optional[str] = None
+    id: Optional[int] = None
+    path: Optional[str] = None
+    provider: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckout'] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -592,8 +607,8 @@ class ScopeBackendType(Enum):
 
 @dataclass
 class SecretMetadata:
-    key: str = None
-    last_updated_timestamp: int = None
+    key: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -609,9 +624,9 @@ class SecretMetadata:
 
 @dataclass
 class SecretScope:
-    backend_type: 'ScopeBackendType' = None
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
-    name: str = None
+    backend_type: Optional['ScopeBackendType'] = None
+    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -629,7 +644,7 @@ class SecretScope:
 
 @dataclass
 class SparseCheckout:
-    patterns: 'List[str]' = None
+    patterns: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -643,7 +658,7 @@ class SparseCheckout:
 
 @dataclass
 class SparseCheckoutUpdate:
-    patterns: 'List[str]' = None
+    patterns: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -657,10 +672,10 @@ class SparseCheckoutUpdate:
 
 @dataclass
 class UpdateCredentials:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
-    personal_access_token: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
+    personal_access_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -680,10 +695,10 @@ class UpdateCredentials:
 
 @dataclass
 class UpdateRepo:
-    branch: str = None
-    repo_id: int = None
-    sparse_checkout: 'SparseCheckoutUpdate' = None
-    tag: str = None
+    branch: Optional[str] = None
+    repo_id: Optional[int] = None
+    sparse_checkout: Optional['SparseCheckoutUpdate'] = None
+    tag: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1103,26 +1118,20 @@ class WorkspaceAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/delete', body=body)
 
-    def export(self,
-               path: str,
-               *,
-               direct_download: bool = None,
-               format: ExportFormat = None,
-               **kwargs) -> ExportResponse:
+    def export(self, path: str, *, format: ExportFormat = None, **kwargs) -> ExportResponse:
         """Export a workspace object.
         
         Exports an object or the contents of an entire directory.
         
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
         
-        One can only export a directory in `DBC` format. If the exported data would exceed size limit, this
-        call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently, this API does not support exporting a library."""
+        If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
+        Currently, this API does not support exporting a library."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ExportRequest(direct_download=direct_download, format=format, path=path)
+            request = ExportRequest(format=format, path=path)
 
         query = {}
-        if direct_download: query['direct_download'] = request.direct_download
         if format: query['format'] = request.format.value
         if path: query['path'] = request.path
 
@@ -1148,7 +1157,7 @@ class WorkspaceAPI:
                 path: str,
                 *,
                 content: str = None,
-                format: ExportFormat = None,
+                format: ImportFormat = None,
                 language: Language = None,
                 overwrite: bool = None,
                 **kwargs):
@@ -1170,7 +1179,7 @@ class WorkspaceAPI:
     def list(self, path: str, *, notebooks_modified_after: int = None, **kwargs) -> Iterator[ObjectInfo]:
         """List contents.
         
-        Lists the contents of a directory, or the object if it is not a directory.If the input path does not
+        Lists the contents of a directory, or the object if it is not a directory. If the input path does not
         exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -1190,7 +1199,7 @@ class WorkspaceAPI:
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
         
-        Note that if this operation fails it may have succeeded in creating some of the necessary parrent
+        Note that if this operation fails it may have succeeded in creating some of the necessary parent
         directories."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args

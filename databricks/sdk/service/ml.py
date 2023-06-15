@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -16,15 +16,15 @@ _LOG = logging.getLogger('databricks.sdk')
 class Activity:
     """Activity recorded for the action."""
 
-    activity_type: 'ActivityType' = None
-    comment: str = None
-    creation_timestamp: int = None
-    from_stage: 'Stage' = None
-    id: str = None
-    last_updated_timestamp: int = None
-    system_comment: str = None
-    to_stage: 'Stage' = None
-    user_id: str = None
+    activity_type: Optional['ActivityType'] = None
+    comment: Optional[str] = None
+    creation_timestamp: Optional[int] = None
+    from_stage: Optional['Stage'] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    system_comment: Optional[str] = None
+    to_stage: Optional['Stage'] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -79,7 +79,7 @@ class ApproveTransitionRequest:
     version: str
     stage: 'Stage'
     archive_existing_versions: bool
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -102,7 +102,7 @@ class ApproveTransitionRequest:
 
 @dataclass
 class ApproveTransitionRequestResponse:
-    activity: 'Activity' = None
+    activity: Optional['Activity'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -125,12 +125,12 @@ class CommentActivityAction(Enum):
 class CommentObject:
     """Comment details."""
 
-    available_actions: 'List[CommentActivityAction]' = None
-    comment: str = None
-    creation_timestamp: int = None
-    id: str = None
-    last_updated_timestamp: int = None
-    user_id: str = None
+    available_actions: Optional['List[CommentActivityAction]'] = None
+    comment: Optional[str] = None
+    creation_timestamp: Optional[int] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -173,7 +173,7 @@ class CreateComment:
 
 @dataclass
 class CreateCommentResponse:
-    comment: 'CommentObject' = None
+    comment: Optional['CommentObject'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -188,8 +188,8 @@ class CreateCommentResponse:
 @dataclass
 class CreateExperiment:
     name: str
-    artifact_location: str = None
-    tags: 'List[ExperimentTag]' = None
+    artifact_location: Optional[str] = None
+    tags: Optional['List[ExperimentTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -207,7 +207,7 @@ class CreateExperiment:
 
 @dataclass
 class CreateExperimentResponse:
-    experiment_id: str = None
+    experiment_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -222,8 +222,8 @@ class CreateExperimentResponse:
 @dataclass
 class CreateModelRequest:
     name: str
-    description: str = None
-    tags: 'List[ModelTag]' = None
+    description: Optional[str] = None
+    tags: Optional['List[ModelTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -241,7 +241,7 @@ class CreateModelRequest:
 
 @dataclass
 class CreateModelResponse:
-    registered_model: 'Model' = None
+    registered_model: Optional['Model'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -257,10 +257,10 @@ class CreateModelResponse:
 class CreateModelVersionRequest:
     name: str
     source: str
-    description: str = None
-    run_id: str = None
-    run_link: str = None
-    tags: 'List[ModelVersionTag]' = None
+    description: Optional[str] = None
+    run_id: Optional[str] = None
+    run_link: Optional[str] = None
+    tags: Optional['List[ModelVersionTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -284,7 +284,7 @@ class CreateModelVersionRequest:
 
 @dataclass
 class CreateModelVersionResponse:
-    model_version: 'ModelVersion' = None
+    model_version: Optional['ModelVersion'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -299,11 +299,11 @@ class CreateModelVersionResponse:
 @dataclass
 class CreateRegistryWebhook:
     events: 'List[RegistryWebhookEvent]'
-    description: str = None
-    http_url_spec: 'HttpUrlSpec' = None
-    job_spec: 'JobSpec' = None
-    model_name: str = None
-    status: 'RegistryWebhookStatus' = None
+    description: Optional[str] = None
+    http_url_spec: Optional['HttpUrlSpec'] = None
+    job_spec: Optional['JobSpec'] = None
+    model_name: Optional[str] = None
+    status: Optional['RegistryWebhookStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -327,10 +327,10 @@ class CreateRegistryWebhook:
 
 @dataclass
 class CreateRun:
-    experiment_id: str = None
-    start_time: int = None
-    tags: 'List[RunTag]' = None
-    user_id: str = None
+    experiment_id: Optional[str] = None
+    start_time: Optional[int] = None
+    tags: Optional['List[RunTag]'] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -350,7 +350,7 @@ class CreateRun:
 
 @dataclass
 class CreateRunResponse:
-    run: 'Run' = None
+    run: Optional['Run'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -367,7 +367,7 @@ class CreateTransitionRequest:
     name: str
     version: str
     stage: 'Stage'
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -387,7 +387,7 @@ class CreateTransitionRequest:
 
 @dataclass
 class CreateTransitionRequestResponse:
-    request: 'TransitionRequest' = None
+    request: Optional['TransitionRequest'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -401,7 +401,7 @@ class CreateTransitionRequestResponse:
 
 @dataclass
 class CreateWebhookResponse:
-    webhook: 'RegistryWebhook' = None
+    webhook: Optional['RegistryWebhook'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -415,12 +415,12 @@ class CreateWebhookResponse:
 
 @dataclass
 class Dataset:
-    digest: str = None
-    name: str = None
-    profile: str = None
-    schema: str = None
-    source: str = None
-    source_type: str = None
+    digest: Optional[str] = None
+    name: Optional[str] = None
+    profile: Optional[str] = None
+    schema: Optional[str] = None
+    source: Optional[str] = None
+    source_type: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -444,8 +444,8 @@ class Dataset:
 
 @dataclass
 class DatasetInput:
-    dataset: 'Dataset' = None
-    tags: 'List[InputTag]' = None
+    dataset: Optional['Dataset'] = None
+    tags: Optional['List[InputTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -549,7 +549,7 @@ class DeleteTransitionRequestRequest:
     version: str
     stage: 'DeleteTransitionRequestStage'
     creator: str
-    comment: str = None
+    comment: Optional[str] = None
 
 
 class DeleteTransitionRequestStage(Enum):
@@ -564,18 +564,18 @@ class DeleteTransitionRequestStage(Enum):
 class DeleteWebhookRequest:
     """Delete a webhook"""
 
-    id: str = None
+    id: Optional[str] = None
 
 
 @dataclass
 class Experiment:
-    artifact_location: str = None
-    creation_time: int = None
-    experiment_id: str = None
-    last_update_time: int = None
-    lifecycle_stage: str = None
-    name: str = None
-    tags: 'List[ExperimentTag]' = None
+    artifact_location: Optional[str] = None
+    creation_time: Optional[int] = None
+    experiment_id: Optional[str] = None
+    last_update_time: Optional[int] = None
+    lifecycle_stage: Optional[str] = None
+    name: Optional[str] = None
+    tags: Optional['List[ExperimentTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -601,8 +601,8 @@ class Experiment:
 
 @dataclass
 class ExperimentTag:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -617,9 +617,9 @@ class ExperimentTag:
 
 @dataclass
 class FileInfo:
-    file_size: int = None
-    is_dir: bool = None
-    path: str = None
+    file_size: Optional[int] = None
+    is_dir: Optional[bool] = None
+    path: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -642,7 +642,7 @@ class GetByNameRequest:
 
 @dataclass
 class GetExperimentByNameResponse:
-    experiment: 'Experiment' = None
+    experiment: Optional['Experiment'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -666,16 +666,16 @@ class GetHistoryRequest:
     """Get history of a given metric within a run"""
 
     metric_key: str
-    max_results: int = None
-    page_token: str = None
-    run_id: str = None
-    run_uuid: str = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
 
 
 @dataclass
 class GetLatestVersionsRequest:
     name: str
-    stages: 'List[str]' = None
+    stages: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -690,7 +690,7 @@ class GetLatestVersionsRequest:
 
 @dataclass
 class GetLatestVersionsResponse:
-    model_versions: 'List[ModelVersion]' = None
+    model_versions: Optional['List[ModelVersion]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -704,8 +704,8 @@ class GetLatestVersionsResponse:
 
 @dataclass
 class GetMetricHistoryResponse:
-    metrics: 'List[Metric]' = None
-    next_page_token: str = None
+    metrics: Optional['List[Metric]'] = None
+    next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -727,7 +727,7 @@ class GetModelRequest:
 
 @dataclass
 class GetModelResponse:
-    registered_model_databricks: 'ModelDatabricks' = None
+    registered_model_databricks: Optional['ModelDatabricks'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -750,7 +750,7 @@ class GetModelVersionDownloadUriRequest:
 
 @dataclass
 class GetModelVersionDownloadUriResponse:
-    artifact_uri: str = None
+    artifact_uri: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -772,7 +772,7 @@ class GetModelVersionRequest:
 
 @dataclass
 class GetModelVersionResponse:
-    model_version: 'ModelVersion' = None
+    model_version: Optional['ModelVersion'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -789,12 +789,12 @@ class GetRunRequest:
     """Get a run"""
 
     run_id: str
-    run_uuid: str = None
+    run_uuid: Optional[str] = None
 
 
 @dataclass
 class GetRunResponse:
-    run: 'Run' = None
+    run: Optional['Run'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -809,9 +809,9 @@ class GetRunResponse:
 @dataclass
 class HttpUrlSpec:
     url: str
-    authorization: str = None
-    enable_ssl_verification: bool = None
-    secret: str = None
+    authorization: Optional[str] = None
+    enable_ssl_verification: Optional[bool] = None
+    secret: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -832,8 +832,8 @@ class HttpUrlSpec:
 
 @dataclass
 class HttpUrlSpecWithoutSecret:
-    enable_ssl_verification: bool = None
-    url: str = None
+    enable_ssl_verification: Optional[bool] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -849,8 +849,8 @@ class HttpUrlSpecWithoutSecret:
 
 @dataclass
 class InputTag:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -867,7 +867,7 @@ class InputTag:
 class JobSpec:
     job_id: str
     access_token: str
-    workspace_url: str = None
+    workspace_url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -885,8 +885,8 @@ class JobSpec:
 
 @dataclass
 class JobSpecWithoutSecret:
-    job_id: str = None
-    workspace_url: str = None
+    job_id: Optional[str] = None
+    workspace_url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -903,17 +903,17 @@ class JobSpecWithoutSecret:
 class ListArtifactsRequest:
     """Get all artifacts"""
 
-    page_token: str = None
-    path: str = None
-    run_id: str = None
-    run_uuid: str = None
+    page_token: Optional[str] = None
+    path: Optional[str] = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
 
 
 @dataclass
 class ListArtifactsResponse:
-    files: 'List[FileInfo]' = None
-    next_page_token: str = None
-    root_uri: str = None
+    files: Optional['List[FileInfo]'] = None
+    next_page_token: Optional[str] = None
+    root_uri: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -933,15 +933,15 @@ class ListArtifactsResponse:
 class ListExperimentsRequest:
     """List experiments"""
 
-    max_results: int = None
-    page_token: str = None
-    view_type: str = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
+    view_type: Optional[str] = None
 
 
 @dataclass
 class ListExperimentsResponse:
-    experiments: 'List[Experiment]' = None
-    next_page_token: str = None
+    experiments: Optional['List[Experiment]'] = None
+    next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -959,14 +959,14 @@ class ListExperimentsResponse:
 class ListModelsRequest:
     """List models"""
 
-    max_results: int = None
-    page_token: str = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListModelsResponse:
-    next_page_token: str = None
-    registered_models: 'List[Model]' = None
+    next_page_token: Optional[str] = None
+    registered_models: Optional['List[Model]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -982,8 +982,8 @@ class ListModelsResponse:
 
 @dataclass
 class ListRegistryWebhooks:
-    next_page_token: str = None
-    webhooks: 'List[RegistryWebhook]' = None
+    next_page_token: Optional[str] = None
+    webhooks: Optional['List[RegistryWebhook]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1007,7 +1007,7 @@ class ListTransitionRequestsRequest:
 
 @dataclass
 class ListTransitionRequestsResponse:
-    requests: 'List[Activity]' = None
+    requests: Optional['List[Activity]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1023,17 +1023,17 @@ class ListTransitionRequestsResponse:
 class ListWebhooksRequest:
     """List registry webhooks"""
 
-    events: 'List[RegistryWebhookEvent]' = None
-    model_name: str = None
-    page_token: str = None
+    events: Optional['List[RegistryWebhookEvent]'] = None
+    model_name: Optional[str] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class LogBatch:
-    metrics: 'List[Metric]' = None
-    params: 'List[Param]' = None
-    run_id: str = None
-    tags: 'List[RunTag]' = None
+    metrics: Optional['List[Metric]'] = None
+    params: Optional['List[Param]'] = None
+    run_id: Optional[str] = None
+    tags: Optional['List[RunTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1053,8 +1053,8 @@ class LogBatch:
 
 @dataclass
 class LogInputs:
-    datasets: 'List[DatasetInput]' = None
-    run_id: str = None
+    datasets: Optional['List[DatasetInput]'] = None
+    run_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1072,9 +1072,9 @@ class LogMetric:
     key: str
     value: float
     timestamp: int
-    run_id: str = None
-    run_uuid: str = None
-    step: int = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
+    step: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1098,8 +1098,8 @@ class LogMetric:
 
 @dataclass
 class LogModel:
-    model_json: str = None
-    run_id: str = None
+    model_json: Optional[str] = None
+    run_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1116,8 +1116,8 @@ class LogModel:
 class LogParam:
     key: str
     value: str
-    run_id: str = None
-    run_uuid: str = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1137,10 +1137,10 @@ class LogParam:
 
 @dataclass
 class Metric:
-    key: str = None
-    step: int = None
-    timestamp: int = None
-    value: float = None
+    key: Optional[str] = None
+    step: Optional[int] = None
+    timestamp: Optional[int] = None
+    value: Optional[float] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1160,13 +1160,13 @@ class Metric:
 
 @dataclass
 class Model:
-    creation_timestamp: int = None
-    description: str = None
-    last_updated_timestamp: int = None
-    latest_versions: 'List[ModelVersion]' = None
-    name: str = None
-    tags: 'List[ModelTag]' = None
-    user_id: str = None
+    creation_timestamp: Optional[int] = None
+    description: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    latest_versions: Optional['List[ModelVersion]'] = None
+    name: Optional[str] = None
+    tags: Optional['List[ModelTag]'] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1193,15 +1193,15 @@ class Model:
 
 @dataclass
 class ModelDatabricks:
-    creation_timestamp: int = None
-    description: str = None
-    id: str = None
-    last_updated_timestamp: int = None
-    latest_versions: 'List[ModelVersion]' = None
-    name: str = None
-    permission_level: 'PermissionLevel' = None
-    tags: 'List[ModelTag]' = None
-    user_id: str = None
+    creation_timestamp: Optional[int] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    latest_versions: Optional['List[ModelVersion]'] = None
+    name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    tags: Optional['List[ModelTag]'] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1232,8 +1232,8 @@ class ModelDatabricks:
 
 @dataclass
 class ModelTag:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1248,19 +1248,19 @@ class ModelTag:
 
 @dataclass
 class ModelVersion:
-    creation_timestamp: int = None
-    current_stage: str = None
-    description: str = None
-    last_updated_timestamp: int = None
-    name: str = None
-    run_id: str = None
-    run_link: str = None
-    source: str = None
-    status: 'ModelVersionStatus' = None
-    status_message: str = None
-    tags: 'List[ModelVersionTag]' = None
-    user_id: str = None
-    version: str = None
+    creation_timestamp: Optional[int] = None
+    current_stage: Optional[str] = None
+    description: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    name: Optional[str] = None
+    run_id: Optional[str] = None
+    run_link: Optional[str] = None
+    source: Optional[str] = None
+    status: Optional['ModelVersionStatus'] = None
+    status_message: Optional[str] = None
+    tags: Optional['List[ModelVersionTag]'] = None
+    user_id: Optional[str] = None
+    version: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1299,20 +1299,20 @@ class ModelVersion:
 
 @dataclass
 class ModelVersionDatabricks:
-    creation_timestamp: int = None
-    current_stage: 'Stage' = None
-    description: str = None
-    last_updated_timestamp: int = None
-    name: str = None
-    permission_level: 'PermissionLevel' = None
-    run_id: str = None
-    run_link: str = None
-    source: str = None
-    status: 'Status' = None
-    status_message: str = None
-    tags: 'List[ModelVersionTag]' = None
-    user_id: str = None
-    version: str = None
+    creation_timestamp: Optional[int] = None
+    current_stage: Optional['Stage'] = None
+    description: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    run_id: Optional[str] = None
+    run_link: Optional[str] = None
+    source: Optional[str] = None
+    status: Optional['Status'] = None
+    status_message: Optional[str] = None
+    tags: Optional['List[ModelVersionTag]'] = None
+    user_id: Optional[str] = None
+    version: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1361,8 +1361,8 @@ class ModelVersionStatus(Enum):
 
 @dataclass
 class ModelVersionTag:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1377,8 +1377,8 @@ class ModelVersionTag:
 
 @dataclass
 class Param:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1404,15 +1404,15 @@ class PermissionLevel(Enum):
 
 @dataclass
 class RegistryWebhook:
-    creation_timestamp: int = None
-    description: str = None
-    events: 'List[RegistryWebhookEvent]' = None
-    http_url_spec: 'HttpUrlSpecWithoutSecret' = None
-    id: str = None
-    job_spec: 'JobSpecWithoutSecret' = None
-    last_updated_timestamp: int = None
-    model_name: str = None
-    status: 'RegistryWebhookStatus' = None
+    creation_timestamp: Optional[int] = None
+    description: Optional[str] = None
+    events: Optional['List[RegistryWebhookEvent]'] = None
+    http_url_spec: Optional['HttpUrlSpecWithoutSecret'] = None
+    id: Optional[str] = None
+    job_spec: Optional['JobSpecWithoutSecret'] = None
+    last_updated_timestamp: Optional[int] = None
+    model_name: Optional[str] = None
+    status: Optional['RegistryWebhookStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1470,7 +1470,7 @@ class RejectTransitionRequest:
     name: str
     version: str
     stage: 'Stage'
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1490,7 +1490,7 @@ class RejectTransitionRequest:
 
 @dataclass
 class RejectTransitionRequestResponse:
-    activity: 'Activity' = None
+    activity: Optional['Activity'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1505,7 +1505,7 @@ class RejectTransitionRequestResponse:
 @dataclass
 class RenameModelRequest:
     name: str
-    new_name: str = None
+    new_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1520,7 +1520,7 @@ class RenameModelRequest:
 
 @dataclass
 class RenameModelResponse:
-    registered_model: 'Model' = None
+    registered_model: Optional['Model'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1562,9 +1562,9 @@ class RestoreRun:
 
 @dataclass
 class Run:
-    data: 'RunData' = None
-    info: 'RunInfo' = None
-    inputs: 'RunInputs' = None
+    data: Optional['RunData'] = None
+    info: Optional['RunInfo'] = None
+    inputs: Optional['RunInputs'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1582,9 +1582,9 @@ class Run:
 
 @dataclass
 class RunData:
-    metrics: 'List[Metric]' = None
-    params: 'List[Param]' = None
-    tags: 'List[RunTag]' = None
+    metrics: Optional['List[Metric]'] = None
+    params: Optional['List[Param]'] = None
+    tags: Optional['List[RunTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1602,15 +1602,15 @@ class RunData:
 
 @dataclass
 class RunInfo:
-    artifact_uri: str = None
-    end_time: int = None
-    experiment_id: str = None
-    lifecycle_stage: str = None
-    run_id: str = None
-    run_uuid: str = None
-    start_time: int = None
-    status: 'RunInfoStatus' = None
-    user_id: str = None
+    artifact_uri: Optional[str] = None
+    end_time: Optional[int] = None
+    experiment_id: Optional[str] = None
+    lifecycle_stage: Optional[str] = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
+    start_time: Optional[int] = None
+    status: Optional['RunInfoStatus'] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1650,7 +1650,7 @@ class RunInfoStatus(Enum):
 
 @dataclass
 class RunInputs:
-    dataset_inputs: 'List[DatasetInput]' = None
+    dataset_inputs: Optional['List[DatasetInput]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1664,8 +1664,8 @@ class RunInputs:
 
 @dataclass
 class RunTag:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1680,11 +1680,11 @@ class RunTag:
 
 @dataclass
 class SearchExperiments:
-    filter: str = None
-    max_results: int = None
-    order_by: 'List[str]' = None
-    page_token: str = None
-    view_type: 'SearchExperimentsViewType' = None
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+    page_token: Optional[str] = None
+    view_type: Optional['SearchExperimentsViewType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1706,8 +1706,8 @@ class SearchExperiments:
 
 @dataclass
 class SearchExperimentsResponse:
-    experiments: 'List[Experiment]' = None
-    next_page_token: str = None
+    experiments: Optional['List[Experiment]'] = None
+    next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1734,16 +1734,16 @@ class SearchExperimentsViewType(Enum):
 class SearchModelVersionsRequest:
     """Searches model versions"""
 
-    filter: str = None
-    max_results: int = None
-    order_by: 'List[str]' = None
-    page_token: str = None
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class SearchModelVersionsResponse:
-    model_versions: 'List[ModelVersion]' = None
-    next_page_token: str = None
+    model_versions: Optional['List[ModelVersion]'] = None
+    next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1761,16 +1761,16 @@ class SearchModelVersionsResponse:
 class SearchModelsRequest:
     """Search models"""
 
-    filter: str = None
-    max_results: int = None
-    order_by: 'List[str]' = None
-    page_token: str = None
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class SearchModelsResponse:
-    next_page_token: str = None
-    registered_models: 'List[Model]' = None
+    next_page_token: Optional[str] = None
+    registered_models: Optional['List[Model]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1786,12 +1786,12 @@ class SearchModelsResponse:
 
 @dataclass
 class SearchRuns:
-    experiment_ids: 'List[str]' = None
-    filter: str = None
-    max_results: int = None
-    order_by: 'List[str]' = None
-    page_token: str = None
-    run_view_type: 'SearchRunsRunViewType' = None
+    experiment_ids: Optional['List[str]'] = None
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+    page_token: Optional[str] = None
+    run_view_type: Optional['SearchRunsRunViewType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1815,8 +1815,8 @@ class SearchRuns:
 
 @dataclass
 class SearchRunsResponse:
-    next_page_token: str = None
-    runs: 'List[Run]' = None
+    next_page_token: Optional[str] = None
+    runs: Optional['List[Run]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1902,8 +1902,8 @@ class SetModelVersionTagRequest:
 class SetTag:
     key: str
     value: str
-    run_id: str = None
-    run_uuid: str = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1942,8 +1942,8 @@ class Status(Enum):
 class TestRegistryWebhook:
     """Test webhook response object."""
 
-    body: str = None
-    status_code: int = None
+    body: Optional[str] = None
+    status_code: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1959,7 +1959,7 @@ class TestRegistryWebhook:
 @dataclass
 class TestRegistryWebhookRequest:
     id: str
-    event: 'RegistryWebhookEvent' = None
+    event: Optional['RegistryWebhookEvent'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1974,7 +1974,7 @@ class TestRegistryWebhookRequest:
 
 @dataclass
 class TestRegistryWebhookResponse:
-    webhook: 'TestRegistryWebhook' = None
+    webhook: Optional['TestRegistryWebhook'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1992,7 +1992,7 @@ class TransitionModelVersionStageDatabricks:
     version: str
     stage: 'Stage'
     archive_existing_versions: bool
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2017,11 +2017,11 @@ class TransitionModelVersionStageDatabricks:
 class TransitionRequest:
     """Transition request details."""
 
-    available_actions: 'List[ActivityAction]' = None
-    comment: str = None
-    creation_timestamp: int = None
-    to_stage: 'Stage' = None
-    user_id: str = None
+    available_actions: Optional['List[ActivityAction]'] = None
+    comment: Optional[str] = None
+    creation_timestamp: Optional[int] = None
+    to_stage: Optional['Stage'] = None
+    user_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2043,7 +2043,7 @@ class TransitionRequest:
 
 @dataclass
 class TransitionStageResponse:
-    model_version: 'ModelVersionDatabricks' = None
+    model_version: Optional['ModelVersionDatabricks'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2073,7 +2073,7 @@ class UpdateComment:
 
 @dataclass
 class UpdateCommentResponse:
-    comment: 'CommentObject' = None
+    comment: Optional['CommentObject'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2088,7 +2088,7 @@ class UpdateCommentResponse:
 @dataclass
 class UpdateExperiment:
     experiment_id: str
-    new_name: str = None
+    new_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2104,7 +2104,7 @@ class UpdateExperiment:
 @dataclass
 class UpdateModelRequest:
     name: str
-    description: str = None
+    description: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2121,7 +2121,7 @@ class UpdateModelRequest:
 class UpdateModelVersionRequest:
     name: str
     version: str
-    description: str = None
+    description: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2140,11 +2140,11 @@ class UpdateModelVersionRequest:
 @dataclass
 class UpdateRegistryWebhook:
     id: str
-    description: str = None
-    events: 'List[RegistryWebhookEvent]' = None
-    http_url_spec: 'HttpUrlSpec' = None
-    job_spec: 'JobSpec' = None
-    status: 'RegistryWebhookStatus' = None
+    description: Optional[str] = None
+    events: Optional['List[RegistryWebhookEvent]'] = None
+    http_url_spec: Optional['HttpUrlSpec'] = None
+    job_spec: Optional['JobSpec'] = None
+    status: Optional['RegistryWebhookStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2168,10 +2168,10 @@ class UpdateRegistryWebhook:
 
 @dataclass
 class UpdateRun:
-    end_time: int = None
-    run_id: str = None
-    run_uuid: str = None
-    status: 'UpdateRunStatus' = None
+    end_time: Optional[int] = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
+    status: Optional['UpdateRunStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2191,7 +2191,7 @@ class UpdateRun:
 
 @dataclass
 class UpdateRunResponse:
-    run_info: 'RunInfo' = None
+    run_info: Optional['RunInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}

@@ -23,10 +23,10 @@ created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
 
 run_now_response = w.jobs.run_now(job_id=created_job.job_id)
 
-cancelled_run = w.jobs.cancel_run(run_id=run_now_response.run_id).result()
+cancelled_run = w.jobs.cancel_run(run_id=run_now_response.response.run_id).result()
 
 repaired_run = w.jobs.repair_run(rerun_tasks=[cancelled_run.tasks[0].task_key],
-                                 run_id=run_now_response.run_id).result()
+                                 run_id=run_now_response.response.run_id).result()
 
 # cleanup
 w.jobs.delete(delete=created_job.job_id)

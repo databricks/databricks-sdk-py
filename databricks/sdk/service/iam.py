@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -14,10 +14,10 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AccessControlRequest:
-    group_name: str = None
-    permission_level: 'PermissionLevel' = None
-    service_principal_name: str = None
-    user_name: str = None
+    group_name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -38,10 +38,10 @@ class AccessControlRequest:
 
 @dataclass
 class AccessControlResponse:
-    all_permissions: 'List[Permission]' = None
-    group_name: str = None
-    service_principal_name: str = None
-    user_name: str = None
+    all_permissions: Optional['List[Permission]'] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -62,10 +62,10 @@ class AccessControlResponse:
 
 @dataclass
 class ComplexValue:
-    display: str = None
-    primary: bool = None
-    type: str = None
-    value: str = None
+    display: Optional[str] = None
+    primary: Optional[bool] = None
+    type: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -134,14 +134,6 @@ class DeleteWorkspaceAssignmentRequest:
 
 
 @dataclass
-class GetAccountAccessControlRequest:
-    """Get a rule set"""
-
-    name: str
-    etag: str
-
-
-@dataclass
 class GetAccountGroupRequest:
     """Get group details"""
 
@@ -163,8 +155,15 @@ class GetAccountUserRequest:
 
 
 @dataclass
+class GetAssignableRolesForResourceRequest:
+    """Get assignable roles for a resource"""
+
+    resource: str
+
+
+@dataclass
 class GetAssignableRolesForResourceResponse:
-    roles: 'List[str]' = None
+    roles: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -193,7 +192,7 @@ class GetPermissionLevelsRequest:
 
 @dataclass
 class GetPermissionLevelsResponse:
-    permission_levels: 'List[PermissionsDescription]' = None
+    permission_levels: Optional['List[PermissionsDescription]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -211,6 +210,14 @@ class GetPermissionRequest:
 
     request_object_type: str
     request_object_id: str
+
+
+@dataclass
+class GetRuleSetRequest:
+    """Get a rule set"""
+
+    name: str
+    etag: str
 
 
 @dataclass
@@ -237,7 +244,7 @@ class GetWorkspaceAssignmentRequest:
 @dataclass
 class GrantRule:
     role: str
-    principals: 'List[str]' = None
+    principals: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -252,13 +259,13 @@ class GrantRule:
 
 @dataclass
 class Group:
-    display_name: str = None
-    entitlements: 'List[ComplexValue]' = None
-    external_id: str = None
-    groups: 'List[ComplexValue]' = None
-    id: str = None
-    members: 'List[ComplexValue]' = None
-    roles: 'List[ComplexValue]' = None
+    display_name: Optional[str] = None
+    entitlements: Optional['List[ComplexValue]'] = None
+    external_id: Optional[str] = None
+    groups: Optional['List[ComplexValue]'] = None
+    id: Optional[str] = None
+    members: Optional['List[ComplexValue]'] = None
+    roles: Optional['List[ComplexValue]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -283,70 +290,63 @@ class Group:
 
 
 @dataclass
-class ListAccountAccessControlRequest:
-    """List assignable roles on a resource"""
-
-    name: str
-
-
-@dataclass
 class ListAccountGroupsRequest:
     """List group details"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListAccountServicePrincipalsRequest:
     """List service principals"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListAccountUsersRequest:
     """List users"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListGroupsRequest:
     """List group details"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListGroupsResponse:
-    items_per_page: int = None
-    resources: 'List[Group]' = None
-    start_index: int = None
-    total_results: int = None
+    items_per_page: Optional[int] = None
+    resources: Optional['List[Group]'] = None
+    start_index: Optional[int] = None
+    total_results: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -366,10 +366,10 @@ class ListGroupsResponse:
 
 @dataclass
 class ListServicePrincipalResponse:
-    items_per_page: int = None
-    resources: 'List[ServicePrincipal]' = None
-    start_index: int = None
-    total_results: int = None
+    items_per_page: Optional[int] = None
+    resources: Optional['List[ServicePrincipal]'] = None
+    start_index: Optional[int] = None
+    total_results: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -391,13 +391,13 @@ class ListServicePrincipalResponse:
 class ListServicePrincipalsRequest:
     """List service principals"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 class ListSortOrder(Enum):
@@ -410,21 +410,21 @@ class ListSortOrder(Enum):
 class ListUsersRequest:
     """List users"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListUsersResponse:
-    items_per_page: int = None
-    resources: 'List[User]' = None
-    start_index: int = None
-    total_results: int = None
+    items_per_page: Optional[int] = None
+    resources: Optional['List[User]'] = None
+    start_index: Optional[int] = None
+    total_results: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -451,8 +451,8 @@ class ListWorkspaceAssignmentRequest:
 
 @dataclass
 class Name:
-    family_name: str = None
-    given_name: str = None
+    family_name: Optional[str] = None
+    given_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -467,9 +467,9 @@ class Name:
 
 @dataclass
 class ObjectPermissions:
-    access_control_list: 'List[AccessControlResponse]' = None
-    object_id: str = None
-    object_type: str = None
+    access_control_list: Optional['List[AccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -488,8 +488,8 @@ class ObjectPermissions:
 
 @dataclass
 class PartialUpdate:
-    id: str = None
-    operations: 'List[Patch]' = None
+    id: Optional[str] = None
+    operations: Optional['List[Patch]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -504,9 +504,9 @@ class PartialUpdate:
 
 @dataclass
 class Patch:
-    op: 'PatchOp' = None
-    path: str = None
-    value: str = None
+    op: Optional['PatchOp'] = None
+    path: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -530,9 +530,9 @@ class PatchOp(Enum):
 
 @dataclass
 class Permission:
-    inherited: bool = None
-    inherited_from_object: 'List[str]' = None
-    permission_level: 'PermissionLevel' = None
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['PermissionLevel'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -550,9 +550,9 @@ class Permission:
 
 @dataclass
 class PermissionAssignment:
-    error: str = None
-    permissions: 'List[WorkspacePermission]' = None
-    principal: 'PrincipalOutput' = None
+    error: Optional[str] = None
+    permissions: Optional['List[WorkspacePermission]'] = None
+    principal: Optional['PrincipalOutput'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -570,7 +570,7 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignments:
-    permission_assignments: 'List[PermissionAssignment]' = None
+    permission_assignments: Optional['List[PermissionAssignment]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -605,8 +605,8 @@ class PermissionLevel(Enum):
 
 @dataclass
 class PermissionOutput:
-    description: str = None
-    permission_level: 'WorkspacePermission' = None
+    description: Optional[str] = None
+    permission_level: Optional['WorkspacePermission'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -622,8 +622,8 @@ class PermissionOutput:
 
 @dataclass
 class PermissionsDescription:
-    description: str = None
-    permission_level: 'PermissionLevel' = None
+    description: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -639,9 +639,9 @@ class PermissionsDescription:
 
 @dataclass
 class PermissionsRequest:
-    access_control_list: 'List[AccessControlRequest]' = None
-    request_object_id: str = None
-    request_object_type: str = None
+    access_control_list: Optional['List[AccessControlRequest]'] = None
+    request_object_id: Optional[str] = None
+    request_object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -660,11 +660,11 @@ class PermissionsRequest:
 
 @dataclass
 class PrincipalOutput:
-    display_name: str = None
-    group_name: str = None
-    principal_id: int = None
-    service_principal_name: str = None
-    user_name: str = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    principal_id: Optional[int] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -687,9 +687,9 @@ class PrincipalOutput:
 
 @dataclass
 class RuleSetResponse:
-    etag: str = None
-    grant_rules: 'List[GrantRule]' = None
-    name: str = None
+    etag: Optional[str] = None
+    grant_rules: Optional['List[GrantRule]'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -709,7 +709,7 @@ class RuleSetResponse:
 class RuleSetUpdateRequest:
     name: str
     etag: str
-    grant_rules: 'List[GrantRule]' = None
+    grant_rules: Optional['List[GrantRule]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -727,14 +727,14 @@ class RuleSetUpdateRequest:
 
 @dataclass
 class ServicePrincipal:
-    active: bool = None
-    application_id: str = None
-    display_name: str = None
-    entitlements: 'List[ComplexValue]' = None
-    external_id: str = None
-    groups: 'List[ComplexValue]' = None
-    id: str = None
-    roles: 'List[ComplexValue]' = None
+    active: Optional[bool] = None
+    application_id: Optional[str] = None
+    display_name: Optional[str] = None
+    entitlements: Optional['List[ComplexValue]'] = None
+    external_id: Optional[str] = None
+    groups: Optional['List[ComplexValue]'] = None
+    id: Optional[str] = None
+    roles: Optional['List[ComplexValue]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -764,27 +764,23 @@ class ServicePrincipal:
 class UpdateRuleSetRequest:
     name: str
     rule_set: 'RuleSetUpdateRequest'
-    etag: str = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
         if self.name is not None: body['name'] = self.name
         if self.rule_set: body['rule_set'] = self.rule_set.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRuleSetRequest':
-        return cls(etag=d.get('etag', None),
-                   name=d.get('name', None),
-                   rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
+        return cls(name=d.get('name', None), rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
 
 
 @dataclass
 class UpdateWorkspaceAssignments:
     permissions: 'List[WorkspacePermission]'
-    principal_id: int = None
-    workspace_id: int = None
+    principal_id: Optional[int] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -802,16 +798,16 @@ class UpdateWorkspaceAssignments:
 
 @dataclass
 class User:
-    active: bool = None
-    display_name: str = None
-    emails: 'List[ComplexValue]' = None
-    entitlements: 'List[ComplexValue]' = None
-    external_id: str = None
-    groups: 'List[ComplexValue]' = None
-    id: str = None
-    name: 'Name' = None
-    roles: 'List[ComplexValue]' = None
-    user_name: str = None
+    active: Optional[bool] = None
+    display_name: Optional[str] = None
+    emails: Optional['List[ComplexValue]'] = None
+    entitlements: Optional['List[ComplexValue]'] = None
+    external_id: Optional[str] = None
+    groups: Optional['List[ComplexValue]'] = None
+    id: Optional[str] = None
+    name: Optional['Name'] = None
+    roles: Optional['List[ComplexValue]'] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -850,7 +846,7 @@ class WorkspacePermission(Enum):
 
 @dataclass
 class WorkspacePermissions:
-    permissions: 'List[PermissionOutput]' = None
+    permissions: Optional['List[PermissionOutput]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -870,58 +866,110 @@ class AccountAccessControlAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+    def get_assignable_roles_for_resource(self, resource: str,
+                                          **kwargs) -> GetAssignableRolesForResourceResponse:
+        """Get assignable roles for a resource.
+        
+        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
+        set on the resource can contain an access rule of the role."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAssignableRolesForResourceRequest(resource=resource)
+
+        query = {}
+        if resource: query['resource'] = request.resource
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
+            query=query)
+        return GetAssignableRolesForResourceResponse.from_dict(json)
+
+    def get_rule_set(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
         """Get a rule set.
         
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
         rules on the said resource. Currently only a default rule set for each resource is supported."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetAccountAccessControlRequest(etag=etag, name=name)
+            request = GetRuleSetRequest(etag=etag, name=name)
 
         query = {}
         if etag: query['etag'] = request.etag
         if name: query['name'] = request.name
 
         json = self._api.do('GET',
-                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
                             query=query)
         return RuleSetResponse.from_dict(json)
 
-    def list(self, name: str, **kwargs) -> GetAssignableRolesForResourceResponse:
-        """List assignable roles on a resource.
-        
-        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
-        set on the resource can contain an access rule of the role."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountAccessControlRequest(name=name)
-
-        query = {}
-        if name: query['name'] = request.name
-
-        json = self._api.do('GET',
-                            f'/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
-                            query=query)
-        return GetAssignableRolesForResourceResponse.from_dict(json)
-
-    def update(self, name: str, rule_set: RuleSetUpdateRequest, etag: str, **kwargs) -> RuleSetResponse:
+    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest, **kwargs) -> RuleSetResponse:
         """Update a rule set.
         
         Replace the rules of a rule set. First, use get to read the current version of the rule set before
         modifying it. This pattern helps prevent conflicts between concurrent updates."""
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateRuleSetRequest(etag=etag, name=name, rule_set=rule_set)
+            request = UpdateRuleSetRequest(name=name, rule_set=rule_set)
         body = request.as_dict()
+
+        json = self._api.do('PUT',
+                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            body=body)
+        return RuleSetResponse.from_dict(json)
+
+
+class AccountAccessControlProxyAPI:
+    """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
+    grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
+    called a rule set. A workspace must belong to an account for these APIs to work."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_assignable_roles_for_resource(self, resource: str,
+                                          **kwargs) -> GetAssignableRolesForResourceResponse:
+        """Get assignable roles for a resource.
+        
+        Gets all the roles that can be granted on an account-level resource. A role is grantable if the rule
+        set on the resource can contain an access rule of the role."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAssignableRolesForResourceRequest(resource=resource)
+
+        query = {}
+        if resource: query['resource'] = request.resource
+
+        json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/assignable-roles', query=query)
+        return GetAssignableRolesForResourceResponse.from_dict(json)
+
+    def get_rule_set(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+        """Get a rule set.
+        
+        Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
+        rules on the said resource. Currently only a default rule set for each resource is supported."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetRuleSetRequest(etag=etag, name=name)
+
         query = {}
         if etag: query['etag'] = request.etag
         if name: query['name'] = request.name
 
-        json = self._api.do('PUT',
-                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
-                            query=query,
-                            body=body)
+        json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/rule-sets', query=query)
+        return RuleSetResponse.from_dict(json)
+
+    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest, **kwargs) -> RuleSetResponse:
+        """Update a rule set.
+        
+        Replace the rules of a rule set. First, use a GET rule set request to read the current version of the
+        rule set before modifying it. This pattern helps prevent conflicts between concurrent updates."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateRuleSetRequest(name=name, rule_set=rule_set)
+        body = request.as_dict()
+
+        json = self._api.do('PUT', '/api/2.0/preview/accounts/access-control/rule-sets', body=body)
         return RuleSetResponse.from_dict(json)
 
 
