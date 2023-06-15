@@ -227,7 +227,7 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-do" -}}
 self._api.do('{{.Verb}}', {{if .PathParts -}}
-  f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
+  f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
 {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
 {{- end}}
 

@@ -162,6 +162,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2649,8 +2650,8 @@ class DbsqlPermissionsAPI:
         if not request: # request is not given through keyed args
             request = GetDbsqlPermissionRequest(object_id=object_id, object_type=object_type)
 
-        json = self._api.do('GET',
-                            f'/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}')
+        json = self._api.do(
+            'GET', f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}')
         return GetResponse.from_dict(json)
 
     def set(self,
@@ -2670,9 +2671,10 @@ class DbsqlPermissionsAPI:
                                  object_type=object_type)
         body = request.as_dict()
 
-        json = self._api.do('POST',
-                            f'/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}',
-                            body=body)
+        json = self._api.do(
+            'POST',
+            f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}',
+            body=body)
         return SetResponse.from_dict(json)
 
     def transfer_ownership(self,
@@ -2693,7 +2695,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             'POST',
-            f'/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}/transfer',
+            f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}/transfer',
             body=body)
         return Success.from_dict(json)
 
