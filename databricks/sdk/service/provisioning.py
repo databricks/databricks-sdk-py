@@ -1172,8 +1172,8 @@ class EncryptionKeysAPI:
     def create(self,
                use_cases: List[KeyUseCase],
                *,
-               aws_key_info: CreateAwsKeyInfo = None,
-               gcp_key_info: CreateGcpKeyInfo = None,
+               aws_key_info: Optional[CreateAwsKeyInfo] = None,
+               gcp_key_info: Optional[CreateGcpKeyInfo] = None,
                **kwargs) -> CustomerManagedKey:
         """Create encryption key configuration.
         
@@ -1269,11 +1269,11 @@ class NetworksAPI:
     def create(self,
                network_name: str,
                *,
-               gcp_network_info: GcpNetworkInfo = None,
-               security_group_ids: List[str] = None,
-               subnet_ids: List[str] = None,
-               vpc_endpoints: NetworkVpcEndpoints = None,
-               vpc_id: str = None,
+               gcp_network_info: Optional[GcpNetworkInfo] = None,
+               security_group_ids: Optional[List[str]] = None,
+               subnet_ids: Optional[List[str]] = None,
+               vpc_endpoints: Optional[NetworkVpcEndpoints] = None,
+               vpc_id: Optional[str] = None,
                **kwargs) -> Network:
         """Create network configuration.
         
@@ -1337,9 +1337,9 @@ class PrivateAccessAPI:
                private_access_settings_name: str,
                region: str,
                *,
-               allowed_vpc_endpoint_ids: List[str] = None,
-               private_access_level: PrivateAccessLevel = None,
-               public_access_enabled: bool = None,
+               allowed_vpc_endpoint_ids: Optional[List[str]] = None,
+               private_access_level: Optional[PrivateAccessLevel] = None,
+               public_access_enabled: Optional[bool] = None,
                **kwargs) -> PrivateAccessSettings:
         """Create private access settings.
         
@@ -1422,9 +1422,9 @@ class PrivateAccessAPI:
                 region: str,
                 private_access_settings_id: str,
                 *,
-                allowed_vpc_endpoint_ids: List[str] = None,
-                private_access_level: PrivateAccessLevel = None,
-                public_access_enabled: bool = None,
+                allowed_vpc_endpoint_ids: Optional[List[str]] = None,
+                private_access_level: Optional[PrivateAccessLevel] = None,
+                public_access_enabled: Optional[bool] = None,
                 **kwargs):
         """Replace private access settings.
         
@@ -1540,9 +1540,9 @@ class VpcEndpointsAPI:
     def create(self,
                vpc_endpoint_name: str,
                *,
-               aws_vpc_endpoint_id: str = None,
-               gcp_vpc_endpoint_info: GcpVpcEndpointInfo = None,
-               region: str = None,
+               aws_vpc_endpoint_id: Optional[str] = None,
+               gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo] = None,
+               region: Optional[str] = None,
                **kwargs) -> VpcEndpoint:
         """Create VPC endpoint configuration.
         
@@ -1630,7 +1630,7 @@ class WorkspacesAPI:
     def wait_get_workspace_running(self,
                                    workspace_id: int,
                                    timeout=timedelta(minutes=20),
-                                   callback: Callable[[Workspace], None] = None) -> Workspace:
+                                   callback: Optional[Callable[[Workspace], None]] = None) -> Workspace:
         deadline = time.time() + timeout.total_seconds()
         target_states = (WorkspaceStatus.RUNNING, )
         failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
@@ -1660,18 +1660,18 @@ class WorkspacesAPI:
     def create(self,
                workspace_name: str,
                *,
-               aws_region: str = None,
-               cloud: str = None,
-               cloud_resource_container: CloudResourceContainer = None,
-               credentials_id: str = None,
-               deployment_name: str = None,
-               location: str = None,
-               managed_services_customer_managed_key_id: str = None,
-               network_id: str = None,
-               pricing_tier: PricingTier = None,
-               private_access_settings_id: str = None,
-               storage_configuration_id: str = None,
-               storage_customer_managed_key_id: str = None,
+               aws_region: Optional[str] = None,
+               cloud: Optional[str] = None,
+               cloud_resource_container: Optional[CloudResourceContainer] = None,
+               credentials_id: Optional[str] = None,
+               deployment_name: Optional[str] = None,
+               location: Optional[str] = None,
+               managed_services_customer_managed_key_id: Optional[str] = None,
+               network_id: Optional[str] = None,
+               pricing_tier: Optional[PricingTier] = None,
+               private_access_settings_id: Optional[str] = None,
+               storage_configuration_id: Optional[str] = None,
+               storage_customer_managed_key_id: Optional[str] = None,
                **kwargs) -> Wait[Workspace]:
         """Create a new workspace.
         
@@ -1709,18 +1709,18 @@ class WorkspacesAPI:
         self,
         workspace_name: str,
         *,
-        aws_region: str = None,
-        cloud: str = None,
-        cloud_resource_container: CloudResourceContainer = None,
-        credentials_id: str = None,
-        deployment_name: str = None,
-        location: str = None,
-        managed_services_customer_managed_key_id: str = None,
-        network_id: str = None,
-        pricing_tier: PricingTier = None,
-        private_access_settings_id: str = None,
-        storage_configuration_id: str = None,
-        storage_customer_managed_key_id: str = None,
+        aws_region: Optional[str] = None,
+        cloud: Optional[str] = None,
+        cloud_resource_container: Optional[CloudResourceContainer] = None,
+        credentials_id: Optional[str] = None,
+        deployment_name: Optional[str] = None,
+        location: Optional[str] = None,
+        managed_services_customer_managed_key_id: Optional[str] = None,
+        network_id: Optional[str] = None,
+        pricing_tier: Optional[PricingTier] = None,
+        private_access_settings_id: Optional[str] = None,
+        storage_configuration_id: Optional[str] = None,
+        storage_customer_managed_key_id: Optional[str] = None,
         timeout=timedelta(minutes=20)) -> Workspace:
         return self.create(aws_region=aws_region,
                            cloud=cloud,
@@ -1788,12 +1788,12 @@ class WorkspacesAPI:
     def update(self,
                workspace_id: int,
                *,
-               aws_region: str = None,
-               credentials_id: str = None,
-               managed_services_customer_managed_key_id: str = None,
-               network_id: str = None,
-               storage_configuration_id: str = None,
-               storage_customer_managed_key_id: str = None,
+               aws_region: Optional[str] = None,
+               credentials_id: Optional[str] = None,
+               managed_services_customer_managed_key_id: Optional[str] = None,
+               network_id: Optional[str] = None,
+               storage_configuration_id: Optional[str] = None,
+               storage_customer_managed_key_id: Optional[str] = None,
                **kwargs) -> Wait[Workspace]:
         """Update workspace configuration.
         
@@ -1907,12 +1907,12 @@ class WorkspacesAPI:
         self,
         workspace_id: int,
         *,
-        aws_region: str = None,
-        credentials_id: str = None,
-        managed_services_customer_managed_key_id: str = None,
-        network_id: str = None,
-        storage_configuration_id: str = None,
-        storage_customer_managed_key_id: str = None,
+        aws_region: Optional[str] = None,
+        credentials_id: Optional[str] = None,
+        managed_services_customer_managed_key_id: Optional[str] = None,
+        network_id: Optional[str] = None,
+        storage_configuration_id: Optional[str] = None,
+        storage_customer_managed_key_id: Optional[str] = None,
         timeout=timedelta(minutes=20)) -> Workspace:
         return self.update(aws_region=aws_region,
                            credentials_id=credentials_id,

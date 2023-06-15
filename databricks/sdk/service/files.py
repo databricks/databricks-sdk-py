@@ -244,7 +244,7 @@ class DbfsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/dbfs/close', body=body)
 
-    def create(self, path: str, *, overwrite: bool = None, **kwargs) -> CreateResponse:
+    def create(self, path: str, *, overwrite: Optional[bool] = None, **kwargs) -> CreateResponse:
         """Open a stream.
         
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
@@ -263,7 +263,7 @@ class DbfsAPI:
         json = self._api.do('POST', '/api/2.0/dbfs/create', body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, path: str, *, recursive: bool = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs):
         """Delete a file/directory.
         
         Delete the file or directory (optionally recursively delete all files in the directory). This call
@@ -349,7 +349,7 @@ class DbfsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/dbfs/move', body=body)
 
-    def put(self, path: str, *, contents: str = None, overwrite: bool = None, **kwargs):
+    def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None, **kwargs):
         """Upload a file.
         
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
@@ -368,7 +368,12 @@ class DbfsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/dbfs/put', body=body)
 
-    def read(self, path: str, *, length: int = None, offset: int = None, **kwargs) -> ReadResponse:
+    def read(self,
+             path: str,
+             *,
+             length: Optional[int] = None,
+             offset: Optional[int] = None,
+             **kwargs) -> ReadResponse:
         """Get the contents of a file.
         
         Returns the contents of a file. If the file does not exist, this call throws an exception with

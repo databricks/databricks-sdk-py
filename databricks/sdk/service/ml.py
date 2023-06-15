@@ -2227,8 +2227,8 @@ class ExperimentsAPI:
     def create_experiment(self,
                           name: str,
                           *,
-                          artifact_location: str = None,
-                          tags: List[ExperimentTag] = None,
+                          artifact_location: Optional[str] = None,
+                          tags: Optional[List[ExperimentTag]] = None,
                           **kwargs) -> CreateExperimentResponse:
         """Create experiment.
         
@@ -2247,10 +2247,10 @@ class ExperimentsAPI:
 
     def create_run(self,
                    *,
-                   experiment_id: str = None,
-                   start_time: int = None,
-                   tags: List[RunTag] = None,
-                   user_id: str = None,
+                   experiment_id: Optional[str] = None,
+                   start_time: Optional[int] = None,
+                   tags: Optional[List[RunTag]] = None,
+                   user_id: Optional[str] = None,
                    **kwargs) -> CreateRunResponse:
         """Create a run.
         
@@ -2337,10 +2337,10 @@ class ExperimentsAPI:
     def get_history(self,
                     metric_key: str,
                     *,
-                    max_results: int = None,
-                    page_token: str = None,
-                    run_id: str = None,
-                    run_uuid: str = None,
+                    max_results: Optional[int] = None,
+                    page_token: Optional[str] = None,
+                    run_id: Optional[str] = None,
+                    run_uuid: Optional[str] = None,
                     **kwargs) -> GetMetricHistoryResponse:
         """Get history of a given metric within a run.
         
@@ -2363,7 +2363,7 @@ class ExperimentsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query)
         return GetMetricHistoryResponse.from_dict(json)
 
-    def get_run(self, run_id: str, *, run_uuid: str = None, **kwargs) -> GetRunResponse:
+    def get_run(self, run_id: str, *, run_uuid: Optional[str] = None, **kwargs) -> GetRunResponse:
         """Get a run.
         
         Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
@@ -2383,10 +2383,10 @@ class ExperimentsAPI:
 
     def list_artifacts(self,
                        *,
-                       page_token: str = None,
-                       path: str = None,
-                       run_id: str = None,
-                       run_uuid: str = None,
+                       page_token: Optional[str] = None,
+                       path: Optional[str] = None,
+                       run_id: Optional[str] = None,
+                       run_uuid: Optional[str] = None,
                        **kwargs) -> Iterator[FileInfo]:
         """Get all artifacts.
         
@@ -2414,9 +2414,9 @@ class ExperimentsAPI:
 
     def list_experiments(self,
                          *,
-                         max_results: int = None,
-                         page_token: str = None,
-                         view_type: str = None,
+                         max_results: Optional[int] = None,
+                         page_token: Optional[str] = None,
+                         view_type: Optional[str] = None,
                          **kwargs) -> Iterator[Experiment]:
         """List experiments.
         
@@ -2444,10 +2444,10 @@ class ExperimentsAPI:
 
     def log_batch(self,
                   *,
-                  metrics: List[Metric] = None,
-                  params: List[Param] = None,
-                  run_id: str = None,
-                  tags: List[RunTag] = None,
+                  metrics: Optional[List[Metric]] = None,
+                  params: Optional[List[Param]] = None,
+                  run_id: Optional[str] = None,
+                  tags: Optional[List[RunTag]] = None,
                   **kwargs):
         """Log a batch.
         
@@ -2491,7 +2491,11 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/log-batch', body=body)
 
-    def log_inputs(self, *, datasets: List[DatasetInput] = None, run_id: str = None, **kwargs):
+    def log_inputs(self,
+                   *,
+                   datasets: Optional[List[DatasetInput]] = None,
+                   run_id: Optional[str] = None,
+                   **kwargs):
         """Log inputs to a run.
         
         **NOTE:** Experimental: This API may change or be removed in a future release without warning."""
@@ -2506,9 +2510,9 @@ class ExperimentsAPI:
                    value: float,
                    timestamp: int,
                    *,
-                   run_id: str = None,
-                   run_uuid: str = None,
-                   step: int = None,
+                   run_id: Optional[str] = None,
+                   run_uuid: Optional[str] = None,
+                   step: Optional[int] = None,
                    **kwargs):
         """Log a metric.
         
@@ -2526,7 +2530,7 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/log-metric', body=body)
 
-    def log_model(self, *, model_json: str = None, run_id: str = None, **kwargs):
+    def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None, **kwargs):
         """Log a model.
         
         **NOTE:** Experimental: This API may change or be removed in a future release without warning."""
@@ -2536,7 +2540,13 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/log-model', body=body)
 
-    def log_param(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
+    def log_param(self,
+                  key: str,
+                  value: str,
+                  *,
+                  run_id: Optional[str] = None,
+                  run_uuid: Optional[str] = None,
+                  **kwargs):
         """Log a param.
         
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
@@ -2574,11 +2584,11 @@ class ExperimentsAPI:
 
     def search_experiments(self,
                            *,
-                           filter: str = None,
-                           max_results: int = None,
-                           order_by: List[str] = None,
-                           page_token: str = None,
-                           view_type: SearchExperimentsViewType = None,
+                           filter: Optional[str] = None,
+                           max_results: Optional[int] = None,
+                           order_by: Optional[List[str]] = None,
+                           page_token: Optional[str] = None,
+                           view_type: Optional[SearchExperimentsViewType] = None,
                            **kwargs) -> Iterator[Experiment]:
         """Search experiments.
         
@@ -2604,12 +2614,12 @@ class ExperimentsAPI:
 
     def search_runs(self,
                     *,
-                    experiment_ids: List[str] = None,
-                    filter: str = None,
-                    max_results: int = None,
-                    order_by: List[str] = None,
-                    page_token: str = None,
-                    run_view_type: SearchRunsRunViewType = None,
+                    experiment_ids: Optional[List[str]] = None,
+                    filter: Optional[str] = None,
+                    max_results: Optional[int] = None,
+                    order_by: Optional[List[str]] = None,
+                    page_token: Optional[str] = None,
+                    run_view_type: Optional[SearchRunsRunViewType] = None,
                     **kwargs) -> Iterator[Run]:
         """Search for runs.
         
@@ -2646,7 +2656,13 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body)
 
-    def set_tag(self, key: str, value: str, *, run_id: str = None, run_uuid: str = None, **kwargs):
+    def set_tag(self,
+                key: str,
+                value: str,
+                *,
+                run_id: Optional[str] = None,
+                run_uuid: Optional[str] = None,
+                **kwargs):
         """Set a tag.
         
         Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes."""
@@ -2656,7 +2672,7 @@ class ExperimentsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/mlflow/runs/set-tag', body=body)
 
-    def update_experiment(self, experiment_id: str, *, new_name: str = None, **kwargs):
+    def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None, **kwargs):
         """Update an experiment.
         
         Updates experiment metadata."""
@@ -2668,10 +2684,10 @@ class ExperimentsAPI:
 
     def update_run(self,
                    *,
-                   end_time: int = None,
-                   run_id: str = None,
-                   run_uuid: str = None,
-                   status: UpdateRunStatus = None,
+                   end_time: Optional[int] = None,
+                   run_id: Optional[str] = None,
+                   run_uuid: Optional[str] = None,
+                   status: Optional[UpdateRunStatus] = None,
                    **kwargs) -> UpdateRunResponse:
         """Update a run.
         
@@ -2698,7 +2714,7 @@ class ModelRegistryAPI:
                                    stage: Stage,
                                    archive_existing_versions: bool,
                                    *,
-                                   comment: str = None,
+                                   comment: Optional[str] = None,
                                    **kwargs) -> ApproveTransitionRequestResponse:
         """Approve transition request.
         
@@ -2731,8 +2747,8 @@ class ModelRegistryAPI:
     def create_model(self,
                      name: str,
                      *,
-                     description: str = None,
-                     tags: List[ModelTag] = None,
+                     description: Optional[str] = None,
+                     tags: Optional[List[ModelTag]] = None,
                      **kwargs) -> CreateModelResponse:
         """Create a model.
         
@@ -2751,10 +2767,10 @@ class ModelRegistryAPI:
                              name: str,
                              source: str,
                              *,
-                             description: str = None,
-                             run_id: str = None,
-                             run_link: str = None,
-                             tags: List[ModelVersionTag] = None,
+                             description: Optional[str] = None,
+                             run_id: Optional[str] = None,
+                             run_link: Optional[str] = None,
+                             tags: Optional[List[ModelVersionTag]] = None,
                              **kwargs) -> CreateModelVersionResponse:
         """Create a model version.
         
@@ -2777,7 +2793,7 @@ class ModelRegistryAPI:
                                   version: str,
                                   stage: Stage,
                                   *,
-                                  comment: str = None,
+                                  comment: Optional[str] = None,
                                   **kwargs) -> CreateTransitionRequestResponse:
         """Make a transition request.
         
@@ -2793,11 +2809,11 @@ class ModelRegistryAPI:
     def create_webhook(self,
                        events: List[RegistryWebhookEvent],
                        *,
-                       description: str = None,
-                       http_url_spec: HttpUrlSpec = None,
-                       job_spec: JobSpec = None,
-                       model_name: str = None,
-                       status: RegistryWebhookStatus = None,
+                       description: Optional[str] = None,
+                       http_url_spec: Optional[HttpUrlSpec] = None,
+                       job_spec: Optional[JobSpec] = None,
+                       model_name: Optional[str] = None,
+                       status: Optional[RegistryWebhookStatus] = None,
                        **kwargs) -> CreateWebhookResponse:
         """Create a webhook.
         
@@ -2892,7 +2908,7 @@ class ModelRegistryAPI:
                                   stage: DeleteTransitionRequestStage,
                                   creator: str,
                                   *,
-                                  comment: str = None,
+                                  comment: Optional[str] = None,
                                   **kwargs):
         """Delete a transition request.
         
@@ -2914,7 +2930,7 @@ class ModelRegistryAPI:
 
         self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
 
-    def delete_webhook(self, *, id: str = None, **kwargs):
+    def delete_webhook(self, *, id: Optional[str] = None, **kwargs):
         """Delete a webhook.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -2929,7 +2945,11 @@ class ModelRegistryAPI:
 
         self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query)
 
-    def get_latest_versions(self, name: str, *, stages: List[str] = None, **kwargs) -> Iterator[ModelVersion]:
+    def get_latest_versions(self,
+                            name: str,
+                            *,
+                            stages: Optional[List[str]] = None,
+                            **kwargs) -> Iterator[ModelVersion]:
         """Get the latest version.
         
         Gets the latest version of a registered model."""
@@ -2990,7 +3010,11 @@ class ModelRegistryAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get-download-uri', query=query)
         return GetModelVersionDownloadUriResponse.from_dict(json)
 
-    def list_models(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[Model]:
+    def list_models(self,
+                    *,
+                    max_results: Optional[int] = None,
+                    page_token: Optional[str] = None,
+                    **kwargs) -> Iterator[Model]:
         """List models.
         
         Lists all available registered models, up to the limit specified in __max_results__."""
@@ -3029,9 +3053,9 @@ class ModelRegistryAPI:
 
     def list_webhooks(self,
                       *,
-                      events: List[RegistryWebhookEvent] = None,
-                      model_name: str = None,
-                      page_token: str = None,
+                      events: Optional[List[RegistryWebhookEvent]] = None,
+                      model_name: Optional[str] = None,
+                      page_token: Optional[str] = None,
                       **kwargs) -> Iterator[RegistryWebhook]:
         """List registry webhooks.
         
@@ -3062,7 +3086,7 @@ class ModelRegistryAPI:
                                   version: str,
                                   stage: Stage,
                                   *,
-                                  comment: str = None,
+                                  comment: Optional[str] = None,
                                   **kwargs) -> RejectTransitionRequestResponse:
         """Reject a transition request.
         
@@ -3075,7 +3099,7 @@ class ModelRegistryAPI:
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/reject', body=body)
         return RejectTransitionRequestResponse.from_dict(json)
 
-    def rename_model(self, name: str, *, new_name: str = None, **kwargs) -> RenameModelResponse:
+    def rename_model(self, name: str, *, new_name: Optional[str] = None, **kwargs) -> RenameModelResponse:
         """Rename a model.
         
         Renames a registered model."""
@@ -3089,10 +3113,10 @@ class ModelRegistryAPI:
 
     def search_model_versions(self,
                               *,
-                              filter: str = None,
-                              max_results: int = None,
-                              order_by: List[str] = None,
-                              page_token: str = None,
+                              filter: Optional[str] = None,
+                              max_results: Optional[int] = None,
+                              order_by: Optional[List[str]] = None,
+                              page_token: Optional[str] = None,
                               **kwargs) -> Iterator[ModelVersion]:
         """Searches model versions.
         
@@ -3122,10 +3146,10 @@ class ModelRegistryAPI:
 
     def search_models(self,
                       *,
-                      filter: str = None,
-                      max_results: int = None,
-                      order_by: List[str] = None,
-                      page_token: str = None,
+                      filter: Optional[str] = None,
+                      max_results: Optional[int] = None,
+                      order_by: Optional[List[str]] = None,
+                      page_token: Optional[str] = None,
                       **kwargs) -> Iterator[Model]:
         """Search models.
         
@@ -3176,7 +3200,7 @@ class ModelRegistryAPI:
     def test_registry_webhook(self,
                               id: str,
                               *,
-                              event: RegistryWebhookEvent = None,
+                              event: Optional[RegistryWebhookEvent] = None,
                               **kwargs) -> TestRegistryWebhookResponse:
         """Test a webhook.
         
@@ -3197,7 +3221,7 @@ class ModelRegistryAPI:
                          stage: Stage,
                          archive_existing_versions: bool,
                          *,
-                         comment: str = None,
+                         comment: Optional[str] = None,
                          **kwargs) -> TransitionStageResponse:
         """Transition a stage.
         
@@ -3230,7 +3254,7 @@ class ModelRegistryAPI:
         json = self._api.do('PATCH', '/api/2.0/mlflow/comments/update', body=body)
         return UpdateCommentResponse.from_dict(json)
 
-    def update_model(self, name: str, *, description: str = None, **kwargs):
+    def update_model(self, name: str, *, description: Optional[str] = None, **kwargs):
         """Update model.
         
         Updates a registered model."""
@@ -3240,7 +3264,7 @@ class ModelRegistryAPI:
         body = request.as_dict()
         self._api.do('PATCH', '/api/2.0/mlflow/registered-models/update', body=body)
 
-    def update_model_version(self, name: str, version: str, *, description: str = None, **kwargs):
+    def update_model_version(self, name: str, version: str, *, description: Optional[str] = None, **kwargs):
         """Update model version.
         
         Updates the model version."""
@@ -3253,11 +3277,11 @@ class ModelRegistryAPI:
     def update_webhook(self,
                        id: str,
                        *,
-                       description: str = None,
-                       events: List[RegistryWebhookEvent] = None,
-                       http_url_spec: HttpUrlSpec = None,
-                       job_spec: JobSpec = None,
-                       status: RegistryWebhookStatus = None,
+                       description: Optional[str] = None,
+                       events: Optional[List[RegistryWebhookEvent]] = None,
+                       http_url_spec: Optional[HttpUrlSpec] = None,
+                       job_spec: Optional[JobSpec] = None,
+                       status: Optional[RegistryWebhookStatus] = None,
                        **kwargs):
         """Update a webhook.
         

@@ -383,8 +383,8 @@ class CustomAppIntegrationAPI:
                name: str,
                redirect_urls: List[str],
                *,
-               confidential: bool = None,
-               token_access_policy: TokenAccessPolicy = None,
+               confidential: Optional[bool] = None,
+               token_access_policy: Optional[TokenAccessPolicy] = None,
                **kwargs) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
         
@@ -443,8 +443,8 @@ class CustomAppIntegrationAPI:
     def update(self,
                integration_id: str,
                *,
-               redirect_urls: List[str] = None,
-               token_access_policy: TokenAccessPolicy = None,
+               redirect_urls: Optional[List[str]] = None,
+               token_access_policy: Optional[TokenAccessPolicy] = None,
                **kwargs):
         """Updates Custom OAuth App Integration.
         
@@ -472,7 +472,7 @@ class OAuthEnrollmentAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, enable_all_published_apps: bool = None, **kwargs):
+    def create(self, *, enable_all_published_apps: Optional[bool] = None, **kwargs):
         """Create OAuth Enrollment request.
         
         Create an OAuth Enrollment request to enroll OAuth for this account and optionally enable the OAuth
@@ -512,8 +512,8 @@ class PublishedAppIntegrationAPI:
 
     def create(self,
                *,
-               app_id: str = None,
-               token_access_policy: TokenAccessPolicy = None,
+               app_id: Optional[str] = None,
+               token_access_policy: Optional[TokenAccessPolicy] = None,
                **kwargs) -> CreatePublishedAppIntegrationOutput:
         """Create Published OAuth App Integration.
         
@@ -567,7 +567,11 @@ class PublishedAppIntegrationAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations')
         return [GetPublishedAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
 
-    def update(self, integration_id: str, *, token_access_policy: TokenAccessPolicy = None, **kwargs):
+    def update(self,
+               integration_id: str,
+               *,
+               token_access_policy: Optional[TokenAccessPolicy] = None,
+               **kwargs):
         """Updates Published OAuth App Integration.
         
         Updates an existing published OAuth App Integration. You can retrieve the published oauth app

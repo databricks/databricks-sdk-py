@@ -455,7 +455,7 @@ class BillableUsageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def download(self, start_month: str, end_month: str, *, personal_data: bool = None, **kwargs):
+    def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None, **kwargs):
         """Return billable usage logs.
         
         Returns billable usage logs in CSV format for the specified account and date range. For the data
@@ -592,7 +592,7 @@ class LogDeliveryAPI:
 
     def create(self,
                *,
-               log_delivery_configuration: CreateLogDeliveryConfigurationParams = None,
+               log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None,
                **kwargs) -> WrappedLogDeliveryConfiguration:
         """Create a new log delivery configuration.
         
@@ -640,9 +640,9 @@ class LogDeliveryAPI:
 
     def list(self,
              *,
-             credentials_id: str = None,
-             status: LogDeliveryConfigStatus = None,
-             storage_configuration_id: str = None,
+             credentials_id: Optional[str] = None,
+             status: Optional[LogDeliveryConfigStatus] = None,
+             storage_configuration_id: Optional[str] = None,
              **kwargs) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
         

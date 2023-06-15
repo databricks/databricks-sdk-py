@@ -2445,8 +2445,8 @@ class AlertsAPI:
                options: AlertOptions,
                query_id: str,
                *,
-               parent: str = None,
-               rearm: int = None,
+               parent: Optional[str] = None,
+               rearm: Optional[int] = None,
                **kwargs) -> Alert:
         """Create an alert.
         
@@ -2496,7 +2496,7 @@ class AlertsAPI:
                query_id: str,
                alert_id: str,
                *,
-               rearm: int = None,
+               rearm: Optional[int] = None,
                **kwargs):
         """Update an alert.
         
@@ -2520,10 +2520,10 @@ class DashboardsAPI:
 
     def create(self,
                *,
-               is_favorite: bool = None,
-               name: str = None,
-               parent: str = None,
-               tags: List[str] = None,
+               is_favorite: Optional[bool] = None,
+               name: Optional[str] = None,
+               parent: Optional[str] = None,
+               tags: Optional[List[str]] = None,
                **kwargs) -> Dashboard:
         """Create a dashboard object."""
         request = kwargs.get('request', None)
@@ -2558,10 +2558,10 @@ class DashboardsAPI:
 
     def list(self,
              *,
-             order: ListOrder = None,
-             page: int = None,
-             page_size: int = None,
-             q: str = None,
+             order: Optional[ListOrder] = None,
+             page: Optional[int] = None,
+             page_size: Optional[int] = None,
+             q: Optional[str] = None,
              **kwargs) -> Iterator[Dashboard]:
         """Get dashboard objects.
         
@@ -2657,7 +2657,7 @@ class DbsqlPermissionsAPI:
             object_type: ObjectTypePlural,
             object_id: str,
             *,
-            access_control_list: List[AccessControl] = None,
+            access_control_list: Optional[List[AccessControl]] = None,
             **kwargs) -> SetResponse:
         """Set object ACL.
         
@@ -2679,7 +2679,7 @@ class DbsqlPermissionsAPI:
                            object_type: OwnableObjectType,
                            object_id: TransferOwnershipObjectId,
                            *,
-                           new_owner: str = None,
+                           new_owner: Optional[str] = None,
                            **kwargs) -> Success:
         """Transfer object ownership.
         
@@ -2708,12 +2708,12 @@ class QueriesAPI:
 
     def create(self,
                *,
-               data_source_id: str = None,
-               description: str = None,
-               name: str = None,
-               options: Any = None,
-               parent: str = None,
-               query: str = None,
+               data_source_id: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               parent: Optional[str] = None,
+               query: Optional[str] = None,
                **kwargs) -> Query:
         """Create a new query definition.
         
@@ -2763,10 +2763,10 @@ class QueriesAPI:
 
     def list(self,
              *,
-             order: str = None,
-             page: int = None,
-             page_size: int = None,
-             q: str = None,
+             order: Optional[str] = None,
+             page: Optional[int] = None,
+             page_size: Optional[int] = None,
+             q: Optional[str] = None,
              **kwargs) -> Iterator[Query]:
         """Get a list of queries.
         
@@ -2810,11 +2810,11 @@ class QueriesAPI:
     def update(self,
                query_id: str,
                *,
-               data_source_id: str = None,
-               description: str = None,
-               name: str = None,
-               options: Any = None,
-               query: str = None,
+               data_source_id: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               query: Optional[str] = None,
                **kwargs) -> Query:
         """Change a query definition.
         
@@ -2843,10 +2843,10 @@ class QueryHistoryAPI:
 
     def list(self,
              *,
-             filter_by: QueryFilter = None,
-             include_metrics: bool = None,
-             max_results: int = None,
-             page_token: str = None,
+             filter_by: Optional[QueryFilter] = None,
+             include_metrics: Optional[bool] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
              **kwargs) -> Iterator[QueryInfo]:
         """List Queries.
         
@@ -3050,15 +3050,15 @@ class StatementExecutionAPI:
 
     def execute_statement(self,
                           *,
-                          byte_limit: int = None,
-                          catalog: str = None,
-                          disposition: Disposition = None,
-                          format: Format = None,
-                          on_wait_timeout: TimeoutAction = None,
-                          schema: str = None,
-                          statement: str = None,
-                          wait_timeout: str = None,
-                          warehouse_id: str = None,
+                          byte_limit: Optional[int] = None,
+                          catalog: Optional[str] = None,
+                          disposition: Optional[Disposition] = None,
+                          format: Optional[Format] = None,
+                          on_wait_timeout: Optional[TimeoutAction] = None,
+                          schema: Optional[str] = None,
+                          statement: Optional[str] = None,
+                          wait_timeout: Optional[str] = None,
+                          warehouse_id: Optional[str] = None,
                           **kwargs) -> ExecuteStatementResponse:
         """Execute a SQL statement.
         
@@ -3120,11 +3120,11 @@ class WarehousesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_warehouse_running(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_running(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.STOPPED, State.DELETED, )
@@ -3153,11 +3153,11 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_warehouse_stopped(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_stopped(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.STOPPED, )
         status_message = 'polling...'
@@ -3184,19 +3184,19 @@ class WarehousesAPI:
 
     def create(self,
                *,
-               auto_stop_mins: int = None,
-               channel: Channel = None,
-               cluster_size: str = None,
-               creator_name: str = None,
-               enable_photon: bool = None,
-               enable_serverless_compute: bool = None,
-               instance_profile_arn: str = None,
-               max_num_clusters: int = None,
-               min_num_clusters: int = None,
-               name: str = None,
-               spot_instance_policy: SpotInstancePolicy = None,
-               tags: EndpointTags = None,
-               warehouse_type: CreateWarehouseRequestWarehouseType = None,
+               auto_stop_mins: Optional[int] = None,
+               channel: Optional[Channel] = None,
+               cluster_size: Optional[str] = None,
+               creator_name: Optional[str] = None,
+               enable_photon: Optional[bool] = None,
+               enable_serverless_compute: Optional[bool] = None,
+               instance_profile_arn: Optional[str] = None,
+               max_num_clusters: Optional[int] = None,
+               min_num_clusters: Optional[int] = None,
+               name: Optional[str] = None,
+               spot_instance_policy: Optional[SpotInstancePolicy] = None,
+               tags: Optional[EndpointTags] = None,
+               warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
                **kwargs) -> Wait[GetWarehouseResponse]:
         """Create a warehouse.
         
@@ -3225,19 +3225,19 @@ class WarehousesAPI:
     def create_and_wait(
         self,
         *,
-        auto_stop_mins: int = None,
-        channel: Channel = None,
-        cluster_size: str = None,
-        creator_name: str = None,
-        enable_photon: bool = None,
-        enable_serverless_compute: bool = None,
-        instance_profile_arn: str = None,
-        max_num_clusters: int = None,
-        min_num_clusters: int = None,
-        name: str = None,
-        spot_instance_policy: SpotInstancePolicy = None,
-        tags: EndpointTags = None,
-        warehouse_type: CreateWarehouseRequestWarehouseType = None,
+        auto_stop_mins: Optional[int] = None,
+        channel: Optional[Channel] = None,
+        cluster_size: Optional[str] = None,
+        creator_name: Optional[str] = None,
+        enable_photon: Optional[bool] = None,
+        enable_serverless_compute: Optional[bool] = None,
+        instance_profile_arn: Optional[str] = None,
+        max_num_clusters: Optional[int] = None,
+        min_num_clusters: Optional[int] = None,
+        name: Optional[str] = None,
+        spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        tags: Optional[EndpointTags] = None,
+        warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20)
     ) -> GetWarehouseResponse:
         return self.create(auto_stop_mins=auto_stop_mins,
@@ -3267,19 +3267,19 @@ class WarehousesAPI:
     def edit(self,
              id: str,
              *,
-             auto_stop_mins: int = None,
-             channel: Channel = None,
-             cluster_size: str = None,
-             creator_name: str = None,
-             enable_photon: bool = None,
-             enable_serverless_compute: bool = None,
-             instance_profile_arn: str = None,
-             max_num_clusters: int = None,
-             min_num_clusters: int = None,
-             name: str = None,
-             spot_instance_policy: SpotInstancePolicy = None,
-             tags: EndpointTags = None,
-             warehouse_type: EditWarehouseRequestWarehouseType = None,
+             auto_stop_mins: Optional[int] = None,
+             channel: Optional[Channel] = None,
+             cluster_size: Optional[str] = None,
+             creator_name: Optional[str] = None,
+             enable_photon: Optional[bool] = None,
+             enable_serverless_compute: Optional[bool] = None,
+             instance_profile_arn: Optional[str] = None,
+             max_num_clusters: Optional[int] = None,
+             min_num_clusters: Optional[int] = None,
+             name: Optional[str] = None,
+             spot_instance_policy: Optional[SpotInstancePolicy] = None,
+             tags: Optional[EndpointTags] = None,
+             warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
              **kwargs) -> Wait[GetWarehouseResponse]:
         """Update a warehouse.
         
@@ -3308,19 +3308,19 @@ class WarehousesAPI:
         self,
         id: str,
         *,
-        auto_stop_mins: int = None,
-        channel: Channel = None,
-        cluster_size: str = None,
-        creator_name: str = None,
-        enable_photon: bool = None,
-        enable_serverless_compute: bool = None,
-        instance_profile_arn: str = None,
-        max_num_clusters: int = None,
-        min_num_clusters: int = None,
-        name: str = None,
-        spot_instance_policy: SpotInstancePolicy = None,
-        tags: EndpointTags = None,
-        warehouse_type: EditWarehouseRequestWarehouseType = None,
+        auto_stop_mins: Optional[int] = None,
+        channel: Optional[Channel] = None,
+        cluster_size: Optional[str] = None,
+        creator_name: Optional[str] = None,
+        enable_photon: Optional[bool] = None,
+        enable_serverless_compute: Optional[bool] = None,
+        instance_profile_arn: Optional[str] = None,
+        max_num_clusters: Optional[int] = None,
+        min_num_clusters: Optional[int] = None,
+        name: Optional[str] = None,
+        spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        tags: Optional[EndpointTags] = None,
+        warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20)
     ) -> GetWarehouseResponse:
         return self.edit(auto_stop_mins=auto_stop_mins,
@@ -3357,7 +3357,7 @@ class WarehousesAPI:
         json = self._api.do('GET', '/api/2.0/sql/config/warehouses')
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
 
-    def list(self, *, run_as_user_id: int = None, **kwargs) -> Iterator[EndpointInfo]:
+    def list(self, *, run_as_user_id: Optional[int] = None, **kwargs) -> Iterator[EndpointInfo]:
         """List warehouses.
         
         Lists all SQL warehouses that a user has manager permissions on."""
@@ -3374,15 +3374,15 @@ class WarehousesAPI:
     def set_workspace_warehouse_config(
             self,
             *,
-            channel: Channel = None,
-            config_param: RepeatedEndpointConfPairs = None,
-            data_access_config: List[EndpointConfPair] = None,
-            enabled_warehouse_types: List[WarehouseTypePair] = None,
-            global_param: RepeatedEndpointConfPairs = None,
-            google_service_account: str = None,
-            instance_profile_arn: str = None,
-            security_policy: SetWorkspaceWarehouseConfigRequestSecurityPolicy = None,
-            sql_configuration_parameters: RepeatedEndpointConfPairs = None,
+            channel: Optional[Channel] = None,
+            config_param: Optional[RepeatedEndpointConfPairs] = None,
+            data_access_config: Optional[List[EndpointConfPair]] = None,
+            enabled_warehouse_types: Optional[List[WarehouseTypePair]] = None,
+            global_param: Optional[RepeatedEndpointConfPairs] = None,
+            google_service_account: Optional[str] = None,
+            instance_profile_arn: Optional[str] = None,
+            security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy] = None,
+            sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None,
             **kwargs):
         """Set the workspace configuration.
         

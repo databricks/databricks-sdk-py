@@ -2137,7 +2137,7 @@ class JobsAPI:
     def wait_get_run_job_terminated_or_skipped(self,
                                                run_id: int,
                                                timeout=timedelta(minutes=20),
-                                               callback: Callable[[Run], None] = None) -> Run:
+                                               callback: Optional[Callable[[Run], None]] = None) -> Run:
         deadline = time.time() + timeout.total_seconds()
         target_states = (RunLifeCycleState.TERMINATED, RunLifeCycleState.SKIPPED, )
         failure_states = (RunLifeCycleState.INTERNAL_ERROR, )
@@ -2194,22 +2194,22 @@ class JobsAPI:
 
     def create(self,
                *,
-               access_control_list: List[AccessControlRequest] = None,
-               continuous: Continuous = None,
-               email_notifications: JobEmailNotifications = None,
-               format: CreateJobFormat = None,
-               git_source: GitSource = None,
-               job_clusters: List[JobCluster] = None,
-               max_concurrent_runs: int = None,
-               name: str = None,
-               notification_settings: JobNotificationSettings = None,
-               run_as: JobRunAs = None,
-               schedule: CronSchedule = None,
-               tags: Dict[str, str] = None,
-               tasks: List[JobTaskSettings] = None,
-               timeout_seconds: int = None,
-               trigger: TriggerSettings = None,
-               webhook_notifications: JobWebhookNotifications = None,
+               access_control_list: Optional[List[AccessControlRequest]] = None,
+               continuous: Optional[Continuous] = None,
+               email_notifications: Optional[JobEmailNotifications] = None,
+               format: Optional[CreateJobFormat] = None,
+               git_source: Optional[GitSource] = None,
+               job_clusters: Optional[List[JobCluster]] = None,
+               max_concurrent_runs: Optional[int] = None,
+               name: Optional[str] = None,
+               notification_settings: Optional[JobNotificationSettings] = None,
+               run_as: Optional[JobRunAs] = None,
+               schedule: Optional[CronSchedule] = None,
+               tags: Optional[Dict[str, str]] = None,
+               tasks: Optional[List[JobTaskSettings]] = None,
+               timeout_seconds: Optional[int] = None,
+               trigger: Optional[TriggerSettings] = None,
+               webhook_notifications: Optional[JobWebhookNotifications] = None,
                **kwargs) -> CreateResponse:
         """Create a new job.
         
@@ -2257,7 +2257,11 @@ class JobsAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.1/jobs/runs/delete', body=body)
 
-    def export_run(self, run_id: int, *, views_to_export: ViewsToExport = None, **kwargs) -> ExportRunOutput:
+    def export_run(self,
+                   run_id: int,
+                   *,
+                   views_to_export: Optional[ViewsToExport] = None,
+                   **kwargs) -> ExportRunOutput:
         """Export and retrieve a job run.
         
         Export and retrieve the job run task."""
@@ -2286,7 +2290,7 @@ class JobsAPI:
         json = self._api.do('GET', '/api/2.1/jobs/get', query=query)
         return Job.from_dict(json)
 
-    def get_run(self, run_id: int, *, include_history: bool = None, **kwargs) -> Run:
+    def get_run(self, run_id: int, *, include_history: Optional[bool] = None, **kwargs) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run."""
@@ -2324,11 +2328,11 @@ class JobsAPI:
 
     def list(self,
              *,
-             expand_tasks: bool = None,
-             limit: int = None,
-             name: str = None,
-             offset: int = None,
-             page_token: str = None,
+             expand_tasks: Optional[bool] = None,
+             limit: Optional[int] = None,
+             name: Optional[str] = None,
+             offset: Optional[int] = None,
+             page_token: Optional[str] = None,
              **kwargs) -> Iterator[BaseJob]:
         """List all jobs.
         
@@ -2360,16 +2364,16 @@ class JobsAPI:
 
     def list_runs(self,
                   *,
-                  active_only: bool = None,
-                  completed_only: bool = None,
-                  expand_tasks: bool = None,
-                  job_id: int = None,
-                  limit: int = None,
-                  offset: int = None,
-                  page_token: str = None,
-                  run_type: ListRunsRunType = None,
-                  start_time_from: int = None,
-                  start_time_to: int = None,
+                  active_only: Optional[bool] = None,
+                  completed_only: Optional[bool] = None,
+                  expand_tasks: Optional[bool] = None,
+                  job_id: Optional[int] = None,
+                  limit: Optional[int] = None,
+                  offset: Optional[int] = None,
+                  page_token: Optional[str] = None,
+                  run_type: Optional[ListRunsRunType] = None,
+                  start_time_from: Optional[int] = None,
+                  start_time_to: Optional[int] = None,
                   **kwargs) -> Iterator[BaseRun]:
         """List runs for a job.
         
@@ -2412,17 +2416,17 @@ class JobsAPI:
     def repair_run(self,
                    run_id: int,
                    *,
-                   dbt_commands: List[str] = None,
-                   jar_params: List[str] = None,
-                   latest_repair_id: int = None,
-                   notebook_params: Dict[str, str] = None,
-                   pipeline_params: PipelineParams = None,
-                   python_named_params: Dict[str, str] = None,
-                   python_params: List[str] = None,
-                   rerun_all_failed_tasks: bool = None,
-                   rerun_tasks: List[str] = None,
-                   spark_submit_params: List[str] = None,
-                   sql_params: Dict[str, str] = None,
+                   dbt_commands: Optional[List[str]] = None,
+                   jar_params: Optional[List[str]] = None,
+                   latest_repair_id: Optional[int] = None,
+                   notebook_params: Optional[Dict[str, str]] = None,
+                   pipeline_params: Optional[PipelineParams] = None,
+                   python_named_params: Optional[Dict[str, str]] = None,
+                   python_params: Optional[List[str]] = None,
+                   rerun_all_failed_tasks: Optional[bool] = None,
+                   rerun_tasks: Optional[List[str]] = None,
+                   spark_submit_params: Optional[List[str]] = None,
+                   sql_params: Optional[Dict[str, str]] = None,
                    **kwargs) -> Wait[Run]:
         """Repair a job run.
         
@@ -2448,21 +2452,22 @@ class JobsAPI:
                     response=RepairRunResponse.from_dict(op_response),
                     run_id=request.run_id)
 
-    def repair_run_and_wait(self,
-                            run_id: int,
-                            *,
-                            dbt_commands: List[str] = None,
-                            jar_params: List[str] = None,
-                            latest_repair_id: int = None,
-                            notebook_params: Dict[str, str] = None,
-                            pipeline_params: PipelineParams = None,
-                            python_named_params: Dict[str, str] = None,
-                            python_params: List[str] = None,
-                            rerun_all_failed_tasks: bool = None,
-                            rerun_tasks: List[str] = None,
-                            spark_submit_params: List[str] = None,
-                            sql_params: Dict[str, str] = None,
-                            timeout=timedelta(minutes=20)) -> Run:
+    def repair_run_and_wait(
+        self,
+        run_id: int,
+        *,
+        dbt_commands: Optional[List[str]] = None,
+        jar_params: Optional[List[str]] = None,
+        latest_repair_id: Optional[int] = None,
+        notebook_params: Optional[Dict[str, str]] = None,
+        pipeline_params: Optional[PipelineParams] = None,
+        python_named_params: Optional[Dict[str, str]] = None,
+        python_params: Optional[List[str]] = None,
+        rerun_all_failed_tasks: Optional[bool] = None,
+        rerun_tasks: Optional[List[str]] = None,
+        spark_submit_params: Optional[List[str]] = None,
+        sql_params: Optional[Dict[str, str]] = None,
+        timeout=timedelta(minutes=20)) -> Run:
         return self.repair_run(dbt_commands=dbt_commands,
                                jar_params=jar_params,
                                latest_repair_id=latest_repair_id,
@@ -2490,15 +2495,15 @@ class JobsAPI:
     def run_now(self,
                 job_id: int,
                 *,
-                dbt_commands: List[str] = None,
-                idempotency_token: str = None,
-                jar_params: List[str] = None,
-                notebook_params: Dict[str, str] = None,
-                pipeline_params: PipelineParams = None,
-                python_named_params: Dict[str, str] = None,
-                python_params: List[str] = None,
-                spark_submit_params: List[str] = None,
-                sql_params: Dict[str, str] = None,
+                dbt_commands: Optional[List[str]] = None,
+                idempotency_token: Optional[str] = None,
+                jar_params: Optional[List[str]] = None,
+                notebook_params: Optional[Dict[str, str]] = None,
+                pipeline_params: Optional[PipelineParams] = None,
+                python_named_params: Optional[Dict[str, str]] = None,
+                python_params: Optional[List[str]] = None,
+                spark_submit_params: Optional[List[str]] = None,
+                sql_params: Optional[Dict[str, str]] = None,
                 **kwargs) -> Wait[Run]:
         """Trigger a new job run.
         
@@ -2524,15 +2529,15 @@ class JobsAPI:
     def run_now_and_wait(self,
                          job_id: int,
                          *,
-                         dbt_commands: List[str] = None,
-                         idempotency_token: str = None,
-                         jar_params: List[str] = None,
-                         notebook_params: Dict[str, str] = None,
-                         pipeline_params: PipelineParams = None,
-                         python_named_params: Dict[str, str] = None,
-                         python_params: List[str] = None,
-                         spark_submit_params: List[str] = None,
-                         sql_params: Dict[str, str] = None,
+                         dbt_commands: Optional[List[str]] = None,
+                         idempotency_token: Optional[str] = None,
+                         jar_params: Optional[List[str]] = None,
+                         notebook_params: Optional[Dict[str, str]] = None,
+                         pipeline_params: Optional[PipelineParams] = None,
+                         python_named_params: Optional[Dict[str, str]] = None,
+                         python_params: Optional[List[str]] = None,
+                         spark_submit_params: Optional[List[str]] = None,
+                         sql_params: Optional[Dict[str, str]] = None,
                          timeout=timedelta(minutes=20)) -> Run:
         return self.run_now(dbt_commands=dbt_commands,
                             idempotency_token=idempotency_token,
@@ -2547,14 +2552,14 @@ class JobsAPI:
 
     def submit(self,
                *,
-               access_control_list: List[AccessControlRequest] = None,
-               git_source: GitSource = None,
-               idempotency_token: str = None,
-               notification_settings: JobNotificationSettings = None,
-               run_name: str = None,
-               tasks: List[RunSubmitTaskSettings] = None,
-               timeout_seconds: int = None,
-               webhook_notifications: JobWebhookNotifications = None,
+               access_control_list: Optional[List[AccessControlRequest]] = None,
+               git_source: Optional[GitSource] = None,
+               idempotency_token: Optional[str] = None,
+               notification_settings: Optional[JobNotificationSettings] = None,
+               run_name: Optional[str] = None,
+               tasks: Optional[List[RunSubmitTaskSettings]] = None,
+               timeout_seconds: Optional[int] = None,
+               webhook_notifications: Optional[JobWebhookNotifications] = None,
                **kwargs) -> Wait[Run]:
         """Create and trigger a one-time run.
         
@@ -2580,14 +2585,14 @@ class JobsAPI:
     def submit_and_wait(
         self,
         *,
-        access_control_list: List[AccessControlRequest] = None,
-        git_source: GitSource = None,
-        idempotency_token: str = None,
-        notification_settings: JobNotificationSettings = None,
-        run_name: str = None,
-        tasks: List[RunSubmitTaskSettings] = None,
-        timeout_seconds: int = None,
-        webhook_notifications: JobWebhookNotifications = None,
+        access_control_list: Optional[List[AccessControlRequest]] = None,
+        git_source: Optional[GitSource] = None,
+        idempotency_token: Optional[str] = None,
+        notification_settings: Optional[JobNotificationSettings] = None,
+        run_name: Optional[str] = None,
+        tasks: Optional[List[RunSubmitTaskSettings]] = None,
+        timeout_seconds: Optional[int] = None,
+        webhook_notifications: Optional[JobWebhookNotifications] = None,
         timeout=timedelta(minutes=20)) -> Run:
         return self.submit(access_control_list=access_control_list,
                            git_source=git_source,
@@ -2601,8 +2606,8 @@ class JobsAPI:
     def update(self,
                job_id: int,
                *,
-               fields_to_remove: List[str] = None,
-               new_settings: JobSettings = None,
+               fields_to_remove: Optional[List[str]] = None,
+               new_settings: Optional[JobSettings] = None,
                **kwargs):
         """Partially update a job.
         

@@ -2885,7 +2885,7 @@ class AccountMetastoreAssignmentsAPI:
                workspace_id: int,
                metastore_id: str,
                *,
-               metastore_assignment: CreateMetastoreAssignment = None,
+               metastore_assignment: Optional[CreateMetastoreAssignment] = None,
                **kwargs) -> Iterator[CreateMetastoreAssignmentsResponseItem]:
         """Assigns a workspace to a metastore.
         
@@ -2951,7 +2951,7 @@ class AccountMetastoreAssignmentsAPI:
                workspace_id: int,
                metastore_id: str,
                *,
-               metastore_assignment: UpdateMetastoreAssignment = None,
+               metastore_assignment: Optional[UpdateMetastoreAssignment] = None,
                **kwargs):
         """Updates a metastore assignment to a workspaces.
         
@@ -2976,7 +2976,7 @@ class AccountMetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, metastore_info: CreateMetastore = None, **kwargs) -> AccountsMetastoreInfo:
+    def create(self, *, metastore_info: Optional[CreateMetastore] = None, **kwargs) -> AccountsMetastoreInfo:
         """Create metastore.
         
         Creates a Unity Catalog metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
@@ -3025,7 +3025,7 @@ class AccountMetastoresAPI:
     def update(self,
                metastore_id: str,
                *,
-               metastore_info: UpdateMetastore = None,
+               metastore_info: Optional[UpdateMetastore] = None,
                **kwargs) -> AccountsMetastoreInfo:
         """Update a metastore.
         
@@ -3051,7 +3051,7 @@ class AccountStorageCredentialsAPI:
     def create(self,
                metastore_id: str,
                *,
-               credential_info: CreateStorageCredential = None,
+               credential_info: Optional[CreateStorageCredential] = None,
                **kwargs) -> StorageCredentialInfo:
         """Create a storage credential.
         
@@ -3120,7 +3120,7 @@ class AccountStorageCredentialsAPI:
                metastore_id: str,
                name: str,
                *,
-               credential_info: UpdateStorageCredential = None,
+               credential_info: Optional[UpdateStorageCredential] = None,
                **kwargs) -> StorageCredentialInfo:
         """Updates a storage credential.
         
@@ -3154,11 +3154,11 @@ class CatalogsAPI:
     def create(self,
                name: str,
                *,
-               comment: str = None,
-               properties: Dict[str, str] = None,
-               provider_name: str = None,
-               share_name: str = None,
-               storage_root: str = None,
+               comment: Optional[str] = None,
+               properties: Optional[Dict[str, str]] = None,
+               provider_name: Optional[str] = None,
+               share_name: Optional[str] = None,
+               storage_root: Optional[str] = None,
                **kwargs) -> CatalogInfo:
         """Create a catalog.
         
@@ -3177,7 +3177,7 @@ class CatalogsAPI:
         json = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body)
         return CatalogInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: bool = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a catalog.
         
         Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
@@ -3217,10 +3217,10 @@ class CatalogsAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               isolation_mode: IsolationMode = None,
-               owner: str = None,
-               properties: Dict[str, str] = None,
+               comment: Optional[str] = None,
+               isolation_mode: Optional[IsolationMode] = None,
+               owner: Optional[str] = None,
+               properties: Optional[Dict[str, str]] = None,
                **kwargs) -> CatalogInfo:
         """Update a catalog.
         
@@ -3257,10 +3257,10 @@ class ConnectionsAPI:
                connection_type: ConnectionType,
                options_kvpairs: OptionsKvPairs,
                *,
-               comment: str = None,
-               owner: str = None,
-               properties_kvpairs: Dict[str, str] = None,
-               read_only: bool = None,
+               comment: Optional[str] = None,
+               owner: Optional[str] = None,
+               properties_kvpairs: Optional[Dict[str, str]] = None,
+               read_only: Optional[bool] = None,
                **kwargs) -> ConnectionInfo:
         """Create a connection.
         
@@ -3344,9 +3344,9 @@ class ExternalLocationsAPI:
                url: str,
                credential_name: str,
                *,
-               comment: str = None,
-               read_only: bool = None,
-               skip_validation: bool = None,
+               comment: Optional[str] = None,
+               read_only: Optional[bool] = None,
+               skip_validation: Optional[bool] = None,
                **kwargs) -> ExternalLocationInfo:
         """Create an external location.
         
@@ -3366,7 +3366,7 @@ class ExternalLocationsAPI:
         json = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body)
         return ExternalLocationInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: bool = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
         """Delete an external location.
         
         Deletes the specified external location from the metastore. The caller must be the owner of the
@@ -3405,12 +3405,12 @@ class ExternalLocationsAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               credential_name: str = None,
-               force: bool = None,
-               owner: str = None,
-               read_only: bool = None,
-               url: str = None,
+               comment: Optional[str] = None,
+               credential_name: Optional[str] = None,
+               force: Optional[bool] = None,
+               owner: Optional[str] = None,
+               read_only: Optional[bool] = None,
+               url: Optional[str] = None,
                **kwargs) -> ExternalLocationInfo:
         """Update an external location.
         
@@ -3460,11 +3460,11 @@ class FunctionsAPI:
                security_type: CreateFunctionSecurityType,
                specific_name: str,
                *,
-               comment: str = None,
-               external_language: str = None,
-               external_name: str = None,
-               properties: Dict[str, str] = None,
-               sql_path: str = None,
+               comment: Optional[str] = None,
+               external_language: Optional[str] = None,
+               external_name: Optional[str] = None,
+               properties: Optional[Dict[str, str]] = None,
+               sql_path: Optional[str] = None,
                **kwargs) -> FunctionInfo:
         """Create a function.
         
@@ -3501,7 +3501,7 @@ class FunctionsAPI:
         json = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body)
         return FunctionInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: bool = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a function.
         
         Deletes the function that matches the supplied name. For the deletion to succeed, the user must
@@ -3553,7 +3553,7 @@ class FunctionsAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query)
         return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
 
-    def update(self, name: str, *, owner: str = None, **kwargs) -> FunctionInfo:
+    def update(self, name: str, *, owner: Optional[str] = None, **kwargs) -> FunctionInfo:
         """Update a function.
         
         Updates the function that matches the supplied name. Only the owner of the function can be updated. If
@@ -3589,7 +3589,7 @@ class GrantsAPI:
             securable_type: SecurableType,
             full_name: str,
             *,
-            principal: str = None,
+            principal: Optional[str] = None,
             **kwargs) -> PermissionsList:
         """Get permissions.
         
@@ -3611,7 +3611,7 @@ class GrantsAPI:
                       securable_type: SecurableType,
                       full_name: str,
                       *,
-                      principal: str = None,
+                      principal: Optional[str] = None,
                       **kwargs) -> EffectivePermissionsList:
         """Get effective permissions.
         
@@ -3635,7 +3635,7 @@ class GrantsAPI:
                securable_type: SecurableType,
                full_name: str,
                *,
-               changes: List[PermissionsChange] = None,
+               changes: Optional[List[PermissionsChange]] = None,
                **kwargs) -> PermissionsList:
         """Update permissions.
         
@@ -3682,7 +3682,12 @@ class MetastoresAPI:
         body = request.as_dict()
         self._api.do('PUT', f'/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore', body=body)
 
-    def create(self, name: str, storage_root: str, *, region: str = None, **kwargs) -> MetastoreInfo:
+    def create(self,
+               name: str,
+               storage_root: str,
+               *,
+               region: Optional[str] = None,
+               **kwargs) -> MetastoreInfo:
         """Create a metastore.
         
         Creates a new metastore based on a provided name and storage root path."""
@@ -3702,7 +3707,7 @@ class MetastoresAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment')
         return MetastoreAssignment.from_dict(json)
 
-    def delete(self, id: str, *, force: bool = None, **kwargs):
+    def delete(self, id: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a metastore.
         
         Deletes a metastore. The caller must be a metastore admin."""
@@ -3775,13 +3780,13 @@ class MetastoresAPI:
     def update(self,
                id: str,
                *,
-               delta_sharing_organization_name: str = None,
-               delta_sharing_recipient_token_lifetime_in_seconds: int = None,
-               delta_sharing_scope: UpdateMetastoreDeltaSharingScope = None,
-               name: str = None,
-               owner: str = None,
-               privilege_model_version: str = None,
-               storage_root_credential_id: str = None,
+               delta_sharing_organization_name: Optional[str] = None,
+               delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
+               delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope] = None,
+               name: Optional[str] = None,
+               owner: Optional[str] = None,
+               privilege_model_version: Optional[str] = None,
+               storage_root_credential_id: Optional[str] = None,
                **kwargs) -> MetastoreInfo:
         """Update a metastore.
         
@@ -3805,8 +3810,8 @@ class MetastoresAPI:
     def update_assignment(self,
                           workspace_id: int,
                           *,
-                          default_catalog_name: str = None,
-                          metastore_id: str = None,
+                          default_catalog_name: Optional[str] = None,
+                          metastore_id: Optional[str] = None,
                           **kwargs):
         """Update an assignment.
         
@@ -3838,9 +3843,9 @@ class SchemasAPI:
                name: str,
                catalog_name: str,
                *,
-               comment: str = None,
-               properties: Dict[str, str] = None,
-               storage_root: str = None,
+               comment: Optional[str] = None,
+               properties: Optional[Dict[str, str]] = None,
+               storage_root: Optional[str] = None,
                **kwargs) -> SchemaInfo:
         """Create a schema.
         
@@ -3901,10 +3906,10 @@ class SchemasAPI:
     def update(self,
                full_name: str,
                *,
-               comment: str = None,
-               name: str = None,
-               owner: str = None,
-               properties: Dict[str, str] = None,
+               comment: Optional[str] = None,
+               name: Optional[str] = None,
+               owner: Optional[str] = None,
+               properties: Optional[Dict[str, str]] = None,
                **kwargs) -> SchemaInfo:
         """Update a schema.
         
@@ -3943,13 +3948,13 @@ class StorageCredentialsAPI:
     def create(self,
                name: str,
                *,
-               aws_iam_role: AwsIamRole = None,
-               azure_managed_identity: AzureManagedIdentity = None,
-               azure_service_principal: AzureServicePrincipal = None,
-               comment: str = None,
-               databricks_gcp_service_account: Any = None,
-               read_only: bool = None,
-               skip_validation: bool = None,
+               aws_iam_role: Optional[AwsIamRole] = None,
+               azure_managed_identity: Optional[AzureManagedIdentity] = None,
+               azure_service_principal: Optional[AzureServicePrincipal] = None,
+               comment: Optional[str] = None,
+               databricks_gcp_service_account: Optional[Any] = None,
+               read_only: Optional[bool] = None,
+               skip_validation: Optional[bool] = None,
                **kwargs) -> StorageCredentialInfo:
         """Create a storage credential.
         
@@ -3976,7 +3981,7 @@ class StorageCredentialsAPI:
         json = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body)
         return StorageCredentialInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: bool = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
@@ -4016,15 +4021,15 @@ class StorageCredentialsAPI:
     def update(self,
                name: str,
                *,
-               aws_iam_role: AwsIamRole = None,
-               azure_managed_identity: AzureManagedIdentity = None,
-               azure_service_principal: AzureServicePrincipal = None,
-               comment: str = None,
-               databricks_gcp_service_account: Any = None,
-               force: bool = None,
-               owner: str = None,
-               read_only: bool = None,
-               skip_validation: bool = None,
+               aws_iam_role: Optional[AwsIamRole] = None,
+               azure_managed_identity: Optional[AzureManagedIdentity] = None,
+               azure_service_principal: Optional[AzureServicePrincipal] = None,
+               comment: Optional[str] = None,
+               databricks_gcp_service_account: Optional[Any] = None,
+               force: Optional[bool] = None,
+               owner: Optional[str] = None,
+               read_only: Optional[bool] = None,
+               skip_validation: Optional[bool] = None,
                **kwargs) -> StorageCredentialInfo:
         """Update a credential.
         
@@ -4050,14 +4055,14 @@ class StorageCredentialsAPI:
 
     def validate(self,
                  *,
-                 aws_iam_role: AwsIamRole = None,
-                 azure_managed_identity: AzureManagedIdentity = None,
-                 azure_service_principal: AzureServicePrincipal = None,
-                 databricks_gcp_service_account: Any = None,
-                 external_location_name: str = None,
-                 read_only: bool = None,
-                 storage_credential_name: Any = None,
-                 url: str = None,
+                 aws_iam_role: Optional[AwsIamRole] = None,
+                 azure_managed_identity: Optional[AzureManagedIdentity] = None,
+                 azure_service_principal: Optional[AzureServicePrincipal] = None,
+                 databricks_gcp_service_account: Optional[Any] = None,
+                 external_location_name: Optional[str] = None,
+                 read_only: Optional[bool] = None,
+                 storage_credential_name: Optional[Any] = None,
+                 url: Optional[str] = None,
                  **kwargs) -> ValidateStorageCredentialResponse:
         """Validate a storage credential.
         
@@ -4211,7 +4216,7 @@ class TablesAPI:
 
         self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{request.full_name}')
 
-    def get(self, full_name: str, *, include_delta_metadata: bool = None, **kwargs) -> TableInfo:
+    def get(self, full_name: str, *, include_delta_metadata: Optional[bool] = None, **kwargs) -> TableInfo:
         """Get a table.
         
         Gets a table from the metastore for a specific catalog and schema. The caller must be a metastore
@@ -4232,9 +4237,9 @@ class TablesAPI:
              catalog_name: str,
              schema_name: str,
              *,
-             include_delta_metadata: bool = None,
-             max_results: int = None,
-             page_token: str = None,
+             include_delta_metadata: Optional[bool] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
              **kwargs) -> Iterator[TableInfo]:
         """List tables.
         
@@ -4271,10 +4276,10 @@ class TablesAPI:
     def list_summaries(self,
                        catalog_name: str,
                        *,
-                       max_results: int = None,
-                       page_token: str = None,
-                       schema_name_pattern: str = None,
-                       table_name_pattern: str = None,
+                       max_results: Optional[int] = None,
+                       page_token: Optional[str] = None,
+                       schema_name_pattern: Optional[str] = None,
+                       table_name_pattern: Optional[str] = None,
                        **kwargs) -> Iterator[TableSummary]:
         """List table summaries.
         
@@ -4331,8 +4336,8 @@ class VolumesAPI:
                schema_name: str,
                volume_type: VolumeType,
                *,
-               comment: str = None,
-               storage_location: str = None,
+               comment: Optional[str] = None,
+               storage_location: Optional[str] = None,
                **kwargs) -> VolumeInfo:
         """Create a Volume.
         
@@ -4419,9 +4424,9 @@ class VolumesAPI:
     def update(self,
                full_name_arg: str,
                *,
-               comment: str = None,
-               name: str = None,
-               owner: str = None,
+               comment: Optional[str] = None,
+               name: Optional[str] = None,
+               owner: Optional[str] = None,
                **kwargs) -> VolumeInfo:
         """Update a Volume.
         
@@ -4468,8 +4473,8 @@ class WorkspaceBindingsAPI:
     def update(self,
                name: str,
                *,
-               assign_workspaces: List[int] = None,
-               unassign_workspaces: List[int] = None,
+               assign_workspaces: Optional[List[int]] = None,
+               unassign_workspaces: Optional[List[int]] = None,
                **kwargs) -> CurrentWorkspaceBindings:
         """Update catalog workspace bindings.
         

@@ -1010,10 +1010,11 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_pipeline_idle(self,
-                               pipeline_id: str,
-                               timeout=timedelta(minutes=20),
-                               callback: Callable[[GetPipelineResponse], None] = None) -> GetPipelineResponse:
+    def wait_get_pipeline_idle(
+            self,
+            pipeline_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (PipelineState.IDLE, )
         failure_states = (PipelineState.FAILED, )
@@ -1044,7 +1045,7 @@ class PipelinesAPI:
             self,
             pipeline_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[GetPipelineResponse], None] = None) -> GetPipelineResponse:
+            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (PipelineState.RUNNING, )
         failure_states = (PipelineState.FAILED, )
@@ -1073,24 +1074,24 @@ class PipelinesAPI:
 
     def create(self,
                *,
-               allow_duplicate_names: bool = None,
-               catalog: str = None,
-               channel: str = None,
-               clusters: List[PipelineCluster] = None,
-               configuration: Dict[str, str] = None,
-               continuous: bool = None,
-               development: bool = None,
-               dry_run: bool = None,
-               edition: str = None,
-               filters: Filters = None,
-               id: str = None,
-               libraries: List[PipelineLibrary] = None,
-               name: str = None,
-               photon: bool = None,
-               serverless: bool = None,
-               storage: str = None,
-               target: str = None,
-               trigger: PipelineTrigger = None,
+               allow_duplicate_names: Optional[bool] = None,
+               catalog: Optional[str] = None,
+               channel: Optional[str] = None,
+               clusters: Optional[List[PipelineCluster]] = None,
+               configuration: Optional[Dict[str, str]] = None,
+               continuous: Optional[bool] = None,
+               development: Optional[bool] = None,
+               dry_run: Optional[bool] = None,
+               edition: Optional[str] = None,
+               filters: Optional[Filters] = None,
+               id: Optional[str] = None,
+               libraries: Optional[List[PipelineLibrary]] = None,
+               name: Optional[str] = None,
+               photon: Optional[bool] = None,
+               serverless: Optional[bool] = None,
+               storage: Optional[str] = None,
+               target: Optional[str] = None,
+               trigger: Optional[PipelineTrigger] = None,
                **kwargs) -> CreatePipelineResponse:
         """Create a pipeline.
         
@@ -1154,10 +1155,10 @@ class PipelinesAPI:
     def list_pipeline_events(self,
                              pipeline_id: str,
                              *,
-                             filter: str = None,
-                             max_results: int = None,
-                             order_by: List[str] = None,
-                             page_token: str = None,
+                             filter: Optional[str] = None,
+                             max_results: Optional[int] = None,
+                             order_by: Optional[List[str]] = None,
+                             page_token: Optional[str] = None,
                              **kwargs) -> Iterator[PipelineEvent]:
         """List pipeline events.
         
@@ -1188,10 +1189,10 @@ class PipelinesAPI:
 
     def list_pipelines(self,
                        *,
-                       filter: str = None,
-                       max_results: int = None,
-                       order_by: List[str] = None,
-                       page_token: str = None,
+                       filter: Optional[str] = None,
+                       max_results: Optional[int] = None,
+                       order_by: Optional[List[str]] = None,
+                       page_token: Optional[str] = None,
                        **kwargs) -> Iterator[PipelineStateInfo]:
         """List pipelines.
         
@@ -1222,9 +1223,9 @@ class PipelinesAPI:
     def list_updates(self,
                      pipeline_id: str,
                      *,
-                     max_results: int = None,
-                     page_token: str = None,
-                     until_update_id: str = None,
+                     max_results: Optional[int] = None,
+                     page_token: Optional[str] = None,
+                     until_update_id: Optional[str] = None,
                      **kwargs) -> ListUpdatesResponse:
         """List pipeline updates.
         
@@ -1261,10 +1262,10 @@ class PipelinesAPI:
     def start_update(self,
                      pipeline_id: str,
                      *,
-                     cause: StartUpdateCause = None,
-                     full_refresh: bool = None,
-                     full_refresh_selection: List[str] = None,
-                     refresh_selection: List[str] = None,
+                     cause: Optional[StartUpdateCause] = None,
+                     full_refresh: Optional[bool] = None,
+                     full_refresh_selection: Optional[List[str]] = None,
+                     refresh_selection: Optional[List[str]] = None,
                      **kwargs) -> StartUpdateResponse:
         """Queue a pipeline update.
         
@@ -1298,24 +1299,24 @@ class PipelinesAPI:
     def update(self,
                pipeline_id: str,
                *,
-               allow_duplicate_names: bool = None,
-               catalog: str = None,
-               channel: str = None,
-               clusters: List[PipelineCluster] = None,
-               configuration: Dict[str, str] = None,
-               continuous: bool = None,
-               development: bool = None,
-               edition: str = None,
-               expected_last_modified: int = None,
-               filters: Filters = None,
-               id: str = None,
-               libraries: List[PipelineLibrary] = None,
-               name: str = None,
-               photon: bool = None,
-               serverless: bool = None,
-               storage: str = None,
-               target: str = None,
-               trigger: PipelineTrigger = None,
+               allow_duplicate_names: Optional[bool] = None,
+               catalog: Optional[str] = None,
+               channel: Optional[str] = None,
+               clusters: Optional[List[PipelineCluster]] = None,
+               configuration: Optional[Dict[str, str]] = None,
+               continuous: Optional[bool] = None,
+               development: Optional[bool] = None,
+               edition: Optional[str] = None,
+               expected_last_modified: Optional[int] = None,
+               filters: Optional[Filters] = None,
+               id: Optional[str] = None,
+               libraries: Optional[List[PipelineLibrary]] = None,
+               name: Optional[str] = None,
+               photon: Optional[bool] = None,
+               serverless: Optional[bool] = None,
+               storage: Optional[str] = None,
+               target: Optional[str] = None,
+               trigger: Optional[PipelineTrigger] = None,
                **kwargs):
         """Edit a pipeline.
         
