@@ -819,7 +819,7 @@ class UpdateSharePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
-        return cls(changes=d.get('changes', None), name=d.get('name', None))
+        return cls(changes=_repeated(d, 'changes', PermissionsChange), name=d.get('name', None))
 
 
 class ProvidersAPI:

@@ -189,7 +189,7 @@ class ClusterSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo))
 
 
@@ -256,7 +256,7 @@ class CreateJob:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
-        return cls(access_control_list=d.get('access_control_list', None),
+        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', CreateJobFormat),
@@ -762,7 +762,7 @@ class JobTaskSettings:
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    job_cluster_key=d.get('job_cluster_key', None),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    max_retries=d.get('max_retries', None),
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
@@ -1434,7 +1434,7 @@ class RunSubmitTaskSettings:
     def from_dict(cls, d: Dict[str, any]) -> 'RunSubmitTaskSettings':
         return cls(depends_on=_repeated(d, 'depends_on', TaskDependenciesItem),
                    existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -1514,7 +1514,7 @@ class RunTask:
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   libraries=d.get('libraries', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    new_cluster=_from_dict(d, 'new_cluster', BaseClusterInfo),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -1908,7 +1908,7 @@ class SubmitRun:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SubmitRun':
-        return cls(access_control_list=d.get('access_control_list', None),
+        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    idempotency_token=d.get('idempotency_token', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
