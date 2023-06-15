@@ -1,6 +1,6 @@
 import io
 
-from databricks.sdk.service.workspace import Language, ImportFormat
+from databricks.sdk.service.workspace import ImportFormat, Language
 
 
 def test_workspace_recursive_list(w, random):
