@@ -5,4 +5,4 @@ w = WorkspaceClient()
 
 all_users = w.users.list(attributes="id,userName",
                          sort_by="userName",
-                         sort_order=iam.ListSortOrder.ascending)
+                         sort_order=iam.ListSortOrder.descending)

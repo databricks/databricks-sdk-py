@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _from_dict, _repeated
 
@@ -15,8 +15,8 @@ _LOG = logging.getLogger('databricks.sdk')
 class CreateCustomAppIntegration:
     name: str
     redirect_urls: 'List[str]'
-    confidential: bool = None
-    token_access_policy: 'TokenAccessPolicy' = None
+    confidential: Optional[bool] = None
+    token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -36,9 +36,9 @@ class CreateCustomAppIntegration:
 
 @dataclass
 class CreateCustomAppIntegrationOutput:
-    client_id: str = None
-    client_secret: str = None
-    integration_id: str = None
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
+    integration_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -56,7 +56,7 @@ class CreateCustomAppIntegrationOutput:
 
 @dataclass
 class CreateOAuthEnrollment:
-    enable_all_published_apps: bool = None
+    enable_all_published_apps: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -71,8 +71,8 @@ class CreateOAuthEnrollment:
 
 @dataclass
 class CreatePublishedAppIntegration:
-    app_id: str = None
-    token_access_policy: 'TokenAccessPolicy' = None
+    app_id: Optional[str] = None
+    token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -88,7 +88,7 @@ class CreatePublishedAppIntegration:
 
 @dataclass
 class CreatePublishedAppIntegrationOutput:
-    integration_id: str = None
+    integration_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -109,12 +109,12 @@ class CreateServicePrincipalSecretRequest:
 
 @dataclass
 class CreateServicePrincipalSecretResponse:
-    create_time: str = None
-    id: str = None
-    secret: str = None
-    secret_hash: str = None
-    status: str = None
-    update_time: str = None
+    create_time: Optional[str] = None
+    id: Optional[str] = None
+    secret: Optional[str] = None
+    secret_hash: Optional[str] = None
+    status: Optional[str] = None
+    update_time: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -160,12 +160,12 @@ class DeleteServicePrincipalSecretRequest:
 
 @dataclass
 class GetCustomAppIntegrationOutput:
-    client_id: str = None
-    confidential: bool = None
-    integration_id: str = None
-    name: str = None
-    redirect_urls: 'List[str]' = None
-    token_access_policy: 'TokenAccessPolicy' = None
+    client_id: Optional[str] = None
+    confidential: Optional[bool] = None
+    integration_id: Optional[str] = None
+    name: Optional[str] = None
+    redirect_urls: Optional['List[str]'] = None
+    token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -196,7 +196,7 @@ class GetCustomAppIntegrationRequest:
 
 @dataclass
 class GetCustomAppIntegrationsOutput:
-    apps: 'List[GetCustomAppIntegrationOutput]' = None
+    apps: Optional['List[GetCustomAppIntegrationOutput]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -210,10 +210,10 @@ class GetCustomAppIntegrationsOutput:
 
 @dataclass
 class GetPublishedAppIntegrationOutput:
-    app_id: str = None
-    integration_id: str = None
-    name: str = None
-    token_access_policy: 'TokenAccessPolicy' = None
+    app_id: Optional[str] = None
+    integration_id: Optional[str] = None
+    name: Optional[str] = None
+    token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -240,7 +240,7 @@ class GetPublishedAppIntegrationRequest:
 
 @dataclass
 class GetPublishedAppIntegrationsOutput:
-    apps: 'List[GetPublishedAppIntegrationOutput]' = None
+    apps: Optional['List[GetPublishedAppIntegrationOutput]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -261,7 +261,7 @@ class ListServicePrincipalSecretsRequest:
 
 @dataclass
 class ListServicePrincipalSecretsResponse:
-    secrets: 'List[SecretInfo]' = None
+    secrets: Optional['List[SecretInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -275,7 +275,7 @@ class ListServicePrincipalSecretsResponse:
 
 @dataclass
 class OAuthEnrollmentStatus:
-    is_enabled: bool = None
+    is_enabled: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -289,11 +289,11 @@ class OAuthEnrollmentStatus:
 
 @dataclass
 class SecretInfo:
-    create_time: str = None
-    id: str = None
-    secret_hash: str = None
-    status: str = None
-    update_time: str = None
+    create_time: Optional[str] = None
+    id: Optional[str] = None
+    secret_hash: Optional[str] = None
+    status: Optional[str] = None
+    update_time: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -315,8 +315,8 @@ class SecretInfo:
 
 @dataclass
 class TokenAccessPolicy:
-    access_token_ttl_in_minutes: int = None
-    refresh_token_ttl_in_minutes: int = None
+    access_token_ttl_in_minutes: Optional[int] = None
+    refresh_token_ttl_in_minutes: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -334,9 +334,9 @@ class TokenAccessPolicy:
 
 @dataclass
 class UpdateCustomAppIntegration:
-    integration_id: str = None
-    redirect_urls: 'List[str]' = None
-    token_access_policy: 'TokenAccessPolicy' = None
+    integration_id: Optional[str] = None
+    redirect_urls: Optional['List[str]'] = None
+    token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -354,8 +354,8 @@ class UpdateCustomAppIntegration:
 
 @dataclass
 class UpdatePublishedAppIntegration:
-    integration_id: str = None
-    token_access_policy: 'TokenAccessPolicy' = None
+    integration_id: Optional[str] = None
+    token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
         body = {}

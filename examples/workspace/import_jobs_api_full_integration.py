@@ -10,7 +10,7 @@ notebook_path = f'/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}'
 
 w.workspace.import_(path=notebook_path,
                     overwrite=True,
-                    format=workspace.ExportFormat.SOURCE,
+                    format=workspace.ImportFormat.SOURCE,
                     language=workspace.Language.PYTHON,
                     content=base64.b64encode(("""import time
 time.sleep(10)

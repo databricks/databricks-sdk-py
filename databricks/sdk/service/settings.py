@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -34,7 +34,7 @@ class CreateIpAccessList:
 
 @dataclass
 class CreateIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo' = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -50,7 +50,7 @@ class CreateIpAccessListResponse:
 class CreateOboTokenRequest:
     application_id: str
     lifetime_seconds: int
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -68,8 +68,8 @@ class CreateOboTokenRequest:
 
 @dataclass
 class CreateOboTokenResponse:
-    token_info: 'TokenInfo' = None
-    token_value: str = None
+    token_info: Optional['TokenInfo'] = None
+    token_value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -84,8 +84,8 @@ class CreateOboTokenResponse:
 
 @dataclass
 class CreateTokenRequest:
-    comment: str = None
-    lifetime_seconds: int = None
+    comment: Optional[str] = None
+    lifetime_seconds: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -100,8 +100,8 @@ class CreateTokenRequest:
 
 @dataclass
 class CreateTokenResponse:
-    token_info: 'PublicTokenInfo' = None
-    token_value: str = None
+    token_info: Optional['PublicTokenInfo'] = None
+    token_value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -138,7 +138,7 @@ class DeleteTokenManagementRequest:
 
 @dataclass
 class FetchIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo' = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -166,7 +166,7 @@ class GetIpAccessListRequest:
 
 @dataclass
 class GetIpAccessListResponse:
-    ip_access_lists: 'List[IpAccessListInfo]' = None
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -180,7 +180,7 @@ class GetIpAccessListResponse:
 
 @dataclass
 class GetIpAccessListsResponse:
-    ip_access_lists: 'List[IpAccessListInfo]' = None
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -208,16 +208,16 @@ class GetTokenManagementRequest:
 
 @dataclass
 class IpAccessListInfo:
-    address_count: int = None
-    created_at: int = None
-    created_by: int = None
-    enabled: bool = None
-    ip_addresses: 'List[str]' = None
-    label: str = None
-    list_id: str = None
-    list_type: 'ListType' = None
-    updated_at: int = None
-    updated_by: int = None
+    address_count: Optional[int] = None
+    created_at: Optional[int] = None
+    created_by: Optional[int] = None
+    enabled: Optional[bool] = None
+    ip_addresses: Optional['List[str]'] = None
+    label: Optional[str] = None
+    list_id: Optional[str] = None
+    list_type: Optional['ListType'] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -251,13 +251,13 @@ class IpAccessListInfo:
 class ListTokenManagementRequest:
     """List all tokens"""
 
-    created_by_id: str = None
-    created_by_username: str = None
+    created_by_id: Optional[str] = None
+    created_by_username: Optional[str] = None
 
 
 @dataclass
 class ListTokensResponse:
-    token_infos: 'List[TokenInfo]' = None
+    token_infos: Optional['List[TokenInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -299,10 +299,10 @@ class PersonalComputeMessageEnum(Enum):
 
 @dataclass
 class PublicTokenInfo:
-    comment: str = None
-    creation_time: int = None
-    expiry_time: int = None
-    token_id: str = None
+    comment: Optional[str] = None
+    creation_time: Optional[int] = None
+    expiry_time: Optional[int] = None
+    token_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -324,7 +324,7 @@ class PublicTokenInfo:
 class ReadPersonalComputeSettingRequest:
     """Get Personal Compute setting"""
 
-    etag: str = None
+    etag: Optional[str] = None
 
 
 @dataclass
@@ -353,8 +353,8 @@ class ReplaceIpAccessList:
     list_type: 'ListType'
     ip_addresses: 'List[str]'
     enabled: bool
-    ip_access_list_id: str = None
-    list_id: str = None
+    ip_access_list_id: Optional[str] = None
+    list_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -392,13 +392,13 @@ class RevokeTokenRequest:
 
 @dataclass
 class TokenInfo:
-    comment: str = None
-    created_by_id: int = None
-    created_by_username: str = None
-    creation_time: int = None
-    expiry_time: int = None
-    owner_id: int = None
-    token_id: str = None
+    comment: Optional[str] = None
+    created_by_id: Optional[int] = None
+    created_by_username: Optional[str] = None
+    creation_time: Optional[int] = None
+    expiry_time: Optional[int] = None
+    owner_id: Optional[int] = None
+    token_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -428,8 +428,8 @@ class UpdateIpAccessList:
     list_type: 'ListType'
     ip_addresses: 'List[str]'
     enabled: bool
-    ip_access_list_id: str = None
-    list_id: str = None
+    ip_access_list_id: Optional[str] = None
+    list_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}

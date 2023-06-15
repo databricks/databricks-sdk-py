@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -65,8 +65,8 @@ class DeleteServingEndpointRequest:
 @dataclass
 class EndpointCoreConfigInput:
     served_models: 'List[ServedModelInput]'
-    name: str = None
-    traffic_config: 'TrafficConfig' = None
+    name: Optional[str] = None
+    traffic_config: Optional['TrafficConfig'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -84,9 +84,9 @@ class EndpointCoreConfigInput:
 
 @dataclass
 class EndpointCoreConfigOutput:
-    config_version: int = None
-    served_models: 'List[ServedModelOutput]' = None
-    traffic_config: 'TrafficConfig' = None
+    config_version: Optional[int] = None
+    served_models: Optional['List[ServedModelOutput]'] = None
+    traffic_config: Optional['TrafficConfig'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -104,7 +104,7 @@ class EndpointCoreConfigOutput:
 
 @dataclass
 class EndpointCoreConfigSummary:
-    served_models: 'List[ServedModelSpec]' = None
+    served_models: Optional['List[ServedModelSpec]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -118,10 +118,10 @@ class EndpointCoreConfigSummary:
 
 @dataclass
 class EndpointPendingConfig:
-    config_version: int = None
-    served_models: 'List[ServedModelOutput]' = None
-    start_time: int = None
-    traffic_config: 'TrafficConfig' = None
+    config_version: Optional[int] = None
+    served_models: Optional['List[ServedModelOutput]'] = None
+    start_time: Optional[int] = None
+    traffic_config: Optional['TrafficConfig'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -141,8 +141,8 @@ class EndpointPendingConfig:
 
 @dataclass
 class EndpointState:
-    config_update: 'EndpointStateConfigUpdate' = None
-    ready: 'EndpointStateReady' = None
+    config_update: Optional['EndpointStateConfigUpdate'] = None
+    ready: Optional['EndpointStateReady'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -193,7 +193,7 @@ class GetServingEndpointRequest:
 
 @dataclass
 class ListEndpointsResponse:
-    endpoints: 'List[ServingEndpoint]' = None
+    endpoints: Optional['List[ServingEndpoint]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -257,7 +257,7 @@ class ServedModelInput:
     model_version: str
     workload_size: str
     scale_to_zero_enabled: bool
-    name: str = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -279,14 +279,14 @@ class ServedModelInput:
 
 @dataclass
 class ServedModelOutput:
-    creation_timestamp: int = None
-    creator: str = None
-    model_name: str = None
-    model_version: str = None
-    name: str = None
-    scale_to_zero_enabled: bool = None
-    state: 'ServedModelState' = None
-    workload_size: str = None
+    creation_timestamp: Optional[int] = None
+    creator: Optional[str] = None
+    model_name: Optional[str] = None
+    model_version: Optional[str] = None
+    name: Optional[str] = None
+    scale_to_zero_enabled: Optional[bool] = None
+    state: Optional['ServedModelState'] = None
+    workload_size: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -314,9 +314,9 @@ class ServedModelOutput:
 
 @dataclass
 class ServedModelSpec:
-    model_name: str = None
-    model_version: str = None
-    name: str = None
+    model_name: Optional[str] = None
+    model_version: Optional[str] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -334,8 +334,8 @@ class ServedModelSpec:
 
 @dataclass
 class ServedModelState:
-    deployment: 'ServedModelStateDeployment' = None
-    deployment_state_message: str = None
+    deployment: Optional['ServedModelStateDeployment'] = None
+    deployment_state_message: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -384,13 +384,13 @@ class ServerLogsResponse:
 
 @dataclass
 class ServingEndpoint:
-    config: 'EndpointCoreConfigSummary' = None
-    creation_timestamp: int = None
-    creator: str = None
-    id: str = None
-    last_updated_timestamp: int = None
-    name: str = None
-    state: 'EndpointState' = None
+    config: Optional['EndpointCoreConfigSummary'] = None
+    creation_timestamp: Optional[int] = None
+    creator: Optional[str] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    name: Optional[str] = None
+    state: Optional['EndpointState'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -417,15 +417,15 @@ class ServingEndpoint:
 
 @dataclass
 class ServingEndpointDetailed:
-    config: 'EndpointCoreConfigOutput' = None
-    creation_timestamp: int = None
-    creator: str = None
-    id: str = None
-    last_updated_timestamp: int = None
-    name: str = None
-    pending_config: 'EndpointPendingConfig' = None
-    permission_level: 'ServingEndpointDetailedPermissionLevel' = None
-    state: 'EndpointState' = None
+    config: Optional['EndpointCoreConfigOutput'] = None
+    creation_timestamp: Optional[int] = None
+    creator: Optional[str] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    name: Optional[str] = None
+    pending_config: Optional['EndpointPendingConfig'] = None
+    permission_level: Optional['ServingEndpointDetailedPermissionLevel'] = None
+    state: Optional['EndpointState'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -464,7 +464,7 @@ class ServingEndpointDetailedPermissionLevel(Enum):
 
 @dataclass
 class TrafficConfig:
-    routes: 'List[Route]' = None
+    routes: Optional['List[Route]'] = None
 
     def as_dict(self) -> dict:
         body = {}

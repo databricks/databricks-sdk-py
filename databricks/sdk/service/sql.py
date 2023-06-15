@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -18,9 +18,9 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AccessControl:
-    group_name: str = None
-    permission_level: 'PermissionLevel' = None
-    user_name: str = None
+    group_name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -38,17 +38,17 @@ class AccessControl:
 
 @dataclass
 class Alert:
-    created_at: str = None
-    id: str = None
-    last_triggered_at: str = None
-    name: str = None
-    options: 'AlertOptions' = None
-    parent: str = None
-    query: 'Query' = None
-    rearm: int = None
-    state: 'AlertState' = None
-    updated_at: str = None
-    user: 'User' = None
+    created_at: Optional[str] = None
+    id: Optional[str] = None
+    last_triggered_at: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional['AlertOptions'] = None
+    parent: Optional[str] = None
+    query: Optional['Query'] = None
+    rearm: Optional[int] = None
+    state: Optional['AlertState'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -87,9 +87,9 @@ class AlertOptions:
     column: str
     op: str
     value: str
-    custom_body: str = None
-    custom_subject: str = None
-    muted: bool = None
+    custom_body: Optional[str] = None
+    custom_subject: Optional[str] = None
+    muted: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -129,8 +129,8 @@ class CancelExecutionRequest:
 
 @dataclass
 class Channel:
-    dbsql_version: str = None
-    name: 'ChannelName' = None
+    dbsql_version: Optional[str] = None
+    name: Optional['ChannelName'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -147,8 +147,8 @@ class Channel:
 class ChannelInfo:
     """Channel information for the SQL warehouse at the time of query execution"""
 
-    dbsql_version: str = None
-    name: 'ChannelName' = None
+    dbsql_version: Optional[str] = None
+    name: Optional['ChannelName'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -175,12 +175,12 @@ class ChunkInfo:
     """Describes metadata for a particular chunk, within a result set; this structure is used both
     within a manifest, and when fetching individual chunk data or links."""
 
-    byte_count: int = None
-    chunk_index: int = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -205,13 +205,13 @@ class ChunkInfo:
 
 @dataclass
 class ColumnInfo:
-    name: str = None
-    position: int = None
-    type_interval_type: str = None
-    type_name: 'ColumnInfoTypeName' = None
-    type_precision: int = None
-    type_scale: int = None
-    type_text: str = None
+    name: Optional[str] = None
+    position: Optional[int] = None
+    type_interval_type: Optional[str] = None
+    type_name: Optional['ColumnInfoTypeName'] = None
+    type_precision: Optional[int] = None
+    type_scale: Optional[int] = None
+    type_text: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -264,8 +264,8 @@ class CreateAlert:
     name: str
     options: 'AlertOptions'
     query_id: str
-    parent: str = None
-    rearm: int = None
+    parent: Optional[str] = None
+    rearm: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -289,10 +289,10 @@ class CreateAlert:
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    is_favorite: bool = None
-    name: str = None
-    parent: str = None
-    tags: 'List[str]' = None
+    is_favorite: Optional[bool] = None
+    name: Optional[str] = None
+    parent: Optional[str] = None
+    tags: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -312,19 +312,19 @@ class CreateDashboardRequest:
 
 @dataclass
 class CreateWarehouseRequest:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    instance_profile_arn: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'CreateWarehouseRequestWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    instance_profile_arn: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['CreateWarehouseRequestWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -373,7 +373,7 @@ class CreateWarehouseRequestWarehouseType(Enum):
 
 @dataclass
 class CreateWarehouseResponse:
-    id: str = None
+    id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -389,23 +389,23 @@ class CreateWarehouseResponse:
 class Dashboard:
     """A JSON representing a dashboard containing widgets of visualizations and text boxes."""
 
-    can_edit: bool = None
-    created_at: str = None
-    dashboard_filters_enabled: bool = None
-    id: str = None
-    is_archived: bool = None
-    is_draft: bool = None
-    is_favorite: bool = None
-    name: str = None
-    options: 'DashboardOptions' = None
-    parent: str = None
-    permission_tier: 'PermissionLevel' = None
-    slug: str = None
-    tags: 'List[str]' = None
-    updated_at: str = None
-    user: 'User' = None
-    user_id: int = None
-    widgets: 'List[Widget]' = None
+    can_edit: Optional[bool] = None
+    created_at: Optional[str] = None
+    dashboard_filters_enabled: Optional[bool] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    name: Optional[str] = None
+    options: Optional['DashboardOptions'] = None
+    parent: Optional[str] = None
+    permission_tier: Optional['PermissionLevel'] = None
+    slug: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
+    user_id: Optional[int] = None
+    widgets: Optional['List[Widget]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -452,7 +452,7 @@ class Dashboard:
 
 @dataclass
 class DashboardOptions:
-    moved_to_trash_at: str = None
+    moved_to_trash_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -468,15 +468,15 @@ class DashboardOptions:
 class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
-    id: str = None
-    name: str = None
-    pause_reason: str = None
-    paused: int = None
-    supports_auto_limit: bool = None
-    syntax: str = None
-    type: str = None
-    view_only: bool = None
-    warehouse_id: str = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    pause_reason: Optional[str] = None
+    paused: Optional[int] = None
+    supports_auto_limit: Optional[bool] = None
+    syntax: Optional[str] = None
+    type: Optional[str] = None
+    view_only: Optional[bool] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -563,8 +563,8 @@ class EditAlert:
     name: str
     options: 'AlertOptions'
     query_id: str
-    alert_id: str = None
-    rearm: int = None
+    alert_id: Optional[str] = None
+    rearm: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -586,20 +586,20 @@ class EditAlert:
 
 @dataclass
 class EditWarehouseRequest:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    id: str = None
-    instance_profile_arn: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'EditWarehouseRequestWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['EditWarehouseRequestWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -650,8 +650,8 @@ class EditWarehouseRequestWarehouseType(Enum):
 
 @dataclass
 class EndpointConfPair:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -666,11 +666,11 @@ class EndpointConfPair:
 
 @dataclass
 class EndpointHealth:
-    details: str = None
-    failure_reason: 'TerminationReason' = None
-    message: str = None
-    status: 'Status' = None
-    summary: str = None
+    details: Optional[str] = None
+    failure_reason: Optional['TerminationReason'] = None
+    message: Optional[str] = None
+    status: Optional['Status'] = None
+    summary: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -692,26 +692,26 @@ class EndpointHealth:
 
 @dataclass
 class EndpointInfo:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    health: 'EndpointHealth' = None
-    id: str = None
-    instance_profile_arn: str = None
-    jdbc_url: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    num_active_sessions: int = None
-    num_clusters: int = None
-    odbc_params: 'OdbcParams' = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    state: 'State' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'EndpointInfoWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    health: Optional['EndpointHealth'] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    jdbc_url: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    num_active_sessions: Optional[int] = None
+    num_clusters: Optional[int] = None
+    odbc_params: Optional['OdbcParams'] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    state: Optional['State'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['EndpointInfoWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -774,8 +774,8 @@ class EndpointInfoWarehouseType(Enum):
 
 @dataclass
 class EndpointTagPair:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -790,7 +790,7 @@ class EndpointTagPair:
 
 @dataclass
 class EndpointTags:
-    custom_tags: 'List[EndpointTagPair]' = None
+    custom_tags: Optional['List[EndpointTagPair]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -804,15 +804,15 @@ class EndpointTags:
 
 @dataclass
 class ExecuteStatementRequest:
-    byte_limit: int = None
-    catalog: str = None
-    disposition: 'Disposition' = None
-    format: 'Format' = None
-    on_wait_timeout: 'TimeoutAction' = None
-    schema: str = None
-    statement: str = None
-    wait_timeout: str = None
-    warehouse_id: str = None
+    byte_limit: Optional[int] = None
+    catalog: Optional[str] = None
+    disposition: Optional['Disposition'] = None
+    format: Optional['Format'] = None
+    on_wait_timeout: Optional['TimeoutAction'] = None
+    schema: Optional[str] = None
+    statement: Optional[str] = None
+    wait_timeout: Optional[str] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -842,10 +842,10 @@ class ExecuteStatementRequest:
 
 @dataclass
 class ExecuteStatementResponse:
-    manifest: 'ResultManifest' = None
-    result: 'ResultData' = None
-    statement_id: str = None
-    status: 'StatementStatus' = None
+    manifest: Optional['ResultManifest'] = None
+    result: Optional['ResultData'] = None
+    statement_id: Optional[str] = None
+    status: Optional['StatementStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -865,14 +865,14 @@ class ExecuteStatementResponse:
 
 @dataclass
 class ExternalLink:
-    byte_count: int = None
-    chunk_index: int = None
-    expiration: str = None
-    external_link: str = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    expiration: Optional[str] = None
+    external_link: Optional[str] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -971,9 +971,9 @@ class GetQueryRequest:
 
 @dataclass
 class GetResponse:
-    access_control_list: 'List[AccessControl]' = None
-    object_id: str = None
-    object_type: 'ObjectType' = None
+    access_control_list: Optional['List[AccessControl]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional['ObjectType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -999,10 +999,10 @@ class GetStatementRequest:
 
 @dataclass
 class GetStatementResponse:
-    manifest: 'ResultManifest' = None
-    result: 'ResultData' = None
-    statement_id: str = None
-    status: 'StatementStatus' = None
+    manifest: Optional['ResultManifest'] = None
+    result: Optional['ResultData'] = None
+    statement_id: Optional[str] = None
+    status: Optional['StatementStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1037,26 +1037,26 @@ class GetWarehouseRequest:
 
 @dataclass
 class GetWarehouseResponse:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    health: 'EndpointHealth' = None
-    id: str = None
-    instance_profile_arn: str = None
-    jdbc_url: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    num_active_sessions: int = None
-    num_clusters: int = None
-    odbc_params: 'OdbcParams' = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    state: 'State' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'GetWarehouseResponseWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    health: Optional['EndpointHealth'] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    jdbc_url: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    num_active_sessions: Optional[int] = None
+    num_clusters: Optional[int] = None
+    odbc_params: Optional['OdbcParams'] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    state: Optional['State'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['GetWarehouseResponseWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1119,15 +1119,15 @@ class GetWarehouseResponseWarehouseType(Enum):
 
 @dataclass
 class GetWorkspaceWarehouseConfigResponse:
-    channel: 'Channel' = None
-    config_param: 'RepeatedEndpointConfPairs' = None
-    data_access_config: 'List[EndpointConfPair]' = None
-    enabled_warehouse_types: 'List[WarehouseTypePair]' = None
-    global_param: 'RepeatedEndpointConfPairs' = None
-    google_service_account: str = None
-    instance_profile_arn: str = None
-    security_policy: 'GetWorkspaceWarehouseConfigResponseSecurityPolicy' = None
-    sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
+    channel: Optional['Channel'] = None
+    config_param: Optional['RepeatedEndpointConfPairs'] = None
+    data_access_config: Optional['List[EndpointConfPair]'] = None
+    enabled_warehouse_types: Optional['List[WarehouseTypePair]'] = None
+    global_param: Optional['RepeatedEndpointConfPairs'] = None
+    google_service_account: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    security_policy: Optional['GetWorkspaceWarehouseConfigResponseSecurityPolicy'] = None
+    sql_configuration_parameters: Optional['RepeatedEndpointConfPairs'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1173,10 +1173,10 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
 class ListDashboardsRequest:
     """Get dashboard objects"""
 
-    order: 'ListOrder' = None
-    page: int = None
-    page_size: int = None
-    q: str = None
+    order: Optional['ListOrder'] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    q: Optional[str] = None
 
 
 class ListOrder(Enum):
@@ -1189,17 +1189,17 @@ class ListOrder(Enum):
 class ListQueriesRequest:
     """Get a list of queries"""
 
-    order: str = None
-    page: int = None
-    page_size: int = None
-    q: str = None
+    order: Optional[str] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    q: Optional[str] = None
 
 
 @dataclass
 class ListQueriesResponse:
-    has_next_page: bool = None
-    next_page_token: str = None
-    res: 'List[QueryInfo]' = None
+    has_next_page: Optional[bool] = None
+    next_page_token: Optional[str] = None
+    res: Optional['List[QueryInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1219,18 +1219,18 @@ class ListQueriesResponse:
 class ListQueryHistoryRequest:
     """List Queries"""
 
-    filter_by: 'QueryFilter' = None
-    include_metrics: bool = None
-    max_results: int = None
-    page_token: str = None
+    filter_by: Optional['QueryFilter'] = None
+    include_metrics: Optional[bool] = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListResponse:
-    count: int = None
-    page: int = None
-    page_size: int = None
-    results: 'List[Dashboard]' = None
+    count: Optional[int] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    results: Optional['List[Dashboard]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1252,12 +1252,12 @@ class ListResponse:
 class ListWarehousesRequest:
     """List warehouses"""
 
-    run_as_user_id: int = None
+    run_as_user_id: Optional[int] = None
 
 
 @dataclass
 class ListWarehousesResponse:
-    warehouses: 'List[EndpointInfo]' = None
+    warehouses: Optional['List[EndpointInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1289,10 +1289,10 @@ class ObjectTypePlural(Enum):
 
 @dataclass
 class OdbcParams:
-    hostname: str = None
-    path: str = None
-    port: int = None
-    protocol: str = None
+    hostname: Optional[str] = None
+    path: Optional[str] = None
+    port: Optional[int] = None
+    protocol: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1320,10 +1320,10 @@ class OwnableObjectType(Enum):
 
 @dataclass
 class Parameter:
-    name: str = None
-    title: str = None
-    type: 'ParameterType' = None
-    value: Any = None
+    name: Optional[str] = None
+    title: Optional[str] = None
+    type: Optional['ParameterType'] = None
+    value: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1370,29 +1370,29 @@ class PlansState(Enum):
 
 @dataclass
 class Query:
-    can_edit: bool = None
-    created_at: str = None
-    data_source_id: str = None
-    description: str = None
-    id: str = None
-    is_archived: bool = None
-    is_draft: bool = None
-    is_favorite: bool = None
-    is_safe: bool = None
-    last_modified_by: 'User' = None
-    last_modified_by_id: int = None
-    latest_query_data_id: str = None
-    name: str = None
-    options: 'QueryOptions' = None
-    parent: str = None
-    permission_tier: 'PermissionLevel' = None
-    query: str = None
-    query_hash: str = None
-    tags: 'List[str]' = None
-    updated_at: str = None
-    user: 'User' = None
-    user_id: int = None
-    visualizations: 'List[Visualization]' = None
+    can_edit: Optional[bool] = None
+    created_at: Optional[str] = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    is_safe: Optional[bool] = None
+    last_modified_by: Optional['User'] = None
+    last_modified_by_id: Optional[int] = None
+    latest_query_data_id: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional['QueryOptions'] = None
+    parent: Optional[str] = None
+    permission_tier: Optional['PermissionLevel'] = None
+    query: Optional[str] = None
+    query_hash: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
+    user_id: Optional[int] = None
+    visualizations: Optional['List[Visualization]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1450,12 +1450,12 @@ class Query:
 
 @dataclass
 class QueryEditContent:
-    data_source_id: str = None
-    description: str = None
-    name: str = None
-    options: Any = None
-    query: str = None
-    query_id: str = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    query: Optional[str] = None
+    query_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1481,10 +1481,10 @@ class QueryEditContent:
 class QueryFilter:
     """A filter to limit query history results. This field is optional."""
 
-    query_start_time_range: 'TimeRange' = None
-    statuses: 'List[QueryStatus]' = None
-    user_ids: 'List[int]' = None
-    warehouse_ids: 'List[str]' = None
+    query_start_time_range: Optional['TimeRange'] = None
+    statuses: Optional['List[QueryStatus]'] = None
+    user_ids: Optional['List[int]'] = None
+    warehouse_ids: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1504,28 +1504,28 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
-    channel_used: 'ChannelInfo' = None
-    duration: int = None
-    endpoint_id: str = None
-    error_message: str = None
-    executed_as_user_id: int = None
-    executed_as_user_name: str = None
-    execution_end_time_ms: int = None
-    is_final: bool = None
-    lookup_key: str = None
-    metrics: 'QueryMetrics' = None
-    plans_state: 'PlansState' = None
-    query_end_time_ms: int = None
-    query_id: str = None
-    query_start_time_ms: int = None
-    query_text: str = None
-    rows_produced: int = None
-    spark_ui_url: str = None
-    statement_type: 'QueryStatementType' = None
-    status: 'QueryStatus' = None
-    user_id: int = None
-    user_name: str = None
-    warehouse_id: str = None
+    channel_used: Optional['ChannelInfo'] = None
+    duration: Optional[int] = None
+    endpoint_id: Optional[str] = None
+    error_message: Optional[str] = None
+    executed_as_user_id: Optional[int] = None
+    executed_as_user_name: Optional[str] = None
+    execution_end_time_ms: Optional[int] = None
+    is_final: Optional[bool] = None
+    lookup_key: Optional[str] = None
+    metrics: Optional['QueryMetrics'] = None
+    plans_state: Optional['PlansState'] = None
+    query_end_time_ms: Optional[int] = None
+    query_id: Optional[str] = None
+    query_start_time_ms: Optional[int] = None
+    query_text: Optional[str] = None
+    rows_produced: Optional[int] = None
+    spark_ui_url: Optional[str] = None
+    statement_type: Optional['QueryStatementType'] = None
+    status: Optional['QueryStatus'] = None
+    user_id: Optional[int] = None
+    user_name: Optional[str] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1581,10 +1581,10 @@ class QueryInfo:
 
 @dataclass
 class QueryList:
-    count: int = None
-    page: int = None
-    page_size: int = None
-    results: 'List[Query]' = None
+    count: Optional[int] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    results: Optional['List[Query]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1606,27 +1606,27 @@ class QueryList:
 class QueryMetrics:
     """Metrics about query execution."""
 
-    compilation_time_ms: int = None
-    execution_time_ms: int = None
-    network_sent_bytes: int = None
-    photon_total_time_ms: int = None
-    queued_overload_time_ms: int = None
-    queued_provisioning_time_ms: int = None
-    read_bytes: int = None
-    read_cache_bytes: int = None
-    read_files_count: int = None
-    read_partitions_count: int = None
-    read_remote_bytes: int = None
-    result_fetch_time_ms: int = None
-    result_from_cache: bool = None
-    rows_produced_count: int = None
-    rows_read_count: int = None
-    spill_to_disk_bytes: int = None
-    task_total_time_ms: int = None
-    total_files_count: int = None
-    total_partitions_count: int = None
-    total_time_ms: int = None
-    write_remote_bytes: int = None
+    compilation_time_ms: Optional[int] = None
+    execution_time_ms: Optional[int] = None
+    network_sent_bytes: Optional[int] = None
+    photon_total_time_ms: Optional[int] = None
+    queued_overload_time_ms: Optional[int] = None
+    queued_provisioning_time_ms: Optional[int] = None
+    read_bytes: Optional[int] = None
+    read_cache_bytes: Optional[int] = None
+    read_files_count: Optional[int] = None
+    read_partitions_count: Optional[int] = None
+    read_remote_bytes: Optional[int] = None
+    result_fetch_time_ms: Optional[int] = None
+    result_from_cache: Optional[bool] = None
+    rows_produced_count: Optional[int] = None
+    rows_read_count: Optional[int] = None
+    spill_to_disk_bytes: Optional[int] = None
+    task_total_time_ms: Optional[int] = None
+    total_files_count: Optional[int] = None
+    total_partitions_count: Optional[int] = None
+    total_time_ms: Optional[int] = None
+    write_remote_bytes: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1683,8 +1683,8 @@ class QueryMetrics:
 
 @dataclass
 class QueryOptions:
-    moved_to_trash_at: str = None
-    parameters: 'List[Parameter]' = None
+    moved_to_trash_at: Optional[str] = None
+    parameters: Optional['List[Parameter]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1700,12 +1700,12 @@ class QueryOptions:
 
 @dataclass
 class QueryPostContent:
-    data_source_id: str = None
-    description: str = None
-    name: str = None
-    options: Any = None
-    parent: str = None
-    query: str = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    parent: Optional[str] = None
+    query: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1766,8 +1766,8 @@ class QueryStatus(Enum):
 
 @dataclass
 class RepeatedEndpointConfPairs:
-    config_pair: 'List[EndpointConfPair]' = None
-    configuration_pairs: 'List[EndpointConfPair]' = None
+    config_pair: Optional['List[EndpointConfPair]'] = None
+    configuration_pairs: Optional['List[EndpointConfPair]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1802,14 +1802,14 @@ class ResultData:
     in the `external_link` field when using `EXTERNAL_LINKS` disposition. Exactly one of these will
     be set."""
 
-    byte_count: int = None
-    chunk_index: int = None
-    data_array: 'List[List[str]]' = None
-    external_links: 'List[ExternalLink]' = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    data_array: Optional['List[List[str]]'] = None
+    external_links: Optional['List[ExternalLink]'] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1840,12 +1840,12 @@ class ResultData:
 class ResultManifest:
     """The result manifest provides schema and metadata for the result set."""
 
-    chunks: 'List[ChunkInfo]' = None
-    format: 'Format' = None
-    schema: 'ResultSchema' = None
-    total_byte_count: int = None
-    total_chunk_count: int = None
-    total_row_count: int = None
+    chunks: Optional['List[ChunkInfo]'] = None
+    format: Optional['Format'] = None
+    schema: Optional['ResultSchema'] = None
+    total_byte_count: Optional[int] = None
+    total_chunk_count: Optional[int] = None
+    total_row_count: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1871,8 +1871,8 @@ class ResultManifest:
 class ResultSchema:
     """Schema is an ordered list of column descriptions."""
 
-    column_count: int = None
-    columns: 'List[ColumnInfo]' = None
+    column_count: Optional[int] = None
+    columns: Optional['List[ColumnInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1887,8 +1887,8 @@ class ResultSchema:
 
 @dataclass
 class ServiceError:
-    error_code: 'ServiceErrorCode' = None
-    message: str = None
+    error_code: Optional['ServiceErrorCode'] = None
+    message: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1925,7 +1925,7 @@ class SetRequest:
 
     object_type: 'ObjectTypePlural'
     object_id: str
-    access_control_list: 'List[AccessControl]' = None
+    access_control_list: Optional['List[AccessControl]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1944,9 +1944,9 @@ class SetRequest:
 
 @dataclass
 class SetResponse:
-    access_control_list: 'List[AccessControl]' = None
-    object_id: str = None
-    object_type: 'ObjectType' = None
+    access_control_list: Optional['List[AccessControl]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional['ObjectType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1965,15 +1965,15 @@ class SetResponse:
 
 @dataclass
 class SetWorkspaceWarehouseConfigRequest:
-    channel: 'Channel' = None
-    config_param: 'RepeatedEndpointConfPairs' = None
-    data_access_config: 'List[EndpointConfPair]' = None
-    enabled_warehouse_types: 'List[WarehouseTypePair]' = None
-    global_param: 'RepeatedEndpointConfPairs' = None
-    google_service_account: str = None
-    instance_profile_arn: str = None
-    security_policy: 'SetWorkspaceWarehouseConfigRequestSecurityPolicy' = None
-    sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
+    channel: Optional['Channel'] = None
+    config_param: Optional['RepeatedEndpointConfPairs'] = None
+    data_access_config: Optional['List[EndpointConfPair]'] = None
+    enabled_warehouse_types: Optional['List[WarehouseTypePair]'] = None
+    global_param: Optional['RepeatedEndpointConfPairs'] = None
+    google_service_account: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    security_policy: Optional['SetWorkspaceWarehouseConfigRequestSecurityPolicy'] = None
+    sql_configuration_parameters: Optional['RepeatedEndpointConfPairs'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2060,8 +2060,8 @@ class StatementState(Enum):
 class StatementStatus:
     """Status response includes execution state and if relevant, error information."""
 
-    error: 'ServiceError' = None
-    state: 'StatementState' = None
+    error: Optional['ServiceError'] = None
+    state: Optional['StatementState'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2092,7 +2092,7 @@ class StopRequest:
 
 @dataclass
 class Success:
-    message: 'SuccessMessage' = None
+    message: Optional['SuccessMessage'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2111,9 +2111,9 @@ class SuccessMessage(Enum):
 
 @dataclass
 class TerminationReason:
-    code: 'TerminationReasonCode' = None
-    parameters: 'Dict[str,str]' = None
-    type: 'TerminationReasonType' = None
+    code: Optional['TerminationReasonCode'] = None
+    parameters: Optional['Dict[str,str]'] = None
+    type: Optional['TerminationReasonType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2224,8 +2224,8 @@ class TerminationReasonType(Enum):
 
 @dataclass
 class TimeRange:
-    end_time_ms: int = None
-    start_time_ms: int = None
+    end_time_ms: Optional[int] = None
+    start_time_ms: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2254,7 +2254,7 @@ class TimeoutAction(Enum):
 
 @dataclass
 class TransferOwnershipObjectId:
-    new_owner: str = None
+    new_owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2272,7 +2272,7 @@ class TransferOwnershipRequest:
 
     object_type: 'OwnableObjectType'
     object_id: 'TransferOwnershipObjectId'
-    new_owner: str = None
+    new_owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2290,11 +2290,11 @@ class TransferOwnershipRequest:
 
 @dataclass
 class User:
-    email: str = None
-    id: int = None
-    is_db_admin: bool = None
-    name: str = None
-    profile_image_url: str = None
+    email: Optional[str] = None
+    id: Optional[int] = None
+    is_db_admin: Optional[bool] = None
+    name: Optional[str] = None
+    profile_image_url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2321,13 +2321,13 @@ class Visualization:
     create a new one with a POST request to the same endpoint. Databricks does not recommend
     constructing ad-hoc visualizations entirely in JSON."""
 
-    created_at: str = None
-    description: str = None
-    id: str = None
-    name: str = None
-    options: Any = None
-    type: str = None
-    updated_at: str = None
+    created_at: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    type: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2353,8 +2353,8 @@ class Visualization:
 
 @dataclass
 class WarehouseTypePair:
-    enabled: bool = None
-    warehouse_type: 'WarehouseTypePairWarehouseType' = None
+    enabled: Optional[bool] = None
+    warehouse_type: Optional['WarehouseTypePairWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2378,10 +2378,10 @@ class WarehouseTypePairWarehouseType(Enum):
 
 @dataclass
 class Widget:
-    id: int = None
-    options: 'WidgetOptions' = None
-    visualization: 'Visualization' = None
-    width: int = None
+    id: Optional[int] = None
+    options: Optional['WidgetOptions'] = None
+    visualization: Optional['Visualization'] = None
+    width: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2401,13 +2401,13 @@ class Widget:
 
 @dataclass
 class WidgetOptions:
-    created_at: str = None
-    dashboard_id: str = None
-    is_hidden: bool = None
-    parameter_mappings: Any = None
-    position: Any = None
-    text: str = None
-    updated_at: str = None
+    created_at: Optional[str] = None
+    dashboard_id: Optional[str] = None
+    is_hidden: Optional[bool] = None
+    parameter_mappings: Optional[Any] = None
+    position: Optional[Any] = None
+    text: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}

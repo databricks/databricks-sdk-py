@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -14,7 +14,7 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AccountsCreateMetastore:
-    metastore_info: 'CreateMetastore' = None
+    metastore_info: Optional['CreateMetastore'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -28,9 +28,9 @@ class AccountsCreateMetastore:
 
 @dataclass
 class AccountsCreateMetastoreAssignment:
-    metastore_assignment: 'CreateMetastoreAssignment' = None
-    metastore_id: str = None
-    workspace_id: int = None
+    metastore_assignment: Optional['CreateMetastoreAssignment'] = None
+    metastore_id: Optional[str] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -48,8 +48,8 @@ class AccountsCreateMetastoreAssignment:
 
 @dataclass
 class AccountsCreateStorageCredential:
-    credential_info: 'CreateStorageCredential' = None
-    metastore_id: str = None
+    credential_info: Optional['CreateStorageCredential'] = None
+    metastore_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -64,9 +64,37 @@ class AccountsCreateStorageCredential:
 
 
 @dataclass
+class AccountsMetastoreAssignment:
+    metastore_assignment: Optional['MetastoreAssignment'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsMetastoreAssignment':
+        return cls(metastore_assignment=_from_dict(d, 'metastore_assignment', MetastoreAssignment))
+
+
+@dataclass
+class AccountsMetastoreInfo:
+    metastore_info: Optional['MetastoreInfo'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metastore_info: body['metastore_info'] = self.metastore_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsMetastoreInfo':
+        return cls(metastore_info=_from_dict(d, 'metastore_info', MetastoreInfo))
+
+
+@dataclass
 class AccountsUpdateMetastore:
-    metastore_id: str = None
-    metastore_info: 'UpdateMetastore' = None
+    metastore_id: Optional[str] = None
+    metastore_info: Optional['UpdateMetastore'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -82,9 +110,9 @@ class AccountsUpdateMetastore:
 
 @dataclass
 class AccountsUpdateMetastoreAssignment:
-    metastore_assignment: 'UpdateMetastoreAssignment' = None
-    metastore_id: str = None
-    workspace_id: int = None
+    metastore_assignment: Optional['UpdateMetastoreAssignment'] = None
+    metastore_id: Optional[str] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -102,9 +130,9 @@ class AccountsUpdateMetastoreAssignment:
 
 @dataclass
 class AccountsUpdateStorageCredential:
-    credential_info: 'UpdateStorageCredential' = None
-    metastore_id: str = None
-    name: str = None
+    credential_info: Optional['UpdateStorageCredential'] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -123,8 +151,8 @@ class AccountsUpdateStorageCredential:
 @dataclass
 class AwsIamRole:
     role_arn: str
-    external_id: str = None
-    unity_catalog_iam_arn: str = None
+    external_id: Optional[str] = None
+    unity_catalog_iam_arn: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -143,8 +171,8 @@ class AwsIamRole:
 @dataclass
 class AzureManagedIdentity:
     access_connector_id: str
-    credential_id: str = None
-    managed_identity_id: str = None
+    credential_id: Optional[str] = None
+    managed_identity_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -182,23 +210,23 @@ class AzureServicePrincipal:
 
 @dataclass
 class CatalogInfo:
-    catalog_type: 'CatalogType' = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
-    enable_auto_maintenance: 'EnableAutoMaintenance' = None
-    isolation_mode: 'IsolationMode' = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    properties: 'Dict[str,str]' = None
-    provider_name: str = None
-    share_name: str = None
-    storage_location: str = None
-    storage_root: str = None
-    updated_at: int = None
-    updated_by: str = None
+    catalog_type: Optional['CatalogType'] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
+    enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    isolation_mode: Optional['IsolationMode'] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
+    provider_name: Optional[str] = None
+    share_name: Optional[str] = None
+    storage_location: Optional[str] = None
+    storage_root: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -255,18 +283,18 @@ class CatalogType(Enum):
 
 @dataclass
 class ColumnInfo:
-    comment: str = None
-    mask: 'ColumnMask' = None
-    name: str = None
-    nullable: bool = None
-    partition_index: int = None
-    position: int = None
-    type_interval_type: str = None
-    type_json: str = None
-    type_name: 'ColumnTypeName' = None
-    type_precision: int = None
-    type_scale: int = None
-    type_text: str = None
+    comment: Optional[str] = None
+    mask: Optional['ColumnMask'] = None
+    name: Optional[str] = None
+    nullable: Optional[bool] = None
+    partition_index: Optional[int] = None
+    position: Optional[int] = None
+    type_interval_type: Optional[str] = None
+    type_json: Optional[str] = None
+    type_name: Optional['ColumnTypeName'] = None
+    type_precision: Optional[int] = None
+    type_scale: Optional[int] = None
+    type_text: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -302,8 +330,8 @@ class ColumnInfo:
 
 @dataclass
 class ColumnMask:
-    function_name: str = None
-    using_column_names: 'List[str]' = None
+    function_name: Optional[str] = None
+    using_column_names: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -345,22 +373,22 @@ class ColumnTypeName(Enum):
 
 @dataclass
 class ConnectionInfo:
-    comment: str = None
-    connection_id: str = None
-    connection_type: 'ConnectionType' = None
-    created_at: int = None
-    created_by: str = None
-    credential_type: 'CredentialType' = None
-    full_name: str = None
-    metastore_id: str = None
-    name: str = None
-    options_kvpairs: 'OptionsKvPairs' = None
-    owner: str = None
-    properties_kvpairs: 'Dict[str,str]' = None
-    read_only: bool = None
-    updated_at: int = None
-    updated_by: str = None
-    url: str = None
+    comment: Optional[str] = None
+    connection_id: Optional[str] = None
+    connection_type: Optional['ConnectionType'] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    credential_type: Optional['CredentialType'] = None
+    full_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    options_kvpairs: Optional['OptionsKvPairs'] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['Dict[str,str]'] = None
+    read_only: Optional[bool] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -417,11 +445,11 @@ class ConnectionType(Enum):
 @dataclass
 class CreateCatalog:
     name: str
-    comment: str = None
-    properties: 'Dict[str,str]' = None
-    provider_name: str = None
-    share_name: str = None
-    storage_root: str = None
+    comment: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
+    provider_name: Optional[str] = None
+    share_name: Optional[str] = None
+    storage_root: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -448,10 +476,10 @@ class CreateConnection:
     name: str
     connection_type: 'ConnectionType'
     options_kvpairs: 'OptionsKvPairs'
-    comment: str = None
-    owner: str = None
-    properties_kvpairs: 'Dict[str,str]' = None
-    read_only: bool = None
+    comment: Optional[str] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['Dict[str,str]'] = None
+    read_only: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -480,9 +508,9 @@ class CreateExternalLocation:
     name: str
     url: str
     credential_name: str
-    comment: str = None
-    read_only: bool = None
-    skip_validation: bool = None
+    comment: Optional[str] = None
+    read_only: Optional[bool] = None
+    skip_validation: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -522,11 +550,11 @@ class CreateFunction:
     is_null_call: bool
     security_type: 'CreateFunctionSecurityType'
     specific_name: str
-    comment: str = None
-    external_language: str = None
-    external_name: str = None
-    properties: 'Dict[str,str]' = None
-    sql_path: str = None
+    comment: Optional[str] = None
+    external_language: Optional[str] = None
+    external_name: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
+    sql_path: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -613,7 +641,7 @@ class CreateFunctionSqlDataAccess(Enum):
 class CreateMetastore:
     name: str
     storage_root: str
-    region: str = None
+    region: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -633,7 +661,7 @@ class CreateMetastore:
 class CreateMetastoreAssignment:
     metastore_id: str
     default_catalog_name: str
-    workspace_id: int = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -650,12 +678,32 @@ class CreateMetastoreAssignment:
 
 
 @dataclass
+class CreateMetastoreAssignmentsResponseItem:
+    message: Optional[str] = None
+    metastore_assignment: Optional['MetastoreAssignment'] = None
+    status_code: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        if self.status_code is not None: body['status_code'] = self.status_code
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateMetastoreAssignmentsResponseItem':
+        return cls(message=d.get('message', None),
+                   metastore_assignment=_from_dict(d, 'metastore_assignment', MetastoreAssignment),
+                   status_code=d.get('status_code', None))
+
+
+@dataclass
 class CreateSchema:
     name: str
     catalog_name: str
-    comment: str = None
-    properties: 'Dict[str,str]' = None
-    storage_root: str = None
+    comment: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
+    storage_root: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -678,13 +726,13 @@ class CreateSchema:
 @dataclass
 class CreateStorageCredential:
     name: str
-    aws_iam_role: 'AwsIamRole' = None
-    azure_managed_identity: 'AzureManagedIdentity' = None
-    azure_service_principal: 'AzureServicePrincipal' = None
-    comment: str = None
-    databricks_gcp_service_account: Any = None
-    read_only: bool = None
-    skip_validation: bool = None
+    aws_iam_role: Optional['AwsIamRole'] = None
+    azure_managed_identity: Optional['AzureManagedIdentity'] = None
+    azure_service_principal: Optional['AzureServicePrincipal'] = None
+    comment: Optional[str] = None
+    databricks_gcp_service_account: Optional[Any] = None
+    read_only: Optional[bool] = None
+    skip_validation: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -735,8 +783,8 @@ class CreateVolumeRequestContent:
     name: str
     schema_name: str
     volume_type: 'VolumeType'
-    comment: str = None
-    storage_location: str = None
+    comment: Optional[str] = None
+    storage_location: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -768,7 +816,7 @@ class CredentialType(Enum):
 class CurrentWorkspaceBindings:
     """Currently assigned workspaces"""
 
-    workspaces: 'List[int]' = None
+    workspaces: Optional['List[int]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -796,8 +844,8 @@ class DataSourceFormat(Enum):
 
 @dataclass
 class DatabricksGcpServiceAccountResponse:
-    credential_id: str = None
-    email: str = None
+    credential_id: Optional[str] = None
+    email: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -838,7 +886,7 @@ class DeleteCatalogRequest:
     """Delete a catalog"""
 
     name: str
-    force: bool = None
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -853,7 +901,7 @@ class DeleteExternalLocationRequest:
     """Delete an external location"""
 
     name: str
-    force: bool = None
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -861,7 +909,7 @@ class DeleteFunctionRequest:
     """Delete a function"""
 
     name: str
-    force: bool = None
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -869,7 +917,7 @@ class DeleteMetastoreRequest:
     """Delete a metastore"""
 
     id: str
-    force: bool = None
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -884,7 +932,7 @@ class DeleteStorageCredentialRequest:
     """Delete a credential"""
 
     name: str
-    force: bool = None
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -932,8 +980,8 @@ class Dependency:
     """A dependency of a SQL object. Either the __table__ field or the __function__ field must be
     defined."""
 
-    function: 'FunctionDependency' = None
-    table: 'TableDependency' = None
+    function: Optional['FunctionDependency'] = None
+    table: Optional['TableDependency'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -948,10 +996,18 @@ class Dependency:
 
 
 @dataclass
+class DisableRequest:
+    """Disable a system schema"""
+
+    metastore_id: str
+    schema_name: str
+
+
+@dataclass
 class EffectiveAutoMaintenanceFlag:
     value: 'EnableAutoMaintenance'
-    inherited_from_name: str = None
-    inherited_from_type: 'EffectiveAutoMaintenanceFlagInheritedFromType' = None
+    inherited_from_name: Optional[str] = None
+    inherited_from_type: Optional['EffectiveAutoMaintenanceFlagInheritedFromType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -978,7 +1034,7 @@ class EffectiveAutoMaintenanceFlagInheritedFromType(Enum):
 
 @dataclass
 class EffectivePermissionsList:
-    privilege_assignments: 'List[EffectivePrivilegeAssignment]' = None
+    privilege_assignments: Optional['List[EffectivePrivilegeAssignment]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -993,9 +1049,9 @@ class EffectivePermissionsList:
 
 @dataclass
 class EffectivePrivilege:
-    inherited_from_name: str = None
-    inherited_from_type: 'SecurableType' = None
-    privilege: 'Privilege' = None
+    inherited_from_name: Optional[str] = None
+    inherited_from_type: Optional['SecurableType'] = None
+    privilege: Optional['Privilege'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1013,8 +1069,8 @@ class EffectivePrivilege:
 
 @dataclass
 class EffectivePrivilegeAssignment:
-    principal: str = None
-    privileges: 'List[EffectivePrivilege]' = None
+    principal: Optional[str] = None
+    privileges: Optional['List[EffectivePrivilege]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1038,18 +1094,18 @@ class EnableAutoMaintenance(Enum):
 
 @dataclass
 class ExternalLocationInfo:
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    credential_id: str = None
-    credential_name: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    read_only: bool = None
-    updated_at: int = None
-    updated_by: str = None
-    url: str = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    credential_id: Optional[str] = None
+    credential_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    read_only: Optional[bool] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1124,35 +1180,35 @@ class FunctionDependency:
 
 @dataclass
 class FunctionInfo:
-    catalog_name: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    data_type: 'ColumnTypeName' = None
-    external_language: str = None
-    external_name: str = None
-    full_data_type: str = None
-    full_name: str = None
-    function_id: str = None
-    input_params: 'List[FunctionParameterInfo]' = None
-    is_deterministic: bool = None
-    is_null_call: bool = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    parameter_style: 'FunctionInfoParameterStyle' = None
-    properties: 'Dict[str,str]' = None
-    return_params: 'List[FunctionParameterInfo]' = None
-    routine_body: 'FunctionInfoRoutineBody' = None
-    routine_definition: str = None
-    routine_dependencies: 'List[Dependency]' = None
-    schema_name: str = None
-    security_type: 'FunctionInfoSecurityType' = None
-    specific_name: str = None
-    sql_data_access: 'FunctionInfoSqlDataAccess' = None
-    sql_path: str = None
-    updated_at: int = None
-    updated_by: str = None
+    catalog_name: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    data_type: Optional['ColumnTypeName'] = None
+    external_language: Optional[str] = None
+    external_name: Optional[str] = None
+    full_data_type: Optional[str] = None
+    full_name: Optional[str] = None
+    function_id: Optional[str] = None
+    input_params: Optional['List[FunctionParameterInfo]'] = None
+    is_deterministic: Optional[bool] = None
+    is_null_call: Optional[bool] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    parameter_style: Optional['FunctionInfoParameterStyle'] = None
+    properties: Optional['Dict[str,str]'] = None
+    return_params: Optional['List[FunctionParameterInfo]'] = None
+    routine_body: Optional['FunctionInfoRoutineBody'] = None
+    routine_definition: Optional[str] = None
+    routine_dependencies: Optional['List[Dependency]'] = None
+    schema_name: Optional[str] = None
+    security_type: Optional['FunctionInfoSecurityType'] = None
+    specific_name: Optional[str] = None
+    sql_data_access: Optional['FunctionInfoSqlDataAccess'] = None
+    sql_path: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1257,14 +1313,14 @@ class FunctionParameterInfo:
     type_text: str
     type_name: 'ColumnTypeName'
     position: int
-    comment: str = None
-    parameter_default: str = None
-    parameter_mode: 'FunctionParameterMode' = None
-    parameter_type: 'FunctionParameterType' = None
-    type_interval_type: str = None
-    type_json: str = None
-    type_precision: int = None
-    type_scale: int = None
+    comment: Optional[str] = None
+    parameter_default: Optional[str] = None
+    parameter_mode: Optional['FunctionParameterMode'] = None
+    parameter_type: Optional['FunctionParameterType'] = None
+    type_interval_type: Optional[str] = None
+    type_json: Optional[str] = None
+    type_precision: Optional[int] = None
+    type_scale: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1353,7 +1409,7 @@ class GetEffectiveRequest:
 
     securable_type: 'SecurableType'
     full_name: str
-    principal: str = None
+    principal: Optional[str] = None
 
 
 @dataclass
@@ -1376,7 +1432,7 @@ class GetGrantRequest:
 
     securable_type: 'SecurableType'
     full_name: str
-    principal: str = None
+    principal: Optional[str] = None
 
 
 @dataclass
@@ -1388,24 +1444,24 @@ class GetMetastoreRequest:
 
 @dataclass
 class GetMetastoreSummaryResponse:
-    cloud: str = None
-    created_at: int = None
-    created_by: str = None
-    default_data_access_config_id: str = None
-    delta_sharing_organization_name: str = None
-    delta_sharing_recipient_token_lifetime_in_seconds: int = None
-    delta_sharing_scope: 'GetMetastoreSummaryResponseDeltaSharingScope' = None
-    global_metastore_id: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    privilege_model_version: str = None
-    region: str = None
-    storage_root: str = None
-    storage_root_credential_id: str = None
-    storage_root_credential_name: str = None
-    updated_at: int = None
-    updated_by: str = None
+    cloud: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    default_data_access_config_id: Optional[str] = None
+    delta_sharing_organization_name: Optional[str] = None
+    delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
+    delta_sharing_scope: Optional['GetMetastoreSummaryResponseDeltaSharingScope'] = None
+    global_metastore_id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    privilege_model_version: Optional[str] = None
+    region: Optional[str] = None
+    storage_root: Optional[str] = None
+    storage_root_credential_id: Optional[str] = None
+    storage_root_credential_name: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1486,7 +1542,7 @@ class GetTableRequest:
     """Get a table"""
 
     full_name: str
-    include_delta_metadata: bool = None
+    include_delta_metadata: Optional[bool] = None
 
 
 @dataclass
@@ -1519,7 +1575,7 @@ class ListAccountStorageCredentialsRequest:
 
 @dataclass
 class ListCatalogsResponse:
-    catalogs: 'List[CatalogInfo]' = None
+    catalogs: Optional['List[CatalogInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1533,7 +1589,7 @@ class ListCatalogsResponse:
 
 @dataclass
 class ListConnectionsResponse:
-    connections: 'List[ConnectionInfo]' = None
+    connections: Optional['List[ConnectionInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1547,7 +1603,7 @@ class ListConnectionsResponse:
 
 @dataclass
 class ListExternalLocationsResponse:
-    external_locations: 'List[ExternalLocationInfo]' = None
+    external_locations: Optional['List[ExternalLocationInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1570,7 +1626,7 @@ class ListFunctionsRequest:
 
 @dataclass
 class ListFunctionsResponse:
-    functions: 'List[FunctionInfo]' = None
+    functions: Optional['List[FunctionInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1584,7 +1640,7 @@ class ListFunctionsResponse:
 
 @dataclass
 class ListMetastoresResponse:
-    metastores: 'List[MetastoreInfo]' = None
+    metastores: Optional['List[MetastoreInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1605,7 +1661,7 @@ class ListSchemasRequest:
 
 @dataclass
 class ListSchemasResponse:
-    schemas: 'List[SchemaInfo]' = None
+    schemas: Optional['List[SchemaInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1619,7 +1675,7 @@ class ListSchemasResponse:
 
 @dataclass
 class ListStorageCredentialsResponse:
-    storage_credentials: 'List[StorageCredentialInfo]' = None
+    storage_credentials: Optional['List[StorageCredentialInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1637,16 +1693,37 @@ class ListSummariesRequest:
     """List table summaries"""
 
     catalog_name: str
-    max_results: int = None
-    page_token: str = None
-    schema_name_pattern: str = None
-    table_name_pattern: str = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
+    schema_name_pattern: Optional[str] = None
+    table_name_pattern: Optional[str] = None
+
+
+@dataclass
+class ListSystemSchemasRequest:
+    """List system schemas"""
+
+    metastore_id: str
+
+
+@dataclass
+class ListSystemSchemasResponse:
+    schemas: Optional['List[SystemSchemaInfo]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListSystemSchemasResponse':
+        return cls(schemas=_repeated(d, 'schemas', SystemSchemaInfo))
 
 
 @dataclass
 class ListTableSummariesResponse:
-    next_page_token: str = None
-    tables: 'List[TableSummary]' = None
+    next_page_token: Optional[str] = None
+    tables: Optional['List[TableSummary]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1666,15 +1743,15 @@ class ListTablesRequest:
 
     catalog_name: str
     schema_name: str
-    include_delta_metadata: bool = None
-    max_results: int = None
-    page_token: str = None
+    include_delta_metadata: Optional[bool] = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListTablesResponse:
-    next_page_token: str = None
-    tables: 'List[TableInfo]' = None
+    next_page_token: Optional[str] = None
+    tables: Optional['List[TableInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1697,7 +1774,7 @@ class ListVolumesRequest:
 
 @dataclass
 class ListVolumesResponseContent:
-    volumes: 'List[VolumeInfo]' = None
+    volumes: Optional['List[VolumeInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1712,8 +1789,8 @@ class ListVolumesResponseContent:
 @dataclass
 class MetastoreAssignment:
     metastore_id: str
-    workspace_id: str
-    default_catalog_name: str = None
+    workspace_id: int
+    default_catalog_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1731,24 +1808,24 @@ class MetastoreAssignment:
 
 @dataclass
 class MetastoreInfo:
-    cloud: str = None
-    created_at: int = None
-    created_by: str = None
-    default_data_access_config_id: str = None
-    delta_sharing_organization_name: str = None
-    delta_sharing_recipient_token_lifetime_in_seconds: int = None
-    delta_sharing_scope: 'MetastoreInfoDeltaSharingScope' = None
-    global_metastore_id: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    privilege_model_version: str = None
-    region: str = None
-    storage_root: str = None
-    storage_root_credential_id: str = None
-    storage_root_credential_name: str = None
-    updated_at: int = None
-    updated_by: str = None
+    cloud: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    default_data_access_config_id: Optional[str] = None
+    delta_sharing_organization_name: Optional[str] = None
+    delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
+    delta_sharing_scope: Optional['MetastoreInfoDeltaSharingScope'] = None
+    global_metastore_id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    privilege_model_version: Optional[str] = None
+    region: Optional[str] = None
+    storage_root: Optional[str] = None
+    storage_root_credential_id: Optional[str] = None
+    storage_root_credential_name: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1841,9 +1918,9 @@ class OptionsKvPairs:
 
 @dataclass
 class PermissionsChange:
-    add: 'List[Privilege]' = None
-    principal: str = None
-    remove: 'List[Privilege]' = None
+    add: Optional['List[Privilege]'] = None
+    principal: Optional[str] = None
+    remove: Optional['List[Privilege]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1859,7 +1936,7 @@ class PermissionsChange:
 
 @dataclass
 class PermissionsList:
-    privilege_assignments: 'List[PrivilegeAssignment]' = None
+    privilege_assignments: Optional['List[PrivilegeAssignment]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1924,8 +2001,8 @@ class Privilege(Enum):
 
 @dataclass
 class PrivilegeAssignment:
-    principal: str = None
-    privileges: 'List[Privilege]' = None
+    principal: Optional[str] = None
+    privileges: Optional['List[Privilege]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1950,22 +2027,22 @@ class ReadVolumeRequest:
 
 @dataclass
 class SchemaInfo:
-    catalog_name: str = None
-    catalog_type: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
-    enable_auto_maintenance: 'EnableAutoMaintenance' = None
-    full_name: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    properties: 'Dict[str,str]' = None
-    storage_location: str = None
-    storage_root: str = None
-    updated_at: int = None
-    updated_by: str = None
+    catalog_name: Optional[str] = None
+    catalog_type: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
+    enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    full_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
+    storage_location: Optional[str] = None
+    storage_root: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2030,21 +2107,21 @@ class SecurableType(Enum):
 
 @dataclass
 class StorageCredentialInfo:
-    aws_iam_role: 'AwsIamRole' = None
-    azure_managed_identity: 'AzureManagedIdentity' = None
-    azure_service_principal: 'AzureServicePrincipal' = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    databricks_gcp_service_account: 'DatabricksGcpServiceAccountResponse' = None
-    id: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    read_only: bool = None
-    updated_at: int = None
-    updated_by: str = None
-    used_for_managed_storage: bool = None
+    aws_iam_role: Optional['AwsIamRole'] = None
+    azure_managed_identity: Optional['AzureManagedIdentity'] = None
+    azure_service_principal: Optional['AzureServicePrincipal'] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    databricks_gcp_service_account: Optional['DatabricksGcpServiceAccountResponse'] = None
+    id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    read_only: Optional[bool] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    used_for_managed_storage: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2089,13 +2166,39 @@ class StorageCredentialInfo:
 
 
 @dataclass
+class SystemSchemaInfo:
+    schema: Optional[str] = None
+    state: Optional['SystemSchemaInfoState'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.schema is not None: body['schema'] = self.schema
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SystemSchemaInfo':
+        return cls(schema=d.get('schema', None), state=_enum(d, 'state', SystemSchemaInfoState))
+
+
+class SystemSchemaInfoState(Enum):
+    """The current state of enablement for the system schema. An empty string means the system schema
+    is available and ready for opt-in."""
+
+    DisableInitialized = 'DisableInitialized'
+    EnableCompleted = 'EnableCompleted'
+    EnableInitialized = 'EnableInitialized'
+    Unavailable = 'Unavailable'
+
+
+@dataclass
 class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
     __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
 
-    foreign_key_constraint: 'ForeignKeyConstraint' = None
-    named_table_constraint: 'NamedTableConstraint' = None
-    primary_key_constraint: 'PrimaryKeyConstraint' = None
+    foreign_key_constraint: Optional['ForeignKeyConstraint'] = None
+    named_table_constraint: Optional['NamedTableConstraint'] = None
+    primary_key_constraint: Optional['PrimaryKeyConstraint'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2113,7 +2216,7 @@ class TableConstraint:
 
 @dataclass
 class TableConstraintList:
-    table_constraints: 'List[TableConstraint]' = None
+    table_constraints: Optional['List[TableConstraint]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2143,34 +2246,34 @@ class TableDependency:
 
 @dataclass
 class TableInfo:
-    catalog_name: str = None
-    columns: 'List[ColumnInfo]' = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    data_access_configuration_id: str = None
-    data_source_format: 'DataSourceFormat' = None
-    deleted_at: int = None
-    delta_runtime_properties_kvpairs: 'DeltaRuntimePropertiesKvPairs' = None
-    effective_auto_maintenance_flag: 'EffectiveAutoMaintenanceFlag' = None
-    enable_auto_maintenance: 'EnableAutoMaintenance' = None
-    full_name: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    properties: 'Dict[str,str]' = None
-    row_filter: 'TableRowFilter' = None
-    schema_name: str = None
-    sql_path: str = None
-    storage_credential_name: str = None
-    storage_location: str = None
-    table_constraints: 'TableConstraintList' = None
-    table_id: str = None
-    table_type: 'TableType' = None
-    updated_at: int = None
-    updated_by: str = None
-    view_definition: str = None
-    view_dependencies: 'List[Dependency]' = None
+    catalog_name: Optional[str] = None
+    columns: Optional['List[ColumnInfo]'] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    data_access_configuration_id: Optional[str] = None
+    data_source_format: Optional['DataSourceFormat'] = None
+    deleted_at: Optional[int] = None
+    delta_runtime_properties_kvpairs: Optional['DeltaRuntimePropertiesKvPairs'] = None
+    effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
+    enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    full_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
+    row_filter: Optional['TableRowFilter'] = None
+    schema_name: Optional[str] = None
+    sql_path: Optional[str] = None
+    storage_credential_name: Optional[str] = None
+    storage_location: Optional[str] = None
+    table_constraints: Optional['TableConstraintList'] = None
+    table_id: Optional[str] = None
+    table_type: Optional['TableType'] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    view_definition: Optional[str] = None
+    view_dependencies: Optional['List[Dependency]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2261,8 +2364,8 @@ class TableRowFilter:
 
 @dataclass
 class TableSummary:
-    full_name: str = None
-    table_type: 'TableType' = None
+    full_name: Optional[str] = None
+    table_type: Optional['TableType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2310,9 +2413,9 @@ class UpdateAutoMaintenance:
 
 @dataclass
 class UpdateAutoMaintenanceResponse:
-    state: bool = None
-    user_id: int = None
-    username: str = None
+    state: Optional[bool] = None
+    user_id: Optional[int] = None
+    username: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2330,11 +2433,11 @@ class UpdateAutoMaintenanceResponse:
 
 @dataclass
 class UpdateCatalog:
-    comment: str = None
-    isolation_mode: 'IsolationMode' = None
-    name: str = None
-    owner: str = None
-    properties: 'Dict[str,str]' = None
+    comment: Optional[str] = None
+    isolation_mode: Optional['IsolationMode'] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2358,7 +2461,7 @@ class UpdateCatalog:
 class UpdateConnection:
     name: str
     options_kvpairs: 'OptionsKvPairs'
-    name_arg: str = None
+    name_arg: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2376,13 +2479,13 @@ class UpdateConnection:
 
 @dataclass
 class UpdateExternalLocation:
-    comment: str = None
-    credential_name: str = None
-    force: bool = None
-    name: str = None
-    owner: str = None
-    read_only: bool = None
-    url: str = None
+    comment: Optional[str] = None
+    credential_name: Optional[str] = None
+    force: Optional[bool] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    read_only: Optional[bool] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2408,8 +2511,8 @@ class UpdateExternalLocation:
 
 @dataclass
 class UpdateFunction:
-    name: str = None
-    owner: str = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2424,14 +2527,14 @@ class UpdateFunction:
 
 @dataclass
 class UpdateMetastore:
-    delta_sharing_organization_name: str = None
-    delta_sharing_recipient_token_lifetime_in_seconds: int = None
-    delta_sharing_scope: 'UpdateMetastoreDeltaSharingScope' = None
-    id: str = None
-    name: str = None
-    owner: str = None
-    privilege_model_version: str = None
-    storage_root_credential_id: str = None
+    delta_sharing_organization_name: Optional[str] = None
+    delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
+    delta_sharing_scope: Optional['UpdateMetastoreDeltaSharingScope'] = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    privilege_model_version: Optional[str] = None
+    storage_root_credential_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2465,9 +2568,9 @@ class UpdateMetastore:
 
 @dataclass
 class UpdateMetastoreAssignment:
-    default_catalog_name: str = None
-    metastore_id: str = None
-    workspace_id: int = None
+    default_catalog_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2492,9 +2595,9 @@ class UpdateMetastoreDeltaSharingScope(Enum):
 
 @dataclass
 class UpdatePermissions:
-    changes: 'List[PermissionsChange]' = None
-    full_name: str = None
-    securable_type: 'SecurableType' = None
+    changes: Optional['List[PermissionsChange]'] = None
+    full_name: Optional[str] = None
+    securable_type: Optional['SecurableType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2512,11 +2615,11 @@ class UpdatePermissions:
 
 @dataclass
 class UpdateSchema:
-    comment: str = None
-    full_name: str = None
-    name: str = None
-    owner: str = None
-    properties: 'Dict[str,str]' = None
+    comment: Optional[str] = None
+    full_name: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties: Optional['Dict[str,str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2538,16 +2641,16 @@ class UpdateSchema:
 
 @dataclass
 class UpdateStorageCredential:
-    aws_iam_role: 'AwsIamRole' = None
-    azure_managed_identity: 'AzureManagedIdentity' = None
-    azure_service_principal: 'AzureServicePrincipal' = None
-    comment: str = None
-    databricks_gcp_service_account: Any = None
-    force: bool = None
-    name: str = None
-    owner: str = None
-    read_only: bool = None
-    skip_validation: bool = None
+    aws_iam_role: Optional['AwsIamRole'] = None
+    azure_managed_identity: Optional['AzureManagedIdentity'] = None
+    azure_service_principal: Optional['AzureServicePrincipal'] = None
+    comment: Optional[str] = None
+    databricks_gcp_service_account: Optional[Any] = None
+    force: Optional[bool] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    read_only: Optional[bool] = None
+    skip_validation: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2581,10 +2684,10 @@ class UpdateStorageCredential:
 
 @dataclass
 class UpdateVolumeRequestContent:
-    comment: str = None
-    full_name_arg: str = None
-    name: str = None
-    owner: str = None
+    comment: Optional[str] = None
+    full_name_arg: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2604,9 +2707,9 @@ class UpdateVolumeRequestContent:
 
 @dataclass
 class UpdateWorkspaceBindings:
-    assign_workspaces: 'List[int]' = None
-    name: str = None
-    unassign_workspaces: 'List[int]' = None
+    assign_workspaces: Optional['List[int]'] = None
+    name: Optional[str] = None
+    unassign_workspaces: Optional['List[int]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2624,14 +2727,14 @@ class UpdateWorkspaceBindings:
 
 @dataclass
 class ValidateStorageCredential:
-    aws_iam_role: 'AwsIamRole' = None
-    azure_managed_identity: 'AzureManagedIdentity' = None
-    azure_service_principal: 'AzureServicePrincipal' = None
-    databricks_gcp_service_account: Any = None
-    external_location_name: str = None
-    read_only: bool = None
-    storage_credential_name: Any = None
-    url: str = None
+    aws_iam_role: Optional['AwsIamRole'] = None
+    azure_managed_identity: Optional['AzureManagedIdentity'] = None
+    azure_service_principal: Optional['AzureServicePrincipal'] = None
+    databricks_gcp_service_account: Optional[Any] = None
+    external_location_name: Optional[str] = None
+    read_only: Optional[bool] = None
+    storage_credential_name: Optional[Any] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2662,8 +2765,8 @@ class ValidateStorageCredential:
 
 @dataclass
 class ValidateStorageCredentialResponse:
-    is_dir: bool = None
-    results: 'List[ValidationResult]' = None
+    is_dir: Optional[bool] = None
+    results: Optional['List[ValidationResult]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2678,9 +2781,9 @@ class ValidateStorageCredentialResponse:
 
 @dataclass
 class ValidationResult:
-    message: str = None
-    operation: 'ValidationResultOperation' = None
-    result: 'ValidationResultResult' = None
+    message: Optional[str] = None
+    operation: Optional['ValidationResultOperation'] = None
+    result: Optional['ValidationResultResult'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2715,20 +2818,20 @@ class ValidationResultResult(Enum):
 
 @dataclass
 class VolumeInfo:
-    catalog_name: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    full_name: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    schema_name: str = None
-    storage_location: str = None
-    updated_at: int = None
-    updated_by: str = None
-    volume_id: str = None
-    volume_type: 'VolumeType' = None
+    catalog_name: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    full_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    schema_name: Optional[str] = None
+    storage_location: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    volume_id: Optional[str] = None
+    volume_type: Optional['VolumeType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2783,7 +2886,7 @@ class AccountMetastoreAssignmentsAPI:
                metastore_id: str,
                *,
                metastore_assignment: CreateMetastoreAssignment = None,
-               **kwargs) -> MetastoreAssignment:
+               **kwargs) -> Iterator[CreateMetastoreAssignmentsResponseItem]:
         """Assigns a workspace to a metastore.
         
         Creates an assignment to a metastore for a workspace Please add a header
@@ -2799,7 +2902,7 @@ class AccountMetastoreAssignmentsAPI:
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
             body=body)
-        return MetastoreAssignment.from_dict(json)
+        return [CreateMetastoreAssignmentsResponseItem.from_dict(v) for v in json]
 
     def delete(self, workspace_id: int, metastore_id: str, **kwargs):
         """Delete a metastore assignment.
@@ -2816,7 +2919,7 @@ class AccountMetastoreAssignmentsAPI:
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}'
         )
 
-    def get(self, workspace_id: int, **kwargs) -> MetastoreAssignment:
+    def get(self, workspace_id: int, **kwargs) -> AccountsMetastoreAssignment:
         """Gets the metastore assignment for a workspace.
         
         Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
@@ -2829,7 +2932,7 @@ class AccountMetastoreAssignmentsAPI:
 
         json = self._api.do(
             'GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastore')
-        return MetastoreAssignment.from_dict(json)
+        return AccountsMetastoreAssignment.from_dict(json)
 
     def list(self, metastore_id: str, **kwargs) -> Iterator[MetastoreAssignment]:
         """Get all workspaces assigned to a metastore.
@@ -2849,7 +2952,7 @@ class AccountMetastoreAssignmentsAPI:
                metastore_id: str,
                *,
                metastore_assignment: UpdateMetastoreAssignment = None,
-               **kwargs) -> MetastoreAssignment:
+               **kwargs):
         """Updates a metastore assignment to a workspaces.
         
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
@@ -2860,12 +2963,10 @@ class AccountMetastoreAssignmentsAPI:
                                                         metastore_id=metastore_id,
                                                         workspace_id=workspace_id)
         body = request.as_dict()
-
-        json = self._api.do(
+        self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
             body=body)
-        return MetastoreAssignment.from_dict(json)
 
 
 class AccountMetastoresAPI:
@@ -2875,7 +2976,7 @@ class AccountMetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, metastore_info: CreateMetastore = None, **kwargs) -> MetastoreInfo:
+    def create(self, *, metastore_info: CreateMetastore = None, **kwargs) -> AccountsMetastoreInfo:
         """Create metastore.
         
         Creates a Unity Catalog metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
@@ -2886,7 +2987,7 @@ class AccountMetastoresAPI:
         body = request.as_dict()
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/metastores', body=body)
-        return MetastoreInfo.from_dict(json)
+        return AccountsMetastoreInfo.from_dict(json)
 
     def delete(self, metastore_id: str, **kwargs):
         """Delete a metastore.
@@ -2899,7 +3000,7 @@ class AccountMetastoresAPI:
 
         self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}')
 
-    def get(self, metastore_id: str, **kwargs) -> MetastoreInfo:
+    def get(self, metastore_id: str, **kwargs) -> AccountsMetastoreInfo:
         """Get a metastore.
         
         Gets a Unity Catalog metastore from an account, both specified by ID. Please add a header
@@ -2910,7 +3011,7 @@ class AccountMetastoresAPI:
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}')
-        return MetastoreInfo.from_dict(json)
+        return AccountsMetastoreInfo.from_dict(json)
 
     def list(self) -> ListMetastoresResponse:
         """Get all metastores associated with an account.
@@ -2921,7 +3022,11 @@ class AccountMetastoresAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores')
         return ListMetastoresResponse.from_dict(json)
 
-    def update(self, metastore_id: str, *, metastore_info: UpdateMetastore = None, **kwargs) -> MetastoreInfo:
+    def update(self,
+               metastore_id: str,
+               *,
+               metastore_info: UpdateMetastore = None,
+               **kwargs) -> AccountsMetastoreInfo:
         """Update a metastore.
         
         Updates an existing Unity Catalog metastore. Please add a header
@@ -2934,7 +3039,7 @@ class AccountMetastoresAPI:
         json = self._api.do('PUT',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}',
                             body=body)
-        return MetastoreInfo.from_dict(json)
+        return AccountsMetastoreInfo.from_dict(json)
 
 
 class AccountStorageCredentialsAPI:
@@ -3981,6 +4086,47 @@ class StorageCredentialsAPI:
         return ValidateStorageCredentialResponse.from_dict(json)
 
 
+class SystemSchemasAPI:
+    """A system schema is a schema that lives within the system catalog. A system schema may contain information
+    about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def disable(self, metastore_id: str, schema_name: str, **kwargs):
+        """Disable a system schema.
+        
+        Disables the system schema and removes it from the system catalog. The caller must be an account admin
+        or a metastore admin."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DisableRequest(metastore_id=metastore_id, schema_name=schema_name)
+
+        self._api.do(
+            'DELETE',
+            f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name}')
+
+    def enable(self):
+        """Enable a system schema.
+        
+        Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
+        metastore admin."""
+
+        self._api.do('POST', f'/api/2.1/unity-catalog/metastores//systemschemas/')
+
+    def list(self, metastore_id: str, **kwargs) -> Iterator[SystemSchemaInfo]:
+        """List system schemas.
+        
+        Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
+        admin."""
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ListSystemSchemasRequest(metastore_id=metastore_id)
+
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas')
+        return [SystemSchemaInfo.from_dict(v) for v in json.get('schemas', [])]
+
+
 class TableConstraintsAPI:
     """Primary key and foreign key constraints encode relationships between fields in tables.
     
@@ -4129,7 +4275,7 @@ class TablesAPI:
                        page_token: str = None,
                        schema_name_pattern: str = None,
                        table_name_pattern: str = None,
-                       **kwargs) -> ListTableSummariesResponse:
+                       **kwargs) -> Iterator[TableSummary]:
         """List table summaries.
         
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
@@ -4157,8 +4303,15 @@ class TablesAPI:
         if schema_name_pattern: query['schema_name_pattern'] = request.schema_name_pattern
         if table_name_pattern: query['table_name_pattern'] = request.table_name_pattern
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query)
-        return ListTableSummariesResponse.from_dict(json)
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query)
+            if 'tables' not in json or not json['tables']:
+                return
+            for v in json['tables']:
+                yield TableSummary.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
 
 class VolumesAPI:

@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _repeated
 
@@ -44,7 +44,7 @@ class Close:
 @dataclass
 class Create:
     path: str
-    overwrite: bool = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -59,7 +59,7 @@ class Create:
 
 @dataclass
 class CreateResponse:
-    handle: int = None
+    handle: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -74,7 +74,7 @@ class CreateResponse:
 @dataclass
 class Delete:
     path: str
-    recursive: bool = None
+    recursive: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -89,10 +89,10 @@ class Delete:
 
 @dataclass
 class FileInfo:
-    file_size: int = None
-    is_dir: bool = None
-    modification_time: int = None
-    path: str = None
+    file_size: Optional[int] = None
+    is_dir: Optional[bool] = None
+    modification_time: Optional[int] = None
+    path: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -126,7 +126,7 @@ class ListDbfsRequest:
 
 @dataclass
 class ListStatusResponse:
-    files: 'List[FileInfo]' = None
+    files: Optional['List[FileInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -171,8 +171,8 @@ class Move:
 @dataclass
 class Put:
     path: str
-    contents: str = None
-    overwrite: bool = None
+    contents: Optional[str] = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -193,14 +193,14 @@ class ReadDbfsRequest:
     """Get the contents of a file"""
 
     path: str
-    length: int = None
-    offset: int = None
+    length: Optional[int] = None
+    offset: Optional[int] = None
 
 
 @dataclass
 class ReadResponse:
-    bytes_read: int = None
-    data: str = None
+    bytes_read: Optional[int] = None
+    data: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}

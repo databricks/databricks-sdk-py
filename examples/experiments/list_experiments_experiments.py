@@ -3,4 +3,4 @@ from databricks.sdk.service import ml
 
 w = WorkspaceClient()
 
-all = w.experiments.list_experiments()
+all = w.experiments.list_experiments(ml.ListExperimentsRequest())

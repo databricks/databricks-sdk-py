@@ -9,11 +9,11 @@ created = w.warehouses.create(name=f'sdk-{time.time_ns()}',
                               max_num_clusters=1,
                               auto_stop_mins=10).result()
 
-w.warehouses.edit(id=created.id,
-                  name=f'sdk-{time.time_ns()}',
-                  cluster_size="2X-Small",
-                  max_num_clusters=1,
-                  auto_stop_mins=10)
+_ = w.warehouses.edit(id=created.id,
+                      name=f'sdk-{time.time_ns()}',
+                      cluster_size="2X-Small",
+                      max_num_clusters=1,
+                      auto_stop_mins=10)
 
 # cleanup
-_ = w.warehouses.delete(delete=created.id).result()
+w.warehouses.delete(delete=created.id)
