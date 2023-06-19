@@ -315,10 +315,12 @@ class DbfsExt(files.DbfsAPI):
         return _DbfsIO(self, path, read=read, write=write, overwrite=overwrite)
 
     def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
+        """Upload file to DBFS"""
         with self.open(path, write=True, overwrite=overwrite) as dst:
             shutil.copyfileobj(src, dst)
 
     def download(self, path: str) -> BinaryIO:
+        """Download file from DBFS"""
         return self.open(path, read=True)
 
     def list(self, path: str, *, recursive=False) -> Iterator[files.FileInfo]:
@@ -343,6 +345,7 @@ class DbfsExt(files.DbfsAPI):
                 yield file_info
 
     def exists(self, path: str) -> bool:
+        """If file exists on DBFS"""
         # TODO: check if we want to put it to errors module to prevent circular import
         from databricks.sdk.core import DatabricksError
         try:
@@ -359,6 +362,7 @@ class DbfsExt(files.DbfsAPI):
         return _DbfsPath(self, src)
 
     def copy(self, src: str, dst: str, *, recursive=False, overwrite=False):
+        """Copy files between DBFS and local filesystems"""
         src = self._path(src)
         dst = self._path(dst)
         if src.is_local and dst.is_local:
@@ -380,6 +384,7 @@ class DbfsExt(files.DbfsAPI):
                     writer.write(chunk)
 
     def move_(self, src: str, dst: str, *, recursive=False, overwrite=False):
+        """Move files between local and DBFS systems"""
         source = self._path(src)
         target = self._path(dst)
         if not source.is_local and not target.is_local:
