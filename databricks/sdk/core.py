@@ -116,15 +116,14 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
 def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
-    # TODO: change to use cfg.oidc_endpoints (and add cache there)
     # TODO: Azure returns 404 for UC workspace after redirecting to
     # https://login.microsoftonline.com/{cfg.azure_tenant_id}/.well-known/oauth-authorization-server
-    resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
-    if not resp.ok:
+    oidc = cfg.oidc_endpoints
+    if oidc is None:
         return None
     token_source = ClientCredentials(client_id=cfg.client_id,
                                      client_secret=cfg.client_secret,
-                                     token_url=resp.json()["token_endpoint"],
+                                     token_url=oidc.token_endpoint,
                                      scopes=["all-apis"],
                                      use_header=True)
 
