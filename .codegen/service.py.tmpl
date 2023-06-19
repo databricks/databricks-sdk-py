@@ -82,6 +82,23 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- end -}}
 {{- end -}}
 
+{{- define "type-doc" -}}
+	{{- if .IsString}}str
+	{{- else if .IsEmpty}}Any
+  {{- else if .IsAny}}Any
+	{{- else if .IsBool}}bool
+	{{- else if .IsInt64}}int
+	{{- else if .IsFloat64}}float
+	{{- else if .IsInt}}int
+	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
+  {{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
+	{{- else if .IsExternal }}:class:`{{.PascalName}}`
+	{{- else if .IsObject }}:class:`{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}`
+	{{- else if .Enum }}:class:`{{.PascalName}}`
+	{{- else}}any /* MISSING TYPE */
+	{{- end -}}
+{{- end -}}
+
 {{range .Services}}
 class {{.Name}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
@@ -136,7 +153,27 @@ class {{.Name}}API:{{if .Description}}
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
       {{- end}}, **kwargs
     {{- end}}){{template "method-return-type" .}}:
-        {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}"""{{end}}
+        {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}
+        {{with .Request}}{{range .RequiredFields}}
+        :param {{.SnakeName}}: {{template "type-doc" .Entity}}{{if .Description}}
+          {{.Comment "          " 110 | trimSuffix "\"" }}{{end}}
+        {{- end}}{{range .NonRequiredFields}}
+        :param {{.SnakeName}}: {{template "type-doc" .Entity}} (optional){{if .Description}}
+          {{.Comment "          " 110 | trimSuffix "\"" }}{{end}}
+        {{- end}}
+        {{end}}
+        {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
+        :returns:
+          Long-running operation waiter for {{template "type-doc" .Wait.Poll.Response}}.
+          See :method:{{.Wait.SnakeName}} for more details.
+        {{- else if .Response}}:returns: {{if .Response.ArrayValue -}}
+          Iterator over {{template "type-doc" .Response.ArrayValue}}
+        {{- else if .Pagination -}}
+          Iterator over {{template "type-doc" .Pagination.Entity}}
+        {{- else -}}
+          {{template "type-doc" .Response}}
+        {{- end}}{{end}}
+        """{{end}}
         {{if .Request -}}request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
           request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})

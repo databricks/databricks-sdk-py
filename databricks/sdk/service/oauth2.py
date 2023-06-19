@@ -390,7 +390,19 @@ class CustomAppIntegrationAPI:
         
         Create Custom OAuth App Integration.
         
-        You can retrieve the custom oauth app integration via :method:CustomAppIntegration/get."""
+        You can retrieve the custom oauth app integration via :method:CustomAppIntegration/get.
+        
+        :param name: str
+          name of the custom oauth app
+        :param redirect_urls: List[str]
+          List of oauth redirect urls
+        :param confidential: bool (optional)
+          indicates if an oauth client-secret should be generated
+        :param token_access_policy: :class:`TokenAccessPolicy` (optional)
+          Token access policy
+        
+        :returns: :class:`CreateCustomAppIntegrationOutput`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCustomAppIntegration(confidential=confidential,
@@ -408,7 +420,13 @@ class CustomAppIntegrationAPI:
         """Delete Custom OAuth App Integration.
         
         Delete an existing Custom OAuth App Integration. You can retrieve the custom oauth app integration via
-        :method:CustomAppIntegration/get."""
+        :method:CustomAppIntegration/get.
+        
+        :param integration_id: str
+          The oauth app integration ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCustomAppIntegrationRequest(integration_id=integration_id)
@@ -421,7 +439,13 @@ class CustomAppIntegrationAPI:
     def get(self, integration_id: str, **kwargs) -> GetCustomAppIntegrationOutput:
         """Get OAuth Custom App Integration.
         
-        Gets the Custom OAuth App Integration for the given integration id."""
+        Gets the Custom OAuth App Integration for the given integration id.
+        
+        :param integration_id: str
+          The oauth app integration ID.
+        
+        :returns: :class:`GetCustomAppIntegrationOutput`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetCustomAppIntegrationRequest(integration_id=integration_id)
@@ -435,7 +459,10 @@ class CustomAppIntegrationAPI:
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
         """Get custom oauth app integrations.
         
-        Get the list of custom oauth app integrations for the specified Databricks account"""
+        Get the list of custom oauth app integrations for the specified Databricks account
+        
+        :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations')
         return [GetCustomAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
@@ -449,7 +476,17 @@ class CustomAppIntegrationAPI:
         """Updates Custom OAuth App Integration.
         
         Updates an existing custom OAuth App Integration. You can retrieve the custom oauth app integration
-        via :method:CustomAppIntegration/get."""
+        via :method:CustomAppIntegration/get.
+        
+        :param integration_id: str
+          The oauth app integration ID.
+        :param redirect_urls: List[str] (optional)
+          List of oauth redirect urls to be updated in the custom oauth app integration
+        :param token_access_policy: :class:`TokenAccessPolicy` (optional)
+          Token access policy to be updated in the custom oauth app integration
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateCustomAppIntegration(integration_id=integration_id,
@@ -481,7 +518,13 @@ class OAuthEnrollmentAPI:
         The parter applications are: - Power BI - Tableau Desktop - Databricks CLI
         
         The enrollment is executed asynchronously, so the API will return 204 immediately. The actual
-        enrollment take a few minutes, you can check the status via API :method:OAuthEnrollment/get."""
+        enrollment take a few minutes, you can check the status via API :method:OAuthEnrollment/get.
+        
+        :param enable_all_published_apps: bool (optional)
+          If true, enable OAuth for all the published applications in the account.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateOAuthEnrollment(enable_all_published_apps=enable_all_published_apps)
@@ -494,7 +537,10 @@ class OAuthEnrollmentAPI:
         Gets the OAuth enrollment status for this Account.
         
         You can only add/use the OAuth published/custom application integrations when OAuth enrollment status
-        is enabled."""
+        is enabled.
+        
+        :returns: :class:`OAuthEnrollmentStatus`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment')
         return OAuthEnrollmentStatus.from_dict(json)
@@ -519,7 +565,15 @@ class PublishedAppIntegrationAPI:
         
         Create Published OAuth App Integration.
         
-        You can retrieve the published oauth app integration via :method:PublishedAppIntegration/get."""
+        You can retrieve the published oauth app integration via :method:PublishedAppIntegration/get.
+        
+        :param app_id: str (optional)
+          app_id of the oauth published app integration. For example power-bi, tableau-deskop
+        :param token_access_policy: :class:`TokenAccessPolicy` (optional)
+          Token access policy
+        
+        :returns: :class:`CreatePublishedAppIntegrationOutput`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreatePublishedAppIntegration(app_id=app_id, token_access_policy=token_access_policy)
@@ -534,7 +588,13 @@ class PublishedAppIntegrationAPI:
         """Delete Published OAuth App Integration.
         
         Delete an existing Published OAuth App Integration. You can retrieve the published oauth app
-        integration via :method:PublishedAppIntegration/get."""
+        integration via :method:PublishedAppIntegration/get.
+        
+        :param integration_id: str
+          The oauth app integration ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeletePublishedAppIntegrationRequest(integration_id=integration_id)
@@ -547,7 +607,13 @@ class PublishedAppIntegrationAPI:
     def get(self, integration_id: str, **kwargs) -> GetPublishedAppIntegrationOutput:
         """Get OAuth Published App Integration.
         
-        Gets the Published OAuth App Integration for the given integration id."""
+        Gets the Published OAuth App Integration for the given integration id.
+        
+        :param integration_id: str
+          The oauth app integration ID.
+        
+        :returns: :class:`GetPublishedAppIntegrationOutput`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetPublishedAppIntegrationRequest(integration_id=integration_id)
@@ -561,7 +627,10 @@ class PublishedAppIntegrationAPI:
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
         """Get published oauth app integrations.
         
-        Get the list of published oauth app integrations for the specified Databricks account"""
+        Get the list of published oauth app integrations for the specified Databricks account
+        
+        :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
+        """
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations')
@@ -575,7 +644,15 @@ class PublishedAppIntegrationAPI:
         """Updates Published OAuth App Integration.
         
         Updates an existing published OAuth App Integration. You can retrieve the published oauth app
-        integration via :method:PublishedAppIntegration/get."""
+        integration via :method:PublishedAppIntegration/get.
+        
+        :param integration_id: str
+          The oauth app integration ID.
+        :param token_access_policy: :class:`TokenAccessPolicy` (optional)
+          Token access policy to be updated in the published oauth app integration
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdatePublishedAppIntegration(integration_id=integration_id,
@@ -606,7 +683,13 @@ class ServicePrincipalSecretsAPI:
     def create(self, service_principal_id: int, **kwargs) -> CreateServicePrincipalSecretResponse:
         """Create service principal secret.
         
-        Create a secret for the given service principal."""
+        Create a secret for the given service principal.
+        
+        :param service_principal_id: int
+          The service principal ID.
+        
+        :returns: :class:`CreateServicePrincipalSecretResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateServicePrincipalSecretRequest(service_principal_id=service_principal_id)
@@ -620,7 +703,15 @@ class ServicePrincipalSecretsAPI:
     def delete(self, service_principal_id: int, secret_id: str, **kwargs):
         """Delete service principal secret.
         
-        Delete a secret from the given service principal."""
+        Delete a secret from the given service principal.
+        
+        :param service_principal_id: int
+          The service principal ID.
+        :param secret_id: str
+          The secret ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteServicePrincipalSecretRequest(secret_id=secret_id,
@@ -635,7 +726,13 @@ class ServicePrincipalSecretsAPI:
         """List service principal secrets.
         
         List all secrets associated with the given service principal. This operation only returns information
-        about the secrets themselves and does not include the secret values."""
+        about the secrets themselves and does not include the secret values.
+        
+        :param service_principal_id: int
+          The service principal ID.
+        
+        :returns: Iterator over :class:`SecretInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListServicePrincipalSecretsRequest(service_principal_id=service_principal_id)
