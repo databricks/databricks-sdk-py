@@ -269,8 +269,8 @@ def index():
         session['consent'] = consent.as_dict()
         return redirect(consent.auth_url)
     from databricks.sdk import WorkspaceClient
-    from databricks.sdk.oauth import RefreshableCredentials
-    credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
+    from databricks.sdk.oauth import SessionCredentials
+    credentials_provider = SessionCredentials.from_dict(oauth_client, session['creds'])
     workspace_client = WorkspaceClient(host=oauth_client.host,
                                        product=APP_NAME,
                                        credentials_provider=credentials_provider)
