@@ -226,7 +226,15 @@ class DbfsAPI:
         Appends a block of data to the stream specified by the input handle. If the handle does not exist,
         this call will throw an exception with `RESOURCE_DOES_NOT_EXIST`.
         
-        If the block of data exceeds 1 MB, this call will throw an exception with `MAX_BLOCK_SIZE_EXCEEDED`."""
+        If the block of data exceeds 1 MB, this call will throw an exception with `MAX_BLOCK_SIZE_EXCEEDED`.
+        
+        :param handle: int
+          The handle on an open stream.
+        :param data: str
+          The base64-encoded data to append to the stream. This has a limit of 1 MB.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AddBlock(data=data, handle=handle)
@@ -237,7 +245,13 @@ class DbfsAPI:
         """Close the stream.
         
         Closes the stream specified by the input handle. If the handle does not exist, this call throws an
-        exception with `RESOURCE_DOES_NOT_EXIST`."""
+        exception with `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param handle: int
+          The handle on an open stream.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Close(handle=handle)
@@ -254,7 +268,15 @@ class DbfsAPI:
         A typical workflow for file upload would be:
         
         1. Issue a `create` call and get a handle. 2. Issue one or more `add-block` calls with the handle you
-        have. 3. Issue a `close` call with the handle you have."""
+        have. 3. Issue a `close` call with the handle you have.
+        
+        :param path: str
+          The path of the new file. The path should be the absolute DBFS path.
+        :param overwrite: bool (optional)
+          The flag that specifies whether to overwrite existing file/files.
+        
+        :returns: :class:`CreateResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Create(overwrite=overwrite, path=path)
@@ -279,7 +301,16 @@ class DbfsAPI:
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs` covers the functional scope
         of the DBFS REST API, but from notebooks. Running such operations using notebooks provides better
         control and manageability, such as selective deletes, and the possibility to automate periodic delete
-        jobs."""
+        jobs.
+        
+        :param path: str
+          The path of the file or directory to delete. The path should be the absolute DBFS path.
+        :param recursive: bool (optional)
+          Whether or not to recursively delete the directory's contents. Deleting empty directories can be
+          done without providing the recursive flag.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Delete(path=path, recursive=recursive)
@@ -290,7 +321,13 @@ class DbfsAPI:
         """Get the information of a file or directory.
         
         Gets the file information for a file or directory. If the file or directory does not exist, this call
-        throws an exception with `RESOURCE_DOES_NOT_EXIST`."""
+        throws an exception with `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param path: str
+          The path of the file or directory. The path should be the absolute DBFS path.
+        
+        :returns: :class:`FileInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatusRequest(path=path)
@@ -312,7 +349,13 @@ class DbfsAPI:
         discourage using the DBFS REST API for operations that list more than 10K files. Instead, we recommend
         that you perform such operations in the context of a cluster, using the [File system utility
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
-        without timing out."""
+        without timing out.
+        
+        :param path: str
+          The path of the file or directory. The path should be the absolute DBFS path.
+        
+        :returns: Iterator over :class:`FileInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListDbfsRequest(path=path)
@@ -329,7 +372,13 @@ class DbfsAPI:
         Creates the given directory and necessary parent directories if they do not exist. If a file (not a
         directory) exists at any prefix of the input path, this call throws an exception with
         `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
-        of the necessary parent directories."""
+        of the necessary parent directories.
+        
+        :param path: str
+          The path of the new directory. The path should be the absolute DBFS path.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = MkDirs(path=path)
@@ -342,7 +391,15 @@ class DbfsAPI:
         Moves a file from one location to another location within DBFS. If the source file does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
-        path is a directory, this call always recursively moves all files.","""
+        path is a directory, this call always recursively moves all files.",
+        
+        :param source_path: str
+          The source path of the file or directory. The path should be the absolute DBFS path.
+        :param destination_path: str
+          The destination path of the file or directory. The path should be the absolute DBFS path.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Move(destination_path=destination_path, source_path=source_path)
@@ -361,7 +418,17 @@ class DbfsAPI:
         to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be thrown if this limit is exceeded.
         
         If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
-        :method:dbfs/addBlock, :method:dbfs/close."""
+        :method:dbfs/addBlock, :method:dbfs/close.
+        
+        :param path: str
+          The path of the new file. The path should be the absolute DBFS path.
+        :param contents: str (optional)
+          This parameter might be absent, and instead a posted file will be used.
+        :param overwrite: bool (optional)
+          The flag that specifies whether to overwrite existing file/files.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Put(contents=contents, overwrite=overwrite, path=path)
@@ -382,7 +449,18 @@ class DbfsAPI:
         1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
         
         If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
-        file.","""
+        file.",
+        
+        :param path: str
+          The path of the file to read. The path should be the absolute DBFS path.
+        :param length: int (optional)
+          The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value
+          of 0.5 MB.
+        :param offset: int (optional)
+          The offset to read from in bytes.
+        
+        :returns: :class:`ReadResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ReadDbfsRequest(length=length, offset=offset, path=path)

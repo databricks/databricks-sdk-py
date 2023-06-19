@@ -461,7 +461,19 @@ class BillableUsageAPI:
         Returns billable usage logs in CSV format for the specified account and date range. For the data
         schema, see [CSV file schema]. Note that this method might take multiple seconds to complete.
         
-        [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema"""
+        [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
+        
+        :param start_month: str
+          Format: `YYYY-MM`. First month to return billable usage logs for. This field is required.
+        :param end_month: str
+          Format: `YYYY-MM`. Last month to return billable usage logs for. This field is required.
+        :param personal_data: bool (optional)
+          Specify whether to include personally identifiable information in the billable usage logs, for
+          example the email addresses of cluster creators. Handle this information with care. Defaults to
+          false.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DownloadRequest(end_month=end_month,
@@ -486,7 +498,13 @@ class BudgetsAPI:
     def create(self, budget: Budget, **kwargs) -> WrappedBudgetWithStatus:
         """Create a new budget.
         
-        Creates a new budget in the specified account."""
+        Creates a new budget in the specified account.
+        
+        :param budget: :class:`Budget`
+          Budget configuration to be created.
+        
+        :returns: :class:`WrappedBudgetWithStatus`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = WrappedBudget(budget=budget)
@@ -498,7 +516,13 @@ class BudgetsAPI:
     def delete(self, budget_id: str, **kwargs):
         """Delete budget.
         
-        Deletes the budget specified by its UUID."""
+        Deletes the budget specified by its UUID.
+        
+        :param budget_id: str
+          Budget ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteBudgetRequest(budget_id=budget_id)
@@ -509,7 +533,13 @@ class BudgetsAPI:
         """Get budget and its status.
         
         Gets the budget specified by its UUID, including noncumulative status for each day that the budget is
-        configured to include."""
+        configured to include.
+        
+        :param budget_id: str
+          Budget ID
+        
+        :returns: :class:`WrappedBudgetWithStatus`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetBudgetRequest(budget_id=budget_id)
@@ -521,7 +551,10 @@ class BudgetsAPI:
         """Get all budgets.
         
         Gets all budgets associated with this account, including noncumulative status for each day that the
-        budget is configured to include."""
+        budget is configured to include.
+        
+        :returns: Iterator over :class:`BudgetWithStatus`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget')
         return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
@@ -529,7 +562,15 @@ class BudgetsAPI:
     def update(self, budget: Budget, budget_id: str, **kwargs):
         """Modify budget.
         
-        Modifies a budget in this account. Budget properties are completely overwritten."""
+        Modifies a budget in this account. Budget properties are completely overwritten.
+        
+        :param budget: :class:`Budget`
+          Budget configuration to be created.
+        :param budget_id: str
+          Budget ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = WrappedBudget(budget=budget, budget_id=budget_id)
@@ -615,7 +656,12 @@ class LogDeliveryAPI:
         delivery configuration](#operation/patch-log-delivery-config-status)).
         
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-        [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+        [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+        
+        :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams` (optional)
+        
+        :returns: :class:`WrappedLogDeliveryConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = WrappedCreateLogDeliveryConfiguration(
@@ -628,7 +674,13 @@ class LogDeliveryAPI:
     def get(self, log_delivery_configuration_id: str, **kwargs) -> WrappedLogDeliveryConfiguration:
         """Get log delivery configuration.
         
-        Gets a Databricks log delivery configuration object for an account, both specified by ID."""
+        Gets a Databricks log delivery configuration object for an account, both specified by ID.
+        
+        :param log_delivery_configuration_id: str
+          Databricks log delivery configuration ID
+        
+        :returns: :class:`WrappedLogDeliveryConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetLogDeliveryRequest(log_delivery_configuration_id=log_delivery_configuration_id)
@@ -646,7 +698,17 @@ class LogDeliveryAPI:
              **kwargs) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
         
-        Gets all Databricks log delivery configurations associated with an account specified by ID."""
+        Gets all Databricks log delivery configurations associated with an account specified by ID.
+        
+        :param credentials_id: str (optional)
+          Filter by credential configuration ID.
+        :param status: :class:`LogDeliveryConfigStatus` (optional)
+          Filter by status `ENABLED` or `DISABLED`.
+        :param storage_configuration_id: str (optional)
+          Filter by storage configuration ID.
+        
+        :returns: Iterator over :class:`LogDeliveryConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListLogDeliveryRequest(credentials_id=credentials_id,
@@ -667,7 +729,18 @@ class LogDeliveryAPI:
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
         supported, so disable log delivery configurations that are no longer needed. Note that you can't
         re-enable a delivery configuration if this would violate the delivery configuration limits described
-        under [Create log delivery](#operation/create-log-delivery-config)."""
+        under [Create log delivery](#operation/create-log-delivery-config).
+        
+        :param status: :class:`LogDeliveryConfigStatus`
+          Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
+          to `ENABLED`. You can [enable or disable the
+          configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
+          not supported, so disable a log delivery configuration that is no longer needed.
+        :param log_delivery_configuration_id: str
+          Databricks log delivery configuration ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateLogDeliveryConfigurationStatusRequest(

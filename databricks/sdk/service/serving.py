@@ -525,7 +525,15 @@ class ServingEndpointsAPI:
         """Retrieve the logs associated with building the model's environment for a given serving endpoint's
         served model.
         
-        Retrieves the build logs associated with the provided served model."""
+        Retrieves the build logs associated with the provided served model.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        :param served_model_name: str
+          The name of the served model that build logs will be retrieved for. This field is required.
+        
+        :returns: :class:`BuildLogsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = BuildLogsRequest(name=name, served_model_name=served_model_name)
@@ -536,7 +544,18 @@ class ServingEndpointsAPI:
         return BuildLogsResponse.from_dict(json)
 
     def create(self, name: str, config: EndpointCoreConfigInput, **kwargs) -> Wait[ServingEndpointDetailed]:
-        """Create a new serving endpoint."""
+        """Create a new serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required and must be unique across a Databricks
+          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+        :param config: :class:`EndpointCoreConfigInput`
+          The core config of the serving endpoint.
+        
+        :returns:
+          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateServingEndpoint(config=config, name=name)
@@ -552,7 +571,13 @@ class ServingEndpointsAPI:
         return self.create(config=config, name=name).result(timeout=timeout)
 
     def delete(self, name: str, **kwargs):
-        """Delete a serving endpoint."""
+        """Delete a serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteServingEndpointRequest(name=name)
@@ -564,7 +589,13 @@ class ServingEndpointsAPI:
         OpenMetrics exposition format.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
-        OpenMetrics exposition format."""
+        OpenMetrics exposition format.
+        
+        :param name: str
+          The name of the serving endpoint to retrieve metrics for. This field is required.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ExportMetricsRequest(name=name)
@@ -574,7 +605,13 @@ class ServingEndpointsAPI:
     def get(self, name: str, **kwargs) -> ServingEndpointDetailed:
         """Get a single serving endpoint.
         
-        Retrieves the details for a single serving endpoint."""
+        Retrieves the details for a single serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        
+        :returns: :class:`ServingEndpointDetailed`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetServingEndpointRequest(name=name)
@@ -583,7 +620,10 @@ class ServingEndpointsAPI:
         return ServingEndpointDetailed.from_dict(json)
 
     def list(self) -> Iterator[ServingEndpoint]:
-        """Retrieve all serving endpoints."""
+        """Retrieve all serving endpoints.
+        
+        :returns: Iterator over :class:`ServingEndpoint`
+        """
 
         json = self._api.do('GET', '/api/2.0/serving-endpoints')
         return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
@@ -591,7 +631,15 @@ class ServingEndpointsAPI:
     def logs(self, name: str, served_model_name: str, **kwargs) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.
         
-        Retrieves the service logs associated with the provided served model."""
+        Retrieves the service logs associated with the provided served model.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        :param served_model_name: str
+          The name of the served model that logs will be retrieved for. This field is required.
+        
+        :returns: :class:`ServerLogsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogsRequest(name=name, served_model_name=served_model_name)
@@ -602,7 +650,13 @@ class ServingEndpointsAPI:
         return ServerLogsResponse.from_dict(json)
 
     def query(self, name: str, **kwargs) -> QueryEndpointResponse:
-        """Query a serving endpoint with provided model input."""
+        """Query a serving endpoint with provided model input.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        
+        :returns: :class:`QueryEndpointResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = QueryRequest(name=name)
@@ -620,7 +674,20 @@ class ServingEndpointsAPI:
         
         Updates any combination of the serving endpoint's served models, the compute configuration of those
         served models, and the endpoint's traffic config. An endpoint that already has an update in progress
-        can not be updated until the current update completes or fails."""
+        can not be updated until the current update completes or fails.
+        
+        :param served_models: List[:class:`ServedModelInput`]
+          A list of served models for the endpoint to serve. A serving endpoint can have up to 10 served
+          models.
+        :param name: str
+          The name of the serving endpoint to update. This field is required.
+        :param traffic_config: :class:`TrafficConfig` (optional)
+          The traffic config defining how invocations to the serving endpoint should be routed.
+        
+        :returns:
+          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EndpointCoreConfigInput(name=name,

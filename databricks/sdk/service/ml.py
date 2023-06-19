@@ -2236,7 +2236,21 @@ class ExperimentsAPI:
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
         
-        Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name exists."""
+        Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name exists.
+        
+        :param name: str
+          Experiment name.
+        :param artifact_location: str (optional)
+          Location where all artifacts for the experiment are stored. If not provided, the remote server will
+          select an appropriate default.
+        :param tags: List[:class:`ExperimentTag`] (optional)
+          A collection of tags to set on the experiment. Maximum tag size and number of tags per request
+          depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
+          bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
+          support up to 20 tags per request.
+        
+        :returns: :class:`CreateExperimentResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateExperiment(artifact_location=artifact_location, name=name, tags=tags)
@@ -2256,7 +2270,20 @@ class ExperimentsAPI:
         
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
         data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag`
-        associated with a single execution."""
+        associated with a single execution.
+        
+        :param experiment_id: str (optional)
+          ID of the associated experiment.
+        :param start_time: int (optional)
+          Unix timestamp in milliseconds of when the run started.
+        :param tags: List[:class:`RunTag`] (optional)
+          Additional metadata for run.
+        :param user_id: str (optional)
+          ID of the user executing the run. This field is deprecated as of MLflow 1.0, and will be removed in
+          a future MLflow release. Use 'mlflow.user' tag instead.
+        
+        :returns: :class:`CreateRunResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateRun(experiment_id=experiment_id,
@@ -2272,7 +2299,13 @@ class ExperimentsAPI:
         """Delete an experiment.
         
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
-        experiment uses FileStore, artifacts associated with experiment are also deleted."""
+        experiment uses FileStore, artifacts associated with experiment are also deleted.
+        
+        :param experiment_id: str
+          ID of the associated experiment.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteExperiment(experiment_id=experiment_id)
@@ -2282,7 +2315,13 @@ class ExperimentsAPI:
     def delete_run(self, run_id: str, **kwargs):
         """Delete a run.
         
-        Marks a run for deletion."""
+        Marks a run for deletion.
+        
+        :param run_id: str
+          ID of the run to delete.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteRun(run_id=run_id)
@@ -2293,7 +2332,15 @@ class ExperimentsAPI:
         """Delete a tag.
         
         Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
-        completes."""
+        completes.
+        
+        :param run_id: str
+          ID of the run that the tag was logged under. Must be provided.
+        :param key: str
+          Name of the tag. Maximum size is 255 bytes. Must be provided.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteTag(key=key, run_id=run_id)
@@ -2309,7 +2356,13 @@ class ExperimentsAPI:
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
         will return one of them.
         
-        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists."""
+        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.
+        
+        :param experiment_name: str
+          Name of the associated experiment.
+        
+        :returns: :class:`GetExperimentByNameResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetByNameRequest(experiment_name=experiment_name)
@@ -2323,7 +2376,13 @@ class ExperimentsAPI:
     def get_experiment(self, experiment_id: str, **kwargs) -> Experiment:
         """Get an experiment.
         
-        Gets metadata for an experiment. This method works on deleted experiments."""
+        Gets metadata for an experiment. This method works on deleted experiments.
+        
+        :param experiment_id: str
+          ID of the associated experiment.
+        
+        :returns: :class:`Experiment`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetExperimentRequest(experiment_id=experiment_id)
@@ -2344,7 +2403,23 @@ class ExperimentsAPI:
                     **kwargs) -> GetMetricHistoryResponse:
         """Get history of a given metric within a run.
         
-        Gets a list of all values for the specified metric for a given run."""
+        Gets a list of all values for the specified metric for a given run.
+        
+        :param metric_key: str
+          Name of the metric.
+        :param max_results: int (optional)
+          Maximum number of Metric records to return per paginated request. Default is set to 25,000. If set
+          higher than 25,000, a request Exception will be raised.
+        :param page_token: str (optional)
+          Token indicating the page of metric histories to fetch.
+        :param run_id: str (optional)
+          ID of the run from which to fetch metric values. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run from which to fetch metric values. This field will be
+          removed in a future MLflow version.
+        
+        :returns: :class:`GetMetricHistoryResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetHistoryRequest(max_results=max_results,
@@ -2369,7 +2444,16 @@ class ExperimentsAPI:
         Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
         same key are logged for a run, return only the value with the latest timestamp.
         
-        If there are multiple values with the latest timestamp, return the maximum of these values."""
+        If there are multiple values with the latest timestamp, return the maximum of these values.
+        
+        :param run_id: str
+          ID of the run to fetch. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run to fetch. This field will be removed in a future
+          MLflow version.
+        
+        :returns: :class:`GetRunResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetRunRequest(run_id=run_id, run_uuid=run_uuid)
@@ -2391,7 +2475,20 @@ class ExperimentsAPI:
         """Get all artifacts.
         
         List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
-        contains only artifacts with the specified prefix.","""
+        contains only artifacts with the specified prefix.",
+        
+        :param page_token: str (optional)
+          Token indicating the page of artifact results to fetch
+        :param path: str (optional)
+          Filter artifacts matching this path (a relative path from the root artifact directory).
+        :param run_id: str (optional)
+          ID of the run whose artifacts to list. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run whose artifacts to list. This field will be removed
+          in a future MLflow version.
+        
+        :returns: Iterator over :class:`FileInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListArtifactsRequest(page_token=page_token, path=path, run_id=run_id, run_uuid=run_uuid)
@@ -2420,7 +2517,19 @@ class ExperimentsAPI:
                          **kwargs) -> Iterator[Experiment]:
         """List experiments.
         
-        Gets a list of all experiments."""
+        Gets a list of all experiments.
+        
+        :param max_results: int (optional)
+          Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
+          `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
+          encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
+        :param page_token: str (optional)
+          Token indicating the page of experiments to fetch
+        :param view_type: str (optional)
+          Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
+        
+        :returns: Iterator over :class:`Experiment`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListExperimentsRequest(max_results=max_results,
@@ -2484,7 +2593,22 @@ class ExperimentsAPI:
         The following limits also apply to metric, param, and tag keys and values:
         
         * Metric keyes, param keys, and tag keys can be up to 250 characters in length * Parameter and tag
-        values can be up to 250 characters in length"""
+        values can be up to 250 characters in length
+        
+        :param metrics: List[:class:`Metric`] (optional)
+          Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and
+          tags in total.
+        :param params: List[:class:`Param`] (optional)
+          Params to log. A single request can contain up to 100 params, and up to 1000 metrics, params, and
+          tags in total.
+        :param run_id: str (optional)
+          ID of the run to log under
+        :param tags: List[:class:`RunTag`] (optional)
+          Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags
+          in total.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogBatch(metrics=metrics, params=params, run_id=run_id, tags=tags)
@@ -2498,7 +2622,15 @@ class ExperimentsAPI:
                    **kwargs):
         """Log inputs to a run.
         
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning."""
+        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        
+        :param datasets: List[:class:`DatasetInput`] (optional)
+          Dataset inputs
+        :param run_id: str (optional)
+          ID of the run to log under
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogInputs(datasets=datasets, run_id=run_id)
@@ -2518,7 +2650,24 @@ class ExperimentsAPI:
         
         Logs a metric for a run. A metric is a key-value pair (string key, float value) with an associated
         timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be
-        logged multiple times."""
+        logged multiple times.
+        
+        :param key: str
+          Name of the metric.
+        :param value: float
+          Double value of the metric being logged.
+        :param timestamp: int
+          Unix timestamp in milliseconds at the time metric was logged.
+        :param run_id: str (optional)
+          ID of the run under which to log the metric. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run under which to log the metric. This field will be
+          removed in a future MLflow version.
+        :param step: int (optional)
+          Step at which to log the metric
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogMetric(key=key,
@@ -2533,7 +2682,15 @@ class ExperimentsAPI:
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None, **kwargs):
         """Log a model.
         
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning."""
+        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        
+        :param model_json: str (optional)
+          MLmodel file in json format.
+        :param run_id: str (optional)
+          ID of the run to log under
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogModel(model_json=model_json, run_id=run_id)
@@ -2551,7 +2708,20 @@ class ExperimentsAPI:
         
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
         hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A
-        param can be logged only once for a run."""
+        param can be logged only once for a run.
+        
+        :param key: str
+          Name of the param. Maximum size is 255 bytes.
+        :param value: str
+          String value of the param being logged. Maximum size is 500 bytes.
+        :param run_id: str (optional)
+          ID of the run under which to log the param. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
+          removed in a future MLflow version.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogParam(key=key, run_id=run_id, run_uuid=run_uuid, value=value)
@@ -2565,7 +2735,13 @@ class ExperimentsAPI:
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
         
-        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted."""
+        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.
+        
+        :param experiment_id: str
+          ID of the associated experiment.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestoreExperiment(experiment_id=experiment_id)
@@ -2575,7 +2751,13 @@ class ExperimentsAPI:
     def restore_run(self, run_id: str, **kwargs):
         """Restore a run.
         
-        Restores a deleted run."""
+        Restores a deleted run.
+        
+        :param run_id: str
+          ID of the run to restore.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestoreRun(run_id=run_id)
@@ -2592,7 +2774,23 @@ class ExperimentsAPI:
                            **kwargs) -> Iterator[Experiment]:
         """Search experiments.
         
-        Searches for experiments that satisfy specified search criteria."""
+        Searches for experiments that satisfy specified search criteria.
+        
+        :param filter: str (optional)
+          String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")
+        :param max_results: int (optional)
+          Maximum number of experiments desired. Max threshold is 3000.
+        :param order_by: List[str] (optional)
+          List of columns for ordering search results, which can include experiment name and last updated
+          timestamp with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are
+          done by experiment id DESC.
+        :param page_token: str (optional)
+          Token indicating the page of experiments to fetch
+        :param view_type: :class:`SearchExperimentsViewType` (optional)
+          Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
+        
+        :returns: Iterator over :class:`Experiment`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SearchExperiments(filter=filter,
@@ -2625,7 +2823,36 @@ class ExperimentsAPI:
         
         Searches for runs that satisfy expressions.
         
-        Search expressions can use `mlflowMetric` and `mlflowParam` keys.","""
+        Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+        
+        :param experiment_ids: List[str] (optional)
+          List of experiment IDs to search over.
+        :param filter: str (optional)
+          A filter expression over params, metrics, and tags, that allows returning a subset of runs. The
+          syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,
+          or tag and a constant.
+          
+          Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
+          
+          You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:
+          `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
+          
+          Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
+        :param max_results: int (optional)
+          Maximum number of runs desired. Max threshold is 50000
+        :param order_by: List[str] (optional)
+          List of columns to be ordered by, including attributes, params, metrics, and tags with an optional
+          "DESC" or "ASC" annotation, where "ASC" is the default. Example: ["params.input DESC",
+          "metrics.alpha ASC", "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id for
+          runs with the same start time (and this is the default ordering criterion if order_by is not
+          provided).
+        :param page_token: str (optional)
+          Token for the current page of runs.
+        :param run_view_type: :class:`SearchRunsRunViewType` (optional)
+          Whether to display only active, only deleted, or all runs. Defaults to only active runs.
+        
+        :returns: Iterator over :class:`Run`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SearchRuns(experiment_ids=experiment_ids,
@@ -2649,7 +2876,19 @@ class ExperimentsAPI:
     def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
         """Set a tag.
         
-        Sets a tag on an experiment. Experiment tags are metadata that can be updated."""
+        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
+        
+        :param experiment_id: str
+          ID of the experiment under which to log the tag. Must be provided.
+        :param key: str
+          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
+          support key values up to 250 bytes in size.
+        :param value: str
+          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
+          are guaranteed to support key values up to 5000 bytes in size.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SetExperimentTag(experiment_id=experiment_id, key=key, value=value)
@@ -2665,7 +2904,22 @@ class ExperimentsAPI:
                 **kwargs):
         """Set a tag.
         
-        Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes."""
+        Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
+        
+        :param key: str
+          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
+          support key values up to 250 bytes in size.
+        :param value: str
+          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
+          are guaranteed to support key values up to 5000 bytes in size.
+        :param run_id: str (optional)
+          ID of the run under which to log the tag. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
+          removed in a future MLflow version.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SetTag(key=key, run_id=run_id, run_uuid=run_uuid, value=value)
@@ -2675,7 +2929,15 @@ class ExperimentsAPI:
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None, **kwargs):
         """Update an experiment.
         
-        Updates experiment metadata."""
+        Updates experiment metadata.
+        
+        :param experiment_id: str
+          ID of the associated experiment.
+        :param new_name: str (optional)
+          If provided, the experiment's name is changed to the new name. The new name must be unique.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateExperiment(experiment_id=experiment_id, new_name=new_name)
@@ -2691,7 +2953,20 @@ class ExperimentsAPI:
                    **kwargs) -> UpdateRunResponse:
         """Update a run.
         
-        Updates run metadata."""
+        Updates run metadata.
+        
+        :param end_time: int (optional)
+          Unix timestamp in milliseconds of when the run ended.
+        :param run_id: str (optional)
+          ID of the run to update. Must be provided.
+        :param run_uuid: str (optional)
+          [Deprecated, use run_id instead] ID of the run to update.. This field will be removed in a future
+          MLflow version.
+        :param status: :class:`UpdateRunStatus` (optional)
+          Updated status of the run.
+        
+        :returns: :class:`UpdateRunResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateRun(end_time=end_time, run_id=run_id, run_uuid=run_uuid, status=status)
@@ -2718,7 +2993,29 @@ class ModelRegistryAPI:
                                    **kwargs) -> ApproveTransitionRequestResponse:
         """Approve transition request.
         
-        Approves a model version stage transition request."""
+        Approves a model version stage transition request.
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        :param stage: :class:`Stage`
+          Target stage of the transition. Valid values are:
+          
+          * `None`: The initial stage of a model version.
+          
+          * `Staging`: Staging or pre-production stage.
+          
+          * `Production`: Production stage.
+          
+          * `Archived`: Archived stage.
+        :param archive_existing_versions: bool
+          Specifies whether to archive all current model versions in the target stage.
+        :param comment: str (optional)
+          User-provided comment on the action.
+        
+        :returns: :class:`ApproveTransitionRequestResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ApproveTransitionRequest(archive_existing_versions=archive_existing_versions,
@@ -2735,7 +3032,17 @@ class ModelRegistryAPI:
         """Post a comment.
         
         Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
-        display relevant information about the model. For example, test results or deployment errors."""
+        display relevant information about the model. For example, test results or deployment errors.
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        :param comment: str
+          User-provided comment on the action.
+        
+        :returns: :class:`CreateCommentResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateComment(comment=comment, name=name, version=version)
@@ -2754,7 +3061,17 @@ class ModelRegistryAPI:
         
         Creates a new registered model with the name specified in the request body.
         
-        Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists."""
+        Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
+        
+        :param name: str
+          Register models under this name
+        :param description: str (optional)
+          Optional description for registered model.
+        :param tags: List[:class:`ModelTag`] (optional)
+          Additional metadata for registered model.
+        
+        :returns: :class:`CreateModelResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateModelRequest(description=description, name=name, tags=tags)
@@ -2774,7 +3091,25 @@ class ModelRegistryAPI:
                              **kwargs) -> CreateModelVersionResponse:
         """Create a model version.
         
-        Creates a model version."""
+        Creates a model version.
+        
+        :param name: str
+          Register model under this name
+        :param source: str
+          URI indicating the location of the model artifacts.
+        :param description: str (optional)
+          Optional description for model version.
+        :param run_id: str (optional)
+          MLflow run ID for correlation, if `source` was generated by an experiment run in MLflow tracking
+          server
+        :param run_link: str (optional)
+          MLflow run link - this is the exact link of the run that generated this model version, potentially
+          hosted at another instance of MLflow.
+        :param tags: List[:class:`ModelVersionTag`] (optional)
+          Additional metadata for model version.
+        
+        :returns: :class:`CreateModelVersionResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateModelVersionRequest(description=description,
@@ -2797,7 +3132,27 @@ class ModelRegistryAPI:
                                   **kwargs) -> CreateTransitionRequestResponse:
         """Make a transition request.
         
-        Creates a model version stage transition request."""
+        Creates a model version stage transition request.
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        :param stage: :class:`Stage`
+          Target stage of the transition. Valid values are:
+          
+          * `None`: The initial stage of a model version.
+          
+          * `Staging`: Staging or pre-production stage.
+          
+          * `Production`: Production stage.
+          
+          * `Archived`: Archived stage.
+        :param comment: str (optional)
+          User-provided comment on the action.
+        
+        :returns: :class:`CreateTransitionRequestResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateTransitionRequest(comment=comment, name=name, stage=stage, version=version)
@@ -2819,7 +3174,48 @@ class ModelRegistryAPI:
         
         **NOTE**: This endpoint is in Public Preview.
         
-        Creates a registry webhook."""
+        Creates a registry webhook.
+        
+        :param events: List[:class:`RegistryWebhookEvent`]
+          Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
+          created for the associated model.
+          
+          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+          
+          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+          
+          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+          
+          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+          specified for a registry-wide webhook, which can be created by not specifying a model name in the
+          create request.
+          
+          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+          
+          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+          
+          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+          
+          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+          
+          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+          staging.
+          
+          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
+          production.
+          
+          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+        :param description: str (optional)
+          User-specified description for the webhook.
+        :param http_url_spec: :class:`HttpUrlSpec` (optional)
+        :param job_spec: :class:`JobSpec` (optional)
+        :param model_name: str (optional)
+          Name of the model whose events would trigger this webhook.
+        :param status: :class:`RegistryWebhookStatus` (optional)
+          This describes an enum
+        
+        :returns: :class:`CreateWebhookResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateRegistryWebhook(description=description,
@@ -2836,7 +3232,12 @@ class ModelRegistryAPI:
     def delete_comment(self, id: str, **kwargs):
         """Delete a comment.
         
-        Deletes a comment on a model version."""
+        Deletes a comment on a model version.
+        
+        :param id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCommentRequest(id=id)
@@ -2849,7 +3250,13 @@ class ModelRegistryAPI:
     def delete_model(self, name: str, **kwargs):
         """Delete a model.
         
-        Deletes a registered model."""
+        Deletes a registered model.
+        
+        :param name: str
+          Registered model unique name identifier.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteModelRequest(name=name)
@@ -2862,7 +3269,16 @@ class ModelRegistryAPI:
     def delete_model_tag(self, name: str, key: str, **kwargs):
         """Delete a model tag.
         
-        Deletes the tag for a registered model."""
+        Deletes the tag for a registered model.
+        
+        :param name: str
+          Name of the registered model that the tag was logged under.
+        :param key: str
+          Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
+          is 250 bytes.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteModelTagRequest(key=key, name=name)
@@ -2876,7 +3292,15 @@ class ModelRegistryAPI:
     def delete_model_version(self, name: str, version: str, **kwargs):
         """Delete a model version.
         
-        Deletes a model version."""
+        Deletes a model version.
+        
+        :param name: str
+          Name of the registered model
+        :param version: str
+          Model version number
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteModelVersionRequest(name=name, version=version)
@@ -2890,7 +3314,18 @@ class ModelRegistryAPI:
     def delete_model_version_tag(self, name: str, version: str, key: str, **kwargs):
         """Delete a model version tag.
         
-        Deletes a model version tag."""
+        Deletes a model version tag.
+        
+        :param name: str
+          Name of the registered model that the tag was logged under.
+        :param version: str
+          Model version number that the tag was logged under.
+        :param key: str
+          Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
+          is 250 bytes.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteModelVersionTagRequest(key=key, name=name, version=version)
@@ -2912,7 +3347,30 @@ class ModelRegistryAPI:
                                   **kwargs):
         """Delete a transition request.
         
-        Cancels a model version stage transition request."""
+        Cancels a model version stage transition request.
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        :param stage: :class:`DeleteTransitionRequestStage`
+          Target stage of the transition request. Valid values are:
+          
+          * `None`: The initial stage of a model version.
+          
+          * `Staging`: Staging or pre-production stage.
+          
+          * `Production`: Production stage.
+          
+          * `Archived`: Archived stage.
+        :param creator: str
+          Username of the user who created this request. Of the transition requests matching the specified
+          details, only the one transition created by this user will be deleted.
+        :param comment: str (optional)
+          User-provided comment on the action.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteTransitionRequestRequest(comment=comment,
@@ -2935,7 +3393,13 @@ class ModelRegistryAPI:
         
         **NOTE:** This endpoint is in Public Preview.
         
-        Deletes a registry webhook."""
+        Deletes a registry webhook.
+        
+        :param id: str (optional)
+          Webhook ID required to delete a registry webhook.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteWebhookRequest(id=id)
@@ -2952,7 +3416,15 @@ class ModelRegistryAPI:
                             **kwargs) -> Iterator[ModelVersion]:
         """Get the latest version.
         
-        Gets the latest version of a registered model."""
+        Gets the latest version of a registered model.
+        
+        :param name: str
+          Registered model unique name identifier.
+        :param stages: List[str] (optional)
+          List of stages.
+        
+        :returns: Iterator over :class:`ModelVersion`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetLatestVersionsRequest(name=name, stages=stages)
@@ -2968,7 +3440,13 @@ class ModelRegistryAPI:
         returns the model's Databricks workspace ID and the permission level of the requesting user on the
         model.
         
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel"""
+        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
+        
+        :param name: str
+          Registered model unique name identifier.
+        
+        :returns: :class:`GetModelResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetModelRequest(name=name)
@@ -2982,7 +3460,15 @@ class ModelRegistryAPI:
     def get_model_version(self, name: str, version: str, **kwargs) -> GetModelVersionResponse:
         """Get a model version.
         
-        Get a model version."""
+        Get a model version.
+        
+        :param name: str
+          Name of the registered model
+        :param version: str
+          Model version number
+        
+        :returns: :class:`GetModelVersionResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetModelVersionRequest(name=name, version=version)
@@ -2998,7 +3484,15 @@ class ModelRegistryAPI:
                                        **kwargs) -> GetModelVersionDownloadUriResponse:
         """Get a model version URI.
         
-        Gets a URI to download the model version."""
+        Gets a URI to download the model version.
+        
+        :param name: str
+          Name of the registered model
+        :param version: str
+          Model version number
+        
+        :returns: :class:`GetModelVersionDownloadUriResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetModelVersionDownloadUriRequest(name=name, version=version)
@@ -3017,7 +3511,15 @@ class ModelRegistryAPI:
                     **kwargs) -> Iterator[Model]:
         """List models.
         
-        Lists all available registered models, up to the limit specified in __max_results__."""
+        Lists all available registered models, up to the limit specified in __max_results__.
+        
+        :param max_results: int (optional)
+          Maximum number of registered models desired. Max threshold is 1000.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+        
+        :returns: Iterator over :class:`Model`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListModelsRequest(max_results=max_results, page_token=page_token)
@@ -3039,7 +3541,15 @@ class ModelRegistryAPI:
     def list_transition_requests(self, name: str, version: str, **kwargs) -> Iterator[Activity]:
         """List transition requests.
         
-        Gets a list of all open stage transition requests for the model version."""
+        Gets a list of all open stage transition requests for the model version.
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        
+        :returns: Iterator over :class:`Activity`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListTransitionRequestsRequest(name=name, version=version)
@@ -3061,7 +3571,19 @@ class ModelRegistryAPI:
         
         **NOTE:** This endpoint is in Public Preview.
         
-        Lists all registry webhooks."""
+        Lists all registry webhooks.
+        
+        :param events: List[:class:`RegistryWebhookEvent`] (optional)
+          If `events` is specified, any webhook with one or more of the specified trigger events is included
+          in the output. If `events` is not specified, webhooks of all event types are included in the output.
+        :param model_name: str (optional)
+          If not specified, all webhooks associated with the specified events are listed, regardless of their
+          associated model.
+        :param page_token: str (optional)
+          Token indicating the page of artifact results to fetch
+        
+        :returns: Iterator over :class:`RegistryWebhook`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListWebhooksRequest(events=events, model_name=model_name, page_token=page_token)
@@ -3090,7 +3612,27 @@ class ModelRegistryAPI:
                                   **kwargs) -> RejectTransitionRequestResponse:
         """Reject a transition request.
         
-        Rejects a model version stage transition request."""
+        Rejects a model version stage transition request.
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        :param stage: :class:`Stage`
+          Target stage of the transition. Valid values are:
+          
+          * `None`: The initial stage of a model version.
+          
+          * `Staging`: Staging or pre-production stage.
+          
+          * `Production`: Production stage.
+          
+          * `Archived`: Archived stage.
+        :param comment: str (optional)
+          User-provided comment on the action.
+        
+        :returns: :class:`RejectTransitionRequestResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RejectTransitionRequest(comment=comment, name=name, stage=stage, version=version)
@@ -3102,7 +3644,15 @@ class ModelRegistryAPI:
     def rename_model(self, name: str, *, new_name: Optional[str] = None, **kwargs) -> RenameModelResponse:
         """Rename a model.
         
-        Renames a registered model."""
+        Renames a registered model.
+        
+        :param name: str
+          Registered model unique name identifier.
+        :param new_name: str (optional)
+          If provided, updates the name for this `registered_model`.
+        
+        :returns: :class:`RenameModelResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RenameModelRequest(name=name, new_name=new_name)
@@ -3120,7 +3670,22 @@ class ModelRegistryAPI:
                               **kwargs) -> Iterator[ModelVersion]:
         """Searches model versions.
         
-        Searches for specific model versions based on the supplied __filter__."""
+        Searches for specific model versions based on the supplied __filter__.
+        
+        :param filter: str (optional)
+          String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
+          string values wrapped in single quotes.
+        :param max_results: int (optional)
+          Maximum number of models desired. Max threshold is 10K.
+        :param order_by: List[str] (optional)
+          List of columns to be ordered by including model name, version, stage with an optional "DESC" or
+          "ASC" annotation, where "ASC" is the default. Tiebreaks are done by latest stage transition
+          timestamp, followed by name ASC, followed by version DESC.
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous search query.
+        
+        :returns: Iterator over :class:`ModelVersion`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SearchModelVersionsRequest(filter=filter,
@@ -3153,7 +3718,23 @@ class ModelRegistryAPI:
                       **kwargs) -> Iterator[Model]:
         """Search models.
         
-        Search for registered models based on the specified __filter__."""
+        Search for registered models based on the specified __filter__.
+        
+        :param filter: str (optional)
+          String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically
+          as "name LIKE '%my-model-name%'". Single boolean condition, with string values wrapped in single
+          quotes.
+        :param max_results: int (optional)
+          Maximum number of models desired. Default is 100. Max threshold is 1000.
+        :param order_by: List[str] (optional)
+          List of columns for ordering search results, which can include model name and last updated timestamp
+          with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are done by model
+          name ASC.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous search query.
+        
+        :returns: Iterator over :class:`Model`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SearchModelsRequest(filter=filter,
@@ -3180,7 +3761,20 @@ class ModelRegistryAPI:
     def set_model_tag(self, name: str, key: str, value: str, **kwargs):
         """Set a tag.
         
-        Sets a tag on a registered model."""
+        Sets a tag on a registered model.
+        
+        :param name: str
+          Unique name of the model.
+        :param key: str
+          Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,
+          its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed
+          to support key values up to 250 bytes in size.
+        :param value: str
+          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
+          are guaranteed to support key values up to 5000 bytes in size.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SetModelTagRequest(key=key, name=name, value=value)
@@ -3190,7 +3784,22 @@ class ModelRegistryAPI:
     def set_model_version_tag(self, name: str, version: str, key: str, value: str, **kwargs):
         """Set a version tag.
         
-        Sets a model version tag."""
+        Sets a model version tag.
+        
+        :param name: str
+          Unique name of the model.
+        :param version: str
+          Model version number.
+        :param key: str
+          Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,
+          its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed
+          to support key values up to 250 bytes in size.
+        :param value: str
+          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
+          are guaranteed to support key values up to 5000 bytes in size.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SetModelVersionTagRequest(key=key, name=name, value=value, version=version)
@@ -3206,7 +3815,16 @@ class ModelRegistryAPI:
         
         **NOTE:** This endpoint is in Public Preview.
         
-        Tests a registry webhook."""
+        Tests a registry webhook.
+        
+        :param id: str
+          Webhook ID
+        :param event: :class:`RegistryWebhookEvent` (optional)
+          If `event` is specified, the test trigger uses the specified event. If `event` is not specified, the
+          test trigger uses a randomly chosen event associated with the webhook.
+        
+        :returns: :class:`TestRegistryWebhookResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = TestRegistryWebhookRequest(event=event, id=id)
@@ -3228,7 +3846,29 @@ class ModelRegistryAPI:
         Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
         that also accepts a comment associated with the transition to be recorded.",
         
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage"""
+        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
+        
+        :param name: str
+          Name of the model.
+        :param version: str
+          Version of the model.
+        :param stage: :class:`Stage`
+          Target stage of the transition. Valid values are:
+          
+          * `None`: The initial stage of a model version.
+          
+          * `Staging`: Staging or pre-production stage.
+          
+          * `Production`: Production stage.
+          
+          * `Archived`: Archived stage.
+        :param archive_existing_versions: bool
+          Specifies whether to archive all current model versions in the target stage.
+        :param comment: str (optional)
+          User-provided comment on the action.
+        
+        :returns: :class:`TransitionStageResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = TransitionModelVersionStageDatabricks(
@@ -3245,7 +3885,15 @@ class ModelRegistryAPI:
     def update_comment(self, id: str, comment: str, **kwargs) -> UpdateCommentResponse:
         """Update a comment.
         
-        Post an edit to a comment on a model version."""
+        Post an edit to a comment on a model version.
+        
+        :param id: str
+          Unique identifier of an activity
+        :param comment: str
+          User-provided comment on the action.
+        
+        :returns: :class:`UpdateCommentResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateComment(comment=comment, id=id)
@@ -3257,7 +3905,15 @@ class ModelRegistryAPI:
     def update_model(self, name: str, *, description: Optional[str] = None, **kwargs):
         """Update model.
         
-        Updates a registered model."""
+        Updates a registered model.
+        
+        :param name: str
+          Registered model unique name identifier.
+        :param description: str (optional)
+          If provided, updates the description for this `registered_model`.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateModelRequest(description=description, name=name)
@@ -3267,7 +3923,17 @@ class ModelRegistryAPI:
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None, **kwargs):
         """Update model version.
         
-        Updates the model version."""
+        Updates the model version.
+        
+        :param name: str
+          Name of the registered model
+        :param version: str
+          Model version number
+        :param description: str (optional)
+          If provided, updates the description for this `registered_model`.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateModelVersionRequest(description=description, name=name, version=version)
@@ -3287,7 +3953,48 @@ class ModelRegistryAPI:
         
         **NOTE:** This endpoint is in Public Preview.
         
-        Updates a registry webhook."""
+        Updates a registry webhook.
+        
+        :param id: str
+          Webhook ID
+        :param description: str (optional)
+          User-specified description for the webhook.
+        :param events: List[:class:`RegistryWebhookEvent`] (optional)
+          Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
+          created for the associated model.
+          
+          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+          
+          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+          
+          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+          
+          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+          specified for a registry-wide webhook, which can be created by not specifying a model name in the
+          create request.
+          
+          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+          
+          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+          
+          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+          
+          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+          
+          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+          staging.
+          
+          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
+          production.
+          
+          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+        :param http_url_spec: :class:`HttpUrlSpec` (optional)
+        :param job_spec: :class:`JobSpec` (optional)
+        :param status: :class:`RegistryWebhookStatus` (optional)
+          This describes an enum
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateRegistryWebhook(description=description,

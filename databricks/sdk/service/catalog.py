@@ -2890,7 +2890,16 @@ class AccountMetastoreAssignmentsAPI:
         """Assigns a workspace to a metastore.
         
         Creates an assignment to a metastore for a workspace Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
+        
+        :returns: Iterator over :class:`CreateMetastoreAssignmentsResponseItem`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AccountsCreateMetastoreAssignment(metastore_assignment=metastore_assignment,
@@ -2908,7 +2917,15 @@ class AccountMetastoreAssignmentsAPI:
         """Delete a metastore assignment.
         
         Deletes a metastore assignment to a workspace, leaving the workspace with no metastore. Please add a
-        header X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        header X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountMetastoreAssignmentRequest(metastore_id=metastore_id,
@@ -2925,7 +2942,13 @@ class AccountMetastoreAssignmentsAPI:
         Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
         a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
         will not be found and a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
-        2.0 to access this API."""
+        2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        
+        :returns: :class:`AccountsMetastoreAssignment`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountMetastoreAssignmentRequest(workspace_id=workspace_id)
@@ -2938,7 +2961,13 @@ class AccountMetastoreAssignmentsAPI:
         """Get all workspaces assigned to a metastore.
         
         Gets a list of all Databricks workspace IDs that have been assigned to given metastore. Please add a
-        header X-Databricks-Account-Console-API-Version: 2.0 to access this API"""
+        header X-Databricks-Account-Console-API-Version: 2.0 to access this API
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        :returns: Iterator over :class:`MetastoreAssignment`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountMetastoreAssignmentsRequest(metastore_id=metastore_id)
@@ -2956,7 +2985,16 @@ class AccountMetastoreAssignmentsAPI:
         """Updates a metastore assignment to a workspaces.
         
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
-        updated. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        updated. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AccountsUpdateMetastoreAssignment(metastore_assignment=metastore_assignment,
@@ -2980,7 +3018,12 @@ class AccountMetastoresAPI:
         """Create metastore.
         
         Creates a Unity Catalog metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
-        to access this API."""
+        to access this API.
+        
+        :param metastore_info: :class:`CreateMetastore` (optional)
+        
+        :returns: :class:`AccountsMetastoreInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AccountsCreateMetastore(metastore_info=metastore_info)
@@ -2993,7 +3036,13 @@ class AccountMetastoresAPI:
         """Delete a metastore.
         
         Deletes a Unity Catalog metastore for an account, both specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountMetastoreRequest(metastore_id=metastore_id)
@@ -3004,7 +3053,13 @@ class AccountMetastoresAPI:
         """Get a metastore.
         
         Gets a Unity Catalog metastore from an account, both specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        :returns: :class:`AccountsMetastoreInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountMetastoreRequest(metastore_id=metastore_id)
@@ -3017,7 +3072,10 @@ class AccountMetastoresAPI:
         """Get all metastores associated with an account.
         
         Gets all Unity Catalog metastores associated with an account specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :returns: :class:`ListMetastoresResponse`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores')
         return ListMetastoresResponse.from_dict(json)
@@ -3030,7 +3088,14 @@ class AccountMetastoresAPI:
         """Update a metastore.
         
         Updates an existing Unity Catalog metastore. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API."""
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param metastore_info: :class:`UpdateMetastore` (optional)
+        
+        :returns: :class:`AccountsMetastoreInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AccountsUpdateMetastore(metastore_id=metastore_id, metastore_info=metastore_info)
@@ -3061,7 +3126,14 @@ class AccountStorageCredentialsAPI:
         **GcpServiceAcountKey** for GCP credentials.
         
         The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
-        metastore."""
+        metastore.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param credential_info: :class:`CreateStorageCredential` (optional)
+        
+        :returns: :class:`StorageCredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AccountsCreateStorageCredential(credential_info=credential_info,
@@ -3078,7 +3150,15 @@ class AccountStorageCredentialsAPI:
         """Delete a storage credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
-        credential."""
+        credential.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param name: str
+          Name of the storage credential.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountStorageCredentialRequest(metastore_id=metastore_id, name=name)
@@ -3092,7 +3172,15 @@ class AccountStorageCredentialsAPI:
         """Gets the named storage credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
-        storage credential, or have a level of privilege on the storage credential."""
+        storage credential, or have a level of privilege on the storage credential.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param name: str
+          Name of the storage credential.
+        
+        :returns: :class:`StorageCredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountStorageCredentialRequest(metastore_id=metastore_id, name=name)
@@ -3106,7 +3194,13 @@ class AccountStorageCredentialsAPI:
     def list(self, metastore_id: str, **kwargs) -> ListStorageCredentialsResponse:
         """Get all storage credentials assigned to a metastore.
         
-        Gets a list of all storage credentials that have been assigned to given metastore."""
+        Gets a list of all storage credentials that have been assigned to given metastore.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        :returns: :class:`ListStorageCredentialsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountStorageCredentialsRequest(metastore_id=metastore_id)
@@ -3125,7 +3219,16 @@ class AccountStorageCredentialsAPI:
         """Updates a storage credential.
         
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
-        If the caller is a metastore admin, only the __owner__ credential can be changed."""
+        If the caller is a metastore admin, only the __owner__ credential can be changed.
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param name: str
+          Name of the storage credential.
+        :param credential_info: :class:`UpdateStorageCredential` (optional)
+        
+        :returns: :class:`StorageCredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AccountsUpdateStorageCredential(credential_info=credential_info,
@@ -3163,7 +3266,25 @@ class CatalogsAPI:
         """Create a catalog.
         
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
-        **CREATE_CATALOG** privilege."""
+        **CREATE_CATALOG** privilege.
+        
+        :param name: str
+          Name of catalog.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+        :param provider_name: str (optional)
+          The name of delta sharing provider.
+          
+          A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server.
+        :param share_name: str (optional)
+          The name of the share under the share provider.
+        :param storage_root: str (optional)
+          Storage root URL for managed tables within catalog.
+        
+        :returns: :class:`CatalogInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCatalog(comment=comment,
@@ -3181,7 +3302,15 @@ class CatalogsAPI:
         """Delete a catalog.
         
         Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
-        of the catalog."""
+        of the catalog.
+        
+        :param name: str
+          The name of the catalog.
+        :param force: bool (optional)
+          Force deletion even if the catalog is not empty.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCatalogRequest(force=force, name=name)
@@ -3195,7 +3324,13 @@ class CatalogsAPI:
         """Get a catalog.
         
         Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
-        catalog, or a user that has the **USE_CATALOG** privilege set for their account."""
+        catalog, or a user that has the **USE_CATALOG** privilege set for their account.
+        
+        :param name: str
+          The name of the catalog.
+        
+        :returns: :class:`CatalogInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetCatalogRequest(name=name)
@@ -3209,7 +3344,10 @@ class CatalogsAPI:
         Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
         retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the
         **USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the
-        elements in the array."""
+        elements in the array.
+        
+        :returns: Iterator over :class:`CatalogInfo`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs')
         return [CatalogInfo.from_dict(v) for v in json.get('catalogs', [])]
@@ -3225,7 +3363,21 @@ class CatalogsAPI:
         """Update a catalog.
         
         Updates the catalog that matches the supplied name. The caller must be either the owner of the
-        catalog, or a metastore admin (when changing the owner field of the catalog)."""
+        catalog, or a metastore admin (when changing the owner field of the catalog).
+        
+        :param name: str
+          Name of catalog.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param owner: str (optional)
+          Username of current owner of catalog.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+        
+        :returns: :class:`CatalogInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateCatalog(comment=comment,
@@ -3267,7 +3419,25 @@ class ConnectionsAPI:
         Creates a new connection
         
         Creates a new connection to an external data source. It allows users to specify connection details and
-        configurations for interaction with the external server."""
+        configurations for interaction with the external server.
+        
+        :param name: str
+          Name of the connection.
+        :param connection_type: :class:`ConnectionType`
+          The type of connection.
+        :param options_kvpairs: :class:`OptionsKvPairs`
+          Object properties as map of string key-value pairs.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param owner: str (optional)
+          Username of current owner of the connection.
+        :param properties_kvpairs: Dict[str,str] (optional)
+          An object containing map of key-value properties attached to the connection.
+        :param read_only: bool (optional)
+          If the connection is read only.
+        
+        :returns: :class:`ConnectionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateConnection(comment=comment,
@@ -3285,7 +3455,13 @@ class ConnectionsAPI:
     def delete(self, name_arg: str, **kwargs):
         """Delete a connection.
         
-        Deletes the connection that matches the supplied name."""
+        Deletes the connection that matches the supplied name.
+        
+        :param name_arg: str
+          The name of the connection to be deleted.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteConnectionRequest(name_arg=name_arg)
@@ -3295,7 +3471,13 @@ class ConnectionsAPI:
     def get(self, name_arg: str, **kwargs) -> ConnectionInfo:
         """Get a connection.
         
-        Gets a connection from it's name."""
+        Gets a connection from it's name.
+        
+        :param name_arg: str
+          Name of the connection.
+        
+        :returns: :class:`ConnectionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetConnectionRequest(name_arg=name_arg)
@@ -3306,7 +3488,10 @@ class ConnectionsAPI:
     def list(self) -> Iterator[ConnectionInfo]:
         """List connections.
         
-        List all connections."""
+        List all connections.
+        
+        :returns: Iterator over :class:`ConnectionInfo`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections')
         return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
@@ -3314,7 +3499,17 @@ class ConnectionsAPI:
     def update(self, name: str, options_kvpairs: OptionsKvPairs, name_arg: str, **kwargs) -> ConnectionInfo:
         """Update a connection.
         
-        Updates the connection that matches the supplied name."""
+        Updates the connection that matches the supplied name.
+        
+        :param name: str
+          Name of the connection.
+        :param options_kvpairs: :class:`OptionsKvPairs`
+          Object properties as map of string key-value pairs.
+        :param name_arg: str
+          Name of the connection.
+        
+        :returns: :class:`ConnectionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateConnection(name=name, name_arg=name_arg, options_kvpairs=options_kvpairs)
@@ -3352,7 +3547,23 @@ class ExternalLocationsAPI:
         
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
-        credential."""
+        credential.
+        
+        :param name: str
+          Name of the external location.
+        :param url: str
+          Path URL of the external location.
+        :param credential_name: str
+          Name of the storage credential used with this location.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param read_only: bool (optional)
+          Indicates whether the external location is read-only.
+        :param skip_validation: bool (optional)
+          Skips validation of the storage credential associated with the external location.
+        
+        :returns: :class:`ExternalLocationInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateExternalLocation(comment=comment,
@@ -3370,7 +3581,15 @@ class ExternalLocationsAPI:
         """Delete an external location.
         
         Deletes the specified external location from the metastore. The caller must be the owner of the
-        external location."""
+        external location.
+        
+        :param name: str
+          Name of the external location.
+        :param force: bool (optional)
+          Force deletion even if there are dependent external tables or mounts.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteExternalLocationRequest(force=force, name=name)
@@ -3384,7 +3603,13 @@ class ExternalLocationsAPI:
         """Get an external location.
         
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
-        of the external location, or a user that has some privilege on the external location."""
+        of the external location, or a user that has some privilege on the external location.
+        
+        :param name: str
+          Name of the external location.
+        
+        :returns: :class:`ExternalLocationInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetExternalLocationRequest(name=name)
@@ -3397,7 +3622,10 @@ class ExternalLocationsAPI:
         
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
-        the external location. There is no guarantee of a specific ordering of the elements in the array."""
+        the external location. There is no guarantee of a specific ordering of the elements in the array.
+        
+        :returns: Iterator over :class:`ExternalLocationInfo`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations')
         return [ExternalLocationInfo.from_dict(v) for v in json.get('external_locations', [])]
@@ -3416,7 +3644,25 @@ class ExternalLocationsAPI:
         
         Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external
-        location."""
+        location.
+        
+        :param name: str
+          Name of the external location.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param credential_name: str (optional)
+          Name of the storage credential used with this location.
+        :param force: bool (optional)
+          Force update even if changing url invalidates dependent external tables or mounts.
+        :param owner: str (optional)
+          The owner of the external location.
+        :param read_only: bool (optional)
+          Indicates whether the external location is read-only.
+        :param url: str (optional)
+          Path URL of the external location.
+        
+        :returns: :class:`ExternalLocationInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateExternalLocation(comment=comment,
@@ -3472,7 +3718,56 @@ class FunctionsAPI:
         
         The user must have the following permissions in order for the function to be created: -
         **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
-        function's parent schema"""
+        function's parent schema
+        
+        :param name: str
+          Name of function, relative to parent schema.
+        :param catalog_name: str
+          Name of parent catalog.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
+        :param input_params: List[:class:`FunctionParameterInfo`]
+          The array of __FunctionParameterInfo__ definitions of the function's parameters.
+        :param data_type: :class:`ColumnTypeName`
+          Scalar function return data type.
+        :param full_data_type: str
+          Pretty printed function data type.
+        :param return_params: List[:class:`FunctionParameterInfo`]
+          Table function return parameters.
+        :param routine_body: :class:`CreateFunctionRoutineBody`
+          Function language. When **EXTERNAL** is used, the language of the routine function should be
+          specified in the __external_language__ field, and the __return_params__ of the function cannot be
+          used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
+          **NO_SQL**.
+        :param routine_definition: str
+          Function body.
+        :param routine_dependencies: List[:class:`Dependency`]
+          Function dependencies.
+        :param parameter_style: :class:`CreateFunctionParameterStyle`
+          Function parameter style. **S** is the value for SQL.
+        :param is_deterministic: bool
+          Whether the function is deterministic.
+        :param sql_data_access: :class:`CreateFunctionSqlDataAccess`
+          Function SQL data access.
+        :param is_null_call: bool
+          Function null call.
+        :param security_type: :class:`CreateFunctionSecurityType`
+          Function security type.
+        :param specific_name: str
+          Specific name of the function; Reserved for future use.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param external_language: str (optional)
+          External function language.
+        :param external_name: str (optional)
+          External function name.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+        :param sql_path: str (optional)
+          List of schemes whose objects can be referenced without qualification.
+        
+        :returns: :class:`FunctionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateFunction(catalog_name=catalog_name,
@@ -3508,7 +3803,16 @@ class FunctionsAPI:
         satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
         owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
         Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
-        and the **USE_SCHEMA** privilege on its parent schema"""
+        and the **USE_SCHEMA** privilege on its parent schema
+        
+        :param name: str
+          The fully-qualified name of the function (of the form
+          __catalog_name__.__schema_name__.__function__name__).
+        :param force: bool (optional)
+          Force deletion even if the function is notempty.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteFunctionRequest(force=force, name=name)
@@ -3526,7 +3830,14 @@ class FunctionsAPI:
         parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
         of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
         **USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the
-        function itself"""
+        function itself
+        
+        :param name: str
+          The fully-qualified name of the function (of the form
+          __catalog_name__.__schema_name__.__function__name__).
+        
+        :returns: :class:`FunctionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetFunctionRequest(name=name)
@@ -3541,7 +3852,15 @@ class FunctionsAPI:
         functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege
         on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only
         functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is
-        no guarantee of a specific ordering of the elements in the array."""
+        no guarantee of a specific ordering of the elements in the array.
+        
+        :param catalog_name: str
+          Name of parent catalog for functions of interest.
+        :param schema_name: str
+          Parent schema of functions.
+        
+        :returns: Iterator over :class:`FunctionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListFunctionsRequest(catalog_name=catalog_name, schema_name=schema_name)
@@ -3561,7 +3880,16 @@ class FunctionsAPI:
         owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
         function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
         the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
-        **USE_SCHEMA** privilege on the function's parent schema."""
+        **USE_SCHEMA** privilege on the function's parent schema.
+        
+        :param name: str
+          The fully-qualified name of the function (of the form
+          __catalog_name__.__schema_name__.__function__name__).
+        :param owner: str (optional)
+          Username of current owner of function.
+        
+        :returns: :class:`FunctionInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateFunction(name=name, owner=owner)
@@ -3593,7 +3921,17 @@ class GrantsAPI:
             **kwargs) -> PermissionsList:
         """Get permissions.
         
-        Gets the permissions for a securable."""
+        Gets the permissions for a securable.
+        
+        :param securable_type: :class:`SecurableType`
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param principal: str (optional)
+          If provided, only the permissions for the specified principal (user or group) are returned.
+        
+        :returns: :class:`PermissionsList`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetGrantRequest(full_name=full_name, principal=principal, securable_type=securable_type)
@@ -3615,7 +3953,18 @@ class GrantsAPI:
                       **kwargs) -> EffectivePermissionsList:
         """Get effective permissions.
         
-        Gets the effective permissions for a securable."""
+        Gets the effective permissions for a securable.
+        
+        :param securable_type: :class:`SecurableType`
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param principal: str (optional)
+          If provided, only the effective permissions for the specified principal (user or group) are
+          returned.
+        
+        :returns: :class:`EffectivePermissionsList`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetEffectiveRequest(full_name=full_name,
@@ -3639,7 +3988,17 @@ class GrantsAPI:
                **kwargs) -> PermissionsList:
         """Update permissions.
         
-        Updates the permissions for a securable."""
+        Updates the permissions for a securable.
+        
+        :param securable_type: :class:`SecurableType`
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param changes: List[:class:`PermissionsChange`] (optional)
+          Array of permissions change objects.
+        
+        :returns: :class:`PermissionsList`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdatePermissions(changes=changes, full_name=full_name, securable_type=securable_type)
@@ -3673,7 +4032,17 @@ class MetastoresAPI:
         
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
-        admin."""
+        admin.
+        
+        :param metastore_id: str
+          The unique ID of the metastore.
+        :param default_catalog_name: str
+          The name of the default catalog in the metastore.
+        :param workspace_id: int
+          A workspace ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateMetastoreAssignment(default_catalog_name=default_catalog_name,
@@ -3690,7 +4059,18 @@ class MetastoresAPI:
                **kwargs) -> MetastoreInfo:
         """Create a metastore.
         
-        Creates a new metastore based on a provided name and storage root path."""
+        Creates a new metastore based on a provided name and storage root path.
+        
+        :param name: str
+          The user-specified name of the metastore.
+        :param storage_root: str
+          The storage root URL for metastore
+        :param region: str (optional)
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted, the
+          region of the workspace receiving the request will be used.
+        
+        :returns: :class:`MetastoreInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateMetastore(name=name, region=region, storage_root=storage_root)
@@ -3702,7 +4082,10 @@ class MetastoresAPI:
     def current(self) -> MetastoreAssignment:
         """Get metastore assignment for workspace.
         
-        Gets the metastore assignment for the workspace being accessed."""
+        Gets the metastore assignment for the workspace being accessed.
+        
+        :returns: :class:`MetastoreAssignment`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment')
         return MetastoreAssignment.from_dict(json)
@@ -3710,7 +4093,15 @@ class MetastoresAPI:
     def delete(self, id: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a metastore.
         
-        Deletes a metastore. The caller must be a metastore admin."""
+        Deletes a metastore. The caller must be a metastore admin.
+        
+        :param id: str
+          Unique ID of the metastore.
+        :param force: bool (optional)
+          Force deletion even if the metastore is not empty. Default is false.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteMetastoreRequest(force=force, id=id)
@@ -3724,7 +4115,13 @@ class MetastoresAPI:
         """Get a metastore.
         
         Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
-        info."""
+        info.
+        
+        :param id: str
+          Unique ID of the metastore.
+        
+        :returns: :class:`MetastoreInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetMetastoreRequest(id=id)
@@ -3736,7 +4133,10 @@ class MetastoresAPI:
         """List metastores.
         
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
-        to retrieve this info. There is no guarantee of a specific ordering of the elements in the array."""
+        to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
+        
+        :returns: Iterator over :class:`MetastoreInfo`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores')
         return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
@@ -3744,7 +4144,15 @@ class MetastoresAPI:
     def maintenance(self, metastore_id: str, enable: bool, **kwargs) -> UpdateAutoMaintenanceResponse:
         """Enables or disables auto maintenance on the metastore.
         
-        Enables or disables auto maintenance on the metastore."""
+        Enables or disables auto maintenance on the metastore.
+        
+        :param metastore_id: str
+          Unique identifier of metastore.
+        :param enable: bool
+          Whether to enable auto maintenance on the metastore.
+        
+        :returns: :class:`UpdateAutoMaintenanceResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateAutoMaintenance(enable=enable, metastore_id=metastore_id)
@@ -3757,7 +4165,10 @@ class MetastoresAPI:
         """Get a metastore summary.
         
         Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
-        the cloud region, and the global metastore ID."""
+        the cloud region, and the global metastore ID.
+        
+        :returns: :class:`GetMetastoreSummaryResponse`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastore_summary')
         return GetMetastoreSummaryResponse.from_dict(json)
@@ -3765,7 +4176,15 @@ class MetastoresAPI:
     def unassign(self, workspace_id: int, metastore_id: str, **kwargs):
         """Delete an assignment.
         
-        Deletes a metastore assignment. The caller must be an account administrator."""
+        Deletes a metastore assignment. The caller must be an account administrator.
+        
+        :param workspace_id: int
+          A workspace ID.
+        :param metastore_id: str
+          Query for the ID of the metastore to delete.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UnassignRequest(metastore_id=metastore_id, workspace_id=workspace_id)
@@ -3790,7 +4209,28 @@ class MetastoresAPI:
                **kwargs) -> MetastoreInfo:
         """Update a metastore.
         
-        Updates information for a specific metastore. The caller must be a metastore admin."""
+        Updates information for a specific metastore. The caller must be a metastore admin.
+        
+        :param id: str
+          Unique ID of the metastore.
+        :param delta_sharing_organization_name: str (optional)
+          The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta
+          Sharing as the official name.
+        :param delta_sharing_recipient_token_lifetime_in_seconds: int (optional)
+          The lifetime of delta sharing recipient token in seconds.
+        :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
+          The scope of Delta Sharing enabled for the metastore.
+        :param name: str (optional)
+          The user-specified name of the metastore.
+        :param owner: str (optional)
+          The owner of the metastore.
+        :param privilege_model_version: str (optional)
+          Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
+        :param storage_root_credential_id: str (optional)
+          UUID of storage credential to access the metastore storage_root.
+        
+        :returns: :class:`MetastoreInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateMetastore(
@@ -3818,7 +4258,17 @@ class MetastoresAPI:
         Updates a metastore assignment. This operation can be used to update __metastore_id__ or
         __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
         The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
-        Workspace admin."""
+        Workspace admin.
+        
+        :param workspace_id: int
+          A workspace ID.
+        :param default_catalog_name: str (optional)
+          The name of the default catalog for the metastore.
+        :param metastore_id: str (optional)
+          The unique ID of the metastore.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateMetastoreAssignment(default_catalog_name=default_catalog_name,
@@ -3850,7 +4300,21 @@ class SchemasAPI:
         """Create a schema.
         
         Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
-        **CREATE_SCHEMA** privilege in the parent catalog."""
+        **CREATE_SCHEMA** privilege in the parent catalog.
+        
+        :param name: str
+          Name of schema, relative to parent catalog.
+        :param catalog_name: str
+          Name of parent catalog.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+        :param storage_root: str (optional)
+          Storage root URL for managed tables within schema.
+        
+        :returns: :class:`SchemaInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateSchema(catalog_name=catalog_name,
@@ -3867,7 +4331,13 @@ class SchemasAPI:
         """Delete a schema.
         
         Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
-        owner of the parent catalog."""
+        owner of the parent catalog.
+        
+        :param full_name: str
+          Full name of the schema.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteSchemaRequest(full_name=full_name)
@@ -3878,7 +4348,13 @@ class SchemasAPI:
         """Get a schema.
         
         Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
-        schema, or a user that has the **USE_SCHEMA** privilege on the schema."""
+        schema, or a user that has the **USE_SCHEMA** privilege on the schema.
+        
+        :param full_name: str
+          Full name of the schema.
+        
+        :returns: :class:`SchemaInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetSchemaRequest(full_name=full_name)
@@ -3892,7 +4368,13 @@ class SchemasAPI:
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
         owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
-        There is no guarantee of a specific ordering of the elements in the array."""
+        There is no guarantee of a specific ordering of the elements in the array.
+        
+        :param catalog_name: str
+          Parent catalog for schemas of interest.
+        
+        :returns: Iterator over :class:`SchemaInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListSchemasRequest(catalog_name=catalog_name)
@@ -3916,7 +4398,21 @@ class SchemasAPI:
         Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
         the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
         __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
-        privilege on the parent catalog."""
+        privilege on the parent catalog.
+        
+        :param full_name: str
+          Full name of the schema.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param name: str (optional)
+          Name of schema, relative to parent catalog.
+        :param owner: str (optional)
+          Username of current owner of schema.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+        
+        :returns: :class:`SchemaInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateSchema(comment=comment,
@@ -3965,7 +4461,27 @@ class StorageCredentialsAPI:
         managed credentials.
         
         The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
-        metastore."""
+        metastore.
+        
+        :param name: str
+          The credential name. The name must be unique within the metastore.
+        :param aws_iam_role: :class:`AwsIamRole` (optional)
+          The AWS IAM role configuration.
+        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+          The Azure managed identity configuration.
+        :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
+          The Azure service principal configuration.
+        :param comment: str (optional)
+          Comment associated with the credential.
+        :param databricks_gcp_service_account: Any (optional)
+          The <Databricks> managed GCP service account configuration.
+        :param read_only: bool (optional)
+          Whether the storage credential is only usable for read operations.
+        :param skip_validation: bool (optional)
+          Supplying true to this argument skips validation of the created credential.
+        
+        :returns: :class:`StorageCredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateStorageCredential(aws_iam_role=aws_iam_role,
@@ -3985,7 +4501,15 @@ class StorageCredentialsAPI:
         """Delete a credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
-        credential."""
+        credential.
+        
+        :param name: str
+          Name of the storage credential.
+        :param force: bool (optional)
+          Force deletion even if there are dependent external locations or external tables.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteStorageCredentialRequest(force=force, name=name)
@@ -3999,7 +4523,13 @@ class StorageCredentialsAPI:
         """Get a credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
-        storage credential, or have some permission on the storage credential."""
+        storage credential, or have some permission on the storage credential.
+        
+        :param name: str
+          Name of the storage credential.
+        
+        :returns: :class:`StorageCredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStorageCredentialRequest(name=name)
@@ -4013,7 +4543,10 @@ class StorageCredentialsAPI:
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, all storage credentials will be retrieved. There is no guarantee of a specific ordering of the
-        elements in the array."""
+        elements in the array.
+        
+        :returns: Iterator over :class:`StorageCredentialInfo`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials')
         return [StorageCredentialInfo.from_dict(v) for v in json.get('storage_credentials', [])]
@@ -4035,7 +4568,31 @@ class StorageCredentialsAPI:
         
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential
         or a metastore admin. If the caller is a metastore admin, only the __owner__ credential can be
-        changed."""
+        changed.
+        
+        :param name: str
+          The credential name. The name must be unique within the metastore.
+        :param aws_iam_role: :class:`AwsIamRole` (optional)
+          The AWS IAM role configuration.
+        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+          The Azure managed identity configuration.
+        :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
+          The Azure service principal configuration.
+        :param comment: str (optional)
+          Comment associated with the credential.
+        :param databricks_gcp_service_account: Any (optional)
+          The <Databricks> managed GCP service account configuration.
+        :param force: bool (optional)
+          Force update even if there are dependent external locations or external tables.
+        :param owner: str (optional)
+          Username of current owner of credential.
+        :param read_only: bool (optional)
+          Whether the storage credential is only usable for read operations.
+        :param skip_validation: bool (optional)
+          Supplying true to this argument skips validation of the updated credential.
+        
+        :returns: :class:`StorageCredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateStorageCredential(aws_iam_role=aws_iam_role,
@@ -4074,7 +4631,27 @@ class StorageCredentialsAPI:
         Either the __storage_credential_name__ or the cloud-specific credential must be provided.
         
         The caller must be a metastore admin or the storage credential owner or have the
-        **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential."""
+        **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
+        
+        :param aws_iam_role: :class:`AwsIamRole` (optional)
+          The AWS IAM role configuration.
+        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+          The Azure managed identity configuration.
+        :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
+          The Azure service principal configuration.
+        :param databricks_gcp_service_account: Any (optional)
+          The Databricks created GCP service account configuration.
+        :param external_location_name: str (optional)
+          The name of an existing external location to validate.
+        :param read_only: bool (optional)
+          Whether the storage credential is only usable for read operations.
+        :param storage_credential_name: Any (optional)
+          The name of the storage credential to validate.
+        :param url: str (optional)
+          The external location url to validate.
+        
+        :returns: :class:`ValidateStorageCredentialResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ValidateStorageCredential(aws_iam_role=aws_iam_role,
@@ -4102,7 +4679,15 @@ class SystemSchemasAPI:
         """Disable a system schema.
         
         Disables the system schema and removes it from the system catalog. The caller must be an account admin
-        or a metastore admin."""
+        or a metastore admin.
+        
+        :param metastore_id: str
+          The metastore ID under which the system schema lives.
+        :param schema_name: str
+          Full name of the system schema.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DisableRequest(metastore_id=metastore_id, schema_name=schema_name)
@@ -4115,7 +4700,10 @@ class SystemSchemasAPI:
         """Enable a system schema.
         
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
-        metastore admin."""
+        metastore admin.
+        
+        
+        """
 
         self._api.do('POST', f'/api/2.1/unity-catalog/metastores//systemschemas/')
 
@@ -4123,7 +4711,13 @@ class SystemSchemasAPI:
         """List system schemas.
         
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
-        admin."""
+        admin.
+        
+        :param metastore_id: str
+          The ID for the metastore in which the system schema resides.
+        
+        :returns: Iterator over :class:`SystemSchemaInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListSystemSchemasRequest(metastore_id=metastore_id)
@@ -4157,7 +4751,16 @@ class TableConstraintsAPI:
         privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a
         __ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent
         table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the
-        owner of the referenced parent table."""
+        owner of the referenced parent table.
+        
+        :param full_name_arg: str
+          The full name of the table referenced by the constraint.
+        :param constraint: :class:`TableConstraint`
+          A table constraint, as defined by *one* of the following fields being set:
+          __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__.
+        
+        :returns: :class:`TableConstraint`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateTableConstraint(constraint=constraint, full_name_arg=full_name_arg)
@@ -4176,7 +4779,18 @@ class TableConstraintsAPI:
         privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is
         **true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**
         privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner
-        of the table."""
+        of the table.
+        
+        :param full_name: str
+          Full name of the table referenced by the constraint.
+        :param constraint_name: str
+          The name of the constraint to delete.
+        :param cascade: bool
+          If true, try deleting all child constraints of the current constraint. If false, reject this
+          operation if the current constraint has any child constraints.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteTableConstraintRequest(cascade=cascade,
@@ -4209,7 +4823,13 @@ class TablesAPI:
         Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
         parent schema, or be the owner of the table and have the **USE_CATALOG** privilege on the parent
-        catalog and the **USE_SCHEMA** privilege on the parent schema."""
+        catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteTableRequest(full_name=full_name)
@@ -4222,7 +4842,15 @@ class TablesAPI:
         Gets a table from the metastore for a specific catalog and schema. The caller must be a metastore
         admin, be the owner of the table and have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema, or be the owner of the table and have the **SELECT**
-        privilege on it as well."""
+        privilege on it as well.
+        
+        :param full_name: str
+          Full name of the table.
+        :param include_delta_metadata: bool (optional)
+          Whether delta metadata should be included in the response.
+        
+        :returns: :class:`TableInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetTableRequest(full_name=full_name, include_delta_metadata=include_delta_metadata)
@@ -4247,7 +4875,25 @@ class TablesAPI:
         must be a metastore admin or an owner of (or have the **SELECT** privilege on) the table. For the
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
-        ordering of the elements in the array."""
+        ordering of the elements in the array.
+        
+        :param catalog_name: str
+          Name of parent catalog for tables of interest.
+        :param schema_name: str
+          Parent schema of tables.
+        :param include_delta_metadata: bool (optional)
+          Whether delta metadata should be included in the response.
+        :param max_results: int (optional)
+          Maximum number of tables to return (page length). If not set, all accessible tables in the schema
+          are returned. If set to:
+          
+          * greater than 0, page length is the minimum of this value and a server configured value. * equal to
+          0, page length is set to a server configured value. * lesser than 0, invalid parameter error.
+        :param page_token: str (optional)
+          Opaque token to send for the next page of results (pagination).
+        
+        :returns: Iterator over :class:`TableInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListTablesRequest(catalog_name=catalog_name,
@@ -4292,7 +4938,21 @@ class TablesAPI:
         ownership or **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
         **USE_CATALOG** privilege on the parent catalog.
         
-        There is no guarantee of a specific ordering of the elements in the array."""
+        There is no guarantee of a specific ordering of the elements in the array.
+        
+        :param catalog_name: str
+          Name of parent catalog for tables of interest.
+        :param max_results: int (optional)
+          Maximum number of tables to return (page length). Defaults to 10000.
+        :param page_token: str (optional)
+          Opaque token to send for the next page of results (pagination).
+        :param schema_name_pattern: str (optional)
+          A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
+        :param table_name_pattern: str (optional)
+          A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
+        
+        :returns: Iterator over :class:`TableSummary`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListSummariesRequest(catalog_name=catalog_name,
@@ -4355,7 +5015,22 @@ class VolumesAPI:
         For an external volume, following conditions also need to satisfy - The caller must have **CREATE
         EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes
         existing in the specified storage location. - The specified storage location is not under the location
-        of other tables, nor volumes, or catalogs or schemas."""
+        of other tables, nor volumes, or catalogs or schemas.
+        
+        :param catalog_name: str
+          The name of the catalog where the schema and the volume are
+        :param name: str
+          The name of the volume
+        :param schema_name: str
+          The name of the schema where the volume is
+        :param volume_type: :class:`VolumeType`
+        :param comment: str (optional)
+          The comment attached to the volume
+        :param storage_location: str (optional)
+          The storage location on the cloud
+        
+        :returns: :class:`VolumeInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateVolumeRequestContent(catalog_name=catalog_name,
@@ -4376,7 +5051,13 @@ class VolumesAPI:
         
         The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
-        privilege on the parent schema."""
+        privilege on the parent schema.
+        
+        :param full_name_arg: str
+          The three-level (fully qualified) name of the volume
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteVolumeRequest(full_name_arg=full_name_arg)
@@ -4394,7 +5075,15 @@ class VolumesAPI:
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
         
-        There is no guarantee of a specific ordering of the elements in the array."""
+        There is no guarantee of a specific ordering of the elements in the array.
+        
+        :param catalog_name: str
+          The identifier of the catalog
+        :param schema_name: str
+          The identifier of the schema
+        
+        :returns: Iterator over :class:`VolumeInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListVolumesRequest(catalog_name=catalog_name, schema_name=schema_name)
@@ -4413,7 +5102,13 @@ class VolumesAPI:
         
         The caller must be a metastore admin or an owner of (or have the **READ VOLUME** privilege on) the
         volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
-        on the parent catalog and the **USE_SCHEMA** privilege on the parent schema."""
+        on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name_arg: str
+          The three-level (fully qualified) name of the volume
+        
+        :returns: :class:`VolumeInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ReadVolumeRequest(full_name_arg=full_name_arg)
@@ -4436,7 +5131,19 @@ class VolumesAPI:
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
         
-        Currently only the name, the owner or the comment of the volume could be updated."""
+        Currently only the name, the owner or the comment of the volume could be updated.
+        
+        :param full_name_arg: str
+          The three-level (fully qualified) name of the volume
+        :param comment: str (optional)
+          The comment attached to the volume
+        :param name: str (optional)
+          The name of the volume
+        :param owner: str (optional)
+          The identifier of the user who owns the volume
+        
+        :returns: :class:`VolumeInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateVolumeRequestContent(comment=comment,
@@ -4462,7 +5169,13 @@ class WorkspaceBindingsAPI:
         """Get catalog workspace bindings.
         
         Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
-        catalog."""
+        catalog.
+        
+        :param name: str
+          The name of the catalog.
+        
+        :returns: :class:`CurrentWorkspaceBindings`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetWorkspaceBindingRequest(name=name)
@@ -4479,7 +5192,17 @@ class WorkspaceBindingsAPI:
         """Update catalog workspace bindings.
         
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
-        catalog."""
+        catalog.
+        
+        :param name: str
+          The name of the catalog.
+        :param assign_workspaces: List[int] (optional)
+          A list of workspace IDs.
+        :param unassign_workspaces: List[int] (optional)
+          A list of workspace IDs.
+        
+        :returns: :class:`CurrentWorkspaceBindings`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateWorkspaceBindings(assign_workspaces=assign_workspaces,

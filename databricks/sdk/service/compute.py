@@ -3172,7 +3172,33 @@ class ClusterPoliciesAPI:
                **kwargs) -> CreatePolicyResponse:
         """Create a new policy.
         
-        Creates a new policy with prescribed settings."""
+        Creates a new policy with prescribed settings.
+        
+        :param name: str
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
+        :param definition: str (optional)
+          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+        :param description: str (optional)
+          Additional human-readable description of the cluster policy.
+        :param max_clusters_per_user: int (optional)
+          Max number of clusters per user that can be active using this policy. If not present, there is no
+          max limit.
+        :param policy_family_definition_overrides: str (optional)
+          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          document must be passed as a string and cannot be embedded in the requests.
+          
+          You can use this to customize the policy definition inherited from the policy family. Policy rules
+          specified here are merged into the inherited policy definition.
+        :param policy_family_id: str (optional)
+          ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
+          definition.
+          
+          Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
+          policy definition.
+        
+        :returns: :class:`CreatePolicyResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreatePolicy(definition=definition,
@@ -3189,7 +3215,13 @@ class ClusterPoliciesAPI:
     def delete(self, policy_id: str, **kwargs):
         """Delete a cluster policy.
         
-        Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited."""
+        Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
+        
+        :param policy_id: str
+          The ID of the policy to delete.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeletePolicy(policy_id=policy_id)
@@ -3209,7 +3241,35 @@ class ClusterPoliciesAPI:
         """Update a cluster policy.
         
         Update an existing policy for cluster. This operation may make some clusters governed by the previous
-        policy invalid."""
+        policy invalid.
+        
+        :param policy_id: str
+          The ID of the policy to update.
+        :param name: str
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
+        :param definition: str (optional)
+          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+        :param description: str (optional)
+          Additional human-readable description of the cluster policy.
+        :param max_clusters_per_user: int (optional)
+          Max number of clusters per user that can be active using this policy. If not present, there is no
+          max limit.
+        :param policy_family_definition_overrides: str (optional)
+          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          document must be passed as a string and cannot be embedded in the requests.
+          
+          You can use this to customize the policy definition inherited from the policy family. Policy rules
+          specified here are merged into the inherited policy definition.
+        :param policy_family_id: str (optional)
+          ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
+          definition.
+          
+          Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
+          policy definition.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditPolicy(definition=definition,
@@ -3225,7 +3285,13 @@ class ClusterPoliciesAPI:
     def get(self, policy_id: str, **kwargs) -> Policy:
         """Get entity.
         
-        Get a cluster policy entity. Creation and editing is available to admins only."""
+        Get a cluster policy entity. Creation and editing is available to admins only.
+        
+        :param policy_id: str
+          Canonical unique identifier for the cluster policy.
+        
+        :returns: :class:`Policy`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetClusterPolicyRequest(policy_id=policy_id)
@@ -3243,7 +3309,17 @@ class ClusterPoliciesAPI:
              **kwargs) -> Iterator[Policy]:
         """Get a cluster policy.
         
-        Returns a list of policies accessible by the requesting user."""
+        Returns a list of policies accessible by the requesting user.
+        
+        :param sort_column: :class:`ListSortColumn` (optional)
+          The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort result list by policy
+          creation time. * `POLICY_NAME` - Sort result list by policy name.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order in which the policies get listed. * `DESC` - Sort result list in descending order. * `ASC`
+          - Sort result list in ascending order.
+        
+        :returns: Iterator over :class:`Policy`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListClusterPoliciesRequest(sort_column=sort_column, sort_order=sort_order)
@@ -3345,7 +3421,15 @@ class ClustersAPI:
     def change_owner(self, cluster_id: str, owner_username: str, **kwargs):
         """Change cluster owner.
         
-        Change the owner of the cluster. You must be an admin to perform this operation."""
+        Change the owner of the cluster. You must be an admin to perform this operation.
+        
+        :param cluster_id: str
+          <needs content added>
+        :param owner_username: str
+          New owner of the cluster_id after this RPC.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ChangeClusterOwner(cluster_id=cluster_id, owner_username=owner_username)
@@ -3391,7 +3475,111 @@ class ClustersAPI:
         limitations (account limits, spot price, etc.) or transient network issues.
         
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
-        Otherwise the cluster will terminate with an informative error message."""
+        Otherwise the cluster will terminate with an informative error message.
+        
+        :param spark_version: str
+          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
+          retrieved by using the :method:clusters/sparkVersions API call.
+        :param apply_policy_default_values: bool (optional)
+          Note: This field won't be true for webapp requests. Only API users will check this field.
+        :param autoscale: :class:`AutoScale` (optional)
+          Parameters needed in order to automatically scale clusters up and down based on load. Note:
+          autoscaling works best with DB runtime versions 3.0 or later.
+        :param autotermination_minutes: int (optional)
+          Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this
+          cluster will not be automatically terminated. If specified, the threshold must be between 10 and
+          10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
+        :param aws_attributes: :class:`AwsAttributes` (optional)
+          Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation,
+          a set of default values will be used.
+        :param azure_attributes: :class:`AzureAttributes` (optional)
+          Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
+          set of default values will be used.
+        :param cluster_log_conf: :class:`ClusterLogConf` (optional)
+          The configuration for delivering spark logs to a long-term storage destination. Two kinds of
+          destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
+          the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of
+          driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
+          `$destination/$clusterId/executor`.
+        :param cluster_name: str (optional)
+          Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
+          the cluster name will be an empty string.
+        :param cluster_source: :class:`ClusterSource` (optional)
+          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
+          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+          
+          - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        :param driver_instance_pool_id: str (optional)
+          The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
+          the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_id: str (optional)
+          The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
+          will be set as the same value as `node_type_id` defined above.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
+          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
+          to function correctly - refer to the User Guide for more details.
+        :param enable_local_disk_encryption: bool (optional)
+          Whether to enable LUKS on cluster VMs' local disks
+        :param gcp_attributes: :class:`GcpAttributes` (optional)
+          Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+          creation, a set of default values will be used.
+        :param init_scripts: List[:class:`InitScriptInfo`] (optional)
+          The configuration for storing init scripts. Any number of destinations can be specified. The scripts
+          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
+          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+        :param instance_pool_id: str (optional)
+          The optional ID of the instance pool to which the cluster belongs.
+        :param node_type_id: str (optional)
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param num_workers: int (optional)
+          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          
+          Note: When reading the properties of a cluster, this field reflects the desired number of workers
+          rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
+          workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
+          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          provisioned.
+        :param policy_id: str (optional)
+          The ID of the cluster policy used to create the cluster if applicable.
+        :param runtime_engine: :class:`RuntimeEngine` (optional)
+          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
+          is inferred from spark_version.
+        :param spark_conf: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
+          can also pass in a string of extra JVM options to the driver and the executors via
+          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+        :param spark_env_vars: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified environment variable key-value pairs. Please
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          launching the driver and workers.
+          
+          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          managed environmental variables are included as well.
+          
+          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}`
+        :param ssh_public_keys: List[str] (optional)
+          SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
+          specified.
+        :param workload_type: :class:`WorkloadType` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCluster(apply_policy_default_values=apply_policy_default_values,
@@ -3485,7 +3673,15 @@ class ClustersAPI:
         
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
         termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
-        `TERMINATING` or `TERMINATED` state, nothing will happen."""
+        `TERMINATING` or `TERMINATED` state, nothing will happen.
+        
+        :param cluster_id: str
+          The cluster to be terminated.
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_terminated for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCluster(cluster_id=cluster_id)
@@ -3540,7 +3736,118 @@ class ClustersAPI:
         is started using the `clusters/start` API, the new attributes will take effect. Any attempt to update
         a cluster in any other state will be rejected with an `INVALID_STATE` error code.
         
-        Clusters created by the Databricks Jobs service cannot be edited."""
+        Clusters created by the Databricks Jobs service cannot be edited.
+        
+        :param cluster_id: str
+          ID of the cluser
+        :param spark_version: str
+          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
+          retrieved by using the :method:clusters/sparkVersions API call.
+        :param apply_policy_default_values: bool (optional)
+          Note: This field won't be true for webapp requests. Only API users will check this field.
+        :param autoscale: :class:`AutoScale` (optional)
+          Parameters needed in order to automatically scale clusters up and down based on load. Note:
+          autoscaling works best with DB runtime versions 3.0 or later.
+        :param autotermination_minutes: int (optional)
+          Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this
+          cluster will not be automatically terminated. If specified, the threshold must be between 10 and
+          10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
+        :param aws_attributes: :class:`AwsAttributes` (optional)
+          Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation,
+          a set of default values will be used.
+        :param azure_attributes: :class:`AzureAttributes` (optional)
+          Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
+          set of default values will be used.
+        :param cluster_log_conf: :class:`ClusterLogConf` (optional)
+          The configuration for delivering spark logs to a long-term storage destination. Two kinds of
+          destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
+          the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of
+          driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
+          `$destination/$clusterId/executor`.
+        :param cluster_name: str (optional)
+          Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
+          the cluster name will be an empty string.
+        :param cluster_source: :class:`ClusterSource` (optional)
+          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
+          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+          
+          - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        :param data_security_mode: :class:`DataSecurityMode` (optional)
+          This describes an enum
+        :param docker_image: :class:`DockerImage` (optional)
+        :param driver_instance_pool_id: str (optional)
+          The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
+          the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_id: str (optional)
+          The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
+          will be set as the same value as `node_type_id` defined above.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
+          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
+          to function correctly - refer to the User Guide for more details.
+        :param enable_local_disk_encryption: bool (optional)
+          Whether to enable LUKS on cluster VMs' local disks
+        :param gcp_attributes: :class:`GcpAttributes` (optional)
+          Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+          creation, a set of default values will be used.
+        :param init_scripts: List[:class:`InitScriptInfo`] (optional)
+          The configuration for storing init scripts. Any number of destinations can be specified. The scripts
+          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
+          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+        :param instance_pool_id: str (optional)
+          The optional ID of the instance pool to which the cluster belongs.
+        :param node_type_id: str (optional)
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param num_workers: int (optional)
+          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          
+          Note: When reading the properties of a cluster, this field reflects the desired number of workers
+          rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
+          workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
+          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          provisioned.
+        :param policy_id: str (optional)
+          The ID of the cluster policy used to create the cluster if applicable.
+        :param runtime_engine: :class:`RuntimeEngine` (optional)
+          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
+          is inferred from spark_version.
+        :param single_user_name: str (optional)
+          Single user name if data_security_mode is `SINGLE_USER`
+        :param spark_conf: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
+          can also pass in a string of extra JVM options to the driver and the executors via
+          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+        :param spark_env_vars: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified environment variable key-value pairs. Please
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          launching the driver and workers.
+          
+          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          managed environmental variables are included as well.
+          
+          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}`
+        :param ssh_public_keys: List[str] (optional)
+          SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
+          specified.
+        :param workload_type: :class:`WorkloadType` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditCluster(apply_policy_default_values=apply_policy_default_values,
@@ -3653,7 +3960,27 @@ class ClustersAPI:
         
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
         events to read, the response includes all the nparameters necessary to request the next page of
-        events."""
+        events.
+        
+        :param cluster_id: str
+          The ID of the cluster to retrieve events about.
+        :param end_time: int (optional)
+          The end time in epoch milliseconds. If empty, returns events up to the current time.
+        :param event_types: List[:class:`EventType`] (optional)
+          An optional set of event types to filter on. If empty, all event types are returned.
+        :param limit: int (optional)
+          The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
+          value is 500.
+        :param offset: int (optional)
+          The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results
+          are requested in descending order, the end_time field is required.
+        :param order: :class:`GetEventsOrder` (optional)
+          The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
+        :param start_time: int (optional)
+          The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
+        
+        :returns: Iterator over :class:`ClusterEvent`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetEvents(cluster_id=cluster_id,
@@ -3679,7 +4006,13 @@ class ClustersAPI:
         """Get cluster info.
         
         Retrieves the information for a cluster given its identifier. Clusters can be described while they are
-        running, or up to 60 days after they are terminated."""
+        running, or up to 60 days after they are terminated.
+        
+        :param cluster_id: str
+          The cluster about which to retrieve information.
+        
+        :returns: :class:`ClusterInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetClusterRequest(cluster_id=cluster_id)
@@ -3700,7 +4033,15 @@ class ClustersAPI:
         For example, if there is 1 pinned cluster, 4 active clusters, 45 terminated all-purpose clusters in
         the past 30 days, and 50 terminated job clusters in the past 30 days, then this API returns the 1
         pinned cluster, 4 active clusters, all 45 terminated all-purpose clusters, and the 30 most recently
-        terminated job clusters."""
+        terminated job clusters.
+        
+        :param can_use_client: str (optional)
+          Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS.
+          No input for this field will get all clusters in the workspace without filtering on its supported
+          client
+        
+        :returns: Iterator over :class:`ClusterInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListClustersRequest(can_use_client=can_use_client)
@@ -3714,7 +4055,10 @@ class ClustersAPI:
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
         
-        Returns a list of supported Spark node types. These node types can be used to launch a cluster."""
+        Returns a list of supported Spark node types. These node types can be used to launch a cluster.
+        
+        :returns: :class:`ListNodeTypesResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/clusters/list-node-types')
         return ListNodeTypesResponse.from_dict(json)
@@ -3723,7 +4067,10 @@ class ClustersAPI:
         """List availability zones.
         
         Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
-        zones can be used to launch a cluster."""
+        zones can be used to launch a cluster.
+        
+        :returns: :class:`ListAvailableZonesResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/clusters/list-zones')
         return ListAvailableZonesResponse.from_dict(json)
@@ -3735,7 +4082,13 @@ class ClustersAPI:
         removed.
         
         In addition, users will no longer see permanently deleted clusters in the cluster list, and API users
-        can no longer perform any action on permanently deleted clusters."""
+        can no longer perform any action on permanently deleted clusters.
+        
+        :param cluster_id: str
+          The cluster to be deleted.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PermanentDeleteCluster(cluster_id=cluster_id)
@@ -3746,7 +4099,13 @@ class ClustersAPI:
         """Pin cluster.
         
         Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
-        cluster that is already pinned will have no effect. This API can only be called by workspace admins."""
+        cluster that is already pinned will have no effect. This API can only be called by workspace admins.
+        
+        :param cluster_id: str
+          <needs content added>
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PinCluster(cluster_id=cluster_id)
@@ -3762,7 +4121,27 @@ class ClustersAPI:
         """Resize cluster.
         
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
-        `RUNNING` state."""
+        `RUNNING` state.
+        
+        :param cluster_id: str
+          The cluster to be resized.
+        :param autoscale: :class:`AutoScale` (optional)
+          Parameters needed in order to automatically scale clusters up and down based on load. Note:
+          autoscaling works best with DB runtime versions 3.0 or later.
+        :param num_workers: int (optional)
+          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          
+          Note: When reading the properties of a cluster, this field reflects the desired number of workers
+          rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
+          workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
+          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          provisioned.
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ResizeCluster(autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers)
@@ -3783,7 +4162,17 @@ class ClustersAPI:
         """Restart cluster.
         
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
-        nothing will happen."""
+        nothing will happen.
+        
+        :param cluster_id: str
+          The cluster to be started.
+        :param restart_user: str (optional)
+          <needs content added>
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
@@ -3801,7 +4190,10 @@ class ClustersAPI:
     def spark_versions(self) -> GetSparkVersionsResponse:
         """List available Spark versions.
         
-        Returns the list of available Spark versions. These versions can be used to launch a cluster."""
+        Returns the list of available Spark versions. These versions can be used to launch a cluster.
+        
+        :returns: :class:`GetSparkVersionsResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
         return GetSparkVersionsResponse.from_dict(json)
@@ -3814,7 +4206,15 @@ class ClustersAPI:
         * The previous cluster id and attributes are preserved. * The cluster starts with the last specified
         cluster size. * If the previous cluster was an autoscaling cluster, the current cluster starts with
         the minimum number of nodes. * If the cluster is not currently in a `TERMINATED` state, nothing will
-        happen. * Clusters launched to run a job cannot be started."""
+        happen. * Clusters launched to run a job cannot be started.
+        
+        :param cluster_id: str
+          The cluster to be started.
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = StartCluster(cluster_id=cluster_id)
@@ -3830,7 +4230,13 @@ class ClustersAPI:
         
         Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
         Unpinning a cluster that is not pinned will have no effect. This API can only be called by workspace
-        admins."""
+        admins.
+        
+        :param cluster_id: str
+          <needs content added>
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UnpinCluster(cluster_id=cluster_id)
@@ -3954,7 +4360,16 @@ class CommandExecutionAPI:
         
         Cancels a currently running command within an execution context.
         
-        The command ID is obtained from a prior successful call to __execute__."""
+        The command ID is obtained from a prior successful call to __execute__.
+        
+        :param cluster_id: str (optional)
+        :param command_id: str (optional)
+        :param context_id: str (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`CommandStatusResponse`.
+          See :method:wait_command_status_command_execution_cancelled for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CancelCommand(cluster_id=cluster_id, command_id=command_id, context_id=context_id)
@@ -3981,7 +4396,14 @@ class CommandExecutionAPI:
         
         Gets the status of and, if available, the results from a currently executing command.
         
-        The command ID is obtained from a prior successful call to __execute__."""
+        The command ID is obtained from a prior successful call to __execute__.
+        
+        :param cluster_id: str
+        :param context_id: str
+        :param command_id: str
+        
+        :returns: :class:`CommandStatusResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CommandStatusRequest(cluster_id=cluster_id,
@@ -3999,7 +4421,13 @@ class CommandExecutionAPI:
     def context_status(self, cluster_id: str, context_id: str, **kwargs) -> ContextStatusResponse:
         """Get status.
         
-        Gets the status for an execution context."""
+        Gets the status for an execution context.
+        
+        :param cluster_id: str
+        :param context_id: str
+        
+        :returns: :class:`ContextStatusResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ContextStatusRequest(cluster_id=cluster_id, context_id=context_id)
@@ -4020,7 +4448,16 @@ class CommandExecutionAPI:
         
         Creates an execution context for running cluster commands.
         
-        If successful, this method returns the ID of the new execution context."""
+        If successful, this method returns the ID of the new execution context.
+        
+        :param cluster_id: str (optional)
+          Running cluster id
+        :param language: :class:`Language` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`ContextStatusResponse`.
+          See :method:wait_context_status_command_execution_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateContext(cluster_id=cluster_id, language=language)
@@ -4042,7 +4479,13 @@ class CommandExecutionAPI:
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
         """Delete an execution context.
         
-        Deletes an execution context."""
+        Deletes an execution context.
+        
+        :param cluster_id: str
+        :param context_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DestroyContext(cluster_id=cluster_id, context_id=context_id)
@@ -4060,7 +4503,20 @@ class CommandExecutionAPI:
         
         Runs a cluster command in the given execution context, using the provided language.
         
-        If successful, it returns an ID for tracking the status of the command's execution."""
+        If successful, it returns an ID for tracking the status of the command's execution.
+        
+        :param cluster_id: str (optional)
+          Running cluster id
+        :param command: str (optional)
+          Executable code
+        :param context_id: str (optional)
+          Running context id
+        :param language: :class:`Language` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`CommandStatusResponse`.
+          See :method:wait_command_status_command_execution_finished_or_error for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Command(cluster_id=cluster_id,
@@ -4108,7 +4564,27 @@ class GlobalInitScriptsAPI:
                **kwargs) -> CreateResponse:
         """Create init script.
         
-        Creates a new global init script in this workspace."""
+        Creates a new global init script in this workspace.
+        
+        :param name: str
+          The name of the script
+        :param script: str
+          The Base64-encoded content of the script.
+        :param enabled: bool (optional)
+          Specifies whether the script is enabled. The script runs only if enabled.
+        :param position: int (optional)
+          The position of a global init script, where 0 represents the first script to run, 1 is the second
+          script to run, in ascending order.
+          
+          If you omit the numeric position for a new global init script, it defaults to last position. It will
+          run after all current scripts. Setting any value greater than the position of the last script is
+          equivalent to the last position. Example: Take three existing scripts with positions 0, 1, and 2.
+          Any position of (3) or greater puts the script in the last position. If an explicit position value
+          conflicts with an existing script value, your request succeeds, but the original script at that
+          position and all later scripts have their positions incremented by 1.
+        
+        :returns: :class:`CreateResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GlobalInitScriptCreateRequest(enabled=enabled,
@@ -4123,7 +4599,13 @@ class GlobalInitScriptsAPI:
     def delete(self, script_id: str, **kwargs):
         """Delete init script.
         
-        Deletes a global init script."""
+        Deletes a global init script.
+        
+        :param script_id: str
+          The ID of the global init script.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteGlobalInitScriptRequest(script_id=script_id)
@@ -4133,7 +4615,13 @@ class GlobalInitScriptsAPI:
     def get(self, script_id: str, **kwargs) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
         
-        Gets all the details of a script, including its Base64-encoded contents."""
+        Gets all the details of a script, including its Base64-encoded contents.
+        
+        :param script_id: str
+          The ID of the global init script.
+        
+        :returns: :class:`GlobalInitScriptDetailsWithContent`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetGlobalInitScriptRequest(script_id=script_id)
@@ -4146,7 +4634,10 @@ class GlobalInitScriptsAPI:
         
         Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
-        script](#operation/get-script) operation."""
+        script](#operation/get-script) operation.
+        
+        :returns: Iterator over :class:`GlobalInitScriptDetails`
+        """
 
         json = self._api.do('GET', '/api/2.0/global-init-scripts')
         return [GlobalInitScriptDetails.from_dict(v) for v in json.get('scripts', [])]
@@ -4162,7 +4653,29 @@ class GlobalInitScriptsAPI:
         """Update init script.
         
         Updates a global init script, specifying only the fields to change. All fields are optional.
-        Unspecified fields retain their current value."""
+        Unspecified fields retain their current value.
+        
+        :param name: str
+          The name of the script
+        :param script: str
+          The Base64-encoded content of the script.
+        :param script_id: str
+          The ID of the global init script.
+        :param enabled: bool (optional)
+          Specifies whether the script is enabled. The script runs only if enabled.
+        :param position: int (optional)
+          The position of a script, where 0 represents the first script to run, 1 is the second script to run,
+          in ascending order. To move the script to run first, set its position to 0.
+          
+          To move the script to the end, set its position to any value greater or equal to the position of the
+          last script. Example, three existing scripts with positions 0, 1, and 2. Any position value of 2 or
+          greater puts the script in the last position (2).
+          
+          If an explicit position value conflicts with an existing script, your request succeeds, but the
+          original script at that position and all later scripts have their positions incremented by 1.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GlobalInitScriptUpdateRequest(enabled=enabled,
@@ -4212,7 +4725,59 @@ class InstancePoolsAPI:
                **kwargs) -> CreateInstancePoolResponse:
         """Create a new instance pool.
         
-        Creates a new instance pool using idle and ready-to-use cloud instances."""
+        Creates a new instance pool using idle and ready-to-use cloud instances.
+        
+        :param instance_pool_name: str
+          Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
+          characters.
+        :param node_type_id: str
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
+          Attributes related to instance pools running on Amazon Web Services. If not specified at pool
+          creation, a set of default values will be used.
+        :param azure_attributes: :class:`InstancePoolAzureAttributes` (optional)
+          Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
+          default values will be used.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
+          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+        :param disk_spec: :class:`DiskSpec` (optional)
+          Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
+          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
+          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
+        :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
+          Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
+          creation, a set of default values will be used.
+        :param idle_instance_autotermination_minutes: int (optional)
+          Automatically terminates the extra instances in the pool cache after they are inactive for this time
+          in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
+          will be automatically terminated after a default timeout. If specified, the threshold must be
+          between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
+          from the cache if min cache size could still hold.
+        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
+          The fleet related setting to power the instance pool.
+        :param max_capacity: int (optional)
+          Maximum number of outstanding instances to keep in the pool, including both instances used by
+          clusters and idle instances. Clusters that require further instance provisioning will fail during
+          upsize requests.
+        :param min_idle_instances: int (optional)
+          Minimum number of idle instances to keep in the instance pool
+        :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
+          Custom Docker Image BYOC
+        :param preloaded_spark_versions: List[str] (optional)
+          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
+          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
+          using the :method:clusters/sparkVersions API call.
+        
+        :returns: :class:`CreateInstancePoolResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateInstancePool(
@@ -4238,7 +4803,13 @@ class InstancePoolsAPI:
     def delete(self, instance_pool_id: str, **kwargs):
         """Delete an instance pool.
         
-        Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously."""
+        Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
+        
+        :param instance_pool_id: str
+          The instance pool to be terminated.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteInstancePool(instance_pool_id=instance_pool_id)
@@ -4265,7 +4836,61 @@ class InstancePoolsAPI:
              **kwargs):
         """Edit an existing instance pool.
         
-        Modifies the configuration of an existing instance pool."""
+        Modifies the configuration of an existing instance pool.
+        
+        :param instance_pool_id: str
+          Instance pool ID
+        :param instance_pool_name: str
+          Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
+          characters.
+        :param node_type_id: str
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
+          Attributes related to instance pools running on Amazon Web Services. If not specified at pool
+          creation, a set of default values will be used.
+        :param azure_attributes: :class:`InstancePoolAzureAttributes` (optional)
+          Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
+          default values will be used.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
+          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+        :param disk_spec: :class:`DiskSpec` (optional)
+          Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
+          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
+          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
+        :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
+          Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
+          creation, a set of default values will be used.
+        :param idle_instance_autotermination_minutes: int (optional)
+          Automatically terminates the extra instances in the pool cache after they are inactive for this time
+          in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
+          will be automatically terminated after a default timeout. If specified, the threshold must be
+          between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
+          from the cache if min cache size could still hold.
+        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
+          The fleet related setting to power the instance pool.
+        :param max_capacity: int (optional)
+          Maximum number of outstanding instances to keep in the pool, including both instances used by
+          clusters and idle instances. Clusters that require further instance provisioning will fail during
+          upsize requests.
+        :param min_idle_instances: int (optional)
+          Minimum number of idle instances to keep in the instance pool
+        :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
+          Custom Docker Image BYOC
+        :param preloaded_spark_versions: List[str] (optional)
+          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
+          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
+          using the :method:clusters/sparkVersions API call.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditInstancePool(
@@ -4290,7 +4915,13 @@ class InstancePoolsAPI:
     def get(self, instance_pool_id: str, **kwargs) -> GetInstancePool:
         """Get instance pool information.
         
-        Retrieve the information for an instance pool based on its identifier."""
+        Retrieve the information for an instance pool based on its identifier.
+        
+        :param instance_pool_id: str
+          The canonical unique identifier for the instance pool.
+        
+        :returns: :class:`GetInstancePool`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetInstancePoolRequest(instance_pool_id=instance_pool_id)
@@ -4304,7 +4935,10 @@ class InstancePoolsAPI:
     def list(self) -> Iterator[InstancePoolAndStats]:
         """List instance pool info.
         
-        Gets a list of instance pools with their statistics."""
+        Gets a list of instance pools with their statistics.
+        
+        :returns: Iterator over :class:`InstancePoolAndStats`
+        """
 
         json = self._api.do('GET', '/api/2.0/instance-pools/list')
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
@@ -4330,7 +4964,33 @@ class InstanceProfilesAPI:
         """Register an instance profile.
         
         In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users."""
+        admin users.
+        
+        :param instance_profile_arn: str
+          The AWS ARN of the instance profile to register with Databricks. This field is required.
+        :param iam_role_arn: str (optional)
+          The AWS IAM role ARN of the role associated with the instance profile. This field is required if
+          your role name and instance profile name do not match and you want to use the instance profile with
+          [Databricks SQL Serverless].
+          
+          Otherwise, this field is optional.
+          
+          [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+        :param is_meta_instance_profile: bool (optional)
+          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
+          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
+          requested instance type is not supported in your requested availability zone`), you can pass this
+          flag to skip the validation and forcibly add the instance profile.
+        :param skip_validation: bool (optional)
+          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
+          fails with an error message that does not indicate an IAM related permission issue, (e.g. “Your
+          requested instance type is not supported in your requested availability zone”), you can pass this
+          flag to skip the validation and forcibly add the instance profile.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AddInstanceProfile(iam_role_arn=iam_role_arn,
@@ -4359,7 +5019,27 @@ class InstanceProfilesAPI:
         This API is only available to admin users.
         
         [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
-        [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html"""
+        [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
+        
+        :param instance_profile_arn: str
+          The AWS ARN of the instance profile to register with Databricks. This field is required.
+        :param iam_role_arn: str (optional)
+          The AWS IAM role ARN of the role associated with the instance profile. This field is required if
+          your role name and instance profile name do not match and you want to use the instance profile with
+          [Databricks SQL Serverless].
+          
+          Otherwise, this field is optional.
+          
+          [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+        :param is_meta_instance_profile: bool (optional)
+          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
+          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
+          requested instance type is not supported in your requested availability zone`), you can pass this
+          flag to skip the validation and forcibly add the instance profile.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = InstanceProfile(iam_role_arn=iam_role_arn,
@@ -4373,7 +5053,10 @@ class InstanceProfilesAPI:
         
         List the instance profiles that the calling user can use to launch a cluster.
         
-        This API is available to all users."""
+        This API is available to all users.
+        
+        :returns: Iterator over :class:`InstanceProfile`
+        """
 
         json = self._api.do('GET', '/api/2.0/instance-profiles/list')
         return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
@@ -4384,7 +5067,13 @@ class InstanceProfilesAPI:
         Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
         continue to function.
         
-        This API is only accessible to admin users."""
+        This API is only accessible to admin users.
+        
+        :param instance_profile_arn: str
+          The ARN of the instance profile to remove. This field is required.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RemoveInstanceProfile(instance_profile_arn=instance_profile_arn)
@@ -4418,7 +5107,10 @@ class LibrariesAPI:
         
         Get the status of all libraries on all clusters. A status will be available for all libraries
         installed on this cluster via the API or the libraries UI as well as libraries set to be installed on
-        all clusters via the libraries UI."""
+        all clusters via the libraries UI.
+        
+        :returns: :class:`ListAllClusterLibraryStatusesResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses')
         return ListAllClusterLibraryStatusesResponse.from_dict(json)
@@ -4437,7 +5129,13 @@ class LibrariesAPI:
         order guarantee.
         
         3. Libraries that were previously requested on this cluster or on all clusters, but now marked for
-        removal. Within this group there is no order guarantee."""
+        removal. Within this group there is no order guarantee.
+        
+        :param cluster_id: str
+          Unique identifier of the cluster whose status should be retrieved.
+        
+        :returns: :class:`ClusterLibraryStatuses`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ClusterStatusRequest(cluster_id=cluster_id)
@@ -4455,7 +5153,15 @@ class LibrariesAPI:
         background after the completion of this request.
         
         **Note**: The actual set of libraries to be installed on a cluster is the union of the libraries
-        specified via this method and the libraries set to be installed on all clusters via the libraries UI."""
+        specified via this method and the libraries set to be installed on all clusters via the libraries UI.
+        
+        :param cluster_id: str
+          Unique identifier for the cluster on which to install these libraries.
+        :param libraries: List[:class:`Library`]
+          The libraries to install.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = InstallLibraries(cluster_id=cluster_id, libraries=libraries)
@@ -4467,7 +5173,15 @@ class LibrariesAPI:
         
         Set libraries to be uninstalled on a cluster. The libraries won't be uninstalled until the cluster is
         restarted. Uninstalling libraries that are not installed on the cluster will have no impact but is not
-        an error."""
+        an error.
+        
+        :param cluster_id: str
+          Unique identifier for the cluster on which to uninstall these libraries.
+        :param libraries: List[:class:`Library`]
+          The libraries to uninstall.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UninstallLibraries(cluster_id=cluster_id, libraries=libraries)
