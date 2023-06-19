@@ -316,7 +316,7 @@ class DbfsExt(files.DbfsAPI):
 
     def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
         with self.open(path, write=True, overwrite=overwrite) as dst:
-            shutil.copyfileobj(src, dst)
+            shutil.copyfileobj(src, dst, length=_DbfsIO.MAX_CHUNK_SIZE)
 
     def download(self, path: str) -> BinaryIO:
         return self.open(path, read=True)
@@ -370,14 +370,12 @@ class DbfsExt(files.DbfsAPI):
             # copy single file
             with src.open(read=True) as reader:
                 with dst.open(write=True, overwrite=overwrite) as writer:
-                    for chunk in reader:
-                        writer.write(chunk)
+                    shutil.copyfileobj(reader, writer, length=_DbfsIO.MAX_CHUNK_SIZE)
             return
         # iterate through files
         for child, reader in src.list_opened_handles(recursive=recursive):
             with dst.child(child).open(write=True, overwrite=overwrite) as writer:
-                for chunk in reader:
-                    writer.write(chunk)
+                shutil.copyfileobj(reader, writer, length=_DbfsIO.MAX_CHUNK_SIZE)
 
     def move_(self, src: str, dst: str, *, recursive=False, overwrite=False):
         source = self._path(src)
