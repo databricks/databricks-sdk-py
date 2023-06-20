@@ -6,8 +6,9 @@ import string
 
 import pytest
 
-from databricks.sdk.core import (Config, DatabricksCliTokenSource,
-                                 databricks_cli, CredentialsProvider, HeaderFactory)
+from databricks.sdk.core import (Config, CredentialsProvider,
+                                 DatabricksCliTokenSource, HeaderFactory,
+                                 databricks_cli)
 from databricks.sdk.version import __version__
 
 
@@ -128,6 +129,7 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
+
     class MockUname:
 
         @property
@@ -150,7 +152,9 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
 
 def test_config_copy_shallow_copies_credential_provider():
+
     class TestCredentialsProvider(CredentialsProvider):
+
         def __init__(self):
             super().__init__()
             self._token = "token1"

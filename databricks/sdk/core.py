@@ -371,7 +371,7 @@ class MetadataServiceTokenSource(Refreshable):
                                 self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
                                 self.METADATA_SERVICE_HOST_HEADER: self.host
                             })
-        json_resp: dict[str, Union[str,float]] = resp.json()
+        json_resp: dict[str, Union[str, float]] = resp.json()
         access_token = json_resp.get("access_token", None)
         if access_token is None:
             raise ValueError("Metadata Service returned empty token")
