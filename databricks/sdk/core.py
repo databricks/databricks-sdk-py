@@ -819,6 +819,11 @@ class Config:
         return f'<{self.debug_string()}>'
 
     def copy(self):
+        """Creates a copy of the config object.
+        All the copies share most of their internal state (ie, shared reference to fields such as credential_provider).
+        Copies have their own instances of the following fields
+            - `_user_agent_other_info`
+        """
         cpy: Config = copy.copy(self)
         cpy._user_agent_other_info = copy.deepcopy(self._user_agent_other_info)
         return cpy
