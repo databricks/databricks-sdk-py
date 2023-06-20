@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
