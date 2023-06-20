@@ -17,6 +17,13 @@ class WorkspaceExt(WorkspaceAPI):
              notebooks_modified_after: Optional[int] = None,
              recursive: Optional[bool] = False,
              **kwargs) -> Iterator[ObjectInfo]:
+        """List workspace objects
+
+        :param recursive: bool
+            Optionally invoke recursive traversal
+
+        :returns: Iterator of workspaceObjectInfo
+        """
         parent_list = super().list
         queue = [path]
         while queue:
