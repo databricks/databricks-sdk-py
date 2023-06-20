@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -18,9 +18,9 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AccessControl:
-    group_name: str = None
-    permission_level: 'PermissionLevel' = None
-    user_name: str = None
+    group_name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -38,17 +38,17 @@ class AccessControl:
 
 @dataclass
 class Alert:
-    created_at: str = None
-    id: str = None
-    last_triggered_at: str = None
-    name: str = None
-    options: 'AlertOptions' = None
-    parent: str = None
-    query: 'Query' = None
-    rearm: int = None
-    state: 'AlertState' = None
-    updated_at: str = None
-    user: 'User' = None
+    created_at: Optional[str] = None
+    id: Optional[str] = None
+    last_triggered_at: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional['AlertOptions'] = None
+    parent: Optional[str] = None
+    query: Optional['Query'] = None
+    rearm: Optional[int] = None
+    state: Optional['AlertState'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -87,9 +87,9 @@ class AlertOptions:
     column: str
     op: str
     value: str
-    custom_body: str = None
-    custom_subject: str = None
-    muted: bool = None
+    custom_body: Optional[str] = None
+    custom_subject: Optional[str] = None
+    muted: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -129,8 +129,8 @@ class CancelExecutionRequest:
 
 @dataclass
 class Channel:
-    dbsql_version: str = None
-    name: 'ChannelName' = None
+    dbsql_version: Optional[str] = None
+    name: Optional['ChannelName'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -147,8 +147,8 @@ class Channel:
 class ChannelInfo:
     """Channel information for the SQL warehouse at the time of query execution"""
 
-    dbsql_version: str = None
-    name: 'ChannelName' = None
+    dbsql_version: Optional[str] = None
+    name: Optional['ChannelName'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -162,6 +162,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -175,12 +176,12 @@ class ChunkInfo:
     """Describes metadata for a particular chunk, within a result set; this structure is used both
     within a manifest, and when fetching individual chunk data or links."""
 
-    byte_count: int = None
-    chunk_index: int = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -205,13 +206,13 @@ class ChunkInfo:
 
 @dataclass
 class ColumnInfo:
-    name: str = None
-    position: int = None
-    type_interval_type: str = None
-    type_name: 'ColumnInfoTypeName' = None
-    type_precision: int = None
-    type_scale: int = None
-    type_text: str = None
+    name: Optional[str] = None
+    position: Optional[int] = None
+    type_interval_type: Optional[str] = None
+    type_name: Optional['ColumnInfoTypeName'] = None
+    type_precision: Optional[int] = None
+    type_scale: Optional[int] = None
+    type_text: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -264,8 +265,8 @@ class CreateAlert:
     name: str
     options: 'AlertOptions'
     query_id: str
-    parent: str = None
-    rearm: int = None
+    parent: Optional[str] = None
+    rearm: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -289,10 +290,10 @@ class CreateAlert:
 class CreateDashboardRequest:
     """Create a dashboard object"""
 
-    is_favorite: bool = None
-    name: str = None
-    parent: str = None
-    tags: 'List[str]' = None
+    is_favorite: Optional[bool] = None
+    name: Optional[str] = None
+    parent: Optional[str] = None
+    tags: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -312,19 +313,19 @@ class CreateDashboardRequest:
 
 @dataclass
 class CreateWarehouseRequest:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    instance_profile_arn: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'CreateWarehouseRequestWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    instance_profile_arn: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['CreateWarehouseRequestWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -373,7 +374,7 @@ class CreateWarehouseRequestWarehouseType(Enum):
 
 @dataclass
 class CreateWarehouseResponse:
-    id: str = None
+    id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -389,23 +390,23 @@ class CreateWarehouseResponse:
 class Dashboard:
     """A JSON representing a dashboard containing widgets of visualizations and text boxes."""
 
-    can_edit: bool = None
-    created_at: str = None
-    dashboard_filters_enabled: bool = None
-    id: str = None
-    is_archived: bool = None
-    is_draft: bool = None
-    is_favorite: bool = None
-    name: str = None
-    options: 'DashboardOptions' = None
-    parent: str = None
-    permission_tier: 'PermissionLevel' = None
-    slug: str = None
-    tags: 'List[str]' = None
-    updated_at: str = None
-    user: 'User' = None
-    user_id: int = None
-    widgets: 'List[Widget]' = None
+    can_edit: Optional[bool] = None
+    created_at: Optional[str] = None
+    dashboard_filters_enabled: Optional[bool] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    name: Optional[str] = None
+    options: Optional['DashboardOptions'] = None
+    parent: Optional[str] = None
+    permission_tier: Optional['PermissionLevel'] = None
+    slug: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
+    user_id: Optional[int] = None
+    widgets: Optional['List[Widget]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -452,7 +453,7 @@ class Dashboard:
 
 @dataclass
 class DashboardOptions:
-    moved_to_trash_at: str = None
+    moved_to_trash_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -468,15 +469,15 @@ class DashboardOptions:
 class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
-    id: str = None
-    name: str = None
-    pause_reason: str = None
-    paused: int = None
-    supports_auto_limit: bool = None
-    syntax: str = None
-    type: str = None
-    view_only: bool = None
-    warehouse_id: str = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    pause_reason: Optional[str] = None
+    paused: Optional[int] = None
+    supports_auto_limit: Optional[bool] = None
+    syntax: Optional[str] = None
+    type: Optional[str] = None
+    view_only: Optional[bool] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -563,8 +564,8 @@ class EditAlert:
     name: str
     options: 'AlertOptions'
     query_id: str
-    alert_id: str = None
-    rearm: int = None
+    alert_id: Optional[str] = None
+    rearm: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -586,20 +587,20 @@ class EditAlert:
 
 @dataclass
 class EditWarehouseRequest:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    id: str = None
-    instance_profile_arn: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'EditWarehouseRequestWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['EditWarehouseRequestWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -650,8 +651,8 @@ class EditWarehouseRequestWarehouseType(Enum):
 
 @dataclass
 class EndpointConfPair:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -666,11 +667,11 @@ class EndpointConfPair:
 
 @dataclass
 class EndpointHealth:
-    details: str = None
-    failure_reason: 'TerminationReason' = None
-    message: str = None
-    status: 'Status' = None
-    summary: str = None
+    details: Optional[str] = None
+    failure_reason: Optional['TerminationReason'] = None
+    message: Optional[str] = None
+    status: Optional['Status'] = None
+    summary: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -692,26 +693,26 @@ class EndpointHealth:
 
 @dataclass
 class EndpointInfo:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    health: 'EndpointHealth' = None
-    id: str = None
-    instance_profile_arn: str = None
-    jdbc_url: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    num_active_sessions: int = None
-    num_clusters: int = None
-    odbc_params: 'OdbcParams' = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    state: 'State' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'EndpointInfoWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    health: Optional['EndpointHealth'] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    jdbc_url: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    num_active_sessions: Optional[int] = None
+    num_clusters: Optional[int] = None
+    odbc_params: Optional['OdbcParams'] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    state: Optional['State'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['EndpointInfoWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -774,8 +775,8 @@ class EndpointInfoWarehouseType(Enum):
 
 @dataclass
 class EndpointTagPair:
-    key: str = None
-    value: str = None
+    key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -790,7 +791,7 @@ class EndpointTagPair:
 
 @dataclass
 class EndpointTags:
-    custom_tags: 'List[EndpointTagPair]' = None
+    custom_tags: Optional['List[EndpointTagPair]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -804,15 +805,15 @@ class EndpointTags:
 
 @dataclass
 class ExecuteStatementRequest:
-    byte_limit: int = None
-    catalog: str = None
-    disposition: 'Disposition' = None
-    format: 'Format' = None
-    on_wait_timeout: 'TimeoutAction' = None
-    schema: str = None
-    statement: str = None
-    wait_timeout: str = None
-    warehouse_id: str = None
+    byte_limit: Optional[int] = None
+    catalog: Optional[str] = None
+    disposition: Optional['Disposition'] = None
+    format: Optional['Format'] = None
+    on_wait_timeout: Optional['TimeoutAction'] = None
+    schema: Optional[str] = None
+    statement: Optional[str] = None
+    wait_timeout: Optional[str] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -842,10 +843,10 @@ class ExecuteStatementRequest:
 
 @dataclass
 class ExecuteStatementResponse:
-    manifest: 'ResultManifest' = None
-    result: 'ResultData' = None
-    statement_id: str = None
-    status: 'StatementStatus' = None
+    manifest: Optional['ResultManifest'] = None
+    result: Optional['ResultData'] = None
+    statement_id: Optional[str] = None
+    status: Optional['StatementStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -865,14 +866,14 @@ class ExecuteStatementResponse:
 
 @dataclass
 class ExternalLink:
-    byte_count: int = None
-    chunk_index: int = None
-    expiration: str = None
-    external_link: str = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    expiration: Optional[str] = None
+    external_link: Optional[str] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -971,9 +972,9 @@ class GetQueryRequest:
 
 @dataclass
 class GetResponse:
-    access_control_list: 'List[AccessControl]' = None
-    object_id: str = None
-    object_type: 'ObjectType' = None
+    access_control_list: Optional['List[AccessControl]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional['ObjectType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -999,10 +1000,10 @@ class GetStatementRequest:
 
 @dataclass
 class GetStatementResponse:
-    manifest: 'ResultManifest' = None
-    result: 'ResultData' = None
-    statement_id: str = None
-    status: 'StatementStatus' = None
+    manifest: Optional['ResultManifest'] = None
+    result: Optional['ResultData'] = None
+    statement_id: Optional[str] = None
+    status: Optional['StatementStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1037,26 +1038,26 @@ class GetWarehouseRequest:
 
 @dataclass
 class GetWarehouseResponse:
-    auto_stop_mins: int = None
-    channel: 'Channel' = None
-    cluster_size: str = None
-    creator_name: str = None
-    enable_photon: bool = None
-    enable_serverless_compute: bool = None
-    health: 'EndpointHealth' = None
-    id: str = None
-    instance_profile_arn: str = None
-    jdbc_url: str = None
-    max_num_clusters: int = None
-    min_num_clusters: int = None
-    name: str = None
-    num_active_sessions: int = None
-    num_clusters: int = None
-    odbc_params: 'OdbcParams' = None
-    spot_instance_policy: 'SpotInstancePolicy' = None
-    state: 'State' = None
-    tags: 'EndpointTags' = None
-    warehouse_type: 'GetWarehouseResponseWarehouseType' = None
+    auto_stop_mins: Optional[int] = None
+    channel: Optional['Channel'] = None
+    cluster_size: Optional[str] = None
+    creator_name: Optional[str] = None
+    enable_photon: Optional[bool] = None
+    enable_serverless_compute: Optional[bool] = None
+    health: Optional['EndpointHealth'] = None
+    id: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    jdbc_url: Optional[str] = None
+    max_num_clusters: Optional[int] = None
+    min_num_clusters: Optional[int] = None
+    name: Optional[str] = None
+    num_active_sessions: Optional[int] = None
+    num_clusters: Optional[int] = None
+    odbc_params: Optional['OdbcParams'] = None
+    spot_instance_policy: Optional['SpotInstancePolicy'] = None
+    state: Optional['State'] = None
+    tags: Optional['EndpointTags'] = None
+    warehouse_type: Optional['GetWarehouseResponseWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1119,15 +1120,15 @@ class GetWarehouseResponseWarehouseType(Enum):
 
 @dataclass
 class GetWorkspaceWarehouseConfigResponse:
-    channel: 'Channel' = None
-    config_param: 'RepeatedEndpointConfPairs' = None
-    data_access_config: 'List[EndpointConfPair]' = None
-    enabled_warehouse_types: 'List[WarehouseTypePair]' = None
-    global_param: 'RepeatedEndpointConfPairs' = None
-    google_service_account: str = None
-    instance_profile_arn: str = None
-    security_policy: 'GetWorkspaceWarehouseConfigResponseSecurityPolicy' = None
-    sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
+    channel: Optional['Channel'] = None
+    config_param: Optional['RepeatedEndpointConfPairs'] = None
+    data_access_config: Optional['List[EndpointConfPair]'] = None
+    enabled_warehouse_types: Optional['List[WarehouseTypePair]'] = None
+    global_param: Optional['RepeatedEndpointConfPairs'] = None
+    google_service_account: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    security_policy: Optional['GetWorkspaceWarehouseConfigResponseSecurityPolicy'] = None
+    sql_configuration_parameters: Optional['RepeatedEndpointConfPairs'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1173,10 +1174,10 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
 class ListDashboardsRequest:
     """Get dashboard objects"""
 
-    order: 'ListOrder' = None
-    page: int = None
-    page_size: int = None
-    q: str = None
+    order: Optional['ListOrder'] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    q: Optional[str] = None
 
 
 class ListOrder(Enum):
@@ -1189,17 +1190,17 @@ class ListOrder(Enum):
 class ListQueriesRequest:
     """Get a list of queries"""
 
-    order: str = None
-    page: int = None
-    page_size: int = None
-    q: str = None
+    order: Optional[str] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    q: Optional[str] = None
 
 
 @dataclass
 class ListQueriesResponse:
-    has_next_page: bool = None
-    next_page_token: str = None
-    res: 'List[QueryInfo]' = None
+    has_next_page: Optional[bool] = None
+    next_page_token: Optional[str] = None
+    res: Optional['List[QueryInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1219,18 +1220,18 @@ class ListQueriesResponse:
 class ListQueryHistoryRequest:
     """List Queries"""
 
-    filter_by: 'QueryFilter' = None
-    include_metrics: bool = None
-    max_results: int = None
-    page_token: str = None
+    filter_by: Optional['QueryFilter'] = None
+    include_metrics: Optional[bool] = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListResponse:
-    count: int = None
-    page: int = None
-    page_size: int = None
-    results: 'List[Dashboard]' = None
+    count: Optional[int] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    results: Optional['List[Dashboard]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1252,12 +1253,12 @@ class ListResponse:
 class ListWarehousesRequest:
     """List warehouses"""
 
-    run_as_user_id: int = None
+    run_as_user_id: Optional[int] = None
 
 
 @dataclass
 class ListWarehousesResponse:
-    warehouses: 'List[EndpointInfo]' = None
+    warehouses: Optional['List[EndpointInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1289,10 +1290,10 @@ class ObjectTypePlural(Enum):
 
 @dataclass
 class OdbcParams:
-    hostname: str = None
-    path: str = None
-    port: int = None
-    protocol: str = None
+    hostname: Optional[str] = None
+    path: Optional[str] = None
+    port: Optional[int] = None
+    protocol: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1320,10 +1321,10 @@ class OwnableObjectType(Enum):
 
 @dataclass
 class Parameter:
-    name: str = None
-    title: str = None
-    type: 'ParameterType' = None
-    value: Any = None
+    name: Optional[str] = None
+    title: Optional[str] = None
+    type: Optional['ParameterType'] = None
+    value: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1370,29 +1371,29 @@ class PlansState(Enum):
 
 @dataclass
 class Query:
-    can_edit: bool = None
-    created_at: str = None
-    data_source_id: str = None
-    description: str = None
-    id: str = None
-    is_archived: bool = None
-    is_draft: bool = None
-    is_favorite: bool = None
-    is_safe: bool = None
-    last_modified_by: 'User' = None
-    last_modified_by_id: int = None
-    latest_query_data_id: str = None
-    name: str = None
-    options: 'QueryOptions' = None
-    parent: str = None
-    permission_tier: 'PermissionLevel' = None
-    query: str = None
-    query_hash: str = None
-    tags: 'List[str]' = None
-    updated_at: str = None
-    user: 'User' = None
-    user_id: int = None
-    visualizations: 'List[Visualization]' = None
+    can_edit: Optional[bool] = None
+    created_at: Optional[str] = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_favorite: Optional[bool] = None
+    is_safe: Optional[bool] = None
+    last_modified_by: Optional['User'] = None
+    last_modified_by_id: Optional[int] = None
+    latest_query_data_id: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional['QueryOptions'] = None
+    parent: Optional[str] = None
+    permission_tier: Optional['PermissionLevel'] = None
+    query: Optional[str] = None
+    query_hash: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user: Optional['User'] = None
+    user_id: Optional[int] = None
+    visualizations: Optional['List[Visualization]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1450,12 +1451,12 @@ class Query:
 
 @dataclass
 class QueryEditContent:
-    data_source_id: str = None
-    description: str = None
-    name: str = None
-    options: Any = None
-    query: str = None
-    query_id: str = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    query: Optional[str] = None
+    query_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1481,10 +1482,10 @@ class QueryEditContent:
 class QueryFilter:
     """A filter to limit query history results. This field is optional."""
 
-    query_start_time_range: 'TimeRange' = None
-    statuses: 'List[QueryStatus]' = None
-    user_ids: 'List[int]' = None
-    warehouse_ids: 'List[str]' = None
+    query_start_time_range: Optional['TimeRange'] = None
+    statuses: Optional['List[QueryStatus]'] = None
+    user_ids: Optional['List[int]'] = None
+    warehouse_ids: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1504,28 +1505,28 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
-    channel_used: 'ChannelInfo' = None
-    duration: int = None
-    endpoint_id: str = None
-    error_message: str = None
-    executed_as_user_id: int = None
-    executed_as_user_name: str = None
-    execution_end_time_ms: int = None
-    is_final: bool = None
-    lookup_key: str = None
-    metrics: 'QueryMetrics' = None
-    plans_state: 'PlansState' = None
-    query_end_time_ms: int = None
-    query_id: str = None
-    query_start_time_ms: int = None
-    query_text: str = None
-    rows_produced: int = None
-    spark_ui_url: str = None
-    statement_type: 'QueryStatementType' = None
-    status: 'QueryStatus' = None
-    user_id: int = None
-    user_name: str = None
-    warehouse_id: str = None
+    channel_used: Optional['ChannelInfo'] = None
+    duration: Optional[int] = None
+    endpoint_id: Optional[str] = None
+    error_message: Optional[str] = None
+    executed_as_user_id: Optional[int] = None
+    executed_as_user_name: Optional[str] = None
+    execution_end_time_ms: Optional[int] = None
+    is_final: Optional[bool] = None
+    lookup_key: Optional[str] = None
+    metrics: Optional['QueryMetrics'] = None
+    plans_state: Optional['PlansState'] = None
+    query_end_time_ms: Optional[int] = None
+    query_id: Optional[str] = None
+    query_start_time_ms: Optional[int] = None
+    query_text: Optional[str] = None
+    rows_produced: Optional[int] = None
+    spark_ui_url: Optional[str] = None
+    statement_type: Optional['QueryStatementType'] = None
+    status: Optional['QueryStatus'] = None
+    user_id: Optional[int] = None
+    user_name: Optional[str] = None
+    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1581,10 +1582,10 @@ class QueryInfo:
 
 @dataclass
 class QueryList:
-    count: int = None
-    page: int = None
-    page_size: int = None
-    results: 'List[Query]' = None
+    count: Optional[int] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+    results: Optional['List[Query]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1606,27 +1607,27 @@ class QueryList:
 class QueryMetrics:
     """Metrics about query execution."""
 
-    compilation_time_ms: int = None
-    execution_time_ms: int = None
-    network_sent_bytes: int = None
-    photon_total_time_ms: int = None
-    queued_overload_time_ms: int = None
-    queued_provisioning_time_ms: int = None
-    read_bytes: int = None
-    read_cache_bytes: int = None
-    read_files_count: int = None
-    read_partitions_count: int = None
-    read_remote_bytes: int = None
-    result_fetch_time_ms: int = None
-    result_from_cache: bool = None
-    rows_produced_count: int = None
-    rows_read_count: int = None
-    spill_to_disk_bytes: int = None
-    task_total_time_ms: int = None
-    total_files_count: int = None
-    total_partitions_count: int = None
-    total_time_ms: int = None
-    write_remote_bytes: int = None
+    compilation_time_ms: Optional[int] = None
+    execution_time_ms: Optional[int] = None
+    network_sent_bytes: Optional[int] = None
+    photon_total_time_ms: Optional[int] = None
+    queued_overload_time_ms: Optional[int] = None
+    queued_provisioning_time_ms: Optional[int] = None
+    read_bytes: Optional[int] = None
+    read_cache_bytes: Optional[int] = None
+    read_files_count: Optional[int] = None
+    read_partitions_count: Optional[int] = None
+    read_remote_bytes: Optional[int] = None
+    result_fetch_time_ms: Optional[int] = None
+    result_from_cache: Optional[bool] = None
+    rows_produced_count: Optional[int] = None
+    rows_read_count: Optional[int] = None
+    spill_to_disk_bytes: Optional[int] = None
+    task_total_time_ms: Optional[int] = None
+    total_files_count: Optional[int] = None
+    total_partitions_count: Optional[int] = None
+    total_time_ms: Optional[int] = None
+    write_remote_bytes: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1683,8 +1684,8 @@ class QueryMetrics:
 
 @dataclass
 class QueryOptions:
-    moved_to_trash_at: str = None
-    parameters: 'List[Parameter]' = None
+    moved_to_trash_at: Optional[str] = None
+    parameters: Optional['List[Parameter]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1700,12 +1701,12 @@ class QueryOptions:
 
 @dataclass
 class QueryPostContent:
-    data_source_id: str = None
-    description: str = None
-    name: str = None
-    options: Any = None
-    parent: str = None
-    query: str = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    parent: Optional[str] = None
+    query: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1766,8 +1767,8 @@ class QueryStatus(Enum):
 
 @dataclass
 class RepeatedEndpointConfPairs:
-    config_pair: 'List[EndpointConfPair]' = None
-    configuration_pairs: 'List[EndpointConfPair]' = None
+    config_pair: Optional['List[EndpointConfPair]'] = None
+    configuration_pairs: Optional['List[EndpointConfPair]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1802,14 +1803,14 @@ class ResultData:
     in the `external_link` field when using `EXTERNAL_LINKS` disposition. Exactly one of these will
     be set."""
 
-    byte_count: int = None
-    chunk_index: int = None
-    data_array: 'List[List[str]]' = None
-    external_links: 'List[ExternalLink]' = None
-    next_chunk_index: int = None
-    next_chunk_internal_link: str = None
-    row_count: int = None
-    row_offset: int = None
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    data_array: Optional['List[List[str]]'] = None
+    external_links: Optional['List[ExternalLink]'] = None
+    next_chunk_index: Optional[int] = None
+    next_chunk_internal_link: Optional[str] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1840,12 +1841,12 @@ class ResultData:
 class ResultManifest:
     """The result manifest provides schema and metadata for the result set."""
 
-    chunks: 'List[ChunkInfo]' = None
-    format: 'Format' = None
-    schema: 'ResultSchema' = None
-    total_byte_count: int = None
-    total_chunk_count: int = None
-    total_row_count: int = None
+    chunks: Optional['List[ChunkInfo]'] = None
+    format: Optional['Format'] = None
+    schema: Optional['ResultSchema'] = None
+    total_byte_count: Optional[int] = None
+    total_chunk_count: Optional[int] = None
+    total_row_count: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1871,8 +1872,8 @@ class ResultManifest:
 class ResultSchema:
     """Schema is an ordered list of column descriptions."""
 
-    column_count: int = None
-    columns: 'List[ColumnInfo]' = None
+    column_count: Optional[int] = None
+    columns: Optional['List[ColumnInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1887,8 +1888,8 @@ class ResultSchema:
 
 @dataclass
 class ServiceError:
-    error_code: 'ServiceErrorCode' = None
-    message: str = None
+    error_code: Optional['ServiceErrorCode'] = None
+    message: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1925,7 +1926,7 @@ class SetRequest:
 
     object_type: 'ObjectTypePlural'
     object_id: str
-    access_control_list: 'List[AccessControl]' = None
+    access_control_list: Optional['List[AccessControl]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1944,9 +1945,9 @@ class SetRequest:
 
 @dataclass
 class SetResponse:
-    access_control_list: 'List[AccessControl]' = None
-    object_id: str = None
-    object_type: 'ObjectType' = None
+    access_control_list: Optional['List[AccessControl]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional['ObjectType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1965,15 +1966,15 @@ class SetResponse:
 
 @dataclass
 class SetWorkspaceWarehouseConfigRequest:
-    channel: 'Channel' = None
-    config_param: 'RepeatedEndpointConfPairs' = None
-    data_access_config: 'List[EndpointConfPair]' = None
-    enabled_warehouse_types: 'List[WarehouseTypePair]' = None
-    global_param: 'RepeatedEndpointConfPairs' = None
-    google_service_account: str = None
-    instance_profile_arn: str = None
-    security_policy: 'SetWorkspaceWarehouseConfigRequestSecurityPolicy' = None
-    sql_configuration_parameters: 'RepeatedEndpointConfPairs' = None
+    channel: Optional['Channel'] = None
+    config_param: Optional['RepeatedEndpointConfPairs'] = None
+    data_access_config: Optional['List[EndpointConfPair]'] = None
+    enabled_warehouse_types: Optional['List[WarehouseTypePair]'] = None
+    global_param: Optional['RepeatedEndpointConfPairs'] = None
+    google_service_account: Optional[str] = None
+    instance_profile_arn: Optional[str] = None
+    security_policy: Optional['SetWorkspaceWarehouseConfigRequestSecurityPolicy'] = None
+    sql_configuration_parameters: Optional['RepeatedEndpointConfPairs'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2060,8 +2061,8 @@ class StatementState(Enum):
 class StatementStatus:
     """Status response includes execution state and if relevant, error information."""
 
-    error: 'ServiceError' = None
-    state: 'StatementState' = None
+    error: Optional['ServiceError'] = None
+    state: Optional['StatementState'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2092,7 +2093,7 @@ class StopRequest:
 
 @dataclass
 class Success:
-    message: 'SuccessMessage' = None
+    message: Optional['SuccessMessage'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2111,9 +2112,9 @@ class SuccessMessage(Enum):
 
 @dataclass
 class TerminationReason:
-    code: 'TerminationReasonCode' = None
-    parameters: 'Dict[str,str]' = None
-    type: 'TerminationReasonType' = None
+    code: Optional['TerminationReasonCode'] = None
+    parameters: Optional['Dict[str,str]'] = None
+    type: Optional['TerminationReasonType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2224,8 +2225,8 @@ class TerminationReasonType(Enum):
 
 @dataclass
 class TimeRange:
-    end_time_ms: int = None
-    start_time_ms: int = None
+    end_time_ms: Optional[int] = None
+    start_time_ms: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2254,7 +2255,7 @@ class TimeoutAction(Enum):
 
 @dataclass
 class TransferOwnershipObjectId:
-    new_owner: str = None
+    new_owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2272,7 +2273,7 @@ class TransferOwnershipRequest:
 
     object_type: 'OwnableObjectType'
     object_id: 'TransferOwnershipObjectId'
-    new_owner: str = None
+    new_owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2290,11 +2291,11 @@ class TransferOwnershipRequest:
 
 @dataclass
 class User:
-    email: str = None
-    id: int = None
-    is_db_admin: bool = None
-    name: str = None
-    profile_image_url: str = None
+    email: Optional[str] = None
+    id: Optional[int] = None
+    is_db_admin: Optional[bool] = None
+    name: Optional[str] = None
+    profile_image_url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2321,13 +2322,13 @@ class Visualization:
     create a new one with a POST request to the same endpoint. Databricks does not recommend
     constructing ad-hoc visualizations entirely in JSON."""
 
-    created_at: str = None
-    description: str = None
-    id: str = None
-    name: str = None
-    options: Any = None
-    type: str = None
-    updated_at: str = None
+    created_at: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    options: Optional[Any] = None
+    type: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2353,8 +2354,8 @@ class Visualization:
 
 @dataclass
 class WarehouseTypePair:
-    enabled: bool = None
-    warehouse_type: 'WarehouseTypePairWarehouseType' = None
+    enabled: Optional[bool] = None
+    warehouse_type: Optional['WarehouseTypePairWarehouseType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2378,10 +2379,10 @@ class WarehouseTypePairWarehouseType(Enum):
 
 @dataclass
 class Widget:
-    id: int = None
-    options: 'WidgetOptions' = None
-    visualization: 'Visualization' = None
-    width: int = None
+    id: Optional[int] = None
+    options: Optional['WidgetOptions'] = None
+    visualization: Optional['Visualization'] = None
+    width: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2401,13 +2402,13 @@ class Widget:
 
 @dataclass
 class WidgetOptions:
-    created_at: str = None
-    dashboard_id: str = None
-    is_hidden: bool = None
-    parameter_mappings: Any = None
-    position: Any = None
-    text: str = None
-    updated_at: str = None
+    created_at: Optional[str] = None
+    dashboard_id: Optional[str] = None
+    is_hidden: Optional[bool] = None
+    parameter_mappings: Optional[Any] = None
+    position: Optional[Any] = None
+    text: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2445,13 +2446,28 @@ class AlertsAPI:
                options: AlertOptions,
                query_id: str,
                *,
-               parent: str = None,
-               rearm: int = None,
+               parent: Optional[str] = None,
+               rearm: Optional[int] = None,
                **kwargs) -> Alert:
         """Create an alert.
         
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
-        condition of its result, and notifies users or notification destinations if the condition was met."""
+        condition of its result, and notifies users or notification destinations if the condition was met.
+        
+        :param name: str
+          Name of the alert.
+        :param options: :class:`AlertOptions`
+          Alert configuration options.
+        :param query_id: str
+          ID of the query evaluated by the alert.
+        :param parent: str (optional)
+          The identifier of the workspace folder containing the alert. The default is ther user's home folder.
+        :param rearm: int (optional)
+          Number of seconds after being triggered before the alert rearms itself and can be triggered again.
+          If `null`, alert will never be triggered again.
+        
+        :returns: :class:`Alert`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateAlert(name=name, options=options, parent=parent, query_id=query_id, rearm=rearm)
@@ -2464,7 +2480,12 @@ class AlertsAPI:
         """Delete an alert.
         
         Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note:** Unlike
-        queries and dashboards, alerts cannot be moved to the trash."""
+        queries and dashboards, alerts cannot be moved to the trash.
+        
+        :param alert_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAlertRequest(alert_id=alert_id)
@@ -2474,7 +2495,12 @@ class AlertsAPI:
     def get(self, alert_id: str, **kwargs) -> Alert:
         """Get an alert.
         
-        Gets an alert."""
+        Gets an alert.
+        
+        :param alert_id: str
+        
+        :returns: :class:`Alert`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAlertRequest(alert_id=alert_id)
@@ -2485,7 +2511,10 @@ class AlertsAPI:
     def list(self) -> Iterator[Alert]:
         """Get alerts.
         
-        Gets a list of alerts."""
+        Gets a list of alerts.
+        
+        :returns: Iterator over :class:`Alert`
+        """
 
         json = self._api.do('GET', '/api/2.0/preview/sql/alerts')
         return [Alert.from_dict(v) for v in json]
@@ -2496,11 +2525,25 @@ class AlertsAPI:
                query_id: str,
                alert_id: str,
                *,
-               rearm: int = None,
+               rearm: Optional[int] = None,
                **kwargs):
         """Update an alert.
         
-        Updates an alert."""
+        Updates an alert.
+        
+        :param name: str
+          Name of the alert.
+        :param options: :class:`AlertOptions`
+          Alert configuration options.
+        :param query_id: str
+          ID of the query evaluated by the alert.
+        :param alert_id: str
+        :param rearm: int (optional)
+          Number of seconds after being triggered before the alert rearms itself and can be triggered again.
+          If `null`, alert will never be triggered again.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditAlert(alert_id=alert_id, name=name, options=options, query_id=query_id, rearm=rearm)
@@ -2520,12 +2563,25 @@ class DashboardsAPI:
 
     def create(self,
                *,
-               is_favorite: bool = None,
-               name: str = None,
-               parent: str = None,
-               tags: List[str] = None,
+               is_favorite: Optional[bool] = None,
+               name: Optional[str] = None,
+               parent: Optional[str] = None,
+               tags: Optional[List[str]] = None,
                **kwargs) -> Dashboard:
-        """Create a dashboard object."""
+        """Create a dashboard object.
+        
+        :param is_favorite: bool (optional)
+          Indicates whether this query object should appear in the current user's favorites list. The
+          application uses this flag to determine whether or not the "favorite star " should selected.
+        :param name: str (optional)
+          The title of this dashboard that appears in list views and at the top of the dashboard page.
+        :param parent: str (optional)
+          The identifier of the workspace folder containing the dashboard. The default is the user's home
+          folder.
+        :param tags: List[str] (optional)
+        
+        :returns: :class:`Dashboard`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateDashboardRequest(is_favorite=is_favorite, name=name, parent=parent, tags=tags)
@@ -2538,7 +2594,12 @@ class DashboardsAPI:
         """Remove a dashboard.
         
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
-        be shared."""
+        be shared.
+        
+        :param dashboard_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteDashboardRequest(dashboard_id=dashboard_id)
@@ -2548,7 +2609,12 @@ class DashboardsAPI:
     def get(self, dashboard_id: str, **kwargs) -> Dashboard:
         """Retrieve a definition.
         
-        Returns a JSON representation of a dashboard object, including its visualization and query objects."""
+        Returns a JSON representation of a dashboard object, including its visualization and query objects.
+        
+        :param dashboard_id: str
+        
+        :returns: :class:`Dashboard`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetDashboardRequest(dashboard_id=dashboard_id)
@@ -2558,14 +2624,26 @@ class DashboardsAPI:
 
     def list(self,
              *,
-             order: ListOrder = None,
-             page: int = None,
-             page_size: int = None,
-             q: str = None,
+             order: Optional[ListOrder] = None,
+             page: Optional[int] = None,
+             page_size: Optional[int] = None,
+             q: Optional[str] = None,
              **kwargs) -> Iterator[Dashboard]:
         """Get dashboard objects.
         
-        Fetch a paginated list of dashboard objects."""
+        Fetch a paginated list of dashboard objects.
+        
+        :param order: :class:`ListOrder` (optional)
+          Name of dashboard attribute to order by.
+        :param page: int (optional)
+          Page number to retrieve.
+        :param page_size: int (optional)
+          Number of dashboards to return per page.
+        :param q: str (optional)
+          Full text search term.
+        
+        :returns: Iterator over :class:`Dashboard`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListDashboardsRequest(order=order, page=page, page_size=page_size, q=q)
@@ -2594,7 +2672,12 @@ class DashboardsAPI:
     def restore(self, dashboard_id: str, **kwargs):
         """Restore a dashboard.
         
-        A restored dashboard appears in list views and searches and can be shared."""
+        A restored dashboard appears in list views and searches and can be shared.
+        
+        :param dashboard_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestoreDashboardRequest(dashboard_id=dashboard_id)
@@ -2619,7 +2702,10 @@ class DataSourcesAPI:
         
         Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
-        queries against it."""
+        queries against it.
+        
+        :returns: Iterator over :class:`DataSource`
+        """
 
         json = self._api.do('GET', '/api/2.0/preview/sql/data_sources')
         return [DataSource.from_dict(v) for v in json]
@@ -2644,25 +2730,42 @@ class DbsqlPermissionsAPI:
     def get(self, object_type: ObjectTypePlural, object_id: str, **kwargs) -> GetResponse:
         """Get object ACL.
         
-        Gets a JSON representation of the access control list (ACL) for a specified object."""
+        Gets a JSON representation of the access control list (ACL) for a specified object.
+        
+        :param object_type: :class:`ObjectTypePlural`
+          The type of object permissions to check.
+        :param object_id: str
+          Object ID. An ACL is returned for the object with this UUID.
+        
+        :returns: :class:`GetResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetDbsqlPermissionRequest(object_id=object_id, object_type=object_type)
 
-        json = self._api.do('GET',
-                            f'/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}')
+        json = self._api.do(
+            'GET', f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}')
         return GetResponse.from_dict(json)
 
     def set(self,
             object_type: ObjectTypePlural,
             object_id: str,
             *,
-            access_control_list: List[AccessControl] = None,
+            access_control_list: Optional[List[AccessControl]] = None,
             **kwargs) -> SetResponse:
         """Set object ACL.
         
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
-        ACL."""
+        ACL.
+        
+        :param object_type: :class:`ObjectTypePlural`
+          The type of object permission to set.
+        :param object_id: str
+          Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.
+        :param access_control_list: List[:class:`AccessControl`] (optional)
+        
+        :returns: :class:`SetResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SetRequest(access_control_list=access_control_list,
@@ -2670,20 +2773,31 @@ class DbsqlPermissionsAPI:
                                  object_type=object_type)
         body = request.as_dict()
 
-        json = self._api.do('POST',
-                            f'/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}',
-                            body=body)
+        json = self._api.do(
+            'POST',
+            f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}',
+            body=body)
         return SetResponse.from_dict(json)
 
     def transfer_ownership(self,
                            object_type: OwnableObjectType,
                            object_id: TransferOwnershipObjectId,
                            *,
-                           new_owner: str = None,
+                           new_owner: Optional[str] = None,
                            **kwargs) -> Success:
         """Transfer object ownership.
         
-        Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key."""
+        Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
+        
+        :param object_type: :class:`OwnableObjectType`
+          The type of object on which to change ownership.
+        :param object_id: :class:`TransferOwnershipObjectId`
+          The ID of the object on which to change ownership.
+        :param new_owner: str (optional)
+          Email address for the new owner, who must exist in the workspace.
+        
+        :returns: :class:`Success`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = TransferOwnershipRequest(new_owner=new_owner,
@@ -2693,7 +2807,7 @@ class DbsqlPermissionsAPI:
 
         json = self._api.do(
             'POST',
-            f'/api/2.0/preview/sql/permissions/{request.object_type}/{request.object_id}/transfer',
+            f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}/transfer',
             body=body)
         return Success.from_dict(json)
 
@@ -2708,12 +2822,12 @@ class QueriesAPI:
 
     def create(self,
                *,
-               data_source_id: str = None,
-               description: str = None,
-               name: str = None,
-               options: Any = None,
-               parent: str = None,
-               query: str = None,
+               data_source_id: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               parent: Optional[str] = None,
+               query: Optional[str] = None,
                **kwargs) -> Query:
         """Create a new query definition.
         
@@ -2724,7 +2838,25 @@ class QueriesAPI:
         use the Data Sources API to see a complete list of available SQL warehouses. Or you can copy the
         `data_source_id` from an existing query.
         
-        **Note**: You cannot add a visualization until you create the query."""
+        **Note**: You cannot add a visualization until you create the query.
+        
+        :param data_source_id: str (optional)
+          The ID of the data source / SQL warehouse where this query will run.
+        :param description: str (optional)
+          General description that can convey additional information about this query such as usage notes.
+        :param name: str (optional)
+          The name or title of this query to display in list views.
+        :param options: Any (optional)
+          Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
+          `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
+          overridden at runtime.
+        :param parent: str (optional)
+          The identifier of the workspace folder containing the query. The default is the user's home folder.
+        :param query: str (optional)
+          The text of the query.
+        
+        :returns: :class:`Query`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = QueryPostContent(data_source_id=data_source_id,
@@ -2742,7 +2874,12 @@ class QueriesAPI:
         """Delete a query.
         
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
-        they cannot be used for alerts. The trash is deleted after 30 days."""
+        they cannot be used for alerts. The trash is deleted after 30 days.
+        
+        :param query_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteQueryRequest(query_id=query_id)
@@ -2753,7 +2890,12 @@ class QueriesAPI:
         """Get a query definition.
         
         Retrieve a query object definition along with contextual permissions information about the currently
-        authenticated user."""
+        authenticated user.
+        
+        :param query_id: str
+        
+        :returns: :class:`Query`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetQueryRequest(query_id=query_id)
@@ -2763,14 +2905,38 @@ class QueriesAPI:
 
     def list(self,
              *,
-             order: str = None,
-             page: int = None,
-             page_size: int = None,
-             q: str = None,
+             order: Optional[str] = None,
+             page: Optional[int] = None,
+             page_size: Optional[int] = None,
+             q: Optional[str] = None,
              **kwargs) -> Iterator[Query]:
         """Get a list of queries.
         
-        Gets a list of queries. Optionally, this list can be filtered by a search term."""
+        Gets a list of queries. Optionally, this list can be filtered by a search term.
+        
+        :param order: str (optional)
+          Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
+          descending instead.
+          
+          - `name`: The name of the query.
+          
+          - `created_at`: The timestamp the query was created.
+          
+          - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank
+          value is treated as the highest value for sorting.
+          
+          - `executed_at`: The timestamp when the query was last run.
+          
+          - `created_by`: The user name of the user that created the query.
+        :param page: int (optional)
+          Page number to retrieve.
+        :param page_size: int (optional)
+          Number of queries to return per page.
+        :param q: str (optional)
+          Full text search term
+        
+        :returns: Iterator over :class:`Query`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListQueriesRequest(order=order, page=page, page_size=page_size, q=q)
@@ -2800,7 +2966,12 @@ class QueriesAPI:
         """Restore a query.
         
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
-        You can use restored queries for alerts."""
+        You can use restored queries for alerts.
+        
+        :param query_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestoreQueryRequest(query_id=query_id)
@@ -2810,17 +2981,34 @@ class QueriesAPI:
     def update(self,
                query_id: str,
                *,
-               data_source_id: str = None,
-               description: str = None,
-               name: str = None,
-               options: Any = None,
-               query: str = None,
+               data_source_id: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               query: Optional[str] = None,
                **kwargs) -> Query:
         """Change a query definition.
         
         Modify this query definition.
         
-        **Note**: You cannot undo this operation."""
+        **Note**: You cannot undo this operation.
+        
+        :param query_id: str
+        :param data_source_id: str (optional)
+          The ID of the data source / SQL warehouse where this query will run.
+        :param description: str (optional)
+          General description that can convey additional information about this query such as usage notes.
+        :param name: str (optional)
+          The name or title of this query to display in list views.
+        :param options: Any (optional)
+          Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
+          `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
+          overridden at runtime.
+        :param query: str (optional)
+          The text of the query.
+        
+        :returns: :class:`Query`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = QueryEditContent(data_source_id=data_source_id,
@@ -2843,16 +3031,28 @@ class QueryHistoryAPI:
 
     def list(self,
              *,
-             filter_by: QueryFilter = None,
-             include_metrics: bool = None,
-             max_results: int = None,
-             page_token: str = None,
+             filter_by: Optional[QueryFilter] = None,
+             include_metrics: Optional[bool] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
              **kwargs) -> Iterator[QueryInfo]:
         """List Queries.
         
         List the history of queries through SQL warehouses.
         
-        You can filter by user ID, warehouse ID, status, and time range."""
+        You can filter by user ID, warehouse ID, status, and time range.
+        
+        :param filter_by: :class:`QueryFilter` (optional)
+          A filter to limit query history results. This field is optional.
+        :param include_metrics: bool (optional)
+          Whether to include metrics about query.
+        :param max_results: int (optional)
+          Limit the number of results returned in one page. The default is 100.
+        :param page_token: str (optional)
+          A token that can be used to get the next page of results.
+        
+        :returns: Iterator over :class:`QueryInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListQueryHistoryRequest(filter_by=filter_by,
@@ -3041,7 +3241,12 @@ class StatementExecutionAPI:
         """Cancel statement execution.
         
         Requests that an executing statement be canceled. Callers must poll for status to see the terminal
-        state."""
+        state.
+        
+        :param statement_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CancelExecutionRequest(statement_id=statement_id)
@@ -3050,19 +3255,108 @@ class StatementExecutionAPI:
 
     def execute_statement(self,
                           *,
-                          byte_limit: int = None,
-                          catalog: str = None,
-                          disposition: Disposition = None,
-                          format: Format = None,
-                          on_wait_timeout: TimeoutAction = None,
-                          schema: str = None,
-                          statement: str = None,
-                          wait_timeout: str = None,
-                          warehouse_id: str = None,
+                          byte_limit: Optional[int] = None,
+                          catalog: Optional[str] = None,
+                          disposition: Optional[Disposition] = None,
+                          format: Optional[Format] = None,
+                          on_wait_timeout: Optional[TimeoutAction] = None,
+                          schema: Optional[str] = None,
+                          statement: Optional[str] = None,
+                          wait_timeout: Optional[str] = None,
+                          warehouse_id: Optional[str] = None,
                           **kwargs) -> ExecuteStatementResponse:
         """Execute a SQL statement.
         
-        Execute a SQL statement, and if flagged as such, await its result for a specified time."""
+        Execute a SQL statement, and if flagged as such, await its result for a specified time.
+        
+        :param byte_limit: int (optional)
+          Applies the given byte limit to the statement's result size. Byte counts are based on internal
+          representations and may not match measurable sizes in the requested `format`.
+        :param catalog: str (optional)
+          Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL.
+          
+          [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
+        :param disposition: :class:`Disposition` (optional)
+          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
+          
+          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
+          format, in a series of chunks. If a given statement produces a result set with a size larger than 16
+          MiB, that statement execution is aborted, and no result set will be available.
+          
+          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
+          may not match the sizes visible in JSON responses.
+          
+          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
+          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
+          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
+          resulting links have two important properties:
+          
+          1. They point to resources _external_ to the Databricks compute; therefore any associated
+          authentication information (typically a personal access token, OAuth token, or similar) _must be
+          removed_ when fetching from these links.
+          
+          2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when
+          attempting to use an expired link is cloud specific.
+        :param format: :class:`Format` (optional)
+          Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
+          `CSV`.
+          
+          When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of values,
+          where each value is either the *string representation* of a value, or `null`. For example, the
+          output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)` would
+          look like this:
+          
+          ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
+          
+          `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
+          
+          `INLINE` `JSON_ARRAY` data can be found at the path `StatementResponse.result.data_array`.
+          
+          For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud storage that contains
+          compact JSON with no indentation or extra whitespace.
+          
+          When specifying `format=ARROW_STREAM`, each chunk in the result will be formatted as Apache Arrow
+          Stream. See the [Apache Arrow streaming format].
+          
+          IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS` disposition.
+          
+          When specifying `format=CSV`, each chunk in the result will be a CSV according to [RFC 4180]
+          standard. All the columns values will have *string representation* similar to the `JSON_ARRAY`
+          format, and `null` values will be encoded as “null”. Only the first chunk in the result would
+          contain a header row with column names. For example, the output of `SELECT concat('id-', id) AS
+          strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
+          
+          ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+          
+          IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS` disposition.
+          
+          [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+          [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+        :param on_wait_timeout: :class:`TimeoutAction` (optional)
+          When in synchronous mode with `wait_timeout > 0s` it determines the action taken when the timeout is
+          reached:
+          
+          `CONTINUE` → the statement execution continues asynchronously and the call returns a statement ID
+          immediately.
+          
+          `CANCEL` → the statement execution is canceled and the call returns immediately with a `CANCELED`
+          state.
+        :param schema: str (optional)
+          Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
+          
+          [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
+        :param statement: str (optional)
+          SQL statement to execute
+        :param wait_timeout: str (optional)
+          The time in seconds the API service will wait for the statement's result set as `Ns`, where `N` can
+          be set to 0 or to a value between 5 and 50. When set to '0s' the statement will execute in
+          asynchronous mode.
+        :param warehouse_id: str (optional)
+          Warehouse upon which to execute a statement. See also [What are SQL
+          warehouses?](/sql/admin/warehouse-type.html)
+        
+        :returns: :class:`ExecuteStatementResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ExecuteStatementRequest(byte_limit=byte_limit,
@@ -3088,7 +3382,12 @@ class StatementExecutionAPI:
         state set. After at least 12 hours in terminal state, the statement is removed from the warehouse and
         further calls will receive an HTTP 404 response.
         
-        **NOTE** This call currently may take up to 5 seconds to get the latest status and result."""
+        **NOTE** This call currently may take up to 5 seconds to get the latest status and result.
+        
+        :param statement_id: str
+        
+        :returns: :class:`GetStatementResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatementRequest(statement_id=statement_id)
@@ -3103,7 +3402,13 @@ class StatementExecutionAPI:
         first chuck with `chunk_index=0` is typically fetched through a `get status` request, subsequent
         chunks can be fetched using a `get result` request. The response structure is identical to the nested
         `result` element described in the `get status` request, and similarly includes the `next_chunk_index`
-        and `next_chunk_internal_link` fields for simple iteration through the result set."""
+        and `next_chunk_internal_link` fields for simple iteration through the result set.
+        
+        :param statement_id: str
+        :param chunk_index: int
+        
+        :returns: :class:`ResultData`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatementResultChunkNRequest(chunk_index=chunk_index, statement_id=statement_id)
@@ -3120,11 +3425,11 @@ class WarehousesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_warehouse_running(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_running(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.STOPPED, State.DELETED, )
@@ -3153,11 +3458,11 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_warehouse_stopped(self,
-                                   id: str,
-                                   timeout=timedelta(minutes=20),
-                                   callback: Callable[[GetWarehouseResponse],
-                                                      None] = None) -> GetWarehouseResponse:
+    def wait_get_warehouse_stopped(
+            self,
+            id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetWarehouseResponse], None]] = None) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.STOPPED, )
         status_message = 'polling...'
@@ -3184,23 +3489,83 @@ class WarehousesAPI:
 
     def create(self,
                *,
-               auto_stop_mins: int = None,
-               channel: Channel = None,
-               cluster_size: str = None,
-               creator_name: str = None,
-               enable_photon: bool = None,
-               enable_serverless_compute: bool = None,
-               instance_profile_arn: str = None,
-               max_num_clusters: int = None,
-               min_num_clusters: int = None,
-               name: str = None,
-               spot_instance_policy: SpotInstancePolicy = None,
-               tags: EndpointTags = None,
-               warehouse_type: CreateWarehouseRequestWarehouseType = None,
+               auto_stop_mins: Optional[int] = None,
+               channel: Optional[Channel] = None,
+               cluster_size: Optional[str] = None,
+               creator_name: Optional[str] = None,
+               enable_photon: Optional[bool] = None,
+               enable_serverless_compute: Optional[bool] = None,
+               instance_profile_arn: Optional[str] = None,
+               max_num_clusters: Optional[int] = None,
+               min_num_clusters: Optional[int] = None,
+               name: Optional[str] = None,
+               spot_instance_policy: Optional[SpotInstancePolicy] = None,
+               tags: Optional[EndpointTags] = None,
+               warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
                **kwargs) -> Wait[GetWarehouseResponse]:
         """Create a warehouse.
         
-        Creates a new SQL warehouse."""
+        Creates a new SQL warehouse.
+        
+        :param auto_stop_mins: int (optional)
+          The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
+          is automatically stopped.
+          
+          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          
+          Defaults to 120 mins
+        :param channel: :class:`Channel` (optional)
+          Channel Details
+        :param cluster_size: str (optional)
+          Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
+          to run larger queries on it. If you want to increase the number of concurrent queries, please tune
+          max_num_clusters.
+          
+          Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
+          4X-Large
+        :param creator_name: str (optional)
+          warehouse creator name
+        :param enable_photon: bool (optional)
+          Configures whether the warehouse should use Photon optimized clusters.
+          
+          Defaults to false.
+        :param enable_serverless_compute: bool (optional)
+          Configures whether the warehouse should use serverless compute
+        :param instance_profile_arn: str (optional)
+          Deprecated. Instance profile used to pass IAM role to the cluster
+        :param max_num_clusters: int (optional)
+          Maximum number of clusters that the autoscaler will create to handle concurrent queries.
+          
+          Supported values: - Must be >= min_num_clusters - Must be <= 30.
+          
+          Defaults to min_clusters if unset.
+        :param min_num_clusters: int (optional)
+          Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this
+          will ensure that a larger number of clusters are always running and therefore may reduce the cold
+          start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
+          
+          Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+          
+          Defaults to 1
+        :param name: str (optional)
+          Logical name for the cluster.
+          
+          Supported values: - Must be unique within an org. - Must be less than 100 characters.
+        :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
+          Configurations whether the warehouse should use spot instances.
+        :param tags: :class:`EndpointTags` (optional)
+          A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
+          associated with this SQL warehouse.
+          
+          Supported values: - Number of tags < 45.
+        :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
+          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
+          also set the field `enable_serverless_compute` to `true`.
+        
+        :returns:
+          long-running operation waiter for :class:`GetWarehouseResponse`.
+          See :method:wait_get_warehouse_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateWarehouseRequest(auto_stop_mins=auto_stop_mins,
@@ -3225,19 +3590,19 @@ class WarehousesAPI:
     def create_and_wait(
         self,
         *,
-        auto_stop_mins: int = None,
-        channel: Channel = None,
-        cluster_size: str = None,
-        creator_name: str = None,
-        enable_photon: bool = None,
-        enable_serverless_compute: bool = None,
-        instance_profile_arn: str = None,
-        max_num_clusters: int = None,
-        min_num_clusters: int = None,
-        name: str = None,
-        spot_instance_policy: SpotInstancePolicy = None,
-        tags: EndpointTags = None,
-        warehouse_type: CreateWarehouseRequestWarehouseType = None,
+        auto_stop_mins: Optional[int] = None,
+        channel: Optional[Channel] = None,
+        cluster_size: Optional[str] = None,
+        creator_name: Optional[str] = None,
+        enable_photon: Optional[bool] = None,
+        enable_serverless_compute: Optional[bool] = None,
+        instance_profile_arn: Optional[str] = None,
+        max_num_clusters: Optional[int] = None,
+        min_num_clusters: Optional[int] = None,
+        name: Optional[str] = None,
+        spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        tags: Optional[EndpointTags] = None,
+        warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20)
     ) -> GetWarehouseResponse:
         return self.create(auto_stop_mins=auto_stop_mins,
@@ -3257,7 +3622,13 @@ class WarehousesAPI:
     def delete(self, id: str, **kwargs):
         """Delete a warehouse.
         
-        Deletes a SQL warehouse."""
+        Deletes a SQL warehouse.
+        
+        :param id: str
+          Required. Id of the SQL warehouse.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteWarehouseRequest(id=id)
@@ -3267,23 +3638,85 @@ class WarehousesAPI:
     def edit(self,
              id: str,
              *,
-             auto_stop_mins: int = None,
-             channel: Channel = None,
-             cluster_size: str = None,
-             creator_name: str = None,
-             enable_photon: bool = None,
-             enable_serverless_compute: bool = None,
-             instance_profile_arn: str = None,
-             max_num_clusters: int = None,
-             min_num_clusters: int = None,
-             name: str = None,
-             spot_instance_policy: SpotInstancePolicy = None,
-             tags: EndpointTags = None,
-             warehouse_type: EditWarehouseRequestWarehouseType = None,
+             auto_stop_mins: Optional[int] = None,
+             channel: Optional[Channel] = None,
+             cluster_size: Optional[str] = None,
+             creator_name: Optional[str] = None,
+             enable_photon: Optional[bool] = None,
+             enable_serverless_compute: Optional[bool] = None,
+             instance_profile_arn: Optional[str] = None,
+             max_num_clusters: Optional[int] = None,
+             min_num_clusters: Optional[int] = None,
+             name: Optional[str] = None,
+             spot_instance_policy: Optional[SpotInstancePolicy] = None,
+             tags: Optional[EndpointTags] = None,
+             warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
              **kwargs) -> Wait[GetWarehouseResponse]:
         """Update a warehouse.
         
-        Updates the configuration for a SQL warehouse."""
+        Updates the configuration for a SQL warehouse.
+        
+        :param id: str
+          Required. Id of the warehouse to configure.
+        :param auto_stop_mins: int (optional)
+          The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
+          is automatically stopped.
+          
+          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          
+          Defaults to 120 mins
+        :param channel: :class:`Channel` (optional)
+          Channel Details
+        :param cluster_size: str (optional)
+          Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
+          to run larger queries on it. If you want to increase the number of concurrent queries, please tune
+          max_num_clusters.
+          
+          Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
+          4X-Large
+        :param creator_name: str (optional)
+          warehouse creator name
+        :param enable_photon: bool (optional)
+          Configures whether the warehouse should use Photon optimized clusters.
+          
+          Defaults to false.
+        :param enable_serverless_compute: bool (optional)
+          Configures whether the warehouse should use serverless compute.
+        :param instance_profile_arn: str (optional)
+          Deprecated. Instance profile used to pass IAM role to the cluster
+        :param max_num_clusters: int (optional)
+          Maximum number of clusters that the autoscaler will create to handle concurrent queries.
+          
+          Supported values: - Must be >= min_num_clusters - Must be <= 30.
+          
+          Defaults to min_clusters if unset.
+        :param min_num_clusters: int (optional)
+          Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this
+          will ensure that a larger number of clusters are always running and therefore may reduce the cold
+          start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
+          
+          Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+          
+          Defaults to 1
+        :param name: str (optional)
+          Logical name for the cluster.
+          
+          Supported values: - Must be unique within an org. - Must be less than 100 characters.
+        :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
+          Configurations whether the warehouse should use spot instances.
+        :param tags: :class:`EndpointTags` (optional)
+          A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
+          associated with this SQL warehouse.
+          
+          Supported values: - Number of tags < 45.
+        :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
+          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
+          also set the field `enable_serverless_compute` to `true`.
+        
+        :returns:
+          long-running operation waiter for :class:`GetWarehouseResponse`.
+          See :method:wait_get_warehouse_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditWarehouseRequest(auto_stop_mins=auto_stop_mins,
@@ -3308,19 +3741,19 @@ class WarehousesAPI:
         self,
         id: str,
         *,
-        auto_stop_mins: int = None,
-        channel: Channel = None,
-        cluster_size: str = None,
-        creator_name: str = None,
-        enable_photon: bool = None,
-        enable_serverless_compute: bool = None,
-        instance_profile_arn: str = None,
-        max_num_clusters: int = None,
-        min_num_clusters: int = None,
-        name: str = None,
-        spot_instance_policy: SpotInstancePolicy = None,
-        tags: EndpointTags = None,
-        warehouse_type: EditWarehouseRequestWarehouseType = None,
+        auto_stop_mins: Optional[int] = None,
+        channel: Optional[Channel] = None,
+        cluster_size: Optional[str] = None,
+        creator_name: Optional[str] = None,
+        enable_photon: Optional[bool] = None,
+        enable_serverless_compute: Optional[bool] = None,
+        instance_profile_arn: Optional[str] = None,
+        max_num_clusters: Optional[int] = None,
+        min_num_clusters: Optional[int] = None,
+        name: Optional[str] = None,
+        spot_instance_policy: Optional[SpotInstancePolicy] = None,
+        tags: Optional[EndpointTags] = None,
+        warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
         timeout=timedelta(minutes=20)
     ) -> GetWarehouseResponse:
         return self.edit(auto_stop_mins=auto_stop_mins,
@@ -3341,7 +3774,13 @@ class WarehousesAPI:
     def get(self, id: str, **kwargs) -> GetWarehouseResponse:
         """Get warehouse info.
         
-        Gets the information for a single SQL warehouse."""
+        Gets the information for a single SQL warehouse.
+        
+        :param id: str
+          Required. Id of the SQL warehouse.
+        
+        :returns: :class:`GetWarehouseResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetWarehouseRequest(id=id)
@@ -3352,15 +3791,25 @@ class WarehousesAPI:
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
         """Get the workspace configuration.
         
-        Gets the workspace level configuration that is shared by all SQL warehouses in a workspace."""
+        Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
+        
+        :returns: :class:`GetWorkspaceWarehouseConfigResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/sql/config/warehouses')
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
 
-    def list(self, *, run_as_user_id: int = None, **kwargs) -> Iterator[EndpointInfo]:
+    def list(self, *, run_as_user_id: Optional[int] = None, **kwargs) -> Iterator[EndpointInfo]:
         """List warehouses.
         
-        Lists all SQL warehouses that a user has manager permissions on."""
+        Lists all SQL warehouses that a user has manager permissions on.
+        
+        :param run_as_user_id: int (optional)
+          Service Principal which will be used to fetch the list of warehouses. If not specified, the user
+          from the session header is used.
+        
+        :returns: Iterator over :class:`EndpointInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListWarehousesRequest(run_as_user_id=run_as_user_id)
@@ -3374,19 +3823,45 @@ class WarehousesAPI:
     def set_workspace_warehouse_config(
             self,
             *,
-            channel: Channel = None,
-            config_param: RepeatedEndpointConfPairs = None,
-            data_access_config: List[EndpointConfPair] = None,
-            enabled_warehouse_types: List[WarehouseTypePair] = None,
-            global_param: RepeatedEndpointConfPairs = None,
-            google_service_account: str = None,
-            instance_profile_arn: str = None,
-            security_policy: SetWorkspaceWarehouseConfigRequestSecurityPolicy = None,
-            sql_configuration_parameters: RepeatedEndpointConfPairs = None,
+            channel: Optional[Channel] = None,
+            config_param: Optional[RepeatedEndpointConfPairs] = None,
+            data_access_config: Optional[List[EndpointConfPair]] = None,
+            enabled_warehouse_types: Optional[List[WarehouseTypePair]] = None,
+            global_param: Optional[RepeatedEndpointConfPairs] = None,
+            google_service_account: Optional[str] = None,
+            instance_profile_arn: Optional[str] = None,
+            security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy] = None,
+            sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None,
             **kwargs):
         """Set the workspace configuration.
         
-        Sets the workspace level configuration that is shared by all SQL warehouses in a workspace."""
+        Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
+        
+        :param channel: :class:`Channel` (optional)
+          Optional: Channel selection details
+        :param config_param: :class:`RepeatedEndpointConfPairs` (optional)
+          Deprecated: Use sql_configuration_parameters
+        :param data_access_config: List[:class:`EndpointConfPair`] (optional)
+          Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
+        :param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)
+          List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
+          CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
+          specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be
+          converted to another type. Used by frontend to save specific type availability in the warehouse
+          create and edit form UI.
+        :param global_param: :class:`RepeatedEndpointConfPairs` (optional)
+          Deprecated: Use sql_configuration_parameters
+        :param google_service_account: str (optional)
+          GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
+        :param instance_profile_arn: str (optional)
+          AWS Only: Instance profile used to pass IAM role to the cluster
+        :param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)
+          Security policy for warehouses
+        :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
+          SQL configuration parameters
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SetWorkspaceWarehouseConfigRequest(
@@ -3405,7 +3880,15 @@ class WarehousesAPI:
     def start(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Start a warehouse.
         
-        Starts a SQL warehouse."""
+        Starts a SQL warehouse.
+        
+        :param id: str
+          Required. Id of the SQL warehouse.
+        
+        :returns:
+          long-running operation waiter for :class:`GetWarehouseResponse`.
+          See :method:wait_get_warehouse_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = StartRequest(id=id)
@@ -3419,7 +3902,15 @@ class WarehousesAPI:
     def stop(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
         """Stop a warehouse.
         
-        Stops a SQL warehouse."""
+        Stops a SQL warehouse.
+        
+        :param id: str
+          Required. Id of the SQL warehouse.
+        
+        :returns:
+          long-running operation waiter for :class:`GetWarehouseResponse`.
+          See :method:wait_get_warehouse_stopped for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = StopRequest(id=id)

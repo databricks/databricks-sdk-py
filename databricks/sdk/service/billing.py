@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -21,8 +21,8 @@ class Budget:
     start_date: str
     target_amount: str
     filter: str
-    alerts: 'List[BudgetAlert]' = None
-    end_date: str = None
+    alerts: Optional['List[BudgetAlert]'] = None
+    end_date: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -48,8 +48,8 @@ class Budget:
 
 @dataclass
 class BudgetAlert:
-    email_notifications: 'List[str]' = None
-    min_percentage: int = None
+    email_notifications: Optional['List[str]'] = None
+    min_percentage: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -67,7 +67,7 @@ class BudgetAlert:
 class BudgetList:
     """List of budgets."""
 
-    budgets: 'List[BudgetWithStatus]' = None
+    budgets: Optional['List[BudgetWithStatus]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -83,17 +83,17 @@ class BudgetList:
 class BudgetWithStatus:
     """Budget configuration with daily status."""
 
-    alerts: 'List[BudgetAlert]' = None
-    budget_id: str = None
-    creation_time: str = None
-    end_date: str = None
-    filter: str = None
-    name: str = None
-    period: str = None
-    start_date: str = None
-    status_daily: 'List[BudgetWithStatusStatusDailyItem]' = None
-    target_amount: str = None
-    update_time: str = None
+    alerts: Optional['List[BudgetAlert]'] = None
+    budget_id: Optional[str] = None
+    creation_time: Optional[str] = None
+    end_date: Optional[str] = None
+    filter: Optional[str] = None
+    name: Optional[str] = None
+    period: Optional[str] = None
+    start_date: Optional[str] = None
+    status_daily: Optional['List[BudgetWithStatusStatusDailyItem]'] = None
+    target_amount: Optional[str] = None
+    update_time: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -127,8 +127,8 @@ class BudgetWithStatus:
 
 @dataclass
 class BudgetWithStatusStatusDailyItem:
-    amount: str = None
-    date: str = None
+    amount: Optional[str] = None
+    date: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -147,11 +147,11 @@ class CreateLogDeliveryConfigurationParams:
     output_format: 'OutputFormat'
     credentials_id: str
     storage_configuration_id: str
-    config_name: str = None
-    delivery_path_prefix: str = None
-    delivery_start_time: str = None
-    status: 'LogDeliveryConfigStatus' = None
-    workspace_ids_filter: 'List[int]' = None
+    config_name: Optional[str] = None
+    delivery_path_prefix: Optional[str] = None
+    delivery_start_time: Optional[str] = None
+    status: Optional['LogDeliveryConfigStatus'] = None
+    workspace_ids_filter: Optional['List[int]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -203,7 +203,7 @@ class DownloadRequest:
 
     start_month: str
     end_month: str
-    personal_data: bool = None
+    personal_data: Optional[bool] = None
 
 
 @dataclass
@@ -224,9 +224,9 @@ class GetLogDeliveryRequest:
 class ListLogDeliveryRequest:
     """Get all log delivery configurations"""
 
-    credentials_id: str = None
-    status: 'LogDeliveryConfigStatus' = None
-    storage_configuration_id: str = None
+    credentials_id: Optional[str] = None
+    status: Optional['LogDeliveryConfigStatus'] = None
+    storage_configuration_id: Optional[str] = None
 
 
 class LogDeliveryConfigStatus(Enum):
@@ -241,20 +241,20 @@ class LogDeliveryConfigStatus(Enum):
 
 @dataclass
 class LogDeliveryConfiguration:
-    account_id: str = None
-    config_id: str = None
-    config_name: str = None
-    creation_time: int = None
-    credentials_id: str = None
-    delivery_path_prefix: str = None
-    delivery_start_time: str = None
-    log_delivery_status: 'LogDeliveryStatus' = None
-    log_type: 'LogType' = None
-    output_format: 'OutputFormat' = None
-    status: 'LogDeliveryConfigStatus' = None
-    storage_configuration_id: str = None
-    update_time: int = None
-    workspace_ids_filter: 'List[int]' = None
+    account_id: Optional[str] = None
+    config_id: Optional[str] = None
+    config_name: Optional[str] = None
+    creation_time: Optional[int] = None
+    credentials_id: Optional[str] = None
+    delivery_path_prefix: Optional[str] = None
+    delivery_start_time: Optional[str] = None
+    log_delivery_status: Optional['LogDeliveryStatus'] = None
+    log_type: Optional['LogType'] = None
+    output_format: Optional['OutputFormat'] = None
+    status: Optional['LogDeliveryConfigStatus'] = None
+    storage_configuration_id: Optional[str] = None
+    update_time: Optional[int] = None
+    workspace_ids_filter: Optional['List[int]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -297,10 +297,10 @@ class LogDeliveryConfiguration:
 class LogDeliveryStatus:
     """Databricks log delivery status."""
 
-    last_attempt_time: str = None
-    last_successful_attempt_time: str = None
-    message: str = None
-    status: 'DeliveryStatus' = None
+    last_attempt_time: Optional[str] = None
+    last_successful_attempt_time: Optional[str] = None
+    message: Optional[str] = None
+    status: Optional['DeliveryStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -355,7 +355,7 @@ class OutputFormat(Enum):
 @dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
     status: 'LogDeliveryConfigStatus'
-    log_delivery_configuration_id: str = None
+    log_delivery_configuration_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -373,7 +373,7 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 @dataclass
 class WrappedBudget:
     budget: 'Budget'
-    budget_id: str = None
+    budget_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -402,7 +402,7 @@ class WrappedBudgetWithStatus:
 
 @dataclass
 class WrappedCreateLogDeliveryConfiguration:
-    log_delivery_configuration: 'CreateLogDeliveryConfigurationParams' = None
+    log_delivery_configuration: Optional['CreateLogDeliveryConfigurationParams'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -418,7 +418,7 @@ class WrappedCreateLogDeliveryConfiguration:
 
 @dataclass
 class WrappedLogDeliveryConfiguration:
-    log_delivery_configuration: 'LogDeliveryConfiguration' = None
+    log_delivery_configuration: Optional['LogDeliveryConfiguration'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -434,7 +434,7 @@ class WrappedLogDeliveryConfiguration:
 
 @dataclass
 class WrappedLogDeliveryConfigurations:
-    log_delivery_configurations: 'List[LogDeliveryConfiguration]' = None
+    log_delivery_configurations: Optional['List[LogDeliveryConfiguration]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -455,13 +455,25 @@ class BillableUsageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def download(self, start_month: str, end_month: str, *, personal_data: bool = None, **kwargs):
+    def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None, **kwargs):
         """Return billable usage logs.
         
         Returns billable usage logs in CSV format for the specified account and date range. For the data
         schema, see [CSV file schema]. Note that this method might take multiple seconds to complete.
         
-        [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema"""
+        [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
+        
+        :param start_month: str
+          Format: `YYYY-MM`. First month to return billable usage logs for. This field is required.
+        :param end_month: str
+          Format: `YYYY-MM`. Last month to return billable usage logs for. This field is required.
+        :param personal_data: bool (optional)
+          Specify whether to include personally identifiable information in the billable usage logs, for
+          example the email addresses of cluster creators. Handle this information with care. Defaults to
+          false.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DownloadRequest(end_month=end_month,
@@ -486,7 +498,13 @@ class BudgetsAPI:
     def create(self, budget: Budget, **kwargs) -> WrappedBudgetWithStatus:
         """Create a new budget.
         
-        Creates a new budget in the specified account."""
+        Creates a new budget in the specified account.
+        
+        :param budget: :class:`Budget`
+          Budget configuration to be created.
+        
+        :returns: :class:`WrappedBudgetWithStatus`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = WrappedBudget(budget=budget)
@@ -498,7 +516,13 @@ class BudgetsAPI:
     def delete(self, budget_id: str, **kwargs):
         """Delete budget.
         
-        Deletes the budget specified by its UUID."""
+        Deletes the budget specified by its UUID.
+        
+        :param budget_id: str
+          Budget ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteBudgetRequest(budget_id=budget_id)
@@ -509,7 +533,13 @@ class BudgetsAPI:
         """Get budget and its status.
         
         Gets the budget specified by its UUID, including noncumulative status for each day that the budget is
-        configured to include."""
+        configured to include.
+        
+        :param budget_id: str
+          Budget ID
+        
+        :returns: :class:`WrappedBudgetWithStatus`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetBudgetRequest(budget_id=budget_id)
@@ -521,7 +551,10 @@ class BudgetsAPI:
         """Get all budgets.
         
         Gets all budgets associated with this account, including noncumulative status for each day that the
-        budget is configured to include."""
+        budget is configured to include.
+        
+        :returns: Iterator over :class:`BudgetWithStatus`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget')
         return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
@@ -529,7 +562,15 @@ class BudgetsAPI:
     def update(self, budget: Budget, budget_id: str, **kwargs):
         """Modify budget.
         
-        Modifies a budget in this account. Budget properties are completely overwritten."""
+        Modifies a budget in this account. Budget properties are completely overwritten.
+        
+        :param budget: :class:`Budget`
+          Budget configuration to be created.
+        :param budget_id: str
+          Budget ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = WrappedBudget(budget=budget, budget_id=budget_id)
@@ -592,7 +633,7 @@ class LogDeliveryAPI:
 
     def create(self,
                *,
-               log_delivery_configuration: CreateLogDeliveryConfigurationParams = None,
+               log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None,
                **kwargs) -> WrappedLogDeliveryConfiguration:
         """Create a new log delivery configuration.
         
@@ -615,7 +656,12 @@ class LogDeliveryAPI:
         delivery configuration](#operation/patch-log-delivery-config-status)).
         
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-        [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+        [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+        
+        :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams` (optional)
+        
+        :returns: :class:`WrappedLogDeliveryConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = WrappedCreateLogDeliveryConfiguration(
@@ -628,7 +674,13 @@ class LogDeliveryAPI:
     def get(self, log_delivery_configuration_id: str, **kwargs) -> WrappedLogDeliveryConfiguration:
         """Get log delivery configuration.
         
-        Gets a Databricks log delivery configuration object for an account, both specified by ID."""
+        Gets a Databricks log delivery configuration object for an account, both specified by ID.
+        
+        :param log_delivery_configuration_id: str
+          Databricks log delivery configuration ID
+        
+        :returns: :class:`WrappedLogDeliveryConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetLogDeliveryRequest(log_delivery_configuration_id=log_delivery_configuration_id)
@@ -640,13 +692,23 @@ class LogDeliveryAPI:
 
     def list(self,
              *,
-             credentials_id: str = None,
-             status: LogDeliveryConfigStatus = None,
-             storage_configuration_id: str = None,
+             credentials_id: Optional[str] = None,
+             status: Optional[LogDeliveryConfigStatus] = None,
+             storage_configuration_id: Optional[str] = None,
              **kwargs) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
         
-        Gets all Databricks log delivery configurations associated with an account specified by ID."""
+        Gets all Databricks log delivery configurations associated with an account specified by ID.
+        
+        :param credentials_id: str (optional)
+          Filter by credential configuration ID.
+        :param status: :class:`LogDeliveryConfigStatus` (optional)
+          Filter by status `ENABLED` or `DISABLED`.
+        :param storage_configuration_id: str (optional)
+          Filter by storage configuration ID.
+        
+        :returns: Iterator over :class:`LogDeliveryConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListLogDeliveryRequest(credentials_id=credentials_id,
@@ -667,7 +729,18 @@ class LogDeliveryAPI:
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
         supported, so disable log delivery configurations that are no longer needed. Note that you can't
         re-enable a delivery configuration if this would violate the delivery configuration limits described
-        under [Create log delivery](#operation/create-log-delivery-config)."""
+        under [Create log delivery](#operation/create-log-delivery-config).
+        
+        :param status: :class:`LogDeliveryConfigStatus`
+          Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
+          to `ENABLED`. You can [enable or disable the
+          configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
+          not supported, so disable a log delivery configuration that is no longer needed.
+        :param log_delivery_configuration_id: str
+          Databricks log delivery configuration ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateLogDeliveryConfigurationStatusRequest(

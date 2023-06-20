@@ -14,6 +14,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             SchemasAPI, StorageCredentialsAPI,
+                                            SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
@@ -24,6 +25,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.files import DbfsAPI
 from databricks.sdk.service.iam import (AccountAccessControlAPI,
+                                        AccountAccessControlProxyAPI,
                                         AccountGroupsAPI,
                                         AccountServicePrincipalsAPI,
                                         AccountUsersAPI, CurrentUserAPI,
@@ -111,6 +113,7 @@ class WorkspaceClient:
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
+        self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
@@ -152,6 +155,7 @@ class WorkspaceClient:
         self.shares = SharesAPI(self.api_client)
         self.statement_execution = StatementExecutionAPI(self.api_client)
         self.storage_credentials = StorageCredentialsAPI(self.api_client)
+        self.system_schemas = SystemSchemasAPI(self.api_client)
         self.table_constraints = TableConstraintsAPI(self.api_client)
         self.tables = TablesAPI(self.api_client)
         self.token_management = TokenManagementAPI(self.api_client)

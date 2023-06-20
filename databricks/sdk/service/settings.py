@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -34,7 +34,7 @@ class CreateIpAccessList:
 
 @dataclass
 class CreateIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo' = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -50,7 +50,7 @@ class CreateIpAccessListResponse:
 class CreateOboTokenRequest:
     application_id: str
     lifetime_seconds: int
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -68,8 +68,8 @@ class CreateOboTokenRequest:
 
 @dataclass
 class CreateOboTokenResponse:
-    token_info: 'TokenInfo' = None
-    token_value: str = None
+    token_info: Optional['TokenInfo'] = None
+    token_value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -84,8 +84,8 @@ class CreateOboTokenResponse:
 
 @dataclass
 class CreateTokenRequest:
-    comment: str = None
-    lifetime_seconds: int = None
+    comment: Optional[str] = None
+    lifetime_seconds: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -100,8 +100,8 @@ class CreateTokenRequest:
 
 @dataclass
 class CreateTokenResponse:
-    token_info: 'PublicTokenInfo' = None
-    token_value: str = None
+    token_info: Optional['PublicTokenInfo'] = None
+    token_value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -138,7 +138,7 @@ class DeleteTokenManagementRequest:
 
 @dataclass
 class FetchIpAccessListResponse:
-    ip_access_list: 'IpAccessListInfo' = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -166,7 +166,7 @@ class GetIpAccessListRequest:
 
 @dataclass
 class GetIpAccessListResponse:
-    ip_access_lists: 'List[IpAccessListInfo]' = None
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -180,7 +180,7 @@ class GetIpAccessListResponse:
 
 @dataclass
 class GetIpAccessListsResponse:
-    ip_access_lists: 'List[IpAccessListInfo]' = None
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -208,16 +208,16 @@ class GetTokenManagementRequest:
 
 @dataclass
 class IpAccessListInfo:
-    address_count: int = None
-    created_at: int = None
-    created_by: int = None
-    enabled: bool = None
-    ip_addresses: 'List[str]' = None
-    label: str = None
-    list_id: str = None
-    list_type: 'ListType' = None
-    updated_at: int = None
-    updated_by: int = None
+    address_count: Optional[int] = None
+    created_at: Optional[int] = None
+    created_by: Optional[int] = None
+    enabled: Optional[bool] = None
+    ip_addresses: Optional['List[str]'] = None
+    label: Optional[str] = None
+    list_id: Optional[str] = None
+    list_type: Optional['ListType'] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -251,13 +251,13 @@ class IpAccessListInfo:
 class ListTokenManagementRequest:
     """List all tokens"""
 
-    created_by_id: str = None
-    created_by_username: str = None
+    created_by_id: Optional[str] = None
+    created_by_username: Optional[str] = None
 
 
 @dataclass
 class ListTokensResponse:
-    token_infos: 'List[TokenInfo]' = None
+    token_infos: Optional['List[TokenInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -299,10 +299,10 @@ class PersonalComputeMessageEnum(Enum):
 
 @dataclass
 class PublicTokenInfo:
-    comment: str = None
-    creation_time: int = None
-    expiry_time: int = None
-    token_id: str = None
+    comment: Optional[str] = None
+    creation_time: Optional[int] = None
+    expiry_time: Optional[int] = None
+    token_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -324,7 +324,7 @@ class PublicTokenInfo:
 class ReadPersonalComputeSettingRequest:
     """Get Personal Compute setting"""
 
-    etag: str = None
+    etag: Optional[str] = None
 
 
 @dataclass
@@ -353,8 +353,8 @@ class ReplaceIpAccessList:
     list_type: 'ListType'
     ip_addresses: 'List[str]'
     enabled: bool
-    ip_access_list_id: str = None
-    list_id: str = None
+    ip_access_list_id: Optional[str] = None
+    list_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -392,13 +392,13 @@ class RevokeTokenRequest:
 
 @dataclass
 class TokenInfo:
-    comment: str = None
-    created_by_id: int = None
-    created_by_username: str = None
-    creation_time: int = None
-    expiry_time: int = None
-    owner_id: int = None
-    token_id: str = None
+    comment: Optional[str] = None
+    created_by_id: Optional[int] = None
+    created_by_username: Optional[str] = None
+    creation_time: Optional[int] = None
+    expiry_time: Optional[int] = None
+    owner_id: Optional[int] = None
+    token_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -428,8 +428,8 @@ class UpdateIpAccessList:
     list_type: 'ListType'
     ip_addresses: 'List[str]'
     enabled: bool
-    ip_access_list_id: str = None
-    list_id: str = None
+    ip_access_list_id: Optional[str] = None
+    list_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -493,7 +493,17 @@ class AccountIpAccessListsAPI:
         `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,
         error 400 is returned with `error_code` value `INVALID_STATE`.
         
-        It can take a few minutes for the changes to take effect."""
+        It can take a few minutes for the changes to take effect.
+        
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+          This describes an enum
+        :param ip_addresses: List[str]
+          Array of IP addresses or CIDR values to be added to the IP access list.
+        
+        :returns: :class:`CreateIpAccessListResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateIpAccessList(ip_addresses=ip_addresses, label=label, list_type=list_type)
@@ -507,7 +517,13 @@ class AccountIpAccessListsAPI:
     def delete(self, ip_access_list_id: str, **kwargs):
         """Delete access list.
         
-        Deletes an IP access list, specified by its list ID."""
+        Deletes an IP access list, specified by its list ID.
+        
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountIpAccessListRequest(ip_access_list_id=ip_access_list_id)
@@ -519,7 +535,13 @@ class AccountIpAccessListsAPI:
     def get(self, ip_access_list_id: str, **kwargs) -> GetIpAccessListResponse:
         """Get IP access list.
         
-        Gets an IP access list, specified by its list ID."""
+        Gets an IP access list, specified by its list ID.
+        
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
+        
+        :returns: :class:`GetIpAccessListResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountIpAccessListRequest(ip_access_list_id=ip_access_list_id)
@@ -532,7 +554,10 @@ class AccountIpAccessListsAPI:
     def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
         
-        Gets all IP access lists for the specified account."""
+        Gets all IP access lists for the specified account.
+        
+        :returns: Iterator over :class:`IpAccessListInfo`
+        """
 
         json = self._api.do('GET', f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists')
         return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
@@ -544,7 +569,7 @@ class AccountIpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: str = None,
+                list_id: Optional[str] = None,
                 **kwargs):
         """Replace access list.
         
@@ -556,7 +581,23 @@ class AccountIpAccessListsAPI:
         CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value
         `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
-        effect."""
+        effect.
+        
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+          This describes an enum
+        :param ip_addresses: List[str]
+          Array of IP addresses or CIDR values to be added to the IP access list.
+        :param enabled: bool
+          Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
+        :param list_id: str (optional)
+          Universally unique identifier (UUID) of the IP access list.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ReplaceIpAccessList(enabled=enabled,
@@ -578,7 +619,7 @@ class AccountIpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: str = None,
+               list_id: Optional[str] = None,
                **kwargs):
         """Update access list.
         
@@ -594,7 +635,23 @@ class AccountIpAccessListsAPI:
         `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,
         error 400 is returned with `error_code` value `INVALID_STATE`.
         
-        It can take a few minutes for the changes to take effect."""
+        It can take a few minutes for the changes to take effect.
+        
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+          This describes an enum
+        :param ip_addresses: List[str]
+          Array of IP addresses or CIDR values to be added to the IP access list.
+        :param enabled: bool
+          Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
+        :param list_id: str (optional)
+          Universally unique identifier (UUID) of the IP access list.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateIpAccessList(enabled=enabled,
@@ -618,11 +675,17 @@ class AccountSettingsAPI:
 
     def read_personal_compute_setting(self,
                                       *,
-                                      etag: str = None,
+                                      etag: Optional[str] = None,
                                       **kwargs) -> ReadPersonalComputeSettingResponse:
         """Get Personal Compute setting.
         
-        TBD"""
+        TBD
+        
+        :param etag: str (optional)
+          TBD
+        
+        :returns: :class:`ReadPersonalComputeSettingResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ReadPersonalComputeSettingRequest(etag=etag)
@@ -676,7 +739,17 @@ class IpAccessListsAPI:
         error 400 is returned with `error_code` value `INVALID_STATE`.
         
         It can take a few minutes for the changes to take effect. **Note**: Your new IP access list has no
-        effect until you enable the feature. See :method:workspaceconf/setStatus"""
+        effect until you enable the feature. See :method:workspaceconf/setStatus
+        
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+          This describes an enum
+        :param ip_addresses: List[str]
+          Array of IP addresses or CIDR values to be added to the IP access list.
+        
+        :returns: :class:`CreateIpAccessListResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateIpAccessList(ip_addresses=ip_addresses, label=label, list_type=list_type)
@@ -688,7 +761,13 @@ class IpAccessListsAPI:
     def delete(self, ip_access_list_id: str, **kwargs):
         """Delete access list.
         
-        Deletes an IP access list, specified by its list ID."""
+        Deletes an IP access list, specified by its list ID.
+        
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteIpAccessListRequest(ip_access_list_id=ip_access_list_id)
@@ -698,7 +777,13 @@ class IpAccessListsAPI:
     def get(self, ip_access_list_id: str, **kwargs) -> FetchIpAccessListResponse:
         """Get access list.
         
-        Gets an IP access list, specified by its list ID."""
+        Gets an IP access list, specified by its list ID.
+        
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
+        
+        :returns: :class:`FetchIpAccessListResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetIpAccessListRequest(ip_access_list_id=ip_access_list_id)
@@ -709,7 +794,10 @@ class IpAccessListsAPI:
     def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
         
-        Gets all IP access lists for the specified workspace."""
+        Gets all IP access lists for the specified workspace.
+        
+        :returns: Iterator over :class:`IpAccessListInfo`
+        """
 
         json = self._api.do('GET', '/api/2.0/ip-access-lists')
         return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
@@ -721,7 +809,7 @@ class IpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: str = None,
+                list_id: Optional[str] = None,
                 **kwargs):
         """Replace access list.
         
@@ -734,7 +822,23 @@ class IpAccessListsAPI:
         `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect. Note that your resulting IP access list has no effect until you enable the feature. See
-        :method:workspaceconf/setStatus."""
+        :method:workspaceconf/setStatus.
+        
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+          This describes an enum
+        :param ip_addresses: List[str]
+          Array of IP addresses or CIDR values to be added to the IP access list.
+        :param enabled: bool
+          Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
+        :param list_id: str (optional)
+          Universally unique identifier (UUID) of the IP access list.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ReplaceIpAccessList(enabled=enabled,
@@ -753,7 +857,7 @@ class IpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: str = None,
+               list_id: Optional[str] = None,
                **kwargs):
         """Update access list.
         
@@ -770,7 +874,23 @@ class IpAccessListsAPI:
         error 400 is returned with `error_code` value `INVALID_STATE`.
         
         It can take a few minutes for the changes to take effect. Note that your resulting IP access list has
-        no effect until you enable the feature. See :method:workspaceconf/setStatus."""
+        no effect until you enable the feature. See :method:workspaceconf/setStatus.
+        
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+          This describes an enum
+        :param ip_addresses: List[str]
+          Array of IP addresses or CIDR values to be added to the IP access list.
+        :param enabled: bool
+          Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
+        :param list_id: str (optional)
+          Universally unique identifier (UUID) of the IP access list.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateIpAccessList(enabled=enabled,
@@ -794,11 +914,21 @@ class TokenManagementAPI:
                          application_id: str,
                          lifetime_seconds: int,
                          *,
-                         comment: str = None,
+                         comment: Optional[str] = None,
                          **kwargs) -> CreateOboTokenResponse:
         """Create on-behalf token.
         
-        Creates a token on behalf of a service principal."""
+        Creates a token on behalf of a service principal.
+        
+        :param application_id: str
+          Application ID of the service principal.
+        :param lifetime_seconds: int
+          The number of seconds before the token expires.
+        :param comment: str (optional)
+          Comment that describes the purpose of the token.
+        
+        :returns: :class:`CreateOboTokenResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateOboTokenRequest(application_id=application_id,
@@ -812,7 +942,13 @@ class TokenManagementAPI:
     def delete(self, token_id: str, **kwargs):
         """Delete a token.
         
-        Deletes a token, specified by its ID."""
+        Deletes a token, specified by its ID.
+        
+        :param token_id: str
+          The ID of the token to get.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteTokenManagementRequest(token_id=token_id)
@@ -822,7 +958,13 @@ class TokenManagementAPI:
     def get(self, token_id: str, **kwargs) -> TokenInfo:
         """Get token info.
         
-        Gets information about a token, specified by its ID."""
+        Gets information about a token, specified by its ID.
+        
+        :param token_id: str
+          The ID of the token to get.
+        
+        :returns: :class:`TokenInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetTokenManagementRequest(token_id=token_id)
@@ -832,12 +974,20 @@ class TokenManagementAPI:
 
     def list(self,
              *,
-             created_by_id: str = None,
-             created_by_username: str = None,
+             created_by_id: Optional[str] = None,
+             created_by_username: Optional[str] = None,
              **kwargs) -> Iterator[TokenInfo]:
         """List all tokens.
         
-        Lists all tokens associated with the specified workspace or user."""
+        Lists all tokens associated with the specified workspace or user.
+        
+        :param created_by_id: str (optional)
+          User ID of the user that created the token.
+        :param created_by_username: str (optional)
+          Username of the user that created the token.
+        
+        :returns: Iterator over :class:`TokenInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListTokenManagementRequest(created_by_id=created_by_id,
@@ -858,12 +1008,26 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, comment: str = None, lifetime_seconds: int = None, **kwargs) -> CreateTokenResponse:
+    def create(self,
+               *,
+               comment: Optional[str] = None,
+               lifetime_seconds: Optional[int] = None,
+               **kwargs) -> CreateTokenResponse:
         """Create a user token.
         
         Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
-        this call returns an error **QUOTA_EXCEEDED**."""
+        this call returns an error **QUOTA_EXCEEDED**.
+        
+        :param comment: str (optional)
+          Optional description to attach to the token.
+        :param lifetime_seconds: int (optional)
+          The lifetime of the token, in seconds.
+          
+          If the ifetime is not specified, this token remains valid indefinitely.
+        
+        :returns: :class:`CreateTokenResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateTokenRequest(comment=comment, lifetime_seconds=lifetime_seconds)
@@ -877,7 +1041,13 @@ class TokensAPI:
         
         Revokes an access token.
         
-        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**."""
+        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+        
+        :param token_id: str
+          The ID of the token to be revoked.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RevokeTokenRequest(token_id=token_id)
@@ -887,7 +1057,10 @@ class TokensAPI:
     def list(self) -> Iterator[TokenInfo]:
         """List tokens.
         
-        Lists all the valid tokens for a user-workspace pair."""
+        Lists all the valid tokens for a user-workspace pair.
+        
+        :returns: Iterator over :class:`TokenInfo`
+        """
 
         json = self._api.do('GET', '/api/2.0/token/list')
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
@@ -902,7 +1075,12 @@ class WorkspaceConfAPI:
     def get_status(self, keys: str, **kwargs) -> WorkspaceConf:
         """Check configuration status.
         
-        Gets the configuration status for a workspace."""
+        Gets the configuration status for a workspace.
+        
+        :param keys: str
+        
+        :returns: Dict[str,str]
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatusRequest(keys=keys)
@@ -916,7 +1094,11 @@ class WorkspaceConfAPI:
     def set_status(self, **kwargs):
         """Enable/disable features.
         
-        Sets the configuration status for a workspace, including enabling or disabling it."""
+        Sets the configuration status for a workspace, including enabling or disabling it.
+        
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Dict[str, str]()

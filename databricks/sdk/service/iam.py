@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -14,10 +14,10 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AccessControlRequest:
-    group_name: str = None
-    permission_level: 'PermissionLevel' = None
-    service_principal_name: str = None
-    user_name: str = None
+    group_name: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -38,10 +38,10 @@ class AccessControlRequest:
 
 @dataclass
 class AccessControlResponse:
-    all_permissions: 'List[Permission]' = None
-    group_name: str = None
-    service_principal_name: str = None
-    user_name: str = None
+    all_permissions: Optional['List[Permission]'] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -62,10 +62,10 @@ class AccessControlResponse:
 
 @dataclass
 class ComplexValue:
-    display: str = None
-    primary: bool = None
-    type: str = None
-    value: str = None
+    display: Optional[str] = None
+    primary: Optional[bool] = None
+    type: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -134,14 +134,6 @@ class DeleteWorkspaceAssignmentRequest:
 
 
 @dataclass
-class GetAccountAccessControlRequest:
-    """Get a rule set"""
-
-    name: str
-    etag: str
-
-
-@dataclass
 class GetAccountGroupRequest:
     """Get group details"""
 
@@ -163,8 +155,15 @@ class GetAccountUserRequest:
 
 
 @dataclass
+class GetAssignableRolesForResourceRequest:
+    """Get assignable roles for a resource"""
+
+    resource: str
+
+
+@dataclass
 class GetAssignableRolesForResourceResponse:
-    roles: 'List[str]' = None
+    roles: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -193,7 +192,7 @@ class GetPermissionLevelsRequest:
 
 @dataclass
 class GetPermissionLevelsResponse:
-    permission_levels: 'List[PermissionsDescription]' = None
+    permission_levels: Optional['List[PermissionsDescription]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -211,6 +210,14 @@ class GetPermissionRequest:
 
     request_object_type: str
     request_object_id: str
+
+
+@dataclass
+class GetRuleSetRequest:
+    """Get a rule set"""
+
+    name: str
+    etag: str
 
 
 @dataclass
@@ -237,7 +244,7 @@ class GetWorkspaceAssignmentRequest:
 @dataclass
 class GrantRule:
     role: str
-    principals: 'List[str]' = None
+    principals: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -252,13 +259,13 @@ class GrantRule:
 
 @dataclass
 class Group:
-    display_name: str = None
-    entitlements: 'List[ComplexValue]' = None
-    external_id: str = None
-    groups: 'List[ComplexValue]' = None
-    id: str = None
-    members: 'List[ComplexValue]' = None
-    roles: 'List[ComplexValue]' = None
+    display_name: Optional[str] = None
+    entitlements: Optional['List[ComplexValue]'] = None
+    external_id: Optional[str] = None
+    groups: Optional['List[ComplexValue]'] = None
+    id: Optional[str] = None
+    members: Optional['List[ComplexValue]'] = None
+    roles: Optional['List[ComplexValue]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -283,70 +290,63 @@ class Group:
 
 
 @dataclass
-class ListAccountAccessControlRequest:
-    """List assignable roles on a resource"""
-
-    name: str
-
-
-@dataclass
 class ListAccountGroupsRequest:
     """List group details"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListAccountServicePrincipalsRequest:
     """List service principals"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListAccountUsersRequest:
     """List users"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListGroupsRequest:
     """List group details"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListGroupsResponse:
-    items_per_page: int = None
-    resources: 'List[Group]' = None
-    start_index: int = None
-    total_results: int = None
+    items_per_page: Optional[int] = None
+    resources: Optional['List[Group]'] = None
+    start_index: Optional[int] = None
+    total_results: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -366,10 +366,10 @@ class ListGroupsResponse:
 
 @dataclass
 class ListServicePrincipalResponse:
-    items_per_page: int = None
-    resources: 'List[ServicePrincipal]' = None
-    start_index: int = None
-    total_results: int = None
+    items_per_page: Optional[int] = None
+    resources: Optional['List[ServicePrincipal]'] = None
+    start_index: Optional[int] = None
+    total_results: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -391,13 +391,13 @@ class ListServicePrincipalResponse:
 class ListServicePrincipalsRequest:
     """List service principals"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 class ListSortOrder(Enum):
@@ -410,21 +410,21 @@ class ListSortOrder(Enum):
 class ListUsersRequest:
     """List users"""
 
-    attributes: str = None
-    count: int = None
-    excluded_attributes: str = None
-    filter: str = None
-    sort_by: str = None
-    sort_order: 'ListSortOrder' = None
-    start_index: int = None
+    attributes: Optional[str] = None
+    count: Optional[int] = None
+    excluded_attributes: Optional[str] = None
+    filter: Optional[str] = None
+    sort_by: Optional[str] = None
+    sort_order: Optional['ListSortOrder'] = None
+    start_index: Optional[int] = None
 
 
 @dataclass
 class ListUsersResponse:
-    items_per_page: int = None
-    resources: 'List[User]' = None
-    start_index: int = None
-    total_results: int = None
+    items_per_page: Optional[int] = None
+    resources: Optional['List[User]'] = None
+    start_index: Optional[int] = None
+    total_results: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -451,8 +451,8 @@ class ListWorkspaceAssignmentRequest:
 
 @dataclass
 class Name:
-    family_name: str = None
-    given_name: str = None
+    family_name: Optional[str] = None
+    given_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -467,9 +467,9 @@ class Name:
 
 @dataclass
 class ObjectPermissions:
-    access_control_list: 'List[AccessControlResponse]' = None
-    object_id: str = None
-    object_type: str = None
+    access_control_list: Optional['List[AccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -488,8 +488,8 @@ class ObjectPermissions:
 
 @dataclass
 class PartialUpdate:
-    id: str = None
-    operations: 'List[Patch]' = None
+    id: Optional[str] = None
+    operations: Optional['List[Patch]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -504,9 +504,9 @@ class PartialUpdate:
 
 @dataclass
 class Patch:
-    op: 'PatchOp' = None
-    path: str = None
-    value: str = None
+    op: Optional['PatchOp'] = None
+    path: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -530,9 +530,9 @@ class PatchOp(Enum):
 
 @dataclass
 class Permission:
-    inherited: bool = None
-    inherited_from_object: 'List[str]' = None
-    permission_level: 'PermissionLevel' = None
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['PermissionLevel'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -550,9 +550,9 @@ class Permission:
 
 @dataclass
 class PermissionAssignment:
-    error: str = None
-    permissions: 'List[WorkspacePermission]' = None
-    principal: 'PrincipalOutput' = None
+    error: Optional[str] = None
+    permissions: Optional['List[WorkspacePermission]'] = None
+    principal: Optional['PrincipalOutput'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -570,7 +570,7 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignments:
-    permission_assignments: 'List[PermissionAssignment]' = None
+    permission_assignments: Optional['List[PermissionAssignment]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -605,8 +605,8 @@ class PermissionLevel(Enum):
 
 @dataclass
 class PermissionOutput:
-    description: str = None
-    permission_level: 'WorkspacePermission' = None
+    description: Optional[str] = None
+    permission_level: Optional['WorkspacePermission'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -622,8 +622,8 @@ class PermissionOutput:
 
 @dataclass
 class PermissionsDescription:
-    description: str = None
-    permission_level: 'PermissionLevel' = None
+    description: Optional[str] = None
+    permission_level: Optional['PermissionLevel'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -639,9 +639,9 @@ class PermissionsDescription:
 
 @dataclass
 class PermissionsRequest:
-    access_control_list: 'List[AccessControlRequest]' = None
-    request_object_id: str = None
-    request_object_type: str = None
+    access_control_list: Optional['List[AccessControlRequest]'] = None
+    request_object_id: Optional[str] = None
+    request_object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -660,11 +660,11 @@ class PermissionsRequest:
 
 @dataclass
 class PrincipalOutput:
-    display_name: str = None
-    group_name: str = None
-    principal_id: int = None
-    service_principal_name: str = None
-    user_name: str = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    principal_id: Optional[int] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -687,9 +687,9 @@ class PrincipalOutput:
 
 @dataclass
 class RuleSetResponse:
-    etag: str = None
-    grant_rules: 'List[GrantRule]' = None
-    name: str = None
+    etag: Optional[str] = None
+    grant_rules: Optional['List[GrantRule]'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -709,7 +709,7 @@ class RuleSetResponse:
 class RuleSetUpdateRequest:
     name: str
     etag: str
-    grant_rules: 'List[GrantRule]' = None
+    grant_rules: Optional['List[GrantRule]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -727,14 +727,14 @@ class RuleSetUpdateRequest:
 
 @dataclass
 class ServicePrincipal:
-    active: bool = None
-    application_id: str = None
-    display_name: str = None
-    entitlements: 'List[ComplexValue]' = None
-    external_id: str = None
-    groups: 'List[ComplexValue]' = None
-    id: str = None
-    roles: 'List[ComplexValue]' = None
+    active: Optional[bool] = None
+    application_id: Optional[str] = None
+    display_name: Optional[str] = None
+    entitlements: Optional['List[ComplexValue]'] = None
+    external_id: Optional[str] = None
+    groups: Optional['List[ComplexValue]'] = None
+    id: Optional[str] = None
+    roles: Optional['List[ComplexValue]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -764,27 +764,23 @@ class ServicePrincipal:
 class UpdateRuleSetRequest:
     name: str
     rule_set: 'RuleSetUpdateRequest'
-    etag: str = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
         if self.name is not None: body['name'] = self.name
         if self.rule_set: body['rule_set'] = self.rule_set.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRuleSetRequest':
-        return cls(etag=d.get('etag', None),
-                   name=d.get('name', None),
-                   rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
+        return cls(name=d.get('name', None), rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
 
 
 @dataclass
 class UpdateWorkspaceAssignments:
     permissions: 'List[WorkspacePermission]'
-    principal_id: int = None
-    workspace_id: int = None
+    principal_id: Optional[int] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -802,16 +798,16 @@ class UpdateWorkspaceAssignments:
 
 @dataclass
 class User:
-    active: bool = None
-    display_name: str = None
-    emails: 'List[ComplexValue]' = None
-    entitlements: 'List[ComplexValue]' = None
-    external_id: str = None
-    groups: 'List[ComplexValue]' = None
-    id: str = None
-    name: 'Name' = None
-    roles: 'List[ComplexValue]' = None
-    user_name: str = None
+    active: Optional[bool] = None
+    display_name: Optional[str] = None
+    emails: Optional['List[ComplexValue]'] = None
+    entitlements: Optional['List[ComplexValue]'] = None
+    external_id: Optional[str] = None
+    groups: Optional['List[ComplexValue]'] = None
+    id: Optional[str] = None
+    name: Optional['Name'] = None
+    roles: Optional['List[ComplexValue]'] = None
+    user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -850,7 +846,7 @@ class WorkspacePermission(Enum):
 
 @dataclass
 class WorkspacePermissions:
-    permissions: 'List[PermissionOutput]' = None
+    permissions: Optional['List[PermissionOutput]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -870,58 +866,162 @@ class AccountAccessControlAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+    def get_assignable_roles_for_resource(self, resource: str,
+                                          **kwargs) -> GetAssignableRolesForResourceResponse:
+        """Get assignable roles for a resource.
+        
+        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
+        set on the resource can contain an access rule of the role.
+        
+        :param resource: str
+          The resource name for which assignable roles will be listed.
+        
+        :returns: :class:`GetAssignableRolesForResourceResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAssignableRolesForResourceRequest(resource=resource)
+
+        query = {}
+        if resource: query['resource'] = request.resource
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
+            query=query)
+        return GetAssignableRolesForResourceResponse.from_dict(json)
+
+    def get_rule_set(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
         """Get a rule set.
         
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
-        rules on the said resource. Currently only a default rule set for each resource is supported."""
+        rules on the said resource. Currently only a default rule set for each resource is supported.
+        
+        :param name: str
+          The ruleset name associated with the request.
+        :param etag: str
+          Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
+          optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
+          overwriting each other. It is strongly suggested that systems make use of the etag in the read ->
+          modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an
+          etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
+          version you are updating.
+        
+        :returns: :class:`RuleSetResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = GetAccountAccessControlRequest(etag=etag, name=name)
+            request = GetRuleSetRequest(etag=etag, name=name)
 
         query = {}
         if etag: query['etag'] = request.etag
         if name: query['name'] = request.name
 
         json = self._api.do('GET',
-                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
                             query=query)
         return RuleSetResponse.from_dict(json)
 
-    def list(self, name: str, **kwargs) -> GetAssignableRolesForResourceResponse:
-        """List assignable roles on a resource.
-        
-        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
-        set on the resource can contain an access rule of the role."""
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountAccessControlRequest(name=name)
-
-        query = {}
-        if name: query['name'] = request.name
-
-        json = self._api.do('GET',
-                            f'/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
-                            query=query)
-        return GetAssignableRolesForResourceResponse.from_dict(json)
-
-    def update(self, name: str, rule_set: RuleSetUpdateRequest, etag: str, **kwargs) -> RuleSetResponse:
+    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest, **kwargs) -> RuleSetResponse:
         """Update a rule set.
         
         Replace the rules of a rule set. First, use get to read the current version of the rule set before
-        modifying it. This pattern helps prevent conflicts between concurrent updates."""
+        modifying it. This pattern helps prevent conflicts between concurrent updates.
+        
+        :param name: str
+          Name of the rule set.
+        :param rule_set: :class:`RuleSetUpdateRequest`
+        
+        :returns: :class:`RuleSetResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateRuleSetRequest(etag=etag, name=name, rule_set=rule_set)
+            request = UpdateRuleSetRequest(name=name, rule_set=rule_set)
         body = request.as_dict()
+
+        json = self._api.do('PUT',
+                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                            body=body)
+        return RuleSetResponse.from_dict(json)
+
+
+class AccountAccessControlProxyAPI:
+    """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
+    grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
+    called a rule set. A workspace must belong to an account for these APIs to work."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_assignable_roles_for_resource(self, resource: str,
+                                          **kwargs) -> GetAssignableRolesForResourceResponse:
+        """Get assignable roles for a resource.
+        
+        Gets all the roles that can be granted on an account-level resource. A role is grantable if the rule
+        set on the resource can contain an access rule of the role.
+        
+        :param resource: str
+          The resource name for which assignable roles will be listed.
+        
+        :returns: :class:`GetAssignableRolesForResourceResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetAssignableRolesForResourceRequest(resource=resource)
+
+        query = {}
+        if resource: query['resource'] = request.resource
+
+        json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/assignable-roles', query=query)
+        return GetAssignableRolesForResourceResponse.from_dict(json)
+
+    def get_rule_set(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+        """Get a rule set.
+        
+        Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
+        rules on the said resource. Currently only a default rule set for each resource is supported.
+        
+        :param name: str
+          The ruleset name associated with the request.
+        :param etag: str
+          Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
+          optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
+          overwriting each other. It is strongly suggested that systems make use of the etag in the read ->
+          modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an
+          etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
+          version you are updating.
+        
+        :returns: :class:`RuleSetResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetRuleSetRequest(etag=etag, name=name)
+
         query = {}
         if etag: query['etag'] = request.etag
         if name: query['name'] = request.name
 
-        json = self._api.do('PUT',
-                            f'/preview/accounts/{self._api.account_id}/access-control/rule-sets',
-                            query=query,
-                            body=body)
+        json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/rule-sets', query=query)
+        return RuleSetResponse.from_dict(json)
+
+    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest, **kwargs) -> RuleSetResponse:
+        """Update a rule set.
+        
+        Replace the rules of a rule set. First, use a GET rule set request to read the current version of the
+        rule set before modifying it. This pattern helps prevent conflicts between concurrent updates.
+        
+        :param name: str
+          Name of the rule set.
+        :param rule_set: :class:`RuleSetUpdateRequest`
+        
+        :returns: :class:`RuleSetResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateRuleSetRequest(name=name, rule_set=rule_set)
+        body = request.as_dict()
+
+        json = self._api.do('PUT', '/api/2.0/preview/accounts/access-control/rule-sets', body=body)
         return RuleSetResponse.from_dict(json)
 
 
@@ -938,17 +1038,30 @@ class AccountGroupsAPI:
 
     def create(self,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> Group:
         """Create a new group.
         
-        Creates a group in the Databricks account with a unique name, using the supplied group details."""
+        Creates a group in the Databricks account with a unique name, using the supplied group details.
+        
+        :param display_name: str (optional)
+          String that represents a human-readable group name
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks group ID
+        :param members: List[:class:`ComplexValue`] (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        :returns: :class:`Group`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Group(display_name=display_name,
@@ -966,7 +1079,13 @@ class AccountGroupsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a group.
         
-        Deletes a group from the Databricks account."""
+        Deletes a group from the Databricks account.
+        
+        :param id: str
+          Unique ID for a group in the Databricks account.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountGroupRequest(id=id)
@@ -976,7 +1095,13 @@ class AccountGroupsAPI:
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
         
-        Gets the information for a specific group in the Databricks account."""
+        Gets the information for a specific group in the Databricks account.
+        
+        :param id: str
+          Unique ID for a group in the Databricks account.
+        
+        :returns: :class:`Group`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountGroupRequest(id=id)
@@ -986,17 +1111,40 @@ class AccountGroupsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[Group]:
         """List group details.
         
-        Gets all details of the groups associated with the Databricks account."""
+        Gets all details of the groups associated with the Databricks account.
+        
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page. Default is 10000.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
+        
+        :returns: Iterator over :class:`Group`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountGroupsRequest(attributes=attributes,
@@ -1019,10 +1167,17 @@ class AccountGroupsAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update group details.
         
-        Partially updates the details of a group."""
+        Partially updates the details of a group.
+        
+        :param id: str
+          Unique ID for a group in the Databricks account.
+        :param operations: List[:class:`Patch`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1034,16 +1189,29 @@ class AccountGroupsAPI:
     def update(self,
                id: str,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace a group.
         
-        Updates the details of a group by replacing the entire group entity."""
+        Updates the details of a group by replacing the entire group entity.
+        
+        :param id: str
+          Databricks group ID
+        :param display_name: str (optional)
+          String that represents a human-readable group name
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param members: List[:class:`ComplexValue`] (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Group(display_name=display_name,
@@ -1071,18 +1239,34 @@ class AccountServicePrincipalsAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
         
-        Creates a new service principal in the Databricks account."""
+        Creates a new service principal in the Databricks account.
+        
+        :param active: bool (optional)
+          If this user is active
+        :param application_id: str (optional)
+          UUID relating to the service principal
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks service principal ID.
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        :returns: :class:`ServicePrincipal`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ServicePrincipal(active=active,
@@ -1103,7 +1287,13 @@ class AccountServicePrincipalsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a service principal.
         
-        Delete a single service principal in the Databricks account."""
+        Delete a single service principal in the Databricks account.
+        
+        :param id: str
+          Unique ID for a service principal in the Databricks account.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountServicePrincipalRequest(id=id)
@@ -1114,7 +1304,13 @@ class AccountServicePrincipalsAPI:
     def get(self, id: str, **kwargs) -> ServicePrincipal:
         """Get service principal details.
         
-        Gets the details for a single service principal define in the Databricks account."""
+        Gets the details for a single service principal define in the Databricks account.
+        
+        :param id: str
+          Unique ID for a service principal in the Databricks account.
+        
+        :returns: :class:`ServicePrincipal`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountServicePrincipalRequest(id=id)
@@ -1125,17 +1321,40 @@ class AccountServicePrincipalsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
-        Gets the set of service principals associated with a Databricks account."""
+        Gets the set of service principals associated with a Databricks account.
+        
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page. Default is 10000.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
+        
+        :returns: Iterator over :class:`ServicePrincipal`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountServicePrincipalsRequest(attributes=attributes,
@@ -1160,10 +1379,17 @@ class AccountServicePrincipalsAPI:
                             query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update service principal details.
         
-        Partially updates the details of a single service principal in the Databricks account."""
+        Partially updates the details of a single service principal in the Databricks account.
+        
+        :param id: str
+          Unique ID for a service principal in the Databricks account.
+        :param operations: List[:class:`Patch`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1175,19 +1401,35 @@ class AccountServicePrincipalsAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace service principal.
         
         Updates the details of a single service principal.
         
-        This action replaces the existing service principal with the same name."""
+        This action replaces the existing service principal with the same name.
+        
+        :param id: str
+          Databricks service principal ID.
+        :param active: bool (optional)
+          If this user is active
+        :param application_id: str (optional)
+          UUID relating to the service principal
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ServicePrincipal(active=active,
@@ -1220,21 +1462,40 @@ class AccountUsersAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs) -> User:
         """Create a new user.
         
         Creates a new user in the Databricks account. This new user will also be added to the Databricks
-        account."""
+        account.
+        
+        :param active: bool (optional)
+          If this user is active
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names. For example `John Smith`.
+        :param emails: List[:class:`ComplexValue`] (optional)
+          All the emails associated with the Databricks user.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks user ID.
+        :param name: :class:`Name` (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        :param user_name: str (optional)
+          Email address of the Databricks user.
+        
+        :returns: :class:`User`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = User(active=active,
@@ -1256,7 +1517,13 @@ class AccountUsersAPI:
         """Delete a user.
         
         Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
-        user."""
+        user.
+        
+        :param id: str
+          Unique ID for a user in the Databricks account.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAccountUserRequest(id=id)
@@ -1266,7 +1533,13 @@ class AccountUsersAPI:
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
         
-        Gets information for a specific user in Databricks account."""
+        Gets information for a specific user in Databricks account.
+        
+        :param id: str
+          Unique ID for a user in the Databricks account.
+        
+        :returns: :class:`User`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAccountUserRequest(id=id)
@@ -1276,17 +1549,41 @@ class AccountUsersAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[User]:
         """List users.
         
-        Gets details for all the users associated with a Databricks account."""
+        Gets details for all the users associated with a Databricks account.
+        
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page. Default is 10000.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
+        
+        :returns: Iterator over :class:`User`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAccountUsersRequest(attributes=attributes,
@@ -1309,10 +1606,17 @@ class AccountUsersAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update user details.
         
-        Partially updates a user resource by applying the supplied operations on specific user attributes."""
+        Partially updates a user resource by applying the supplied operations on specific user attributes.
+        
+        :param id: str
+          Unique ID for a user in the Databricks account.
+        :param operations: List[:class:`Patch`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1324,19 +1628,38 @@ class AccountUsersAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs):
         """Replace a user.
         
-        Replaces a user's information with the data supplied in request."""
+        Replaces a user's information with the data supplied in request.
+        
+        :param id: str
+          Databricks user ID.
+        :param active: bool (optional)
+          If this user is active
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names. For example `John Smith`.
+        :param emails: List[:class:`ComplexValue`] (optional)
+          All the emails associated with the Databricks user.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param name: :class:`Name` (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        :param user_name: str (optional)
+          Email address of the Databricks user.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = User(active=active,
@@ -1362,7 +1685,10 @@ class CurrentUserAPI:
     def me(self) -> User:
         """Get current user info.
         
-        Get details about the current method caller's identity."""
+        Get details about the current method caller's identity.
+        
+        :returns: :class:`User`
+        """
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Me')
         return User.from_dict(json)
@@ -1381,17 +1707,30 @@ class GroupsAPI:
 
     def create(self,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> Group:
         """Create a new group.
         
-        Creates a group in the Databricks workspace with a unique name, using the supplied group details."""
+        Creates a group in the Databricks workspace with a unique name, using the supplied group details.
+        
+        :param display_name: str (optional)
+          String that represents a human-readable group name
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks group ID
+        :param members: List[:class:`ComplexValue`] (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        :returns: :class:`Group`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Group(display_name=display_name,
@@ -1409,7 +1748,13 @@ class GroupsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a group.
         
-        Deletes a group from the Databricks workspace."""
+        Deletes a group from the Databricks workspace.
+        
+        :param id: str
+          Unique ID for a group in the Databricks workspace.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteGroupRequest(id=id)
@@ -1419,7 +1764,13 @@ class GroupsAPI:
     def get(self, id: str, **kwargs) -> Group:
         """Get group details.
         
-        Gets the information for a specific group in the Databricks workspace."""
+        Gets the information for a specific group in the Databricks workspace.
+        
+        :param id: str
+          Unique ID for a group in the Databricks workspace.
+        
+        :returns: :class:`Group`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetGroupRequest(id=id)
@@ -1429,17 +1780,40 @@ class GroupsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[Group]:
         """List group details.
         
-        Gets all details of the groups associated with the Databricks workspace."""
+        Gets all details of the groups associated with the Databricks workspace.
+        
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
+        
+        :returns: Iterator over :class:`Group`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListGroupsRequest(attributes=attributes,
@@ -1462,10 +1836,17 @@ class GroupsAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update group details.
         
-        Partially updates the details of a group."""
+        Partially updates the details of a group.
+        
+        :param id: str
+          Unique ID for a group in the Databricks workspace.
+        :param operations: List[:class:`Patch`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1475,16 +1856,29 @@ class GroupsAPI:
     def update(self,
                id: str,
                *,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               members: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               members: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace a group.
         
-        Updates the details of a group by replacing the entire group entity."""
+        Updates the details of a group by replacing the entire group entity.
+        
+        :param id: str
+          Databricks group ID
+        :param display_name: str (optional)
+          String that represents a human-readable group name
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param members: List[:class:`ComplexValue`] (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Group(display_name=display_name,
@@ -1509,7 +1903,14 @@ class PermissionsAPI:
         """Get object permissions.
         
         Gets the permission of an object. Objects can inherit permissions from their parent objects or root
-        objects."""
+        objects.
+        
+        :param request_object_type: str
+          <needs content>
+        :param request_object_id: str
+        
+        :returns: :class:`ObjectPermissions`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetPermissionRequest(request_object_id=request_object_id,
@@ -1523,7 +1924,15 @@ class PermissionsAPI:
                               **kwargs) -> GetPermissionLevelsResponse:
         """Get permission levels.
         
-        Gets the permission levels that a user can have on an object."""
+        Gets the permission levels that a user can have on an object.
+        
+        :param request_object_type: str
+          <needs content>
+        :param request_object_id: str
+          <needs content>
+        
+        :returns: :class:`GetPermissionLevelsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetPermissionLevelsRequest(request_object_id=request_object_id,
@@ -1539,12 +1948,20 @@ class PermissionsAPI:
             request_object_type: str,
             request_object_id: str,
             *,
-            access_control_list: List[AccessControlRequest] = None,
+            access_control_list: Optional[List[AccessControlRequest]] = None,
             **kwargs):
         """Set permissions.
         
         Sets permissions on object. Objects can inherit permissions from their parent objects and root
-        objects."""
+        objects.
+        
+        :param request_object_type: str
+          <needs content>
+        :param request_object_id: str
+        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PermissionsRequest(access_control_list=access_control_list,
@@ -1559,11 +1976,19 @@ class PermissionsAPI:
                request_object_type: str,
                request_object_id: str,
                *,
-               access_control_list: List[AccessControlRequest] = None,
+               access_control_list: Optional[List[AccessControlRequest]] = None,
                **kwargs):
         """Update permission.
         
-        Updates the permissions on an object."""
+        Updates the permissions on an object.
+        
+        :param request_object_type: str
+          <needs content>
+        :param request_object_id: str
+        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PermissionsRequest(access_control_list=access_control_list,
@@ -1587,18 +2012,34 @@ class ServicePrincipalsAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> ServicePrincipal:
         """Create a service principal.
         
-        Creates a new service principal in the Databricks workspace."""
+        Creates a new service principal in the Databricks workspace.
+        
+        :param active: bool (optional)
+          If this user is active
+        :param application_id: str (optional)
+          UUID relating to the service principal
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks service principal ID.
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        :returns: :class:`ServicePrincipal`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ServicePrincipal(active=active,
@@ -1617,7 +2058,13 @@ class ServicePrincipalsAPI:
     def delete(self, id: str, **kwargs):
         """Delete a service principal.
         
-        Delete a single service principal in the Databricks workspace."""
+        Delete a single service principal in the Databricks workspace.
+        
+        :param id: str
+          Unique ID for a service principal in the Databricks workspace.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteServicePrincipalRequest(id=id)
@@ -1627,7 +2074,13 @@ class ServicePrincipalsAPI:
     def get(self, id: str, **kwargs) -> ServicePrincipal:
         """Get service principal details.
         
-        Gets the details for a single service principal define in the Databricks workspace."""
+        Gets the details for a single service principal define in the Databricks workspace.
+        
+        :param id: str
+          Unique ID for a service principal in the Databricks workspace.
+        
+        :returns: :class:`ServicePrincipal`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetServicePrincipalRequest(id=id)
@@ -1637,17 +2090,40 @@ class ServicePrincipalsAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[ServicePrincipal]:
         """List service principals.
         
-        Gets the set of service principals associated with a Databricks workspace."""
+        Gets the set of service principals associated with a Databricks workspace.
+        
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
+        
+        :returns: Iterator over :class:`ServicePrincipal`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListServicePrincipalsRequest(attributes=attributes,
@@ -1670,10 +2146,17 @@ class ServicePrincipalsAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update service principal details.
         
-        Partially updates the details of a single service principal in the Databricks workspace."""
+        Partially updates the details of a single service principal in the Databricks workspace.
+        
+        :param id: str
+          Unique ID for a service principal in the Databricks workspace.
+        :param operations: List[:class:`Patch`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1683,19 +2166,35 @@ class ServicePrincipalsAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               application_id: str = None,
-               display_name: str = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               roles: List[ComplexValue] = None,
+               active: Optional[bool] = None,
+               application_id: Optional[str] = None,
+               display_name: Optional[str] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace service principal.
         
         Updates the details of a single service principal.
         
-        This action replaces the existing service principal with the same name."""
+        This action replaces the existing service principal with the same name.
+        
+        :param id: str
+          Databricks service principal ID.
+        :param active: bool (optional)
+          If this user is active
+        :param application_id: str (optional)
+          UUID relating to the service principal
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ServicePrincipal(active=active,
@@ -1726,21 +2225,40 @@ class UsersAPI:
 
     def create(self,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               id: str = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               id: Optional[str] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs) -> User:
         """Create a new user.
         
         Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
-        account."""
+        account.
+        
+        :param active: bool (optional)
+          If this user is active
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names. For example `John Smith`.
+        :param emails: List[:class:`ComplexValue`] (optional)
+          All the emails associated with the Databricks user.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks user ID.
+        :param name: :class:`Name` (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        :param user_name: str (optional)
+          Email address of the Databricks user.
+        
+        :returns: :class:`User`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = User(active=active,
@@ -1762,7 +2280,13 @@ class UsersAPI:
         """Delete a user.
         
         Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
-        user."""
+        user.
+        
+        :param id: str
+          Unique ID for a user in the Databricks workspace.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteUserRequest(id=id)
@@ -1772,7 +2296,13 @@ class UsersAPI:
     def get(self, id: str, **kwargs) -> User:
         """Get user details.
         
-        Gets information for a specific user in Databricks workspace."""
+        Gets information for a specific user in Databricks workspace.
+        
+        :param id: str
+          Unique ID for a user in the Databricks workspace.
+        
+        :returns: :class:`User`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetUserRequest(id=id)
@@ -1782,17 +2312,41 @@ class UsersAPI:
 
     def list(self,
              *,
-             attributes: str = None,
-             count: int = None,
-             excluded_attributes: str = None,
-             filter: str = None,
-             sort_by: str = None,
-             sort_order: ListSortOrder = None,
-             start_index: int = None,
+             attributes: Optional[str] = None,
+             count: Optional[int] = None,
+             excluded_attributes: Optional[str] = None,
+             filter: Optional[str] = None,
+             sort_by: Optional[str] = None,
+             sort_order: Optional[ListSortOrder] = None,
+             start_index: Optional[int] = None,
              **kwargs) -> Iterator[User]:
         """List users.
         
-        Gets details for all the users associated with a Databricks workspace."""
+        Gets details for all the users associated with a Databricks workspace.
+        
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
+        
+        :returns: Iterator over :class:`User`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListUsersRequest(attributes=attributes,
@@ -1815,10 +2369,17 @@ class UsersAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: List[Patch] = None, **kwargs):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
         """Update user details.
         
-        Partially updates a user resource by applying the supplied operations on specific user attributes."""
+        Partially updates a user resource by applying the supplied operations on specific user attributes.
+        
+        :param id: str
+          Unique ID for a user in the Databricks workspace.
+        :param operations: List[:class:`Patch`] (optional)
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PartialUpdate(id=id, operations=operations)
@@ -1828,19 +2389,38 @@ class UsersAPI:
     def update(self,
                id: str,
                *,
-               active: bool = None,
-               display_name: str = None,
-               emails: List[ComplexValue] = None,
-               entitlements: List[ComplexValue] = None,
-               external_id: str = None,
-               groups: List[ComplexValue] = None,
-               name: Name = None,
-               roles: List[ComplexValue] = None,
-               user_name: str = None,
+               active: Optional[bool] = None,
+               display_name: Optional[str] = None,
+               emails: Optional[List[ComplexValue]] = None,
+               entitlements: Optional[List[ComplexValue]] = None,
+               external_id: Optional[str] = None,
+               groups: Optional[List[ComplexValue]] = None,
+               name: Optional[Name] = None,
+               roles: Optional[List[ComplexValue]] = None,
+               user_name: Optional[str] = None,
                **kwargs):
         """Replace a user.
         
-        Replaces a user's information with the data supplied in request."""
+        Replaces a user's information with the data supplied in request.
+        
+        :param id: str
+          Databricks user ID.
+        :param active: bool (optional)
+          If this user is active
+        :param display_name: str (optional)
+          String that represents a concatenation of given and family names. For example `John Smith`.
+        :param emails: List[:class:`ComplexValue`] (optional)
+          All the emails associated with the Databricks user.
+        :param entitlements: List[:class:`ComplexValue`] (optional)
+        :param external_id: str (optional)
+        :param groups: List[:class:`ComplexValue`] (optional)
+        :param name: :class:`Name` (optional)
+        :param roles: List[:class:`ComplexValue`] (optional)
+        :param user_name: str (optional)
+          Email address of the Databricks user.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = User(active=active,
@@ -1868,7 +2448,15 @@ class WorkspaceAssignmentAPI:
         """Delete permissions assignment.
         
         Deletes the workspace permissions assignment in a given account and workspace for the specified
-        principal."""
+        principal.
+        
+        :param workspace_id: int
+          The workspace ID.
+        :param principal_id: int
+          The ID of the user, service principal, or group.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteWorkspaceAssignmentRequest(principal_id=principal_id, workspace_id=workspace_id)
@@ -1881,7 +2469,13 @@ class WorkspaceAssignmentAPI:
     def get(self, workspace_id: int, **kwargs) -> WorkspacePermissions:
         """List workspace permissions.
         
-        Get an array of workspace permissions for the specified account and workspace."""
+        Get an array of workspace permissions for the specified account and workspace.
+        
+        :param workspace_id: int
+          The workspace ID.
+        
+        :returns: :class:`WorkspacePermissions`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetWorkspaceAssignmentRequest(workspace_id=workspace_id)
@@ -1895,7 +2489,13 @@ class WorkspaceAssignmentAPI:
     def list(self, workspace_id: int, **kwargs) -> Iterator[PermissionAssignment]:
         """Get permission assignments.
         
-        Get the permission assignments for the specified Databricks account and Databricks workspace."""
+        Get the permission assignments for the specified Databricks account and Databricks workspace.
+        
+        :param workspace_id: int
+          The workspace ID for the account.
+        
+        :returns: Iterator over :class:`PermissionAssignment`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListWorkspaceAssignmentRequest(workspace_id=workspace_id)
@@ -1910,7 +2510,17 @@ class WorkspaceAssignmentAPI:
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
-        specified principal."""
+        specified principal.
+        
+        :param permissions: List[:class:`WorkspacePermission`]
+          Array of permissions assignments to update on the workspace.
+        :param workspace_id: int
+          The workspace ID.
+        :param principal_id: int
+          The ID of the user, service principal, or group.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateWorkspaceAssignments(permissions=permissions,

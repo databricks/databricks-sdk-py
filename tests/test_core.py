@@ -1,5 +1,6 @@
 import os
 import pathlib
+import platform
 import random
 import string
 
@@ -7,6 +8,7 @@ import pytest
 
 from databricks.sdk.core import (Config, DatabricksCliTokenSource,
                                  databricks_cli)
+from databricks.sdk.version import __version__
 
 
 def test_parse_dsn():
@@ -123,3 +125,25 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
     write_large_dummy_executable(tmp_path)
     monkeypatch.setenv('PATH', str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']]))
     assert databricks_cli(config) is not None
+
+
+def test_extra_and_upstream_user_agent(monkeypatch):
+
+    class MockUname:
+
+        @property
+        def system(self):
+            return 'TestOS'
+
+    monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
+    monkeypatch.setattr(platform, 'uname', MockUname)
+    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
+    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
+
+    config = Config(host='http://localhost', username="something", password="something", product='test', product_version='0.0.0')\
+        .with_user_agent_extra('test-extra-1', '1')\
+        .with_user_agent_extra('test-extra-2', '2')
+
+    assert config.user_agent == (
+        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
+        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1")

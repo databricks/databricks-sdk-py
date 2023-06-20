@@ -12,4 +12,4 @@ created = w.warehouses.create(name=f'sdk-{time.time_ns()}',
 wh = w.warehouses.get(get=created.id)
 
 # cleanup
-_ = w.warehouses.delete(delete=created.id).result()
+w.warehouses.delete(delete=created.id)

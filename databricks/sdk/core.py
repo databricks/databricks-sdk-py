@@ -91,27 +91,39 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     from databricks.sdk.runtime import init_runtime_native_auth
-    if init_runtime_native_auth is None:
-        return None
-    else:
+    if init_runtime_native_auth is not None:
         host, inner = init_runtime_native_auth()
         cfg.host = host
         return inner
+    try:
+        from dbruntime.databricks_repl_context import get_context
+        ctx = get_context()
+        if ctx is None:
+            logger.debug('Empty REPL context returned, skipping runtime auth')
+            return None
+        cfg.host = f'https://{ctx.browserHostName}'
+
+        def inner() -> Dict[str, str]:
+            ctx = get_context()
+            return {'Authorization': f'Bearer {ctx.apiToken}'}
+
+        return inner
+    except ImportError:
+        return None
 
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
 def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
-    # TODO: change to use cfg.oidc_endpoints (and add cache there)
     # TODO: Azure returns 404 for UC workspace after redirecting to
     # https://login.microsoftonline.com/{cfg.azure_tenant_id}/.well-known/oauth-authorization-server
-    resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
-    if not resp.ok:
+    oidc = cfg.oidc_endpoints
+    if oidc is None:
         return None
     token_source = ClientCredentials(client_id=cfg.client_id,
                                      client_secret=cfg.client_secret,
-                                     token_url=resp.json()["token_endpoint"],
+                                     token_url=oidc.token_endpoint,
                                      scopes=["all-apis"],
                                      use_header=True)
 
@@ -486,6 +498,7 @@ class Config:
                  product_version="0.0.0",
                  **kwargs):
         self._inner = {}
+        self._user_agent_other_info = []
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         try:
             self._set_inner_config(kwargs)
@@ -589,8 +602,29 @@ class Config:
         """ Returns User-Agent header used by this SDK """
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()
-        return (f"{self._product}/{self._product_version} databricks-sdk-py/{__version__}"
-                f" python/{py_version} os/{os_name} auth/{self.auth_type}")
+
+        ua = [
+            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
+            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
+        ]
+        if len(self._user_agent_other_info) > 0:
+            ua.append(' '.join(self._user_agent_other_info))
+        if len(self._upstream_user_agent) > 0:
+            ua.append(self._upstream_user_agent)
+
+        return ' '.join(ua)
+
+    @property
+    def _upstream_user_agent(self) -> str:
+        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
+        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
+        if product is not None and product_version is not None:
+            return f"upstream/{product} upstream-version/{product_version}"
+        return ""
+
+    def with_user_agent_extra(self, key: str, value: str) -> 'Config':
+        self._user_agent_other_info.append(f"{key}/{value}")
+        return self
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
@@ -717,7 +751,8 @@ class Config:
             logger.debug('Loaded from environment')
 
     def _known_file_config_loader(self):
-        if not self.profile and (self.is_any_auth_configured or self.is_azure):
+        if not self.profile and (self.is_any_auth_configured or self.host
+                                 or self.azure_workspace_resource_id):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
             return

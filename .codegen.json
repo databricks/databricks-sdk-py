@@ -5,5 +5,8 @@
   },
   "batch": {
     ".codegen/__init__.py.tmpl": "databricks/sdk/__init__.py"
+  },
+  "samples": {
+    ".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py"
   }
 }
