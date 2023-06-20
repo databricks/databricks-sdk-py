@@ -7,7 +7,7 @@ import string
 import pytest
 
 from databricks.sdk.core import (Config, DatabricksCliTokenSource,
-                                 databricks_cli)
+                                 databricks_cli, CredentialsProvider, HeaderFactory)
 from databricks.sdk.version import __version__
 
 
@@ -128,7 +128,6 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
-
     class MockUname:
 
         @property
@@ -140,10 +139,52 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
 
-    config = Config(host='http://localhost', username="something", password="something", product='test', product_version='0.0.0')\
-        .with_user_agent_extra('test-extra-1', '1')\
+    config = Config(host='http://localhost', username="something", password="something", product='test',
+                    product_version='0.0.0') \
+        .with_user_agent_extra('test-extra-1', '1') \
         .with_user_agent_extra('test-extra-2', '2')
 
     assert config.user_agent == (
         f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
         f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1")
+
+
+def test_config_copy_shallow_copies_credential_provider():
+    class TestCredentialsProvider(CredentialsProvider):
+        def __init__(self):
+            super().__init__()
+            self._token = "token1"
+
+        def auth_type(self) -> str:
+            return "test"
+
+        def __call__(self, cfg: 'Config') -> HeaderFactory:
+            return lambda: {"token": self._token}
+
+        def refresh(self):
+            self._token = "token2"
+
+    credential_provider = TestCredentialsProvider()
+    config = Config(credentials_provider=credential_provider)
+    config_copy = config.copy()
+
+    assert config.authenticate()["token"] == "token1"
+    assert config_copy.authenticate()["token"] == "token1"
+
+    credential_provider.refresh()
+
+    assert config.authenticate()["token"] == "token2"
+    assert config_copy.authenticate()["token"] == "token2"
+    assert config._credentials_provider == config_copy._credentials_provider
+
+
+def test_config_copy_deep_copies_user_agent_other_info(config):
+    config_copy = config.copy()
+
+    config.with_user_agent_extra("test", "test1")
+    assert "test/test1" not in config_copy.user_agent
+    assert "test/test1" in config.user_agent
+
+    config_copy.with_user_agent_extra("test", "test2")
+    assert "test/test2" in config_copy.user_agent
+    assert "test/test2" not in config.user_agent

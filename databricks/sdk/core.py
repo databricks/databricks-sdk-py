@@ -1,6 +1,7 @@
 import abc
 import base64
 import configparser
+import copy
 import functools
 import json
 import logging
@@ -13,7 +14,7 @@ import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Callable, Dict, Iterable, List, Optional
+from typing import Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
@@ -370,7 +371,7 @@ class MetadataServiceTokenSource(Refreshable):
                                 self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
                                 self.METADATA_SERVICE_HOST_HEADER: self.host
                             })
-        json_resp: dict[str, str] = resp.json()
+        json_resp: dict[str, Union[str,float]] = resp.json()
         access_token = json_resp.get("access_token", None)
         if access_token is None:
             raise ValueError("Metadata Service returned empty token")
@@ -816,6 +817,11 @@ class Config:
 
     def __repr__(self):
         return f'<{self.debug_string()}>'
+
+    def copy(self):
+        cpy: Config = copy.copy(self)
+        cpy._user_agent_other_info = copy.deepcopy(self._user_agent_other_info)
+        return cpy
 
 
 class DatabricksError(IOError):

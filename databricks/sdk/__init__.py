@@ -109,7 +109,7 @@ class WorkspaceClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self.config = deepcopy(config)
+        self.config = config.copy()
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
@@ -216,7 +216,7 @@ class AccountClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self.config = deepcopy(config)
+        self.config = config.copy()
         self.api_client = client.ApiClient(self.config)
         self.access_control = AccountAccessControlAPI(self.api_client)
         self.billable_usage = BillableUsageAPI(self.api_client)
