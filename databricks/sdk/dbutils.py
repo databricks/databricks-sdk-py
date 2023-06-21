@@ -5,7 +5,6 @@ import threading
 import typing
 from collections import namedtuple
 
-from ._widgets import _widget_impl
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
 from .mixins import files as dbfs_ext
@@ -176,7 +175,19 @@ class RemoteDbUtils:
 
         self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
-        self.widgets = _widget_impl()
+        self._widgets = None
+
+    # When we import widget_impl, the init file checks whether user has the
+    # correct dependencies required for running on notebook or not (ipywidgets etc).
+    # We only want these checks (and the subsequent errors and warnings), to
+    # happen when the user actually uses widgets.
+    @property
+    def widgets(self):
+        if self._widgets is None:
+            from ._widgets import widget_impl
+            self._widgets = widget_impl()
+
+        return self._widgets
 
     @property
     def _cluster_id(self) -> str:
