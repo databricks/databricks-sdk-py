@@ -310,6 +310,7 @@ class _DbfsPath(_Path):
 
 
 class DbfsExt(files.DbfsAPI):
+    __doc__ = files.DbfsAPI.__doc__
 
     def open(self, path: str, *, read: bool = False, write: bool = False, overwrite: bool = False) -> _DbfsIO:
         return _DbfsIO(self, path, read=read, write=write, overwrite=overwrite)

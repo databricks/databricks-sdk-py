@@ -10,6 +10,7 @@ def _fqcn(x: any) -> str:
 
 
 class WorkspaceExt(WorkspaceAPI):
+    __doc__ = WorkspaceAPI.__doc__
 
     def list(self,
              path: str,

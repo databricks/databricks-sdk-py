@@ -2,7 +2,7 @@
 Account APIs
 ============
  
-These apis are available from AccountClient
+These APIs are available from AccountClient
  
 .. toctree::
   :maxdepth: 1

@@ -2,7 +2,7 @@
 Workspace APIs
 ==============
  
-These apis are available from WorkspaceClient
+These APIs are available from WorkspaceClient
  
 .. toctree::
   :maxdepth: 1

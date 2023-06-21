@@ -2,7 +2,8 @@ Dbfs
 ====
 .. py:class:: DbfsExt
 
-    
+    DBFS API makes it simple to interact with various data sources without having to include a users
+    credentials every time to read a file.
 
     .. py:method:: add_block(handle, data)
 

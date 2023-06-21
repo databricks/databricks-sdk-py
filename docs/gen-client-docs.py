@@ -58,7 +58,7 @@ class ServiceDoc:
 
     def as_rst(self) -> str:
         if not self.doc:
-            self.doc = '' # TODO: fill from parent
+            self.doc = ''
         out = [
             self.tag.name, '=' * len(self.tag.name), f'.. py:class:: {self.class_name}', '', f'    {self.doc}'
         ]
@@ -175,10 +175,6 @@ class Generator:
             if service_name in ignore_client_fields:
                 continue
             class_doc = service_inst.__doc__
-            # if class_doc is not None:
-            #     bases = service_inst.__class__.__bases__
-            #     if len(bases) > 0:
-            #         class_doc = bases[0].__doc__
             class_name = service_inst.__class__.__name__
             all.append(
                 ServiceDoc(service_name=service_name,

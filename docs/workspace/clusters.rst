@@ -2,7 +2,27 @@ Clusters
 ========
 .. py:class:: ClustersExt
 
+    The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
     
+    Databricks maps cluster node instance types to compute units known as DBUs. See the instance type pricing
+    page for a list of the supported instance types and their corresponding DBUs.
+    
+    A Databricks cluster is a set of computation resources and configurations on which you run data
+    engineering, data science, and data analytics workloads, such as production ETL pipelines, streaming
+    analytics, ad-hoc analytics, and machine learning.
+    
+    You run these workloads as a set of commands in a notebook or as an automated job. Databricks makes a
+    distinction between all-purpose clusters and job clusters. You use all-purpose clusters to analyze data
+    collaboratively using interactive notebooks. You use job clusters to run fast and robust automated jobs.
+    
+    You can create an all-purpose cluster using the UI, CLI, or REST API. You can manually terminate and
+    restart an all-purpose cluster. Multiple users can share such clusters to do collaborative interactive
+    analysis.
+    
+    IMPORTANT: Databricks retains cluster configuration information for up to 200 all-purpose clusters
+    terminated in the last 30 days and up to 30 job clusters recently terminated by the job scheduler. To keep
+    an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
+    administrator can pin a cluster to the cluster list.
 
     .. py:method:: change_owner(cluster_id, owner_username)
 
