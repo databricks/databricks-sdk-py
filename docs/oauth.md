@@ -233,6 +233,8 @@ the authorization server. The app also creates a transform value of the Code Ver
 and sends it over HTTPS to obtain an Authorization Code. By intercepting the Authorization Code, a malicious attacker
 cannot exchange it for a token without possessing the Code Verifier.
 
+![session credentials flow with flask](images/flask-oauth.gif)
+
 The [presented sample](https://github.com/databricks/databricks-sdk-py/blob/main/examples/flask_app_with_oauth.py)
 is a Python3 script that uses the Flask web framework along with Databricks SDK for Python to demonstrate how to
 implement the OAuth Authorization Code flow with PKCE security. It can be used to build an app where each user uses

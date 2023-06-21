@@ -1,6 +1,6 @@
 Clusters
 ========
-.. py:class:: ClustersAPI
+.. py:class:: ClustersExt
 
     
 

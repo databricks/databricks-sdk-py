@@ -1,6 +1,6 @@
 Workspace
 =========
-.. py:class:: WorkspaceAPI
+.. py:class:: WorkspaceExt
 
     
 
@@ -26,6 +26,27 @@ Workspace
         
 
     .. py:method:: download(path [, format])
+
+        Usage:
+
+        .. code-block::
+
+            import io
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service.workspace import ImportFormat
+            
+            w = WorkspaceClient()
+            
+            py_file = f'/Users/{w.current_user.me().user_name}/file-{time.time_ns()}.py'
+            
+            w.workspace.upload(py_file, io.BytesIO(b'print(1)'), format=ImportFormat.AUTO)
+            with w.workspace.download(py_file) as f:
+                content = f.read()
+                assert content == b'print(1)'
+            
+            w.workspace.delete(py_file)
 
         
         Downloads notebook or file from the workspace
@@ -169,16 +190,14 @@ Workspace
 
         .. code-block::
 
-            import os
-            import time
-            
             from databricks.sdk import WorkspaceClient
             
             w = WorkspaceClient()
             
-            notebook = f'/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}'
-            
-            objects = w.workspace.list(path=os.path.dirname(notebook))
+            names = []
+            for i in w.workspace.list(f'/Users/{w.current_user.me().user_name}', recursive=True):
+                names.append(i.path)
+            assert len(names) > 0
 
         List workspace objects
 
@@ -207,6 +226,26 @@ Workspace
         
 
     .. py:method:: upload(path, content [, format, language, overwrite])
+
+        Usage:
+
+        .. code-block::
+
+            import io
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            
+            w = WorkspaceClient()
+            
+            notebook = f'/Users/{w.current_user.me().user_name}/notebook-{time.time_ns()}.py'
+            
+            w.workspace.upload(notebook, io.BytesIO(b'print(1)'))
+            with w.workspace.download(notebook) as f:
+                content = f.read()
+                assert content == b'# Databricks notebook source\nprint(1)'
+            
+            w.workspace.delete(notebook)
 
         
         Uploads a workspace object (for example, a notebook or file) or the contents of an entire
