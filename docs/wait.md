@@ -32,12 +32,11 @@ import datetime
 import logging
 from databricks.sdk import WorkspaceClient
 w = WorkspaceClient()
-info = w.clusters.create_and_wait(cluster_name='Created cluster',
-                                  spark_version='12.0.x-scala2.12',
-                                  node_type_id='m5d.large',
-                                  autotermination_minutes=10,
-                                  num_workers=1,
-                                  timeout=datetime.timedelta(minutes=10))
+info = w.clusters.create(cluster_name='Created cluster',
+                         spark_version='12.0.x-scala2.12',
+                         node_type_id='m5d.large',
+                         autotermination_minutes=10,
+                         num_workers=1).result(timeout=datetime.timedelta(minutes=10))
 logging.info(f'Created: {info}')
 ```
 

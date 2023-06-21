@@ -1,5 +1,4 @@
-Authentication
---------------
+# Authentication
 
 If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles)
 or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables)
@@ -15,7 +14,16 @@ w. # press <TAB> for autocompletion
 
 The conventional name for the variable that holds the workspace-level client of the Databricks SDK for Python is `w`, which is shorthand for `workspace`.
 
-### Default authentication flow
+## Notebook-native authentication
+
+If you initialise `WorkspaceClient` without any arguments, credentials will be picked up automatically from the notebook context. 
+If the same code is run outside the notebook environment, like CI/CD, you have to supply [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables) for the authentication to work.    
+
+![notebook-native authentication](images/notebook-native-auth.gif)
+
+`databricks.sdk.AccountClient` does not support notebook-native authentication.
+
+## Default authentication flow
 
 If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest),
 the [Databricks SDK for Go](https://github.com/databricks/databricks-sdk-go), the [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html),
@@ -43,7 +51,7 @@ in the following order. Once the SDK finds a compatible set of credentials that 
 
 Depending on the Databricks authentication method, the SDK uses the following information. Presented are the `WorkspaceClient` and `AccountClient` arguments (which have corresponding `.databrickscfg` file fields), their descriptions, and any corresponding environment variables.
 
-### Databricks native authentication
+## Databricks native authentication
 
 By default, the Databricks SDK for Python initially tries [Databricks token authentication](https://docs.databricks.com/dev-tools/api/latest/authentication.html) (`auth_type='pat'` argument). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`auth_type="basic"` argument).
 
@@ -65,7 +73,7 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient(host=input('Databricks Workspace URL: '), token=input('Token: '))
 ```
 
-### Azure native authentication
+## Azure native authentication
 
 By default, the Databricks SDK for Python first tries Azure client secret authentication (`auth_type='azure-client-secret'` argument). If the SDK is unsuccessful, it then tries Azure CLI authentication (`auth_type='azure-cli'` argument). See [Manage service principals](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals).
 
@@ -96,7 +104,7 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
                     azure_client_secret=input('AAD Client Secret: '))
 ```
 
-### Overriding `.databrickscfg`
+## Overriding `.databrickscfg`
 
 For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior for using `.databrickscfg` as follows:
 
@@ -113,7 +121,7 @@ w = WorkspaceClient(profile='MYPROFILE')
 # Now call the Databricks workspace APIs as desired...
 ```
 
-### Additional authentication configuration options
+## Additional configuration options
 
 For all authentication methods, you can override the default behavior in client arguments as follows:
 
