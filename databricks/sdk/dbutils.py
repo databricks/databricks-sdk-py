@@ -1,14 +1,17 @@
 import base64
 import json
+import logging
 import threading
 import typing
 from collections import namedtuple
 
 from ._widgets import _widget_impl
-from .core import ApiClient, Config
+from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
-from .mixins import dbfs as dbfs_ext
+from .mixins import files as dbfs_ext
 from .service import compute, workspace
+
+_LOG = logging.getLogger('databricks.sdk')
 
 
 class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
@@ -78,38 +81,42 @@ class _FsUtil:
 
     def mount(self,
               source: str,
-              mountPoint: str,
-              encryptionType: str = "",
-              owner: str = "",
-              extraConfigs: 'typing.Dict[str, str]' = None,
-              ) -> bool:
+              mount_point: str,
+              encryption_type: str = None,
+              owner: str = None,
+              extra_configs: 'typing.Dict[str, str]' = None) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
         fs = self._proxy_factory('fs')
-        return fs.mount(source=source,
-                        mountPoint=mountPoint,
-                        encryptionType=encryptionType,
-                        owner=owner,
-                        extraConfigs=extraConfigs)
+        kwargs = {}
+        if encryption_type:
+            kwargs['encryption_type'] = encryption_type
+        if owner:
+            kwargs['owner'] = owner
+        if extra_configs:
+            kwargs['extra_configs'] = extra_configs
+        return fs.mount(source, mount_point, **kwargs)
 
-    def unmount(self, mountPoint: str) -> bool:
+    def unmount(self, mount_point: str) -> bool:
         """Deletes a DBFS mount point"""
         fs = self._proxy_factory('fs')
-        return fs.unmount(mountPoint)
+        return fs.unmount(mount_point)
 
     def updateMount(self,
                     source: str,
-                    mountPoint: str,
-                    encryptionType: str = "",
-                    owner: str = "",
-                    extraConfigs: 'typing.Dict[str, str]' = None,
-                    ) -> bool:
+                    mount_point: str,
+                    encryption_type: str = None,
+                    owner: str = None,
+                    extra_configs: 'typing.Dict[str, str]' = None) -> bool:
         """ Similar to mount(), but updates an existing mount point (if present) instead of creating a new one """
         fs = self._proxy_factory('fs')
-        return fs.updateMount(source=source,
-                              mountPoint=mountPoint,
-                              encryptionType=encryptionType,
-                              owner=owner,
-                              extraConfigs=extraConfigs)
+        kwargs = {}
+        if encryption_type:
+            kwargs['encryption_type'] = encryption_type
+        if owner:
+            kwargs['owner'] = owner
+        if extra_configs:
+            kwargs['extra_configs'] = extra_configs
+        return fs.updateMount(source, mount_point, **kwargs)
 
     def mounts(self) -> typing.List[MountInfo]:
         """ Displays information about what is mounted within DBFS """
@@ -216,6 +223,10 @@ class _ProxyUtil:
                           method=method)
 
 
+import html
+import re
+
+
 class _ProxyCall:
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
@@ -226,6 +237,52 @@ class _ProxyCall:
         self._context_factory = context_factory
         self._util = util
         self._method = method
+
+    _out_re = re.compile(r'Out\[[\d\s]+]:\s')
+    _tag_re = re.compile(r'<[^>]*>')
+    _exception_re = re.compile(r'.*Exception:\s+(.*)')
+    _execution_error_re = re.compile(
+        r'ExecutionError: ([\s\S]*)\n(StatusCode=[0-9]*)\n(StatusDescription=.*)\n')
+    _error_message_re = re.compile(r'ErrorMessage=(.+)\n')
+    _ascii_escape_re = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]')
+
+    def _is_failed(self, results: compute.Results) -> bool:
+        return results.result_type == compute.ResultType.error
+
+    def _text(self, results: compute.Results) -> str:
+        if results.result_type != compute.ResultType.text:
+            return ''
+        return self._out_re.sub("", str(results.data))
+
+    def _raise_if_failed(self, results: compute.Results):
+        if not self._is_failed(results):
+            return
+        raise DatabricksError(self._error_from_results(results))
+
+    def _error_from_results(self, results: compute.Results):
+        if not self._is_failed(results):
+            return
+        if results.cause:
+            _LOG.debug(f'{self._ascii_escape_re.sub("", results.cause)}')
+
+        summary = self._tag_re.sub("", results.summary)
+        summary = html.unescape(summary)
+
+        exception_matches = self._exception_re.findall(summary)
+        if len(exception_matches) == 1:
+            summary = exception_matches[0].replace("; nested exception is:", "")
+            summary = summary.rstrip(" ")
+            return summary
+
+        execution_error_matches = self._execution_error_re.findall(results.cause)
+        if len(execution_error_matches) == 1:
+            return "\n".join(execution_error_matches[0])
+
+        error_message_matches = self._error_message_re.findall(results.cause)
+        if len(error_message_matches) == 1:
+            return error_message_matches[0]
+
+        return summary
 
     def __call__(self, *args, **kwargs):
         raw = json.dumps((args, kwargs))
@@ -241,6 +298,7 @@ class _ProxyCall:
                                         context_id=ctx.id,
                                         command=code).result()
         if result.status == compute.CommandStatus.Finished:
+            self._raise_if_failed(result.results)
             raw = result.results.data
             return json.loads(raw)
         else:

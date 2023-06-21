@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -31,7 +31,7 @@ class BuildLogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.logs: body['logs'] = self.logs
+        if self.logs is not None: body['logs'] = self.logs
         return body
 
     @classmethod
@@ -47,7 +47,7 @@ class CreateServingEndpoint:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -65,12 +65,12 @@ class DeleteServingEndpointRequest:
 @dataclass
 class EndpointCoreConfigInput:
     served_models: 'List[ServedModelInput]'
-    name: str
-    traffic_config: 'TrafficConfig' = None
+    name: Optional[str] = None
+    traffic_config: Optional['TrafficConfig'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
@@ -84,13 +84,13 @@ class EndpointCoreConfigInput:
 
 @dataclass
 class EndpointCoreConfigOutput:
-    config_version: int = None
-    served_models: 'List[ServedModelOutput]' = None
-    traffic_config: 'TrafficConfig' = None
+    config_version: Optional[int] = None
+    served_models: Optional['List[ServedModelOutput]'] = None
+    traffic_config: Optional['TrafficConfig'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_version: body['config_version'] = self.config_version
+        if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
@@ -104,7 +104,7 @@ class EndpointCoreConfigOutput:
 
 @dataclass
 class EndpointCoreConfigSummary:
-    served_models: 'List[ServedModelSpec]' = None
+    served_models: Optional['List[ServedModelSpec]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -118,16 +118,16 @@ class EndpointCoreConfigSummary:
 
 @dataclass
 class EndpointPendingConfig:
-    config_version: int = None
-    served_models: 'List[ServedModelOutput]' = None
-    start_time: int = None
-    traffic_config: 'TrafficConfig' = None
+    config_version: Optional[int] = None
+    served_models: Optional['List[ServedModelOutput]'] = None
+    start_time: Optional[int] = None
+    traffic_config: Optional['TrafficConfig'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_version: body['config_version'] = self.config_version
+        if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
-        if self.start_time: body['start_time'] = self.start_time
+        if self.start_time is not None: body['start_time'] = self.start_time
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
 
@@ -141,13 +141,13 @@ class EndpointPendingConfig:
 
 @dataclass
 class EndpointState:
-    config_update: 'EndpointStateConfigUpdate' = None
-    ready: 'EndpointStateReady' = None
+    config_update: Optional['EndpointStateConfigUpdate'] = None
+    ready: Optional['EndpointStateReady'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_update: body['config_update'] = self.config_update.value
-        if self.ready: body['ready'] = self.ready.value
+        if self.config_update is not None: body['config_update'] = self.config_update.value
+        if self.ready is not None: body['ready'] = self.ready.value
         return body
 
     @classmethod
@@ -193,7 +193,7 @@ class GetServingEndpointRequest:
 
 @dataclass
 class ListEndpointsResponse:
-    endpoints: 'List[ServingEndpoint]' = None
+    endpoints: Optional['List[ServingEndpoint]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -241,8 +241,8 @@ class Route:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.served_model_name: body['served_model_name'] = self.served_model_name
-        if self.traffic_percentage: body['traffic_percentage'] = self.traffic_percentage
+        if self.served_model_name is not None: body['served_model_name'] = self.served_model_name
+        if self.traffic_percentage is not None: body['traffic_percentage'] = self.traffic_percentage
         return body
 
     @classmethod
@@ -257,15 +257,15 @@ class ServedModelInput:
     model_version: str
     workload_size: str
     scale_to_zero_enabled: bool
-    name: str = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_name: body['model_name'] = self.model_name
-        if self.model_version: body['model_version'] = self.model_version
-        if self.name: body['name'] = self.name
-        if self.scale_to_zero_enabled: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
-        if self.workload_size: body['workload_size'] = self.workload_size
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
         return body
 
     @classmethod
@@ -279,25 +279,25 @@ class ServedModelInput:
 
 @dataclass
 class ServedModelOutput:
-    creation_timestamp: int = None
-    creator: str = None
-    model_name: str = None
-    model_version: str = None
-    name: str = None
-    scale_to_zero_enabled: bool = None
-    state: 'ServedModelState' = None
-    workload_size: str = None
+    creation_timestamp: Optional[int] = None
+    creator: Optional[str] = None
+    model_name: Optional[str] = None
+    model_version: Optional[str] = None
+    name: Optional[str] = None
+    scale_to_zero_enabled: Optional[bool] = None
+    state: Optional['ServedModelState'] = None
+    workload_size: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator: body['creator'] = self.creator
-        if self.model_name: body['model_name'] = self.model_name
-        if self.model_version: body['model_version'] = self.model_version
-        if self.name: body['name'] = self.name
-        if self.scale_to_zero_enabled: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
-        if self.workload_size: body['workload_size'] = self.workload_size
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
         return body
 
     @classmethod
@@ -314,15 +314,15 @@ class ServedModelOutput:
 
 @dataclass
 class ServedModelSpec:
-    model_name: str = None
-    model_version: str = None
-    name: str = None
+    model_name: Optional[str] = None
+    model_version: Optional[str] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_name: body['model_name'] = self.model_name
-        if self.model_version: body['model_version'] = self.model_version
-        if self.name: body['name'] = self.name
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -334,13 +334,14 @@ class ServedModelSpec:
 
 @dataclass
 class ServedModelState:
-    deployment: 'ServedModelStateDeployment' = None
-    deployment_state_message: str = None
+    deployment: Optional['ServedModelStateDeployment'] = None
+    deployment_state_message: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.deployment: body['deployment'] = self.deployment.value
-        if self.deployment_state_message: body['deployment_state_message'] = self.deployment_state_message
+        if self.deployment is not None: body['deployment'] = self.deployment.value
+        if self.deployment_state_message is not None:
+            body['deployment_state_message'] = self.deployment_state_message
         return body
 
     @classmethod
@@ -373,7 +374,7 @@ class ServerLogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.logs: body['logs'] = self.logs
+        if self.logs is not None: body['logs'] = self.logs
         return body
 
     @classmethod
@@ -383,22 +384,23 @@ class ServerLogsResponse:
 
 @dataclass
 class ServingEndpoint:
-    config: 'EndpointCoreConfigSummary' = None
-    creation_timestamp: int = None
-    creator: str = None
-    id: str = None
-    last_updated_timestamp: int = None
-    name: str = None
-    state: 'EndpointState' = None
+    config: Optional['EndpointCoreConfigSummary'] = None
+    creation_timestamp: Optional[int] = None
+    creator: Optional[str] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    name: Optional[str] = None
+    state: Optional['EndpointState'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator: body['creator'] = self.creator
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name: body['name'] = self.name
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
         if self.state: body['state'] = self.state.as_dict()
         return body
 
@@ -415,26 +417,27 @@ class ServingEndpoint:
 
 @dataclass
 class ServingEndpointDetailed:
-    config: 'EndpointCoreConfigOutput' = None
-    creation_timestamp: int = None
-    creator: str = None
-    id: str = None
-    last_updated_timestamp: int = None
-    name: str = None
-    pending_config: 'EndpointPendingConfig' = None
-    permission_level: 'ServingEndpointDetailedPermissionLevel' = None
-    state: 'EndpointState' = None
+    config: Optional['EndpointCoreConfigOutput'] = None
+    creation_timestamp: Optional[int] = None
+    creator: Optional[str] = None
+    id: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
+    name: Optional[str] = None
+    pending_config: Optional['EndpointPendingConfig'] = None
+    permission_level: Optional['ServingEndpointDetailedPermissionLevel'] = None
+    state: Optional['EndpointState'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
-        if self.creation_timestamp: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator: body['creator'] = self.creator
-        if self.id: body['id'] = self.id
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name: body['name'] = self.name
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
         if self.pending_config: body['pending_config'] = self.pending_config.as_dict()
-        if self.permission_level: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         if self.state: body['state'] = self.state.as_dict()
         return body
 
@@ -461,7 +464,7 @@ class ServingEndpointDetailedPermissionLevel(Enum):
 
 @dataclass
 class TrafficConfig:
-    routes: 'List[Route]' = None
+    routes: Optional['List[Route]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -491,7 +494,7 @@ class ServingEndpointsAPI:
             self,
             name: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[ServingEndpointDetailed], None] = None) -> ServingEndpointDetailed:
+            callback: Optional[Callable[[ServingEndpointDetailed], None]] = None) -> ServingEndpointDetailed:
         deadline = time.time() + timeout.total_seconds()
         target_states = (EndpointStateConfigUpdate.NOT_UPDATING, )
         failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, )
@@ -522,7 +525,15 @@ class ServingEndpointsAPI:
         """Retrieve the logs associated with building the model's environment for a given serving endpoint's
         served model.
         
-        Retrieves the build logs associated with the provided served model."""
+        Retrieves the build logs associated with the provided served model.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        :param served_model_name: str
+          The name of the served model that build logs will be retrieved for. This field is required.
+        
+        :returns: :class:`BuildLogsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = BuildLogsRequest(name=name, served_model_name=served_model_name)
@@ -533,7 +544,18 @@ class ServingEndpointsAPI:
         return BuildLogsResponse.from_dict(json)
 
     def create(self, name: str, config: EndpointCoreConfigInput, **kwargs) -> Wait[ServingEndpointDetailed]:
-        """Create a new serving endpoint."""
+        """Create a new serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required and must be unique across a Databricks
+          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+        :param config: :class:`EndpointCoreConfigInput`
+          The core config of the serving endpoint.
+        
+        :returns:
+          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateServingEndpoint(config=config, name=name)
@@ -549,7 +571,13 @@ class ServingEndpointsAPI:
         return self.create(config=config, name=name).result(timeout=timeout)
 
     def delete(self, name: str, **kwargs):
-        """Delete a serving endpoint."""
+        """Delete a serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteServingEndpointRequest(name=name)
@@ -561,7 +589,13 @@ class ServingEndpointsAPI:
         OpenMetrics exposition format.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
-        OpenMetrics exposition format."""
+        OpenMetrics exposition format.
+        
+        :param name: str
+          The name of the serving endpoint to retrieve metrics for. This field is required.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ExportMetricsRequest(name=name)
@@ -571,7 +605,13 @@ class ServingEndpointsAPI:
     def get(self, name: str, **kwargs) -> ServingEndpointDetailed:
         """Get a single serving endpoint.
         
-        Retrieves the details for a single serving endpoint."""
+        Retrieves the details for a single serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        
+        :returns: :class:`ServingEndpointDetailed`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetServingEndpointRequest(name=name)
@@ -579,16 +619,27 @@ class ServingEndpointsAPI:
         json = self._api.do('GET', f'/api/2.0/serving-endpoints/{request.name}')
         return ServingEndpointDetailed.from_dict(json)
 
-    def list(self) -> ListEndpointsResponse:
-        """Retrieve all serving endpoints."""
+    def list(self) -> Iterator[ServingEndpoint]:
+        """Retrieve all serving endpoints.
+        
+        :returns: Iterator over :class:`ServingEndpoint`
+        """
 
         json = self._api.do('GET', '/api/2.0/serving-endpoints')
-        return ListEndpointsResponse.from_dict(json)
+        return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
 
     def logs(self, name: str, served_model_name: str, **kwargs) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.
         
-        Retrieves the service logs associated with the provided served model."""
+        Retrieves the service logs associated with the provided served model.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        :param served_model_name: str
+          The name of the served model that logs will be retrieved for. This field is required.
+        
+        :returns: :class:`ServerLogsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = LogsRequest(name=name, served_model_name=served_model_name)
@@ -599,7 +650,13 @@ class ServingEndpointsAPI:
         return ServerLogsResponse.from_dict(json)
 
     def query(self, name: str, **kwargs) -> QueryEndpointResponse:
-        """Query a serving endpoint with provided model input."""
+        """Query a serving endpoint with provided model input.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        
+        :returns: :class:`QueryEndpointResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = QueryRequest(name=name)
@@ -611,13 +668,26 @@ class ServingEndpointsAPI:
                       served_models: List[ServedModelInput],
                       name: str,
                       *,
-                      traffic_config: TrafficConfig = None,
+                      traffic_config: Optional[TrafficConfig] = None,
                       **kwargs) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
         
         Updates any combination of the serving endpoint's served models, the compute configuration of those
         served models, and the endpoint's traffic config. An endpoint that already has an update in progress
-        can not be updated until the current update completes or fails."""
+        can not be updated until the current update completes or fails.
+        
+        :param served_models: List[:class:`ServedModelInput`]
+          A list of served models for the endpoint to serve. A serving endpoint can have up to 10 served
+          models.
+        :param name: str
+          The name of the serving endpoint to update. This field is required.
+        :param traffic_config: :class:`TrafficConfig` (optional)
+          The traffic config defining how invocations to the serving endpoint should be routed.
+        
+        :returns:
+          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EndpointCoreConfigInput(name=name,
@@ -634,7 +704,7 @@ class ServingEndpointsAPI:
         served_models: List[ServedModelInput],
         name: str,
         *,
-        traffic_config: TrafficConfig = None,
+        traffic_config: Optional[TrafficConfig] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
         return self.update_config(name=name, served_models=served_models,
                                   traffic_config=traffic_config).result(timeout=timeout)

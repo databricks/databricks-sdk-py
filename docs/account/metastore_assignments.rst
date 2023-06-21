@@ -1,0 +1,80 @@
+Account Metastore Assignments
+=============================
+.. py:class:: AccountMetastoreAssignmentsAPI
+
+    These APIs manage metastore assignments to a workspace.
+
+    .. py:method:: create(workspace_id, metastore_id [, metastore_assignment])
+
+        Assigns a workspace to a metastore.
+        
+        Creates an assignment to a metastore for a workspace Please add a header
+        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
+        
+        :returns: Iterator over :class:`CreateMetastoreAssignmentsResponseItem`
+        
+
+    .. py:method:: delete(workspace_id, metastore_id)
+
+        Delete a metastore assignment.
+        
+        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore. Please add a
+        header X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        
+        
+
+    .. py:method:: get(workspace_id)
+
+        Gets the metastore assignment for a workspace.
+        
+        Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
+        a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
+        will not be found and a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
+        2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        
+        :returns: :class:`AccountsMetastoreAssignment`
+        
+
+    .. py:method:: list(metastore_id)
+
+        Get all workspaces assigned to a metastore.
+        
+        Gets a list of all Databricks workspace IDs that have been assigned to given metastore. Please add a
+        header X-Databricks-Account-Console-API-Version: 2.0 to access this API
+        
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        
+        :returns: Iterator over :class:`MetastoreAssignment`
+        
+
+    .. py:method:: update(workspace_id, metastore_id [, metastore_assignment])
+
+        Updates a metastore assignment to a workspaces.
+        
+        Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
+        updated. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param metastore_id: str
+          Unity Catalog metastore ID
+        :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
+        
+        
+        

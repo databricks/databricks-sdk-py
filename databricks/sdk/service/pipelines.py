@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -21,42 +21,44 @@ from .compute import (AutoScale, AwsAttributes, AzureAttributes,
 
 @dataclass
 class CreatePipeline:
-    allow_duplicate_names: bool = None
-    catalog: str = None
-    channel: str = None
-    clusters: 'List[PipelineCluster]' = None
-    configuration: 'Dict[str,str]' = None
-    continuous: bool = None
-    development: bool = None
-    dry_run: bool = None
-    edition: str = None
-    filters: 'Filters' = None
-    id: str = None
-    libraries: 'List[PipelineLibrary]' = None
-    name: str = None
-    photon: bool = None
-    storage: str = None
-    target: str = None
-    trigger: 'PipelineTrigger' = None
+    allow_duplicate_names: Optional[bool] = None
+    catalog: Optional[str] = None
+    channel: Optional[str] = None
+    clusters: Optional['List[PipelineCluster]'] = None
+    configuration: Optional['Dict[str,str]'] = None
+    continuous: Optional[bool] = None
+    development: Optional[bool] = None
+    dry_run: Optional[bool] = None
+    edition: Optional[str] = None
+    filters: Optional['Filters'] = None
+    id: Optional[str] = None
+    libraries: Optional['List[PipelineLibrary]'] = None
+    name: Optional[str] = None
+    photon: Optional[bool] = None
+    serverless: Optional[bool] = None
+    storage: Optional[str] = None
+    target: Optional[str] = None
+    trigger: Optional['PipelineTrigger'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allow_duplicate_names: body['allow_duplicate_names'] = self.allow_duplicate_names
-        if self.catalog: body['catalog'] = self.catalog
-        if self.channel: body['channel'] = self.channel
+        if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
-        if self.continuous: body['continuous'] = self.continuous
-        if self.development: body['development'] = self.development
-        if self.dry_run: body['dry_run'] = self.dry_run
-        if self.edition: body['edition'] = self.edition
+        if self.continuous is not None: body['continuous'] = self.continuous
+        if self.development is not None: body['development'] = self.development
+        if self.dry_run is not None: body['dry_run'] = self.dry_run
+        if self.edition is not None: body['edition'] = self.edition
         if self.filters: body['filters'] = self.filters.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
-        if self.name: body['name'] = self.name
-        if self.photon: body['photon'] = self.photon
-        if self.storage: body['storage'] = self.storage
-        if self.target: body['target'] = self.target
+        if self.name is not None: body['name'] = self.name
+        if self.photon is not None: body['photon'] = self.photon
+        if self.serverless is not None: body['serverless'] = self.serverless
+        if self.storage is not None: body['storage'] = self.storage
+        if self.target is not None: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         return body
 
@@ -76,6 +78,7 @@ class CreatePipeline:
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    photon=d.get('photon', None),
+                   serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
@@ -83,13 +86,13 @@ class CreatePipeline:
 
 @dataclass
 class CreatePipelineResponse:
-    effective_settings: 'PipelineSpec' = None
-    pipeline_id: str = None
+    effective_settings: Optional['PipelineSpec'] = None
+    pipeline_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.effective_settings: body['effective_settings'] = self.effective_settings.as_dict()
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
     @classmethod
@@ -100,13 +103,13 @@ class CreatePipelineResponse:
 
 @dataclass
 class CronTrigger:
-    quartz_cron_schedule: str = None
-    timezone_id: str = None
+    quartz_cron_schedule: Optional[str] = None
+    timezone_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.quartz_cron_schedule: body['quartz_cron_schedule'] = self.quartz_cron_schedule
-        if self.timezone_id: body['timezone_id'] = self.timezone_id
+        if self.quartz_cron_schedule is not None: body['quartz_cron_schedule'] = self.quartz_cron_schedule
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
         return body
 
     @classmethod
@@ -117,12 +120,12 @@ class CronTrigger:
 
 @dataclass
 class DataPlaneId:
-    instance: str = None
-    seq_no: Any = None
+    instance: Optional[str] = None
+    seq_no: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance: body['instance'] = self.instance
+        if self.instance is not None: body['instance'] = self.instance
         if self.seq_no: body['seq_no'] = self.seq_no
         return body
 
@@ -140,44 +143,47 @@ class DeletePipelineRequest:
 
 @dataclass
 class EditPipeline:
-    pipeline_id: str
-    allow_duplicate_names: bool = None
-    catalog: str = None
-    channel: str = None
-    clusters: 'List[PipelineCluster]' = None
-    configuration: 'Dict[str,str]' = None
-    continuous: bool = None
-    development: bool = None
-    edition: str = None
-    expected_last_modified: int = None
-    filters: 'Filters' = None
-    id: str = None
-    libraries: 'List[PipelineLibrary]' = None
-    name: str = None
-    photon: bool = None
-    storage: str = None
-    target: str = None
-    trigger: 'PipelineTrigger' = None
+    allow_duplicate_names: Optional[bool] = None
+    catalog: Optional[str] = None
+    channel: Optional[str] = None
+    clusters: Optional['List[PipelineCluster]'] = None
+    configuration: Optional['Dict[str,str]'] = None
+    continuous: Optional[bool] = None
+    development: Optional[bool] = None
+    edition: Optional[str] = None
+    expected_last_modified: Optional[int] = None
+    filters: Optional['Filters'] = None
+    id: Optional[str] = None
+    libraries: Optional['List[PipelineLibrary]'] = None
+    name: Optional[str] = None
+    photon: Optional[bool] = None
+    pipeline_id: Optional[str] = None
+    serverless: Optional[bool] = None
+    storage: Optional[str] = None
+    target: Optional[str] = None
+    trigger: Optional['PipelineTrigger'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allow_duplicate_names: body['allow_duplicate_names'] = self.allow_duplicate_names
-        if self.catalog: body['catalog'] = self.catalog
-        if self.channel: body['channel'] = self.channel
+        if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
-        if self.continuous: body['continuous'] = self.continuous
-        if self.development: body['development'] = self.development
-        if self.edition: body['edition'] = self.edition
-        if self.expected_last_modified: body['expected_last_modified'] = self.expected_last_modified
+        if self.continuous is not None: body['continuous'] = self.continuous
+        if self.development is not None: body['development'] = self.development
+        if self.edition is not None: body['edition'] = self.edition
+        if self.expected_last_modified is not None:
+            body['expected_last_modified'] = self.expected_last_modified
         if self.filters: body['filters'] = self.filters.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
-        if self.name: body['name'] = self.name
-        if self.photon: body['photon'] = self.photon
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.storage: body['storage'] = self.storage
-        if self.target: body['target'] = self.target
+        if self.name is not None: body['name'] = self.name
+        if self.photon is not None: body['photon'] = self.photon
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.serverless is not None: body['serverless'] = self.serverless
+        if self.storage is not None: body['storage'] = self.storage
+        if self.target is not None: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         return body
 
@@ -198,6 +204,7 @@ class EditPipeline:
                    name=d.get('name', None),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
+                   serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
@@ -205,13 +212,13 @@ class EditPipeline:
 
 @dataclass
 class ErrorDetail:
-    exceptions: 'List[SerializedException]' = None
-    fatal: bool = None
+    exceptions: Optional['List[SerializedException]'] = None
+    fatal: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.exceptions: body['exceptions'] = [v.as_dict() for v in self.exceptions]
-        if self.fatal: body['fatal'] = self.fatal
+        if self.fatal is not None: body['fatal'] = self.fatal
         return body
 
     @classmethod
@@ -230,11 +237,11 @@ class EventLevel(Enum):
 
 @dataclass
 class FileLibrary:
-    path: str = None
+    path: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -244,8 +251,8 @@ class FileLibrary:
 
 @dataclass
 class Filters:
-    exclude: 'List[str]' = None
-    include: 'List[str]' = None
+    exclude: Optional['List[str]'] = None
+    include: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -267,31 +274,31 @@ class GetPipelineRequest:
 
 @dataclass
 class GetPipelineResponse:
-    cause: str = None
-    cluster_id: str = None
-    creator_user_name: str = None
-    health: 'GetPipelineResponseHealth' = None
-    last_modified: int = None
-    latest_updates: 'List[UpdateStateInfo]' = None
-    name: str = None
-    pipeline_id: str = None
-    run_as_user_name: str = None
-    spec: 'PipelineSpec' = None
-    state: 'PipelineState' = None
+    cause: Optional[str] = None
+    cluster_id: Optional[str] = None
+    creator_user_name: Optional[str] = None
+    health: Optional['GetPipelineResponseHealth'] = None
+    last_modified: Optional[int] = None
+    latest_updates: Optional['List[UpdateStateInfo]'] = None
+    name: Optional[str] = None
+    pipeline_id: Optional[str] = None
+    run_as_user_name: Optional[str] = None
+    spec: Optional['PipelineSpec'] = None
+    state: Optional['PipelineState'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.health: body['health'] = self.health.value
-        if self.last_modified: body['last_modified'] = self.last_modified
+        if self.cause is not None: body['cause'] = self.cause
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.health is not None: body['health'] = self.health.value
+        if self.last_modified is not None: body['last_modified'] = self.last_modified
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
-        if self.name: body['name'] = self.name
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.run_as_user_name: body['run_as_user_name'] = self.run_as_user_name
+        if self.name is not None: body['name'] = self.name
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.spec: body['spec'] = self.spec.as_dict()
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
@@ -326,7 +333,7 @@ class GetUpdateRequest:
 
 @dataclass
 class GetUpdateResponse:
-    update: 'UpdateInfo' = None
+    update: Optional['UpdateInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -343,23 +350,23 @@ class ListPipelineEventsRequest:
     """List pipeline events"""
 
     pipeline_id: str
-    filter: str = None
-    max_results: int = None
-    order_by: 'List[str]' = None
-    page_token: str = None
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListPipelineEventsResponse:
-    events: 'List[PipelineEvent]' = None
-    next_page_token: str = None
-    prev_page_token: str = None
+    events: Optional['List[PipelineEvent]'] = None
+    next_page_token: Optional[str] = None
+    prev_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
 
     @classmethod
@@ -373,20 +380,20 @@ class ListPipelineEventsResponse:
 class ListPipelinesRequest:
     """List pipelines"""
 
-    filter: str = None
-    max_results: int = None
-    order_by: 'List[str]' = None
-    page_token: str = None
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListPipelinesResponse:
-    next_page_token: str = None
-    statuses: 'List[PipelineStateInfo]' = None
+    next_page_token: Optional[str] = None
+    statuses: Optional['List[PipelineStateInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.statuses: body['statuses'] = [v.as_dict() for v in self.statuses]
         return body
 
@@ -401,21 +408,21 @@ class ListUpdatesRequest:
     """List pipeline updates"""
 
     pipeline_id: str
-    max_results: int = None
-    page_token: str = None
-    until_update_id: str = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
+    until_update_id: Optional[str] = None
 
 
 @dataclass
 class ListUpdatesResponse:
-    next_page_token: str = None
-    prev_page_token: str = None
-    updates: 'List[UpdateInfo]' = None
+    next_page_token: Optional[str] = None
+    prev_page_token: Optional[str] = None
+    updates: Optional['List[UpdateInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
         return body
 
@@ -436,11 +443,11 @@ class MaturityLevel(Enum):
 
 @dataclass
 class NotebookLibrary:
-    path: str = None
+    path: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -450,43 +457,43 @@ class NotebookLibrary:
 
 @dataclass
 class Origin:
-    batch_id: int = None
-    cloud: str = None
-    cluster_id: str = None
-    dataset_name: str = None
-    flow_id: str = None
-    flow_name: str = None
-    host: str = None
-    maintenance_id: str = None
-    materialization_name: str = None
-    org_id: int = None
-    pipeline_id: str = None
-    pipeline_name: str = None
-    region: str = None
-    request_id: str = None
-    table_id: str = None
-    uc_resource_id: str = None
-    update_id: str = None
+    batch_id: Optional[int] = None
+    cloud: Optional[str] = None
+    cluster_id: Optional[str] = None
+    dataset_name: Optional[str] = None
+    flow_id: Optional[str] = None
+    flow_name: Optional[str] = None
+    host: Optional[str] = None
+    maintenance_id: Optional[str] = None
+    materialization_name: Optional[str] = None
+    org_id: Optional[int] = None
+    pipeline_id: Optional[str] = None
+    pipeline_name: Optional[str] = None
+    region: Optional[str] = None
+    request_id: Optional[str] = None
+    table_id: Optional[str] = None
+    uc_resource_id: Optional[str] = None
+    update_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.batch_id: body['batch_id'] = self.batch_id
-        if self.cloud: body['cloud'] = self.cloud
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.dataset_name: body['dataset_name'] = self.dataset_name
-        if self.flow_id: body['flow_id'] = self.flow_id
-        if self.flow_name: body['flow_name'] = self.flow_name
-        if self.host: body['host'] = self.host
-        if self.maintenance_id: body['maintenance_id'] = self.maintenance_id
-        if self.materialization_name: body['materialization_name'] = self.materialization_name
-        if self.org_id: body['org_id'] = self.org_id
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.pipeline_name: body['pipeline_name'] = self.pipeline_name
-        if self.region: body['region'] = self.region
-        if self.request_id: body['request_id'] = self.request_id
-        if self.table_id: body['table_id'] = self.table_id
-        if self.uc_resource_id: body['uc_resource_id'] = self.uc_resource_id
-        if self.update_id: body['update_id'] = self.update_id
+        if self.batch_id is not None: body['batch_id'] = self.batch_id
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.dataset_name is not None: body['dataset_name'] = self.dataset_name
+        if self.flow_id is not None: body['flow_id'] = self.flow_id
+        if self.flow_name is not None: body['flow_name'] = self.flow_name
+        if self.host is not None: body['host'] = self.host
+        if self.maintenance_id is not None: body['maintenance_id'] = self.maintenance_id
+        if self.materialization_name is not None: body['materialization_name'] = self.materialization_name
+        if self.org_id is not None: body['org_id'] = self.org_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_name is not None: body['pipeline_name'] = self.pipeline_name
+        if self.region is not None: body['region'] = self.region
+        if self.request_id is not None: body['request_id'] = self.request_id
+        if self.table_id is not None: body['table_id'] = self.table_id
+        if self.uc_resource_id is not None: body['uc_resource_id'] = self.uc_resource_id
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -512,41 +519,42 @@ class Origin:
 
 @dataclass
 class PipelineCluster:
-    apply_policy_default_values: bool = None
-    autoscale: 'AutoScale' = None
-    aws_attributes: 'AwsAttributes' = None
-    azure_attributes: 'AzureAttributes' = None
-    cluster_log_conf: 'ClusterLogConf' = None
-    custom_tags: 'Dict[str,str]' = None
-    driver_instance_pool_id: str = None
-    driver_node_type_id: str = None
-    gcp_attributes: 'GcpAttributes' = None
-    instance_pool_id: str = None
-    label: str = None
-    node_type_id: str = None
-    num_workers: int = None
-    policy_id: str = None
-    spark_conf: 'Dict[str,str]' = None
-    spark_env_vars: 'Dict[str,str]' = None
-    ssh_public_keys: 'List[str]' = None
+    apply_policy_default_values: Optional[bool] = None
+    autoscale: Optional['AutoScale'] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    instance_pool_id: Optional[str] = None
+    label: Optional[str] = None
+    node_type_id: Optional[str] = None
+    num_workers: Optional[int] = None
+    policy_id: Optional[str] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    ssh_public_keys: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apply_policy_default_values:
+        if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.label: body['label'] = self.label
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.label is not None: body['label'] = self.label
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
@@ -575,27 +583,27 @@ class PipelineCluster:
 
 @dataclass
 class PipelineEvent:
-    error: 'ErrorDetail' = None
-    event_type: str = None
-    id: str = None
-    level: 'EventLevel' = None
-    maturity_level: 'MaturityLevel' = None
-    message: str = None
-    origin: 'Origin' = None
-    sequence: 'Sequencing' = None
-    timestamp: str = None
+    error: Optional['ErrorDetail'] = None
+    event_type: Optional[str] = None
+    id: Optional[str] = None
+    level: Optional['EventLevel'] = None
+    maturity_level: Optional['MaturityLevel'] = None
+    message: Optional[str] = None
+    origin: Optional['Origin'] = None
+    sequence: Optional['Sequencing'] = None
+    timestamp: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.error: body['error'] = self.error.as_dict()
-        if self.event_type: body['event_type'] = self.event_type
-        if self.id: body['id'] = self.id
-        if self.level: body['level'] = self.level.value
-        if self.maturity_level: body['maturity_level'] = self.maturity_level.value
-        if self.message: body['message'] = self.message
+        if self.event_type is not None: body['event_type'] = self.event_type
+        if self.id is not None: body['id'] = self.id
+        if self.level is not None: body['level'] = self.level.value
+        if self.maturity_level is not None: body['maturity_level'] = self.maturity_level.value
+        if self.message is not None: body['message'] = self.message
         if self.origin: body['origin'] = self.origin.as_dict()
         if self.sequence: body['sequence'] = self.sequence.as_dict()
-        if self.timestamp: body['timestamp'] = self.timestamp
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
     @classmethod
@@ -613,19 +621,19 @@ class PipelineEvent:
 
 @dataclass
 class PipelineLibrary:
-    file: 'FileLibrary' = None
-    jar: str = None
-    maven: 'MavenLibrary' = None
-    notebook: 'NotebookLibrary' = None
-    whl: str = None
+    file: Optional['FileLibrary'] = None
+    jar: Optional[str] = None
+    maven: Optional['MavenLibrary'] = None
+    notebook: Optional['NotebookLibrary'] = None
+    whl: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.file: body['file'] = self.file.as_dict()
-        if self.jar: body['jar'] = self.jar
+        if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
-        if self.whl: body['whl'] = self.whl
+        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -639,38 +647,40 @@ class PipelineLibrary:
 
 @dataclass
 class PipelineSpec:
-    catalog: str = None
-    channel: str = None
-    clusters: 'List[PipelineCluster]' = None
-    configuration: 'Dict[str,str]' = None
-    continuous: bool = None
-    development: bool = None
-    edition: str = None
-    filters: 'Filters' = None
-    id: str = None
-    libraries: 'List[PipelineLibrary]' = None
-    name: str = None
-    photon: bool = None
-    storage: str = None
-    target: str = None
-    trigger: 'PipelineTrigger' = None
+    catalog: Optional[str] = None
+    channel: Optional[str] = None
+    clusters: Optional['List[PipelineCluster]'] = None
+    configuration: Optional['Dict[str,str]'] = None
+    continuous: Optional[bool] = None
+    development: Optional[bool] = None
+    edition: Optional[str] = None
+    filters: Optional['Filters'] = None
+    id: Optional[str] = None
+    libraries: Optional['List[PipelineLibrary]'] = None
+    name: Optional[str] = None
+    photon: Optional[bool] = None
+    serverless: Optional[bool] = None
+    storage: Optional[str] = None
+    target: Optional[str] = None
+    trigger: Optional['PipelineTrigger'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog: body['catalog'] = self.catalog
-        if self.channel: body['channel'] = self.channel
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
-        if self.continuous: body['continuous'] = self.continuous
-        if self.development: body['development'] = self.development
-        if self.edition: body['edition'] = self.edition
+        if self.continuous is not None: body['continuous'] = self.continuous
+        if self.development is not None: body['development'] = self.development
+        if self.edition is not None: body['edition'] = self.edition
         if self.filters: body['filters'] = self.filters.as_dict()
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
-        if self.name: body['name'] = self.name
-        if self.photon: body['photon'] = self.photon
-        if self.storage: body['storage'] = self.storage
-        if self.target: body['target'] = self.target
+        if self.name is not None: body['name'] = self.name
+        if self.photon is not None: body['photon'] = self.photon
+        if self.serverless is not None: body['serverless'] = self.serverless
+        if self.storage is not None: body['storage'] = self.storage
+        if self.target is not None: body['target'] = self.target
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         return body
 
@@ -688,6 +698,7 @@ class PipelineSpec:
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    photon=d.get('photon', None),
+                   serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
@@ -709,23 +720,23 @@ class PipelineState(Enum):
 
 @dataclass
 class PipelineStateInfo:
-    cluster_id: str = None
-    creator_user_name: str = None
-    latest_updates: 'List[UpdateStateInfo]' = None
-    name: str = None
-    pipeline_id: str = None
-    run_as_user_name: str = None
-    state: 'PipelineState' = None
+    cluster_id: Optional[str] = None
+    creator_user_name: Optional[str] = None
+    latest_updates: Optional['List[UpdateStateInfo]'] = None
+    name: Optional[str] = None
+    pipeline_id: Optional[str] = None
+    run_as_user_name: Optional[str] = None
+    state: Optional['PipelineState'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
-        if self.name: body['name'] = self.name
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
-        if self.run_as_user_name: body['run_as_user_name'] = self.run_as_user_name
-        if self.state: body['state'] = self.state.value
+        if self.name is not None: body['name'] = self.name
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
+        if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
@@ -741,8 +752,8 @@ class PipelineStateInfo:
 
 @dataclass
 class PipelineTrigger:
-    cron: 'CronTrigger' = None
-    manual: Any = None
+    cron: Optional['CronTrigger'] = None
+    manual: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -764,12 +775,12 @@ class ResetRequest:
 
 @dataclass
 class Sequencing:
-    control_plane_seq_no: int = None
-    data_plane_id: 'DataPlaneId' = None
+    control_plane_seq_no: Optional[int] = None
+    data_plane_id: Optional['DataPlaneId'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.control_plane_seq_no: body['control_plane_seq_no'] = self.control_plane_seq_no
+        if self.control_plane_seq_no is not None: body['control_plane_seq_no'] = self.control_plane_seq_no
         if self.data_plane_id: body['data_plane_id'] = self.data_plane_id.as_dict()
         return body
 
@@ -781,14 +792,14 @@ class Sequencing:
 
 @dataclass
 class SerializedException:
-    class_name: str = None
-    message: str = None
-    stack: 'List[StackFrame]' = None
+    class_name: Optional[str] = None
+    message: Optional[str] = None
+    stack: Optional['List[StackFrame]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.class_name: body['class_name'] = self.class_name
-        if self.message: body['message'] = self.message
+        if self.class_name is not None: body['class_name'] = self.class_name
+        if self.message is not None: body['message'] = self.message
         if self.stack: body['stack'] = [v.as_dict() for v in self.stack]
         return body
 
@@ -801,17 +812,17 @@ class SerializedException:
 
 @dataclass
 class StackFrame:
-    declaring_class: str = None
-    file_name: str = None
-    line_number: int = None
-    method_name: str = None
+    declaring_class: Optional[str] = None
+    file_name: Optional[str] = None
+    line_number: Optional[int] = None
+    method_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.declaring_class: body['declaring_class'] = self.declaring_class
-        if self.file_name: body['file_name'] = self.file_name
-        if self.line_number: body['line_number'] = self.line_number
-        if self.method_name: body['method_name'] = self.method_name
+        if self.declaring_class is not None: body['declaring_class'] = self.declaring_class
+        if self.file_name is not None: body['file_name'] = self.file_name
+        if self.line_number is not None: body['line_number'] = self.line_number
+        if self.method_name is not None: body['method_name'] = self.method_name
         return body
 
     @classmethod
@@ -824,19 +835,19 @@ class StackFrame:
 
 @dataclass
 class StartUpdate:
-    pipeline_id: str
-    cause: 'StartUpdateCause' = None
-    full_refresh: bool = None
-    full_refresh_selection: 'List[str]' = None
-    refresh_selection: 'List[str]' = None
+    cause: Optional['StartUpdateCause'] = None
+    full_refresh: Optional[bool] = None
+    full_refresh_selection: Optional['List[str]'] = None
+    pipeline_id: Optional[str] = None
+    refresh_selection: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause.value
-        if self.full_refresh: body['full_refresh'] = self.full_refresh
+        if self.cause is not None: body['cause'] = self.cause.value
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.full_refresh_selection:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
         return body
 
@@ -861,11 +872,11 @@ class StartUpdateCause(Enum):
 
 @dataclass
 class StartUpdateResponse:
-    update_id: str = None
+    update_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.update_id: body['update_id'] = self.update_id
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -882,30 +893,30 @@ class StopRequest:
 
 @dataclass
 class UpdateInfo:
-    cause: 'UpdateInfoCause' = None
-    cluster_id: str = None
-    config: 'PipelineSpec' = None
-    creation_time: int = None
-    full_refresh: bool = None
-    full_refresh_selection: 'List[str]' = None
-    pipeline_id: str = None
-    refresh_selection: 'List[str]' = None
-    state: 'UpdateInfoState' = None
-    update_id: str = None
+    cause: Optional['UpdateInfoCause'] = None
+    cluster_id: Optional[str] = None
+    config: Optional['PipelineSpec'] = None
+    creation_time: Optional[int] = None
+    full_refresh: Optional[bool] = None
+    full_refresh_selection: Optional['List[str]'] = None
+    pipeline_id: Optional[str] = None
+    refresh_selection: Optional['List[str]'] = None
+    state: Optional['UpdateInfoState'] = None
+    update_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause.value
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cause is not None: body['cause'] = self.cause.value
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.config: body['config'] = self.config.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.full_refresh: body['full_refresh'] = self.full_refresh
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.full_refresh_selection:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
-        if self.state: body['state'] = self.state.value
-        if self.update_id: body['update_id'] = self.update_id
+        if self.state is not None: body['state'] = self.state.value
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -951,15 +962,15 @@ class UpdateInfoState(Enum):
 
 @dataclass
 class UpdateStateInfo:
-    creation_time: str = None
-    state: 'UpdateStateInfoState' = None
-    update_id: str = None
+    creation_time: Optional[str] = None
+    state: Optional['UpdateStateInfoState'] = None
+    update_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.state: body['state'] = self.state.value
-        if self.update_id: body['update_id'] = self.update_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.state is not None: body['state'] = self.state.value
+        if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
@@ -999,10 +1010,11 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_pipeline_idle(self,
-                               pipeline_id: str,
-                               timeout=timedelta(minutes=20),
-                               callback: Callable[[GetPipelineResponse], None] = None) -> GetPipelineResponse:
+    def wait_get_pipeline_idle(
+            self,
+            pipeline_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (PipelineState.IDLE, )
         failure_states = (PipelineState.FAILED, )
@@ -1033,7 +1045,7 @@ class PipelinesAPI:
             self,
             pipeline_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[GetPipelineResponse], None] = None) -> GetPipelineResponse:
+            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (PipelineState.RUNNING, )
         failure_states = (PipelineState.FAILED, )
@@ -1062,28 +1074,71 @@ class PipelinesAPI:
 
     def create(self,
                *,
-               allow_duplicate_names: bool = None,
-               catalog: str = None,
-               channel: str = None,
-               clusters: List[PipelineCluster] = None,
-               configuration: Dict[str, str] = None,
-               continuous: bool = None,
-               development: bool = None,
-               dry_run: bool = None,
-               edition: str = None,
-               filters: Filters = None,
-               id: str = None,
-               libraries: List[PipelineLibrary] = None,
-               name: str = None,
-               photon: bool = None,
-               storage: str = None,
-               target: str = None,
-               trigger: PipelineTrigger = None,
+               allow_duplicate_names: Optional[bool] = None,
+               catalog: Optional[str] = None,
+               channel: Optional[str] = None,
+               clusters: Optional[List[PipelineCluster]] = None,
+               configuration: Optional[Dict[str, str]] = None,
+               continuous: Optional[bool] = None,
+               development: Optional[bool] = None,
+               dry_run: Optional[bool] = None,
+               edition: Optional[str] = None,
+               filters: Optional[Filters] = None,
+               id: Optional[str] = None,
+               libraries: Optional[List[PipelineLibrary]] = None,
+               name: Optional[str] = None,
+               photon: Optional[bool] = None,
+               serverless: Optional[bool] = None,
+               storage: Optional[str] = None,
+               target: Optional[str] = None,
+               trigger: Optional[PipelineTrigger] = None,
                **kwargs) -> CreatePipelineResponse:
         """Create a pipeline.
         
         Creates a new data processing pipeline based on the requested configuration. If successful, this
-        method returns the ID of the new pipeline."""
+        method returns the ID of the new pipeline.
+        
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name conflicts with that of another pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param dry_run: bool (optional)
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. If not specified, no data is published
+          to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        
+        :returns: :class:`CreatePipelineResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreatePipeline(allow_duplicate_names=allow_duplicate_names,
@@ -1100,6 +1155,7 @@ class PipelinesAPI:
                                      libraries=libraries,
                                      name=name,
                                      photon=photon,
+                                     serverless=serverless,
                                      storage=storage,
                                      target=target,
                                      trigger=trigger)
@@ -1111,7 +1167,12 @@ class PipelinesAPI:
     def delete(self, pipeline_id: str, **kwargs):
         """Delete a pipeline.
         
-        Deletes a pipeline."""
+        Deletes a pipeline.
+        
+        :param pipeline_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeletePipelineRequest(pipeline_id=pipeline_id)
@@ -1119,7 +1180,12 @@ class PipelinesAPI:
         self._api.do('DELETE', f'/api/2.0/pipelines/{request.pipeline_id}')
 
     def get(self, pipeline_id: str, **kwargs) -> GetPipelineResponse:
-        """Get a pipeline."""
+        """Get a pipeline.
+        
+        :param pipeline_id: str
+        
+        :returns: :class:`GetPipelineResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetPipelineRequest(pipeline_id=pipeline_id)
@@ -1130,7 +1196,15 @@ class PipelinesAPI:
     def get_update(self, pipeline_id: str, update_id: str, **kwargs) -> GetUpdateResponse:
         """Get a pipeline update.
         
-        Gets an update from an active pipeline."""
+        Gets an update from an active pipeline.
+        
+        :param pipeline_id: str
+          The ID of the pipeline.
+        :param update_id: str
+          The ID of the update.
+        
+        :returns: :class:`GetUpdateResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetUpdateRequest(pipeline_id=pipeline_id, update_id=update_id)
@@ -1141,14 +1215,37 @@ class PipelinesAPI:
     def list_pipeline_events(self,
                              pipeline_id: str,
                              *,
-                             filter: str = None,
-                             max_results: int = None,
-                             order_by: List[str] = None,
-                             page_token: str = None,
+                             filter: Optional[str] = None,
+                             max_results: Optional[int] = None,
+                             order_by: Optional[List[str]] = None,
+                             page_token: Optional[str] = None,
                              **kwargs) -> Iterator[PipelineEvent]:
         """List pipeline events.
         
-        Retrieves events for a pipeline."""
+        Retrieves events for a pipeline.
+        
+        :param pipeline_id: str
+        :param filter: str (optional)
+          Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
+          are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
+          > 'TIMESTAMP' (or >=,<,<=,=)
+          
+          Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp>
+          '2021-07-22T06:37:33.083Z'
+        :param max_results: int (optional)
+          Max number of entries to return in a single page. The system may return fewer than max_results
+          events in a response, even if there are more events available.
+        :param order_by: List[str] (optional)
+          A string indicating a sort order by timestamp for the results, for example, ["timestamp asc"]. The
+          sort order can be ascending or descending. By default, events are returned in descending order by
+          timestamp.
+        :param page_token: str (optional)
+          Page token returned by previous call. This field is mutually exclusive with all fields in this
+          request except max_results. An error is returned if any fields other than max_results are set when
+          this field is set.
+        
+        :returns: Iterator over :class:`PipelineEvent`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListPipelineEventsRequest(filter=filter,
@@ -1175,14 +1272,36 @@ class PipelinesAPI:
 
     def list_pipelines(self,
                        *,
-                       filter: str = None,
-                       max_results: int = None,
-                       order_by: List[str] = None,
-                       page_token: str = None,
+                       filter: Optional[str] = None,
+                       max_results: Optional[int] = None,
+                       order_by: Optional[List[str]] = None,
+                       page_token: Optional[str] = None,
                        **kwargs) -> Iterator[PipelineStateInfo]:
         """List pipelines.
         
-        Lists pipelines defined in the Delta Live Tables system."""
+        Lists pipelines defined in the Delta Live Tables system.
+        
+        :param filter: str (optional)
+          Select a subset of results based on the specified criteria. The supported filters are:
+          
+          * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE
+          '[pattern]'` to select pipelines with a name that matches pattern. Wildcards are supported, for
+          example: `name LIKE '%shopping%'`
+          
+          Composite filters are not supported. This field is optional.
+        :param max_results: int (optional)
+          The maximum number of entries to return in a single page. The system may return fewer than
+          max_results events in a response, even if there are more events available. This field is optional.
+          The default value is 25. The maximum value is 100. An error is returned if the value of max_results
+          is greater than 100.
+        :param order_by: List[str] (optional)
+          A list of strings specifying the order of results. Supported order_by fields are id and name. The
+          default is id asc. This field is optional.
+        :param page_token: str (optional)
+          Page token returned by previous call
+        
+        :returns: Iterator over :class:`PipelineStateInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListPipelinesRequest(filter=filter,
@@ -1209,13 +1328,25 @@ class PipelinesAPI:
     def list_updates(self,
                      pipeline_id: str,
                      *,
-                     max_results: int = None,
-                     page_token: str = None,
-                     until_update_id: str = None,
+                     max_results: Optional[int] = None,
+                     page_token: Optional[str] = None,
+                     until_update_id: Optional[str] = None,
                      **kwargs) -> ListUpdatesResponse:
         """List pipeline updates.
         
-        List updates for an active pipeline."""
+        List updates for an active pipeline.
+        
+        :param pipeline_id: str
+          The pipeline to return updates for.
+        :param max_results: int (optional)
+          Max number of entries to return in a single page.
+        :param page_token: str (optional)
+          Page token returned by previous call
+        :param until_update_id: str (optional)
+          If present, returns updates until and including this update_id.
+        
+        :returns: :class:`ListUpdatesResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListUpdatesRequest(max_results=max_results,
@@ -1234,7 +1365,14 @@ class PipelinesAPI:
     def reset(self, pipeline_id: str, **kwargs) -> Wait[GetPipelineResponse]:
         """Reset a pipeline.
         
-        Resets a pipeline."""
+        Resets a pipeline.
+        
+        :param pipeline_id: str
+        
+        :returns:
+          long-running operation waiter for :class:`GetPipelineResponse`.
+          See :method:wait_get_pipeline_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ResetRequest(pipeline_id=pipeline_id)
@@ -1248,14 +1386,30 @@ class PipelinesAPI:
     def start_update(self,
                      pipeline_id: str,
                      *,
-                     cause: StartUpdateCause = None,
-                     full_refresh: bool = None,
-                     full_refresh_selection: List[str] = None,
-                     refresh_selection: List[str] = None,
+                     cause: Optional[StartUpdateCause] = None,
+                     full_refresh: Optional[bool] = None,
+                     full_refresh_selection: Optional[List[str]] = None,
+                     refresh_selection: Optional[List[str]] = None,
                      **kwargs) -> StartUpdateResponse:
         """Queue a pipeline update.
         
-        Starts or queues a pipeline update."""
+        Starts or queues a pipeline update.
+        
+        :param pipeline_id: str
+        :param cause: :class:`StartUpdateCause` (optional)
+        :param full_refresh: bool (optional)
+          If true, this update will reset all tables before running.
+        :param full_refresh_selection: List[str] (optional)
+          A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection
+          are empty, this is a full graph update. Full Refresh on a table means that the states of the table
+          will be reset before the refresh.
+        :param refresh_selection: List[str] (optional)
+          A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
+          are empty, this is a full graph update. Full Refresh on a table means that the states of the table
+          will be reset before the refresh.
+        
+        :returns: :class:`StartUpdateResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = StartUpdate(cause=cause,
@@ -1271,7 +1425,14 @@ class PipelinesAPI:
     def stop(self, pipeline_id: str, **kwargs) -> Wait[GetPipelineResponse]:
         """Stop a pipeline.
         
-        Stops a pipeline."""
+        Stops a pipeline.
+        
+        :param pipeline_id: str
+        
+        :returns:
+          long-running operation waiter for :class:`GetPipelineResponse`.
+          See :method:wait_get_pipeline_idle for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = StopRequest(pipeline_id=pipeline_id)
@@ -1285,27 +1446,74 @@ class PipelinesAPI:
     def update(self,
                pipeline_id: str,
                *,
-               allow_duplicate_names: bool = None,
-               catalog: str = None,
-               channel: str = None,
-               clusters: List[PipelineCluster] = None,
-               configuration: Dict[str, str] = None,
-               continuous: bool = None,
-               development: bool = None,
-               edition: str = None,
-               expected_last_modified: int = None,
-               filters: Filters = None,
-               id: str = None,
-               libraries: List[PipelineLibrary] = None,
-               name: str = None,
-               photon: bool = None,
-               storage: str = None,
-               target: str = None,
-               trigger: PipelineTrigger = None,
+               allow_duplicate_names: Optional[bool] = None,
+               catalog: Optional[str] = None,
+               channel: Optional[str] = None,
+               clusters: Optional[List[PipelineCluster]] = None,
+               configuration: Optional[Dict[str, str]] = None,
+               continuous: Optional[bool] = None,
+               development: Optional[bool] = None,
+               edition: Optional[str] = None,
+               expected_last_modified: Optional[int] = None,
+               filters: Optional[Filters] = None,
+               id: Optional[str] = None,
+               libraries: Optional[List[PipelineLibrary]] = None,
+               name: Optional[str] = None,
+               photon: Optional[bool] = None,
+               serverless: Optional[bool] = None,
+               storage: Optional[str] = None,
+               target: Optional[str] = None,
+               trigger: Optional[PipelineTrigger] = None,
                **kwargs):
         """Edit a pipeline.
         
-        Updates a pipeline with the supplied configuration."""
+        Updates a pipeline with the supplied configuration.
+        
+        :param pipeline_id: str
+          Unique identifier for this pipeline.
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name has changed and conflicts the name of another pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param expected_last_modified: int (optional)
+          If present, the last-modified time of the pipeline settings before the edit. If the settings were
+          modified after that time, then the request will fail with a conflict.
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. If not specified, no data is published
+          to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditPipeline(allow_duplicate_names=allow_duplicate_names,
@@ -1323,6 +1531,7 @@ class PipelinesAPI:
                                    name=name,
                                    photon=photon,
                                    pipeline_id=pipeline_id,
+                                   serverless=serverless,
                                    storage=storage,
                                    target=target,
                                    trigger=trigger)

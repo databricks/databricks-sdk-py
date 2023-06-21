@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List
+from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -18,7 +18,7 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class AwsCredentials:
-    sts_role: 'StsRole' = None
+    sts_role: Optional['StsRole'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -34,15 +34,15 @@ class AwsCredentials:
 class AwsKeyInfo:
     key_arn: str
     key_region: str
-    key_alias: str = None
-    reuse_key_for_cluster_volumes: bool = None
+    key_alias: Optional[str] = None
+    reuse_key_for_cluster_volumes: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key_alias: body['key_alias'] = self.key_alias
-        if self.key_arn: body['key_arn'] = self.key_arn
-        if self.key_region: body['key_region'] = self.key_region
-        if self.reuse_key_for_cluster_volumes:
+        if self.key_alias is not None: body['key_alias'] = self.key_alias
+        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.key_region is not None: body['key_region'] = self.key_region
+        if self.reuse_key_for_cluster_volumes is not None:
             body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
         return body
 
@@ -58,7 +58,7 @@ class AwsKeyInfo:
 class CloudResourceContainer:
     """The general workspace configurations that are specific to cloud providers."""
 
-    gcp: 'CustomerFacingGcpCloudResourceContainer' = None
+    gcp: Optional['CustomerFacingGcpCloudResourceContainer'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -73,14 +73,14 @@ class CloudResourceContainer:
 @dataclass
 class CreateAwsKeyInfo:
     key_arn: str
-    key_alias: str = None
-    reuse_key_for_cluster_volumes: bool = None
+    key_alias: Optional[str] = None
+    reuse_key_for_cluster_volumes: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key_alias: body['key_alias'] = self.key_alias
-        if self.key_arn: body['key_arn'] = self.key_arn
-        if self.reuse_key_for_cluster_volumes:
+        if self.key_alias is not None: body['key_alias'] = self.key_alias
+        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.reuse_key_for_cluster_volumes is not None:
             body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
         return body
 
@@ -93,7 +93,7 @@ class CreateAwsKeyInfo:
 
 @dataclass
 class CreateCredentialAwsCredentials:
-    sts_role: 'CreateCredentialStsRole' = None
+    sts_role: Optional['CreateCredentialStsRole'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -113,7 +113,7 @@ class CreateCredentialRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.aws_credentials: body['aws_credentials'] = self.aws_credentials.as_dict()
-        if self.credentials_name: body['credentials_name'] = self.credentials_name
+        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
         return body
 
     @classmethod
@@ -124,11 +124,11 @@ class CreateCredentialRequest:
 
 @dataclass
 class CreateCredentialStsRole:
-    role_arn: str = None
+    role_arn: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.role_arn: body['role_arn'] = self.role_arn
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
         return body
 
     @classmethod
@@ -138,38 +138,55 @@ class CreateCredentialStsRole:
 
 @dataclass
 class CreateCustomerManagedKeyRequest:
-    aws_key_info: 'CreateAwsKeyInfo'
     use_cases: 'List[KeyUseCase]'
+    aws_key_info: Optional['CreateAwsKeyInfo'] = None
+    gcp_key_info: Optional['CreateGcpKeyInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
+        if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
         if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCustomerManagedKeyRequest':
         return cls(aws_key_info=_from_dict(d, 'aws_key_info', CreateAwsKeyInfo),
+                   gcp_key_info=_from_dict(d, 'gcp_key_info', CreateGcpKeyInfo),
                    use_cases=d.get('use_cases', None))
+
+
+@dataclass
+class CreateGcpKeyInfo:
+    kms_key_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateGcpKeyInfo':
+        return cls(kms_key_id=d.get('kms_key_id', None))
 
 
 @dataclass
 class CreateNetworkRequest:
     network_name: str
-    gcp_network_info: 'GcpNetworkInfo' = None
-    security_group_ids: 'List[str]' = None
-    subnet_ids: 'List[str]' = None
-    vpc_endpoints: 'NetworkVpcEndpoints' = None
-    vpc_id: str = None
+    gcp_network_info: Optional['GcpNetworkInfo'] = None
+    security_group_ids: Optional['List[str]'] = None
+    subnet_ids: Optional['List[str]'] = None
+    vpc_endpoints: Optional['NetworkVpcEndpoints'] = None
+    vpc_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.gcp_network_info: body['gcp_network_info'] = self.gcp_network_info.as_dict()
-        if self.network_name: body['network_name'] = self.network_name
+        if self.network_name is not None: body['network_name'] = self.network_name
         if self.security_group_ids: body['security_group_ids'] = [v for v in self.security_group_ids]
         if self.subnet_ids: body['subnet_ids'] = [v for v in self.subnet_ids]
         if self.vpc_endpoints: body['vpc_endpoints'] = self.vpc_endpoints.as_dict()
-        if self.vpc_id: body['vpc_id'] = self.vpc_id
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
         return body
 
     @classmethod
@@ -190,7 +207,7 @@ class CreateStorageConfigurationRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info.as_dict()
-        if self.storage_configuration_name:
+        if self.storage_configuration_name is not None:
             body['storage_configuration_name'] = self.storage_configuration_name
         return body
 
@@ -203,16 +220,16 @@ class CreateStorageConfigurationRequest:
 @dataclass
 class CreateVpcEndpointRequest:
     vpc_endpoint_name: str
-    aws_vpc_endpoint_id: str = None
-    gcp_vpc_endpoint_info: 'GcpVpcEndpointInfo' = None
-    region: str = None
+    aws_vpc_endpoint_id: Optional[str] = None
+    gcp_vpc_endpoint_info: Optional['GcpVpcEndpointInfo'] = None
+    region: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_vpc_endpoint_id: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
-        if self.region: body['region'] = self.region
-        if self.vpc_endpoint_name: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        if self.region is not None: body['region'] = self.region
+        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
 
     @classmethod
@@ -226,38 +243,39 @@ class CreateVpcEndpointRequest:
 @dataclass
 class CreateWorkspaceRequest:
     workspace_name: str
-    aws_region: str = None
-    cloud: str = None
-    cloud_resource_container: 'CloudResourceContainer' = None
-    credentials_id: str = None
-    deployment_name: str = None
-    location: str = None
-    managed_services_customer_managed_key_id: str = None
-    network_id: str = None
-    pricing_tier: 'PricingTier' = None
-    private_access_settings_id: str = None
-    storage_configuration_id: str = None
-    storage_customer_managed_key_id: str = None
+    aws_region: Optional[str] = None
+    cloud: Optional[str] = None
+    cloud_resource_container: Optional['CloudResourceContainer'] = None
+    credentials_id: Optional[str] = None
+    deployment_name: Optional[str] = None
+    location: Optional[str] = None
+    managed_services_customer_managed_key_id: Optional[str] = None
+    network_id: Optional[str] = None
+    pricing_tier: Optional['PricingTier'] = None
+    private_access_settings_id: Optional[str] = None
+    storage_configuration_id: Optional[str] = None
+    storage_customer_managed_key_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_region: body['aws_region'] = self.aws_region
-        if self.cloud: body['cloud'] = self.cloud
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.cloud is not None: body['cloud'] = self.cloud
         if self.cloud_resource_container:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.deployment_name: body['deployment_name'] = self.deployment_name
-        if self.location: body['location'] = self.location
-        if self.managed_services_customer_managed_key_id:
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.location is not None: body['location'] = self.location
+        if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id: body['network_id'] = self.network_id
-        if self.pricing_tier: body['pricing_tier'] = self.pricing_tier.value
-        if self.private_access_settings_id:
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.pricing_tier is not None: body['pricing_tier'] = self.pricing_tier.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_customer_managed_key_id:
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_name: body['workspace_name'] = self.workspace_name
+        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
         return body
 
     @classmethod
@@ -280,19 +298,19 @@ class CreateWorkspaceRequest:
 
 @dataclass
 class Credential:
-    account_id: str = None
-    aws_credentials: 'AwsCredentials' = None
-    creation_time: int = None
-    credentials_id: str = None
-    credentials_name: str = None
+    account_id: Optional[str] = None
+    aws_credentials: Optional['AwsCredentials'] = None
+    creation_time: Optional[int] = None
+    credentials_id: Optional[str] = None
+    credentials_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = self.account_id
         if self.aws_credentials: body['aws_credentials'] = self.aws_credentials.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.credentials_name: body['credentials_name'] = self.credentials_name
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
         return body
 
     @classmethod
@@ -308,11 +326,11 @@ class Credential:
 class CustomerFacingGcpCloudResourceContainer:
     """The general workspace configurations that are specific to Google Cloud."""
 
-    project_id: str = None
+    project_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.project_id: body['project_id'] = self.project_id
+        if self.project_id is not None: body['project_id'] = self.project_id
         return body
 
     @classmethod
@@ -322,18 +340,21 @@ class CustomerFacingGcpCloudResourceContainer:
 
 @dataclass
 class CustomerManagedKey:
-    account_id: str = None
-    aws_key_info: 'AwsKeyInfo' = None
-    creation_time: int = None
-    customer_managed_key_id: str = None
-    use_cases: 'List[KeyUseCase]' = None
+    account_id: Optional[str] = None
+    aws_key_info: Optional['AwsKeyInfo'] = None
+    creation_time: Optional[int] = None
+    customer_managed_key_id: Optional[str] = None
+    gcp_key_info: Optional['GcpKeyInfo'] = None
+    use_cases: Optional['List[KeyUseCase]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = self.account_id
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.customer_managed_key_id: body['customer_managed_key_id'] = self.customer_managed_key_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.customer_managed_key_id is not None:
+            body['customer_managed_key_id'] = self.customer_managed_key_id
+        if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
         if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
         return body
 
@@ -343,6 +364,7 @@ class CustomerManagedKey:
                    aws_key_info=_from_dict(d, 'aws_key_info', AwsKeyInfo),
                    creation_time=d.get('creation_time', None),
                    customer_managed_key_id=d.get('customer_managed_key_id', None),
+                   gcp_key_info=_from_dict(d, 'gcp_key_info', GcpKeyInfo),
                    use_cases=d.get('use_cases', None))
 
 
@@ -417,6 +439,20 @@ class ErrorType(Enum):
 
 
 @dataclass
+class GcpKeyInfo:
+    kms_key_id: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GcpKeyInfo':
+        return cls(kms_key_id=d.get('kms_key_id', None))
+
+
+@dataclass
 class GcpManagedNetworkConfig:
     """The network settings for the workspace. The configurations are only for Databricks-managed VPCs.
     It is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP
@@ -437,16 +473,17 @@ class GcpManagedNetworkConfig:
     
     [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html"""
 
-    gke_cluster_pod_ip_range: str = None
-    gke_cluster_service_ip_range: str = None
-    subnet_cidr: str = None
+    gke_cluster_pod_ip_range: Optional[str] = None
+    gke_cluster_service_ip_range: Optional[str] = None
+    subnet_cidr: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.gke_cluster_pod_ip_range: body['gke_cluster_pod_ip_range'] = self.gke_cluster_pod_ip_range
-        if self.gke_cluster_service_ip_range:
+        if self.gke_cluster_pod_ip_range is not None:
+            body['gke_cluster_pod_ip_range'] = self.gke_cluster_pod_ip_range
+        if self.gke_cluster_service_ip_range is not None:
             body['gke_cluster_service_ip_range'] = self.gke_cluster_service_ip_range
-        if self.subnet_cidr: body['subnet_cidr'] = self.subnet_cidr
+        if self.subnet_cidr is not None: body['subnet_cidr'] = self.subnet_cidr
         return body
 
     @classmethod
@@ -470,12 +507,12 @@ class GcpNetworkInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.network_project_id: body['network_project_id'] = self.network_project_id
-        if self.pod_ip_range_name: body['pod_ip_range_name'] = self.pod_ip_range_name
-        if self.service_ip_range_name: body['service_ip_range_name'] = self.service_ip_range_name
-        if self.subnet_id: body['subnet_id'] = self.subnet_id
-        if self.subnet_region: body['subnet_region'] = self.subnet_region
-        if self.vpc_id: body['vpc_id'] = self.vpc_id
+        if self.network_project_id is not None: body['network_project_id'] = self.network_project_id
+        if self.pod_ip_range_name is not None: body['pod_ip_range_name'] = self.pod_ip_range_name
+        if self.service_ip_range_name is not None: body['service_ip_range_name'] = self.service_ip_range_name
+        if self.subnet_id is not None: body['subnet_id'] = self.subnet_id
+        if self.subnet_region is not None: body['subnet_region'] = self.subnet_region
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
         return body
 
     @classmethod
@@ -495,16 +532,16 @@ class GcpVpcEndpointInfo:
     project_id: str
     psc_endpoint_name: str
     endpoint_region: str
-    psc_connection_id: str = None
-    service_attachment_id: str = None
+    psc_connection_id: Optional[str] = None
+    service_attachment_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.endpoint_region: body['endpoint_region'] = self.endpoint_region
-        if self.project_id: body['project_id'] = self.project_id
-        if self.psc_connection_id: body['psc_connection_id'] = self.psc_connection_id
-        if self.psc_endpoint_name: body['psc_endpoint_name'] = self.psc_endpoint_name
-        if self.service_attachment_id: body['service_attachment_id'] = self.service_attachment_id
+        if self.endpoint_region is not None: body['endpoint_region'] = self.endpoint_region
+        if self.project_id is not None: body['project_id'] = self.project_id
+        if self.psc_connection_id is not None: body['psc_connection_id'] = self.psc_connection_id
+        if self.psc_endpoint_name is not None: body['psc_endpoint_name'] = self.psc_endpoint_name
+        if self.service_attachment_id is not None: body['service_attachment_id'] = self.service_attachment_id
         return body
 
     @classmethod
@@ -569,13 +606,13 @@ class GetWorkspaceRequest:
 class GkeConfig:
     """The configurations for the GKE cluster of a Databricks workspace."""
 
-    connectivity_type: 'GkeConfigConnectivityType' = None
-    master_ip_range: str = None
+    connectivity_type: Optional['GkeConfigConnectivityType'] = None
+    master_ip_range: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.connectivity_type: body['connectivity_type'] = self.connectivity_type.value
-        if self.master_ip_range: body['master_ip_range'] = self.master_ip_range
+        if self.connectivity_type is not None: body['connectivity_type'] = self.connectivity_type.value
+        if self.master_ip_range is not None: body['master_ip_range'] = self.master_ip_range
         return body
 
     @classmethod
@@ -606,35 +643,35 @@ class KeyUseCase(Enum):
 
 @dataclass
 class Network:
-    account_id: str = None
-    creation_time: int = None
-    error_messages: 'List[NetworkHealth]' = None
-    gcp_network_info: 'GcpNetworkInfo' = None
-    network_id: str = None
-    network_name: str = None
-    security_group_ids: 'List[str]' = None
-    subnet_ids: 'List[str]' = None
-    vpc_endpoints: 'NetworkVpcEndpoints' = None
-    vpc_id: str = None
-    vpc_status: 'VpcStatus' = None
-    warning_messages: 'List[NetworkWarning]' = None
-    workspace_id: int = None
+    account_id: Optional[str] = None
+    creation_time: Optional[int] = None
+    error_messages: Optional['List[NetworkHealth]'] = None
+    gcp_network_info: Optional['GcpNetworkInfo'] = None
+    network_id: Optional[str] = None
+    network_name: Optional[str] = None
+    security_group_ids: Optional['List[str]'] = None
+    subnet_ids: Optional['List[str]'] = None
+    vpc_endpoints: Optional['NetworkVpcEndpoints'] = None
+    vpc_id: Optional[str] = None
+    vpc_status: Optional['VpcStatus'] = None
+    warning_messages: Optional['List[NetworkWarning]'] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.creation_time: body['creation_time'] = self.creation_time
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.error_messages: body['error_messages'] = [v.as_dict() for v in self.error_messages]
         if self.gcp_network_info: body['gcp_network_info'] = self.gcp_network_info.as_dict()
-        if self.network_id: body['network_id'] = self.network_id
-        if self.network_name: body['network_name'] = self.network_name
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.network_name is not None: body['network_name'] = self.network_name
         if self.security_group_ids: body['security_group_ids'] = [v for v in self.security_group_ids]
         if self.subnet_ids: body['subnet_ids'] = [v for v in self.subnet_ids]
         if self.vpc_endpoints: body['vpc_endpoints'] = self.vpc_endpoints.as_dict()
-        if self.vpc_id: body['vpc_id'] = self.vpc_id
-        if self.vpc_status: body['vpc_status'] = self.vpc_status.value
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        if self.vpc_status is not None: body['vpc_status'] = self.vpc_status.value
         if self.warning_messages: body['warning_messages'] = [v.as_dict() for v in self.warning_messages]
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -656,13 +693,13 @@ class Network:
 
 @dataclass
 class NetworkHealth:
-    error_message: str = None
-    error_type: 'ErrorType' = None
+    error_message: Optional[str] = None
+    error_type: Optional['ErrorType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error_message: body['error_message'] = self.error_message
-        if self.error_type: body['error_type'] = self.error_type.value
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.error_type is not None: body['error_type'] = self.error_type.value
         return body
 
     @classmethod
@@ -693,13 +730,13 @@ class NetworkVpcEndpoints:
 
 @dataclass
 class NetworkWarning:
-    warning_message: str = None
-    warning_type: 'WarningType' = None
+    warning_message: Optional[str] = None
+    warning_type: Optional['WarningType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.warning_message: body['warning_message'] = self.warning_message
-        if self.warning_type: body['warning_type'] = self.warning_type.value
+        if self.warning_message is not None: body['warning_message'] = self.warning_message
+        if self.warning_type is not None: body['warning_type'] = self.warning_type.value
         return body
 
     @classmethod
@@ -734,26 +771,27 @@ class PrivateAccessLevel(Enum):
 
 @dataclass
 class PrivateAccessSettings:
-    account_id: str = None
-    allowed_vpc_endpoint_ids: 'List[str]' = None
-    private_access_level: 'PrivateAccessLevel' = None
-    private_access_settings_id: str = None
-    private_access_settings_name: str = None
-    public_access_enabled: bool = None
-    region: str = None
+    account_id: Optional[str] = None
+    allowed_vpc_endpoint_ids: Optional['List[str]'] = None
+    private_access_level: Optional['PrivateAccessLevel'] = None
+    private_access_settings_id: Optional[str] = None
+    private_access_settings_name: Optional[str] = None
+    public_access_enabled: Optional[bool] = None
+    region: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = self.account_id
         if self.allowed_vpc_endpoint_ids:
             body['allowed_vpc_endpoint_ids'] = [v for v in self.allowed_vpc_endpoint_ids]
-        if self.private_access_level: body['private_access_level'] = self.private_access_level.value
-        if self.private_access_settings_id:
+        if self.private_access_level is not None:
+            body['private_access_level'] = self.private_access_level.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.private_access_settings_name:
+        if self.private_access_settings_name is not None:
             body['private_access_settings_name'] = self.private_access_settings_name
-        if self.public_access_enabled: body['public_access_enabled'] = self.public_access_enabled
-        if self.region: body['region'] = self.region
+        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
+        if self.region is not None: body['region'] = self.region
         return body
 
     @classmethod
@@ -771,11 +809,11 @@ class PrivateAccessSettings:
 class RootBucketInfo:
     """Root S3 bucket information."""
 
-    bucket_name: str = None
+    bucket_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bucket_name: body['bucket_name'] = self.bucket_name
+        if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
         return body
 
     @classmethod
@@ -785,19 +823,20 @@ class RootBucketInfo:
 
 @dataclass
 class StorageConfiguration:
-    account_id: str = None
-    creation_time: int = None
-    root_bucket_info: 'RootBucketInfo' = None
-    storage_configuration_id: str = None
-    storage_configuration_name: str = None
+    account_id: Optional[str] = None
+    creation_time: Optional[int] = None
+    root_bucket_info: Optional['RootBucketInfo'] = None
+    storage_configuration_id: Optional[str] = None
+    storage_configuration_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.creation_time: body['creation_time'] = self.creation_time
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info.as_dict()
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_configuration_name:
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_configuration_name is not None:
             body['storage_configuration_name'] = self.storage_configuration_name
         return body
 
@@ -812,13 +851,13 @@ class StorageConfiguration:
 
 @dataclass
 class StsRole:
-    external_id: str = None
-    role_arn: str = None
+    external_id: Optional[str] = None
+    role_arn: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.external_id: body['external_id'] = self.external_id
-        if self.role_arn: body['role_arn'] = self.role_arn
+        if self.external_id is not None: body['external_id'] = self.external_id
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
         return body
 
     @classmethod
@@ -828,25 +867,26 @@ class StsRole:
 
 @dataclass
 class UpdateWorkspaceRequest:
-    workspace_id: int
-    aws_region: str = None
-    credentials_id: str = None
-    managed_services_customer_managed_key_id: str = None
-    network_id: str = None
-    storage_configuration_id: str = None
-    storage_customer_managed_key_id: str = None
+    aws_region: Optional[str] = None
+    credentials_id: Optional[str] = None
+    managed_services_customer_managed_key_id: Optional[str] = None
+    network_id: Optional[str] = None
+    storage_configuration_id: Optional[str] = None
+    storage_customer_managed_key_id: Optional[str] = None
+    workspace_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_region: body['aws_region'] = self.aws_region
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.managed_services_customer_managed_key_id:
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id: body['network_id'] = self.network_id
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_customer_managed_key_id:
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -865,22 +905,23 @@ class UpdateWorkspaceRequest:
 class UpsertPrivateAccessSettingsRequest:
     private_access_settings_name: str
     region: str
-    private_access_settings_id: str
-    allowed_vpc_endpoint_ids: 'List[str]' = None
-    private_access_level: 'PrivateAccessLevel' = None
-    public_access_enabled: bool = None
+    allowed_vpc_endpoint_ids: Optional['List[str]'] = None
+    private_access_level: Optional['PrivateAccessLevel'] = None
+    private_access_settings_id: Optional[str] = None
+    public_access_enabled: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.allowed_vpc_endpoint_ids:
             body['allowed_vpc_endpoint_ids'] = [v for v in self.allowed_vpc_endpoint_ids]
-        if self.private_access_level: body['private_access_level'] = self.private_access_level.value
-        if self.private_access_settings_id:
+        if self.private_access_level is not None:
+            body['private_access_level'] = self.private_access_level.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.private_access_settings_name:
+        if self.private_access_settings_name is not None:
             body['private_access_settings_name'] = self.private_access_settings_name
-        if self.public_access_enabled: body['public_access_enabled'] = self.public_access_enabled
-        if self.region: body['region'] = self.region
+        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
+        if self.region is not None: body['region'] = self.region
         return body
 
     @classmethod
@@ -895,29 +936,30 @@ class UpsertPrivateAccessSettingsRequest:
 
 @dataclass
 class VpcEndpoint:
-    account_id: str = None
-    aws_account_id: str = None
-    aws_endpoint_service_id: str = None
-    aws_vpc_endpoint_id: str = None
-    gcp_vpc_endpoint_info: 'GcpVpcEndpointInfo' = None
-    region: str = None
-    state: str = None
-    use_case: 'EndpointUseCase' = None
-    vpc_endpoint_id: str = None
-    vpc_endpoint_name: str = None
+    account_id: Optional[str] = None
+    aws_account_id: Optional[str] = None
+    aws_endpoint_service_id: Optional[str] = None
+    aws_vpc_endpoint_id: Optional[str] = None
+    gcp_vpc_endpoint_info: Optional['GcpVpcEndpointInfo'] = None
+    region: Optional[str] = None
+    state: Optional[str] = None
+    use_case: Optional['EndpointUseCase'] = None
+    vpc_endpoint_id: Optional[str] = None
+    vpc_endpoint_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.aws_account_id: body['aws_account_id'] = self.aws_account_id
-        if self.aws_endpoint_service_id: body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
-        if self.aws_vpc_endpoint_id: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_account_id is not None: body['aws_account_id'] = self.aws_account_id
+        if self.aws_endpoint_service_id is not None:
+            body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
+        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
-        if self.region: body['region'] = self.region
-        if self.state: body['state'] = self.state
-        if self.use_case: body['use_case'] = self.use_case.value
-        if self.vpc_endpoint_id: body['vpc_endpoint_id'] = self.vpc_endpoint_id
-        if self.vpc_endpoint_name: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        if self.region is not None: body['region'] = self.region
+        if self.state is not None: body['state'] = self.state
+        if self.use_case is not None: body['use_case'] = self.use_case.value
+        if self.vpc_endpoint_id is not None: body['vpc_endpoint_id'] = self.vpc_endpoint_id
+        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
 
     @classmethod
@@ -952,54 +994,56 @@ class WarningType(Enum):
 
 @dataclass
 class Workspace:
-    account_id: str = None
-    aws_region: str = None
-    cloud: str = None
-    cloud_resource_container: 'CloudResourceContainer' = None
-    creation_time: int = None
-    credentials_id: str = None
-    deployment_name: str = None
-    gcp_managed_network_config: 'GcpManagedNetworkConfig' = None
-    gke_config: 'GkeConfig' = None
-    location: str = None
-    managed_services_customer_managed_key_id: str = None
-    network_id: str = None
-    pricing_tier: 'PricingTier' = None
-    private_access_settings_id: str = None
-    storage_configuration_id: str = None
-    storage_customer_managed_key_id: str = None
-    workspace_id: int = None
-    workspace_name: str = None
-    workspace_status: 'WorkspaceStatus' = None
-    workspace_status_message: str = None
+    account_id: Optional[str] = None
+    aws_region: Optional[str] = None
+    cloud: Optional[str] = None
+    cloud_resource_container: Optional['CloudResourceContainer'] = None
+    creation_time: Optional[int] = None
+    credentials_id: Optional[str] = None
+    deployment_name: Optional[str] = None
+    gcp_managed_network_config: Optional['GcpManagedNetworkConfig'] = None
+    gke_config: Optional['GkeConfig'] = None
+    location: Optional[str] = None
+    managed_services_customer_managed_key_id: Optional[str] = None
+    network_id: Optional[str] = None
+    pricing_tier: Optional['PricingTier'] = None
+    private_access_settings_id: Optional[str] = None
+    storage_configuration_id: Optional[str] = None
+    storage_customer_managed_key_id: Optional[str] = None
+    workspace_id: Optional[int] = None
+    workspace_name: Optional[str] = None
+    workspace_status: Optional['WorkspaceStatus'] = None
+    workspace_status_message: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id: body['account_id'] = self.account_id
-        if self.aws_region: body['aws_region'] = self.aws_region
-        if self.cloud: body['cloud'] = self.cloud
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.cloud is not None: body['cloud'] = self.cloud
         if self.cloud_resource_container:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
-        if self.creation_time: body['creation_time'] = self.creation_time
-        if self.credentials_id: body['credentials_id'] = self.credentials_id
-        if self.deployment_name: body['deployment_name'] = self.deployment_name
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
         if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
-        if self.location: body['location'] = self.location
-        if self.managed_services_customer_managed_key_id:
+        if self.location is not None: body['location'] = self.location
+        if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id: body['network_id'] = self.network_id
-        if self.pricing_tier: body['pricing_tier'] = self.pricing_tier.value
-        if self.private_access_settings_id:
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.pricing_tier is not None: body['pricing_tier'] = self.pricing_tier.value
+        if self.private_access_settings_id is not None:
             body['private_access_settings_id'] = self.private_access_settings_id
-        if self.storage_configuration_id: body['storage_configuration_id'] = self.storage_configuration_id
-        if self.storage_customer_managed_key_id:
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
-        if self.workspace_name: body['workspace_name'] = self.workspace_name
-        if self.workspace_status: body['workspace_status'] = self.workspace_status.value
-        if self.workspace_status_message: body['workspace_status_message'] = self.workspace_status_message
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
+        if self.workspace_status is not None: body['workspace_status'] = self.workspace_status.value
+        if self.workspace_status_message is not None:
+            body['workspace_status_message'] = self.workspace_status_message
         return body
 
     @classmethod
@@ -1064,7 +1108,14 @@ class CredentialsAPI:
         For information about how to create a new workspace with this API, see [Create a new workspace using
         the Account API]
         
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        
+        :param credentials_name: str
+          The human-readable name of the credential configuration object.
+        :param aws_credentials: :class:`CreateCredentialAwsCredentials`
+        
+        :returns: :class:`Credential`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCredentialRequest(aws_credentials=aws_credentials,
@@ -1078,7 +1129,13 @@ class CredentialsAPI:
         """Delete credential configuration.
         
         Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
-        delete a credential that is associated with any workspace."""
+        delete a credential that is associated with any workspace.
+        
+        :param credentials_id: str
+          Databricks Account API credential configuration ID
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCredentialRequest(credentials_id=credentials_id)
@@ -1089,7 +1146,13 @@ class CredentialsAPI:
     def get(self, credentials_id: str, **kwargs) -> Credential:
         """Get credential configuration.
         
-        Gets a Databricks credential configuration object for an account, both specified by ID."""
+        Gets a Databricks credential configuration object for an account, both specified by ID.
+        
+        :param credentials_id: str
+          Databricks Account API credential configuration ID
+        
+        :returns: :class:`Credential`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetCredentialRequest(credentials_id=credentials_id)
@@ -1101,7 +1164,10 @@ class CredentialsAPI:
     def list(self) -> Iterator[Credential]:
         """Get all credential configurations.
         
-        Gets all Databricks credential configurations associated with an account specified by ID."""
+        Gets all Databricks credential configurations associated with an account specified by ID.
+        
+        :returns: Iterator over :class:`Credential`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials')
         return [Credential.from_dict(v) for v in json]
@@ -1125,7 +1191,11 @@ class EncryptionKeysAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, aws_key_info: CreateAwsKeyInfo, use_cases: List[KeyUseCase],
+    def create(self,
+               use_cases: List[KeyUseCase],
+               *,
+               aws_key_info: Optional[CreateAwsKeyInfo] = None,
+               gcp_key_info: Optional[CreateGcpKeyInfo] = None,
                **kwargs) -> CustomerManagedKey:
         """Create encryption key configuration.
         
@@ -1138,13 +1208,23 @@ class EncryptionKeysAPI:
         cluster EBS volume data.
         
         **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
-        and AWS regions.
+        and AWS regions that currently support creation of Databricks workspaces.
         
         This operation is available only if your account is on the E2 version of the platform or on a select
-        custom plan that allows multiple workspaces per account."""
+        custom plan that allows multiple workspaces per account.
+        
+        :param use_cases: List[:class:`KeyUseCase`]
+          The cases that the key can be used for.
+        :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
+        :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
+        
+        :returns: :class:`CustomerManagedKey`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateCustomerManagedKeyRequest(aws_key_info=aws_key_info, use_cases=use_cases)
+            request = CreateCustomerManagedKeyRequest(aws_key_info=aws_key_info,
+                                                      gcp_key_info=gcp_key_info,
+                                                      use_cases=use_cases)
         body = request.as_dict()
 
         json = self._api.do('POST',
@@ -1156,7 +1236,13 @@ class EncryptionKeysAPI:
         """Delete encryption key configuration.
         
         Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
-        that is associated with a running workspace."""
+        that is associated with a running workspace.
+        
+        :param customer_managed_key_id: str
+          Databricks encryption key configuration ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteEncryptionKeyRequest(customer_managed_key_id=customer_managed_key_id)
@@ -1180,7 +1266,13 @@ class EncryptionKeysAPI:
         **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
         and AWS regions.
         
-        This operation is available only if your account is on the E2 version of the platform."""
+        This operation is available only if your account is on the E2 version of the platform.",
+        
+        :param customer_managed_key_id: str
+          Databricks encryption key configuration ID.
+        
+        :returns: :class:`CustomerManagedKey`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetEncryptionKeyRequest(customer_managed_key_id=customer_managed_key_id)
@@ -1203,7 +1295,10 @@ class EncryptionKeysAPI:
         **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
         and AWS regions.
         
-        This operation is available only if your account is on the E2 version of the platform."""
+        This operation is available only if your account is on the E2 version of the platform.
+        
+        :returns: Iterator over :class:`CustomerManagedKey`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys')
         return [CustomerManagedKey.from_dict(v) for v in json]
@@ -1219,16 +1314,39 @@ class NetworksAPI:
     def create(self,
                network_name: str,
                *,
-               gcp_network_info: GcpNetworkInfo = None,
-               security_group_ids: List[str] = None,
-               subnet_ids: List[str] = None,
-               vpc_endpoints: NetworkVpcEndpoints = None,
-               vpc_id: str = None,
+               gcp_network_info: Optional[GcpNetworkInfo] = None,
+               security_group_ids: Optional[List[str]] = None,
+               subnet_ids: Optional[List[str]] = None,
+               vpc_endpoints: Optional[NetworkVpcEndpoints] = None,
+               vpc_id: Optional[str] = None,
                **kwargs) -> Network:
         """Create network configuration.
         
         Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
-        used for new Databricks clusters. This requires a pre-existing VPC and subnets."""
+        used for new Databricks clusters. This requires a pre-existing VPC and subnets.
+        
+        :param network_name: str
+          The human-readable name of the network configuration.
+        :param gcp_network_info: :class:`GcpNetworkInfo` (optional)
+          The Google Cloud specific information for this network (for example, the VPC ID, subnet ID, and
+          secondary IP ranges).
+        :param security_group_ids: List[str] (optional)
+          IDs of one to five security groups associated with this network. Security group IDs **cannot** be
+          used in multiple network configurations.
+        :param subnet_ids: List[str] (optional)
+          IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple
+          network configurations.
+        :param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)
+          If specified, contains the VPC endpoints used to allow cluster communication from this VPC over [AWS
+          PrivateLink].
+          
+          [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+        :param vpc_id: str (optional)
+          The ID of the VPC associated with this network. VPC IDs can be used in multiple network
+          configurations.
+        
+        :returns: :class:`Network`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateNetworkRequest(gcp_network_info=gcp_network_info,
@@ -1248,7 +1366,13 @@ class NetworksAPI:
         Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
         delete a network that is associated with a workspace.
         
-        This operation is available only if your account is on the E2 version of the platform."""
+        This operation is available only if your account is on the E2 version of the platform.
+        
+        :param network_id: str
+          Databricks Account API network configuration ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteNetworkRequest(network_id=network_id)
@@ -1258,7 +1382,13 @@ class NetworksAPI:
     def get(self, network_id: str, **kwargs) -> Network:
         """Get a network configuration.
         
-        Gets a Databricks network configuration, which represents a cloud VPC and its resources."""
+        Gets a Databricks network configuration, which represents a cloud VPC and its resources.
+        
+        :param network_id: str
+          Databricks Account API network configuration ID.
+        
+        :returns: :class:`Network`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetNetworkRequest(network_id=network_id)
@@ -1271,7 +1401,10 @@ class NetworksAPI:
         
         Gets a list of all Databricks network configurations for an account, specified by ID.
         
-        This operation is available only if your account is on the E2 version of the platform."""
+        This operation is available only if your account is on the E2 version of the platform.
+        
+        :returns: Iterator over :class:`Network`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks')
         return [Network.from_dict(v) for v in json]
@@ -1286,11 +1419,10 @@ class PrivateAccessAPI:
     def create(self,
                private_access_settings_name: str,
                region: str,
-               private_access_settings_id: str,
                *,
-               allowed_vpc_endpoint_ids: List[str] = None,
-               private_access_level: PrivateAccessLevel = None,
-               public_access_enabled: bool = None,
+               allowed_vpc_endpoint_ids: Optional[List[str]] = None,
+               private_access_level: Optional[PrivateAccessLevel] = None,
+               public_access_enabled: Optional[bool] = None,
                **kwargs) -> PrivateAccessSettings:
         """Create private access settings.
         
@@ -1305,13 +1437,43 @@ class PrivateAccessAPI:
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        
+        :param private_access_settings_name: str
+          The human-readable name of the private access settings object.
+        :param region: str
+          The cloud region for workspaces associated with this private access settings object.
+        :param allowed_vpc_endpoint_ids: List[str] (optional)
+          An array of Databricks VPC endpoint IDs. This is the Databricks ID that is returned when registering
+          the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in
+          AWS.
+          
+          Only used when `private_access_level` is set to `ENDPOINT`. This is an allow list of VPC endpoints
+          that in your account that can connect to your workspace over AWS PrivateLink.
+          
+          If hybrid access to your workspace is enabled by setting `public_access_enabled` to `true`, this
+          control only works for PrivateLink connections. To control how your workspace is accessed via public
+          internet, see [IP access lists].
+          
+          [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
+        :param private_access_level: :class:`PrivateAccessLevel` (optional)
+          The private access level controls which VPC endpoints can connect to the UI or API of any workspace
+          that attaches this private access settings object. * `ACCOUNT` level access (the default) allows
+          only VPC endpoints that are registered in your Databricks account connect to your workspace. *
+          `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details,
+          see `allowed_vpc_endpoint_ids`.
+        :param public_access_enabled: bool (optional)
+          Determines if the workspace can be accessed over public internet. For fully private workspaces, you
+          can optionally specify `false`, but only if you implement both the front-end and the back-end
+          PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
+        
+        :returns: :class:`PrivateAccessSettings`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpsertPrivateAccessSettingsRequest(
                 allowed_vpc_endpoint_ids=allowed_vpc_endpoint_ids,
                 private_access_level=private_access_level,
-                private_access_settings_id=private_access_settings_id,
                 private_access_settings_name=private_access_settings_name,
                 public_access_enabled=public_access_enabled,
                 region=region)
@@ -1331,7 +1493,13 @@ class PrivateAccessAPI:
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        
+        :param private_access_settings_id: str
+          Databricks Account API private access settings ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeletePrivateAccesRequest(private_access_settings_id=private_access_settings_id)
@@ -1350,7 +1518,13 @@ class PrivateAccessAPI:
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        
+        :param private_access_settings_id: str
+          Databricks Account API private access settings ID.
+        
+        :returns: :class:`PrivateAccessSettings`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetPrivateAccesRequest(private_access_settings_id=private_access_settings_id)
@@ -1364,7 +1538,10 @@ class PrivateAccessAPI:
     def list(self) -> Iterator[PrivateAccessSettings]:
         """Get all private access settings objects.
         
-        Gets a list of all private access settings objects for an account, specified by ID."""
+        Gets a list of all private access settings objects for an account, specified by ID.
+        
+        :returns: Iterator over :class:`PrivateAccessSettings`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/private-access-settings')
         return [PrivateAccessSettings.from_dict(v) for v in json]
@@ -1374,9 +1551,9 @@ class PrivateAccessAPI:
                 region: str,
                 private_access_settings_id: str,
                 *,
-                allowed_vpc_endpoint_ids: List[str] = None,
-                private_access_level: PrivateAccessLevel = None,
-                public_access_enabled: bool = None,
+                allowed_vpc_endpoint_ids: Optional[List[str]] = None,
+                private_access_level: Optional[PrivateAccessLevel] = None,
+                public_access_enabled: Optional[bool] = None,
                 **kwargs):
         """Replace private access settings.
         
@@ -1396,7 +1573,40 @@ class PrivateAccessAPI:
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        
+        :param private_access_settings_name: str
+          The human-readable name of the private access settings object.
+        :param region: str
+          The cloud region for workspaces associated with this private access settings object.
+        :param private_access_settings_id: str
+          Databricks Account API private access settings ID.
+        :param allowed_vpc_endpoint_ids: List[str] (optional)
+          An array of Databricks VPC endpoint IDs. This is the Databricks ID that is returned when registering
+          the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in
+          AWS.
+          
+          Only used when `private_access_level` is set to `ENDPOINT`. This is an allow list of VPC endpoints
+          that in your account that can connect to your workspace over AWS PrivateLink.
+          
+          If hybrid access to your workspace is enabled by setting `public_access_enabled` to `true`, this
+          control only works for PrivateLink connections. To control how your workspace is accessed via public
+          internet, see [IP access lists].
+          
+          [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
+        :param private_access_level: :class:`PrivateAccessLevel` (optional)
+          The private access level controls which VPC endpoints can connect to the UI or API of any workspace
+          that attaches this private access settings object. * `ACCOUNT` level access (the default) allows
+          only VPC endpoints that are registered in your Databricks account connect to your workspace. *
+          `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details,
+          see `allowed_vpc_endpoint_ids`.
+        :param public_access_enabled: bool (optional)
+          Determines if the workspace can be accessed over public internet. For fully private workspaces, you
+          can optionally specify `false`, but only if you implement both the front-end and the back-end
+          PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpsertPrivateAccessSettingsRequest(
@@ -1434,7 +1644,15 @@ class StorageAPI:
         For information about how to create a new workspace with this API, see [Create a new workspace using
         the Account API]
         
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        
+        :param storage_configuration_name: str
+          The human-readable name of the storage configuration.
+        :param root_bucket_info: :class:`RootBucketInfo`
+          Root S3 bucket information.
+        
+        :returns: :class:`StorageConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateStorageConfigurationRequest(root_bucket_info=root_bucket_info,
@@ -1450,7 +1668,13 @@ class StorageAPI:
         """Delete storage configuration.
         
         Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
-        associated with any workspace."""
+        associated with any workspace.
+        
+        :param storage_configuration_id: str
+          Databricks Account API storage configuration ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteStorageRequest(storage_configuration_id=storage_configuration_id)
@@ -1463,7 +1687,13 @@ class StorageAPI:
     def get(self, storage_configuration_id: str, **kwargs) -> StorageConfiguration:
         """Get storage configuration.
         
-        Gets a Databricks storage configuration for an account, both specified by ID."""
+        Gets a Databricks storage configuration for an account, both specified by ID.
+        
+        :param storage_configuration_id: str
+          Databricks Account API storage configuration ID.
+        
+        :returns: :class:`StorageConfiguration`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStorageRequest(storage_configuration_id=storage_configuration_id)
@@ -1477,7 +1707,10 @@ class StorageAPI:
     def list(self) -> Iterator[StorageConfiguration]:
         """Get all storage configurations.
         
-        Gets a list of all Databricks storage configurations for your account, specified by ID."""
+        Gets a list of all Databricks storage configurations for your account, specified by ID.
+        
+        :returns: Iterator over :class:`StorageConfiguration`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/storage-configurations')
         return [StorageConfiguration.from_dict(v) for v in json]
@@ -1492,9 +1725,9 @@ class VpcEndpointsAPI:
     def create(self,
                vpc_endpoint_name: str,
                *,
-               aws_vpc_endpoint_id: str = None,
-               gcp_vpc_endpoint_info: GcpVpcEndpointInfo = None,
-               region: str = None,
+               aws_vpc_endpoint_id: Optional[str] = None,
+               gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo] = None,
+               region: Optional[str] = None,
                **kwargs) -> VpcEndpoint:
         """Create VPC endpoint configuration.
         
@@ -1509,7 +1742,19 @@ class VpcEndpointsAPI:
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
         [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
-        [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html"""
+        [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
+        
+        :param vpc_endpoint_name: str
+          The human-readable name of the storage configuration.
+        :param aws_vpc_endpoint_id: str (optional)
+          The ID of the VPC endpoint object in AWS.
+        :param gcp_vpc_endpoint_info: :class:`GcpVpcEndpointInfo` (optional)
+          The Google Cloud specific information for this Private Service Connect endpoint.
+        :param region: str (optional)
+          The AWS region in which this VPC endpoint object exists.
+        
+        :returns: :class:`VpcEndpoint`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateVpcEndpointRequest(aws_vpc_endpoint_id=aws_vpc_endpoint_id,
@@ -1531,7 +1776,13 @@ class VpcEndpointsAPI:
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        
+        :param vpc_endpoint_id: str
+          Databricks VPC endpoint ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
@@ -1546,7 +1797,13 @@ class VpcEndpointsAPI:
         privately with Databricks over [AWS PrivateLink].
         
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html"""
+        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
+        
+        :param vpc_endpoint_id: str
+          Databricks VPC endpoint ID.
+        
+        :returns: :class:`VpcEndpoint`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
@@ -1562,7 +1819,10 @@ class VpcEndpointsAPI:
         
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
         
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        
+        :returns: Iterator over :class:`VpcEndpoint`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints')
         return [VpcEndpoint.from_dict(v) for v in json]
@@ -1582,7 +1842,7 @@ class WorkspacesAPI:
     def wait_get_workspace_running(self,
                                    workspace_id: int,
                                    timeout=timedelta(minutes=20),
-                                   callback: Callable[[Workspace], None] = None) -> Workspace:
+                                   callback: Optional[Callable[[Workspace], None]] = None) -> Workspace:
         deadline = time.time() + timeout.total_seconds()
         target_states = (WorkspaceStatus.RUNNING, )
         failure_states = (WorkspaceStatus.BANNED, WorkspaceStatus.FAILED, )
@@ -1612,18 +1872,18 @@ class WorkspacesAPI:
     def create(self,
                workspace_name: str,
                *,
-               aws_region: str = None,
-               cloud: str = None,
-               cloud_resource_container: CloudResourceContainer = None,
-               credentials_id: str = None,
-               deployment_name: str = None,
-               location: str = None,
-               managed_services_customer_managed_key_id: str = None,
-               network_id: str = None,
-               pricing_tier: PricingTier = None,
-               private_access_settings_id: str = None,
-               storage_configuration_id: str = None,
-               storage_customer_managed_key_id: str = None,
+               aws_region: Optional[str] = None,
+               cloud: Optional[str] = None,
+               cloud_resource_container: Optional[CloudResourceContainer] = None,
+               credentials_id: Optional[str] = None,
+               deployment_name: Optional[str] = None,
+               location: Optional[str] = None,
+               managed_services_customer_managed_key_id: Optional[str] = None,
+               network_id: Optional[str] = None,
+               pricing_tier: Optional[PricingTier] = None,
+               private_access_settings_id: Optional[str] = None,
+               storage_configuration_id: Optional[str] = None,
+               storage_customer_managed_key_id: Optional[str] = None,
                **kwargs) -> Wait[Workspace]:
         """Create a new workspace.
         
@@ -1634,7 +1894,77 @@ class WorkspacesAPI:
         is running. The initial workspace status is typically `PROVISIONING`. Use the workspace ID
         (`workspace_id`) field in the response to identify the new workspace and make repeated `GET` requests
         with the workspace ID and check its status. The workspace becomes available when the status changes to
-        `RUNNING`."""
+        `RUNNING`.
+        
+        :param workspace_name: str
+          The workspace's human-readable name.
+        :param aws_region: str (optional)
+          The AWS region of the workspace's data plane.
+        :param cloud: str (optional)
+          The cloud provider which the workspace uses. For Google Cloud workspaces, always set this field to
+          `gcp`.
+        :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
+          The general workspace configurations that are specific to cloud providers.
+        :param credentials_id: str (optional)
+          ID of the workspace's credential configuration object.
+        :param deployment_name: str (optional)
+          The deployment name defines part of the subdomain for the workspace. The workspace URL for web
+          application and REST APIs is `<workspace-deployment-name>.cloud.databricks.com`. For example, if the
+          deployment name is `abcsales`, your workspace URL will be `https://abcsales.cloud.databricks.com`.
+          Hyphens are allowed. This property supports only the set of characters that are allowed in a
+          subdomain.
+          
+          If your account has a non-empty deployment name prefix at workspace creation time, the workspace
+          deployment name changes so that the beginning has the account prefix and a hyphen. For example, if
+          your account's deployment prefix is `acme` and the workspace deployment name is `workspace-1`, the
+          `deployment_name` field becomes `acme-workspace-1` and that is the value that is returned in JSON
+          responses for the `deployment_name` field. The workspace URL is
+          `acme-workspace-1.cloud.databricks.com`.
+          
+          If your account has a non-empty deployment name prefix and you set `deployment_name` to the reserved
+          keyword `EMPTY`, `deployment_name` is just the account prefix only. For example, if your account's
+          deployment prefix is `acme` and the workspace deployment name is `EMPTY`, `deployment_name` becomes
+          `acme` only and the workspace URL is `acme.cloud.databricks.com`.
+          
+          Contact your Databricks representatives to add an account deployment name prefix to your account. If
+          you do not have a deployment name prefix, the special deployment name value `EMPTY` is invalid.
+          
+          This value must be unique across all non-deleted deployments across all AWS regions.
+          
+          If a new workspace omits this property, the server generates a unique deployment name for you with
+          the pattern `dbc-xxxxxxxx-xxxx`.
+        :param location: str (optional)
+          The Google Cloud region of the workspace data plane in your Google account. For example, `us-east4`.
+        :param managed_services_customer_managed_key_id: str (optional)
+          The ID of the workspace's managed services encryption key configuration object. This is used to
+          encrypt the workspace's notebook and secret data in the control plane, in addition to Databricks SQL
+          queries and query history. The provided key configuration object property `use_cases` must contain
+          `MANAGED_SERVICES`.
+        :param network_id: str (optional)
+        :param pricing_tier: :class:`PricingTier` (optional)
+          The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
+          
+          [AWS Pricing]: https://databricks.com/product/aws-pricing
+        :param private_access_settings_id: str (optional)
+          ID of the workspace's private access settings object. Only used for PrivateLink. This ID must be
+          specified for customers using [AWS PrivateLink] for either front-end (user-to-workspace connection),
+          back-end (data plane to control plane connection), or both connection types.
+          
+          Before configuring PrivateLink, read the [Databricks article about PrivateLink].
+          
+          [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+          [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        :param storage_configuration_id: str (optional)
+          The ID of the workspace's storage configuration object.
+        :param storage_customer_managed_key_id: str (optional)
+          The ID of the workspace's storage encryption key configuration object. This is used to encrypt the
+          workspace's root S3 bucket (root DBFS and system data) and, optionally, cluster EBS volumes. The
+          provided key configuration object property `use_cases` must contain `STORAGE`.
+        
+        :returns:
+          long-running operation waiter for :class:`Workspace`.
+          See :method:wait_get_workspace_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateWorkspaceRequest(
@@ -1661,18 +1991,18 @@ class WorkspacesAPI:
         self,
         workspace_name: str,
         *,
-        aws_region: str = None,
-        cloud: str = None,
-        cloud_resource_container: CloudResourceContainer = None,
-        credentials_id: str = None,
-        deployment_name: str = None,
-        location: str = None,
-        managed_services_customer_managed_key_id: str = None,
-        network_id: str = None,
-        pricing_tier: PricingTier = None,
-        private_access_settings_id: str = None,
-        storage_configuration_id: str = None,
-        storage_customer_managed_key_id: str = None,
+        aws_region: Optional[str] = None,
+        cloud: Optional[str] = None,
+        cloud_resource_container: Optional[CloudResourceContainer] = None,
+        credentials_id: Optional[str] = None,
+        deployment_name: Optional[str] = None,
+        location: Optional[str] = None,
+        managed_services_customer_managed_key_id: Optional[str] = None,
+        network_id: Optional[str] = None,
+        pricing_tier: Optional[PricingTier] = None,
+        private_access_settings_id: Optional[str] = None,
+        storage_configuration_id: Optional[str] = None,
+        storage_customer_managed_key_id: Optional[str] = None,
         timeout=timedelta(minutes=20)) -> Workspace:
         return self.create(aws_region=aws_region,
                            cloud=cloud,
@@ -1696,7 +2026,13 @@ class WorkspacesAPI:
         and number of workspace resources.
         
         This operation is available only if your account is on the E2 version of the platform or on a select
-        custom plan that allows multiple workspaces per account."""
+        custom plan that allows multiple workspaces per account.
+        
+        :param workspace_id: int
+          Workspace ID.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteWorkspaceRequest(workspace_id=workspace_id)
@@ -1717,7 +2053,13 @@ class WorkspacesAPI:
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
         
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        
+        :param workspace_id: int
+          Workspace ID.
+        
+        :returns: :class:`Workspace`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetWorkspaceRequest(workspace_id=workspace_id)
@@ -1732,7 +2074,10 @@ class WorkspacesAPI:
         Gets a list of all workspaces associated with an account, specified by ID.
         
         This operation is available only if your account is on the E2 version of the platform or on a select
-        custom plan that allows multiple workspaces per account."""
+        custom plan that allows multiple workspaces per account.
+        
+        :returns: Iterator over :class:`Workspace`
+        """
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces')
         return [Workspace.from_dict(v) for v in json]
@@ -1740,12 +2085,12 @@ class WorkspacesAPI:
     def update(self,
                workspace_id: int,
                *,
-               aws_region: str = None,
-               credentials_id: str = None,
-               managed_services_customer_managed_key_id: str = None,
-               network_id: str = None,
-               storage_configuration_id: str = None,
-               storage_customer_managed_key_id: str = None,
+               aws_region: Optional[str] = None,
+               credentials_id: Optional[str] = None,
+               managed_services_customer_managed_key_id: Optional[str] = None,
+               network_id: Optional[str] = None,
+               storage_configuration_id: Optional[str] = None,
+               storage_customer_managed_key_id: Optional[str] = None,
                **kwargs) -> Wait[Workspace]:
         """Update workspace configuration.
         
@@ -1838,7 +2183,34 @@ class WorkspacesAPI:
         custom plan that allows multiple workspaces per account.
         
         [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html"""
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        
+        :param workspace_id: int
+          Workspace ID.
+        :param aws_region: str (optional)
+          The AWS region of the workspace's data plane (for example, `us-west-2`). This parameter is available
+          only for updating failed workspaces.
+        :param credentials_id: str (optional)
+          ID of the workspace's credential configuration object. This parameter is available for updating both
+          failed and running workspaces.
+        :param managed_services_customer_managed_key_id: str (optional)
+          The ID of the workspace's managed services encryption key configuration object. This parameter is
+          available only for updating failed workspaces.
+        :param network_id: str (optional)
+          The ID of the workspace's network configuration object. Used only if you already use a
+          customer-managed VPC. For failed workspaces only, you can switch from a Databricks-managed VPC to a
+          customer-managed VPC by updating the workspace to add a network configuration ID.
+        :param storage_configuration_id: str (optional)
+          The ID of the workspace's storage configuration object. This parameter is available only for
+          updating failed workspaces.
+        :param storage_customer_managed_key_id: str (optional)
+          The ID of the key configuration object for workspace storage. This parameter is available for
+          updating both failed and running workspaces.
+        
+        :returns:
+          long-running operation waiter for :class:`Workspace`.
+          See :method:wait_get_workspace_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateWorkspaceRequest(
@@ -1859,12 +2231,12 @@ class WorkspacesAPI:
         self,
         workspace_id: int,
         *,
-        aws_region: str = None,
-        credentials_id: str = None,
-        managed_services_customer_managed_key_id: str = None,
-        network_id: str = None,
-        storage_configuration_id: str = None,
-        storage_customer_managed_key_id: str = None,
+        aws_region: Optional[str] = None,
+        credentials_id: Optional[str] = None,
+        managed_services_customer_managed_key_id: Optional[str] = None,
+        network_id: Optional[str] = None,
+        storage_configuration_id: Optional[str] = None,
+        storage_customer_managed_key_id: Optional[str] = None,
         timeout=timedelta(minutes=20)) -> Workspace:
         return self.update(aws_region=aws_region,
                            credentials_id=credentials_id,

@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated
@@ -19,16 +19,17 @@ _LOG = logging.getLogger('databricks.sdk')
 @dataclass
 class AddInstanceProfile:
     instance_profile_arn: str
-    iam_role_arn: str = None
-    is_meta_instance_profile: bool = None
-    skip_validation: bool = None
+    iam_role_arn: Optional[str] = None
+    is_meta_instance_profile: Optional[bool] = None
+    skip_validation: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.iam_role_arn: body['iam_role_arn'] = self.iam_role_arn
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.is_meta_instance_profile: body['is_meta_instance_profile'] = self.is_meta_instance_profile
-        if self.skip_validation: body['skip_validation'] = self.skip_validation
+        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = self.is_meta_instance_profile
+        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
         return body
 
     @classmethod
@@ -46,8 +47,8 @@ class AutoScale:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.max_workers: body['max_workers'] = self.max_workers
-        if self.min_workers: body['min_workers'] = self.min_workers
+        if self.max_workers is not None: body['max_workers'] = self.max_workers
+        if self.min_workers is not None: body['min_workers'] = self.min_workers
         return body
 
     @classmethod
@@ -57,29 +58,30 @@ class AutoScale:
 
 @dataclass
 class AwsAttributes:
-    availability: 'AwsAvailability' = None
-    ebs_volume_count: int = None
-    ebs_volume_iops: int = None
-    ebs_volume_size: int = None
-    ebs_volume_throughput: int = None
-    ebs_volume_type: 'EbsVolumeType' = None
-    first_on_demand: int = None
-    instance_profile_arn: str = None
-    spot_bid_price_percent: int = None
-    zone_id: str = None
+    availability: Optional['AwsAvailability'] = None
+    ebs_volume_count: Optional[int] = None
+    ebs_volume_iops: Optional[int] = None
+    ebs_volume_size: Optional[int] = None
+    ebs_volume_throughput: Optional[int] = None
+    ebs_volume_type: Optional['EbsVolumeType'] = None
+    first_on_demand: Optional[int] = None
+    instance_profile_arn: Optional[str] = None
+    spot_bid_price_percent: Optional[int] = None
+    zone_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.ebs_volume_count: body['ebs_volume_count'] = self.ebs_volume_count
-        if self.ebs_volume_iops: body['ebs_volume_iops'] = self.ebs_volume_iops
-        if self.ebs_volume_size: body['ebs_volume_size'] = self.ebs_volume_size
-        if self.ebs_volume_throughput: body['ebs_volume_throughput'] = self.ebs_volume_throughput
-        if self.ebs_volume_type: body['ebs_volume_type'] = self.ebs_volume_type.value
-        if self.first_on_demand: body['first_on_demand'] = self.first_on_demand
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.spot_bid_price_percent: body['spot_bid_price_percent'] = self.spot_bid_price_percent
-        if self.zone_id: body['zone_id'] = self.zone_id
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.ebs_volume_count is not None: body['ebs_volume_count'] = self.ebs_volume_count
+        if self.ebs_volume_iops is not None: body['ebs_volume_iops'] = self.ebs_volume_iops
+        if self.ebs_volume_size is not None: body['ebs_volume_size'] = self.ebs_volume_size
+        if self.ebs_volume_throughput is not None: body['ebs_volume_throughput'] = self.ebs_volume_throughput
+        if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type.value
+        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.spot_bid_price_percent is not None:
+            body['spot_bid_price_percent'] = self.spot_bid_price_percent
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
     @classmethod
@@ -108,17 +110,17 @@ class AwsAvailability(Enum):
 
 @dataclass
 class AzureAttributes:
-    availability: 'AzureAvailability' = None
-    first_on_demand: int = None
-    log_analytics_info: 'LogAnalyticsInfo' = None
-    spot_bid_max_price: float = None
+    availability: Optional['AzureAvailability'] = None
+    first_on_demand: Optional[int] = None
+    log_analytics_info: Optional['LogAnalyticsInfo'] = None
+    spot_bid_max_price: Optional[float] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.first_on_demand: body['first_on_demand'] = self.first_on_demand
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
         if self.log_analytics_info: body['log_analytics_info'] = self.log_analytics_info.as_dict()
-        if self.spot_bid_max_price: body['spot_bid_max_price'] = self.spot_bid_max_price
+        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
         return body
 
     @classmethod
@@ -141,54 +143,64 @@ class AzureAvailability(Enum):
 
 @dataclass
 class BaseClusterInfo:
-    autoscale: 'AutoScale' = None
-    autotermination_minutes: int = None
-    aws_attributes: 'AwsAttributes' = None
-    azure_attributes: 'AzureAttributes' = None
-    cluster_log_conf: 'ClusterLogConf' = None
-    cluster_name: str = None
-    cluster_source: 'ClusterSource' = None
-    custom_tags: 'Dict[str,str]' = None
-    driver_instance_pool_id: str = None
-    driver_node_type_id: str = None
-    enable_elastic_disk: bool = None
-    enable_local_disk_encryption: bool = None
-    gcp_attributes: 'GcpAttributes' = None
-    instance_pool_id: str = None
-    node_type_id: str = None
-    num_workers: int = None
-    policy_id: str = None
-    runtime_engine: 'RuntimeEngine' = None
-    spark_conf: 'Dict[str,str]' = None
-    spark_env_vars: 'Dict[str,str]' = None
-    spark_version: str = None
-    ssh_public_keys: 'List[str]' = None
-    workload_type: 'WorkloadType' = None
+    autoscale: Optional['AutoScale'] = None
+    autotermination_minutes: Optional[int] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    cluster_name: Optional[str] = None
+    cluster_source: Optional['ClusterSource'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    data_security_mode: Optional['DataSecurityMode'] = None
+    docker_image: Optional['DockerImage'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    enable_elastic_disk: Optional[bool] = None
+    enable_local_disk_encryption: Optional[bool] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    init_scripts: Optional['List[InitScriptInfo]'] = None
+    instance_pool_id: Optional[str] = None
+    node_type_id: Optional[str] = None
+    num_workers: Optional[int] = None
+    policy_id: Optional[str] = None
+    runtime_engine: Optional['RuntimeEngine'] = None
+    single_user_name: Optional[str] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    spark_version: Optional[str] = None
+    ssh_public_keys: Optional['List[str]'] = None
+    workload_type: Optional['WorkloadType'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -203,16 +215,20 @@ class BaseClusterInfo:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -222,15 +238,15 @@ class BaseClusterInfo:
 
 @dataclass
 class CancelCommand:
-    cluster_id: str = None
-    command_id: str = None
-    context_id: str = None
+    cluster_id: Optional[str] = None
+    command_id: Optional[str] = None
+    context_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.command_id: body['commandId'] = self.command_id
-        if self.context_id: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.command_id is not None: body['commandId'] = self.command_id
+        if self.context_id is not None: body['contextId'] = self.context_id
         return body
 
     @classmethod
@@ -247,8 +263,8 @@ class ChangeClusterOwner:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.owner_username: body['owner_username'] = self.owner_username
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.owner_username is not None: body['owner_username'] = self.owner_username
         return body
 
     @classmethod
@@ -258,13 +274,13 @@ class ChangeClusterOwner:
 
 @dataclass
 class ClientsTypes:
-    jobs: bool = None
-    notebooks: bool = None
+    jobs: Optional[bool] = None
+    notebooks: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.jobs: body['jobs'] = self.jobs
-        if self.notebooks: body['notebooks'] = self.notebooks
+        if self.jobs is not None: body['jobs'] = self.jobs
+        if self.notebooks is not None: body['notebooks'] = self.notebooks
         return body
 
     @classmethod
@@ -274,7 +290,7 @@ class ClientsTypes:
 
 @dataclass
 class CloudProviderNodeInfo:
-    status: 'List[CloudProviderNodeStatus]' = None
+    status: Optional['List[CloudProviderNodeStatus]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -295,49 +311,59 @@ class CloudProviderNodeStatus(Enum):
 @dataclass
 class ClusterAttributes:
     spark_version: str
-    autotermination_minutes: int = None
-    aws_attributes: 'AwsAttributes' = None
-    azure_attributes: 'AzureAttributes' = None
-    cluster_log_conf: 'ClusterLogConf' = None
-    cluster_name: str = None
-    cluster_source: 'ClusterSource' = None
-    custom_tags: 'Dict[str,str]' = None
-    driver_instance_pool_id: str = None
-    driver_node_type_id: str = None
-    enable_elastic_disk: bool = None
-    enable_local_disk_encryption: bool = None
-    gcp_attributes: 'GcpAttributes' = None
-    instance_pool_id: str = None
-    node_type_id: str = None
-    policy_id: str = None
-    runtime_engine: 'RuntimeEngine' = None
-    spark_conf: 'Dict[str,str]' = None
-    spark_env_vars: 'Dict[str,str]' = None
-    ssh_public_keys: 'List[str]' = None
-    workload_type: 'WorkloadType' = None
+    autotermination_minutes: Optional[int] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    cluster_name: Optional[str] = None
+    cluster_source: Optional['ClusterSource'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    data_security_mode: Optional['DataSecurityMode'] = None
+    docker_image: Optional['DockerImage'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    enable_elastic_disk: Optional[bool] = None
+    enable_local_disk_encryption: Optional[bool] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    init_scripts: Optional['List[InitScriptInfo]'] = None
+    instance_pool_id: Optional[str] = None
+    node_type_id: Optional[str] = None
+    policy_id: Optional[str] = None
+    runtime_engine: Optional['RuntimeEngine'] = None
+    single_user_name: Optional[str] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    ssh_public_keys: Optional['List[str]'] = None
+    workload_type: Optional['WorkloadType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -351,15 +377,19 @@ class ClusterAttributes:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -370,19 +400,19 @@ class ClusterAttributes:
 @dataclass
 class ClusterEvent:
     cluster_id: str
-    data_plane_event_details: 'DataPlaneEventDetails' = None
-    details: 'EventDetails' = None
-    timestamp: int = None
-    type: 'EventType' = None
+    data_plane_event_details: Optional['DataPlaneEventDetails'] = None
+    details: Optional['EventDetails'] = None
+    timestamp: Optional[int] = None
+    type: Optional['EventType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.data_plane_event_details:
             body['data_plane_event_details'] = self.data_plane_event_details.as_dict()
         if self.details: body['details'] = self.details.as_dict()
-        if self.timestamp: body['timestamp'] = self.timestamp
-        if self.type: body['type'] = self.type.value
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -396,92 +426,98 @@ class ClusterEvent:
 
 @dataclass
 class ClusterInfo:
-    autoscale: 'AutoScale' = None
-    autotermination_minutes: int = None
-    aws_attributes: 'AwsAttributes' = None
-    azure_attributes: 'AzureAttributes' = None
-    cluster_cores: float = None
-    cluster_id: str = None
-    cluster_log_conf: 'ClusterLogConf' = None
-    cluster_log_status: 'LogSyncStatus' = None
-    cluster_memory_mb: int = None
-    cluster_name: str = None
-    cluster_source: 'ClusterSource' = None
-    creator_user_name: str = None
-    custom_tags: 'Dict[str,str]' = None
-    data_security_mode: 'DataSecurityMode' = None
-    default_tags: 'Dict[str,str]' = None
-    driver: 'SparkNode' = None
-    driver_instance_pool_id: str = None
-    driver_node_type_id: str = None
-    enable_elastic_disk: bool = None
-    enable_local_disk_encryption: bool = None
-    executors: 'List[SparkNode]' = None
-    gcp_attributes: 'GcpAttributes' = None
-    instance_pool_id: str = None
-    jdbc_port: int = None
-    last_restarted_time: int = None
-    last_state_loss_time: int = None
-    node_type_id: str = None
-    num_workers: int = None
-    policy_id: str = None
-    runtime_engine: 'RuntimeEngine' = None
-    single_user_name: str = None
-    spark_conf: 'Dict[str,str]' = None
-    spark_context_id: int = None
-    spark_env_vars: 'Dict[str,str]' = None
-    spark_version: str = None
-    ssh_public_keys: 'List[str]' = None
-    start_time: int = None
-    state: 'State' = None
-    state_message: str = None
-    terminated_time: int = None
-    termination_reason: 'TerminationReason' = None
-    workload_type: 'WorkloadType' = None
+    autoscale: Optional['AutoScale'] = None
+    autotermination_minutes: Optional[int] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_cores: Optional[float] = None
+    cluster_id: Optional[str] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    cluster_log_status: Optional['LogSyncStatus'] = None
+    cluster_memory_mb: Optional[int] = None
+    cluster_name: Optional[str] = None
+    cluster_source: Optional['ClusterSource'] = None
+    creator_user_name: Optional[str] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    data_security_mode: Optional['DataSecurityMode'] = None
+    default_tags: Optional['Dict[str,str]'] = None
+    docker_image: Optional['DockerImage'] = None
+    driver: Optional['SparkNode'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    enable_elastic_disk: Optional[bool] = None
+    enable_local_disk_encryption: Optional[bool] = None
+    executors: Optional['List[SparkNode]'] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    init_scripts: Optional['List[InitScriptInfo]'] = None
+    instance_pool_id: Optional[str] = None
+    jdbc_port: Optional[int] = None
+    last_restarted_time: Optional[int] = None
+    last_state_loss_time: Optional[int] = None
+    node_type_id: Optional[str] = None
+    num_workers: Optional[int] = None
+    policy_id: Optional[str] = None
+    runtime_engine: Optional['RuntimeEngine'] = None
+    single_user_name: Optional[str] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_context_id: Optional[int] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    spark_version: Optional[str] = None
+    ssh_public_keys: Optional['List[str]'] = None
+    start_time: Optional[int] = None
+    state: Optional['State'] = None
+    state_message: Optional[str] = None
+    terminated_time: Optional[int] = None
+    termination_reason: Optional['TerminationReason'] = None
+    workload_type: Optional['WorkloadType'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
-        if self.cluster_cores: body['cluster_cores'] = self.cluster_cores
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_cores is not None: body['cluster_cores'] = self.cluster_cores
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_log_status: body['cluster_log_status'] = self.cluster_log_status.as_dict()
-        if self.cluster_memory_mb: body['cluster_memory_mb'] = self.cluster_memory_mb
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
+        if self.cluster_memory_mb is not None: body['cluster_memory_mb'] = self.cluster_memory_mb
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.data_security_mode: body['data_security_mode'] = self.data_security_mode.value
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
         if self.default_tags: body['default_tags'] = self.default_tags
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver: body['driver'] = self.driver.as_dict()
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.executors: body['executors'] = [v.as_dict() for v in self.executors]
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.jdbc_port: body['jdbc_port'] = self.jdbc_port
-        if self.last_restarted_time: body['last_restarted_time'] = self.last_restarted_time
-        if self.last_state_loss_time: body['last_state_loss_time'] = self.last_state_loss_time
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
-        if self.single_user_name: body['single_user_name'] = self.single_user_name
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
+        if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
+        if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_context_id: body['spark_context_id'] = self.spark_context_id
+        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
-        if self.start_time: body['start_time'] = self.start_time
-        if self.state: body['state'] = self.state.value
-        if self.state_message: body['state_message'] = self.state_message
-        if self.terminated_time: body['terminated_time'] = self.terminated_time
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state is not None: body['state'] = self.state.value
+        if self.state_message is not None: body['state_message'] = self.state_message
+        if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
         if self.termination_reason: body['termination_reason'] = self.termination_reason.as_dict()
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -503,6 +539,7 @@ class ClusterInfo:
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    default_tags=d.get('default_tags', None),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver=_from_dict(d, 'driver', SparkNode),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
@@ -510,6 +547,7 @@ class ClusterInfo:
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    executors=_repeated(d, 'executors', SparkNode),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    jdbc_port=d.get('jdbc_port', None),
                    last_restarted_time=d.get('last_restarted_time', None),
@@ -534,12 +572,12 @@ class ClusterInfo:
 
 @dataclass
 class ClusterLibraryStatuses:
-    cluster_id: str = None
-    library_statuses: 'List[LibraryFullStatus]' = None
+    cluster_id: Optional[str] = None
+    library_statuses: Optional['List[LibraryFullStatus]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.library_statuses: body['library_statuses'] = [v.as_dict() for v in self.library_statuses]
         return body
 
@@ -551,8 +589,8 @@ class ClusterLibraryStatuses:
 
 @dataclass
 class ClusterLogConf:
-    dbfs: 'DbfsStorageInfo' = None
-    s3: 'S3StorageInfo' = None
+    dbfs: Optional['DbfsStorageInfo'] = None
+    s3: Optional['S3StorageInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -567,13 +605,13 @@ class ClusterLogConf:
 
 @dataclass
 class ClusterSize:
-    autoscale: 'AutoScale' = None
-    num_workers: int = None
+    autoscale: Optional['AutoScale'] = None
+    num_workers: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.num_workers: body['num_workers'] = self.num_workers
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
         return body
 
     @classmethod
@@ -603,17 +641,17 @@ class ClusterStatusRequest:
 
 @dataclass
 class Command:
-    cluster_id: str = None
-    command: str = None
-    context_id: str = None
-    language: 'Language' = None
+    cluster_id: Optional[str] = None
+    command: Optional[str] = None
+    context_id: Optional[str] = None
+    language: Optional['Language'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.command: body['command'] = self.command
-        if self.context_id: body['contextId'] = self.context_id
-        if self.language: body['language'] = self.language.value
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.command is not None: body['command'] = self.command
+        if self.context_id is not None: body['contextId'] = self.context_id
+        if self.language is not None: body['language'] = self.language.value
         return body
 
     @classmethod
@@ -645,15 +683,15 @@ class CommandStatusRequest:
 
 @dataclass
 class CommandStatusResponse:
-    id: str = None
-    results: 'Results' = None
-    status: 'CommandStatus' = None
+    id: Optional[str] = None
+    results: Optional['Results'] = None
+    status: Optional['CommandStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         if self.results: body['results'] = self.results.as_dict()
-        if self.status: body['status'] = self.status.value
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -680,13 +718,13 @@ class ContextStatusRequest:
 
 @dataclass
 class ContextStatusResponse:
-    id: str = None
-    status: 'ContextStatus' = None
+    id: Optional[str] = None
+    status: Optional['ContextStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
-        if self.status: body['status'] = self.status.value
+        if self.id is not None: body['id'] = self.id
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -697,56 +735,60 @@ class ContextStatusResponse:
 @dataclass
 class CreateCluster:
     spark_version: str
-    apply_policy_default_values: bool = None
-    autoscale: 'AutoScale' = None
-    autotermination_minutes: int = None
-    aws_attributes: 'AwsAttributes' = None
-    azure_attributes: 'AzureAttributes' = None
-    cluster_log_conf: 'ClusterLogConf' = None
-    cluster_name: str = None
-    cluster_source: 'ClusterSource' = None
-    custom_tags: 'Dict[str,str]' = None
-    driver_instance_pool_id: str = None
-    driver_node_type_id: str = None
-    enable_elastic_disk: bool = None
-    enable_local_disk_encryption: bool = None
-    gcp_attributes: 'GcpAttributes' = None
-    instance_pool_id: str = None
-    node_type_id: str = None
-    num_workers: int = None
-    policy_id: str = None
-    runtime_engine: 'RuntimeEngine' = None
-    spark_conf: 'Dict[str,str]' = None
-    spark_env_vars: 'Dict[str,str]' = None
-    ssh_public_keys: 'List[str]' = None
-    workload_type: 'WorkloadType' = None
+    apply_policy_default_values: Optional[bool] = None
+    autoscale: Optional['AutoScale'] = None
+    autotermination_minutes: Optional[int] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    cluster_name: Optional[str] = None
+    cluster_source: Optional['ClusterSource'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    enable_elastic_disk: Optional[bool] = None
+    enable_local_disk_encryption: Optional[bool] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    init_scripts: Optional['List[InitScriptInfo]'] = None
+    instance_pool_id: Optional[str] = None
+    node_type_id: Optional[str] = None
+    num_workers: Optional[int] = None
+    policy_id: Optional[str] = None
+    runtime_engine: Optional['RuntimeEngine'] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    ssh_public_keys: Optional['List[str]'] = None
+    workload_type: Optional['WorkloadType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apply_policy_default_values:
+        if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -767,6 +809,7 @@ class CreateCluster:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -781,11 +824,11 @@ class CreateCluster:
 
 @dataclass
 class CreateClusterResponse:
-    cluster_id: str = None
+    cluster_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -795,13 +838,13 @@ class CreateClusterResponse:
 
 @dataclass
 class CreateContext:
-    cluster_id: str = None
-    language: 'Language' = None
+    cluster_id: Optional[str] = None
+    language: Optional['Language'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.language: body['language'] = self.language.value
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.language is not None: body['language'] = self.language.value
         return body
 
     @classmethod
@@ -813,17 +856,18 @@ class CreateContext:
 class CreateInstancePool:
     instance_pool_name: str
     node_type_id: str
-    aws_attributes: 'InstancePoolAwsAttributes' = None
-    azure_attributes: 'InstancePoolAzureAttributes' = None
-    custom_tags: 'Dict[str,str]' = None
-    disk_spec: 'DiskSpec' = None
-    enable_elastic_disk: bool = None
-    idle_instance_autotermination_minutes: int = None
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
-    max_capacity: int = None
-    min_idle_instances: int = None
-    preloaded_docker_images: 'List[DockerImage]' = None
-    preloaded_spark_versions: 'List[str]' = None
+    aws_attributes: Optional['InstancePoolAwsAttributes'] = None
+    azure_attributes: Optional['InstancePoolAzureAttributes'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    disk_spec: Optional['DiskSpec'] = None
+    enable_elastic_disk: Optional[bool] = None
+    gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
+    idle_instance_autotermination_minutes: Optional[int] = None
+    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
+    max_capacity: Optional[int] = None
+    min_idle_instances: Optional[int] = None
+    preloaded_docker_images: Optional['List[DockerImage]'] = None
+    preloaded_spark_versions: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -831,15 +875,16 @@ class CreateInstancePool:
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
@@ -853,6 +898,7 @@ class CreateInstancePool:
                    custom_tags=d.get('custom_tags', None),
                    disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
                    instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
                                                              InstancePoolFleetAttributes),
@@ -866,11 +912,11 @@ class CreateInstancePool:
 
 @dataclass
 class CreateInstancePoolResponse:
-    instance_pool_id: str = None
+    instance_pool_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
 
     @classmethod
@@ -881,21 +927,21 @@ class CreateInstancePoolResponse:
 @dataclass
 class CreatePolicy:
     name: str
-    definition: str = None
-    description: str = None
-    max_clusters_per_user: int = None
-    policy_family_definition_overrides: str = None
-    policy_family_id: str = None
+    definition: Optional[str] = None
+    description: Optional[str] = None
+    max_clusters_per_user: Optional[int] = None
+    policy_family_definition_overrides: Optional[str] = None
+    policy_family_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name: body['name'] = self.name
-        if self.policy_family_definition_overrides:
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
         return body
 
     @classmethod
@@ -910,11 +956,11 @@ class CreatePolicy:
 
 @dataclass
 class CreatePolicyResponse:
-    policy_id: str = None
+    policy_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -924,11 +970,11 @@ class CreatePolicyResponse:
 
 @dataclass
 class CreateResponse:
-    script_id: str = None
+    script_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.script_id: body['script_id'] = self.script_id
+        if self.script_id is not None: body['script_id'] = self.script_id
         return body
 
     @classmethod
@@ -938,11 +984,11 @@ class CreateResponse:
 
 @dataclass
 class Created:
-    id: str = None
+    id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id: body['id'] = self.id
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
@@ -952,17 +998,17 @@ class Created:
 
 @dataclass
 class DataPlaneEventDetails:
-    event_type: 'DataPlaneEventDetailsEventType' = None
-    executor_failures: int = None
-    host_id: str = None
-    timestamp: int = None
+    event_type: Optional['DataPlaneEventDetailsEventType'] = None
+    executor_failures: Optional[int] = None
+    host_id: Optional[str] = None
+    timestamp: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.event_type: body['event_type'] = self.event_type.value
-        if self.executor_failures: body['executor_failures'] = self.executor_failures
-        if self.host_id: body['host_id'] = self.host_id
-        if self.timestamp: body['timestamp'] = self.timestamp
+        if self.event_type is not None: body['event_type'] = self.event_type.value
+        if self.executor_failures is not None: body['executor_failures'] = self.executor_failures
+        if self.host_id is not None: body['host_id'] = self.host_id
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
     @classmethod
@@ -993,11 +1039,11 @@ class DataSecurityMode(Enum):
 
 @dataclass
 class DbfsStorageInfo:
-    destination: str = None
+    destination: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination: body['destination'] = self.destination
+        if self.destination is not None: body['destination'] = self.destination
         return body
 
     @classmethod
@@ -1011,7 +1057,7 @@ class DeleteCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -1032,7 +1078,7 @@ class DeleteInstancePool:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
 
     @classmethod
@@ -1046,7 +1092,7 @@ class DeletePolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -1061,8 +1107,8 @@ class DestroyContext:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['clusterId'] = self.cluster_id
-        if self.context_id: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.context_id is not None: body['contextId'] = self.context_id
         return body
 
     @classmethod
@@ -1072,18 +1118,18 @@ class DestroyContext:
 
 @dataclass
 class DiskSpec:
-    disk_count: int = None
-    disk_iops: int = None
-    disk_size: int = None
-    disk_throughput: int = None
-    disk_type: 'DiskType' = None
+    disk_count: Optional[int] = None
+    disk_iops: Optional[int] = None
+    disk_size: Optional[int] = None
+    disk_throughput: Optional[int] = None
+    disk_type: Optional['DiskType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.disk_count: body['disk_count'] = self.disk_count
-        if self.disk_iops: body['disk_iops'] = self.disk_iops
-        if self.disk_size: body['disk_size'] = self.disk_size
-        if self.disk_throughput: body['disk_throughput'] = self.disk_throughput
+        if self.disk_count is not None: body['disk_count'] = self.disk_count
+        if self.disk_iops is not None: body['disk_iops'] = self.disk_iops
+        if self.disk_size is not None: body['disk_size'] = self.disk_size
+        if self.disk_throughput is not None: body['disk_throughput'] = self.disk_throughput
         if self.disk_type: body['disk_type'] = self.disk_type.as_dict()
         return body
 
@@ -1098,13 +1144,14 @@ class DiskSpec:
 
 @dataclass
 class DiskType:
-    azure_disk_volume_type: 'DiskTypeAzureDiskVolumeType' = None
-    ebs_volume_type: 'DiskTypeEbsVolumeType' = None
+    azure_disk_volume_type: Optional['DiskTypeAzureDiskVolumeType'] = None
+    ebs_volume_type: Optional['DiskTypeEbsVolumeType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.azure_disk_volume_type: body['azure_disk_volume_type'] = self.azure_disk_volume_type.value
-        if self.ebs_volume_type: body['ebs_volume_type'] = self.ebs_volume_type.value
+        if self.azure_disk_volume_type is not None:
+            body['azure_disk_volume_type'] = self.azure_disk_volume_type.value
+        if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type.value
         return body
 
     @classmethod
@@ -1127,13 +1174,13 @@ class DiskTypeEbsVolumeType(Enum):
 
 @dataclass
 class DockerBasicAuth:
-    password: str = None
-    username: str = None
+    password: Optional[str] = None
+    username: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.password: body['password'] = self.password
-        if self.username: body['username'] = self.username
+        if self.password is not None: body['password'] = self.password
+        if self.username is not None: body['username'] = self.username
         return body
 
     @classmethod
@@ -1143,13 +1190,13 @@ class DockerBasicAuth:
 
 @dataclass
 class DockerImage:
-    basic_auth: 'DockerBasicAuth' = None
-    url: str = None
+    basic_auth: Optional['DockerBasicAuth'] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.basic_auth: body['basic_auth'] = self.basic_auth.as_dict()
-        if self.url: body['url'] = self.url
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -1168,57 +1215,67 @@ class EbsVolumeType(Enum):
 class EditCluster:
     cluster_id: str
     spark_version: str
-    apply_policy_default_values: bool = None
-    autoscale: 'AutoScale' = None
-    autotermination_minutes: int = None
-    aws_attributes: 'AwsAttributes' = None
-    azure_attributes: 'AzureAttributes' = None
-    cluster_log_conf: 'ClusterLogConf' = None
-    cluster_name: str = None
-    cluster_source: 'ClusterSource' = None
-    custom_tags: 'Dict[str,str]' = None
-    driver_instance_pool_id: str = None
-    driver_node_type_id: str = None
-    enable_elastic_disk: bool = None
-    enable_local_disk_encryption: bool = None
-    gcp_attributes: 'GcpAttributes' = None
-    instance_pool_id: str = None
-    node_type_id: str = None
-    num_workers: int = None
-    policy_id: str = None
-    runtime_engine: 'RuntimeEngine' = None
-    spark_conf: 'Dict[str,str]' = None
-    spark_env_vars: 'Dict[str,str]' = None
-    ssh_public_keys: 'List[str]' = None
-    workload_type: 'WorkloadType' = None
+    apply_policy_default_values: Optional[bool] = None
+    autoscale: Optional['AutoScale'] = None
+    autotermination_minutes: Optional[int] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    cluster_name: Optional[str] = None
+    cluster_source: Optional['ClusterSource'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    data_security_mode: Optional['DataSecurityMode'] = None
+    docker_image: Optional['DockerImage'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    enable_elastic_disk: Optional[bool] = None
+    enable_local_disk_encryption: Optional[bool] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    init_scripts: Optional['List[InitScriptInfo]'] = None
+    instance_pool_id: Optional[str] = None
+    node_type_id: Optional[str] = None
+    num_workers: Optional[int] = None
+    policy_id: Optional[str] = None
+    runtime_engine: Optional['RuntimeEngine'] = None
+    single_user_name: Optional[str] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    ssh_public_keys: Optional['List[str]'] = None
+    workload_type: Optional['WorkloadType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apply_policy_default_values:
+        if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes: body['autotermination_minutes'] = self.autotermination_minutes
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name: body['cluster_name'] = self.cluster_name
-        if self.cluster_source: body['cluster_source'] = self.cluster_source.value
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.driver_instance_pool_id: body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption:
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
             body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_workers: body['num_workers'] = self.num_workers
-        if self.policy_id: body['policy_id'] = self.policy_id
-        if self.runtime_engine: body['runtime_engine'] = self.runtime_engine.value
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version: body['spark_version'] = self.spark_version
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
@@ -1235,16 +1292,20 @@ class EditCluster:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -1257,17 +1318,18 @@ class EditInstancePool:
     instance_pool_id: str
     instance_pool_name: str
     node_type_id: str
-    aws_attributes: 'InstancePoolAwsAttributes' = None
-    azure_attributes: 'InstancePoolAzureAttributes' = None
-    custom_tags: 'Dict[str,str]' = None
-    disk_spec: 'DiskSpec' = None
-    enable_elastic_disk: bool = None
-    idle_instance_autotermination_minutes: int = None
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
-    max_capacity: int = None
-    min_idle_instances: int = None
-    preloaded_docker_images: 'List[DockerImage]' = None
-    preloaded_spark_versions: 'List[str]' = None
+    aws_attributes: Optional['InstancePoolAwsAttributes'] = None
+    azure_attributes: Optional['InstancePoolAzureAttributes'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    disk_spec: Optional['DiskSpec'] = None
+    enable_elastic_disk: Optional[bool] = None
+    gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
+    idle_instance_autotermination_minutes: Optional[int] = None
+    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
+    max_capacity: Optional[int] = None
+    min_idle_instances: Optional[int] = None
+    preloaded_docker_images: Optional['List[DockerImage]'] = None
+    preloaded_spark_versions: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1275,16 +1337,17 @@ class EditInstancePool:
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
@@ -1298,6 +1361,7 @@ class EditInstancePool:
                    custom_tags=d.get('custom_tags', None),
                    disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
                    instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
                                                              InstancePoolFleetAttributes),
@@ -1314,22 +1378,22 @@ class EditInstancePool:
 class EditPolicy:
     policy_id: str
     name: str
-    definition: str = None
-    description: str = None
-    max_clusters_per_user: int = None
-    policy_family_definition_overrides: str = None
-    policy_family_id: str = None
+    definition: Optional[str] = None
+    description: Optional[str] = None
+    max_clusters_per_user: Optional[int] = None
+    policy_family_definition_overrides: Optional[str] = None
+    policy_family_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name: body['name'] = self.name
-        if self.policy_family_definition_overrides:
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -1345,48 +1409,48 @@ class EditPolicy:
 
 @dataclass
 class EventDetails:
-    attributes: 'ClusterAttributes' = None
-    cause: 'EventDetailsCause' = None
-    cluster_size: 'ClusterSize' = None
-    current_num_vcpus: int = None
-    current_num_workers: int = None
-    did_not_expand_reason: str = None
-    disk_size: int = None
-    driver_state_message: str = None
-    enable_termination_for_node_blocklisted: bool = None
-    free_space: int = None
-    instance_id: str = None
-    job_run_name: str = None
-    previous_attributes: 'ClusterAttributes' = None
-    previous_cluster_size: 'ClusterSize' = None
-    previous_disk_size: int = None
-    reason: 'TerminationReason' = None
-    target_num_vcpus: int = None
-    target_num_workers: int = None
-    user: str = None
+    attributes: Optional['ClusterAttributes'] = None
+    cause: Optional['EventDetailsCause'] = None
+    cluster_size: Optional['ClusterSize'] = None
+    current_num_vcpus: Optional[int] = None
+    current_num_workers: Optional[int] = None
+    did_not_expand_reason: Optional[str] = None
+    disk_size: Optional[int] = None
+    driver_state_message: Optional[str] = None
+    enable_termination_for_node_blocklisted: Optional[bool] = None
+    free_space: Optional[int] = None
+    instance_id: Optional[str] = None
+    job_run_name: Optional[str] = None
+    previous_attributes: Optional['ClusterAttributes'] = None
+    previous_cluster_size: Optional['ClusterSize'] = None
+    previous_disk_size: Optional[int] = None
+    reason: Optional['TerminationReason'] = None
+    target_num_vcpus: Optional[int] = None
+    target_num_workers: Optional[int] = None
+    user: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.attributes: body['attributes'] = self.attributes.as_dict()
-        if self.cause: body['cause'] = self.cause.value
+        if self.cause is not None: body['cause'] = self.cause.value
         if self.cluster_size: body['cluster_size'] = self.cluster_size.as_dict()
-        if self.current_num_vcpus: body['current_num_vcpus'] = self.current_num_vcpus
-        if self.current_num_workers: body['current_num_workers'] = self.current_num_workers
-        if self.did_not_expand_reason: body['did_not_expand_reason'] = self.did_not_expand_reason
-        if self.disk_size: body['disk_size'] = self.disk_size
-        if self.driver_state_message: body['driver_state_message'] = self.driver_state_message
-        if self.enable_termination_for_node_blocklisted:
+        if self.current_num_vcpus is not None: body['current_num_vcpus'] = self.current_num_vcpus
+        if self.current_num_workers is not None: body['current_num_workers'] = self.current_num_workers
+        if self.did_not_expand_reason is not None: body['did_not_expand_reason'] = self.did_not_expand_reason
+        if self.disk_size is not None: body['disk_size'] = self.disk_size
+        if self.driver_state_message is not None: body['driver_state_message'] = self.driver_state_message
+        if self.enable_termination_for_node_blocklisted is not None:
             body['enable_termination_for_node_blocklisted'] = self.enable_termination_for_node_blocklisted
-        if self.free_space: body['free_space'] = self.free_space
-        if self.instance_id: body['instance_id'] = self.instance_id
-        if self.job_run_name: body['job_run_name'] = self.job_run_name
+        if self.free_space is not None: body['free_space'] = self.free_space
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.job_run_name is not None: body['job_run_name'] = self.job_run_name
         if self.previous_attributes: body['previous_attributes'] = self.previous_attributes.as_dict()
         if self.previous_cluster_size: body['previous_cluster_size'] = self.previous_cluster_size.as_dict()
-        if self.previous_disk_size: body['previous_disk_size'] = self.previous_disk_size
+        if self.previous_disk_size is not None: body['previous_disk_size'] = self.previous_disk_size
         if self.reason: body['reason'] = self.reason.as_dict()
-        if self.target_num_vcpus: body['target_num_vcpus'] = self.target_num_vcpus
-        if self.target_num_workers: body['target_num_workers'] = self.target_num_workers
-        if self.user: body['user'] = self.user
+        if self.target_num_vcpus is not None: body['target_num_vcpus'] = self.target_num_vcpus
+        if self.target_num_workers is not None: body['target_num_workers'] = self.target_num_workers
+        if self.user is not None: body['user'] = self.user
         return body
 
     @classmethod
@@ -1455,15 +1519,15 @@ class EventType(Enum):
 class FleetLaunchTemplateOverride:
     availability_zone: str
     instance_type: str
-    max_price: float = None
-    priority: float = None
+    max_price: Optional[float] = None
+    priority: Optional[float] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability_zone: body['availability_zone'] = self.availability_zone
-        if self.instance_type: body['instance_type'] = self.instance_type
-        if self.max_price: body['max_price'] = self.max_price
-        if self.priority: body['priority'] = self.priority
+        if self.availability_zone is not None: body['availability_zone'] = self.availability_zone
+        if self.instance_type is not None: body['instance_type'] = self.instance_type
+        if self.max_price is not None: body['max_price'] = self.max_price
+        if self.priority is not None: body['priority'] = self.priority
         return body
 
     @classmethod
@@ -1476,15 +1540,15 @@ class FleetLaunchTemplateOverride:
 
 @dataclass
 class FleetOnDemandOption:
-    allocation_strategy: 'FleetOnDemandOptionAllocationStrategy' = None
-    max_total_price: float = None
-    use_capacity_reservations_first: bool = None
+    allocation_strategy: Optional['FleetOnDemandOptionAllocationStrategy'] = None
+    max_total_price: Optional[float] = None
+    use_capacity_reservations_first: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allocation_strategy: body['allocation_strategy'] = self.allocation_strategy.value
-        if self.max_total_price: body['max_total_price'] = self.max_total_price
-        if self.use_capacity_reservations_first:
+        if self.allocation_strategy is not None: body['allocation_strategy'] = self.allocation_strategy.value
+        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
+        if self.use_capacity_reservations_first is not None:
             body['use_capacity_reservations_first'] = self.use_capacity_reservations_first
         return body
 
@@ -1506,16 +1570,16 @@ class FleetOnDemandOptionAllocationStrategy(Enum):
 
 @dataclass
 class FleetSpotOption:
-    allocation_strategy: 'FleetSpotOptionAllocationStrategy' = None
-    instance_pools_to_use_count: int = None
-    max_total_price: float = None
+    allocation_strategy: Optional['FleetSpotOptionAllocationStrategy'] = None
+    instance_pools_to_use_count: Optional[int] = None
+    max_total_price: Optional[float] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allocation_strategy: body['allocation_strategy'] = self.allocation_strategy.value
-        if self.instance_pools_to_use_count:
+        if self.allocation_strategy is not None: body['allocation_strategy'] = self.allocation_strategy.value
+        if self.instance_pools_to_use_count is not None:
             body['instance_pools_to_use_count'] = self.instance_pools_to_use_count
-        if self.max_total_price: body['max_total_price'] = self.max_total_price
+        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
         return body
 
     @classmethod
@@ -1536,27 +1600,31 @@ class FleetSpotOptionAllocationStrategy(Enum):
 
 @dataclass
 class GcpAttributes:
-    availability: 'GcpAvailability' = None
-    boot_disk_size: int = None
-    google_service_account: str = None
+    availability: Optional['GcpAvailability'] = None
+    boot_disk_size: Optional[int] = None
+    google_service_account: Optional[str] = None
+    local_ssd_count: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.boot_disk_size: body['boot_disk_size'] = self.boot_disk_size
-        if self.google_service_account: body['google_service_account'] = self.google_service_account
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.boot_disk_size is not None: body['boot_disk_size'] = self.boot_disk_size
+        if self.google_service_account is not None:
+            body['google_service_account'] = self.google_service_account
+        if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GcpAttributes':
         return cls(availability=_enum(d, 'availability', GcpAvailability),
                    boot_disk_size=d.get('boot_disk_size', None),
-                   google_service_account=d.get('google_service_account', None))
+                   google_service_account=d.get('google_service_account', None),
+                   local_ssd_count=d.get('local_ssd_count', None))
 
 
 class GcpAvailability(Enum):
-    """This field determines whether the spark executors will be scheduled to run on preemptible VMs,
-    on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
+    """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
+    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
 
     ON_DEMAND_GCP = 'ON_DEMAND_GCP'
     PREEMPTIBLE_GCP = 'PREEMPTIBLE_GCP'
@@ -1580,22 +1648,22 @@ class GetClusterRequest:
 @dataclass
 class GetEvents:
     cluster_id: str
-    end_time: int = None
-    event_types: 'List[EventType]' = None
-    limit: int = None
-    offset: int = None
-    order: 'GetEventsOrder' = None
-    start_time: int = None
+    end_time: Optional[int] = None
+    event_types: Optional['List[EventType]'] = None
+    limit: Optional[int] = None
+    offset: Optional[int] = None
+    order: Optional['GetEventsOrder'] = None
+    start_time: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.end_time: body['end_time'] = self.end_time
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.end_time is not None: body['end_time'] = self.end_time
         if self.event_types: body['event_types'] = [v for v in self.event_types]
-        if self.limit: body['limit'] = self.limit
-        if self.offset: body['offset'] = self.offset
-        if self.order: body['order'] = self.order.value
-        if self.start_time: body['start_time'] = self.start_time
+        if self.limit is not None: body['limit'] = self.limit
+        if self.offset is not None: body['offset'] = self.offset
+        if self.order is not None: body['order'] = self.order.value
+        if self.start_time is not None: body['start_time'] = self.start_time
         return body
 
     @classmethod
@@ -1618,15 +1686,15 @@ class GetEventsOrder(Enum):
 
 @dataclass
 class GetEventsResponse:
-    events: 'List[ClusterEvent]' = None
-    next_page: 'GetEvents' = None
-    total_count: int = None
+    events: Optional['List[ClusterEvent]'] = None
+    next_page: Optional['GetEvents'] = None
+    total_count: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
         if self.next_page: body['next_page'] = self.next_page.as_dict()
-        if self.total_count: body['total_count'] = self.total_count
+        if self.total_count is not None: body['total_count'] = self.total_count
         return body
 
     @classmethod
@@ -1646,23 +1714,24 @@ class GetGlobalInitScriptRequest:
 @dataclass
 class GetInstancePool:
     instance_pool_id: str
-    aws_attributes: 'InstancePoolAwsAttributes' = None
-    azure_attributes: 'InstancePoolAzureAttributes' = None
-    custom_tags: 'Dict[str,str]' = None
-    default_tags: 'Dict[str,str]' = None
-    disk_spec: 'DiskSpec' = None
-    enable_elastic_disk: bool = None
-    idle_instance_autotermination_minutes: int = None
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
-    instance_pool_name: str = None
-    max_capacity: int = None
-    min_idle_instances: int = None
-    node_type_id: str = None
-    preloaded_docker_images: 'List[DockerImage]' = None
-    preloaded_spark_versions: 'List[str]' = None
-    state: 'InstancePoolState' = None
-    stats: 'InstancePoolStats' = None
-    status: 'InstancePoolStatus' = None
+    aws_attributes: Optional['InstancePoolAwsAttributes'] = None
+    azure_attributes: Optional['InstancePoolAzureAttributes'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    default_tags: Optional['Dict[str,str]'] = None
+    disk_spec: Optional['DiskSpec'] = None
+    enable_elastic_disk: Optional[bool] = None
+    gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
+    idle_instance_autotermination_minutes: Optional[int] = None
+    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
+    instance_pool_name: Optional[str] = None
+    max_capacity: Optional[int] = None
+    min_idle_instances: Optional[int] = None
+    node_type_id: Optional[str] = None
+    preloaded_docker_images: Optional['List[DockerImage]'] = None
+    preloaded_spark_versions: Optional['List[str]'] = None
+    state: Optional['InstancePoolState'] = None
+    stats: Optional['InstancePoolStats'] = None
+    status: Optional['InstancePoolStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1671,21 +1740,22 @@ class GetInstancePool:
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.default_tags: body['default_tags'] = self.default_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         if self.stats: body['stats'] = self.stats.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         return body
@@ -1698,6 +1768,7 @@ class GetInstancePool:
                    default_tags=d.get('default_tags', None),
                    disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
                    instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
                                                              InstancePoolFleetAttributes),
@@ -1727,7 +1798,7 @@ class GetPolicyFamilyRequest:
 
 @dataclass
 class GetSparkVersionsResponse:
-    versions: 'List[SparkVersion]' = None
+    versions: Optional['List[SparkVersion]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1743,15 +1814,15 @@ class GetSparkVersionsResponse:
 class GlobalInitScriptCreateRequest:
     name: str
     script: str
-    enabled: bool = None
-    position: int = None
+    enabled: Optional[bool] = None
+    position: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script: body['script'] = self.script
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
         return body
 
     @classmethod
@@ -1764,25 +1835,25 @@ class GlobalInitScriptCreateRequest:
 
 @dataclass
 class GlobalInitScriptDetails:
-    created_at: int = None
-    created_by: str = None
-    enabled: bool = None
-    name: str = None
-    position: int = None
-    script_id: str = None
-    updated_at: int = None
-    updated_by: str = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    enabled: Optional[bool] = None
+    name: Optional[str] = None
+    position: Optional[int] = None
+    script_id: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script_id: body['script_id'] = self.script_id
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -1799,27 +1870,27 @@ class GlobalInitScriptDetails:
 
 @dataclass
 class GlobalInitScriptDetailsWithContent:
-    created_at: int = None
-    created_by: str = None
-    enabled: bool = None
-    name: str = None
-    position: int = None
-    script: str = None
-    script_id: str = None
-    updated_at: int = None
-    updated_by: str = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    enabled: Optional[bool] = None
+    name: Optional[str] = None
+    position: Optional[int] = None
+    script: Optional[str] = None
+    script_id: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script: body['script'] = self.script
-        if self.script_id: body['script_id'] = self.script_id
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -1839,17 +1910,17 @@ class GlobalInitScriptDetailsWithContent:
 class GlobalInitScriptUpdateRequest:
     name: str
     script: str
-    script_id: str
-    enabled: bool = None
-    position: int = None
+    enabled: Optional[bool] = None
+    position: Optional[int] = None
+    script_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled: body['enabled'] = self.enabled
-        if self.name: body['name'] = self.name
-        if self.position: body['position'] = self.position
-        if self.script: body['script'] = self.script
-        if self.script_id: body['script_id'] = self.script_id
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        if self.script_id is not None: body['script_id'] = self.script_id
         return body
 
     @classmethod
@@ -1862,13 +1933,33 @@ class GlobalInitScriptUpdateRequest:
 
 
 @dataclass
+class InitScriptInfo:
+    dbfs: Optional['DbfsStorageInfo'] = None
+    s3: Optional['S3StorageInfo'] = None
+    workspace: Optional['WorkspaceStorageInfo'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dbfs: body['dbfs'] = self.dbfs.as_dict()
+        if self.s3: body['s3'] = self.s3.as_dict()
+        if self.workspace: body['workspace'] = self.workspace.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InitScriptInfo':
+        return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
+                   s3=_from_dict(d, 's3', S3StorageInfo),
+                   workspace=_from_dict(d, 'workspace', WorkspaceStorageInfo))
+
+
+@dataclass
 class InstallLibraries:
     cluster_id: str
     libraries: 'List[Library]'
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         return body
 
@@ -1879,24 +1970,25 @@ class InstallLibraries:
 
 @dataclass
 class InstancePoolAndStats:
-    aws_attributes: 'InstancePoolAwsAttributes' = None
-    azure_attributes: 'InstancePoolAzureAttributes' = None
-    custom_tags: 'Dict[str,str]' = None
-    default_tags: 'Dict[str,str]' = None
-    disk_spec: 'DiskSpec' = None
-    enable_elastic_disk: bool = None
-    idle_instance_autotermination_minutes: int = None
-    instance_pool_fleet_attributes: 'InstancePoolFleetAttributes' = None
-    instance_pool_id: str = None
-    instance_pool_name: str = None
-    max_capacity: int = None
-    min_idle_instances: int = None
-    node_type_id: str = None
-    preloaded_docker_images: 'List[DockerImage]' = None
-    preloaded_spark_versions: 'List[str]' = None
-    state: 'InstancePoolState' = None
-    stats: 'InstancePoolStats' = None
-    status: 'InstancePoolStatus' = None
+    aws_attributes: Optional['InstancePoolAwsAttributes'] = None
+    azure_attributes: Optional['InstancePoolAzureAttributes'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    default_tags: Optional['Dict[str,str]'] = None
+    disk_spec: Optional['DiskSpec'] = None
+    enable_elastic_disk: Optional[bool] = None
+    gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
+    idle_instance_autotermination_minutes: Optional[int] = None
+    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
+    instance_pool_id: Optional[str] = None
+    instance_pool_name: Optional[str] = None
+    max_capacity: Optional[int] = None
+    min_idle_instances: Optional[int] = None
+    node_type_id: Optional[str] = None
+    preloaded_docker_images: Optional['List[DockerImage]'] = None
+    preloaded_spark_versions: Optional['List[str]'] = None
+    state: Optional['InstancePoolState'] = None
+    stats: Optional['InstancePoolStats'] = None
+    status: Optional['InstancePoolStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1905,21 +1997,22 @@ class InstancePoolAndStats:
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.default_tags: body['default_tags'] = self.default_tags
         if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.idle_instance_autotermination_minutes:
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
-        if self.instance_pool_id: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
-        if self.state: body['state'] = self.state.value
+        if self.state is not None: body['state'] = self.state.value
         if self.stats: body['stats'] = self.stats.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         return body
@@ -1932,6 +2025,7 @@ class InstancePoolAndStats:
                    default_tags=d.get('default_tags', None),
                    disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
                    instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
                                                              InstancePoolFleetAttributes),
@@ -1949,15 +2043,16 @@ class InstancePoolAndStats:
 
 @dataclass
 class InstancePoolAwsAttributes:
-    availability: 'InstancePoolAwsAttributesAvailability' = None
-    spot_bid_price_percent: int = None
-    zone_id: str = None
+    availability: Optional['InstancePoolAwsAttributesAvailability'] = None
+    spot_bid_price_percent: Optional[int] = None
+    zone_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.spot_bid_price_percent: body['spot_bid_price_percent'] = self.spot_bid_price_percent
-        if self.zone_id: body['zone_id'] = self.zone_id
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.spot_bid_price_percent is not None:
+            body['spot_bid_price_percent'] = self.spot_bid_price_percent
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
     @classmethod
@@ -1979,13 +2074,13 @@ class InstancePoolAwsAttributesAvailability(Enum):
 
 @dataclass
 class InstancePoolAzureAttributes:
-    availability: 'InstancePoolAzureAttributesAvailability' = None
-    spot_bid_max_price: float = None
+    availability: Optional['InstancePoolAzureAttributesAvailability'] = None
+    spot_bid_max_price: Optional[float] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability: body['availability'] = self.availability.value
-        if self.spot_bid_max_price: body['spot_bid_max_price'] = self.spot_bid_max_price
+        if self.availability is not None: body['availability'] = self.availability.value
+        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
         return body
 
     @classmethod
@@ -2006,9 +2101,9 @@ class InstancePoolAzureAttributesAvailability(Enum):
 
 @dataclass
 class InstancePoolFleetAttributes:
-    fleet_on_demand_option: 'FleetOnDemandOption' = None
-    fleet_spot_option: 'FleetSpotOption' = None
-    launch_template_overrides: 'List[FleetLaunchTemplateOverride]' = None
+    fleet_on_demand_option: Optional['FleetOnDemandOption'] = None
+    fleet_spot_option: Optional['FleetSpotOption'] = None
+    launch_template_overrides: Optional['List[FleetLaunchTemplateOverride]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2026,6 +2121,23 @@ class InstancePoolFleetAttributes:
                                                        FleetLaunchTemplateOverride))
 
 
+@dataclass
+class InstancePoolGcpAttributes:
+    gcp_availability: Optional['GcpAvailability'] = None
+    local_ssd_count: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.gcp_availability is not None: body['gcp_availability'] = self.gcp_availability.value
+        if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolGcpAttributes':
+        return cls(gcp_availability=_enum(d, 'gcp_availability', GcpAvailability),
+                   local_ssd_count=d.get('local_ssd_count', None))
+
+
 class InstancePoolState(Enum):
     """Current state of the instance pool."""
 
@@ -2036,17 +2148,17 @@ class InstancePoolState(Enum):
 
 @dataclass
 class InstancePoolStats:
-    idle_count: int = None
-    pending_idle_count: int = None
-    pending_used_count: int = None
-    used_count: int = None
+    idle_count: Optional[int] = None
+    pending_idle_count: Optional[int] = None
+    pending_used_count: Optional[int] = None
+    used_count: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.idle_count: body['idle_count'] = self.idle_count
-        if self.pending_idle_count: body['pending_idle_count'] = self.pending_idle_count
-        if self.pending_used_count: body['pending_used_count'] = self.pending_used_count
-        if self.used_count: body['used_count'] = self.used_count
+        if self.idle_count is not None: body['idle_count'] = self.idle_count
+        if self.pending_idle_count is not None: body['pending_idle_count'] = self.pending_idle_count
+        if self.pending_used_count is not None: body['pending_used_count'] = self.pending_used_count
+        if self.used_count is not None: body['used_count'] = self.used_count
         return body
 
     @classmethod
@@ -2059,7 +2171,7 @@ class InstancePoolStats:
 
 @dataclass
 class InstancePoolStatus:
-    pending_instance_errors: 'List[PendingInstanceError]' = None
+    pending_instance_errors: Optional['List[PendingInstanceError]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2075,14 +2187,15 @@ class InstancePoolStatus:
 @dataclass
 class InstanceProfile:
     instance_profile_arn: str
-    iam_role_arn: str = None
-    is_meta_instance_profile: bool = None
+    iam_role_arn: Optional[str] = None
+    is_meta_instance_profile: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.iam_role_arn: body['iam_role_arn'] = self.iam_role_arn
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.is_meta_instance_profile: body['is_meta_instance_profile'] = self.is_meta_instance_profile
+        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = self.is_meta_instance_profile
         return body
 
     @classmethod
@@ -2101,21 +2214,21 @@ class Language(Enum):
 
 @dataclass
 class Library:
-    cran: 'RCranLibrary' = None
-    egg: str = None
-    jar: str = None
-    maven: 'MavenLibrary' = None
-    pypi: 'PythonPyPiLibrary' = None
-    whl: str = None
+    cran: Optional['RCranLibrary'] = None
+    egg: Optional[str] = None
+    jar: Optional[str] = None
+    maven: Optional['MavenLibrary'] = None
+    pypi: Optional['PythonPyPiLibrary'] = None
+    whl: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.cran: body['cran'] = self.cran.as_dict()
-        if self.egg: body['egg'] = self.egg
-        if self.jar: body['jar'] = self.jar
+        if self.egg is not None: body['egg'] = self.egg
+        if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.pypi: body['pypi'] = self.pypi.as_dict()
-        if self.whl: body['whl'] = self.whl
+        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -2130,18 +2243,18 @@ class Library:
 
 @dataclass
 class LibraryFullStatus:
-    is_library_for_all_clusters: bool = None
-    library: 'Library' = None
-    messages: 'List[str]' = None
-    status: 'LibraryFullStatusStatus' = None
+    is_library_for_all_clusters: Optional[bool] = None
+    library: Optional['Library'] = None
+    messages: Optional['List[str]'] = None
+    status: Optional['LibraryFullStatusStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_library_for_all_clusters:
+        if self.is_library_for_all_clusters is not None:
             body['is_library_for_all_clusters'] = self.is_library_for_all_clusters
         if self.library: body['library'] = self.library.as_dict()
         if self.messages: body['messages'] = [v for v in self.messages]
-        if self.status: body['status'] = self.status.value
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -2166,7 +2279,7 @@ class LibraryFullStatusStatus(Enum):
 
 @dataclass
 class ListAllClusterLibraryStatusesResponse:
-    statuses: 'List[ClusterLibraryStatuses]' = None
+    statuses: Optional['List[ClusterLibraryStatuses]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2180,12 +2293,12 @@ class ListAllClusterLibraryStatusesResponse:
 
 @dataclass
 class ListAvailableZonesResponse:
-    default_zone: str = None
-    zones: 'List[str]' = None
+    default_zone: Optional[str] = None
+    zones: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default_zone: body['default_zone'] = self.default_zone
+        if self.default_zone is not None: body['default_zone'] = self.default_zone
         if self.zones: body['zones'] = [v for v in self.zones]
         return body
 
@@ -2198,20 +2311,20 @@ class ListAvailableZonesResponse:
 class ListClusterPoliciesRequest:
     """Get a cluster policy"""
 
-    sort_column: 'ListSortColumn' = None
-    sort_order: 'ListSortOrder' = None
+    sort_column: Optional['ListSortColumn'] = None
+    sort_order: Optional['ListSortOrder'] = None
 
 
 @dataclass
 class ListClustersRequest:
     """List all clusters"""
 
-    can_use_client: str = None
+    can_use_client: Optional[str] = None
 
 
 @dataclass
 class ListClustersResponse:
-    clusters: 'List[ClusterInfo]' = None
+    clusters: Optional['List[ClusterInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2225,7 +2338,7 @@ class ListClustersResponse:
 
 @dataclass
 class ListGlobalInitScriptsResponse:
-    scripts: 'List[GlobalInitScriptDetails]' = None
+    scripts: Optional['List[GlobalInitScriptDetails]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2239,7 +2352,7 @@ class ListGlobalInitScriptsResponse:
 
 @dataclass
 class ListInstancePools:
-    instance_pools: 'List[InstancePoolAndStats]' = None
+    instance_pools: Optional['List[InstancePoolAndStats]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2253,7 +2366,7 @@ class ListInstancePools:
 
 @dataclass
 class ListInstanceProfilesResponse:
-    instance_profiles: 'List[InstanceProfile]' = None
+    instance_profiles: Optional['List[InstanceProfile]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2267,7 +2380,7 @@ class ListInstanceProfilesResponse:
 
 @dataclass
 class ListNodeTypesResponse:
-    node_types: 'List[NodeType]' = None
+    node_types: Optional['List[NodeType]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2281,7 +2394,7 @@ class ListNodeTypesResponse:
 
 @dataclass
 class ListPoliciesResponse:
-    policies: 'List[Policy]' = None
+    policies: Optional['List[Policy]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2295,18 +2408,18 @@ class ListPoliciesResponse:
 
 @dataclass
 class ListPolicyFamiliesRequest:
-    max_results: int = None
-    page_token: str = None
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
 
 
 @dataclass
 class ListPolicyFamiliesResponse:
     policy_families: 'List[PolicyFamily]'
-    next_page_token: str = None
+    next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.policy_families: body['policy_families'] = [v.as_dict() for v in self.policy_families]
         return body
 
@@ -2330,13 +2443,14 @@ class ListSortOrder(Enum):
 
 @dataclass
 class LogAnalyticsInfo:
-    log_analytics_primary_key: str = None
-    log_analytics_workspace_id: str = None
+    log_analytics_primary_key: Optional[str] = None
+    log_analytics_workspace_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.log_analytics_primary_key: body['log_analytics_primary_key'] = self.log_analytics_primary_key
-        if self.log_analytics_workspace_id:
+        if self.log_analytics_primary_key is not None:
+            body['log_analytics_primary_key'] = self.log_analytics_primary_key
+        if self.log_analytics_workspace_id is not None:
             body['log_analytics_workspace_id'] = self.log_analytics_workspace_id
         return body
 
@@ -2348,13 +2462,13 @@ class LogAnalyticsInfo:
 
 @dataclass
 class LogSyncStatus:
-    last_attempted: int = None
-    last_exception: str = None
+    last_attempted: Optional[int] = None
+    last_exception: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.last_attempted: body['last_attempted'] = self.last_attempted
-        if self.last_exception: body['last_exception'] = self.last_exception
+        if self.last_attempted is not None: body['last_attempted'] = self.last_attempted
+        if self.last_exception is not None: body['last_exception'] = self.last_exception
         return body
 
     @classmethod
@@ -2365,14 +2479,14 @@ class LogSyncStatus:
 @dataclass
 class MavenLibrary:
     coordinates: str
-    exclusions: 'List[str]' = None
-    repo: str = None
+    exclusions: Optional['List[str]'] = None
+    repo: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.coordinates: body['coordinates'] = self.coordinates
+        if self.coordinates is not None: body['coordinates'] = self.coordinates
         if self.exclusions: body['exclusions'] = [v for v in self.exclusions]
-        if self.repo: body['repo'] = self.repo
+        if self.repo is not None: body['repo'] = self.repo
         return body
 
     @classmethod
@@ -2384,19 +2498,20 @@ class MavenLibrary:
 
 @dataclass
 class NodeInstanceType:
-    instance_type_id: str = None
-    local_disk_size_gb: int = None
-    local_disks: int = None
-    local_nvme_disk_size_gb: int = None
-    local_nvme_disks: int = None
+    instance_type_id: Optional[str] = None
+    local_disk_size_gb: Optional[int] = None
+    local_disks: Optional[int] = None
+    local_nvme_disk_size_gb: Optional[int] = None
+    local_nvme_disks: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_type_id: body['instance_type_id'] = self.instance_type_id
-        if self.local_disk_size_gb: body['local_disk_size_gb'] = self.local_disk_size_gb
-        if self.local_disks: body['local_disks'] = self.local_disks
-        if self.local_nvme_disk_size_gb: body['local_nvme_disk_size_gb'] = self.local_nvme_disk_size_gb
-        if self.local_nvme_disks: body['local_nvme_disks'] = self.local_nvme_disks
+        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
+        if self.local_disk_size_gb is not None: body['local_disk_size_gb'] = self.local_disk_size_gb
+        if self.local_disks is not None: body['local_disks'] = self.local_disks
+        if self.local_nvme_disk_size_gb is not None:
+            body['local_nvme_disk_size_gb'] = self.local_nvme_disk_size_gb
+        if self.local_nvme_disks is not None: body['local_nvme_disks'] = self.local_nvme_disks
         return body
 
     @classmethod
@@ -2415,44 +2530,46 @@ class NodeType:
     num_cores: float
     description: str
     instance_type_id: str
-    category: str = None
-    display_order: int = None
-    is_deprecated: bool = None
-    is_encrypted_in_transit: bool = None
-    is_graviton: bool = None
-    is_hidden: bool = None
-    is_io_cache_enabled: bool = None
-    node_info: 'CloudProviderNodeInfo' = None
-    node_instance_type: 'NodeInstanceType' = None
-    num_gpus: int = None
-    photon_driver_capable: bool = None
-    photon_worker_capable: bool = None
-    support_cluster_tags: bool = None
-    support_ebs_volumes: bool = None
-    support_port_forwarding: bool = None
+    category: Optional[str] = None
+    display_order: Optional[int] = None
+    is_deprecated: Optional[bool] = None
+    is_encrypted_in_transit: Optional[bool] = None
+    is_graviton: Optional[bool] = None
+    is_hidden: Optional[bool] = None
+    is_io_cache_enabled: Optional[bool] = None
+    node_info: Optional['CloudProviderNodeInfo'] = None
+    node_instance_type: Optional['NodeInstanceType'] = None
+    num_gpus: Optional[int] = None
+    photon_driver_capable: Optional[bool] = None
+    photon_worker_capable: Optional[bool] = None
+    support_cluster_tags: Optional[bool] = None
+    support_ebs_volumes: Optional[bool] = None
+    support_port_forwarding: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.category: body['category'] = self.category
-        if self.description: body['description'] = self.description
-        if self.display_order: body['display_order'] = self.display_order
-        if self.instance_type_id: body['instance_type_id'] = self.instance_type_id
-        if self.is_deprecated: body['is_deprecated'] = self.is_deprecated
-        if self.is_encrypted_in_transit: body['is_encrypted_in_transit'] = self.is_encrypted_in_transit
-        if self.is_graviton: body['is_graviton'] = self.is_graviton
-        if self.is_hidden: body['is_hidden'] = self.is_hidden
-        if self.is_io_cache_enabled: body['is_io_cache_enabled'] = self.is_io_cache_enabled
-        if self.memory_mb: body['memory_mb'] = self.memory_mb
+        if self.category is not None: body['category'] = self.category
+        if self.description is not None: body['description'] = self.description
+        if self.display_order is not None: body['display_order'] = self.display_order
+        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
+        if self.is_deprecated is not None: body['is_deprecated'] = self.is_deprecated
+        if self.is_encrypted_in_transit is not None:
+            body['is_encrypted_in_transit'] = self.is_encrypted_in_transit
+        if self.is_graviton is not None: body['is_graviton'] = self.is_graviton
+        if self.is_hidden is not None: body['is_hidden'] = self.is_hidden
+        if self.is_io_cache_enabled is not None: body['is_io_cache_enabled'] = self.is_io_cache_enabled
+        if self.memory_mb is not None: body['memory_mb'] = self.memory_mb
         if self.node_info: body['node_info'] = self.node_info.as_dict()
         if self.node_instance_type: body['node_instance_type'] = self.node_instance_type.as_dict()
-        if self.node_type_id: body['node_type_id'] = self.node_type_id
-        if self.num_cores: body['num_cores'] = self.num_cores
-        if self.num_gpus: body['num_gpus'] = self.num_gpus
-        if self.photon_driver_capable: body['photon_driver_capable'] = self.photon_driver_capable
-        if self.photon_worker_capable: body['photon_worker_capable'] = self.photon_worker_capable
-        if self.support_cluster_tags: body['support_cluster_tags'] = self.support_cluster_tags
-        if self.support_ebs_volumes: body['support_ebs_volumes'] = self.support_ebs_volumes
-        if self.support_port_forwarding: body['support_port_forwarding'] = self.support_port_forwarding
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_cores is not None: body['num_cores'] = self.num_cores
+        if self.num_gpus is not None: body['num_gpus'] = self.num_gpus
+        if self.photon_driver_capable is not None: body['photon_driver_capable'] = self.photon_driver_capable
+        if self.photon_worker_capable is not None: body['photon_worker_capable'] = self.photon_worker_capable
+        if self.support_cluster_tags is not None: body['support_cluster_tags'] = self.support_cluster_tags
+        if self.support_ebs_volumes is not None: body['support_ebs_volumes'] = self.support_ebs_volumes
+        if self.support_port_forwarding is not None:
+            body['support_port_forwarding'] = self.support_port_forwarding
         return body
 
     @classmethod
@@ -2481,13 +2598,13 @@ class NodeType:
 
 @dataclass
 class PendingInstanceError:
-    instance_id: str = None
-    message: str = None
+    instance_id: Optional[str] = None
+    message: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_id: body['instance_id'] = self.instance_id
-        if self.message: body['message'] = self.message
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.message is not None: body['message'] = self.message
         return body
 
     @classmethod
@@ -2501,7 +2618,7 @@ class PermanentDeleteCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2515,7 +2632,7 @@ class PinCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2525,30 +2642,30 @@ class PinCluster:
 
 @dataclass
 class Policy:
-    created_at_timestamp: int = None
-    creator_user_name: str = None
-    definition: str = None
-    description: str = None
-    is_default: bool = None
-    max_clusters_per_user: int = None
-    name: str = None
-    policy_family_definition_overrides: str = None
-    policy_family_id: str = None
-    policy_id: str = None
+    created_at_timestamp: Optional[int] = None
+    creator_user_name: Optional[str] = None
+    definition: Optional[str] = None
+    description: Optional[str] = None
+    is_default: Optional[bool] = None
+    max_clusters_per_user: Optional[int] = None
+    name: Optional[str] = None
+    policy_family_definition_overrides: Optional[str] = None
+    policy_family_id: Optional[str] = None
+    policy_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at_timestamp: body['created_at_timestamp'] = self.created_at_timestamp
-        if self.creator_user_name: body['creator_user_name'] = self.creator_user_name
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.is_default: body['is_default'] = self.is_default
-        if self.max_clusters_per_user: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name: body['name'] = self.name
-        if self.policy_family_definition_overrides:
+        if self.created_at_timestamp is not None: body['created_at_timestamp'] = self.created_at_timestamp
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.is_default is not None: body['is_default'] = self.is_default
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
-        if self.policy_id: body['policy_id'] = self.policy_id
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
     @classmethod
@@ -2574,10 +2691,10 @@ class PolicyFamily:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition: body['definition'] = self.definition
-        if self.description: body['description'] = self.description
-        if self.name: body['name'] = self.name
-        if self.policy_family_id: body['policy_family_id'] = self.policy_family_id
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
         return body
 
     @classmethod
@@ -2591,12 +2708,12 @@ class PolicyFamily:
 @dataclass
 class PythonPyPiLibrary:
     package: str
-    repo: str = None
+    repo: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.package: body['package'] = self.package
-        if self.repo: body['repo'] = self.repo
+        if self.package is not None: body['package'] = self.package
+        if self.repo is not None: body['repo'] = self.repo
         return body
 
     @classmethod
@@ -2607,12 +2724,12 @@ class PythonPyPiLibrary:
 @dataclass
 class RCranLibrary:
     package: str
-    repo: str = None
+    repo: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.package: body['package'] = self.package
-        if self.repo: body['repo'] = self.repo
+        if self.package is not None: body['package'] = self.package
+        if self.repo is not None: body['repo'] = self.repo
         return body
 
     @classmethod
@@ -2626,7 +2743,7 @@ class RemoveInstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_profile_arn: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         return body
 
     @classmethod
@@ -2637,14 +2754,14 @@ class RemoveInstanceProfile:
 @dataclass
 class ResizeCluster:
     cluster_id: str
-    autoscale: 'AutoScale' = None
-    num_workers: int = None
+    autoscale: Optional['AutoScale'] = None
+    num_workers: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.num_workers: body['num_workers'] = self.num_workers
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
         return body
 
     @classmethod
@@ -2657,12 +2774,12 @@ class ResizeCluster:
 @dataclass
 class RestartCluster:
     cluster_id: str
-    restart_user: str = None
+    restart_user: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
-        if self.restart_user: body['restart_user'] = self.restart_user
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.restart_user is not None: body['restart_user'] = self.restart_user
         return body
 
     @classmethod
@@ -2681,29 +2798,29 @@ class ResultType(Enum):
 
 @dataclass
 class Results:
-    cause: str = None
-    data: Any = None
-    file_name: str = None
-    file_names: 'List[str]' = None
-    is_json_schema: bool = None
-    pos: int = None
-    result_type: 'ResultType' = None
-    schema: 'List[Dict[str,Any]]' = None
-    summary: str = None
-    truncated: bool = None
+    cause: Optional[str] = None
+    data: Optional[Any] = None
+    file_name: Optional[str] = None
+    file_names: Optional['List[str]'] = None
+    is_json_schema: Optional[bool] = None
+    pos: Optional[int] = None
+    result_type: Optional['ResultType'] = None
+    schema: Optional['List[Dict[str,Any]]'] = None
+    summary: Optional[str] = None
+    truncated: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause: body['cause'] = self.cause
+        if self.cause is not None: body['cause'] = self.cause
         if self.data: body['data'] = self.data
-        if self.file_name: body['fileName'] = self.file_name
+        if self.file_name is not None: body['fileName'] = self.file_name
         if self.file_names: body['fileNames'] = [v for v in self.file_names]
-        if self.is_json_schema: body['isJsonSchema'] = self.is_json_schema
-        if self.pos: body['pos'] = self.pos
-        if self.result_type: body['resultType'] = self.result_type.value
+        if self.is_json_schema is not None: body['isJsonSchema'] = self.is_json_schema
+        if self.pos is not None: body['pos'] = self.pos
+        if self.result_type is not None: body['resultType'] = self.result_type.value
         if self.schema: body['schema'] = [v for v in self.schema]
-        if self.summary: body['summary'] = self.summary
-        if self.truncated: body['truncated'] = self.truncated
+        if self.summary is not None: body['summary'] = self.summary
+        if self.truncated is not None: body['truncated'] = self.truncated
         return body
 
     @classmethod
@@ -2731,23 +2848,23 @@ class RuntimeEngine(Enum):
 
 @dataclass
 class S3StorageInfo:
-    canned_acl: str = None
-    destination: str = None
-    enable_encryption: bool = None
-    encryption_type: str = None
-    endpoint: str = None
-    kms_key: str = None
-    region: str = None
+    canned_acl: Optional[str] = None
+    destination: Optional[str] = None
+    enable_encryption: Optional[bool] = None
+    encryption_type: Optional[str] = None
+    endpoint: Optional[str] = None
+    kms_key: Optional[str] = None
+    region: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.canned_acl: body['canned_acl'] = self.canned_acl
-        if self.destination: body['destination'] = self.destination
-        if self.enable_encryption: body['enable_encryption'] = self.enable_encryption
-        if self.encryption_type: body['encryption_type'] = self.encryption_type
-        if self.endpoint: body['endpoint'] = self.endpoint
-        if self.kms_key: body['kms_key'] = self.kms_key
-        if self.region: body['region'] = self.region
+        if self.canned_acl is not None: body['canned_acl'] = self.canned_acl
+        if self.destination is not None: body['destination'] = self.destination
+        if self.enable_encryption is not None: body['enable_encryption'] = self.enable_encryption
+        if self.encryption_type is not None: body['encryption_type'] = self.encryption_type
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.kms_key is not None: body['kms_key'] = self.kms_key
+        if self.region is not None: body['region'] = self.region
         return body
 
     @classmethod
@@ -2763,23 +2880,23 @@ class S3StorageInfo:
 
 @dataclass
 class SparkNode:
-    host_private_ip: str = None
-    instance_id: str = None
-    node_aws_attributes: 'SparkNodeAwsAttributes' = None
-    node_id: str = None
-    private_ip: str = None
-    public_dns: str = None
-    start_timestamp: int = None
+    host_private_ip: Optional[str] = None
+    instance_id: Optional[str] = None
+    node_aws_attributes: Optional['SparkNodeAwsAttributes'] = None
+    node_id: Optional[str] = None
+    private_ip: Optional[str] = None
+    public_dns: Optional[str] = None
+    start_timestamp: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.host_private_ip: body['host_private_ip'] = self.host_private_ip
-        if self.instance_id: body['instance_id'] = self.instance_id
+        if self.host_private_ip is not None: body['host_private_ip'] = self.host_private_ip
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
         if self.node_aws_attributes: body['node_aws_attributes'] = self.node_aws_attributes.as_dict()
-        if self.node_id: body['node_id'] = self.node_id
-        if self.private_ip: body['private_ip'] = self.private_ip
-        if self.public_dns: body['public_dns'] = self.public_dns
-        if self.start_timestamp: body['start_timestamp'] = self.start_timestamp
+        if self.node_id is not None: body['node_id'] = self.node_id
+        if self.private_ip is not None: body['private_ip'] = self.private_ip
+        if self.public_dns is not None: body['public_dns'] = self.public_dns
+        if self.start_timestamp is not None: body['start_timestamp'] = self.start_timestamp
         return body
 
     @classmethod
@@ -2795,11 +2912,11 @@ class SparkNode:
 
 @dataclass
 class SparkNodeAwsAttributes:
-    is_spot: bool = None
+    is_spot: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_spot: body['is_spot'] = self.is_spot
+        if self.is_spot is not None: body['is_spot'] = self.is_spot
         return body
 
     @classmethod
@@ -2809,13 +2926,13 @@ class SparkNodeAwsAttributes:
 
 @dataclass
 class SparkVersion:
-    key: str = None
-    name: str = None
+    key: Optional[str] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.name: body['name'] = self.name
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -2829,7 +2946,7 @@ class StartCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2852,15 +2969,15 @@ class State(Enum):
 
 @dataclass
 class TerminationReason:
-    code: 'TerminationReasonCode' = None
-    parameters: 'Dict[str,str]' = None
-    type: 'TerminationReasonType' = None
+    code: Optional['TerminationReasonCode'] = None
+    parameters: Optional['Dict[str,str]'] = None
+    type: Optional['TerminationReasonType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.code: body['code'] = self.code.value
+        if self.code is not None: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
-        if self.type: body['type'] = self.type.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -2970,7 +3087,7 @@ class UninstallLibraries:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         return body
 
@@ -2985,7 +3102,7 @@ class UnpinCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
     @classmethod
@@ -2995,7 +3112,7 @@ class UnpinCluster:
 
 @dataclass
 class WorkloadType:
-    clients: 'ClientsTypes' = None
+    clients: Optional['ClientsTypes'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -3005,6 +3122,20 @@ class WorkloadType:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkloadType':
         return cls(clients=_from_dict(d, 'clients', ClientsTypes))
+
+
+@dataclass
+class WorkspaceStorageInfo:
+    destination: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceStorageInfo':
+        return cls(destination=d.get('destination', None))
 
 
 class ClusterPoliciesAPI:
@@ -3033,15 +3164,41 @@ class ClusterPoliciesAPI:
     def create(self,
                name: str,
                *,
-               definition: str = None,
-               description: str = None,
-               max_clusters_per_user: int = None,
-               policy_family_definition_overrides: str = None,
-               policy_family_id: str = None,
+               definition: Optional[str] = None,
+               description: Optional[str] = None,
+               max_clusters_per_user: Optional[int] = None,
+               policy_family_definition_overrides: Optional[str] = None,
+               policy_family_id: Optional[str] = None,
                **kwargs) -> CreatePolicyResponse:
         """Create a new policy.
         
-        Creates a new policy with prescribed settings."""
+        Creates a new policy with prescribed settings.
+        
+        :param name: str
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
+        :param definition: str (optional)
+          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+        :param description: str (optional)
+          Additional human-readable description of the cluster policy.
+        :param max_clusters_per_user: int (optional)
+          Max number of clusters per user that can be active using this policy. If not present, there is no
+          max limit.
+        :param policy_family_definition_overrides: str (optional)
+          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          document must be passed as a string and cannot be embedded in the requests.
+          
+          You can use this to customize the policy definition inherited from the policy family. Policy rules
+          specified here are merged into the inherited policy definition.
+        :param policy_family_id: str (optional)
+          ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
+          definition.
+          
+          Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
+          policy definition.
+        
+        :returns: :class:`CreatePolicyResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreatePolicy(definition=definition,
@@ -3058,7 +3215,13 @@ class ClusterPoliciesAPI:
     def delete(self, policy_id: str, **kwargs):
         """Delete a cluster policy.
         
-        Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited."""
+        Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
+        
+        :param policy_id: str
+          The ID of the policy to delete.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeletePolicy(policy_id=policy_id)
@@ -3069,16 +3232,44 @@ class ClusterPoliciesAPI:
              policy_id: str,
              name: str,
              *,
-             definition: str = None,
-             description: str = None,
-             max_clusters_per_user: int = None,
-             policy_family_definition_overrides: str = None,
-             policy_family_id: str = None,
+             definition: Optional[str] = None,
+             description: Optional[str] = None,
+             max_clusters_per_user: Optional[int] = None,
+             policy_family_definition_overrides: Optional[str] = None,
+             policy_family_id: Optional[str] = None,
              **kwargs):
         """Update a cluster policy.
         
         Update an existing policy for cluster. This operation may make some clusters governed by the previous
-        policy invalid."""
+        policy invalid.
+        
+        :param policy_id: str
+          The ID of the policy to update.
+        :param name: str
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
+        :param definition: str (optional)
+          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+        :param description: str (optional)
+          Additional human-readable description of the cluster policy.
+        :param max_clusters_per_user: int (optional)
+          Max number of clusters per user that can be active using this policy. If not present, there is no
+          max limit.
+        :param policy_family_definition_overrides: str (optional)
+          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          document must be passed as a string and cannot be embedded in the requests.
+          
+          You can use this to customize the policy definition inherited from the policy family. Policy rules
+          specified here are merged into the inherited policy definition.
+        :param policy_family_id: str (optional)
+          ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
+          definition.
+          
+          Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
+          policy definition.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditPolicy(definition=definition,
@@ -3094,7 +3285,13 @@ class ClusterPoliciesAPI:
     def get(self, policy_id: str, **kwargs) -> Policy:
         """Get entity.
         
-        Get a cluster policy entity. Creation and editing is available to admins only."""
+        Get a cluster policy entity. Creation and editing is available to admins only.
+        
+        :param policy_id: str
+          Canonical unique identifier for the cluster policy.
+        
+        :returns: :class:`Policy`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetClusterPolicyRequest(policy_id=policy_id)
@@ -3107,12 +3304,22 @@ class ClusterPoliciesAPI:
 
     def list(self,
              *,
-             sort_column: ListSortColumn = None,
-             sort_order: ListSortOrder = None,
+             sort_column: Optional[ListSortColumn] = None,
+             sort_order: Optional[ListSortOrder] = None,
              **kwargs) -> Iterator[Policy]:
         """Get a cluster policy.
         
-        Returns a list of policies accessible by the requesting user."""
+        Returns a list of policies accessible by the requesting user.
+        
+        :param sort_column: :class:`ListSortColumn` (optional)
+          The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort result list by policy
+          creation time. * `POLICY_NAME` - Sort result list by policy name.
+        :param sort_order: :class:`ListSortOrder` (optional)
+          The order in which the policies get listed. * `DESC` - Sort result list in descending order. * `ASC`
+          - Sort result list in ascending order.
+        
+        :returns: Iterator over :class:`Policy`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListClusterPoliciesRequest(sort_column=sort_column, sort_order=sort_order)
@@ -3154,7 +3361,7 @@ class ClustersAPI:
     def wait_get_cluster_running(self,
                                  cluster_id: str,
                                  timeout=timedelta(minutes=20),
-                                 callback: Callable[[ClusterInfo], None] = None) -> ClusterInfo:
+                                 callback: Optional[Callable[[ClusterInfo], None]] = None) -> ClusterInfo:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.ERROR, State.TERMINATED, )
@@ -3184,7 +3391,7 @@ class ClustersAPI:
     def wait_get_cluster_terminated(self,
                                     cluster_id: str,
                                     timeout=timedelta(minutes=20),
-                                    callback: Callable[[ClusterInfo], None] = None) -> ClusterInfo:
+                                    callback: Optional[Callable[[ClusterInfo], None]] = None) -> ClusterInfo:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.TERMINATED, )
         failure_states = (State.ERROR, )
@@ -3214,7 +3421,15 @@ class ClustersAPI:
     def change_owner(self, cluster_id: str, owner_username: str, **kwargs):
         """Change cluster owner.
         
-        Change the owner of the cluster. You must be an admin to perform this operation."""
+        Change the owner of the cluster. You must be an admin to perform this operation.
+        
+        :param cluster_id: str
+          <needs content added>
+        :param owner_username: str
+          New owner of the cluster_id after this RPC.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ChangeClusterOwner(cluster_id=cluster_id, owner_username=owner_username)
@@ -3224,29 +3439,30 @@ class ClustersAPI:
     def create(self,
                spark_version: str,
                *,
-               apply_policy_default_values: bool = None,
-               autoscale: AutoScale = None,
-               autotermination_minutes: int = None,
-               aws_attributes: AwsAttributes = None,
-               azure_attributes: AzureAttributes = None,
-               cluster_log_conf: ClusterLogConf = None,
-               cluster_name: str = None,
-               cluster_source: ClusterSource = None,
-               custom_tags: Dict[str, str] = None,
-               driver_instance_pool_id: str = None,
-               driver_node_type_id: str = None,
-               enable_elastic_disk: bool = None,
-               enable_local_disk_encryption: bool = None,
-               gcp_attributes: GcpAttributes = None,
-               instance_pool_id: str = None,
-               node_type_id: str = None,
-               num_workers: int = None,
-               policy_id: str = None,
-               runtime_engine: RuntimeEngine = None,
-               spark_conf: Dict[str, str] = None,
-               spark_env_vars: Dict[str, str] = None,
-               ssh_public_keys: List[str] = None,
-               workload_type: WorkloadType = None,
+               apply_policy_default_values: Optional[bool] = None,
+               autoscale: Optional[AutoScale] = None,
+               autotermination_minutes: Optional[int] = None,
+               aws_attributes: Optional[AwsAttributes] = None,
+               azure_attributes: Optional[AzureAttributes] = None,
+               cluster_log_conf: Optional[ClusterLogConf] = None,
+               cluster_name: Optional[str] = None,
+               cluster_source: Optional[ClusterSource] = None,
+               custom_tags: Optional[Dict[str, str]] = None,
+               driver_instance_pool_id: Optional[str] = None,
+               driver_node_type_id: Optional[str] = None,
+               enable_elastic_disk: Optional[bool] = None,
+               enable_local_disk_encryption: Optional[bool] = None,
+               gcp_attributes: Optional[GcpAttributes] = None,
+               init_scripts: Optional[List[InitScriptInfo]] = None,
+               instance_pool_id: Optional[str] = None,
+               node_type_id: Optional[str] = None,
+               num_workers: Optional[int] = None,
+               policy_id: Optional[str] = None,
+               runtime_engine: Optional[RuntimeEngine] = None,
+               spark_conf: Optional[Dict[str, str]] = None,
+               spark_env_vars: Optional[Dict[str, str]] = None,
+               ssh_public_keys: Optional[List[str]] = None,
+               workload_type: Optional[WorkloadType] = None,
                **kwargs) -> Wait[ClusterInfo]:
         """Create new cluster.
         
@@ -3259,7 +3475,111 @@ class ClustersAPI:
         limitations (account limits, spot price, etc.) or transient network issues.
         
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
-        Otherwise the cluster will terminate with an informative error message."""
+        Otherwise the cluster will terminate with an informative error message.
+        
+        :param spark_version: str
+          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
+          retrieved by using the :method:clusters/sparkVersions API call.
+        :param apply_policy_default_values: bool (optional)
+          Note: This field won't be true for webapp requests. Only API users will check this field.
+        :param autoscale: :class:`AutoScale` (optional)
+          Parameters needed in order to automatically scale clusters up and down based on load. Note:
+          autoscaling works best with DB runtime versions 3.0 or later.
+        :param autotermination_minutes: int (optional)
+          Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this
+          cluster will not be automatically terminated. If specified, the threshold must be between 10 and
+          10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
+        :param aws_attributes: :class:`AwsAttributes` (optional)
+          Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation,
+          a set of default values will be used.
+        :param azure_attributes: :class:`AzureAttributes` (optional)
+          Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
+          set of default values will be used.
+        :param cluster_log_conf: :class:`ClusterLogConf` (optional)
+          The configuration for delivering spark logs to a long-term storage destination. Two kinds of
+          destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
+          the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of
+          driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
+          `$destination/$clusterId/executor`.
+        :param cluster_name: str (optional)
+          Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
+          the cluster name will be an empty string.
+        :param cluster_source: :class:`ClusterSource` (optional)
+          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
+          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+          
+          - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        :param driver_instance_pool_id: str (optional)
+          The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
+          the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_id: str (optional)
+          The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
+          will be set as the same value as `node_type_id` defined above.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
+          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
+          to function correctly - refer to the User Guide for more details.
+        :param enable_local_disk_encryption: bool (optional)
+          Whether to enable LUKS on cluster VMs' local disks
+        :param gcp_attributes: :class:`GcpAttributes` (optional)
+          Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+          creation, a set of default values will be used.
+        :param init_scripts: List[:class:`InitScriptInfo`] (optional)
+          The configuration for storing init scripts. Any number of destinations can be specified. The scripts
+          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
+          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+        :param instance_pool_id: str (optional)
+          The optional ID of the instance pool to which the cluster belongs.
+        :param node_type_id: str (optional)
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param num_workers: int (optional)
+          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          
+          Note: When reading the properties of a cluster, this field reflects the desired number of workers
+          rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
+          workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
+          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          provisioned.
+        :param policy_id: str (optional)
+          The ID of the cluster policy used to create the cluster if applicable.
+        :param runtime_engine: :class:`RuntimeEngine` (optional)
+          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
+          is inferred from spark_version.
+        :param spark_conf: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
+          can also pass in a string of extra JVM options to the driver and the executors via
+          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+        :param spark_env_vars: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified environment variable key-value pairs. Please
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          launching the driver and workers.
+          
+          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          managed environmental variables are included as well.
+          
+          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}`
+        :param ssh_public_keys: List[str] (optional)
+          SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
+          specified.
+        :param workload_type: :class:`WorkloadType` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCluster(apply_policy_default_values=apply_policy_default_values,
@@ -3276,6 +3596,7 @@ class ClustersAPI:
                                     enable_elastic_disk=enable_elastic_disk,
                                     enable_local_disk_encryption=enable_local_disk_encryption,
                                     gcp_attributes=gcp_attributes,
+                                    init_scripts=init_scripts,
                                     instance_pool_id=instance_pool_id,
                                     node_type_id=node_type_id,
                                     num_workers=num_workers,
@@ -3292,33 +3613,35 @@ class ClustersAPI:
                     response=CreateClusterResponse.from_dict(op_response),
                     cluster_id=op_response['cluster_id'])
 
-    def create_and_wait(self,
-                        spark_version: str,
-                        *,
-                        apply_policy_default_values: bool = None,
-                        autoscale: AutoScale = None,
-                        autotermination_minutes: int = None,
-                        aws_attributes: AwsAttributes = None,
-                        azure_attributes: AzureAttributes = None,
-                        cluster_log_conf: ClusterLogConf = None,
-                        cluster_name: str = None,
-                        cluster_source: ClusterSource = None,
-                        custom_tags: Dict[str, str] = None,
-                        driver_instance_pool_id: str = None,
-                        driver_node_type_id: str = None,
-                        enable_elastic_disk: bool = None,
-                        enable_local_disk_encryption: bool = None,
-                        gcp_attributes: GcpAttributes = None,
-                        instance_pool_id: str = None,
-                        node_type_id: str = None,
-                        num_workers: int = None,
-                        policy_id: str = None,
-                        runtime_engine: RuntimeEngine = None,
-                        spark_conf: Dict[str, str] = None,
-                        spark_env_vars: Dict[str, str] = None,
-                        ssh_public_keys: List[str] = None,
-                        workload_type: WorkloadType = None,
-                        timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def create_and_wait(
+        self,
+        spark_version: str,
+        *,
+        apply_policy_default_values: Optional[bool] = None,
+        autoscale: Optional[AutoScale] = None,
+        autotermination_minutes: Optional[int] = None,
+        aws_attributes: Optional[AwsAttributes] = None,
+        azure_attributes: Optional[AzureAttributes] = None,
+        cluster_log_conf: Optional[ClusterLogConf] = None,
+        cluster_name: Optional[str] = None,
+        cluster_source: Optional[ClusterSource] = None,
+        custom_tags: Optional[Dict[str, str]] = None,
+        driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_id: Optional[str] = None,
+        enable_elastic_disk: Optional[bool] = None,
+        enable_local_disk_encryption: Optional[bool] = None,
+        gcp_attributes: Optional[GcpAttributes] = None,
+        init_scripts: Optional[List[InitScriptInfo]] = None,
+        instance_pool_id: Optional[str] = None,
+        node_type_id: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        policy_id: Optional[str] = None,
+        runtime_engine: Optional[RuntimeEngine] = None,
+        spark_conf: Optional[Dict[str, str]] = None,
+        spark_env_vars: Optional[Dict[str, str]] = None,
+        ssh_public_keys: Optional[List[str]] = None,
+        workload_type: Optional[WorkloadType] = None,
+        timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.create(apply_policy_default_values=apply_policy_default_values,
                            autoscale=autoscale,
                            autotermination_minutes=autotermination_minutes,
@@ -3333,6 +3656,7 @@ class ClustersAPI:
                            enable_elastic_disk=enable_elastic_disk,
                            enable_local_disk_encryption=enable_local_disk_encryption,
                            gcp_attributes=gcp_attributes,
+                           init_scripts=init_scripts,
                            instance_pool_id=instance_pool_id,
                            node_type_id=node_type_id,
                            num_workers=num_workers,
@@ -3349,7 +3673,15 @@ class ClustersAPI:
         
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
         termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
-        `TERMINATING` or `TERMINATED` state, nothing will happen."""
+        `TERMINATING` or `TERMINATED` state, nothing will happen.
+        
+        :param cluster_id: str
+          The cluster to be terminated.
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_terminated for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteCluster(cluster_id=cluster_id)
@@ -3364,29 +3696,33 @@ class ClustersAPI:
              cluster_id: str,
              spark_version: str,
              *,
-             apply_policy_default_values: bool = None,
-             autoscale: AutoScale = None,
-             autotermination_minutes: int = None,
-             aws_attributes: AwsAttributes = None,
-             azure_attributes: AzureAttributes = None,
-             cluster_log_conf: ClusterLogConf = None,
-             cluster_name: str = None,
-             cluster_source: ClusterSource = None,
-             custom_tags: Dict[str, str] = None,
-             driver_instance_pool_id: str = None,
-             driver_node_type_id: str = None,
-             enable_elastic_disk: bool = None,
-             enable_local_disk_encryption: bool = None,
-             gcp_attributes: GcpAttributes = None,
-             instance_pool_id: str = None,
-             node_type_id: str = None,
-             num_workers: int = None,
-             policy_id: str = None,
-             runtime_engine: RuntimeEngine = None,
-             spark_conf: Dict[str, str] = None,
-             spark_env_vars: Dict[str, str] = None,
-             ssh_public_keys: List[str] = None,
-             workload_type: WorkloadType = None,
+             apply_policy_default_values: Optional[bool] = None,
+             autoscale: Optional[AutoScale] = None,
+             autotermination_minutes: Optional[int] = None,
+             aws_attributes: Optional[AwsAttributes] = None,
+             azure_attributes: Optional[AzureAttributes] = None,
+             cluster_log_conf: Optional[ClusterLogConf] = None,
+             cluster_name: Optional[str] = None,
+             cluster_source: Optional[ClusterSource] = None,
+             custom_tags: Optional[Dict[str, str]] = None,
+             data_security_mode: Optional[DataSecurityMode] = None,
+             docker_image: Optional[DockerImage] = None,
+             driver_instance_pool_id: Optional[str] = None,
+             driver_node_type_id: Optional[str] = None,
+             enable_elastic_disk: Optional[bool] = None,
+             enable_local_disk_encryption: Optional[bool] = None,
+             gcp_attributes: Optional[GcpAttributes] = None,
+             init_scripts: Optional[List[InitScriptInfo]] = None,
+             instance_pool_id: Optional[str] = None,
+             node_type_id: Optional[str] = None,
+             num_workers: Optional[int] = None,
+             policy_id: Optional[str] = None,
+             runtime_engine: Optional[RuntimeEngine] = None,
+             single_user_name: Optional[str] = None,
+             spark_conf: Optional[Dict[str, str]] = None,
+             spark_env_vars: Optional[Dict[str, str]] = None,
+             ssh_public_keys: Optional[List[str]] = None,
+             workload_type: Optional[WorkloadType] = None,
              **kwargs) -> Wait[ClusterInfo]:
         """Update cluster configuration.
         
@@ -3400,7 +3736,118 @@ class ClustersAPI:
         is started using the `clusters/start` API, the new attributes will take effect. Any attempt to update
         a cluster in any other state will be rejected with an `INVALID_STATE` error code.
         
-        Clusters created by the Databricks Jobs service cannot be edited."""
+        Clusters created by the Databricks Jobs service cannot be edited.
+        
+        :param cluster_id: str
+          ID of the cluser
+        :param spark_version: str
+          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
+          retrieved by using the :method:clusters/sparkVersions API call.
+        :param apply_policy_default_values: bool (optional)
+          Note: This field won't be true for webapp requests. Only API users will check this field.
+        :param autoscale: :class:`AutoScale` (optional)
+          Parameters needed in order to automatically scale clusters up and down based on load. Note:
+          autoscaling works best with DB runtime versions 3.0 or later.
+        :param autotermination_minutes: int (optional)
+          Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this
+          cluster will not be automatically terminated. If specified, the threshold must be between 10 and
+          10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
+        :param aws_attributes: :class:`AwsAttributes` (optional)
+          Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation,
+          a set of default values will be used.
+        :param azure_attributes: :class:`AzureAttributes` (optional)
+          Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
+          set of default values will be used.
+        :param cluster_log_conf: :class:`ClusterLogConf` (optional)
+          The configuration for delivering spark logs to a long-term storage destination. Two kinds of
+          destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
+          the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of
+          driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
+          `$destination/$clusterId/executor`.
+        :param cluster_name: str (optional)
+          Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
+          the cluster name will be an empty string.
+        :param cluster_source: :class:`ClusterSource` (optional)
+          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
+          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+          
+          - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        :param data_security_mode: :class:`DataSecurityMode` (optional)
+          This describes an enum
+        :param docker_image: :class:`DockerImage` (optional)
+        :param driver_instance_pool_id: str (optional)
+          The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
+          the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_id: str (optional)
+          The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
+          will be set as the same value as `node_type_id` defined above.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
+          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
+          to function correctly - refer to the User Guide for more details.
+        :param enable_local_disk_encryption: bool (optional)
+          Whether to enable LUKS on cluster VMs' local disks
+        :param gcp_attributes: :class:`GcpAttributes` (optional)
+          Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+          creation, a set of default values will be used.
+        :param init_scripts: List[:class:`InitScriptInfo`] (optional)
+          The configuration for storing init scripts. Any number of destinations can be specified. The scripts
+          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
+          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+        :param instance_pool_id: str (optional)
+          The optional ID of the instance pool to which the cluster belongs.
+        :param node_type_id: str (optional)
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param num_workers: int (optional)
+          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          
+          Note: When reading the properties of a cluster, this field reflects the desired number of workers
+          rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
+          workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
+          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          provisioned.
+        :param policy_id: str (optional)
+          The ID of the cluster policy used to create the cluster if applicable.
+        :param runtime_engine: :class:`RuntimeEngine` (optional)
+          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
+          is inferred from spark_version.
+        :param single_user_name: str (optional)
+          Single user name if data_security_mode is `SINGLE_USER`
+        :param spark_conf: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
+          can also pass in a string of extra JVM options to the driver and the executors via
+          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+        :param spark_env_vars: Dict[str,str] (optional)
+          An object containing a set of optional, user-specified environment variable key-value pairs. Please
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          launching the driver and workers.
+          
+          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          managed environmental variables are included as well.
+          
+          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}`
+        :param ssh_public_keys: List[str] (optional)
+          SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
+          specified.
+        :param workload_type: :class:`WorkloadType` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditCluster(apply_policy_default_values=apply_policy_default_values,
@@ -3413,16 +3860,20 @@ class ClustersAPI:
                                   cluster_name=cluster_name,
                                   cluster_source=cluster_source,
                                   custom_tags=custom_tags,
+                                  data_security_mode=data_security_mode,
+                                  docker_image=docker_image,
                                   driver_instance_pool_id=driver_instance_pool_id,
                                   driver_node_type_id=driver_node_type_id,
                                   enable_elastic_disk=enable_elastic_disk,
                                   enable_local_disk_encryption=enable_local_disk_encryption,
                                   gcp_attributes=gcp_attributes,
+                                  init_scripts=init_scripts,
                                   instance_pool_id=instance_pool_id,
                                   node_type_id=node_type_id,
                                   num_workers=num_workers,
                                   policy_id=policy_id,
                                   runtime_engine=runtime_engine,
+                                  single_user_name=single_user_name,
                                   spark_conf=spark_conf,
                                   spark_env_vars=spark_env_vars,
                                   spark_version=spark_version,
@@ -3432,34 +3883,39 @@ class ClustersAPI:
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
 
-    def edit_and_wait(self,
-                      cluster_id: str,
-                      spark_version: str,
-                      *,
-                      apply_policy_default_values: bool = None,
-                      autoscale: AutoScale = None,
-                      autotermination_minutes: int = None,
-                      aws_attributes: AwsAttributes = None,
-                      azure_attributes: AzureAttributes = None,
-                      cluster_log_conf: ClusterLogConf = None,
-                      cluster_name: str = None,
-                      cluster_source: ClusterSource = None,
-                      custom_tags: Dict[str, str] = None,
-                      driver_instance_pool_id: str = None,
-                      driver_node_type_id: str = None,
-                      enable_elastic_disk: bool = None,
-                      enable_local_disk_encryption: bool = None,
-                      gcp_attributes: GcpAttributes = None,
-                      instance_pool_id: str = None,
-                      node_type_id: str = None,
-                      num_workers: int = None,
-                      policy_id: str = None,
-                      runtime_engine: RuntimeEngine = None,
-                      spark_conf: Dict[str, str] = None,
-                      spark_env_vars: Dict[str, str] = None,
-                      ssh_public_keys: List[str] = None,
-                      workload_type: WorkloadType = None,
-                      timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def edit_and_wait(
+        self,
+        cluster_id: str,
+        spark_version: str,
+        *,
+        apply_policy_default_values: Optional[bool] = None,
+        autoscale: Optional[AutoScale] = None,
+        autotermination_minutes: Optional[int] = None,
+        aws_attributes: Optional[AwsAttributes] = None,
+        azure_attributes: Optional[AzureAttributes] = None,
+        cluster_log_conf: Optional[ClusterLogConf] = None,
+        cluster_name: Optional[str] = None,
+        cluster_source: Optional[ClusterSource] = None,
+        custom_tags: Optional[Dict[str, str]] = None,
+        data_security_mode: Optional[DataSecurityMode] = None,
+        docker_image: Optional[DockerImage] = None,
+        driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_id: Optional[str] = None,
+        enable_elastic_disk: Optional[bool] = None,
+        enable_local_disk_encryption: Optional[bool] = None,
+        gcp_attributes: Optional[GcpAttributes] = None,
+        init_scripts: Optional[List[InitScriptInfo]] = None,
+        instance_pool_id: Optional[str] = None,
+        node_type_id: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        policy_id: Optional[str] = None,
+        runtime_engine: Optional[RuntimeEngine] = None,
+        single_user_name: Optional[str] = None,
+        spark_conf: Optional[Dict[str, str]] = None,
+        spark_env_vars: Optional[Dict[str, str]] = None,
+        ssh_public_keys: Optional[List[str]] = None,
+        workload_type: Optional[WorkloadType] = None,
+        timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.edit(apply_policy_default_values=apply_policy_default_values,
                          autoscale=autoscale,
                          autotermination_minutes=autotermination_minutes,
@@ -3470,16 +3926,20 @@ class ClustersAPI:
                          cluster_name=cluster_name,
                          cluster_source=cluster_source,
                          custom_tags=custom_tags,
+                         data_security_mode=data_security_mode,
+                         docker_image=docker_image,
                          driver_instance_pool_id=driver_instance_pool_id,
                          driver_node_type_id=driver_node_type_id,
                          enable_elastic_disk=enable_elastic_disk,
                          enable_local_disk_encryption=enable_local_disk_encryption,
                          gcp_attributes=gcp_attributes,
+                         init_scripts=init_scripts,
                          instance_pool_id=instance_pool_id,
                          node_type_id=node_type_id,
                          num_workers=num_workers,
                          policy_id=policy_id,
                          runtime_engine=runtime_engine,
+                         single_user_name=single_user_name,
                          spark_conf=spark_conf,
                          spark_env_vars=spark_env_vars,
                          spark_version=spark_version,
@@ -3489,18 +3949,38 @@ class ClustersAPI:
     def events(self,
                cluster_id: str,
                *,
-               end_time: int = None,
-               event_types: List[EventType] = None,
-               limit: int = None,
-               offset: int = None,
-               order: GetEventsOrder = None,
-               start_time: int = None,
+               end_time: Optional[int] = None,
+               event_types: Optional[List[EventType]] = None,
+               limit: Optional[int] = None,
+               offset: Optional[int] = None,
+               order: Optional[GetEventsOrder] = None,
+               start_time: Optional[int] = None,
                **kwargs) -> Iterator[ClusterEvent]:
         """List cluster activity events.
         
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
         events to read, the response includes all the nparameters necessary to request the next page of
-        events."""
+        events.
+        
+        :param cluster_id: str
+          The ID of the cluster to retrieve events about.
+        :param end_time: int (optional)
+          The end time in epoch milliseconds. If empty, returns events up to the current time.
+        :param event_types: List[:class:`EventType`] (optional)
+          An optional set of event types to filter on. If empty, all event types are returned.
+        :param limit: int (optional)
+          The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
+          value is 500.
+        :param offset: int (optional)
+          The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results
+          are requested in descending order, the end_time field is required.
+        :param order: :class:`GetEventsOrder` (optional)
+          The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
+        :param start_time: int (optional)
+          The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
+        
+        :returns: Iterator over :class:`ClusterEvent`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetEvents(cluster_id=cluster_id,
@@ -3525,8 +4005,14 @@ class ClustersAPI:
     def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
         """Get cluster info.
         
-        "Retrieves the information for a cluster given its identifier. Clusters can be described while they
-        are running, or up to 60 days after they are terminated."""
+        Retrieves the information for a cluster given its identifier. Clusters can be described while they are
+        running, or up to 60 days after they are terminated.
+        
+        :param cluster_id: str
+          The cluster about which to retrieve information.
+        
+        :returns: :class:`ClusterInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetClusterRequest(cluster_id=cluster_id)
@@ -3537,7 +4023,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterInfo.from_dict(json)
 
-    def list(self, *, can_use_client: str = None, **kwargs) -> Iterator[ClusterInfo]:
+    def list(self, *, can_use_client: Optional[str] = None, **kwargs) -> Iterator[ClusterInfo]:
         """List all clusters.
         
         Return information about all pinned clusters, active clusters, up to 200 of the most recently
@@ -3547,7 +4033,15 @@ class ClustersAPI:
         For example, if there is 1 pinned cluster, 4 active clusters, 45 terminated all-purpose clusters in
         the past 30 days, and 50 terminated job clusters in the past 30 days, then this API returns the 1
         pinned cluster, 4 active clusters, all 45 terminated all-purpose clusters, and the 30 most recently
-        terminated job clusters."""
+        terminated job clusters.
+        
+        :param can_use_client: str (optional)
+          Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS.
+          No input for this field will get all clusters in the workspace without filtering on its supported
+          client
+        
+        :returns: Iterator over :class:`ClusterInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListClustersRequest(can_use_client=can_use_client)
@@ -3561,7 +4055,10 @@ class ClustersAPI:
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
         
-        Returns a list of supported Spark node types. These node types can be used to launch a cluster."""
+        Returns a list of supported Spark node types. These node types can be used to launch a cluster.
+        
+        :returns: :class:`ListNodeTypesResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/clusters/list-node-types')
         return ListNodeTypesResponse.from_dict(json)
@@ -3570,7 +4067,10 @@ class ClustersAPI:
         """List availability zones.
         
         Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
-        zones can be used to launch a cluster."""
+        zones can be used to launch a cluster.
+        
+        :returns: :class:`ListAvailableZonesResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/clusters/list-zones')
         return ListAvailableZonesResponse.from_dict(json)
@@ -3582,7 +4082,13 @@ class ClustersAPI:
         removed.
         
         In addition, users will no longer see permanently deleted clusters in the cluster list, and API users
-        can no longer perform any action on permanently deleted clusters."""
+        can no longer perform any action on permanently deleted clusters.
+        
+        :param cluster_id: str
+          The cluster to be deleted.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PermanentDeleteCluster(cluster_id=cluster_id)
@@ -3593,7 +4099,13 @@ class ClustersAPI:
         """Pin cluster.
         
         Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
-        cluster that is already pinned will have no effect. This API can only be called by workspace admins."""
+        cluster that is already pinned will have no effect. This API can only be called by workspace admins.
+        
+        :param cluster_id: str
+          <needs content added>
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PinCluster(cluster_id=cluster_id)
@@ -3603,13 +4115,33 @@ class ClustersAPI:
     def resize(self,
                cluster_id: str,
                *,
-               autoscale: AutoScale = None,
-               num_workers: int = None,
+               autoscale: Optional[AutoScale] = None,
+               num_workers: Optional[int] = None,
                **kwargs) -> Wait[ClusterInfo]:
         """Resize cluster.
         
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
-        `RUNNING` state."""
+        `RUNNING` state.
+        
+        :param cluster_id: str
+          The cluster to be resized.
+        :param autoscale: :class:`AutoScale` (optional)
+          Parameters needed in order to automatically scale clusters up and down based on load. Note:
+          autoscaling works best with DB runtime versions 3.0 or later.
+        :param num_workers: int (optional)
+          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          
+          Note: When reading the properties of a cluster, this field reflects the desired number of workers
+          rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
+          workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
+          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          provisioned.
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ResizeCluster(autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers)
@@ -3620,17 +4152,27 @@ class ClustersAPI:
     def resize_and_wait(self,
                         cluster_id: str,
                         *,
-                        autoscale: AutoScale = None,
-                        num_workers: int = None,
+                        autoscale: Optional[AutoScale] = None,
+                        num_workers: Optional[int] = None,
                         timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.resize(autoscale=autoscale, cluster_id=cluster_id,
                            num_workers=num_workers).result(timeout=timeout)
 
-    def restart(self, cluster_id: str, *, restart_user: str = None, **kwargs) -> Wait[ClusterInfo]:
+    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None, **kwargs) -> Wait[ClusterInfo]:
         """Restart cluster.
         
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
-        nothing will happen."""
+        nothing will happen.
+        
+        :param cluster_id: str
+          The cluster to be started.
+        :param restart_user: str (optional)
+          <needs content added>
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
@@ -3641,14 +4183,17 @@ class ClustersAPI:
     def restart_and_wait(self,
                          cluster_id: str,
                          *,
-                         restart_user: str = None,
+                         restart_user: Optional[str] = None,
                          timeout=timedelta(minutes=20)) -> ClusterInfo:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
         """List available Spark versions.
         
-        Returns the list of available Spark versions. These versions can be used to launch a cluster."""
+        Returns the list of available Spark versions. These versions can be used to launch a cluster.
+        
+        :returns: :class:`GetSparkVersionsResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
         return GetSparkVersionsResponse.from_dict(json)
@@ -3661,7 +4206,15 @@ class ClustersAPI:
         * The previous cluster id and attributes are preserved. * The cluster starts with the last specified
         cluster size. * If the previous cluster was an autoscaling cluster, the current cluster starts with
         the minimum number of nodes. * If the cluster is not currently in a `TERMINATED` state, nothing will
-        happen. * Clusters launched to run a job cannot be started."""
+        happen. * Clusters launched to run a job cannot be started.
+        
+        :param cluster_id: str
+          The cluster to be started.
+        
+        :returns:
+          long-running operation waiter for :class:`ClusterInfo`.
+          See :method:wait_get_cluster_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = StartCluster(cluster_id=cluster_id)
@@ -3677,7 +4230,13 @@ class ClustersAPI:
         
         Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
         Unpinning a cluster that is not pinned will have no effect. This API can only be called by workspace
-        admins."""
+        admins.
+        
+        :param cluster_id: str
+          <needs content added>
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UnpinCluster(cluster_id=cluster_id)
@@ -3697,7 +4256,7 @@ class CommandExecutionAPI:
             command_id: str,
             context_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[CommandStatusResponse], None] = None) -> CommandStatusResponse:
+            callback: Optional[Callable[[CommandStatusResponse], None]] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (CommandStatus.Cancelled, )
         failure_states = (CommandStatus.Error, )
@@ -3732,7 +4291,7 @@ class CommandExecutionAPI:
             command_id: str,
             context_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[CommandStatusResponse], None] = None) -> CommandStatusResponse:
+            callback: Optional[Callable[[CommandStatusResponse], None]] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (CommandStatus.Finished, CommandStatus.Error, )
         failure_states = (CommandStatus.Cancelled, CommandStatus.Cancelling, )
@@ -3764,7 +4323,7 @@ class CommandExecutionAPI:
             cluster_id: str,
             context_id: str,
             timeout=timedelta(minutes=20),
-            callback: Callable[[ContextStatusResponse], None] = None) -> ContextStatusResponse:
+            callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ContextStatus.Running, )
         failure_states = (ContextStatus.Error, )
@@ -3793,15 +4352,24 @@ class CommandExecutionAPI:
 
     def cancel(self,
                *,
-               cluster_id: str = None,
-               command_id: str = None,
-               context_id: str = None,
+               cluster_id: Optional[str] = None,
+               command_id: Optional[str] = None,
+               context_id: Optional[str] = None,
                **kwargs) -> Wait[CommandStatusResponse]:
         """Cancel a command.
         
         Cancels a currently running command within an execution context.
         
-        The command ID is obtained from a prior successful call to __execute__."""
+        The command ID is obtained from a prior successful call to __execute__.
+        
+        :param cluster_id: str (optional)
+        :param command_id: str (optional)
+        :param context_id: str (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`CommandStatusResponse`.
+          See :method:wait_command_status_command_execution_cancelled for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CancelCommand(cluster_id=cluster_id, command_id=command_id, context_id=context_id)
@@ -3812,12 +4380,13 @@ class CommandExecutionAPI:
                     command_id=request.command_id,
                     context_id=request.context_id)
 
-    def cancel_and_wait(self,
-                        *,
-                        cluster_id: str = None,
-                        command_id: str = None,
-                        context_id: str = None,
-                        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+    def cancel_and_wait(
+        self,
+        *,
+        cluster_id: Optional[str] = None,
+        command_id: Optional[str] = None,
+        context_id: Optional[str] = None,
+        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
         return self.cancel(cluster_id=cluster_id, command_id=command_id,
                            context_id=context_id).result(timeout=timeout)
 
@@ -3827,7 +4396,14 @@ class CommandExecutionAPI:
         
         Gets the status of and, if available, the results from a currently executing command.
         
-        The command ID is obtained from a prior successful call to __execute__."""
+        The command ID is obtained from a prior successful call to __execute__.
+        
+        :param cluster_id: str
+        :param context_id: str
+        :param command_id: str
+        
+        :returns: :class:`CommandStatusResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CommandStatusRequest(cluster_id=cluster_id,
@@ -3845,7 +4421,13 @@ class CommandExecutionAPI:
     def context_status(self, cluster_id: str, context_id: str, **kwargs) -> ContextStatusResponse:
         """Get status.
         
-        Gets the status for an execution context."""
+        Gets the status for an execution context.
+        
+        :param cluster_id: str
+        :param context_id: str
+        
+        :returns: :class:`ContextStatusResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ContextStatusRequest(cluster_id=cluster_id, context_id=context_id)
@@ -3859,14 +4441,23 @@ class CommandExecutionAPI:
 
     def create(self,
                *,
-               cluster_id: str = None,
-               language: Language = None,
+               cluster_id: Optional[str] = None,
+               language: Optional[Language] = None,
                **kwargs) -> Wait[ContextStatusResponse]:
         """Create an execution context.
         
         Creates an execution context for running cluster commands.
         
-        If successful, this method returns the ID of the new execution context."""
+        If successful, this method returns the ID of the new execution context.
+        
+        :param cluster_id: str (optional)
+          Running cluster id
+        :param language: :class:`Language` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`ContextStatusResponse`.
+          See :method:wait_context_status_command_execution_running for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateContext(cluster_id=cluster_id, language=language)
@@ -3877,17 +4468,24 @@ class CommandExecutionAPI:
                     cluster_id=request.cluster_id,
                     context_id=op_response['id'])
 
-    def create_and_wait(self,
-                        *,
-                        cluster_id: str = None,
-                        language: Language = None,
-                        timeout=timedelta(minutes=20)) -> ContextStatusResponse:
+    def create_and_wait(
+        self,
+        *,
+        cluster_id: Optional[str] = None,
+        language: Optional[Language] = None,
+        timeout=timedelta(minutes=20)) -> ContextStatusResponse:
         return self.create(cluster_id=cluster_id, language=language).result(timeout=timeout)
 
     def destroy(self, cluster_id: str, context_id: str, **kwargs):
         """Delete an execution context.
         
-        Deletes an execution context."""
+        Deletes an execution context.
+        
+        :param cluster_id: str
+        :param context_id: str
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DestroyContext(cluster_id=cluster_id, context_id=context_id)
@@ -3896,16 +4494,29 @@ class CommandExecutionAPI:
 
     def execute(self,
                 *,
-                cluster_id: str = None,
-                command: str = None,
-                context_id: str = None,
-                language: Language = None,
+                cluster_id: Optional[str] = None,
+                command: Optional[str] = None,
+                context_id: Optional[str] = None,
+                language: Optional[Language] = None,
                 **kwargs) -> Wait[CommandStatusResponse]:
         """Run a command.
         
         Runs a cluster command in the given execution context, using the provided language.
         
-        If successful, it returns an ID for tracking the status of the command's execution."""
+        If successful, it returns an ID for tracking the status of the command's execution.
+        
+        :param cluster_id: str (optional)
+          Running cluster id
+        :param command: str (optional)
+          Executable code
+        :param context_id: str (optional)
+          Running context id
+        :param language: :class:`Language` (optional)
+        
+        :returns:
+          long-running operation waiter for :class:`CommandStatusResponse`.
+          See :method:wait_command_status_command_execution_finished_or_error for more details.
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Command(cluster_id=cluster_id,
@@ -3920,13 +4531,14 @@ class CommandExecutionAPI:
                     command_id=op_response['id'],
                     context_id=request.context_id)
 
-    def execute_and_wait(self,
-                         *,
-                         cluster_id: str = None,
-                         command: str = None,
-                         context_id: str = None,
-                         language: Language = None,
-                         timeout=timedelta(minutes=20)) -> CommandStatusResponse:
+    def execute_and_wait(
+        self,
+        *,
+        cluster_id: Optional[str] = None,
+        command: Optional[str] = None,
+        context_id: Optional[str] = None,
+        language: Optional[Language] = None,
+        timeout=timedelta(minutes=20)) -> CommandStatusResponse:
         return self.execute(cluster_id=cluster_id, command=command, context_id=context_id,
                             language=language).result(timeout=timeout)
 
@@ -3947,12 +4559,32 @@ class GlobalInitScriptsAPI:
                name: str,
                script: str,
                *,
-               enabled: bool = None,
-               position: int = None,
+               enabled: Optional[bool] = None,
+               position: Optional[int] = None,
                **kwargs) -> CreateResponse:
         """Create init script.
         
-        Creates a new global init script in this workspace."""
+        Creates a new global init script in this workspace.
+        
+        :param name: str
+          The name of the script
+        :param script: str
+          The Base64-encoded content of the script.
+        :param enabled: bool (optional)
+          Specifies whether the script is enabled. The script runs only if enabled.
+        :param position: int (optional)
+          The position of a global init script, where 0 represents the first script to run, 1 is the second
+          script to run, in ascending order.
+          
+          If you omit the numeric position for a new global init script, it defaults to last position. It will
+          run after all current scripts. Setting any value greater than the position of the last script is
+          equivalent to the last position. Example: Take three existing scripts with positions 0, 1, and 2.
+          Any position of (3) or greater puts the script in the last position. If an explicit position value
+          conflicts with an existing script value, your request succeeds, but the original script at that
+          position and all later scripts have their positions incremented by 1.
+        
+        :returns: :class:`CreateResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GlobalInitScriptCreateRequest(enabled=enabled,
@@ -3967,7 +4599,13 @@ class GlobalInitScriptsAPI:
     def delete(self, script_id: str, **kwargs):
         """Delete init script.
         
-        Deletes a global init script."""
+        Deletes a global init script.
+        
+        :param script_id: str
+          The ID of the global init script.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteGlobalInitScriptRequest(script_id=script_id)
@@ -3977,7 +4615,13 @@ class GlobalInitScriptsAPI:
     def get(self, script_id: str, **kwargs) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
         
-        Gets all the details of a script, including its Base64-encoded contents."""
+        Gets all the details of a script, including its Base64-encoded contents.
+        
+        :param script_id: str
+          The ID of the global init script.
+        
+        :returns: :class:`GlobalInitScriptDetailsWithContent`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetGlobalInitScriptRequest(script_id=script_id)
@@ -3988,9 +4632,12 @@ class GlobalInitScriptsAPI:
     def list(self) -> Iterator[GlobalInitScriptDetails]:
         """Get init scripts.
         
-        "Get a list of all global init scripts for this workspace. This returns all properties for each script
+        Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
-        script](#operation/get-script) operation."""
+        script](#operation/get-script) operation.
+        
+        :returns: Iterator over :class:`GlobalInitScriptDetails`
+        """
 
         json = self._api.do('GET', '/api/2.0/global-init-scripts')
         return [GlobalInitScriptDetails.from_dict(v) for v in json.get('scripts', [])]
@@ -4000,13 +4647,35 @@ class GlobalInitScriptsAPI:
                script: str,
                script_id: str,
                *,
-               enabled: bool = None,
-               position: int = None,
+               enabled: Optional[bool] = None,
+               position: Optional[int] = None,
                **kwargs):
         """Update init script.
         
         Updates a global init script, specifying only the fields to change. All fields are optional.
-        Unspecified fields retain their current value."""
+        Unspecified fields retain their current value.
+        
+        :param name: str
+          The name of the script
+        :param script: str
+          The Base64-encoded content of the script.
+        :param script_id: str
+          The ID of the global init script.
+        :param enabled: bool (optional)
+          Specifies whether the script is enabled. The script runs only if enabled.
+        :param position: int (optional)
+          The position of a script, where 0 represents the first script to run, 1 is the second script to run,
+          in ascending order. To move the script to run first, set its position to 0.
+          
+          To move the script to the end, set its position to any value greater or equal to the position of the
+          last script. Example, three existing scripts with positions 0, 1, and 2. Any position value of 2 or
+          greater puts the script in the last position (2).
+          
+          If an explicit position value conflicts with an existing script, your request succeeds, but the
+          original script at that position and all later scripts have their positions incremented by 1.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GlobalInitScriptUpdateRequest(enabled=enabled,
@@ -4041,21 +4710,74 @@ class InstancePoolsAPI:
                instance_pool_name: str,
                node_type_id: str,
                *,
-               aws_attributes: InstancePoolAwsAttributes = None,
-               azure_attributes: InstancePoolAzureAttributes = None,
-               custom_tags: Dict[str, str] = None,
-               disk_spec: DiskSpec = None,
-               enable_elastic_disk: bool = None,
-               idle_instance_autotermination_minutes: int = None,
-               instance_pool_fleet_attributes: InstancePoolFleetAttributes = None,
-               max_capacity: int = None,
-               min_idle_instances: int = None,
-               preloaded_docker_images: List[DockerImage] = None,
-               preloaded_spark_versions: List[str] = None,
+               aws_attributes: Optional[InstancePoolAwsAttributes] = None,
+               azure_attributes: Optional[InstancePoolAzureAttributes] = None,
+               custom_tags: Optional[Dict[str, str]] = None,
+               disk_spec: Optional[DiskSpec] = None,
+               enable_elastic_disk: Optional[bool] = None,
+               gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
+               idle_instance_autotermination_minutes: Optional[int] = None,
+               instance_pool_fleet_attributes: Optional[InstancePoolFleetAttributes] = None,
+               max_capacity: Optional[int] = None,
+               min_idle_instances: Optional[int] = None,
+               preloaded_docker_images: Optional[List[DockerImage]] = None,
+               preloaded_spark_versions: Optional[List[str]] = None,
                **kwargs) -> CreateInstancePoolResponse:
         """Create a new instance pool.
         
-        Creates a new instance pool using idle and ready-to-use cloud instances."""
+        Creates a new instance pool using idle and ready-to-use cloud instances.
+        
+        :param instance_pool_name: str
+          Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
+          characters.
+        :param node_type_id: str
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
+          Attributes related to instance pools running on Amazon Web Services. If not specified at pool
+          creation, a set of default values will be used.
+        :param azure_attributes: :class:`InstancePoolAzureAttributes` (optional)
+          Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
+          default values will be used.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
+          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+        :param disk_spec: :class:`DiskSpec` (optional)
+          Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
+          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
+          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
+        :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
+          Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
+          creation, a set of default values will be used.
+        :param idle_instance_autotermination_minutes: int (optional)
+          Automatically terminates the extra instances in the pool cache after they are inactive for this time
+          in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
+          will be automatically terminated after a default timeout. If specified, the threshold must be
+          between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
+          from the cache if min cache size could still hold.
+        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
+          The fleet related setting to power the instance pool.
+        :param max_capacity: int (optional)
+          Maximum number of outstanding instances to keep in the pool, including both instances used by
+          clusters and idle instances. Clusters that require further instance provisioning will fail during
+          upsize requests.
+        :param min_idle_instances: int (optional)
+          Minimum number of idle instances to keep in the instance pool
+        :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
+          Custom Docker Image BYOC
+        :param preloaded_spark_versions: List[str] (optional)
+          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
+          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
+          using the :method:clusters/sparkVersions API call.
+        
+        :returns: :class:`CreateInstancePoolResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateInstancePool(
@@ -4064,6 +4786,7 @@ class InstancePoolsAPI:
                 custom_tags=custom_tags,
                 disk_spec=disk_spec,
                 enable_elastic_disk=enable_elastic_disk,
+                gcp_attributes=gcp_attributes,
                 idle_instance_autotermination_minutes=idle_instance_autotermination_minutes,
                 instance_pool_fleet_attributes=instance_pool_fleet_attributes,
                 instance_pool_name=instance_pool_name,
@@ -4080,7 +4803,13 @@ class InstancePoolsAPI:
     def delete(self, instance_pool_id: str, **kwargs):
         """Delete an instance pool.
         
-        Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously."""
+        Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
+        
+        :param instance_pool_id: str
+          The instance pool to be terminated.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteInstancePool(instance_pool_id=instance_pool_id)
@@ -4092,21 +4821,76 @@ class InstancePoolsAPI:
              instance_pool_name: str,
              node_type_id: str,
              *,
-             aws_attributes: InstancePoolAwsAttributes = None,
-             azure_attributes: InstancePoolAzureAttributes = None,
-             custom_tags: Dict[str, str] = None,
-             disk_spec: DiskSpec = None,
-             enable_elastic_disk: bool = None,
-             idle_instance_autotermination_minutes: int = None,
-             instance_pool_fleet_attributes: InstancePoolFleetAttributes = None,
-             max_capacity: int = None,
-             min_idle_instances: int = None,
-             preloaded_docker_images: List[DockerImage] = None,
-             preloaded_spark_versions: List[str] = None,
+             aws_attributes: Optional[InstancePoolAwsAttributes] = None,
+             azure_attributes: Optional[InstancePoolAzureAttributes] = None,
+             custom_tags: Optional[Dict[str, str]] = None,
+             disk_spec: Optional[DiskSpec] = None,
+             enable_elastic_disk: Optional[bool] = None,
+             gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
+             idle_instance_autotermination_minutes: Optional[int] = None,
+             instance_pool_fleet_attributes: Optional[InstancePoolFleetAttributes] = None,
+             max_capacity: Optional[int] = None,
+             min_idle_instances: Optional[int] = None,
+             preloaded_docker_images: Optional[List[DockerImage]] = None,
+             preloaded_spark_versions: Optional[List[str]] = None,
              **kwargs):
         """Edit an existing instance pool.
         
-        Modifies the configuration of an existing instance pool."""
+        Modifies the configuration of an existing instance pool.
+        
+        :param instance_pool_id: str
+          Instance pool ID
+        :param instance_pool_name: str
+          Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
+          characters.
+        :param node_type_id: str
+          This field encodes, through a single value, the resources available to each of the Spark nodes in
+          this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
+          intensive workloads. A list of available node types can be retrieved by using the
+          :method:clusters/listNodeTypes API call.
+        :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
+          Attributes related to instance pools running on Amazon Web Services. If not specified at pool
+          creation, a set of default values will be used.
+        :param azure_attributes: :class:`InstancePoolAzureAttributes` (optional)
+          Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
+          default values will be used.
+        :param custom_tags: Dict[str,str] (optional)
+          Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
+          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          
+          - Currently, Databricks allows at most 45 custom tags
+        :param disk_spec: :class:`DiskSpec` (optional)
+          Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_elastic_disk: bool (optional)
+          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
+          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
+          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
+        :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
+          Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
+          creation, a set of default values will be used.
+        :param idle_instance_autotermination_minutes: int (optional)
+          Automatically terminates the extra instances in the pool cache after they are inactive for this time
+          in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
+          will be automatically terminated after a default timeout. If specified, the threshold must be
+          between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
+          from the cache if min cache size could still hold.
+        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
+          The fleet related setting to power the instance pool.
+        :param max_capacity: int (optional)
+          Maximum number of outstanding instances to keep in the pool, including both instances used by
+          clusters and idle instances. Clusters that require further instance provisioning will fail during
+          upsize requests.
+        :param min_idle_instances: int (optional)
+          Minimum number of idle instances to keep in the instance pool
+        :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
+          Custom Docker Image BYOC
+        :param preloaded_spark_versions: List[str] (optional)
+          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
+          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
+          using the :method:clusters/sparkVersions API call.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = EditInstancePool(
@@ -4115,6 +4899,7 @@ class InstancePoolsAPI:
                 custom_tags=custom_tags,
                 disk_spec=disk_spec,
                 enable_elastic_disk=enable_elastic_disk,
+                gcp_attributes=gcp_attributes,
                 idle_instance_autotermination_minutes=idle_instance_autotermination_minutes,
                 instance_pool_fleet_attributes=instance_pool_fleet_attributes,
                 instance_pool_id=instance_pool_id,
@@ -4130,7 +4915,13 @@ class InstancePoolsAPI:
     def get(self, instance_pool_id: str, **kwargs) -> GetInstancePool:
         """Get instance pool information.
         
-        Retrieve the information for an instance pool based on its identifier."""
+        Retrieve the information for an instance pool based on its identifier.
+        
+        :param instance_pool_id: str
+          The canonical unique identifier for the instance pool.
+        
+        :returns: :class:`GetInstancePool`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetInstancePoolRequest(instance_pool_id=instance_pool_id)
@@ -4144,7 +4935,10 @@ class InstancePoolsAPI:
     def list(self) -> Iterator[InstancePoolAndStats]:
         """List instance pool info.
         
-        Gets a list of instance pools with their statistics."""
+        Gets a list of instance pools with their statistics.
+        
+        :returns: Iterator over :class:`InstancePoolAndStats`
+        """
 
         json = self._api.do('GET', '/api/2.0/instance-pools/list')
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
@@ -4163,14 +4957,40 @@ class InstanceProfilesAPI:
     def add(self,
             instance_profile_arn: str,
             *,
-            iam_role_arn: str = None,
-            is_meta_instance_profile: bool = None,
-            skip_validation: bool = None,
+            iam_role_arn: Optional[str] = None,
+            is_meta_instance_profile: Optional[bool] = None,
+            skip_validation: Optional[bool] = None,
             **kwargs):
         """Register an instance profile.
         
         In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users."""
+        admin users.
+        
+        :param instance_profile_arn: str
+          The AWS ARN of the instance profile to register with Databricks. This field is required.
+        :param iam_role_arn: str (optional)
+          The AWS IAM role ARN of the role associated with the instance profile. This field is required if
+          your role name and instance profile name do not match and you want to use the instance profile with
+          [Databricks SQL Serverless].
+          
+          Otherwise, this field is optional.
+          
+          [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+        :param is_meta_instance_profile: bool (optional)
+          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
+          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
+          requested instance type is not supported in your requested availability zone`), you can pass this
+          flag to skip the validation and forcibly add the instance profile.
+        :param skip_validation: bool (optional)
+          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
+          fails with an error message that does not indicate an IAM related permission issue, (e.g. “Your
+          requested instance type is not supported in your requested availability zone”), you can pass this
+          flag to skip the validation and forcibly add the instance profile.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AddInstanceProfile(iam_role_arn=iam_role_arn,
@@ -4183,8 +5003,8 @@ class InstanceProfilesAPI:
     def edit(self,
              instance_profile_arn: str,
              *,
-             iam_role_arn: str = None,
-             is_meta_instance_profile: bool = None,
+             iam_role_arn: Optional[str] = None,
+             is_meta_instance_profile: Optional[bool] = None,
              **kwargs):
         """Edit an instance profile.
         
@@ -4199,7 +5019,27 @@ class InstanceProfilesAPI:
         This API is only available to admin users.
         
         [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
-        [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html"""
+        [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
+        
+        :param instance_profile_arn: str
+          The AWS ARN of the instance profile to register with Databricks. This field is required.
+        :param iam_role_arn: str (optional)
+          The AWS IAM role ARN of the role associated with the instance profile. This field is required if
+          your role name and instance profile name do not match and you want to use the instance profile with
+          [Databricks SQL Serverless].
+          
+          Otherwise, this field is optional.
+          
+          [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+        :param is_meta_instance_profile: bool (optional)
+          By default, Databricks validates that it has sufficient permissions to launch instances with the
+          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
+          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
+          requested instance type is not supported in your requested availability zone`), you can pass this
+          flag to skip the validation and forcibly add the instance profile.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = InstanceProfile(iam_role_arn=iam_role_arn,
@@ -4213,7 +5053,10 @@ class InstanceProfilesAPI:
         
         List the instance profiles that the calling user can use to launch a cluster.
         
-        This API is available to all users."""
+        This API is available to all users.
+        
+        :returns: Iterator over :class:`InstanceProfile`
+        """
 
         json = self._api.do('GET', '/api/2.0/instance-profiles/list')
         return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
@@ -4224,7 +5067,13 @@ class InstanceProfilesAPI:
         Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
         continue to function.
         
-        This API is only accessible to admin users."""
+        This API is only accessible to admin users.
+        
+        :param instance_profile_arn: str
+          The ARN of the instance profile to remove. This field is required.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RemoveInstanceProfile(instance_profile_arn=instance_profile_arn)
@@ -4258,7 +5107,10 @@ class LibrariesAPI:
         
         Get the status of all libraries on all clusters. A status will be available for all libraries
         installed on this cluster via the API or the libraries UI as well as libraries set to be installed on
-        all clusters via the libraries UI."""
+        all clusters via the libraries UI.
+        
+        :returns: :class:`ListAllClusterLibraryStatusesResponse`
+        """
 
         json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses')
         return ListAllClusterLibraryStatusesResponse.from_dict(json)
@@ -4277,7 +5129,13 @@ class LibrariesAPI:
         order guarantee.
         
         3. Libraries that were previously requested on this cluster or on all clusters, but now marked for
-        removal. Within this group there is no order guarantee."""
+        removal. Within this group there is no order guarantee.
+        
+        :param cluster_id: str
+          Unique identifier of the cluster whose status should be retrieved.
+        
+        :returns: :class:`ClusterLibraryStatuses`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ClusterStatusRequest(cluster_id=cluster_id)
@@ -4295,7 +5153,15 @@ class LibrariesAPI:
         background after the completion of this request.
         
         **Note**: The actual set of libraries to be installed on a cluster is the union of the libraries
-        specified via this method and the libraries set to be installed on all clusters via the libraries UI."""
+        specified via this method and the libraries set to be installed on all clusters via the libraries UI.
+        
+        :param cluster_id: str
+          Unique identifier for the cluster on which to install these libraries.
+        :param libraries: List[:class:`Library`]
+          The libraries to install.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = InstallLibraries(cluster_id=cluster_id, libraries=libraries)
@@ -4307,7 +5173,15 @@ class LibrariesAPI:
         
         Set libraries to be uninstalled on a cluster. The libraries won't be uninstalled until the cluster is
         restarted. Uninstalling libraries that are not installed on the cluster will have no impact but is not
-        an error."""
+        an error.
+        
+        :param cluster_id: str
+          Unique identifier for the cluster on which to uninstall these libraries.
+        :param libraries: List[:class:`Library`]
+          The libraries to uninstall.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UninstallLibraries(cluster_id=cluster_id, libraries=libraries)
@@ -4338,7 +5212,11 @@ class PolicyFamiliesAPI:
         json = self._api.do('GET', f'/api/2.0/policy-families/{request.policy_family_id}')
         return PolicyFamily.from_dict(json)
 
-    def list(self, *, max_results: int = None, page_token: str = None, **kwargs) -> Iterator[PolicyFamily]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
+             **kwargs) -> Iterator[PolicyFamily]:
 
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args

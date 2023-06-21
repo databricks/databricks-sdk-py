@@ -1,0 +1,112 @@
+from databricks.sdk import {{if .IsAccount}}AccountClient{{else}}WorkspaceClient{{end}}
+from databricks.sdk.service import _internal{{range .Suite.ServiceToPackage}}, {{.}}{{end}}
+import time, base64, os
+
+{{$example := .}}
+{{if .IsAccount}}a{{else}}w{{end}} = {{if .IsAccount}}Account{{else}}Workspace{{end}}Client()
+
+{{range .Init}}
+{{.SnakeName}} = {{template "expr" .Value}}
+{{end}}
+
+{{range .Calls}}
+{{if .Service -}}
+  {{template "svc-call" .}}
+{{- else -}}
+  {{with .Assign}}{{.SnakeName}} = {{end}}{{template "expr" .}}
+{{- end}}
+{{end}}
+
+{{with .Cleanup}}
+# cleanup
+{{range . -}}
+  {{template "svc-call" .}}
+{{end}}
+{{end}}
+
+{{define "svc-call" -}}
+  {{with .Assign}}{{.SnakeName}} = {{end}}{{if .IsAccount}}a{{else}}w{{end}}.{{.Service.SnakeName}}.{{.Original.SnakeName}}{{if eq .Original.SnakeName "import"}}_{{end}}({{template "method-args" .}})
+  {{- if .IsWait}}.result(){{end}}
+{{- end}}
+
+{{define "expr" -}}
+{{- if eq .Type "binary" -}}
+    {{template "expr" .Left}} {{.Op}} {{template "expr" .Right}}
+{{- else if eq .Type "index" -}}
+    {{template "expr" .Left}}[{{template "expr" .Right}}]
+{{- else if eq .Type "boolean" -}}
+    {{if .Value}}True{{else}}False{{end}}
+{{- else if eq .Type "heredoc" -}}
+"""{{.Value}}"""
+{{- else if eq .Type "literal" -}}
+    {{.Value}}
+{{- else if eq .Type "lookup" -}}
+    {{template "expr" .X}}.{{.Field.SnakeName}}
+{{- else if eq .Type "enum" -}}
+    {{.Package}}.{{.Entity.PascalName}}.{{.Content}}{{if eq .Content "None"}}_{{end}}
+{{- else if eq .Type "variable" -}}
+    {{if eq .SnakeName "true"}}True
+    {{- else if eq .SnakeName "false"}}False
+    {{else}}{{.SnakeName}}{{end}}
+{{- else if eq .Type "entity" -}}
+    {{.Package}}.{{.PascalName}}({{template "kwargs" .FieldValues}})
+{{- else if eq .Type "call" -}}
+    {{template "call" .}}
+{{- else if eq .Type "map" -}}
+    { {{range .Pairs}}{{template "expr" .Key}}: {{template "expr" .Value}},{{end}} }
+{{- else if eq .Type "array" -}}
+    [ {{range $i, $x := .Values}}{{if $i}}, {{end}}{{template "expr" .}}{{end}} ]
+{{- else -}}
+    /* UNKNOWN: {{.Type}} */
+{{- end -}}
+{{- end}}
+
+{{define "method-args" -}}
+  {{with .Request -}}
+    {{template "kwargs" .}}
+  {{- else -}}
+    {{template "args" .}}
+  {{- end}}
+{{- end}}
+
+{{define "kwargs" -}}
+  {{range $i, $x := . -}}
+    {{if $i}}, {{end}}{{.SnakeName}}={{template "expr" .Value}}
+  {{- end}}
+{{- end}}
+
+{{define "args" -}}
+  {{range $i, $x := .Args -}}
+    {{if $i}}, {{end}}{{template "expr" .}}
+  {{- end}}
+{{- end}}
+
+{{define "call" -}}
+{{- if eq .PascalName "GetEnvOrSkipTest" -}}
+os.environ[{{template "args" .}}]
+{{- else if eq .PascalName "Dir" -}}
+os.path.dirname({{template "args" .}})
+{{- else if eq .PascalName "Sprintf" -}}
+{{range $i, $x := .Args}}{{if eq $i 0}}{{template "expr" .}} % ({{else}} {{if gt $i 1}}, {{end}}  {{template "expr" .}} {{end}}{{end}})
+{{- else if eq .PascalName "MustParseInt64" -}}
+{{template "args" .}}
+{{- else if eq .PascalName "RandomEmail" -}}
+f'sdk-{time.time_ns()}@example.com'
+{{- else if eq .PascalName "RandomName" -}}
+f'sdk-{time.time_ns()}'
+{{- else if eq .PascalName "RandomHex" -}}
+hex(time.time_ns())[2:]
+{{- else if eq .PascalName "EncodeToString" -}}
+base64.b64encode({{template "args" .}}.encode()).decode()
+{{- else if eq .PascalName "CanonicalHostName" -}}
+w.config.host
+{{- else if eq .PascalName "SharedRunningCluster" -}}
+w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
+{{- else if eq .PascalName "DltNotebook" -}}
+"CREATE LIVE TABLE dlt_sample AS SELECT 1"
+{{- else if eq .PascalName "MyNotebookPath" -}}
+f'/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}'
+{{- else -}}
+{{.SnakeName}}({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+{{- end -}}
+{{- end}}

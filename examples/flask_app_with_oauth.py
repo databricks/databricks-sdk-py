@@ -27,21 +27,21 @@ Once started, please open http://localhost:5001 in your browser and
 go through SSO flow to get a list of clusters on <databricks workspace url>.
 """
 
-import logging
 import argparse
+import logging
 import sys
 
 from databricks.sdk.oauth import OAuthClient
 
-APP_NAME = 'flask-demo'
-all_clusters_template = '''<ul>
+APP_NAME = "flask-demo"
+all_clusters_template = """<ul>
 {% for cluster in w.clusters.list() -%}
     <li><a 
         target="_blank" 
         href="{{ w.config.host }}/#setting/clusters/{{ cluster.cluster_id }}/configuration">
         {{ cluster.cluster_name }}</a> is {{ cluster.state }}</li>
 {% endfor %}
-</ul>'''
+</ul>"""
 
 
 def create_flask_app(oauth_client: OAuthClient, port: int):
@@ -51,36 +51,40 @@ def create_flask_app(oauth_client: OAuthClient, port: int):
     handling the callback and index pages.
     """
     import secrets
-    from flask import Flask, render_template_string, request, redirect, url_for, session
+
+    from flask import (Flask, redirect, render_template_string, request,
+                       session, url_for)
 
     app = Flask(APP_NAME)
     app.secret_key = secrets.token_urlsafe(32)
 
-    @app.route('/callback')
+    @app.route("/callback")
     def callback():
         """The callback route initiates consent using the OAuth client, exchanges
         the callback parameters, and redirects the user to the index page."""
         from databricks.sdk.oauth import Consent
-        consent = Consent.from_dict(oauth_client, session['consent'])
-        session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
-        return redirect(url_for('index'))
 
-    @app.route('/')
+        consent = Consent.from_dict(oauth_client, session["consent"])
+        session["creds"] = consent.exchange_callback_parameters(request.args).as_dict()
+        return redirect(url_for("index"))
+
+    @app.route("/")
     def index():
         """The index page checks if the user has already authenticated and retrieves the user's credentials using
         the Databricks SDK WorkspaceClient. It then renders the template with the clusters' list."""
-        if 'creds' not in session:
+        if "creds" not in session:
             consent = oauth_client.initiate_consent()
-            session['consent'] = consent.as_dict()
+            session["consent"] = consent.as_dict()
             return redirect(consent.auth_url)
 
         from databricks.sdk import WorkspaceClient
-        from databricks.sdk.oauth import RefreshableCredentials
+        from databricks.sdk.oauth import SessionCredentials
 
-        credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
+        credentials_provider = SessionCredentials.from_dict(oauth_client, session["creds"])
         workspace_client = WorkspaceClient(host=oauth_client.host,
                                            product=APP_NAME,
-                                           credentials_provider=credentials_provider)
+                                           credentials_provider=credentials_provider,
+                                           )
 
         return render_template_string(all_clusters_template, w=workspace_client)
 
@@ -90,31 +94,33 @@ def create_flask_app(oauth_client: OAuthClient, port: int):
 def register_custom_app(oauth_client: OAuthClient, args: argparse.Namespace) -> tuple[str, str]:
     """Creates new Custom OAuth App in Databricks Account"""
     if not oauth_client.is_aws:
-        logging.error('Not supported for other clouds than AWS')
+        logging.error("Not supported for other clouds than AWS")
         sys.exit(2)
 
-    logging.info('No OAuth custom app client/secret provided, creating new app')
+    logging.info("No OAuth custom app client/secret provided, creating new app")
 
     import getpass
-    from databricks.sdk import AccountClient
-    account_client = AccountClient(host='https://accounts.cloud.databricks.com',
-                                   account_id=input('Databricks Account ID: '),
-                                   username=input('Username: '),
-                                   password=getpass.getpass('Password: '))
 
-    logging.info('Enrolling all published apps...')
+    from databricks.sdk import AccountClient
+
+    account_client = AccountClient(host="https://accounts.cloud.databricks.com",
+                                   account_id=input("Databricks Account ID: "),
+                                   username=input("Username: "),
+                                   password=getpass.getpass("Password: "),
+                                   )
+
+    logging.info("Enrolling all published apps...")
     account_client.o_auth_enrollment.create(enable_all_published_apps=True)
 
     status = account_client.o_auth_enrollment.get()
-    logging.info(f'Enrolled all published apps: {status}')
+    logging.info(f"Enrolled all published apps: {status}")
 
     custom_app = account_client.custom_app_integration.create(
-        name=APP_NAME,
-        redirect_urls=[f'http://localhost:{args.port}/callback'],
-        confidential=True)
-    logging.info(f'Created new custom app: '
-                 f'--client_id {custom_app.client_id} '
-                 f'--client_secret {custom_app.client_secret}')
+        name=APP_NAME, redirect_urls=[f"http://localhost:{args.port}/callback"], confidential=True,
+    )
+    logging.info(f"Created new custom app: "
+                 f"--client_id {custom_app.client_id} "
+                 f"--client_secret {custom_app.client_secret}")
 
     return custom_app.client_id, custom_app.client_secret
 
@@ -124,8 +130,9 @@ def init_oauth_config(args) -> OAuthClient:
     oauth_client = OAuthClient(host=args.host,
                                client_id=args.client_id,
                                client_secret=args.client_secret,
-                               redirect_url=f'http://localhost:{args.port}/callback',
-                               scopes=['clusters'])
+                               redirect_url=f"http://localhost:{args.port}/callback",
+                               scopes=["clusters"],
+                               )
     if not oauth_client.client_id:
         client_id, client_secret = register_custom_app(oauth_client, args)
         oauth_client.client_id = client_id
@@ -137,23 +144,29 @@ def init_oauth_config(args) -> OAuthClient:
 def parse_arguments() -> argparse.Namespace:
     """Parses arguments for this demo"""
     parser = argparse.ArgumentParser(prog=APP_NAME, description=__doc__.strip())
-    parser.add_argument('host')
-    for flag in ['client_id', 'client_secret']:
-        parser.add_argument(f'--{flag}')
-    parser.add_argument('--port', default=5001, type=int)
+    parser.add_argument("host")
+    for flag in ["client_id", "client_secret"]:
+        parser.add_argument(f"--{flag}")
+    parser.add_argument("--port", default=5001, type=int)
     return parser.parse_args()
 
 
-if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
-                        format='%(asctime)s [%(name)s][%(levelname)s] %(message)s')
-    logging.getLogger('databricks.sdk').setLevel(logging.DEBUG)
+if __name__ == "__main__":
+    logging.basicConfig(stream=sys.stdout,
+                        level=logging.INFO,
+                        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
+                        )
+    logging.getLogger("databricks.sdk").setLevel(logging.DEBUG)
 
     args = parse_arguments()
     oauth_cfg = init_oauth_config(args)
     app = create_flask_app(oauth_cfg, args.port)
 
-    app.run(host='localhost', port=args.port, debug=True,
-            # to simplify this demo experience, we create OAuth Custom App for you,
-            # but it intervenes with the werkzeug reloader. So we disable it
-            use_reloader=args.client_id is not None)
+    app.run(
+        host="localhost",
+        port=args.port,
+        debug=True,
+        # to simplify this demo experience, we create OAuth Custom App for you,
+        # but it intervenes with the werkzeug reloader. So we disable it
+        use_reloader=args.client_id is not None,
+    )

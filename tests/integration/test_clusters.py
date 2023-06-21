@@ -1,6 +1,10 @@
 import logging
 from datetime import timedelta
 
+import pytest
+
+from databricks.sdk.core import DatabricksError
+
 
 def test_smallest_node_type(w):
     node_type_id = w.clusters.select_node_type(local_disk=True)
@@ -33,3 +37,11 @@ def test_create_cluster(w, env_or_skip, random):
                              num_workers=1,
                              timeout=timedelta(minutes=10))
     logging.info(f'Created: {info}')
+
+
+def test_error_unmarshall(w, random):
+    with pytest.raises(DatabricksError) as exc_info:
+        w.clusters.get('__non_existing__')
+    err = exc_info.value
+    assert 'Cluster __non_existing__ does not exist' in str(err)
+    assert 'INVALID_PARAMETER_VALUE' == err.error_code

@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -19,8 +19,8 @@ class AclItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission: body['permission'] = self.permission.value
-        if self.principal: body['principal'] = self.principal
+        if self.permission is not None: body['permission'] = self.permission.value
+        if self.principal is not None: body['principal'] = self.principal
         return body
 
     @classmethod
@@ -42,8 +42,8 @@ class AzureKeyVaultSecretScopeMetadata:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dns_name: body['dns_name'] = self.dns_name
-        if self.resource_id: body['resource_id'] = self.resource_id
+        if self.dns_name is not None: body['dns_name'] = self.dns_name
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
         return body
 
     @classmethod
@@ -54,14 +54,14 @@ class AzureKeyVaultSecretScopeMetadata:
 @dataclass
 class CreateCredentials:
     git_provider: str
-    git_username: str = None
-    personal_access_token: str = None
+    git_username: Optional[str] = None
+    personal_access_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
-        if self.personal_access_token: body['personal_access_token'] = self.personal_access_token
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
+        if self.personal_access_token is not None: body['personal_access_token'] = self.personal_access_token
         return body
 
     @classmethod
@@ -73,15 +73,15 @@ class CreateCredentials:
 
 @dataclass
 class CreateCredentialsResponse:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id: body['credential_id'] = self.credential_id
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
         return body
 
     @classmethod
@@ -95,15 +95,15 @@ class CreateCredentialsResponse:
 class CreateRepo:
     url: str
     provider: str
-    path: str = None
-    sparse_checkout: 'SparseCheckout' = None
+    path: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckout'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
-        if self.provider: body['provider'] = self.provider
+        if self.path is not None: body['path'] = self.path
+        if self.provider is not None: body['provider'] = self.provider
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
-        if self.url: body['url'] = self.url
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -117,16 +117,17 @@ class CreateRepo:
 @dataclass
 class CreateScope:
     scope: str
-    initial_manage_principal: str = None
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
-    scope_backend_type: 'ScopeBackendType' = None
+    initial_manage_principal: Optional[str] = None
+    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    scope_backend_type: Optional['ScopeBackendType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.initial_manage_principal: body['initial_manage_principal'] = self.initial_manage_principal
+        if self.initial_manage_principal is not None:
+            body['initial_manage_principal'] = self.initial_manage_principal
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
-        if self.scope: body['scope'] = self.scope
-        if self.scope_backend_type: body['scope_backend_type'] = self.scope_backend_type.value
+        if self.scope is not None: body['scope'] = self.scope
+        if self.scope_backend_type is not None: body['scope_backend_type'] = self.scope_backend_type.value
         return body
 
     @classmethod
@@ -139,15 +140,15 @@ class CreateScope:
 
 @dataclass
 class CredentialInfo:
-    credential_id: int = None
-    git_provider: str = None
-    git_username: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id: body['credential_id'] = self.credential_id
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
         return body
 
     @classmethod
@@ -160,12 +161,12 @@ class CredentialInfo:
 @dataclass
 class Delete:
     path: str
-    recursive: bool = None
+    recursive: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
-        if self.recursive: body['recursive'] = self.recursive
+        if self.path is not None: body['path'] = self.path
+        if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
     @classmethod
@@ -180,8 +181,8 @@ class DeleteAcl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal: body['principal'] = self.principal
-        if self.scope: body['scope'] = self.scope
+        if self.principal is not None: body['principal'] = self.principal
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -209,7 +210,7 @@ class DeleteScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.scope: body['scope'] = self.scope
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -224,8 +225,8 @@ class DeleteSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.scope: body['scope'] = self.scope
+        if self.key is not None: body['key'] = self.key
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -234,14 +235,7 @@ class DeleteSecret:
 
 
 class ExportFormat(Enum):
-    """This specifies the format of the file to be imported. By default, this is `SOURCE`.
-    
-    If using `AUTO` the item is imported or exported as either a workspace file or a
-    notebook,depending on an analysis of the item’s extension and the header content provided in
-    the request. The value is case sensitive. In addition, if the item is imported as a notebook,
-    then the item’s extension is automatically removed."""
 
-    AUTO = 'AUTO'
     DBC = 'DBC'
     HTML = 'HTML'
     JUPYTER = 'JUPYTER'
@@ -254,17 +248,16 @@ class ExportRequest:
     """Export a workspace object"""
 
     path: str
-    direct_download: bool = None
-    format: 'ExportFormat' = None
+    format: Optional['ExportFormat'] = None
 
 
 @dataclass
 class ExportResponse:
-    content: str = None
+    content: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content: body['content'] = self.content
+        if self.content is not None: body['content'] = self.content
         return body
 
     @classmethod
@@ -282,7 +275,7 @@ class GetAclRequest:
 
 @dataclass
 class GetCredentialsResponse:
-    credentials: 'List[CredentialInfo]' = None
+    credentials: Optional['List[CredentialInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -318,27 +311,47 @@ class GetStatusRequest:
 @dataclass
 class Import:
     path: str
-    content: str = None
-    format: 'ExportFormat' = None
-    language: 'Language' = None
-    overwrite: bool = None
+    content: Optional[str] = None
+    format: Optional['ImportFormat'] = None
+    language: Optional['Language'] = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content: body['content'] = self.content
-        if self.format: body['format'] = self.format.value
-        if self.language: body['language'] = self.language.value
-        if self.overwrite: body['overwrite'] = self.overwrite
-        if self.path: body['path'] = self.path
+        if self.content is not None: body['content'] = self.content
+        if self.format is not None: body['format'] = self.format.value
+        if self.language is not None: body['language'] = self.language.value
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Import':
         return cls(content=d.get('content', None),
-                   format=_enum(d, 'format', ExportFormat),
+                   format=_enum(d, 'format', ImportFormat),
                    language=_enum(d, 'language', Language),
                    overwrite=d.get('overwrite', None),
                    path=d.get('path', None))
+
+
+class ImportFormat(Enum):
+    """This specifies the format of the file to be imported.
+    
+    The value is case sensitive.
+    
+    - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
+    content provided in the request. If the item is imported as a notebook, then the item's
+    extension is automatically removed. - `SOURCE`: The notebook is imported as source code. -
+    `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a
+    Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive format.
+    Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format."""
+
+    AUTO = 'AUTO'
+    DBC = 'DBC'
+    HTML = 'HTML'
+    JUPYTER = 'JUPYTER'
+    R_MARKDOWN = 'R_MARKDOWN'
+    SOURCE = 'SOURCE'
 
 
 class Language(Enum):
@@ -359,7 +372,7 @@ class ListAclsRequest:
 
 @dataclass
 class ListAclsResponse:
-    items: 'List[AclItem]' = None
+    items: Optional['List[AclItem]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -375,18 +388,18 @@ class ListAclsResponse:
 class ListReposRequest:
     """Get repos"""
 
-    next_page_token: str = None
-    path_prefix: str = None
+    next_page_token: Optional[str] = None
+    path_prefix: Optional[str] = None
 
 
 @dataclass
 class ListReposResponse:
-    next_page_token: str = None
-    repos: 'List[RepoInfo]' = None
+    next_page_token: Optional[str] = None
+    repos: Optional['List[RepoInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.repos: body['repos'] = [v.as_dict() for v in self.repos]
         return body
 
@@ -397,7 +410,7 @@ class ListReposResponse:
 
 @dataclass
 class ListResponse:
-    objects: 'List[ObjectInfo]' = None
+    objects: Optional['List[ObjectInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -411,7 +424,7 @@ class ListResponse:
 
 @dataclass
 class ListScopesResponse:
-    scopes: 'List[SecretScope]' = None
+    scopes: Optional['List[SecretScope]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -432,7 +445,7 @@ class ListSecretsRequest:
 
 @dataclass
 class ListSecretsResponse:
-    secrets: 'List[SecretMetadata]' = None
+    secrets: Optional['List[SecretMetadata]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -449,7 +462,7 @@ class ListWorkspaceRequest:
     """List contents"""
 
     path: str
-    notebooks_modified_after: int = None
+    notebooks_modified_after: Optional[int] = None
 
 
 @dataclass
@@ -458,7 +471,7 @@ class Mkdirs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -468,23 +481,23 @@ class Mkdirs:
 
 @dataclass
 class ObjectInfo:
-    created_at: int = None
-    language: 'Language' = None
-    modified_at: int = None
-    object_id: int = None
-    object_type: 'ObjectType' = None
-    path: str = None
-    size: int = None
+    created_at: Optional[int] = None
+    language: Optional['Language'] = None
+    modified_at: Optional[int] = None
+    object_id: Optional[int] = None
+    object_type: Optional['ObjectType'] = None
+    path: Optional[str] = None
+    size: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at: body['created_at'] = self.created_at
-        if self.language: body['language'] = self.language.value
-        if self.modified_at: body['modified_at'] = self.modified_at
-        if self.object_id: body['object_id'] = self.object_id
-        if self.object_type: body['object_type'] = self.object_type.value
-        if self.path: body['path'] = self.path
-        if self.size: body['size'] = self.size
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.language is not None: body['language'] = self.language.value
+        if self.modified_at is not None: body['modified_at'] = self.modified_at
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type.value
+        if self.path is not None: body['path'] = self.path
+        if self.size is not None: body['size'] = self.size
         return body
 
     @classmethod
@@ -499,7 +512,10 @@ class ObjectInfo:
 
 
 class ObjectType(Enum):
-    """The type of the object in workspace."""
+    """The type of the object in workspace.
+    
+    - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
+    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository"""
 
     DIRECTORY = 'DIRECTORY'
     FILE = 'FILE'
@@ -516,9 +532,9 @@ class PutAcl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission: body['permission'] = self.permission.value
-        if self.principal: body['principal'] = self.principal
-        if self.scope: body['scope'] = self.scope
+        if self.permission is not None: body['permission'] = self.permission.value
+        if self.principal is not None: body['principal'] = self.principal
+        if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
@@ -532,15 +548,15 @@ class PutAcl:
 class PutSecret:
     scope: str
     key: str
-    bytes_value: str = None
-    string_value: str = None
+    bytes_value: Optional[str] = None
+    string_value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bytes_value: body['bytes_value'] = self.bytes_value
-        if self.key: body['key'] = self.key
-        if self.scope: body['scope'] = self.scope
-        if self.string_value: body['string_value'] = self.string_value
+        if self.bytes_value is not None: body['bytes_value'] = self.bytes_value
+        if self.key is not None: body['key'] = self.key
+        if self.scope is not None: body['scope'] = self.scope
+        if self.string_value is not None: body['string_value'] = self.string_value
         return body
 
     @classmethod
@@ -553,23 +569,23 @@ class PutSecret:
 
 @dataclass
 class RepoInfo:
-    branch: str = None
-    head_commit_id: str = None
-    id: int = None
-    path: str = None
-    provider: str = None
-    sparse_checkout: 'SparseCheckout' = None
-    url: str = None
+    branch: Optional[str] = None
+    head_commit_id: Optional[str] = None
+    id: Optional[int] = None
+    path: Optional[str] = None
+    provider: Optional[str] = None
+    sparse_checkout: Optional['SparseCheckout'] = None
+    url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.branch: body['branch'] = self.branch
-        if self.head_commit_id: body['head_commit_id'] = self.head_commit_id
-        if self.id: body['id'] = self.id
-        if self.path: body['path'] = self.path
-        if self.provider: body['provider'] = self.provider
+        if self.branch is not None: body['branch'] = self.branch
+        if self.head_commit_id is not None: body['head_commit_id'] = self.head_commit_id
+        if self.id is not None: body['id'] = self.id
+        if self.path is not None: body['path'] = self.path
+        if self.provider is not None: body['provider'] = self.provider
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
-        if self.url: body['url'] = self.url
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -591,13 +607,14 @@ class ScopeBackendType(Enum):
 
 @dataclass
 class SecretMetadata:
-    key: str = None
-    last_updated_timestamp: int = None
+    key: Optional[str] = None
+    last_updated_timestamp: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key: body['key'] = self.key
-        if self.last_updated_timestamp: body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.key is not None: body['key'] = self.key
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
         return body
 
     @classmethod
@@ -607,15 +624,15 @@ class SecretMetadata:
 
 @dataclass
 class SecretScope:
-    backend_type: 'ScopeBackendType' = None
-    keyvault_metadata: 'AzureKeyVaultSecretScopeMetadata' = None
-    name: str = None
+    backend_type: Optional['ScopeBackendType'] = None
+    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.backend_type: body['backend_type'] = self.backend_type.value
+        if self.backend_type is not None: body['backend_type'] = self.backend_type.value
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -627,7 +644,7 @@ class SecretScope:
 
 @dataclass
 class SparseCheckout:
-    patterns: 'List[str]' = None
+    patterns: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -641,7 +658,7 @@ class SparseCheckout:
 
 @dataclass
 class SparseCheckoutUpdate:
-    patterns: 'List[str]' = None
+    patterns: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -655,17 +672,17 @@ class SparseCheckoutUpdate:
 
 @dataclass
 class UpdateCredentials:
-    credential_id: int
-    git_provider: str = None
-    git_username: str = None
-    personal_access_token: str = None
+    credential_id: Optional[int] = None
+    git_provider: Optional[str] = None
+    git_username: Optional[str] = None
+    personal_access_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id: body['credential_id'] = self.credential_id
-        if self.git_provider: body['git_provider'] = self.git_provider
-        if self.git_username: body['git_username'] = self.git_username
-        if self.personal_access_token: body['personal_access_token'] = self.personal_access_token
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
+        if self.personal_access_token is not None: body['personal_access_token'] = self.personal_access_token
         return body
 
     @classmethod
@@ -678,17 +695,17 @@ class UpdateCredentials:
 
 @dataclass
 class UpdateRepo:
-    repo_id: int
-    branch: str = None
-    sparse_checkout: 'SparseCheckoutUpdate' = None
-    tag: str = None
+    branch: Optional[str] = None
+    repo_id: Optional[int] = None
+    sparse_checkout: Optional['SparseCheckoutUpdate'] = None
+    tag: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.branch: body['branch'] = self.branch
-        if self.repo_id: body['repo_id'] = self.repo_id
+        if self.branch is not None: body['branch'] = self.branch
+        if self.repo_id is not None: body['repo_id'] = self.repo_id
         if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
-        if self.tag: body['tag'] = self.tag
+        if self.tag is not None: body['tag'] = self.tag
         return body
 
     @classmethod
@@ -712,14 +729,26 @@ class GitCredentialsAPI:
     def create(self,
                git_provider: str,
                *,
-               git_username: str = None,
-               personal_access_token: str = None,
+               git_username: Optional[str] = None,
+               personal_access_token: Optional[str] = None,
                **kwargs) -> CreateCredentialsResponse:
         """Create a credential entry.
         
         Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
         attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
-        existing credentials, or the DELETE endpoint to delete existing credentials."""
+        existing credentials, or the DELETE endpoint to delete existing credentials.
+        
+        :param git_provider: str
+          Git provider. This field is case-insensitive. The available Git providers are gitHub,
+          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+          gitLabEnterpriseEdition and awsCodeCommit.
+        :param git_username: str (optional)
+          Git username.
+        :param personal_access_token: str (optional)
+          The personal access token used to authenticate to the corresponding Git provider.
+        
+        :returns: :class:`CreateCredentialsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCredentials(git_provider=git_provider,
@@ -733,7 +762,13 @@ class GitCredentialsAPI:
     def delete(self, credential_id: int, **kwargs):
         """Delete a credential.
         
-        Deletes the specified Git credential."""
+        Deletes the specified Git credential.
+        
+        :param credential_id: int
+          The ID for the corresponding credential to access.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteGitCredentialRequest(credential_id=credential_id)
@@ -743,7 +778,13 @@ class GitCredentialsAPI:
     def get(self, credential_id: int, **kwargs) -> CredentialInfo:
         """Get a credential entry.
         
-        Gets the Git credential with the specified credential ID."""
+        Gets the Git credential with the specified credential ID.
+        
+        :param credential_id: int
+          The ID for the corresponding credential to access.
+        
+        :returns: :class:`CredentialInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetGitCredentialRequest(credential_id=credential_id)
@@ -754,7 +795,10 @@ class GitCredentialsAPI:
     def list(self) -> Iterator[CredentialInfo]:
         """Get Git credentials.
         
-        Lists the calling user's Git credentials. One credential per user is supported."""
+        Lists the calling user's Git credentials. One credential per user is supported.
+        
+        :returns: Iterator over :class:`CredentialInfo`
+        """
 
         json = self._api.do('GET', '/api/2.0/git-credentials')
         return [CredentialInfo.from_dict(v) for v in json.get('credentials', [])]
@@ -762,13 +806,27 @@ class GitCredentialsAPI:
     def update(self,
                credential_id: int,
                *,
-               git_provider: str = None,
-               git_username: str = None,
-               personal_access_token: str = None,
+               git_provider: Optional[str] = None,
+               git_username: Optional[str] = None,
+               personal_access_token: Optional[str] = None,
                **kwargs):
         """Update a credential.
         
-        Updates the specified Git credential."""
+        Updates the specified Git credential.
+        
+        :param credential_id: int
+          The ID for the corresponding credential to access.
+        :param git_provider: str (optional)
+          Git provider. This field is case-insensitive. The available Git providers are gitHub,
+          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+          gitLabEnterpriseEdition and awsCodeCommit.
+        :param git_username: str (optional)
+          Git username.
+        :param personal_access_token: str (optional)
+          The personal access token used to authenticate to the corresponding Git provider.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateCredentials(credential_id=credential_id,
@@ -797,13 +855,28 @@ class ReposAPI:
                url: str,
                provider: str,
                *,
-               path: str = None,
-               sparse_checkout: SparseCheckout = None,
+               path: Optional[str] = None,
+               sparse_checkout: Optional[SparseCheckout] = None,
                **kwargs) -> RepoInfo:
         """Create a repo.
         
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
-        programmatically must be linked to a remote Git repo, unlike repos created in the browser."""
+        programmatically must be linked to a remote Git repo, unlike repos created in the browser.
+        
+        :param url: str
+          URL of the Git repository to be linked.
+        :param provider: str
+          Git provider. This field is case-insensitive. The available Git providers are gitHub,
+          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+          gitLabEnterpriseEdition and awsCodeCommit.
+        :param path: str (optional)
+          Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}.
+        :param sparse_checkout: :class:`SparseCheckout` (optional)
+          If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
+          sparse checkout after the repo is created.
+        
+        :returns: :class:`RepoInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateRepo(path=path, provider=provider, sparse_checkout=sparse_checkout, url=url)
@@ -815,7 +888,13 @@ class ReposAPI:
     def delete(self, repo_id: int, **kwargs):
         """Delete a repo.
         
-        Deletes the specified repo."""
+        Deletes the specified repo.
+        
+        :param repo_id: int
+          The ID for the corresponding repo to access.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteRepoRequest(repo_id=repo_id)
@@ -825,7 +904,13 @@ class ReposAPI:
     def get(self, repo_id: int, **kwargs) -> RepoInfo:
         """Get a repo.
         
-        Returns the repo with the given repo ID."""
+        Returns the repo with the given repo ID.
+        
+        :param repo_id: int
+          The ID for the corresponding repo to access.
+        
+        :returns: :class:`RepoInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetRepoRequest(repo_id=repo_id)
@@ -833,11 +918,24 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/repos/{request.repo_id}')
         return RepoInfo.from_dict(json)
 
-    def list(self, *, next_page_token: str = None, path_prefix: str = None, **kwargs) -> Iterator[RepoInfo]:
+    def list(self,
+             *,
+             next_page_token: Optional[str] = None,
+             path_prefix: Optional[str] = None,
+             **kwargs) -> Iterator[RepoInfo]:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
-        containing twenty repos."""
+        containing twenty repos.
+        
+        :param next_page_token: str (optional)
+          Token used to get the next page of results. If not specified, returns the first page of results as
+          well as a next page token if there are more results.
+        :param path_prefix: str (optional)
+          Filters repos that have paths starting with the given path prefix.
+        
+        :returns: Iterator over :class:`RepoInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListReposRequest(next_page_token=next_page_token, path_prefix=path_prefix)
@@ -859,14 +957,29 @@ class ReposAPI:
     def update(self,
                repo_id: int,
                *,
-               branch: str = None,
-               sparse_checkout: SparseCheckoutUpdate = None,
-               tag: str = None,
+               branch: Optional[str] = None,
+               sparse_checkout: Optional[SparseCheckoutUpdate] = None,
+               tag: Optional[str] = None,
                **kwargs):
         """Update a repo.
         
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
-        branch."""
+        branch.
+        
+        :param repo_id: int
+          The ID for the corresponding repo to access.
+        :param branch: str (optional)
+          Branch that the local version of the repo is checked out to.
+        :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
+          If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
+          enabled for the repo.
+        :param tag: str (optional)
+          Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the repo
+          in a detached HEAD state. Before committing new changes, you must update the repo to a branch
+          instead of the detached HEAD.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateRepo(branch=branch, repo_id=repo_id, sparse_checkout=sparse_checkout, tag=tag)
@@ -891,14 +1004,26 @@ class SecretsAPI:
     def create_scope(self,
                      scope: str,
                      *,
-                     initial_manage_principal: str = None,
-                     keyvault_metadata: AzureKeyVaultSecretScopeMetadata = None,
-                     scope_backend_type: ScopeBackendType = None,
+                     initial_manage_principal: Optional[str] = None,
+                     keyvault_metadata: Optional[AzureKeyVaultSecretScopeMetadata] = None,
+                     scope_backend_type: Optional[ScopeBackendType] = None,
                      **kwargs):
         """Create a new secret scope.
         
         The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
-        exceed 128 characters. The maximum number of scopes in a workspace is 100."""
+        exceed 128 characters. The maximum number of scopes in a workspace is 100.
+        
+        :param scope: str
+          Scope name requested by the user. Scope names are unique.
+        :param initial_manage_principal: str (optional)
+          The principal that is initially granted `MANAGE` permission to the created scope.
+        :param keyvault_metadata: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
+          The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+        :param scope_backend_type: :class:`ScopeBackendType` (optional)
+          The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateScope(initial_manage_principal=initial_manage_principal,
@@ -915,7 +1040,15 @@ class SecretsAPI:
         
         Users must have the `MANAGE` permission to invoke this API. Throws `RESOURCE_DOES_NOT_EXIST` if no
         such secret scope, principal, or ACL exists. Throws `PERMISSION_DENIED` if the user does not have
-        permission to make this API call."""
+        permission to make this API call.
+        
+        :param scope: str
+          The name of the scope to remove permissions from.
+        :param principal: str
+          The principal to remove an existing ACL from.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteAcl(principal=principal, scope=scope)
@@ -928,7 +1061,13 @@ class SecretsAPI:
         Deletes a secret scope.
         
         Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws `PERMISSION_DENIED` if the user
-        does not have permission to make this API call."""
+        does not have permission to make this API call.
+        
+        :param scope: str
+          Name of the scope to delete.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteScope(scope=scope)
@@ -942,7 +1081,15 @@ class SecretsAPI:
         secret scope.
         
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists. Throws `PERMISSION_DENIED`
-        if the user does not have permission to make this API call."""
+        if the user does not have permission to make this API call.
+        
+        :param scope: str
+          The name of the scope that contains the secret to delete.
+        :param key: str
+          Name of the secret to delete.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteSecret(key=key, scope=scope)
@@ -956,7 +1103,15 @@ class SecretsAPI:
         permission to invoke this API.
         
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
-        user does not have permission to make this API call."""
+        user does not have permission to make this API call.
+        
+        :param scope: str
+          The name of the scope to fetch ACL information from.
+        :param principal: str
+          The principal to fetch ACL information for.
+        
+        :returns: :class:`AclItem`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetAclRequest(principal=principal, scope=scope)
@@ -974,7 +1129,13 @@ class SecretsAPI:
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
         
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
-        user does not have permission to make this API call."""
+        user does not have permission to make this API call.
+        
+        :param scope: str
+          The name of the scope to fetch ACL information from.
+        
+        :returns: Iterator over :class:`AclItem`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListAclsRequest(scope=scope)
@@ -990,7 +1151,10 @@ class SecretsAPI:
         
         Lists all secret scopes available in the workspace.
         
-        Throws `PERMISSION_DENIED` if the user does not have permission to make this API call."""
+        Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+        
+        :returns: Iterator over :class:`SecretScope`
+        """
 
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list')
         return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
@@ -1003,7 +1167,13 @@ class SecretsAPI:
         
         The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws `RESOURCE_DOES_NOT_EXIST` if
         no such secret scope exists. Throws `PERMISSION_DENIED` if the user does not have permission to make
-        this API call."""
+        this API call.
+        
+        :param scope: str
+          The name of the scope to list secrets within.
+        
+        :returns: Iterator over :class:`SecretMetadata`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListSecretsRequest(scope=scope)
@@ -1039,7 +1209,17 @@ class SecretsAPI:
         
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_ALREADY_EXISTS` if a
         permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission is
-        invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API call."""
+        invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+        
+        :param scope: str
+          The name of the scope to apply permissions to.
+        :param principal: str
+          The principal in which the permission is applied.
+        :param permission: :class:`AclPermission`
+          The permission level applied to the principal.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PutAcl(permission=permission, principal=principal, scope=scope)
@@ -1050,8 +1230,8 @@ class SecretsAPI:
                    scope: str,
                    key: str,
                    *,
-                   bytes_value: str = None,
-                   string_value: str = None,
+                   bytes_value: Optional[str] = None,
+                   string_value: Optional[str] = None,
                    **kwargs):
         """Add a secret.
         
@@ -1069,7 +1249,19 @@ class SecretsAPI:
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_LIMIT_EXCEEDED` if
         maximum number of secrets in scope is exceeded. Throws `INVALID_PARAMETER_VALUE` if the key name or
         value length is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this
-        API call."""
+        API call.
+        
+        :param scope: str
+          The name of the scope to which the secret will be associated with.
+        :param key: str
+          A unique name to identify the secret.
+        :param bytes_value: str (optional)
+          If specified, value will be stored as bytes.
+        :param string_value: str (optional)
+          If specified, note that the value will be stored in UTF-8 (MB4) form.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = PutSecret(bytes_value=bytes_value, key=key, scope=scope, string_value=string_value)
@@ -1086,7 +1278,7 @@ class WorkspaceAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, path: str, *, recursive: bool = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs):
         """Delete a workspace object.
         
         Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
@@ -1094,33 +1286,53 @@ class WorkspaceAPI:
         non-empty directory and `recursive` is set to `false`, this call returns an error
         `DIRECTORY_NOT_EMPTY`.
         
-        Object deletion cannot be undone and deleting a directory recursively is not atomic."""
+        Object deletion cannot be undone and deleting a directory recursively is not atomic.
+        
+        :param path: str
+          The absolute path of the notebook or directory.
+        :param recursive: bool (optional)
+          The flag that specifies whether to delete the object recursively. It is `false` by default. Please
+          note this deleting directory is not atomic. If it fails in the middle, some of objects under this
+          directory may be deleted and cannot be undone.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Delete(path=path, recursive=recursive)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/delete', body=body)
 
-    def export(self,
-               path: str,
-               *,
-               direct_download: bool = None,
-               format: ExportFormat = None,
-               **kwargs) -> ExportResponse:
+    def export(self, path: str, *, format: Optional[ExportFormat] = None, **kwargs) -> ExportResponse:
         """Export a workspace object.
         
         Exports an object or the contents of an entire directory.
         
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
         
-        One can only export a directory in `DBC` format. If the exported data would exceed size limit, this
-        call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently, this API does not support exporting a library."""
+        If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
+        Currently, this API does not support exporting a library.
+        
+        :param path: str
+          The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`
+          and `SOURCE` format.
+        :param format: :class:`ExportFormat` (optional)
+          This specifies the format of the exported file. By default, this is `SOURCE`.
+          
+          The value is case sensitive.
+          
+          - `SOURCE`: The notebook is exported as source code. - `HTML`: The notebook is exported as an HTML
+          file. - `JUPYTER`: The notebook is exported as a Jupyter/IPython Notebook file. - `DBC`: The
+          notebook is exported in Databricks archive format. - `R_MARKDOWN`: The notebook is exported to R
+          Markdown format.
+        
+        :returns: :class:`ExportResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = ExportRequest(direct_download=direct_download, format=format, path=path)
+            request = ExportRequest(format=format, path=path)
 
         query = {}
-        if direct_download: query['direct_download'] = request.direct_download
         if format: query['format'] = request.format.value
         if path: query['path'] = request.path
 
@@ -1131,7 +1343,13 @@ class WorkspaceAPI:
         """Get status.
         
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
-        `RESOURCE_DOES_NOT_EXIST`."""
+        `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param path: str
+          The absolute path of the notebook or directory.
+        
+        :returns: :class:`ObjectInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatusRequest(path=path)
@@ -1145,16 +1363,44 @@ class WorkspaceAPI:
     def import_(self,
                 path: str,
                 *,
-                content: str = None,
-                format: ExportFormat = None,
-                language: Language = None,
-                overwrite: bool = None,
+                content: Optional[str] = None,
+                format: Optional[ImportFormat] = None,
+                language: Optional[Language] = None,
+                overwrite: Optional[bool] = None,
                 **kwargs):
         """Import a workspace object.
         
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import a directory."""
+        `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import a directory.
+        
+        :param path: str
+          The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
+          format.
+        :param content: str (optional)
+          The base64-encoded content. This has a limit of 10 MB.
+          
+          If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
+          This parameter might be absent, and instead a posted file is used.
+        :param format: :class:`ImportFormat` (optional)
+          This specifies the format of the file to be imported.
+          
+          The value is case sensitive.
+          
+          - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
+          content provided in the request. If the item is imported as a notebook, then the item's extension is
+          automatically removed. - `SOURCE`: The notebook is imported as source code. - `HTML`: The notebook
+          is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook
+          file. - `DBC`: The notebook is imported in Databricks archive format. Required for directories. -
+          `R_MARKDOWN`: The notebook is imported from R Markdown format.
+        :param language: :class:`Language` (optional)
+          The language of the object. This value is set only if the object type is `NOTEBOOK`.
+        :param overwrite: bool (optional)
+          The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
+          format, `overwrite` is not supported since it may contain a directory.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Import(content=content,
@@ -1165,11 +1411,23 @@ class WorkspaceAPI:
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
 
-    def list(self, path: str, *, notebooks_modified_after: int = None, **kwargs) -> Iterator[ObjectInfo]:
+    def list(self,
+             path: str,
+             *,
+             notebooks_modified_after: Optional[int] = None,
+             **kwargs) -> Iterator[ObjectInfo]:
         """List contents.
         
-        Lists the contents of a directory, or the object if it is not a directory.If the input path does not
-        exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`."""
+        Lists the contents of a directory, or the object if it is not a directory. If the input path does not
+        exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param path: str
+          The absolute path of the notebook or directory.
+        :param notebooks_modified_after: int (optional)
+          UTC timestamp in milliseconds
+        
+        :returns: Iterator over :class:`ObjectInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListWorkspaceRequest(notebooks_modified_after=notebooks_modified_after, path=path)
@@ -1188,8 +1446,15 @@ class WorkspaceAPI:
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
         
-        Note that if this operation fails it may have succeeded in creating some of the necessary parrent
-        directories."""
+        Note that if this operation fails it may have succeeded in creating some of the necessary parent
+        directories.
+        
+        :param path: str
+          The absolute path of the directory. If the parent directories do not exist, it will also create
+          them. If the directory already exists, this command will do nothing and succeed.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Mkdirs(path=path)

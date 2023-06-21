@@ -10,7 +10,7 @@ def dbutils(config):
 
 
 def test_fs_cp(dbutils, mocker):
-    inner = mocker.patch('databricks.sdk.mixins.dbfs.DbfsExt.copy')
+    inner = mocker.patch('databricks.sdk.mixins.files.DbfsExt.copy')
 
     dbutils.fs.cp('a', 'b', recurse=True)
 
@@ -30,7 +30,7 @@ def test_fs_head(dbutils, mocker):
 
 def test_fs_ls(dbutils, mocker):
     from databricks.sdk.service.files import FileInfo
-    inner = mocker.patch('databricks.sdk.mixins.dbfs.DbfsExt.list',
+    inner = mocker.patch('databricks.sdk.mixins.files.DbfsExt.list',
                          return_value=[
                              FileInfo(path='b', file_size=10, modification_time=20),
                              FileInfo(path='c', file_size=30, modification_time=40),
@@ -53,7 +53,7 @@ def test_fs_mkdirs(dbutils, mocker):
 
 
 def test_fs_mv(dbutils, mocker):
-    inner = mocker.patch('databricks.sdk.mixins.dbfs.DbfsExt.move_')
+    inner = mocker.patch('databricks.sdk.mixins.files.DbfsExt.move_')
 
     dbutils.fs.mv('a', 'b')
 
@@ -75,7 +75,7 @@ def test_fs_put(dbutils, mocker):
             self._written = contents
 
     mock_open = _MockOpen()
-    inner = mocker.patch('databricks.sdk.mixins.dbfs.DbfsExt.open', return_value=mock_open)
+    inner = mocker.patch('databricks.sdk.mixins.files.DbfsExt.open', return_value=mock_open)
 
     dbutils.fs.put('a', 'b')
 
@@ -137,9 +137,7 @@ def dbutils_proxy(mocker):
 def test_fs_mount(dbutils_proxy):
     command = ('\n'
                '        import json\n'
-               '        (args, kwargs) = json.loads(\'[[], {"source": "s3://foo", '
-               '"mountPoint": "bar", "encryptionType": "", "owner": "", '
-               '"extraConfigs": null}]\')\n'
+               '        (args, kwargs) = json.loads(\'[["s3://foo", "bar"], {}]\')\n'
                '        result = dbutils.fs.mount(*args, **kwargs)\n'
                '        dbutils.notebook.exit(json.dumps(result))\n'
                '        ')
@@ -153,9 +151,7 @@ def test_fs_mount(dbutils_proxy):
 def test_fs_update_mount(dbutils_proxy):
     command = ('\n'
                '        import json\n'
-               '        (args, kwargs) = json.loads(\'[[], {"source": '
-               '"s3://foo2", "mountPoint": "bar", "encryptionType": "", "owner": '
-               '"", "extraConfigs": null}]\')\n'
+               '        (args, kwargs) = json.loads(\'[["s3://foo2", "bar"], {}]\')\n'
                '        result = dbutils.fs.updateMount(*args, **kwargs)\n'
                '        dbutils.notebook.exit(json.dumps(result))\n'
                '        ')

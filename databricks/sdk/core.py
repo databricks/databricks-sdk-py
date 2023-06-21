@@ -1,6 +1,7 @@
 import abc
 import base64
 import configparser
+import copy
 import functools
 import json
 import logging
@@ -9,10 +10,11 @@ import pathlib
 import platform
 import re
 import subprocess
+import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Callable, Dict, Iterable, List, Optional
+from typing import Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
@@ -21,7 +23,7 @@ from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
-                    Token, TokenSource)
+                    Token, TokenCache, TokenSource)
 from .version import __version__
 
 __all__ = ['Config', 'DatabricksError']
@@ -87,19 +89,42 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
     return inner
 
 
+@credentials_provider('runtime', [])
+def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
+    from databricks.sdk.runtime import init_runtime_native_auth
+    if init_runtime_native_auth is not None:
+        host, inner = init_runtime_native_auth()
+        cfg.host = host
+        return inner
+    try:
+        from dbruntime.databricks_repl_context import get_context
+        ctx = get_context()
+        if ctx is None:
+            logger.debug('Empty REPL context returned, skipping runtime auth')
+            return None
+        cfg.host = f'https://{ctx.browserHostName}'
+
+        def inner() -> Dict[str, str]:
+            ctx = get_context()
+            return {'Authorization': f'Bearer {ctx.apiToken}'}
+
+        return inner
+    except ImportError:
+        return None
+
+
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
 def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
-    # TODO: change to use cfg.oidc_endpoints (and add cache there)
     # TODO: Azure returns 404 for UC workspace after redirecting to
     # https://login.microsoftonline.com/{cfg.azure_tenant_id}/.well-known/oauth-authorization-server
-    resp = requests.get(f"{cfg.host}/oidc/.well-known/oauth-authorization-server")
-    if not resp.ok:
+    oidc = cfg.oidc_endpoints
+    if oidc is None:
         return None
     token_source = ClientCredentials(client_id=cfg.client_id,
                                      client_secret=cfg.client_secret,
-                                     token_url=resp.json()["token_endpoint"],
+                                     token_url=oidc.token_endpoint,
                                      scopes=["all-apis"],
                                      use_header=True)
 
@@ -129,10 +154,20 @@ def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
                                client_id=client_id,
                                redirect_url='http://localhost:8020',
                                client_secret=cfg.client_secret)
-    consent = oauth_client.initiate_consent()
-    if not consent:
-        return None
-    credentials = consent.launch_external_browser()
+
+    # Load cached credentials from disk if they exist.
+    # Note that these are local to the Python SDK and not reused by other SDKs.
+    token_cache = TokenCache(oauth_client)
+    credentials = token_cache.load()
+    if credentials:
+        # Force a refresh in case the loaded credentials are expired.
+        credentials.token()
+    else:
+        consent = oauth_client.initiate_consent()
+        if not consent:
+            return None
+        credentials = consent.launch_external_browser()
+    token_cache.save(credentials)
     return credentials(cfg)
 
 
@@ -203,7 +238,10 @@ class CliTokenSource(Refreshable):
 
     def refresh(self) -> Token:
         try:
-            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT)
+            is_windows = sys.platform.startswith('win')
+            # windows requires shell=True to be able to execute 'az login' or other commands
+            # cannot use shell=True all the time, as it breaks macOS
+            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=is_windows)
             it = json.loads(out.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
@@ -248,37 +286,115 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     return inner
 
 
-class BricksCliTokenSource(CliTokenSource):
-    """ Obtain the token granted by `bricks auth login` CLI command """
+class DatabricksCliTokenSource(CliTokenSource):
+    """ Obtain the token granted by `databricks auth login` CLI command """
 
     def __init__(self, cfg: 'Config'):
-        cli_path = cfg.bricks_cli_path
-        if not cli_path:
-            cli_path = 'bricks'
-        cmd = [cli_path, 'auth', 'token', '--host', cfg.host]
+        args = ['auth', 'token', '--host', cfg.host]
         if cfg.is_account_client:
-            cmd += ['--account-id', cfg.account_id]
-        super().__init__(cmd=cmd,
+            args += ['--account-id', cfg.account_id]
+
+        cli_path = cfg.databricks_cli_path
+        if not cli_path:
+            cli_path = 'databricks'
+
+        # If the path is unqualified, look it up in PATH.
+        if cli_path.count("/") == 0:
+            cli_path = self.__class__._find_executable(cli_path)
+
+        super().__init__(cmd=[cli_path, *args],
                          token_type_field='token_type',
                          access_token_field='access_token',
                          expiry_field='expiry')
 
+    @staticmethod
+    def _find_executable(name) -> str:
+        err = FileNotFoundError("Most likely the Databricks CLI is not installed")
+        for dir in os.getenv("PATH", default="").split(os.path.pathsep):
+            path = pathlib.Path(dir).joinpath(name).resolve()
+            if not path.is_file():
+                continue
 
-@credentials_provider('bricks-cli', ['host', 'is_aws'])
-def bricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
-    token_source = BricksCliTokenSource(cfg)
+            # The new Databricks CLI is a single binary with size > 1MB.
+            # We use the size as a signal to determine which Databricks CLI is installed.
+            stat = path.stat()
+            if stat.st_size < (1024 * 1024):
+                err = FileNotFoundError("Databricks CLI version <0.100.0 detected")
+                continue
+
+            return str(path)
+
+        raise err
+
+
+@credentials_provider('databricks-cli', ['host', 'is_aws'])
+def databricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
+    try:
+        token_source = DatabricksCliTokenSource(cfg)
+    except FileNotFoundError as e:
+        logger.debug(e)
+        return None
+
     try:
         token_source.token()
-    except FileNotFoundError:
-        logger.debug(f'Most likely Bricks CLI is not installed.')
-        return None
     except IOError as e:
         if 'databricks OAuth is not' in str(e):
             logger.debug(f'OAuth not configured or not available: {e}')
             return None
         raise e
 
-    logger.info("Using Bricks CLI authentication")
+    logger.info("Using Databricks CLI authentication")
+
+    def inner() -> Dict[str, str]:
+        token = token_source.token()
+        return {'Authorization': f'{token.token_type} {token.access_token}'}
+
+    return inner
+
+
+class MetadataServiceTokenSource(Refreshable):
+    """ Obtain the token granted by Databricks Metadata Service """
+    METADATA_SERVICE_VERSION = "1"
+    METADATA_SERVICE_VERSION_HEADER = "X-Databricks-Metadata-Version"
+    METADATA_SERVICE_HOST_HEADER = "X-Databricks-Host"
+    _metadata_service_timeout = 10 # seconds
+
+    def __init__(self, cfg: 'Config'):
+        super().__init__()
+        self.url = cfg.metadata_service_url
+        self.host = cfg.host
+
+    def refresh(self) -> Token:
+        resp = requests.get(self.url,
+                            timeout=self._metadata_service_timeout,
+                            headers={
+                                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
+                                self.METADATA_SERVICE_HOST_HEADER: self.host
+                            })
+        json_resp: dict[str, Union[str, float]] = resp.json()
+        access_token = json_resp.get("access_token", None)
+        if access_token is None:
+            raise ValueError("Metadata Service returned empty token")
+        token_type = json_resp.get("token_type", None)
+        if token_type is None:
+            raise ValueError("Metadata Service returned empty token type")
+        if json_resp["expires_on"] in ["", None]:
+            raise ValueError("Metadata Service returned invalid expiry")
+        try:
+            expiry = datetime.fromtimestamp(json_resp["expires_on"])
+        except:
+            raise ValueError("Metadata Service returned invalid expiry")
+
+        return Token(access_token=access_token, token_type=token_type, expiry=expiry)
+
+
+@credentials_provider('metadata-service', ['host', 'metadata_service_url'])
+def metadata_service(cfg: 'Config') -> Optional[HeaderFactory]:
+    """ Adds refreshed token granted by Databricks Metadata Service to every request. """
+
+    token_source = MetadataServiceTokenSource(cfg)
+    token_source.token()
+    logger.info("Using Databricks Metadata Service authentication")
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
@@ -298,8 +414,8 @@ class DefaultCredentials:
 
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
-            pat_auth, basic_auth, oauth_service_principal, azure_service_principal, azure_cli,
-            external_browser, bricks_cli
+            pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
+            azure_cli, external_browser, databricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -362,7 +478,7 @@ class Config:
     azure_tenant_id = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
     azure_environment = ConfigAttribute(env='ARM_ENVIRONMENT')
     azure_login_app_id = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
-    bricks_cli_path = ConfigAttribute(env='BRICKS_CLI_PATH')
+    databricks_cli_path = ConfigAttribute(env='DATABRICKS_CLI_PATH')
     auth_type = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
     cluster_id = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
     warehouse_id = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
@@ -372,6 +488,9 @@ class Config:
     debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
     retry_timeout_seconds: int = ConfigAttribute()
+    metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL',
+                                           auth='metadata-service',
+                                           sensitive=True)
 
     def __init__(self,
                  *,
@@ -380,6 +499,7 @@ class Config:
                  product_version="0.0.0",
                  **kwargs):
         self._inner = {}
+        self._user_agent_other_info = []
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         try:
             self._set_inner_config(kwargs)
@@ -483,8 +603,29 @@ class Config:
         """ Returns User-Agent header used by this SDK """
         py_version = platform.python_version()
         os_name = platform.uname().system.lower()
-        return (f"{self._product}/{self._product_version} databricks-sdk-py/{__version__}"
-                f" python/{py_version} os/{os_name} auth/{self.auth_type}")
+
+        ua = [
+            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
+            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
+        ]
+        if len(self._user_agent_other_info) > 0:
+            ua.append(' '.join(self._user_agent_other_info))
+        if len(self._upstream_user_agent) > 0:
+            ua.append(self._upstream_user_agent)
+
+        return ' '.join(ua)
+
+    @property
+    def _upstream_user_agent(self) -> str:
+        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
+        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
+        if product is not None and product_version is not None:
+            return f"upstream/{product} upstream-version/{product_version}"
+        return ""
+
+    def with_user_agent_extra(self, key: str, value: str) -> 'Config':
+        self._user_agent_other_info.append(f"{key}/{value}")
+        return self
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
@@ -611,7 +752,8 @@ class Config:
             logger.debug('Loaded from environment')
 
     def _known_file_config_loader(self):
-        if not self.profile and (self.is_any_auth_configured or self.is_azure):
+        if not self.profile and (self.is_any_auth_configured or self.host
+                                 or self.azure_workspace_resource_id):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
             return
@@ -676,6 +818,16 @@ class Config:
     def __repr__(self):
         return f'<{self.debug_string()}>'
 
+    def copy(self):
+        """Creates a copy of the config object.
+        All the copies share most of their internal state (ie, shared reference to fields such as credential_provider).
+        Copies have their own instances of the following fields
+            - `_user_agent_other_info`
+        """
+        cpy: Config = copy.copy(self)
+        cpy._user_agent_other_info = copy.deepcopy(self._user_agent_other_info)
+        return cpy
+
 
 class DatabricksError(IOError):
     """ Generic error from Databricks REST API """
@@ -689,10 +841,10 @@ class DatabricksError(IOError):
                  scimType: str = None,
                  error: str = None,
                  **kwargs):
-        if not message and error:
+        if error:
             # API 1.2 has different response format, let's adapt
             message = error
-        if not message and detail:
+        if detail:
             # Handle SCIM error message details
             # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
             if detail == "null":
@@ -707,12 +859,18 @@ class DatabricksError(IOError):
         self.kwargs = kwargs
 
 
-class ApiClient(requests.Session):
+class ApiClient:
     _cfg: Config
 
     def __init__(self, cfg: Config = None):
-        super().__init__()
-        self._cfg = Config() if not cfg else cfg
+
+        if cfg is None:
+            cfg = Config()
+
+        self._cfg = cfg
+        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
+        self._user_agent_base = cfg.user_agent
+
         retry_strategy = Retry(
             total=6,
             backoff_factor=1,
@@ -721,11 +879,10 @@ class ApiClient(requests.Session):
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
         )
-        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
-        self._user_agent_base = cfg.user_agent
-        self.auth = self._authenticate
 
-        self.mount("https://", HTTPAdapter(max_retries=retry_strategy))
+        self._session = requests.Session()
+        self._session.auth = self._authenticate
+        self._session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
 
     @property
     def account_id(self) -> str:
@@ -741,16 +898,40 @@ class ApiClient(requests.Session):
             r.headers[k] = v
         return r
 
-    def do(self, method: str, path: str, query: dict = None, body: dict = None) -> dict:
+    @staticmethod
+    def _fix_query_string(query: Optional[dict] = None) -> Optional[dict]:
+        # Convert True -> "true" for Databricks APIs to understand booleans.
+        # See: https://github.com/databricks/databricks-sdk-py/issues/142
+        if query is None:
+            return None
+        return {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+
+    def do(self,
+           method: str,
+           path: str,
+           query: dict = None,
+           body: dict = None,
+           raw: bool = False,
+           files=None,
+           data=None) -> dict:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
-        response = self.request(method, f"{self._cfg.host}{path}", params=query, json=body, headers=headers)
+        response = self._session.request(method,
+                                         f"{self._cfg.host}{path}",
+                                         params=self._fix_query_string(query),
+                                         json=body,
+                                         headers=headers,
+                                         files=files,
+                                         data=data,
+                                         stream=True if raw else False)
         try:
-            self._record_request_log(response)
+            self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok:
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
                 payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
+            if raw:
+                return response.raw
             if not len(response.content):
                 return {}
             return response.json()
@@ -758,7 +939,7 @@ class ApiClient(requests.Session):
             message = self._make_sense_from_html(response.text)
             if not message:
                 message = response.reason
-            raise self._make_nicer_error(message) from None
+            raise self._make_nicer_error(message=message) from None
 
     @staticmethod
     def _make_sense_from_html(txt: str) -> str:
@@ -771,13 +952,15 @@ class ApiClient(requests.Session):
             return match.group(1).strip()
         return txt
 
-    def _make_nicer_error(self, message: str, status_code: int = 200, **kwargs) -> DatabricksError:
+    def _make_nicer_error(self, status_code: int = 200, **kwargs) -> DatabricksError:
+        message = kwargs.get('message', 'request failed')
         is_http_unauthorized_or_forbidden = status_code in (401, 403)
         if is_http_unauthorized_or_forbidden:
             message = self._cfg.wrap_debug_info(message)
-        return DatabricksError(message, **kwargs)
+        kwargs['message'] = message
+        return DatabricksError(**kwargs)
 
-    def _record_request_log(self, response: requests.Response):
+    def _record_request_log(self, response: requests.Response, raw=False):
         if not logger.isEnabledFor(logging.DEBUG):
             return
         request = response.request
@@ -792,9 +975,12 @@ class ApiClient(requests.Session):
             for k, v in request.headers.items():
                 sb.append(f'> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}')
         if request.body:
-            sb.append(self._redacted_dump("> ", request.body))
+            sb.append("> [raw stream]" if raw else self._redacted_dump("> ", request.body))
         sb.append(f'< {response.status_code} {response.reason}')
-        if response.content:
+        if raw and response.headers.get('Content-Type', None) != 'application/json':
+            # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
+            sb.append("< [raw stream]")
+        elif response.content:
             sb.append(self._redacted_dump("< ", response.content))
         logger.debug("\n".join(sb))
 

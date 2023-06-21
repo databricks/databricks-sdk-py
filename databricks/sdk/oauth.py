@@ -1,7 +1,9 @@
 import base64
 import functools
 import hashlib
+import json
 import logging
+import os
 import secrets
 import threading
 import urllib.parse
@@ -10,7 +12,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import requests
 import requests.auth
@@ -20,6 +22,22 @@ import requests.auth
 NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
 
 logger = logging.getLogger(__name__)
+
+
+class IgnoreNetrcAuth(requests.auth.AuthBase):
+    """This auth method is a no-op.
+
+    We use it to force requestslib to not use .netrc to write auth headers
+    when making .post() requests to the oauth token endpoints, since these
+    don't require authentication.
+
+    In cases where .netrc is outdated or corrupt, these requests will fail.
+
+    See issue #121
+    """
+
+    def __call__(self, r):
+        return r
 
 
 @dataclass
@@ -85,6 +103,8 @@ def retrieve_token(client_id,
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
+    else:
+        auth = IgnoreNetrcAuth()
     resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
         if resp.headers['Content-Type'].startswith('application/json'):
@@ -157,7 +177,7 @@ class _OAuthCallback(BaseHTTPRequestHandler):
         self.wfile.write(b'You can close this tab.')
 
 
-class RefreshableCredentials(Refreshable):
+class SessionCredentials(Refreshable):
 
     def __init__(self, client: 'OAuthClient', token: Token):
         self._client = client
@@ -167,8 +187,8 @@ class RefreshableCredentials(Refreshable):
         return {'token': self._token.as_dict()}
 
     @staticmethod
-    def from_dict(client: 'OAuthClient', raw: dict) -> 'RefreshableCredentials':
-        return RefreshableCredentials(client=client, token=Token.from_dict(raw['token']))
+    def from_dict(client: 'OAuthClient', raw: dict) -> 'SessionCredentials':
+        return SessionCredentials(client=client, token=Token.from_dict(raw['token']))
 
     def auth_type(self):
         """Implementing CredentialsProvider protocol"""
@@ -217,7 +237,7 @@ class Consent:
     def from_dict(client: 'OAuthClient', raw: dict) -> 'Consent':
         return Consent(client, raw['state'], raw['verifier'])
 
-    def launch_external_browser(self) -> RefreshableCredentials:
+    def launch_external_browser(self) -> SessionCredentials:
         redirect_url = urllib.parse.urlparse(self._client.redirect_url)
         if redirect_url.hostname not in ('localhost', '127.0.0.1'):
             raise ValueError(f'cannot listen on {redirect_url.hostname}')
@@ -234,14 +254,14 @@ class Consent:
         query = feedback.pop()
         return self.exchange_callback_parameters(query)
 
-    def exchange_callback_parameters(self, query: Dict[str, str]) -> RefreshableCredentials:
+    def exchange_callback_parameters(self, query: Dict[str, str]) -> SessionCredentials:
         if 'error' in query:
             raise ValueError('{error}: {error_description}'.format(**query))
         if 'code' not in query or 'state' not in query:
             raise ValueError('No code returned in callback')
         return self.exchange(query['code'], query['state'])
 
-    def exchange(self, code: str, state: str) -> RefreshableCredentials:
+    def exchange(self, code: str, state: str) -> SessionCredentials:
         if self._state != state:
             raise ValueError('state mismatch')
         params = {
@@ -259,7 +279,7 @@ class Consent:
                                        params=params,
                                        headers=headers,
                                        use_params=True)
-                return RefreshableCredentials(self._client, token)
+                return SessionCredentials(self._client, token)
             except ValueError as e:
                 if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
                     # Retry in cases of 'Single-Page Application' client-type with
@@ -384,3 +404,41 @@ class ClientCredentials(Refreshable):
                               params,
                               use_params=self.use_params,
                               use_header=self.use_header)
+
+
+class TokenCache():
+    BASE_PATH = "~/.config/databricks-sdk-py/oauth"
+
+    def __init__(self, client: OAuthClient) -> None:
+        self.client = client
+
+    @property
+    def filename(self) -> str:
+        # Include host, client_id, and scopes in the cache filename to make it unique.
+        hash = hashlib.sha256()
+        for chunk in [self.client.host, self.client.client_id, ",".join(self.client._scopes), ]:
+            hash.update(chunk.encode('utf-8'))
+        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
+
+    def load(self) -> Optional[SessionCredentials]:
+        """
+        Load credentials from cache file. Return None if the cache file does not exist or is invalid.
+        """
+        if not os.path.exists(self.filename):
+            return None
+
+        try:
+            with open(self.filename, 'r') as f:
+                raw = json.load(f)
+                return SessionCredentials.from_dict(self.client, raw)
+        except Exception:
+            return None
+
+    def save(self, credentials: SessionCredentials) -> None:
+        """
+        Save credentials to cache file.
+        """
+        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        with open(self.filename, 'w') as f:
+            json.dump(credentials.as_dict(), f)
+        os.chmod(self.filename, 0o600)

@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _repeated
 
@@ -18,8 +18,8 @@ class AddBlock:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.data: body['data'] = self.data
-        if self.handle: body['handle'] = self.handle
+        if self.data is not None: body['data'] = self.data
+        if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
@@ -33,7 +33,7 @@ class Close:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.handle: body['handle'] = self.handle
+        if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
@@ -44,12 +44,12 @@ class Close:
 @dataclass
 class Create:
     path: str
-    overwrite: bool = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.overwrite: body['overwrite'] = self.overwrite
-        if self.path: body['path'] = self.path
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -59,11 +59,11 @@ class Create:
 
 @dataclass
 class CreateResponse:
-    handle: int = None
+    handle: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.handle: body['handle'] = self.handle
+        if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
@@ -74,12 +74,12 @@ class CreateResponse:
 @dataclass
 class Delete:
     path: str
-    recursive: bool = None
+    recursive: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
-        if self.recursive: body['recursive'] = self.recursive
+        if self.path is not None: body['path'] = self.path
+        if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
     @classmethod
@@ -89,17 +89,17 @@ class Delete:
 
 @dataclass
 class FileInfo:
-    file_size: int = None
-    is_dir: bool = None
-    modification_time: int = None
-    path: str = None
+    file_size: Optional[int] = None
+    is_dir: Optional[bool] = None
+    modification_time: Optional[int] = None
+    path: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.file_size: body['file_size'] = self.file_size
-        if self.is_dir: body['is_dir'] = self.is_dir
-        if self.modification_time: body['modification_time'] = self.modification_time
-        if self.path: body['path'] = self.path
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_dir is not None: body['is_dir'] = self.is_dir
+        if self.modification_time is not None: body['modification_time'] = self.modification_time
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -126,7 +126,7 @@ class ListDbfsRequest:
 
 @dataclass
 class ListStatusResponse:
-    files: 'List[FileInfo]' = None
+    files: Optional['List[FileInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -144,7 +144,7 @@ class MkDirs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path: body['path'] = self.path
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -159,8 +159,8 @@ class Move:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination_path: body['destination_path'] = self.destination_path
-        if self.source_path: body['source_path'] = self.source_path
+        if self.destination_path is not None: body['destination_path'] = self.destination_path
+        if self.source_path is not None: body['source_path'] = self.source_path
         return body
 
     @classmethod
@@ -171,14 +171,14 @@ class Move:
 @dataclass
 class Put:
     path: str
-    contents: str = None
-    overwrite: bool = None
+    contents: Optional[str] = None
+    overwrite: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.contents: body['contents'] = self.contents
-        if self.overwrite: body['overwrite'] = self.overwrite
-        if self.path: body['path'] = self.path
+        if self.contents is not None: body['contents'] = self.contents
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
@@ -193,19 +193,19 @@ class ReadDbfsRequest:
     """Get the contents of a file"""
 
     path: str
-    length: int = None
-    offset: int = None
+    length: Optional[int] = None
+    offset: Optional[int] = None
 
 
 @dataclass
 class ReadResponse:
-    bytes_read: int = None
-    data: str = None
+    bytes_read: Optional[int] = None
+    data: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bytes_read: body['bytes_read'] = self.bytes_read
-        if self.data: body['data'] = self.data
+        if self.bytes_read is not None: body['bytes_read'] = self.bytes_read
+        if self.data is not None: body['data'] = self.data
         return body
 
     @classmethod
@@ -226,7 +226,15 @@ class DbfsAPI:
         Appends a block of data to the stream specified by the input handle. If the handle does not exist,
         this call will throw an exception with `RESOURCE_DOES_NOT_EXIST`.
         
-        If the block of data exceeds 1 MB, this call will throw an exception with `MAX_BLOCK_SIZE_EXCEEDED`."""
+        If the block of data exceeds 1 MB, this call will throw an exception with `MAX_BLOCK_SIZE_EXCEEDED`.
+        
+        :param handle: int
+          The handle on an open stream.
+        :param data: str
+          The base64-encoded data to append to the stream. This has a limit of 1 MB.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = AddBlock(data=data, handle=handle)
@@ -237,24 +245,38 @@ class DbfsAPI:
         """Close the stream.
         
         Closes the stream specified by the input handle. If the handle does not exist, this call throws an
-        exception with `RESOURCE_DOES_NOT_EXIST`."""
+        exception with `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param handle: int
+          The handle on an open stream.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Close(handle=handle)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/dbfs/close', body=body)
 
-    def create(self, path: str, *, overwrite: bool = None, **kwargs) -> CreateResponse:
+    def create(self, path: str, *, overwrite: Optional[bool] = None, **kwargs) -> CreateResponse:
         """Open a stream.
         
-        "Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
+        Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
         timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
         set to `false`, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
         
         A typical workflow for file upload would be:
         
         1. Issue a `create` call and get a handle. 2. Issue one or more `add-block` calls with the handle you
-        have. 3. Issue a `close` call with the handle you have."""
+        have. 3. Issue a `close` call with the handle you have.
+        
+        :param path: str
+          The path of the new file. The path should be the absolute DBFS path.
+        :param overwrite: bool (optional)
+          The flag that specifies whether to overwrite existing file/files.
+        
+        :returns: :class:`CreateResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Create(overwrite=overwrite, path=path)
@@ -263,7 +285,7 @@ class DbfsAPI:
         json = self._api.do('POST', '/api/2.0/dbfs/create', body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, path: str, *, recursive: bool = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs):
         """Delete a file/directory.
         
         Delete the file or directory (optionally recursively delete all files in the directory). This call
@@ -279,7 +301,16 @@ class DbfsAPI:
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs` covers the functional scope
         of the DBFS REST API, but from notebooks. Running such operations using notebooks provides better
         control and manageability, such as selective deletes, and the possibility to automate periodic delete
-        jobs."""
+        jobs.
+        
+        :param path: str
+          The path of the file or directory to delete. The path should be the absolute DBFS path.
+        :param recursive: bool (optional)
+          Whether or not to recursively delete the directory's contents. Deleting empty directories can be
+          done without providing the recursive flag.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Delete(path=path, recursive=recursive)
@@ -290,7 +321,13 @@ class DbfsAPI:
         """Get the information of a file or directory.
         
         Gets the file information for a file or directory. If the file or directory does not exist, this call
-        throws an exception with `RESOURCE_DOES_NOT_EXIST`."""
+        throws an exception with `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param path: str
+          The path of the file or directory. The path should be the absolute DBFS path.
+        
+        :returns: :class:`FileInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetStatusRequest(path=path)
@@ -312,7 +349,13 @@ class DbfsAPI:
         discourage using the DBFS REST API for operations that list more than 10K files. Instead, we recommend
         that you perform such operations in the context of a cluster, using the [File system utility
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
-        without timing out."""
+        without timing out.
+        
+        :param path: str
+          The path of the file or directory. The path should be the absolute DBFS path.
+        
+        :returns: Iterator over :class:`FileInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListDbfsRequest(path=path)
@@ -329,7 +372,13 @@ class DbfsAPI:
         Creates the given directory and necessary parent directories if they do not exist. If a file (not a
         directory) exists at any prefix of the input path, this call throws an exception with
         `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
-        of the necessary parent directories."""
+        of the necessary parent directories.
+        
+        :param path: str
+          The path of the new directory. The path should be the absolute DBFS path.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = MkDirs(path=path)
@@ -342,14 +391,22 @@ class DbfsAPI:
         Moves a file from one location to another location within DBFS. If the source file does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
-        path is a directory, this call always recursively moves all files.","""
+        path is a directory, this call always recursively moves all files.",
+        
+        :param source_path: str
+          The source path of the file or directory. The path should be the absolute DBFS path.
+        :param destination_path: str
+          The destination path of the file or directory. The path should be the absolute DBFS path.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Move(destination_path=destination_path, source_path=source_path)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/dbfs/move', body=body)
 
-    def put(self, path: str, *, contents: str = None, overwrite: bool = None, **kwargs):
+    def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None, **kwargs):
         """Upload a file.
         
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
@@ -361,23 +418,49 @@ class DbfsAPI:
         to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be thrown if this limit is exceeded.
         
         If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
-        :method:dbfs/addBlock, :method:dbfs/close."""
+        :method:dbfs/addBlock, :method:dbfs/close.
+        
+        :param path: str
+          The path of the new file. The path should be the absolute DBFS path.
+        :param contents: str (optional)
+          This parameter might be absent, and instead a posted file will be used.
+        :param overwrite: bool (optional)
+          The flag that specifies whether to overwrite existing file/files.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = Put(contents=contents, overwrite=overwrite, path=path)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/dbfs/put', body=body)
 
-    def read(self, path: str, *, length: int = None, offset: int = None, **kwargs) -> ReadResponse:
+    def read(self,
+             path: str,
+             *,
+             length: Optional[int] = None,
+             offset: Optional[int] = None,
+             **kwargs) -> ReadResponse:
         """Get the contents of a file.
         
-        "Returns the contents of a file. If the file does not exist, this call throws an exception with
+        Returns the contents of a file. If the file does not exist, this call throws an exception with
         `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the read length is negative, or if the offset
         is negative, this call throws an exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds
         1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
         
         If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
-        file.","""
+        file.",
+        
+        :param path: str
+          The path of the file to read. The path should be the absolute DBFS path.
+        :param length: int (optional)
+          The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value
+          of 0.5 MB.
+        :param offset: int (optional)
+          The offset to read from in bytes.
+        
+        :returns: :class:`ReadResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ReadDbfsRequest(length=length, offset=offset, path=path)

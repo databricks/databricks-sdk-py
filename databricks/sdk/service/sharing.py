@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -25,15 +25,15 @@ class AuthenticationType(Enum):
 class CreateProvider:
     name: str
     authentication_type: 'AuthenticationType'
-    comment: str = None
-    recipient_profile_str: str = None
+    comment: Optional[str] = None
+    recipient_profile_str: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.recipient_profile_str: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
         return body
 
     @classmethod
@@ -48,24 +48,24 @@ class CreateProvider:
 class CreateRecipient:
     name: str
     authentication_type: 'AuthenticationType'
-    comment: str = None
-    data_recipient_global_metastore_id: Any = None
-    ip_access_list: 'IpAccessList' = None
-    owner: str = None
-    properties_kvpairs: Any = None
-    sharing_code: str = None
+    comment: Optional[str] = None
+    data_recipient_global_metastore_id: Optional[Any] = None
+    ip_access_list: Optional['IpAccessList'] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    sharing_code: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.comment: body['comment'] = self.comment
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.comment is not None: body['comment'] = self.comment
         if self.data_recipient_global_metastore_id:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
-        if self.sharing_code: body['sharing_code'] = self.sharing_code
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
+        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
         return body
 
     @classmethod
@@ -76,19 +76,19 @@ class CreateRecipient:
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
                    sharing_code=d.get('sharing_code', None))
 
 
 @dataclass
 class CreateShare:
     name: str
-    comment: str = None
+    comment: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -140,7 +140,7 @@ class GetRecipientRequest:
 
 @dataclass
 class GetRecipientSharePermissionsResponse:
-    permissions_out: 'List[ShareToPrivilegeAssignment]' = None
+    permissions_out: Optional['List[ShareToPrivilegeAssignment]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -157,12 +157,12 @@ class GetShareRequest:
     """Get a share"""
 
     name: str
-    include_shared_data: bool = None
+    include_shared_data: Optional[bool] = None
 
 
 @dataclass
 class IpAccessList:
-    allowed_ip_addresses: 'List[str]' = None
+    allowed_ip_addresses: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -176,7 +176,7 @@ class IpAccessList:
 
 @dataclass
 class ListProviderSharesResponse:
-    shares: 'List[ProviderShare]' = None
+    shares: Optional['List[ProviderShare]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -192,12 +192,12 @@ class ListProviderSharesResponse:
 class ListProvidersRequest:
     """List providers"""
 
-    data_provider_global_metastore_id: str = None
+    data_provider_global_metastore_id: Optional[str] = None
 
 
 @dataclass
 class ListProvidersResponse:
-    providers: 'List[ProviderInfo]' = None
+    providers: Optional['List[ProviderInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -213,12 +213,12 @@ class ListProvidersResponse:
 class ListRecipientsRequest:
     """List share recipients"""
 
-    data_recipient_global_metastore_id: str = None
+    data_recipient_global_metastore_id: Optional[str] = None
 
 
 @dataclass
 class ListRecipientsResponse:
-    recipients: 'List[RecipientInfo]' = None
+    recipients: Optional['List[RecipientInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -239,7 +239,7 @@ class ListSharesRequest:
 
 @dataclass
 class ListSharesResponse:
-    shares: 'List[ShareInfo]' = None
+    shares: Optional['List[ShareInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -253,7 +253,7 @@ class ListSharesResponse:
 
 @dataclass
 class Partition:
-    values: 'List[PartitionValue]' = None
+    values: Optional['List[PartitionValue]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -267,17 +267,18 @@ class Partition:
 
 @dataclass
 class PartitionValue:
-    name: str = None
-    op: 'PartitionValueOp' = None
-    recipient_property_key: str = None
-    value: str = None
+    name: Optional[str] = None
+    op: Optional['PartitionValueOp'] = None
+    recipient_property_key: Optional[str] = None
+    value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
-        if self.op: body['op'] = self.op.value
-        if self.recipient_property_key: body['recipient_property_key'] = self.recipient_property_key
-        if self.value: body['value'] = self.value
+        if self.name is not None: body['name'] = self.name
+        if self.op is not None: body['op'] = self.op.value
+        if self.recipient_property_key is not None:
+            body['recipient_property_key'] = self.recipient_property_key
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -331,12 +332,12 @@ class Privilege(Enum):
 
 @dataclass
 class PrivilegeAssignment:
-    principal: str = None
-    privileges: 'List[Privilege]' = None
+    principal: Optional[str] = None
+    privileges: Optional['List[Privilege]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal: body['principal'] = self.principal
+        if self.principal is not None: body['principal'] = self.principal
         if self.privileges: body['privileges'] = [v for v in self.privileges]
         return body
 
@@ -347,38 +348,38 @@ class PrivilegeAssignment:
 
 @dataclass
 class ProviderInfo:
-    authentication_type: 'AuthenticationType' = None
-    cloud: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    data_provider_global_metastore_id: str = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    recipient_profile: 'RecipientProfile' = None
-    recipient_profile_str: str = None
-    region: str = None
-    updated_at: int = None
-    updated_by: str = None
+    authentication_type: Optional['AuthenticationType'] = None
+    cloud: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    data_provider_global_metastore_id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    recipient_profile: Optional['RecipientProfile'] = None
+    recipient_profile_str: Optional[str] = None
+    region: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.cloud: body['cloud'] = self.cloud
-        if self.comment: body['comment'] = self.comment
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.data_provider_global_metastore_id:
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.data_provider_global_metastore_id is not None:
             body['data_provider_global_metastore_id'] = self.data_provider_global_metastore_id
-        if self.metastore_id: body['metastore_id'] = self.metastore_id
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.recipient_profile: body['recipient_profile'] = self.recipient_profile.as_dict()
-        if self.recipient_profile_str: body['recipient_profile_str'] = self.recipient_profile_str
-        if self.region: body['region'] = self.region
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.region is not None: body['region'] = self.region
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -401,11 +402,11 @@ class ProviderInfo:
 
 @dataclass
 class ProviderShare:
-    name: str = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -415,46 +416,46 @@ class ProviderShare:
 
 @dataclass
 class RecipientInfo:
-    activated: bool = None
-    activation_url: str = None
-    authentication_type: 'AuthenticationType' = None
-    cloud: str = None
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    data_recipient_global_metastore_id: Any = None
-    ip_access_list: 'IpAccessList' = None
-    metastore_id: str = None
-    name: str = None
-    owner: str = None
-    properties_kvpairs: Any = None
-    region: str = None
-    sharing_code: str = None
-    tokens: 'List[RecipientTokenInfo]' = None
-    updated_at: int = None
-    updated_by: str = None
+    activated: Optional[bool] = None
+    activation_url: Optional[str] = None
+    authentication_type: Optional['AuthenticationType'] = None
+    cloud: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    data_recipient_global_metastore_id: Optional[Any] = None
+    ip_access_list: Optional['IpAccessList'] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    region: Optional[str] = None
+    sharing_code: Optional[str] = None
+    tokens: Optional['List[RecipientTokenInfo]'] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activated: body['activated'] = self.activated
-        if self.activation_url: body['activation_url'] = self.activation_url
-        if self.authentication_type: body['authentication_type'] = self.authentication_type.value
-        if self.cloud: body['cloud'] = self.cloud
-        if self.comment: body['comment'] = self.comment
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
+        if self.activated is not None: body['activated'] = self.activated
+        if self.activation_url is not None: body['activation_url'] = self.activation_url
+        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
         if self.data_recipient_global_metastore_id:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.metastore_id: body['metastore_id'] = self.metastore_id
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
-        if self.region: body['region'] = self.region
-        if self.sharing_code: body['sharing_code'] = self.sharing_code
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
+        if self.region is not None: body['region'] = self.region
+        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
         if self.tokens: body['tokens'] = [v.as_dict() for v in self.tokens]
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -471,7 +472,7 @@ class RecipientInfo:
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
                    region=d.get('region', None),
                    sharing_code=d.get('sharing_code', None),
                    tokens=_repeated(d, 'tokens', RecipientTokenInfo),
@@ -481,15 +482,16 @@ class RecipientInfo:
 
 @dataclass
 class RecipientProfile:
-    bearer_token: str = None
-    endpoint: str = None
-    share_credentials_version: int = None
+    bearer_token: Optional[str] = None
+    endpoint: Optional[str] = None
+    share_credentials_version: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearer_token: body['bearer_token'] = self.bearer_token
-        if self.endpoint: body['endpoint'] = self.endpoint
-        if self.share_credentials_version: body['share_credentials_version'] = self.share_credentials_version
+        if self.bearer_token is not None: body['bearer_token'] = self.bearer_token
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.share_credentials_version is not None:
+            body['share_credentials_version'] = self.share_credentials_version
         return body
 
     @classmethod
@@ -501,23 +503,23 @@ class RecipientProfile:
 
 @dataclass
 class RecipientTokenInfo:
-    activation_url: str = None
-    created_at: int = None
-    created_by: str = None
-    expiration_time: int = None
-    id: str = None
-    updated_at: int = None
-    updated_by: str = None
+    activation_url: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    expiration_time: Optional[int] = None
+    id: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activation_url: body['activation_url'] = self.activation_url
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.expiration_time: body['expiration_time'] = self.expiration_time
-        if self.id: body['id'] = self.id
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.activation_url is not None: body['activation_url'] = self.activation_url
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.id is not None: body['id'] = self.id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -540,17 +542,18 @@ class RetrieveTokenRequest:
 
 @dataclass
 class RetrieveTokenResponse:
-    bearer_token: str = None
-    endpoint: str = None
-    expiration_time: str = None
-    share_credentials_version: int = None
+    bearer_token: Optional[str] = None
+    endpoint: Optional[str] = None
+    expiration_time: Optional[str] = None
+    share_credentials_version: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearer_token: body['bearerToken'] = self.bearer_token
-        if self.endpoint: body['endpoint'] = self.endpoint
-        if self.expiration_time: body['expirationTime'] = self.expiration_time
-        if self.share_credentials_version: body['shareCredentialsVersion'] = self.share_credentials_version
+        if self.bearer_token is not None: body['bearerToken'] = self.bearer_token
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.expiration_time is not None: body['expirationTime'] = self.expiration_time
+        if self.share_credentials_version is not None:
+            body['shareCredentialsVersion'] = self.share_credentials_version
         return body
 
     @classmethod
@@ -564,13 +567,13 @@ class RetrieveTokenResponse:
 @dataclass
 class RotateRecipientToken:
     existing_token_expire_in_seconds: int
-    name: str
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.existing_token_expire_in_seconds:
+        if self.existing_token_expire_in_seconds is not None:
             body['existing_token_expire_in_seconds'] = self.existing_token_expire_in_seconds
-        if self.name: body['name'] = self.name
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
@@ -580,26 +583,45 @@ class RotateRecipientToken:
 
 
 @dataclass
-class ShareInfo:
-    comment: str = None
-    created_at: int = None
-    created_by: str = None
-    name: str = None
-    objects: 'List[SharedDataObject]' = None
-    owner: str = None
-    updated_at: int = None
-    updated_by: str = None
+class SecurablePropertiesKvPairs:
+    """An object with __properties__ containing map of key-value properties attached to the securable."""
+
+    properties: 'Dict[str,str]'
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.created_at: body['created_at'] = self.created_at
-        if self.created_by: body['created_by'] = self.created_by
-        if self.name: body['name'] = self.name
+        if self.properties: body['properties'] = self.properties
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SecurablePropertiesKvPairs':
+        return cls(properties=d.get('properties', None))
+
+
+SecurablePropertiesMap = Dict[str, str]
+
+
+@dataclass
+class ShareInfo:
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    name: Optional[str] = None
+    objects: Optional['List[SharedDataObject]'] = None
+    owner: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.name is not None: body['name'] = self.name
         if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
-        if self.owner: body['owner'] = self.owner
-        if self.updated_at: body['updated_at'] = self.updated_at
-        if self.updated_by: body['updated_by'] = self.updated_by
+        if self.owner is not None: body['owner'] = self.owner
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
     @classmethod
@@ -623,14 +645,14 @@ class SharePermissionsRequest:
 
 @dataclass
 class ShareToPrivilegeAssignment:
-    privilege_assignments: 'List[PrivilegeAssignment]' = None
-    share_name: str = None
+    privilege_assignments: Optional['List[PrivilegeAssignment]'] = None
+    share_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.privilege_assignments:
             body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
-        if self.share_name: body['share_name'] = self.share_name
+        if self.share_name is not None: body['share_name'] = self.share_name
         return body
 
     @classmethod
@@ -642,28 +664,28 @@ class ShareToPrivilegeAssignment:
 @dataclass
 class SharedDataObject:
     name: str
-    added_at: int = None
-    added_by: str = None
-    cdf_enabled: bool = None
-    comment: str = None
-    data_object_type: str = None
-    partitions: 'List[Partition]' = None
-    shared_as: str = None
-    start_version: int = None
-    status: 'SharedDataObjectStatus' = None
+    added_at: Optional[int] = None
+    added_by: Optional[str] = None
+    cdf_enabled: Optional[bool] = None
+    comment: Optional[str] = None
+    data_object_type: Optional[str] = None
+    partitions: Optional['List[Partition]'] = None
+    shared_as: Optional[str] = None
+    start_version: Optional[int] = None
+    status: Optional['SharedDataObjectStatus'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.added_at: body['added_at'] = self.added_at
-        if self.added_by: body['added_by'] = self.added_by
-        if self.cdf_enabled: body['cdf_enabled'] = self.cdf_enabled
-        if self.comment: body['comment'] = self.comment
-        if self.data_object_type: body['data_object_type'] = self.data_object_type
-        if self.name: body['name'] = self.name
+        if self.added_at is not None: body['added_at'] = self.added_at
+        if self.added_by is not None: body['added_by'] = self.added_by
+        if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
+        if self.comment is not None: body['comment'] = self.comment
+        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type
+        if self.name is not None: body['name'] = self.name
         if self.partitions: body['partitions'] = [v.as_dict() for v in self.partitions]
-        if self.shared_as: body['shared_as'] = self.shared_as
-        if self.start_version: body['start_version'] = self.start_version
-        if self.status: body['status'] = self.status.value
+        if self.shared_as is not None: body['shared_as'] = self.shared_as
+        if self.start_version is not None: body['start_version'] = self.start_version
+        if self.status is not None: body['status'] = self.status.value
         return body
 
     @classmethod
@@ -689,12 +711,12 @@ class SharedDataObjectStatus(Enum):
 
 @dataclass
 class SharedDataObjectUpdate:
-    action: 'SharedDataObjectUpdateAction' = None
-    data_object: 'SharedDataObject' = None
+    action: Optional['SharedDataObjectUpdateAction'] = None
+    data_object: Optional['SharedDataObject'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.action: body['action'] = self.action.value
+        if self.action is not None: body['action'] = self.action.value
         if self.data_object: body['data_object'] = self.data_object.as_dict()
         return body
 
@@ -714,17 +736,17 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class UpdateProvider:
-    name: str
-    comment: str = None
-    owner: str = None
-    recipient_profile_str: str = None
+    comment: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    recipient_profile_str: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
-        if self.recipient_profile_str: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
         return body
 
     @classmethod
@@ -737,19 +759,19 @@ class UpdateProvider:
 
 @dataclass
 class UpdateRecipient:
-    name: str
-    comment: str = None
-    ip_access_list: 'IpAccessList' = None
-    owner: str = None
-    properties_kvpairs: Any = None
+    comment: Optional[str] = None
+    ip_access_list: Optional['IpAccessList'] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = self.comment
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
         return body
 
     @classmethod
@@ -758,21 +780,21 @@ class UpdateRecipient:
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None))
+                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs))
 
 
 @dataclass
 class UpdateShare:
-    name: str
-    comment: str = None
-    owner: str = None
-    updates: 'List[SharedDataObjectUpdate]' = None
+    comment: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    updates: Optional['List[SharedDataObjectUpdate]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment
-        if self.name: body['name'] = self.name
-        if self.owner: body['owner'] = self.owner
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
         if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
         return body
 
@@ -786,18 +808,18 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    name: str
-    changes: 'List[PermissionsChange]' = None
+    changes: Optional['List[PermissionsChange]'] = None
+    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.changes: body['changes'] = [v for v in self.changes]
-        if self.name: body['name'] = self.name
+        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
+        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
-        return cls(changes=d.get('changes', None), name=d.get('name', None))
+        return cls(changes=_repeated(d, 'changes', PermissionsChange), name=d.get('name', None))
 
 
 class ProvidersAPI:
@@ -810,13 +832,25 @@ class ProvidersAPI:
                name: str,
                authentication_type: AuthenticationType,
                *,
-               comment: str = None,
-               recipient_profile_str: str = None,
+               comment: Optional[str] = None,
+               recipient_profile_str: Optional[str] = None,
                **kwargs) -> ProviderInfo:
         """Create an auth provider.
         
         Creates a new authentication provider minimally based on a name and authentication type. The caller
-        must be an admin on the metastore."""
+        must be an admin on the metastore.
+        
+        :param name: str
+          The name of the Provider.
+        :param authentication_type: :class:`AuthenticationType`
+          The delta sharing authentication type.
+        :param comment: str (optional)
+          Description about the provider.
+        :param recipient_profile_str: str (optional)
+          This field is required when the __authentication_type__ is **TOKEN** or not provided.
+        
+        :returns: :class:`ProviderInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateProvider(authentication_type=authentication_type,
@@ -832,7 +866,13 @@ class ProvidersAPI:
         """Delete a provider.
         
         Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
-        provider."""
+        provider.
+        
+        :param name: str
+          Name of the provider.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteProviderRequest(name=name)
@@ -843,7 +883,13 @@ class ProvidersAPI:
         """Get a provider.
         
         Gets a specific authentication provider. The caller must supply the name of the provider, and must
-        either be a metastore admin or the owner of the provider."""
+        either be a metastore admin or the owner of the provider.
+        
+        :param name: str
+          Name of the provider.
+        
+        :returns: :class:`ProviderInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetProviderRequest(name=name)
@@ -851,12 +897,22 @@ class ProvidersAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}')
         return ProviderInfo.from_dict(json)
 
-    def list(self, *, data_provider_global_metastore_id: str = None, **kwargs) -> Iterator[ProviderInfo]:
+    def list(self,
+             *,
+             data_provider_global_metastore_id: Optional[str] = None,
+             **kwargs) -> Iterator[ProviderInfo]:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There
-        is no guarantee of a specific ordering of the elements in the array."""
+        is no guarantee of a specific ordering of the elements in the array.
+        
+        :param data_provider_global_metastore_id: str (optional)
+          If not provided, all providers will be returned. If no providers exist with this ID, no results will
+          be returned.
+        
+        :returns: Iterator over :class:`ProviderInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListProvidersRequest(
@@ -869,31 +925,49 @@ class ProvidersAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
         return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
 
-    def list_shares(self, name: str, **kwargs) -> ListProviderSharesResponse:
+    def list_shares(self, name: str, **kwargs) -> Iterator[ProviderShare]:
         """List shares by Provider.
         
         Gets an array of a specified provider's shares within the metastore where:
         
-        * the caller is a metastore admin, or * the caller is the owner."""
+        * the caller is a metastore admin, or * the caller is the owner.
+        
+        :param name: str
+          Name of the provider in which to list shares.
+        
+        :returns: Iterator over :class:`ProviderShare`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListSharesRequest(name=name)
 
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}/shares')
-        return ListProviderSharesResponse.from_dict(json)
+        return [ProviderShare.from_dict(v) for v in json.get('shares', [])]
 
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               owner: str = None,
-               recipient_profile_str: str = None,
+               comment: Optional[str] = None,
+               owner: Optional[str] = None,
+               recipient_profile_str: Optional[str] = None,
                **kwargs) -> ProviderInfo:
         """Update a provider.
         
         Updates the information for an authentication provider, if the caller is a metastore admin or is the
         owner of the provider. If the update changes the provider name, the caller must be both a metastore
-        admin and the owner of the provider."""
+        admin and the owner of the provider.
+        
+        :param name: str
+          The name of the Provider.
+        :param comment: str (optional)
+          Description about the provider.
+        :param owner: str (optional)
+          Username of Provider owner.
+        :param recipient_profile_str: str (optional)
+          This field is required when the __authentication_type__ is **TOKEN** or not provided.
+        
+        :returns: :class:`ProviderInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateProvider(comment=comment,
@@ -915,7 +989,13 @@ class RecipientActivationAPI:
     def get_activation_url_info(self, activation_url: str, **kwargs):
         """Get a share activation URL.
         
-        Gets an activation URL for a share."""
+        Gets an activation URL for a share.
+        
+        :param activation_url: str
+          The one time activation url. It also accepts activation token.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetActivationUrlInfoRequest(activation_url=activation_url)
@@ -926,7 +1006,13 @@ class RecipientActivationAPI:
     def retrieve_token(self, activation_url: str, **kwargs) -> RetrieveTokenResponse:
         """Get an access token.
         
-        Retrieve access token with an activation url. This is a public API without any authentication."""
+        Retrieve access token with an activation url. This is a public API without any authentication.
+        
+        :param activation_url: str
+          The one time activation url. It also accepts activation token.
+        
+        :returns: :class:`RetrieveTokenResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RetrieveTokenRequest(activation_url=activation_url)
@@ -946,17 +1032,40 @@ class RecipientsAPI:
                name: str,
                authentication_type: AuthenticationType,
                *,
-               comment: str = None,
-               data_recipient_global_metastore_id: Any = None,
-               ip_access_list: IpAccessList = None,
-               owner: str = None,
-               properties_kvpairs: Any = None,
-               sharing_code: str = None,
+               comment: Optional[str] = None,
+               data_recipient_global_metastore_id: Optional[Any] = None,
+               ip_access_list: Optional[IpAccessList] = None,
+               owner: Optional[str] = None,
+               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
+               sharing_code: Optional[str] = None,
                **kwargs) -> RecipientInfo:
         """Create a share recipient.
         
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
-        be a metastore admin or has the **CREATE_RECIPIENT** privilege on the metastore."""
+        be a metastore admin or has the **CREATE_RECIPIENT** privilege on the metastore.
+        
+        :param name: str
+          Name of Recipient.
+        :param authentication_type: :class:`AuthenticationType`
+          The delta sharing authentication type.
+        :param comment: str (optional)
+          Description about the recipient.
+        :param data_recipient_global_metastore_id: Any (optional)
+          The global Unity Catalog metastore id provided by the data recipient. This field is required when
+          the __authentication_type__ is **DATABRICKS**. The identifier is of format
+          __cloud__:__region__:__metastore-uuid__.
+        :param ip_access_list: :class:`IpAccessList` (optional)
+          IP Access List
+        :param owner: str (optional)
+          Username of the recipient owner.
+        :param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)
+          Recipient properties as map of string key-value pairs.
+        :param sharing_code: str (optional)
+          The one-time sharing code provided by the data recipient. This field is required when the
+          __authentication_type__ is **DATABRICKS**.
+        
+        :returns: :class:`RecipientInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateRecipient(authentication_type=authentication_type,
@@ -975,7 +1084,13 @@ class RecipientsAPI:
     def delete(self, name: str, **kwargs):
         """Delete a share recipient.
         
-        Deletes the specified recipient from the metastore. The caller must be the owner of the recipient."""
+        Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
+        
+        :param name: str
+          Name of the recipient.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteRecipientRequest(name=name)
@@ -987,7 +1102,13 @@ class RecipientsAPI:
         
         Gets a share recipient from the metastore if:
         
-        * the caller is the owner of the share recipient, or: * is a metastore admin"""
+        * the caller is the owner of the share recipient, or: * is a metastore admin
+        
+        :param name: str
+          Name of the recipient.
+        
+        :returns: :class:`RecipientInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetRecipientRequest(name=name)
@@ -995,13 +1116,23 @@ class RecipientsAPI:
         json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{request.name}')
         return RecipientInfo.from_dict(json)
 
-    def list(self, *, data_recipient_global_metastore_id: str = None, **kwargs) -> Iterator[RecipientInfo]:
+    def list(self,
+             *,
+             data_recipient_global_metastore_id: Optional[str] = None,
+             **kwargs) -> Iterator[RecipientInfo]:
         """List share recipients.
         
         Gets an array of all share recipients within the current metastore where:
         
         * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
-        ordering of the elements in the array."""
+        ordering of the elements in the array.
+        
+        :param data_recipient_global_metastore_id: str (optional)
+          If not provided, all recipients will be returned. If no recipients exist with this ID, no results
+          will be returned.
+        
+        :returns: Iterator over :class:`RecipientInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListRecipientsRequest(
@@ -1018,7 +1149,17 @@ class RecipientsAPI:
         """Rotate a token.
         
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
-        The caller must be the owner of the recipient."""
+        The caller must be the owner of the recipient.
+        
+        :param existing_token_expire_in_seconds: int
+          The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
+          existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
+          the existing token immediately, negative number will return an error.
+        :param name: str
+          The name of the recipient.
+        
+        :returns: :class:`RecipientInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = RotateRecipientToken(existing_token_expire_in_seconds=existing_token_expire_in_seconds,
@@ -1034,7 +1175,13 @@ class RecipientsAPI:
         """Get recipient share permissions.
         
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
-        owner of the Recipient."""
+        owner of the Recipient.
+        
+        :param name: str
+          The name of the Recipient.
+        
+        :returns: :class:`GetRecipientSharePermissionsResponse`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SharePermissionsRequest(name=name)
@@ -1045,16 +1192,32 @@ class RecipientsAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               ip_access_list: IpAccessList = None,
-               owner: str = None,
-               properties_kvpairs: Any = None,
+               comment: Optional[str] = None,
+               ip_access_list: Optional[IpAccessList] = None,
+               owner: Optional[str] = None,
+               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
                **kwargs):
         """Update a share recipient.
         
         Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the
-        owner of the recipient."""
+        owner of the recipient.
+        
+        :param name: str
+          Name of Recipient.
+        :param comment: str (optional)
+          Description about the recipient.
+        :param ip_access_list: :class:`IpAccessList` (optional)
+          IP Access List
+        :param owner: str (optional)
+          Username of the recipient owner.
+        :param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)
+          Recipient properties as map of string key-value pairs. When provided in update request, the
+          specified properties will override the existing properties. To add and remove properties, one would
+          need to perform a read-modify-write.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateRecipient(comment=comment,
@@ -1072,11 +1235,19 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: str = None, **kwargs) -> ShareInfo:
+    def create(self, name: str, *, comment: Optional[str] = None, **kwargs) -> ShareInfo:
         """Create a share.
         
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
-        caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore."""
+        caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
+        
+        :param name: str
+          Name of the share.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        
+        :returns: :class:`ShareInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateShare(comment=comment, name=name)
@@ -1088,18 +1259,32 @@ class SharesAPI:
     def delete(self, name: str, **kwargs):
         """Delete a share.
         
-        Deletes a data object share from the metastore. The caller must be an owner of the share."""
+        Deletes a data object share from the metastore. The caller must be an owner of the share.
+        
+        :param name: str
+          The name of the share.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = DeleteShareRequest(name=name)
 
         self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{request.name}')
 
-    def get(self, name: str, *, include_shared_data: bool = None, **kwargs) -> ShareInfo:
+    def get(self, name: str, *, include_shared_data: Optional[bool] = None, **kwargs) -> ShareInfo:
         """Get a share.
         
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
-        share."""
+        share.
+        
+        :param name: str
+          The name of the share.
+        :param include_shared_data: bool (optional)
+          Query for data to include in the share.
+        
+        :returns: :class:`ShareInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetShareRequest(include_shared_data=include_shared_data, name=name)
@@ -1114,7 +1299,10 @@ class SharesAPI:
         """List shares.
         
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
-        owner of the share. There is no guarantee of a specific ordering of the elements in the array."""
+        owner of the share. There is no guarantee of a specific ordering of the elements in the array.
+        
+        :returns: Iterator over :class:`ShareInfo`
+        """
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares')
         return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
@@ -1123,7 +1311,13 @@ class SharesAPI:
         """Get permissions.
         
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
-        owner of the share."""
+        owner of the share.
+        
+        :param name: str
+          The name of the share.
+        
+        :returns: :class:`PermissionsList`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = SharePermissionsRequest(name=name)
@@ -1134,9 +1328,9 @@ class SharesAPI:
     def update(self,
                name: str,
                *,
-               comment: str = None,
-               owner: str = None,
-               updates: List[SharedDataObjectUpdate] = None,
+               comment: Optional[str] = None,
+               owner: Optional[str] = None,
+               updates: Optional[List[SharedDataObjectUpdate]] = None,
                **kwargs) -> ShareInfo:
         """Update a share.
         
@@ -1152,7 +1346,19 @@ class SharesAPI:
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
         table. Typically, you should use a group as the share owner.
         
-        Table removals through **update** do not require additional privileges."""
+        Table removals through **update** do not require additional privileges.
+        
+        :param name: str
+          Name of the share.
+        :param comment: str (optional)
+          User-provided free-form text description.
+        :param owner: str (optional)
+          Username of current owner of share.
+        :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
+          Array of shared data object updates.
+        
+        :returns: :class:`ShareInfo`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateShare(comment=comment, name=name, owner=owner, updates=updates)
@@ -1161,14 +1367,22 @@ class SharesAPI:
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{request.name}', body=body)
         return ShareInfo.from_dict(json)
 
-    def update_permissions(self, name: str, *, changes: List[PermissionsChange] = None, **kwargs):
+    def update_permissions(self, name: str, *, changes: Optional[List[PermissionsChange]] = None, **kwargs):
         """Update permissions.
         
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
         
         For new recipient grants, the user must also be the owner of the recipients. recipient revocations do
-        not require additional privileges."""
+        not require additional privileges.
+        
+        :param name: str
+          The name of the share.
+        :param changes: List[:class:`PermissionsChange`] (optional)
+          Array of permission changes.
+        
+        
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = UpdateSharePermissions(changes=changes, name=name)

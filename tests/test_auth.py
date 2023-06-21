@@ -1,6 +1,5 @@
 # These are auto-generated tests for Unified Authentication
 # In case of editing this file, make sure the change is propagated to all Databricks SDK codebases
-
 from databricks.sdk.core import Config
 
 from .conftest import __tests__, raises
@@ -115,6 +114,27 @@ def test_config_config_file(monkeypatch):
     Config()
 
 
+@raises("default auth: cannot configure default credentials. Config: host=https://x")
+def test_config_config_file_skip_default_profile_if_host_specified(monkeypatch):
+    monkeypatch.setenv('HOME', __tests__ + '/testdata')
+    cfg = Config(host='x')
+
+
+@raises("default auth: cannot configure default credentials")
+def test_config_config_file_with_empty_default_profile_select_default(monkeypatch):
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/empty_default')
+    Config()
+
+
+def test_config_config_file_with_empty_default_profile_select_abc(monkeypatch):
+    monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'abc')
+    monkeypatch.setenv('HOME', __tests__ + '/testdata/empty_default')
+    cfg = Config()
+
+    assert cfg.auth_type == 'pat'
+    assert cfg.host == 'https://foo'
+
+
 def test_config_pat_from_databricks_cfg(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata')
     cfg = Config()
@@ -192,7 +212,7 @@ def test_config_azure_cli_host_fail(monkeypatch):
 @raises("default auth: cannot configure default credentials. Config: azure_workspace_resource_id=/sub/rg/ws")
 def test_config_azure_cli_host_az_not_installed(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
-    monkeypatch.setenv('PATH', 'whatever')
+    monkeypatch.setenv('PATH', __tests__ + '/whatever')
     cfg = Config(azure_workspace_resource_id='/sub/rg/ws')
 
 

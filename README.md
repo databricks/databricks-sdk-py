@@ -1,19 +1,27 @@
 # Databricks SDK for Python
 
-**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html)
+![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)
+![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)
+[![databricks-sdk](https://snyk.io/advisor/python/databricks-sdk/badge.svg)](https://snyk.io/advisor/python/databricks-sdk)
+![PyPI](https://img.shields.io/pypi/v/databricks-sdk)
+[![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
+
+**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html) 
+| See also the [SDK for Java](https://github.com/databricks/databricks-sdk-java) 
+| See also the [SDK for Go](https://github.com/databricks/databricks-sdk-go) 
+| See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
+| See also cloud-specific docs ([AWS](https://docs.databricks.com/dev-tools/sdk-python.html), 
+   [Azure](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/sdk-python), 
+   [GCP](https://docs.gcp.databricks.com/dev-tools/sdk-python.html)) 
 
 The Databricks SDK for Python includes functionality to accelerate development with [Python](https://www.python.org/) for the Databricks Lakehouse.
 It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations.
 The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
-For additional and cloud-specific documentation, you can consult the following pages:
-- [AWS Documentation](https://docs.databricks.com/dev-tools/sdk-python.html)
-- [Azure Documentation](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/sdk-python)
-- [GCP Documentation](https://docs.gcp.databricks.com/dev-tools/sdk-python.html)
-
 ## Contents
 
 - [Getting started](#getting-started)
+- [Code examples](#code-examples)
 - [Authentication](#authentication)
 - [Code examples](#code-examples)
 - [Long-running operations](#long-running-operations)
@@ -36,6 +44,58 @@ for c in w.clusters.list():
 ```
 
 Databricks SDK for Python is compatible with Python 3.7 _(until [June 2023](https://devguide.python.org/versions/))_, 3.8, 3.9, 3.10, and 3.11.
+
+## Code examples
+
+Please checkout [custom credentials provider](https://github.com/databricks/databricks-sdk-py/tree/main/examples/custom_auth.py), 
+[OAuth with Flask](https://github.com/databricks/databricks-sdk-py/tree/main/examples/flask_app_with_oauth.py), 
+[Last job runs](https://github.com/databricks/databricks-sdk-py/tree/main/examples/last_job_runs.py), 
+[Starting job and waiting](https://github.com/databricks/databricks-sdk-py/tree/main/examples/starting_job_and_waiting.py) examples. You can also dig deeper into different services, like
+[alerts](https://github.com/databricks/databricks-sdk-py/tree/main/examples/alerts), 
+[billable_usage](https://github.com/databricks/databricks-sdk-py/tree/main/examples/billable_usage), 
+[catalogs](https://github.com/databricks/databricks-sdk-py/tree/main/examples/catalogs), 
+[cluster_policies](https://github.com/databricks/databricks-sdk-py/tree/main/examples/cluster_policies), 
+[clusters](https://github.com/databricks/databricks-sdk-py/tree/main/examples/clusters), 
+[credentials](https://github.com/databricks/databricks-sdk-py/tree/main/examples/credentials), 
+[current_user](https://github.com/databricks/databricks-sdk-py/tree/main/examples/current_user), 
+[dashboards](https://github.com/databricks/databricks-sdk-py/tree/main/examples/dashboards), 
+[data_sources](https://github.com/databricks/databricks-sdk-py/tree/main/examples/data_sources), 
+[databricks](https://github.com/databricks/databricks-sdk-py/tree/main/examples/databricks), 
+[encryption_keys](https://github.com/databricks/databricks-sdk-py/tree/main/examples/encryption_keys), 
+[experiments](https://github.com/databricks/databricks-sdk-py/tree/main/examples/experiments), 
+[external_locations](https://github.com/databricks/databricks-sdk-py/tree/main/examples/external_locations), 
+[git_credentials](https://github.com/databricks/databricks-sdk-py/tree/main/examples/git_credentials), 
+[global_init_scripts](https://github.com/databricks/databricks-sdk-py/tree/main/examples/global_init_scripts), 
+[groups](https://github.com/databricks/databricks-sdk-py/tree/main/examples/groups), 
+[instance_pools](https://github.com/databricks/databricks-sdk-py/tree/main/examples/instance_pools), 
+[instance_profiles](https://github.com/databricks/databricks-sdk-py/tree/main/examples/instance_profiles), 
+[ip_access_lists](https://github.com/databricks/databricks-sdk-py/tree/main/examples/ip_access_lists), 
+[jobs](https://github.com/databricks/databricks-sdk-py/tree/main/examples/jobs), 
+[libraries](https://github.com/databricks/databricks-sdk-py/tree/main/examples/libraries), 
+[local_browser_oauth.py](https://github.com/databricks/databricks-sdk-py/tree/main/examples/local_browser_oauth.py), 
+[log_delivery](https://github.com/databricks/databricks-sdk-py/tree/main/examples/log_delivery), 
+[metastores](https://github.com/databricks/databricks-sdk-py/tree/main/examples/metastores), 
+[model_registry](https://github.com/databricks/databricks-sdk-py/tree/main/examples/model_registry), 
+[networks](https://github.com/databricks/databricks-sdk-py/tree/main/examples/networks), 
+[permissions](https://github.com/databricks/databricks-sdk-py/tree/main/examples/permissions), 
+[pipelines](https://github.com/databricks/databricks-sdk-py/tree/main/examples/pipelines), 
+[private_access](https://github.com/databricks/databricks-sdk-py/tree/main/examples/private_access), 
+[queries](https://github.com/databricks/databricks-sdk-py/tree/main/examples/queries), 
+[recipients](https://github.com/databricks/databricks-sdk-py/tree/main/examples/recipients), 
+[repos](https://github.com/databricks/databricks-sdk-py/tree/main/examples/repos), 
+[schemas](https://github.com/databricks/databricks-sdk-py/tree/main/examples/schemas), 
+[secrets](https://github.com/databricks/databricks-sdk-py/tree/main/examples/secrets), 
+[service_principals](https://github.com/databricks/databricks-sdk-py/tree/main/examples/service_principals), 
+[storage](https://github.com/databricks/databricks-sdk-py/tree/main/examples/storage), 
+[storage_credentials](https://github.com/databricks/databricks-sdk-py/tree/main/examples/storage_credentials), 
+[tokens](https://github.com/databricks/databricks-sdk-py/tree/main/examples/tokens), 
+[users](https://github.com/databricks/databricks-sdk-py/tree/main/examples/users), 
+[vpc_endpoints](https://github.com/databricks/databricks-sdk-py/tree/main/examples/vpc_endpoints), 
+[warehouses](https://github.com/databricks/databricks-sdk-py/tree/main/examples/warehouses), 
+[workspace](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspace), 
+[workspace_assignment](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspace_assignment), 
+[workspace_conf](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspace_conf), 
+and [workspaces](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspaces).
 
 ## Authentication
 
@@ -368,6 +428,7 @@ Works for both AWS and Azure. Not supported for GCP at the moment.
 
 ```python
 from databricks.sdk.oauth import OAuthClient
+
 oauth_client = OAuthClient(host='<workspace-url>',
                            client_id='<oauth client ID>',
                            redirect_url=f'http://host.domain/callback',
@@ -380,29 +441,31 @@ APP_NAME = 'flask-demo'
 app = Flask(APP_NAME)
 app.secret_key = secrets.token_urlsafe(32)
 
+
 @app.route('/callback')
 def callback():
-    from databricks.sdk.oauth import Consent
-    consent = Consent.from_dict(oauth_client, session['consent'])
-    session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
-    return redirect(url_for('index'))
+   from databricks.sdk.oauth import Consent
+   consent = Consent.from_dict(oauth_client, session['consent'])
+   session['creds'] = consent.exchange_callback_parameters(request.args).as_dict()
+   return redirect(url_for('index'))
+
 
 @app.route('/')
 def index():
-    if 'creds' not in session:
-        consent = oauth_client.initiate_consent()
-        session['consent'] = consent.as_dict()
-        return redirect(consent.auth_url)
+   if 'creds' not in session:
+      consent = oauth_client.initiate_consent()
+      session['consent'] = consent.as_dict()
+      return redirect(consent.auth_url)
 
-    from databricks.sdk import WorkspaceClient
-    from databricks.sdk.oauth import RefreshableCredentials
+   from databricks.sdk import WorkspaceClient
+   from databricks.sdk.oauth import SessionCredentials
 
-    credentials_provider = RefreshableCredentials.from_dict(oauth_client, session['creds'])
-    workspace_client = WorkspaceClient(host=oauth_client.host,
-                                       product=APP_NAME,
-                                       credentials_provider=credentials_provider)
+   credentials_provider = SessionCredentials.from_dict(oauth_client, session['creds'])
+   workspace_client = WorkspaceClient(host=oauth_client.host,
+                                      product=APP_NAME,
+                                      credentials_provider=credentials_provider)
 
-    return render_template_string('...', w=workspace_client)
+   return render_template_string('...', w=workspace_client)
 ```
 
 ### SSO for local scripts on development machines

@@ -1,18 +1,20 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
-from databricks.sdk.mixins.dbfs import DbfsExt
+from databricks.sdk.mixins.files import DbfsExt, FilesMixin
+from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
                                             LogDeliveryAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
-                                            CatalogsAPI, ExternalLocationsAPI,
-                                            FunctionsAPI, GrantsAPI,
-                                            MetastoresAPI, SchemasAPI,
-                                            StorageCredentialsAPI,
+                                            CatalogsAPI, ConnectionsAPI,
+                                            ExternalLocationsAPI, FunctionsAPI,
+                                            GrantsAPI, MetastoresAPI,
+                                            SchemasAPI, StorageCredentialsAPI,
+                                            SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
-                                            VolumesAPI)
+                                            VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
                                             GlobalInitScriptsAPI,
@@ -20,7 +22,9 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.files import DbfsAPI
-from databricks.sdk.service.iam import (AccountGroupsAPI,
+from databricks.sdk.service.iam import (AccountAccessControlAPI,
+                                        AccountAccessControlProxyAPI,
+                                        AccountGroupsAPI,
                                         AccountServicePrincipalsAPI,
                                         AccountUsersAPI, CurrentUserAPI,
                                         GroupsAPI, PermissionsAPI,
@@ -30,7 +34,8 @@ from databricks.sdk.service.jobs import JobsAPI
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
 from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
                                            OAuthEnrollmentAPI,
-                                           PublishedAppIntegrationAPI)
+                                           PublishedAppIntegrationAPI,
+                                           ServicePrincipalSecretsAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
@@ -39,6 +44,7 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  WorkspacesAPI)
 from databricks.sdk.service.serving import ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
+                                             AccountSettingsAPI,
                                              IpAccessListsAPI,
                                              TokenManagementAPI, TokensAPI,
                                              WorkspaceConfAPI)
@@ -101,14 +107,17 @@ class WorkspaceClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self.config = config
+        self.config = config.copy()
         self.dbutils = dbutils.RemoteDbUtils(self.config)
         self.api_client = client.ApiClient(self.config)
+        self.files = FilesMixin(self.api_client)
+        self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
         self.clusters = ClustersExt(self.api_client)
         self.command_execution = CommandExecutionAPI(self.api_client)
+        self.connections = ConnectionsAPI(self.api_client)
         self.current_user = CurrentUserAPI(self.api_client)
         self.dashboards = DashboardsAPI(self.api_client)
         self.data_sources = DataSourcesAPI(self.api_client)
@@ -144,6 +153,7 @@ class WorkspaceClient:
         self.shares = SharesAPI(self.api_client)
         self.statement_execution = StatementExecutionAPI(self.api_client)
         self.storage_credentials = StorageCredentialsAPI(self.api_client)
+        self.system_schemas = SystemSchemasAPI(self.api_client)
         self.table_constraints = TableConstraintsAPI(self.api_client)
         self.tables = TablesAPI(self.api_client)
         self.token_management = TokenManagementAPI(self.api_client)
@@ -151,7 +161,8 @@ class WorkspaceClient:
         self.users = UsersAPI(self.api_client)
         self.volumes = VolumesAPI(self.api_client)
         self.warehouses = WarehousesAPI(self.api_client)
-        self.workspace = WorkspaceAPI(self.api_client)
+        self.workspace = WorkspaceExt(self.api_client)
+        self.workspace_bindings = WorkspaceBindingsAPI(self.api_client)
         self.workspace_conf = WorkspaceConfAPI(self.api_client)
 
 
@@ -203,8 +214,9 @@ class AccountClient:
                                    debug_headers=debug_headers,
                                    product=product,
                                    product_version=product_version)
-        self.config = config
+        self.config = config.copy()
         self.api_client = client.ApiClient(self.config)
+        self.access_control = AccountAccessControlAPI(self.api_client)
         self.billable_usage = BillableUsageAPI(self.api_client)
         self.budgets = BudgetsAPI(self.api_client)
         self.credentials = CredentialsAPI(self.api_client)
@@ -219,7 +231,9 @@ class AccountClient:
         self.o_auth_enrollment = OAuthEnrollmentAPI(self.api_client)
         self.private_access = PrivateAccessAPI(self.api_client)
         self.published_app_integration = PublishedAppIntegrationAPI(self.api_client)
+        self.service_principal_secrets = ServicePrincipalSecretsAPI(self.api_client)
         self.service_principals = AccountServicePrincipalsAPI(self.api_client)
+        self.settings = AccountSettingsAPI(self.api_client)
         self.storage = StorageAPI(self.api_client)
         self.storage_credentials = AccountStorageCredentialsAPI(self.api_client)
         self.users = AccountUsersAPI(self.api_client)

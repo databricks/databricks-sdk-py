@@ -55,6 +55,7 @@ class SemVer:
 
 
 class ClustersExt(compute.ClustersAPI):
+    __doc__ = compute.ClustersAPI.__doc__
 
     def select_spark_version(self,
                              long_term_support: bool = False,
@@ -66,8 +67,22 @@ class ClustersExt(compute.ClustersAPI):
                              scala: str = "2.12",
                              spark_version: str = None,
                              photon: bool = False,
-                             graviton: bool = False):
-        # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/clusters/spark_version.go
+                             graviton: bool = False) -> str:
+        """Selects the latest Databricks Runtime Version.
+
+        :param long_term_support: bool
+        :param beta: bool
+        :param latest: bool
+        :param ml: bool
+        :param gpu: bool
+        :param scala: bool
+        :param spark_version: bool
+        :param photon: bool
+        :param graviton: bool
+
+        :returns: `spark_version` compatible string
+        """
+        # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/compute/spark_version.go
         versions = []
         sv = self.spark_versions()
         for version in sv.versions:
@@ -128,6 +143,22 @@ class ClustersExt(compute.ClustersAPI):
                          is_io_cache_enabled: bool = None,
                          support_port_forwarding: bool = None,
                          fleet: str = None) -> str:
+        """Selects smallest available node type given the conditions.
+
+        :param min_memory_gb: int
+        :param gb_per_core: int
+        :param min_cores: int
+        :param min_gpus: int
+        :param local_disk: bool
+        :param local_disk_min_size: bool
+        :param category: bool
+        :param photon_worker_capable: bool
+        :param photon_driver_capable: bool
+        :param graviton: bool
+        :param is_io_cache_enabled: bool
+
+        :returns: `node_type` compatible string
+        """
         # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/clusters/node_type.go
         res = self.list_node_types()
         types = sorted(res.node_types, key=self._node_sorting_tuple)
@@ -173,6 +204,7 @@ class ClustersExt(compute.ClustersAPI):
         raise ValueError("cannot determine smallest node type")
 
     def ensure_cluster_is_running(self, cluster_id: str):
+        """Ensures that given cluster is running, regardless of the current state"""
         state = compute.State
         info = self.get(cluster_id)
         if info.state == state.TERMINATED:
