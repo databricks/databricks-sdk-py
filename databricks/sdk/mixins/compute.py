@@ -55,6 +55,7 @@ class SemVer:
 
 
 class ClustersExt(compute.ClustersAPI):
+    __doc__ = compute.ClustersAPI.__doc__
 
     def select_spark_version(self,
                              long_term_support: bool = False,
