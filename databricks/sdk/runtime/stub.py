@@ -70,6 +70,7 @@ def display(input=None, *args, **kwargs):
 
 
 class dbutils:
+
     class credentials:
         """
         Utilities for interacting with credentials within notebooks
