@@ -97,15 +97,29 @@ class dbutils:
             """
             ...
 
+        @staticmethod
+        def getCurrentCredentials() -> typing.Mapping[str, str]:
+            ...
+
     class data:
         """
         Utilities for understanding and interacting with datasets (EXPERIMENTAL)
         """
 
         @staticmethod
-        def summarize(df: any, precise: bool) -> None:
-            """
-            Summarize a Spark DataFrame and visualize the statistics to get quick insights
+        def summarize(df: any, precise: bool = False) -> None:
+            """Summarize a Spark/pandas/Koalas DataFrame and visualize the statistics to get quick insights.
+
+            Example: dbutils.data.summarize(df)
+
+            :param df: A pyspark.sql.DataFrame, pyspark.pandas.DataFrame, databricks.koalas.DataFrame
+            or pandas.DataFrame object to summarize. Streaming dataframes are not supported.
+            :param precise: If false, percentiles, distinct item counts, and frequent item counts
+            will be computed approximately to reduce the run time.
+            If true, distinct item counts and frequent item counts will be computed exactly,
+            and percentiles will be computed with high precision.
+
+            :return: visualization of the computed summmary statistics.
             """
             ...
 
@@ -115,21 +129,21 @@ class dbutils:
         """
 
         @staticmethod
-        def cp(from_: str, to: str, recurse: bool = False) -> bool:
+        def cp(source: str, dest: str, recurse: bool = False) -> bool:
             """
             Copies a file or directory, possibly across FileSystems
             """
             ...
 
         @staticmethod
-        def head(file: str, maxBytes: int = 65536) -> str:
+        def head(file: str, max_bytes: int = 65536) -> str:
             """
             Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8
             """
             ...
 
         @staticmethod
-        def ls(dir: str) -> typing.List[FileInfo]:
+        def ls(path: str) -> typing.List[FileInfo]:
             """
             Lists the contents of a directory
             """
@@ -143,7 +157,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def mv(from_: str, to: str, recurse: bool = False) -> bool:
+        def mv(source: str, dest: str, recurse: bool = False) -> bool:
             """
             Moves a file or directory, possibly across FileSystems
             """
@@ -164,11 +178,27 @@ class dbutils:
             ...
 
         @staticmethod
+        def cacheFiles(*files):
+            ...
+
+        @staticmethod
+        def cacheTable(name: str):
+            ...
+
+        @staticmethod
+        def uncacheFiles(*files):
+            ...
+
+        @staticmethod
+        def uncacheTable(name: str):
+            ...
+
+        @staticmethod
         def mount(source: str,
-                  mountPoint: str,
-                  encryptionType: str = "",
-                  owner: str = "",
-                  extraConfigs: typing.Mapping[str, str] = None,
+                  mount_point: str,
+                  encryption_type: str = "",
+                  owner: typing.Optional[str] = None,
+                  extra_configs: typing.Mapping[str, str] = {},
                   ) -> bool:
             """
             Mounts the given source directory into DBFS at the given mount point
@@ -176,18 +206,11 @@ class dbutils:
             ...
 
         @staticmethod
-        def unmount(mountPoint: str) -> bool:
-            """
-            Deletes a DBFS mount point
-            """
-            ...
-
-        @staticmethod
         def updateMount(source: str,
-                        mountPoint: str,
-                        encryptionType: str = "",
-                        owner: str = "",
-                        extraConfigs: typing.Map[str, str] = {},
+                        mount_point: str,
+                        encryption_type: str = "",
+                        owner: typing.Optional[str] = None,
+                        extra_configs: typing.Map[str, str] = {},
                         ) -> bool:
             """
             Similar to mount(), but updates an existing mount point (if present) instead of creating a new one
@@ -205,6 +228,13 @@ class dbutils:
         def refreshMounts() -> bool:
             """
             Forces all machines in this cluster to refresh their mount cache, ensuring they receive the most recent information
+            """
+            ...
+
+        @staticmethod
+        def unmount(mount_point: str) -> bool:
+            """
+            Deletes a DBFS mount point
             """
             ...
 
@@ -257,7 +287,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def run(path: str, timeoutSeconds: int, arguments: typing.Map[str, str]) -> str:
+        def run(path: str, timeout_seconds: int, arguments: typing.Map[str, str]) -> str:
             """
             This method runs a notebook and returns its exit value
             """
@@ -274,6 +304,10 @@ class dbutils:
             Gets the string representation of a secret value with scope and key
             """
             ...
+
+        @staticmethod
+        def getBytes(self, scope: str, key: str) -> bytes:
+            """Gets the bytes representation of a secret value for the specified scope and key."""
 
         @staticmethod
         def list(scope: str) -> typing.List[SecretMetadata]:
