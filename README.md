@@ -1,4 +1,4 @@
-# Databricks SDK for Python
+# Databricks SDK for Python (Beta)
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)
 ![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)
@@ -590,12 +590,8 @@ for secret_scope in dbutils.secrets.listScopes():
 
 ## Interface stability
 
-During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) backward-incompatible changes, such as renaming the methods or some type names to bring more consistency.
-
-## Disclaimer
-- The product is in preview and not intended to be used in production;
-- The product may change or may never be released;
-- While we will not charge separately for this product right now, we may charge for it in the future. You will still incur charges for DBUs.
-- There's no formal support or SLAs for the preview - so please reach out to your account or other contact with any questions or feedback; and
-- We may terminate the preview or your access at any time;
-
+Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. 
+API clients for all services are generated from specification files that are synchronized from the main platform. 
+You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) 
+where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) 
+backward-incompatible changes, such as renaming some type names to bring more consistency.
