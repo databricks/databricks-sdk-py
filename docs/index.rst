@@ -12,7 +12,7 @@ performing intelligent retries. Install it via
 
 .. note::
 
-   The Databricks SDK for Python is in an Experimental state. To provide feedback, ask questions, and report issues, use the Issues tab in the Databricks SDK for Python repository in GitHub.
+   The Databricks SDK for Python is in an Experimental state. To provide feedback, ask questions, and report issues, use the `Issues tab <https://github.com/databricks/databricks-sdk-py/issues>`_ in the `Databricks SDK for Python repository <https://github.com/databricks/databricks-sdk-py>`_ on GitHub.
 
    During the Experimental period, Databricks is actively working on stabilizing the Databricks SDK for Python’s interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to install a specific version of the Databricks SDK for Python package and read the changelog where Databricks documents the changes. Databricks may have minor documented backward-incompatible changes, such as renaming the functions or some class names to bring more consistency.
 

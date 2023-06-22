@@ -254,7 +254,7 @@ method to get a result of long-running operation, once it's finished. Databricks
 every method, but sometimes you may find yourself in a situation, where you'd want to provide `datatime.timedelta()` as the value of `timeout`
 argument to `result()` method.
 
-There are a number of long-runng opereations in Databricks APIs such as managing:
+There are a number of long-running operations in Databricks APIs such as managing:
 * Clusters,
 * Command execution
 * Jobs
@@ -269,7 +269,7 @@ only usable in the `RUNNING` state and so you have to wait for that state to be 
 Another example is the API for running a job or repairing the run: right after
 the run starts, the run is in the `PENDING` state. The job is only considered to be finished when it is in either
 the `TERMINATED` or `SKIPPED` state. Also you would likely need the error message if the long-running
-operation times out failed with an error code. Other times you may want to configure a custom timeout other than
+operation times out and fails with an error code. Other times you may want to configure a custom timeout other than
 the default of 20 minutes.
 
 In the following example, `w.clusters.create` returns `ClusterInfo` only once the cluster is in the `RUNNING` state,
@@ -565,7 +565,7 @@ the logging output to their specific needs.
 
 You can use the client-side implementation of [`dbutils`](https://docs.databricks.com/dev-tools/databricks-utils.html) by accessing `dbutils` property on the `WorkspaceClient`.
 Most of the `dbutils.fs` operations and `dbutils.secrets` are implemented natively in Python within Databricks SDK. Non-SDK implementations still require a Databricks cluster,
-that you have to specify through `cluster_id` configuration attribute or `DATABRICKS_CLUSTER_ID` environment variable. Don't worry if cluster is not running: internally,
+that you have to specify through the `cluster_id` configuration attribute or `DATABRICKS_CLUSTER_ID` environment variable. Don't worry if cluster is not running: internally,
 Databricks SDK for Python calls `w.clusters.ensure_cluster_is_running()`.
 
 ```python
