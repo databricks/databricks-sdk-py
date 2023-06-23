@@ -1164,7 +1164,7 @@ class WorkspaceConfAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_status(self, keys: str, **kwargs) -> WorkspaceConf:
+    def get_status(self, keys: str, **kwargs) -> Dict[str, str]:
         """Check configuration status.
         
         Gets the configuration status for a workspace.

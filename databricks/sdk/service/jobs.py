@@ -13,8 +13,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from .compute import ClusterSpec, ComputeSpec, Library
-from .iam import AccessControlRequest
+from . import compute, iam
 
 # all definitions in this file are in alphabetical order
 
@@ -176,8 +175,8 @@ class ClusterInstance:
 @dataclass
 class ClusterSpec:
     existing_cluster_id: Optional[str] = None
-    libraries: Optional['List[Library]'] = None
-    new_cluster: Optional['ClusterSpec'] = None
+    libraries: Optional['List[compute.Library]'] = None
+    new_cluster: Optional['compute.ClusterSpec'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -189,8 +188,8 @@ class ClusterSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=_repeated(d, 'libraries', Library),
-                   new_cluster=_from_dict(d, 'new_cluster', ClusterSpec))
+                   libraries=_repeated(d, 'libraries', compute.Library),
+                   new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
 
 
 @dataclass
@@ -246,7 +245,7 @@ class Continuous:
 
 @dataclass
 class CreateJob:
-    access_control_list: Optional['List[AccessControlRequest]'] = None
+    access_control_list: Optional['List[iam.AccessControlRequest]'] = None
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
@@ -288,7 +287,7 @@ class CreateJob:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
+        return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
                    compute=_repeated(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
@@ -581,7 +580,7 @@ class Job:
 @dataclass
 class JobCluster:
     job_cluster_key: str
-    new_cluster: Optional['ClusterSpec'] = None
+    new_cluster: Optional['compute.ClusterSpec'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -592,13 +591,13 @@ class JobCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobCluster':
         return cls(job_cluster_key=d.get('job_cluster_key', None),
-                   new_cluster=_from_dict(d, 'new_cluster', ClusterSpec))
+                   new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
 
 
 @dataclass
 class JobCompute:
     compute_key: str
-    spec: 'ComputeSpec'
+    spec: 'compute.ComputeSpec'
 
     def as_dict(self) -> dict:
         body = {}
@@ -608,7 +607,7 @@ class JobCompute:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobCompute':
-        return cls(compute_key=d.get('compute_key', None), spec=_from_dict(d, 'spec', ComputeSpec))
+        return cls(compute_key=d.get('compute_key', None), spec=_from_dict(d, 'spec', compute.ComputeSpec))
 
 
 @dataclass
@@ -1351,8 +1350,8 @@ class RunTask:
     execution_duration: Optional[int] = None
     existing_cluster_id: Optional[str] = None
     git_source: Optional['GitSource'] = None
-    libraries: Optional['List[Library]'] = None
-    new_cluster: Optional['ClusterSpec'] = None
+    libraries: Optional['List[compute.Library]'] = None
+    new_cluster: Optional['compute.ClusterSpec'] = None
     notebook_task: Optional['NotebookTask'] = None
     pipeline_task: Optional['PipelineTask'] = None
     python_wheel_task: Optional['PythonWheelTask'] = None
@@ -1408,8 +1407,8 @@ class RunTask:
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   libraries=_repeated(d, 'libraries', Library),
-                   new_cluster=_from_dict(d, 'new_cluster', ClusterSpec),
+                   libraries=_repeated(d, 'libraries', compute.Library),
+                   new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
@@ -1777,7 +1776,7 @@ class SqlTaskSubscription:
 
 @dataclass
 class SubmitRun:
-    access_control_list: Optional['List[AccessControlRequest]'] = None
+    access_control_list: Optional['List[iam.AccessControlRequest]'] = None
     git_source: Optional['GitSource'] = None
     idempotency_token: Optional[str] = None
     notification_settings: Optional['JobNotificationSettings'] = None
@@ -1801,7 +1800,7 @@ class SubmitRun:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SubmitRun':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
+        return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    idempotency_token=d.get('idempotency_token', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
@@ -1831,8 +1830,8 @@ class SubmitTask:
     condition_task: Optional['ConditionTask'] = None
     depends_on: Optional['List[TaskDependency]'] = None
     existing_cluster_id: Optional[str] = None
-    libraries: Optional['List[Library]'] = None
-    new_cluster: Optional['ClusterSpec'] = None
+    libraries: Optional['List[compute.Library]'] = None
+    new_cluster: Optional['compute.ClusterSpec'] = None
     notebook_task: Optional['NotebookTask'] = None
     pipeline_task: Optional['PipelineTask'] = None
     python_wheel_task: Optional['PythonWheelTask'] = None
@@ -1865,8 +1864,8 @@ class SubmitTask:
         return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    depends_on=_repeated(d, 'depends_on', TaskDependency),
                    existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=_repeated(d, 'libraries', Library),
-                   new_cluster=_from_dict(d, 'new_cluster', ClusterSpec),
+                   libraries=_repeated(d, 'libraries', compute.Library),
+                   new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
@@ -1889,10 +1888,10 @@ class Task:
     email_notifications: Optional['TaskEmailNotifications'] = None
     existing_cluster_id: Optional[str] = None
     job_cluster_key: Optional[str] = None
-    libraries: Optional['List[Library]'] = None
+    libraries: Optional['List[compute.Library]'] = None
     max_retries: Optional[int] = None
     min_retry_interval_millis: Optional[int] = None
-    new_cluster: Optional['ClusterSpec'] = None
+    new_cluster: Optional['compute.ClusterSpec'] = None
     notebook_task: Optional['NotebookTask'] = None
     notification_settings: Optional['TaskNotificationSettings'] = None
     pipeline_task: Optional['PipelineTask'] = None
@@ -1942,10 +1941,10 @@ class Task:
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    job_cluster_key=d.get('job_cluster_key', None),
-                   libraries=_repeated(d, 'libraries', Library),
+                   libraries=_repeated(d, 'libraries', compute.Library),
                    max_retries=d.get('max_retries', None),
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
-                   new_cluster=_from_dict(d, 'new_cluster', ClusterSpec),
+                   new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    notification_settings=_from_dict(d, 'notification_settings', TaskNotificationSettings),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -2272,7 +2271,7 @@ class JobsAPI:
 
     def create(self,
                *,
-               access_control_list: Optional[List[AccessControlRequest]] = None,
+               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
                compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
@@ -2969,7 +2968,7 @@ class JobsAPI:
 
     def submit(self,
                *,
-               access_control_list: Optional[List[AccessControlRequest]] = None,
+               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
                git_source: Optional[GitSource] = None,
                idempotency_token: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
@@ -3037,7 +3036,7 @@ class JobsAPI:
     def submit_and_wait(
         self,
         *,
-        access_control_list: Optional[List[AccessControlRequest]] = None,
+        access_control_list: Optional[List[iam.AccessControlRequest]] = None,
         git_source: Optional[GitSource] = None,
         idempotency_token: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
