@@ -279,7 +279,11 @@ self._api.do('{{.Verb}}', {{if .PathParts -}}
   {{- else if .Pagination -}}
     Iterator[{{.Pagination.Entity.PascalName}}]
   {{- else -}}
-    {{template "type-nq" .Response}}
+    {{- if .Response.IsExternal -}}
+      {{.Response.Package.Name}}.{{.Response.PascalName}}
+    {{- else -}}
+      {{.Response.PascalName}}
+    {{- end -}}
   {{- end}}{{end}}
 {{- end}}
 
