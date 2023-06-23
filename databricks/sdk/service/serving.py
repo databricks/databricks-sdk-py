@@ -178,8 +178,7 @@ class EndpointStateReady(Enum):
 
 @dataclass
 class ExportMetricsRequest:
-    """Retrieve the metrics corresponding to a serving endpoint for the current time in Prometheus or
-    OpenMetrics exposition format"""
+    """Retrieve the metrics associated with a serving endpoint"""
 
     name: str
 
@@ -257,10 +256,12 @@ class ServedModelInput:
     model_version: str
     workload_size: str
     scale_to_zero_enabled: bool
+    environment_vars: Optional[Any] = None
     name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
@@ -270,7 +271,8 @@ class ServedModelInput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelInput':
-        return cls(model_name=d.get('model_name', None),
+        return cls(environment_vars=d.get('environment_vars', None),
+                   model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
@@ -281,6 +283,7 @@ class ServedModelInput:
 class ServedModelOutput:
     creation_timestamp: Optional[int] = None
     creator: Optional[str] = None
+    environment_vars: Optional[Any] = None
     model_name: Optional[str] = None
     model_version: Optional[str] = None
     name: Optional[str] = None
@@ -292,6 +295,7 @@ class ServedModelOutput:
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
+        if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
@@ -304,6 +308,7 @@ class ServedModelOutput:
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelOutput':
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
+                   environment_vars=d.get('environment_vars', None),
                    model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
@@ -553,7 +558,7 @@ class ServingEndpointsAPI:
           The core config of the serving endpoint.
         
         :returns:
-          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
         request = kwargs.get('request', None)
@@ -585,8 +590,7 @@ class ServingEndpointsAPI:
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{request.name}')
 
     def export_metrics(self, name: str, **kwargs):
-        """Retrieve the metrics corresponding to a serving endpoint for the current time in Prometheus or
-        OpenMetrics exposition format.
+        """Retrieve the metrics associated with a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
@@ -685,7 +689,7 @@ class ServingEndpointsAPI:
           The traffic config defining how invocations to the serving endpoint should be routed.
         
         :returns:
-          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
         request = kwargs.get('request', None)

@@ -162,7 +162,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -3563,7 +3562,7 @@ class WarehousesAPI:
           also set the field `enable_serverless_compute` to `true`.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
         request = kwargs.get('request', None)
@@ -3714,7 +3713,7 @@ class WarehousesAPI:
           also set the field `enable_serverless_compute` to `true`.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
         request = kwargs.get('request', None)
@@ -3886,7 +3885,7 @@ class WarehousesAPI:
           Required. Id of the SQL warehouse.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
         request = kwargs.get('request', None)
@@ -3908,7 +3907,7 @@ class WarehousesAPI:
           Required. Id of the SQL warehouse.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_stopped for more details.
         """
         request = kwargs.get('request', None)

@@ -1370,7 +1370,7 @@ class PipelinesAPI:
         :param pipeline_id: str
         
         :returns:
-          long-running operation waiter for :class:`GetPipelineResponse`.
+          Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_running for more details.
         """
         request = kwargs.get('request', None)
@@ -1430,7 +1430,7 @@ class PipelinesAPI:
         :param pipeline_id: str
         
         :returns:
-          long-running operation waiter for :class:`GetPipelineResponse`.
+          Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_idle for more details.
         """
         request = kwargs.get('request', None)

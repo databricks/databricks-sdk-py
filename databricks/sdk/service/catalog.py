@@ -212,6 +212,7 @@ class AzureServicePrincipal:
 class CatalogInfo:
     catalog_type: Optional['CatalogType'] = None
     comment: Optional[str] = None
+    connection_name: Optional[str] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
     effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
@@ -219,6 +220,7 @@ class CatalogInfo:
     isolation_mode: Optional['IsolationMode'] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
+    options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
     provider_name: Optional[str] = None
@@ -232,6 +234,7 @@ class CatalogInfo:
         body = {}
         if self.catalog_type is not None: body['catalog_type'] = self.catalog_type.value
         if self.comment is not None: body['comment'] = self.comment
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.effective_auto_maintenance_flag:
@@ -241,6 +244,7 @@ class CatalogInfo:
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
@@ -255,6 +259,7 @@ class CatalogInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
         return cls(catalog_type=_enum(d, 'catalog_type', CatalogType),
                    comment=d.get('comment', None),
+                   connection_name=d.get('connection_name', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
@@ -263,6 +268,7 @@ class CatalogInfo:
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
@@ -382,7 +388,7 @@ class ConnectionInfo:
     full_name: Optional[str] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
-    options_kvpairs: Optional['OptionsKvPairs'] = None
+    options_kvpairs: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties_kvpairs: Optional['Dict[str,str]'] = None
     read_only: Optional[bool] = None
@@ -401,7 +407,7 @@ class ConnectionInfo:
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs.as_dict()
+        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
         if self.owner is not None: body['owner'] = self.owner
         if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
         if self.read_only is not None: body['read_only'] = self.read_only
@@ -421,7 +427,7 @@ class ConnectionInfo:
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
-                   options_kvpairs=_from_dict(d, 'options_kvpairs', OptionsKvPairs),
+                   options_kvpairs=d.get('options_kvpairs', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=d.get('properties_kvpairs', None),
                    read_only=d.get('read_only', None),
@@ -475,7 +481,7 @@ class CreateCatalog:
 class CreateConnection:
     name: str
     connection_type: 'ConnectionType'
-    options_kvpairs: 'OptionsKvPairs'
+    options_kvpairs: 'Dict[str,str]'
     comment: Optional[str] = None
     owner: Optional[str] = None
     properties_kvpairs: Optional['Dict[str,str]'] = None
@@ -486,7 +492,7 @@ class CreateConnection:
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_type is not None: body['connection_type'] = self.connection_type.value
         if self.name is not None: body['name'] = self.name
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs.as_dict()
+        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
         if self.owner is not None: body['owner'] = self.owner
         if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
         if self.read_only is not None: body['read_only'] = self.read_only
@@ -497,7 +503,7 @@ class CreateConnection:
         return cls(comment=d.get('comment', None),
                    connection_type=_enum(d, 'connection_type', ConnectionType),
                    name=d.get('name', None),
-                   options_kvpairs=_from_dict(d, 'options_kvpairs', OptionsKvPairs),
+                   options_kvpairs=d.get('options_kvpairs', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=d.get('properties_kvpairs', None),
                    read_only=d.get('read_only', None))
@@ -1000,7 +1006,15 @@ class DisableRequest:
     """Disable a system schema"""
 
     metastore_id: str
-    schema_name: str
+    schema_name: 'DisableSchemaName'
+
+
+class DisableSchemaName(Enum):
+
+    access = 'access'
+    billing = 'billing'
+    lineage = 'lineage'
+    operational_data = 'operational_data'
 
 
 @dataclass
@@ -1090,6 +1104,22 @@ class EnableAutoMaintenance(Enum):
     DISABLE = 'DISABLE'
     ENABLE = 'ENABLE'
     INHERIT = 'INHERIT'
+
+
+@dataclass
+class EnableRequest:
+    """Enable a system schema"""
+
+    metastore_id: str
+    schema_name: 'EnableSchemaName'
+
+
+class EnableSchemaName(Enum):
+
+    access = 'access'
+    billing = 'billing'
+    lineage = 'lineage'
+    operational_data = 'operational_data'
 
 
 @dataclass
@@ -1901,22 +1931,6 @@ class NamedTableConstraint:
 
 
 @dataclass
-class OptionsKvPairs:
-    """Object properties as map of string key-value pairs."""
-
-    host: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.host is not None: body['host'] = self.host
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'OptionsKvPairs':
-        return cls(host=d.get('host', None))
-
-
-@dataclass
 class PermissionsChange:
     add: Optional['List[Privilege]'] = None
     principal: Optional[str] = None
@@ -1991,6 +2005,7 @@ class Privilege(Enum):
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
     USAGE = 'USAGE'
     USE_CATALOG = 'USE_CATALOG'
+    USE_MARKETPLACE_ASSETS = 'USE_MARKETPLACE_ASSETS'
     USE_PROVIDER = 'USE_PROVIDER'
     USE_RECIPIENT = 'USE_RECIPIENT'
     USE_SCHEMA = 'USE_SCHEMA'
@@ -2086,6 +2101,8 @@ class SchemaInfo:
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
 
+
+SecurableOptionsMap = Dict[str, str]
 
 SecurablePropertiesMap = Dict[str, str]
 
@@ -2185,10 +2202,11 @@ class SystemSchemaInfoState(Enum):
     """The current state of enablement for the system schema. An empty string means the system schema
     is available and ready for opt-in."""
 
-    DisableInitialized = 'DisableInitialized'
-    EnableCompleted = 'EnableCompleted'
-    EnableInitialized = 'EnableInitialized'
-    Unavailable = 'Unavailable'
+    AVAILABLE = 'AVAILABLE'
+    DISABLE_INITIALIZED = 'DISABLE_INITIALIZED'
+    ENABLE_COMPLETED = 'ENABLE_COMPLETED'
+    ENABLE_INITIALIZED = 'ENABLE_INITIALIZED'
+    UNAVAILABLE = 'UNAVAILABLE'
 
 
 @dataclass
@@ -2460,21 +2478,21 @@ class UpdateCatalog:
 @dataclass
 class UpdateConnection:
     name: str
-    options_kvpairs: 'OptionsKvPairs'
+    options_kvpairs: 'Dict[str,str]'
     name_arg: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.name_arg is not None: body['name_arg'] = self.name_arg
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs.as_dict()
+        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateConnection':
         return cls(name=d.get('name', None),
                    name_arg=d.get('name_arg', None),
-                   options_kvpairs=_from_dict(d, 'options_kvpairs', OptionsKvPairs))
+                   options_kvpairs=d.get('options_kvpairs', None))
 
 
 @dataclass
@@ -3407,7 +3425,7 @@ class ConnectionsAPI:
     def create(self,
                name: str,
                connection_type: ConnectionType,
-               options_kvpairs: OptionsKvPairs,
+               options_kvpairs: Dict[str, str],
                *,
                comment: Optional[str] = None,
                owner: Optional[str] = None,
@@ -3425,8 +3443,8 @@ class ConnectionsAPI:
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
           The type of connection.
-        :param options_kvpairs: :class:`OptionsKvPairs`
-          Object properties as map of string key-value pairs.
+        :param options_kvpairs: Dict[str,str]
+          A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
         :param owner: str (optional)
@@ -3496,15 +3514,15 @@ class ConnectionsAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections')
         return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
 
-    def update(self, name: str, options_kvpairs: OptionsKvPairs, name_arg: str, **kwargs) -> ConnectionInfo:
+    def update(self, name: str, options_kvpairs: Dict[str, str], name_arg: str, **kwargs) -> ConnectionInfo:
         """Update a connection.
         
         Updates the connection that matches the supplied name.
         
         :param name: str
           Name of the connection.
-        :param options_kvpairs: :class:`OptionsKvPairs`
-          Object properties as map of string key-value pairs.
+        :param options_kvpairs: Dict[str,str]
+          A map of key-value properties attached to the securable.
         :param name_arg: str
           Name of the connection.
         
@@ -4675,7 +4693,7 @@ class SystemSchemasAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def disable(self, metastore_id: str, schema_name: str, **kwargs):
+    def disable(self, metastore_id: str, schema_name: DisableSchemaName, **kwargs):
         """Disable a system schema.
         
         Disables the system schema and removes it from the system catalog. The caller must be an account admin
@@ -4683,7 +4701,7 @@ class SystemSchemasAPI:
         
         :param metastore_id: str
           The metastore ID under which the system schema lives.
-        :param schema_name: str
+        :param schema_name: :class:`DisableSchemaName`
           Full name of the system schema.
         
         
@@ -4694,18 +4712,30 @@ class SystemSchemasAPI:
 
         self._api.do(
             'DELETE',
-            f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name}')
+            f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name.value}'
+        )
 
-    def enable(self):
+    def enable(self, metastore_id: str, schema_name: EnableSchemaName, **kwargs):
         """Enable a system schema.
         
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
         metastore admin.
         
+        :param metastore_id: str
+          The metastore ID under which the system schema lives.
+        :param schema_name: :class:`EnableSchemaName`
+          Full name of the system schema.
+        
         
         """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = EnableRequest(metastore_id=metastore_id, schema_name=schema_name)
 
-        self._api.do('POST', f'/api/2.1/unity-catalog/metastores//systemschemas/')
+        self._api.do(
+            'POST',
+            f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name.value}'
+        )
 
     def list(self, metastore_id: str, **kwargs) -> Iterator[SystemSchemaInfo]:
         """List system schemas.
