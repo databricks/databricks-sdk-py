@@ -19,9 +19,9 @@ def test_submitting_jobs(w, random, env_or_skip):
 
     waiter = w.jobs.submit(run_name=f'py-sdk-{random(8)}',
                            tasks=[
-                               j.RunSubmitTaskSettings(
+                               j.SubmitTask(
                                    task_key='pi',
-                                   new_cluster=j.BaseClusterInfo(
+                                   new_cluster=j.ClusterSpec(
                                        spark_version=w.clusters.select_spark_version(long_term_support=True),
                                        # node_type_id=w.clusters.select_node_type(local_disk=True),
                                        instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
@@ -74,17 +74,16 @@ def test_last_job_runs(w):
 
 
 def test_create_job(w):
-    from databricks.sdk.service.jobs import (BaseClusterInfo, JobCluster,
-                                             JobTaskSettings, PythonWheelTask)
+    from databricks.sdk.service.jobs import (ClusterSpec, JobCluster,
+                                             PythonWheelTask, Task)
 
     cluster = JobCluster(job_cluster_key="cluster1",
-                         new_cluster=BaseClusterInfo(
-                             num_workers=2,
-                             spark_version=w.clusters.select_spark_version(),
-                             node_type_id=w.clusters.select_node_type(local_disk=True)))
+                         new_cluster=ClusterSpec(num_workers=2,
+                                                 spark_version=w.clusters.select_spark_version(),
+                                                 node_type_id=w.clusters.select_node_type(local_disk=True)))
 
-    task1 = JobTaskSettings(task_key="task1",
-                            job_cluster_key="cluster1",
-                            python_wheel_task=PythonWheelTask(entry_point="test", package_name="deepspeed"))
+    task1 = Task(task_key="task1",
+                 job_cluster_key="cluster1",
+                 python_wheel_task=PythonWheelTask(entry_point="test", package_name="deepspeed"))
 
     w.jobs.create(job_clusters=[cluster], tasks=[task1])

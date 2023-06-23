@@ -58,9 +58,9 @@ if __name__ == "__main__":
     # trigger one-time-run job and get waiter object
     waiter = w.jobs.submit(run_name=f"py-sdk-run-{time.time()}",
                            tasks=[
-                               j.RunSubmitTaskSettings(
+                               j.SubmitTask(
                                    task_key="hello_world",
-                                   new_cluster=j.BaseClusterInfo(
+                                   new_cluster=j.ClusterSpec(
                                        spark_version=w.clusters.select_spark_version(long_term_support=True),
                                        node_type_id=w.clusters.select_node_type(local_disk=True),
                                        num_workers=1,
