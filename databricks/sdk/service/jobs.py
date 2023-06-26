@@ -13,7 +13,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from . import compute, iam
+from databricks.sdk.service import compute, iam
 
 # all definitions in this file are in alphabetical order
 

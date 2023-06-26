@@ -9,7 +9,7 @@ from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from . import catalog
+from databricks.sdk.service import catalog
 
 # all definitions in this file are in alphabetical order
 
