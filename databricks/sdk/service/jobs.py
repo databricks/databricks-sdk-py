@@ -739,7 +739,7 @@ class JobSettings:
 
 @dataclass
 class ListJobsRequest:
-    """List all jobs"""
+    """List jobs"""
 
     expand_tasks: Optional[bool] = None
     limit: Optional[int] = None
@@ -773,7 +773,7 @@ class ListJobsResponse:
 
 @dataclass
 class ListRunsRequest:
-    """List runs for a job"""
+    """List job runs"""
 
     active_only: Optional[bool] = None
     completed_only: Optional[bool] = None
@@ -1122,13 +1122,13 @@ class RunConditionTask:
     left: str
     right: str
     op: 'RunConditionTaskOp'
-    outcome: Optional['RunConditionTaskOutcome'] = None
+    outcome: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.left is not None: body['left'] = self.left
         if self.op is not None: body['op'] = self.op.value
-        if self.outcome is not None: body['outcome'] = self.outcome.value
+        if self.outcome is not None: body['outcome'] = self.outcome
         if self.right is not None: body['right'] = self.right
         return body
 
@@ -1136,7 +1136,7 @@ class RunConditionTask:
     def from_dict(cls, d: Dict[str, any]) -> 'RunConditionTask':
         return cls(left=d.get('left', None),
                    op=_enum(d, 'op', RunConditionTaskOp),
-                   outcome=_enum(d, 'outcome', RunConditionTaskOutcome),
+                   outcome=d.get('outcome', None),
                    right=d.get('right', None))
 
 
@@ -1149,14 +1149,6 @@ class RunConditionTaskOp(Enum):
     LESS_THAN = 'LESS_THAN'
     LESS_THAN_OR_EQUAL = 'LESS_THAN_OR_EQUAL'
     NOT_EQUAL = 'NOT_EQUAL'
-
-
-class RunConditionTaskOutcome(Enum):
-    """The condition expression evaluation result. Filled in if the task was successfully completed.
-    Can be `"true"` or `"false"`"""
-
-    false = 'false'
-    true = 'true'
 
 
 class RunLifeCycleState(Enum):
@@ -1961,25 +1953,17 @@ class Task:
 @dataclass
 class TaskDependency:
     task_key: str
-    outcome: Optional['TaskDependencyOutcome'] = None
+    outcome: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.outcome is not None: body['outcome'] = self.outcome.value
+        if self.outcome is not None: body['outcome'] = self.outcome
         if self.task_key is not None: body['task_key'] = self.task_key
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TaskDependency':
-        return cls(outcome=_enum(d, 'outcome', TaskDependencyOutcome), task_key=d.get('task_key', None))
-
-
-class TaskDependencyOutcome(Enum):
-    """Can only be specified on condition task dependencies. The outcome of the dependent task that
-    must be met for this task to run."""
-
-    false = 'false'
-    true = 'true'
+        return cls(outcome=d.get('outcome', None), task_key=d.get('task_key', None))
 
 
 @dataclass
@@ -2520,7 +2504,7 @@ class JobsAPI:
              offset: Optional[int] = None,
              page_token: Optional[str] = None,
              **kwargs) -> Iterator[BaseJob]:
-        """List all jobs.
+        """List jobs.
         
         Retrieves a list of jobs.
         
@@ -2579,7 +2563,7 @@ class JobsAPI:
                   start_time_from: Optional[int] = None,
                   start_time_to: Optional[int] = None,
                   **kwargs) -> Iterator[BaseRun]:
-        """List runs for a job.
+        """List job runs.
         
         List runs in descending order by start time.
         
