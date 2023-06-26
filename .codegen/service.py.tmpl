@@ -45,8 +45,8 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
-		{{- if .Entity.ArrayValue.IsObject }}_repeated(d, '{{.Name}}', {{.Entity.ArrayValue.PascalName}})
-		{{- else if .Entity.ArrayValue.IsExternal }}_repeated(d, '{{.Name}}', {{.Entity.ArrayValue.Package.Name}}.{{.Entity.ArrayValue.PascalName}})
+		{{- if .Entity.ArrayValue.IsObject }}_repeated(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
+		{{- else if .Entity.ArrayValue.IsExternal }}_repeated(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
 		{{- else}}d.get('{{.Name}}', None){{- end -}}
 	{{- else if .Entity.IsObject }}_from_dict(d, '{{.Name}}', {{.Entity.PascalName}})
 	{{- else if .Entity.IsExternal }}_from_dict(d, '{{.Name}}', {{.Entity.Package.Name}}.{{.Entity.PascalName}})
