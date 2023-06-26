@@ -24,8 +24,8 @@ Connections
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
           The type of connection.
-        :param options_kvpairs: :class:`OptionsKvPairs`
-          Object properties as map of string key-value pairs.
+        :param options_kvpairs: Dict[str,str]
+          A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
         :param owner: str (optional)
@@ -79,8 +79,8 @@ Connections
         
         :param name: str
           Name of the connection.
-        :param options_kvpairs: :class:`OptionsKvPairs`
-          Object properties as map of string key-value pairs.
+        :param options_kvpairs: Dict[str,str]
+          A map of key-value properties attached to the securable.
         :param name_arg: str
           Name of the connection.
         

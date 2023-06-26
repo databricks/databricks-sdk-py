@@ -12,7 +12,7 @@ Secret
     Databricks makes an effort to redact secret values that might be displayed in notebooks, it is not
     possible to prevent such users from reading secrets.
 
-    .. py:method:: create_scope(scope [, initial_manage_principal, keyvault_metadata, scope_backend_type])
+    .. py:method:: create_scope(scope [, backend_azure_keyvault, initial_manage_principal, scope_backend_type])
 
         Usage:
 
@@ -41,10 +41,10 @@ Secret
         
         :param scope: str
           Scope name requested by the user. Scope names are unique.
+        :param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
+          The metadata for the secret scope if the type is `AZURE_KEYVAULT`
         :param initial_manage_principal: str (optional)
           The principal that is initially granted `MANAGE` permission to the created scope.
-        :param keyvault_metadata: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
-          The metadata for the secret scope if the type is `AZURE_KEYVAULT`
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
           The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
         
@@ -268,8 +268,9 @@ Secret
         or revoked access.
         
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_ALREADY_EXISTS` if a
-        permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission is
-        invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+        permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission or
+        principal is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API
+        call.
         
         :param scope: str
           The name of the scope to apply permissions to.

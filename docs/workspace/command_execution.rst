@@ -17,7 +17,7 @@ Command Execution
         :param context_id: str (optional)
         
         :returns:
-          long-running operation waiter for :class:`CommandStatusResponse`.
+          Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_cancelled for more details.
         
 
@@ -79,7 +79,7 @@ Command Execution
         :param language: :class:`Language` (optional)
         
         :returns:
-          long-running operation waiter for :class:`ContextStatusResponse`.
+          Long-running operation waiter for :class:`ContextStatusResponse`.
           See :method:wait_context_status_command_execution_running for more details.
         
 
@@ -135,6 +135,6 @@ Command Execution
         :param language: :class:`Language` (optional)
         
         :returns:
-          long-running operation waiter for :class:`CommandStatusResponse`.
+          Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_finished_or_error for more details.
         
