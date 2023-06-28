@@ -1,5 +1,23 @@
 # Version changelog
 
+## 0.1.12
+
+* Beta release ([#198](https://github.com/databricks/databricks-sdk-py/pull/198)).
+* Documentation improvements ([#197](https://github.com/databricks/databricks-sdk-py/pull/197)).
+* Make `dbutils` type stubs consistent with runtime implementation ([#196](https://github.com/databricks/databricks-sdk-py/pull/196)).
+* Regenerated from OpenAPI spec ([#199](https://github.com/databricks/databricks-sdk-py/pull/199)).
+
+API changes:
+
+* Renamed `compute.BaseClusterInfo` to `compute.ClusterSpec`
+* Renamed `compute.ClusterInfo` to `compute.ClusterDetails`
+* Renamed `jobs.JobTaskSettings` to `jobs.Task`
+* Renamed `jobs.RunSubmitTaskSettings` to `jobs.SubmitTask`
+* Renamed `jobs.JobWebhookNotifications` to `jobs.WebhookNotifications`
+* Renamed `jobs.CreateJobFormat` to `jobs.Format`
+* Renamed `jobs.GitSourceGitProvider` to `jobs.GitProvider`
+* Renamed `jobs.FileArrivalTriggerSettings` to `jobs.FileArrivalTriggerConfiguration`
+
 ## 0.1.11
 
 * Added Sphinx documentation ([#184](https://github.com/databricks/databricks-sdk-py/pull/184), [#191](https://github.com/databricks/databricks-sdk-py/pull/191), [#183](https://github.com/databricks/databricks-sdk-py/pull/183), [#193](https://github.com/databricks/databricks-sdk-py/pull/193)).
