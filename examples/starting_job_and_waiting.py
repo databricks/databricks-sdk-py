@@ -39,7 +39,7 @@ import logging
 import sys
 import time
 
-import databricks.sdk.service.jobs as j
+from databricks.sdk.service import compute, jobs
 from databricks.sdk import WorkspaceClient
 
 if __name__ == "__main__":
@@ -58,14 +58,14 @@ if __name__ == "__main__":
     # trigger one-time-run job and get waiter object
     waiter = w.jobs.submit(run_name=f"py-sdk-run-{time.time()}",
                            tasks=[
-                               j.RunSubmitTaskSettings(
+                               jobs.SubmitTask(
                                    task_key="hello_world",
-                                   new_cluster=j.BaseClusterInfo(
+                                   new_cluster=compute.ClusterSpec(
                                        spark_version=w.clusters.select_spark_version(long_term_support=True),
                                        node_type_id=w.clusters.select_node_type(local_disk=True),
                                        num_workers=1,
                                    ),
-                                   spark_python_task=j.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
+                                   spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
                                )
                            ],
                            )
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     logging.info(f"starting to poll: {waiter.run_id}")
 
     # callback, that receives a polled entity between state updates
-    def print_status(run: j.Run):
+    def print_status(run: jobs.Run):
         statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
 

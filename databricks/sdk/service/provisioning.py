@@ -1962,7 +1962,7 @@ class WorkspacesAPI:
           provided key configuration object property `use_cases` must contain `STORAGE`.
         
         :returns:
-          long-running operation waiter for :class:`Workspace`.
+          Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
         """
         request = kwargs.get('request', None)
@@ -2208,7 +2208,7 @@ class WorkspacesAPI:
           updating both failed and running workspaces.
         
         :returns:
-          long-running operation waiter for :class:`Workspace`.
+          Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
         """
         request = kwargs.get('request', None)

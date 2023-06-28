@@ -13,12 +13,11 @@ cluster_id = w.clusters.ensure_cluster_is_running(
 
 created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                             tasks=[
-                                jobs.JobTaskSettings(
-                                    description="test",
-                                    existing_cluster_id=cluster_id,
-                                    notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                    task_key="test",
-                                    timeout_seconds=0)
+                                jobs.Task(description="test",
+                                          existing_cluster_id=cluster_id,
+                                          notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                          task_key="test",
+                                          timeout_seconds=0)
                             ])
 
 by_id = w.jobs.get(get=created_job.job_id)

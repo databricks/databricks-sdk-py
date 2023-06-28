@@ -85,7 +85,7 @@ SQL Warehouses
           also set the field `enable_serverless_compute` to `true`.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         
 
@@ -189,7 +189,7 @@ SQL Warehouses
           also set the field `enable_serverless_compute` to `true`.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         
 
@@ -300,7 +300,7 @@ SQL Warehouses
           Required. Id of the SQL warehouse.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         
 
@@ -314,6 +314,6 @@ SQL Warehouses
           Required. Id of the SQL warehouse.
         
         :returns:
-          long-running operation waiter for :class:`GetWarehouseResponse`.
+          Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_stopped for more details.
         

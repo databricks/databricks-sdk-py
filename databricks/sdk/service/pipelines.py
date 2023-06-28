@@ -13,8 +13,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from .compute import (AutoScale, AwsAttributes, AzureAttributes,
-                      ClusterLogConf, GcpAttributes, MavenLibrary)
+from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -520,14 +519,14 @@ class Origin:
 @dataclass
 class PipelineCluster:
     apply_policy_default_values: Optional[bool] = None
-    autoscale: Optional['AutoScale'] = None
-    aws_attributes: Optional['AwsAttributes'] = None
-    azure_attributes: Optional['AzureAttributes'] = None
-    cluster_log_conf: Optional['ClusterLogConf'] = None
+    autoscale: Optional['compute.AutoScale'] = None
+    aws_attributes: Optional['compute.AwsAttributes'] = None
+    azure_attributes: Optional['compute.AzureAttributes'] = None
+    cluster_log_conf: Optional['compute.ClusterLogConf'] = None
     custom_tags: Optional['Dict[str,str]'] = None
     driver_instance_pool_id: Optional[str] = None
     driver_node_type_id: Optional[str] = None
-    gcp_attributes: Optional['GcpAttributes'] = None
+    gcp_attributes: Optional['compute.GcpAttributes'] = None
     instance_pool_id: Optional[str] = None
     label: Optional[str] = None
     node_type_id: Optional[str] = None
@@ -563,14 +562,14 @@ class PipelineCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineCluster':
         return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
-                   autoscale=_from_dict(d, 'autoscale', AutoScale),
-                   aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
-                   azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
-                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
+                   autoscale=_from_dict(d, 'autoscale', compute.AutoScale),
+                   aws_attributes=_from_dict(d, 'aws_attributes', compute.AwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', compute.AzureAttributes),
+                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', compute.ClusterLogConf),
                    custom_tags=d.get('custom_tags', None),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
-                   gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', compute.GcpAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    label=d.get('label', None),
                    node_type_id=d.get('node_type_id', None),
@@ -623,7 +622,7 @@ class PipelineEvent:
 class PipelineLibrary:
     file: Optional['FileLibrary'] = None
     jar: Optional[str] = None
-    maven: Optional['MavenLibrary'] = None
+    maven: Optional['compute.MavenLibrary'] = None
     notebook: Optional['NotebookLibrary'] = None
     whl: Optional[str] = None
 
@@ -640,7 +639,7 @@ class PipelineLibrary:
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineLibrary':
         return cls(file=_from_dict(d, 'file', FileLibrary),
                    jar=d.get('jar', None),
-                   maven=_from_dict(d, 'maven', MavenLibrary),
+                   maven=_from_dict(d, 'maven', compute.MavenLibrary),
                    notebook=_from_dict(d, 'notebook', NotebookLibrary),
                    whl=d.get('whl', None))
 
@@ -1370,7 +1369,7 @@ class PipelinesAPI:
         :param pipeline_id: str
         
         :returns:
-          long-running operation waiter for :class:`GetPipelineResponse`.
+          Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_running for more details.
         """
         request = kwargs.get('request', None)
@@ -1430,7 +1429,7 @@ class PipelinesAPI:
         :param pipeline_id: str
         
         :returns:
-          long-running operation waiter for :class:`GetPipelineResponse`.
+          Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_idle for more details.
         """
         request = kwargs.get('request', None)

@@ -9,7 +9,7 @@ from ._internal import _enum, _from_dict, _repeated
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from .catalog import PermissionsChange, PermissionsList
+from databricks.sdk.service import catalog
 
 # all definitions in this file are in alphabetical order
 
@@ -322,6 +322,7 @@ class Privilege(Enum):
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
     USAGE = 'USAGE'
     USE_CATALOG = 'USE_CATALOG'
+    USE_MARKETPLACE_ASSETS = 'USE_MARKETPLACE_ASSETS'
     USE_PROVIDER = 'USE_PROVIDER'
     USE_RECIPIENT = 'USE_RECIPIENT'
     USE_SCHEMA = 'USE_SCHEMA'
@@ -808,7 +809,7 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    changes: Optional['List[PermissionsChange]'] = None
+    changes: Optional['List[catalog.PermissionsChange]'] = None
     name: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -819,7 +820,7 @@ class UpdateSharePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
-        return cls(changes=_repeated(d, 'changes', PermissionsChange), name=d.get('name', None))
+        return cls(changes=_repeated(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
 
 
 class ProvidersAPI:
@@ -1307,7 +1308,7 @@ class SharesAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares')
         return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
 
-    def share_permissions(self, name: str, **kwargs) -> PermissionsList:
+    def share_permissions(self, name: str, **kwargs) -> catalog.PermissionsList:
         """Get permissions.
         
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
@@ -1367,7 +1368,11 @@ class SharesAPI:
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{request.name}', body=body)
         return ShareInfo.from_dict(json)
 
-    def update_permissions(self, name: str, *, changes: Optional[List[PermissionsChange]] = None, **kwargs):
+    def update_permissions(self,
+                           name: str,
+                           *,
+                           changes: Optional[List[catalog.PermissionsChange]] = None,
+                           **kwargs):
         """Update permissions.
         
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an

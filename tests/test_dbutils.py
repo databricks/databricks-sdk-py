@@ -101,14 +101,14 @@ def dbutils_proxy(mocker):
     from databricks.sdk.core import Config
     from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
-    from databricks.sdk.service.compute import (ClusterInfo, CommandStatus,
+    from databricks.sdk.service.compute import (ClusterDetails, CommandStatus,
                                                 CommandStatusResponse, Created,
                                                 Language, Results, State)
 
     from .conftest import noop_credentials
 
     cluster_get = mocker.patch('databricks.sdk.service.compute.ClustersAPI.get',
-                               return_value=ClusterInfo(state=State.RUNNING))
+                               return_value=ClusterDetails(state=State.RUNNING))
     context_create = mocker.patch('databricks.sdk.service.compute.CommandExecutionAPI.create',
                                   return_value=Wait(lambda **kwargs: Created('y')))
 

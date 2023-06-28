@@ -142,101 +142,6 @@ class AzureAvailability(Enum):
 
 
 @dataclass
-class BaseClusterInfo:
-    autoscale: Optional['AutoScale'] = None
-    autotermination_minutes: Optional[int] = None
-    aws_attributes: Optional['AwsAttributes'] = None
-    azure_attributes: Optional['AzureAttributes'] = None
-    cluster_log_conf: Optional['ClusterLogConf'] = None
-    cluster_name: Optional[str] = None
-    cluster_source: Optional['ClusterSource'] = None
-    custom_tags: Optional['Dict[str,str]'] = None
-    data_security_mode: Optional['DataSecurityMode'] = None
-    docker_image: Optional['DockerImage'] = None
-    driver_instance_pool_id: Optional[str] = None
-    driver_node_type_id: Optional[str] = None
-    enable_elastic_disk: Optional[bool] = None
-    enable_local_disk_encryption: Optional[bool] = None
-    gcp_attributes: Optional['GcpAttributes'] = None
-    init_scripts: Optional['List[InitScriptInfo]'] = None
-    instance_pool_id: Optional[str] = None
-    node_type_id: Optional[str] = None
-    num_workers: Optional[int] = None
-    policy_id: Optional[str] = None
-    runtime_engine: Optional['RuntimeEngine'] = None
-    single_user_name: Optional[str] = None
-    spark_conf: Optional['Dict[str,str]'] = None
-    spark_env_vars: Optional['Dict[str,str]'] = None
-    spark_version: Optional[str] = None
-    ssh_public_keys: Optional['List[str]'] = None
-    workload_type: Optional['WorkloadType'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.autotermination_minutes is not None:
-            body['autotermination_minutes'] = self.autotermination_minutes
-        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
-        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
-        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
-        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
-        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
-        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
-        if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
-        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
-        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
-        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
-        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version is not None: body['spark_version'] = self.spark_version
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
-        if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BaseClusterInfo':
-        return cls(autoscale=_from_dict(d, 'autoscale', AutoScale),
-                   autotermination_minutes=d.get('autotermination_minutes', None),
-                   aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
-                   azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
-                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
-                   cluster_name=d.get('cluster_name', None),
-                   cluster_source=_enum(d, 'cluster_source', ClusterSource),
-                   custom_tags=d.get('custom_tags', None),
-                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
-                   docker_image=_from_dict(d, 'docker_image', DockerImage),
-                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
-                   driver_node_type_id=d.get('driver_node_type_id', None),
-                   enable_elastic_disk=d.get('enable_elastic_disk', None),
-                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-                   gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
-                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
-                   instance_pool_id=d.get('instance_pool_id', None),
-                   node_type_id=d.get('node_type_id', None),
-                   num_workers=d.get('num_workers', None),
-                   policy_id=d.get('policy_id', None),
-                   runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
-                   single_user_name=d.get('single_user_name', None),
-                   spark_conf=d.get('spark_conf', None),
-                   spark_env_vars=d.get('spark_env_vars', None),
-                   spark_version=d.get('spark_version', None),
-                   ssh_public_keys=d.get('ssh_public_keys', None),
-                   workload_type=_from_dict(d, 'workload_type', WorkloadType))
-
-
-@dataclass
 class CancelCommand:
     cluster_id: Optional[str] = None
     command_id: Optional[str] = None
@@ -398,34 +303,7 @@ class ClusterAttributes:
 
 
 @dataclass
-class ClusterEvent:
-    cluster_id: str
-    data_plane_event_details: Optional['DataPlaneEventDetails'] = None
-    details: Optional['EventDetails'] = None
-    timestamp: Optional[int] = None
-    type: Optional['EventType'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.data_plane_event_details:
-            body['data_plane_event_details'] = self.data_plane_event_details.as_dict()
-        if self.details: body['details'] = self.details.as_dict()
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
-        if self.type is not None: body['type'] = self.type.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ClusterEvent':
-        return cls(cluster_id=d.get('cluster_id', None),
-                   data_plane_event_details=_from_dict(d, 'data_plane_event_details', DataPlaneEventDetails),
-                   details=_from_dict(d, 'details', EventDetails),
-                   timestamp=d.get('timestamp', None),
-                   type=_enum(d, 'type', EventType))
-
-
-@dataclass
-class ClusterInfo:
+class ClusterDetails:
     autoscale: Optional['AutoScale'] = None
     autotermination_minutes: Optional[int] = None
     aws_attributes: Optional['AwsAttributes'] = None
@@ -523,7 +401,7 @@ class ClusterInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ClusterInfo':
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterDetails':
         return cls(autoscale=_from_dict(d, 'autoscale', AutoScale),
                    autotermination_minutes=d.get('autotermination_minutes', None),
                    aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
@@ -568,6 +446,33 @@ class ClusterInfo:
                    terminated_time=d.get('terminated_time', None),
                    termination_reason=_from_dict(d, 'termination_reason', TerminationReason),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
+
+
+@dataclass
+class ClusterEvent:
+    cluster_id: str
+    data_plane_event_details: Optional['DataPlaneEventDetails'] = None
+    details: Optional['EventDetails'] = None
+    timestamp: Optional[int] = None
+    type: Optional['EventType'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.data_plane_event_details:
+            body['data_plane_event_details'] = self.data_plane_event_details.as_dict()
+        if self.details: body['details'] = self.details.as_dict()
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.type is not None: body['type'] = self.type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterEvent':
+        return cls(cluster_id=d.get('cluster_id', None),
+                   data_plane_event_details=_from_dict(d, 'data_plane_event_details', DataPlaneEventDetails),
+                   details=_from_dict(d, 'details', EventDetails),
+                   timestamp=d.get('timestamp', None),
+                   type=_enum(d, 'type', EventType))
 
 
 @dataclass
@@ -630,6 +535,101 @@ class ClusterSource(Enum):
     PIPELINE_MAINTENANCE = 'PIPELINE_MAINTENANCE'
     SQL = 'SQL'
     UI = 'UI'
+
+
+@dataclass
+class ClusterSpec:
+    autoscale: Optional['AutoScale'] = None
+    autotermination_minutes: Optional[int] = None
+    aws_attributes: Optional['AwsAttributes'] = None
+    azure_attributes: Optional['AzureAttributes'] = None
+    cluster_log_conf: Optional['ClusterLogConf'] = None
+    cluster_name: Optional[str] = None
+    cluster_source: Optional['ClusterSource'] = None
+    custom_tags: Optional['Dict[str,str]'] = None
+    data_security_mode: Optional['DataSecurityMode'] = None
+    docker_image: Optional['DockerImage'] = None
+    driver_instance_pool_id: Optional[str] = None
+    driver_node_type_id: Optional[str] = None
+    enable_elastic_disk: Optional[bool] = None
+    enable_local_disk_encryption: Optional[bool] = None
+    gcp_attributes: Optional['GcpAttributes'] = None
+    init_scripts: Optional['List[InitScriptInfo]'] = None
+    instance_pool_id: Optional[str] = None
+    node_type_id: Optional[str] = None
+    num_workers: Optional[int] = None
+    policy_id: Optional[str] = None
+    runtime_engine: Optional['RuntimeEngine'] = None
+    single_user_name: Optional[str] = None
+    spark_conf: Optional['Dict[str,str]'] = None
+    spark_env_vars: Optional['Dict[str,str]'] = None
+    spark_version: Optional[str] = None
+    ssh_public_keys: Optional['List[str]'] = None
+    workload_type: Optional['WorkloadType'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
+        return cls(autoscale=_from_dict(d, 'autoscale', AutoScale),
+                   autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
+                   cluster_name=d.get('cluster_name', None),
+                   cluster_source=_enum(d, 'cluster_source', ClusterSource),
+                   custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
 @dataclass
@@ -699,6 +699,26 @@ class CommandStatusResponse:
         return cls(id=d.get('id', None),
                    results=_from_dict(d, 'results', Results),
                    status=_enum(d, 'status', CommandStatus))
+
+
+@dataclass
+class ComputeSpec:
+    kind: Optional['ComputeSpecKind'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.kind is not None: body['kind'] = self.kind.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ComputeSpec':
+        return cls(kind=_enum(d, 'kind', ComputeSpecKind))
+
+
+class ComputeSpecKind(Enum):
+    """The kind of compute described by this compute specification."""
+
+    SERVERLESS_PREVIEW = 'SERVERLESS_PREVIEW'
 
 
 class ContextStatus(Enum):
@@ -2324,7 +2344,7 @@ class ListClustersRequest:
 
 @dataclass
 class ListClustersResponse:
-    clusters: Optional['List[ClusterInfo]'] = None
+    clusters: Optional['List[ClusterDetails]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2333,7 +2353,7 @@ class ListClustersResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListClustersResponse':
-        return cls(clusters=_repeated(d, 'clusters', ClusterInfo))
+        return cls(clusters=_repeated(d, 'clusters', ClusterDetails))
 
 
 @dataclass
@@ -3358,10 +3378,11 @@ class ClustersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_cluster_running(self,
-                                 cluster_id: str,
-                                 timeout=timedelta(minutes=20),
-                                 callback: Optional[Callable[[ClusterInfo], None]] = None) -> ClusterInfo:
+    def wait_get_cluster_running(
+            self,
+            cluster_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[ClusterDetails], None]] = None) -> ClusterDetails:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING, )
         failure_states = (State.ERROR, State.TERMINATED, )
@@ -3388,10 +3409,11 @@ class ClustersAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_cluster_terminated(self,
-                                    cluster_id: str,
-                                    timeout=timedelta(minutes=20),
-                                    callback: Optional[Callable[[ClusterInfo], None]] = None) -> ClusterInfo:
+    def wait_get_cluster_terminated(
+            self,
+            cluster_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[ClusterDetails], None]] = None) -> ClusterDetails:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.TERMINATED, )
         failure_states = (State.ERROR, )
@@ -3463,16 +3485,12 @@ class ClustersAPI:
                spark_env_vars: Optional[Dict[str, str]] = None,
                ssh_public_keys: Optional[List[str]] = None,
                workload_type: Optional[WorkloadType] = None,
-               **kwargs) -> Wait[ClusterInfo]:
+               **kwargs) -> Wait[ClusterDetails]:
         """Create new cluster.
         
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
-        necessary. This method is asynchronous; the returned `cluster_id` can be used to poll the cluster
-        status. When this method returns, the cluster will be in a `PENDING` state. The cluster will be usable
-        once it enters a `RUNNING` state.
-        
-        Note: Databricks may not be able to acquire some of the requested nodes, due to cloud provider
-        limitations (account limits, spot price, etc.) or transient network issues.
+        necessary. Note: Databricks may not be able to acquire some of the requested nodes, due to cloud
+        provider limitations (account limits, spot price, etc.) or transient network issues.
         
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
@@ -3577,7 +3595,7 @@ class ClustersAPI:
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
         request = kwargs.get('request', None)
@@ -3641,7 +3659,7 @@ class ClustersAPI:
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
         workload_type: Optional[WorkloadType] = None,
-        timeout=timedelta(minutes=20)) -> ClusterInfo:
+        timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.create(apply_policy_default_values=apply_policy_default_values,
                            autoscale=autoscale,
                            autotermination_minutes=autotermination_minutes,
@@ -3668,7 +3686,7 @@ class ClustersAPI:
                            ssh_public_keys=ssh_public_keys,
                            workload_type=workload_type).result(timeout=timeout)
 
-    def delete(self, cluster_id: str, **kwargs) -> Wait[ClusterInfo]:
+    def delete(self, cluster_id: str, **kwargs) -> Wait[ClusterDetails]:
         """Terminate cluster.
         
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
@@ -3679,7 +3697,7 @@ class ClustersAPI:
           The cluster to be terminated.
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_terminated for more details.
         """
         request = kwargs.get('request', None)
@@ -3689,7 +3707,7 @@ class ClustersAPI:
         self._api.do('POST', '/api/2.0/clusters/delete', body=body)
         return Wait(self.wait_get_cluster_terminated, cluster_id=request.cluster_id)
 
-    def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.delete(cluster_id=cluster_id).result(timeout=timeout)
 
     def edit(self,
@@ -3723,7 +3741,7 @@ class ClustersAPI:
              spark_env_vars: Optional[Dict[str, str]] = None,
              ssh_public_keys: Optional[List[str]] = None,
              workload_type: Optional[WorkloadType] = None,
-             **kwargs) -> Wait[ClusterInfo]:
+             **kwargs) -> Wait[ClusterDetails]:
         """Update cluster configuration.
         
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -3845,7 +3863,7 @@ class ClustersAPI:
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
         request = kwargs.get('request', None)
@@ -3915,7 +3933,7 @@ class ClustersAPI:
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
         workload_type: Optional[WorkloadType] = None,
-        timeout=timedelta(minutes=20)) -> ClusterInfo:
+        timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.edit(apply_policy_default_values=apply_policy_default_values,
                          autoscale=autoscale,
                          autotermination_minutes=autotermination_minutes,
@@ -4002,7 +4020,7 @@ class ClustersAPI:
                 return
             body = json['next_page']
 
-    def get(self, cluster_id: str, **kwargs) -> ClusterInfo:
+    def get(self, cluster_id: str, **kwargs) -> ClusterDetails:
         """Get cluster info.
         
         Retrieves the information for a cluster given its identifier. Clusters can be described while they are
@@ -4011,7 +4029,7 @@ class ClustersAPI:
         :param cluster_id: str
           The cluster about which to retrieve information.
         
-        :returns: :class:`ClusterInfo`
+        :returns: :class:`ClusterDetails`
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -4021,9 +4039,9 @@ class ClustersAPI:
         if cluster_id: query['cluster_id'] = request.cluster_id
 
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
-        return ClusterInfo.from_dict(json)
+        return ClusterDetails.from_dict(json)
 
-    def list(self, *, can_use_client: Optional[str] = None, **kwargs) -> Iterator[ClusterInfo]:
+    def list(self, *, can_use_client: Optional[str] = None, **kwargs) -> Iterator[ClusterDetails]:
         """List all clusters.
         
         Return information about all pinned clusters, active clusters, up to 200 of the most recently
@@ -4040,7 +4058,7 @@ class ClustersAPI:
           No input for this field will get all clusters in the workspace without filtering on its supported
           client
         
-        :returns: Iterator over :class:`ClusterInfo`
+        :returns: Iterator over :class:`ClusterDetails`
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -4050,7 +4068,7 @@ class ClustersAPI:
         if can_use_client: query['can_use_client'] = request.can_use_client
 
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query)
-        return [ClusterInfo.from_dict(v) for v in json.get('clusters', [])]
+        return [ClusterDetails.from_dict(v) for v in json.get('clusters', [])]
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -4117,7 +4135,7 @@ class ClustersAPI:
                *,
                autoscale: Optional[AutoScale] = None,
                num_workers: Optional[int] = None,
-               **kwargs) -> Wait[ClusterInfo]:
+               **kwargs) -> Wait[ClusterDetails]:
         """Resize cluster.
         
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
@@ -4139,7 +4157,7 @@ class ClustersAPI:
           provisioned.
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
         request = kwargs.get('request', None)
@@ -4154,11 +4172,15 @@ class ClustersAPI:
                         *,
                         autoscale: Optional[AutoScale] = None,
                         num_workers: Optional[int] = None,
-                        timeout=timedelta(minutes=20)) -> ClusterInfo:
+                        timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.resize(autoscale=autoscale, cluster_id=cluster_id,
                            num_workers=num_workers).result(timeout=timeout)
 
-    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None, **kwargs) -> Wait[ClusterInfo]:
+    def restart(self,
+                cluster_id: str,
+                *,
+                restart_user: Optional[str] = None,
+                **kwargs) -> Wait[ClusterDetails]:
         """Restart cluster.
         
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
@@ -4170,7 +4192,7 @@ class ClustersAPI:
           <needs content added>
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
         request = kwargs.get('request', None)
@@ -4184,7 +4206,7 @@ class ClustersAPI:
                          cluster_id: str,
                          *,
                          restart_user: Optional[str] = None,
-                         timeout=timedelta(minutes=20)) -> ClusterInfo:
+                         timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -4198,7 +4220,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
         return GetSparkVersionsResponse.from_dict(json)
 
-    def start(self, cluster_id: str, **kwargs) -> Wait[ClusterInfo]:
+    def start(self, cluster_id: str, **kwargs) -> Wait[ClusterDetails]:
         """Start terminated cluster.
         
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
@@ -4212,7 +4234,7 @@ class ClustersAPI:
           The cluster to be started.
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
         request = kwargs.get('request', None)
@@ -4222,7 +4244,7 @@ class ClustersAPI:
         self._api.do('POST', '/api/2.0/clusters/start', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
 
-    def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterInfo:
+    def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
 
     def unpin(self, cluster_id: str, **kwargs):
@@ -4367,7 +4389,7 @@ class CommandExecutionAPI:
         :param context_id: str (optional)
         
         :returns:
-          long-running operation waiter for :class:`CommandStatusResponse`.
+          Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_cancelled for more details.
         """
         request = kwargs.get('request', None)
@@ -4455,7 +4477,7 @@ class CommandExecutionAPI:
         :param language: :class:`Language` (optional)
         
         :returns:
-          long-running operation waiter for :class:`ContextStatusResponse`.
+          Long-running operation waiter for :class:`ContextStatusResponse`.
           See :method:wait_context_status_command_execution_running for more details.
         """
         request = kwargs.get('request', None)
@@ -4514,7 +4536,7 @@ class CommandExecutionAPI:
         :param language: :class:`Language` (optional)
         
         :returns:
-          long-running operation waiter for :class:`CommandStatusResponse`.
+          Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_finished_or_error for more details.
         """
         request = kwargs.get('request', None)
