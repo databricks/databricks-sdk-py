@@ -45,8 +45,9 @@ try:
     # because we DO NOT SUPPORT any other notebook backends, and hence fallback to default_widgets.
     from IPython.core.getipython import get_ipython
 
-    # Iterate over the mro of the current ipython instance, to find ZMQInteractiveShell (jupyter). When used
-    # from REPL or file, this check will fail, since the mro only contains TerminalInteractiveShell.
+    # Detect if we are in an interactive notebook by iterating over the mro of the current ipython instance,
+    # to find ZMQInteractiveShell (jupyter). When used from REPL or file, this check will fail, since the
+    # mro only contains TerminalInteractiveShell.
     if len(list(filter(lambda i: i.__name__ == 'ZMQInteractiveShell', get_ipython().__class__.__mro__))) == 0:
         logging.debug("Not in an interactive notebook. Skipping ipywidgets implementation for dbutils.")
         raise EnvironmentError("Not in an interactive notebook.")
