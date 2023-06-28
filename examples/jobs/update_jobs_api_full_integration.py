@@ -15,12 +15,11 @@ new_name = f'sdk-{time.time_ns()}'
 
 created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                             tasks=[
-                                jobs.JobTaskSettings(
-                                    description="test",
-                                    existing_cluster_id=cluster_id,
-                                    notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                    task_key="test",
-                                    timeout_seconds=0)
+                                jobs.Task(description="test",
+                                          existing_cluster_id=cluster_id,
+                                          notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                          task_key="test",
+                                          timeout_seconds=0)
                             ])
 
 w.jobs.update(job_id=created_job.job_id, new_settings=jobs.JobSettings(name=new_name, max_concurrent_runs=5))

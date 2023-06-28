@@ -96,12 +96,8 @@ Clusters
         Create new cluster.
         
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
-        necessary. This method is asynchronous; the returned `cluster_id` can be used to poll the cluster
-        status. When this method returns, the cluster will be in a `PENDING` state. The cluster will be usable
-        once it enters a `RUNNING` state.
-        
-        Note: Databricks may not be able to acquire some of the requested nodes, due to cloud provider
-        limitations (account limits, spot price, etc.) or transient network issues.
+        necessary. Note: Databricks may not be able to acquire some of the requested nodes, due to cloud
+        provider limitations (account limits, spot price, etc.) or transient network issues.
         
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
@@ -206,7 +202,7 @@ Clusters
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         
 
@@ -248,7 +244,7 @@ Clusters
           The cluster to be terminated.
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_terminated for more details.
         
 
@@ -406,7 +402,7 @@ Clusters
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         
 
@@ -524,7 +520,7 @@ Clusters
         :param cluster_id: str
           The cluster about which to retrieve information.
         
-        :returns: :class:`ClusterInfo`
+        :returns: :class:`ClusterDetails`
         
 
     .. py:method:: list( [, can_use_client])
@@ -556,7 +552,7 @@ Clusters
           No input for this field will get all clusters in the workspace without filtering on its supported
           client
         
-        :returns: Iterator over :class:`ClusterInfo`
+        :returns: Iterator over :class:`ClusterDetails`
         
 
     .. py:method:: list_node_types()
@@ -692,7 +688,7 @@ Clusters
           provisioned.
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         
 
@@ -735,7 +731,7 @@ Clusters
           <needs content added>
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         
 
@@ -845,7 +841,7 @@ Clusters
           The cluster to be started.
         
         :returns:
-          long-running operation waiter for :class:`ClusterInfo`.
+          Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         
 

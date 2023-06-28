@@ -39,12 +39,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             w.jobs.cancel_all_runs(cancel_all_runs=created_job.job_id)
@@ -84,12 +83,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             run_now_response = w.jobs.run_now(job_id=created_job.job_id)
@@ -108,11 +106,11 @@ Jobs
           This field is required.
         
         :returns:
-          long-running operation waiter for :class:`Run`.
+          Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: create( [, access_control_list, continuous, email_notifications, format, git_source, job_clusters, max_concurrent_runs, name, notification_settings, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
+    .. py:method:: create( [, access_control_list, compute, continuous, email_notifications, format, git_source, job_clusters, max_concurrent_runs, name, notification_settings, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
 
         Usage:
 
@@ -133,12 +131,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             # cleanup
@@ -150,13 +147,15 @@ Jobs
         
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param compute: List[:class:`JobCompute`] (optional)
+          A list of compute requirements that can be referenced by tasks of this job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted. The default behavior is to not send any emails.
-        :param format: :class:`CreateJobFormat` (optional)
+        :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
         :param git_source: :class:`GitSource` (optional)
@@ -198,7 +197,7 @@ Jobs
           A map of tags associated with the job. These are forwarded to the cluster as cluster tags for jobs
           clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added
           to the job.
-        :param tasks: List[:class:`JobTaskSettings`] (optional)
+        :param tasks: List[:class:`Task`] (optional)
           A list of task specifications to be executed by this job.
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. The default behavior is to have no timeout.
@@ -206,7 +205,7 @@ Jobs
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
-        :param webhook_notifications: :class:`JobWebhookNotifications` (optional)
+        :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when the run begins or completes. The default
           behavior is to not send any system notifications.
         
@@ -258,12 +257,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             run_by_id = w.jobs.run_now(job_id=created_job.job_id).result()
@@ -306,10 +304,9 @@ Jobs
             
             run = w.jobs.submit(run_name=f'sdk-{time.time_ns()}',
                                 tasks=[
-                                    jobs.RunSubmitTaskSettings(
-                                        existing_cluster_id=cluster_id,
-                                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                        task_key=f'sdk-{time.time_ns()}')
+                                    jobs.SubmitTask(existing_cluster_id=cluster_id,
+                                                    notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                    task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
             output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
@@ -348,10 +345,9 @@ Jobs
             
             run = w.jobs.submit(run_name=f'sdk-{time.time_ns()}',
                                 tasks=[
-                                    jobs.RunSubmitTaskSettings(
-                                        existing_cluster_id=cluster_id,
-                                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                        task_key=f'sdk-{time.time_ns()}')
+                                    jobs.SubmitTask(existing_cluster_id=cluster_id,
+                                                    notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                    task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
             output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
@@ -392,10 +388,9 @@ Jobs
             
             run = w.jobs.submit(run_name=f'sdk-{time.time_ns()}',
                                 tasks=[
-                                    jobs.RunSubmitTaskSettings(
-                                        existing_cluster_id=cluster_id,
-                                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                        task_key=f'sdk-{time.time_ns()}')
+                                    jobs.SubmitTask(existing_cluster_id=cluster_id,
+                                                    notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                    task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
             output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
@@ -432,7 +427,7 @@ Jobs
             
             job_list = w.jobs.list(expand_tasks=False)
 
-        List all jobs.
+        List jobs.
         
         Retrieves a list of jobs.
         
@@ -456,7 +451,7 @@ Jobs
 
     .. py:method:: list_runs( [, active_only, completed_only, expand_tasks, job_id, limit, offset, page_token, run_type, start_time_from, start_time_to])
 
-        List runs for a job.
+        List job runs.
         
         List runs in descending order by start time.
         
@@ -514,12 +509,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             run_now_response = w.jobs.run_now(job_id=created_job.job_id)
@@ -614,7 +608,7 @@ Jobs
           "age": "35"}`. The SQL alert task does not support custom parameters.
         
         :returns:
-          long-running operation waiter for :class:`Run`.
+          Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
@@ -639,12 +633,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             new_name = f'sdk-{time.time_ns()}'
@@ -693,12 +686,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             run_by_id = w.jobs.run_now(job_id=created_job.job_id).result()
@@ -793,7 +785,7 @@ Jobs
           "age": "35"}`. The SQL alert task does not support custom parameters.
         
         :returns:
-          long-running operation waiter for :class:`Run`.
+          Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
@@ -818,10 +810,9 @@ Jobs
             
             run = w.jobs.submit(run_name=f'sdk-{time.time_ns()}',
                                 tasks=[
-                                    jobs.RunSubmitTaskSettings(
-                                        existing_cluster_id=cluster_id,
-                                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                        task_key=f'sdk-{time.time_ns()}')
+                                    jobs.SubmitTask(existing_cluster_id=cluster_id,
+                                                    notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                    task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
             # cleanup
@@ -856,15 +847,15 @@ Jobs
           `webhook_notifications` for this run.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
-        :param tasks: List[:class:`RunSubmitTaskSettings`] (optional)
+        :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. The default behavior is to have no timeout.
-        :param webhook_notifications: :class:`JobWebhookNotifications` (optional)
+        :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when the run begins or completes. The default
           behavior is to not send any system notifications.
         
         :returns:
-          long-running operation waiter for :class:`Run`.
+          Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
@@ -891,12 +882,11 @@ Jobs
             
             created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                                         tasks=[
-                                            jobs.JobTaskSettings(
-                                                description="test",
-                                                existing_cluster_id=cluster_id,
-                                                notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                                                task_key="test",
-                                                timeout_seconds=0)
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
                                         ])
             
             w.jobs.update(job_id=created_job.job_id, new_settings=jobs.JobSettings(name=new_name, max_concurrent_runs=5))
@@ -912,11 +902,16 @@ Jobs
         :param job_id: int
           The canonical identifier of the job to update. This field is required.
         :param fields_to_remove: List[str] (optional)
-          Remove top-level fields in the job settings. Removing nested fields is not supported. This field is
-          optional.
+          Remove top-level fields in the job settings. Removing nested fields is not supported, except for
+          tasks and job clusters (`tasks/task_1`). This field is optional.
         :param new_settings: :class:`JobSettings` (optional)
-          The new settings for the job. Any top-level fields specified in `new_settings` are completely
-          replaced. Partially updating nested fields is not supported.
+          The new settings for the job.
+          
+          Top-level fields specified in `new_settings` are completely replaced, except for arrays which are
+          merged. That is, new and existing entries are completely replaced based on the respective key
+          fields, i.e. `task_key` or `job_cluster_key`, while previous entries are kept.
+          
+          Partially updating nested fields is not supported.
           
           Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.

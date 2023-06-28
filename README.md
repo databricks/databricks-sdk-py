@@ -1,12 +1,14 @@
-# Databricks SDK for Python
+# Databricks SDK for Python (Beta)
 
-![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)
-![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)
+[![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)](https://pypistats.org/packages/databricks-sdk)
+[![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)](https://github.com/databricks/databricks-sdk-py/blob/main/LICENSE)
 [![databricks-sdk](https://snyk.io/advisor/python/databricks-sdk/badge.svg)](https://snyk.io/advisor/python/databricks-sdk)
 ![PyPI](https://img.shields.io/pypi/v/databricks-sdk)
 [![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
 
-**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html) 
+[Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
+but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
+We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-py/issues), and we will address them. 
 | See also the [SDK for Java](https://github.com/databricks/databricks-sdk-java) 
 | See also the [SDK for Go](https://github.com/databricks/databricks-sdk-go) 
 | See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
@@ -30,7 +32,6 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Logging](#logging)
 - [Integration with `dbutils`](#interaction-with-dbutils)
 - [Interface stability](#interface-stability)
-- [Disclaimer](#disclaimer)
 
 ## Getting started
 
@@ -254,7 +255,7 @@ method to get a result of long-running operation, once it's finished. Databricks
 every method, but sometimes you may find yourself in a situation, where you'd want to provide `datatime.timedelta()` as the value of `timeout`
 argument to `result()` method.
 
-There are a number of long-runng opereations in Databricks APIs such as managing:
+There are a number of long-running operations in Databricks APIs such as managing:
 * Clusters,
 * Command execution
 * Jobs
@@ -269,7 +270,7 @@ only usable in the `RUNNING` state and so you have to wait for that state to be 
 Another example is the API for running a job or repairing the run: right after
 the run starts, the run is in the `PENDING` state. The job is only considered to be finished when it is in either
 the `TERMINATED` or `SKIPPED` state. Also you would likely need the error message if the long-running
-operation times out failed with an error code. Other times you may want to configure a custom timeout other than
+operation times out and fails with an error code. Other times you may want to configure a custom timeout other than
 the default of 20 minutes.
 
 In the following example, `w.clusters.create` returns `ClusterInfo` only once the cluster is in the `RUNNING` state,
@@ -565,7 +566,7 @@ the logging output to their specific needs.
 
 You can use the client-side implementation of [`dbutils`](https://docs.databricks.com/dev-tools/databricks-utils.html) by accessing `dbutils` property on the `WorkspaceClient`.
 Most of the `dbutils.fs` operations and `dbutils.secrets` are implemented natively in Python within Databricks SDK. Non-SDK implementations still require a Databricks cluster,
-that you have to specify through `cluster_id` configuration attribute or `DATABRICKS_CLUSTER_ID` environment variable. Don't worry if cluster is not running: internally,
+that you have to specify through the `cluster_id` configuration attribute or `DATABRICKS_CLUSTER_ID` environment variable. Don't worry if cluster is not running: internally,
 Databricks SDK for Python calls `w.clusters.ensure_cluster_is_running()`.
 
 ```python
@@ -590,12 +591,8 @@ for secret_scope in dbutils.secrets.listScopes():
 
 ## Interface stability
 
-During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) backward-incompatible changes, such as renaming the methods or some type names to bring more consistency.
-
-## Disclaimer
-- The product is in preview and not intended to be used in production;
-- The product may change or may never be released;
-- While we will not charge separately for this product right now, we may charge for it in the future. You will still incur charges for DBUs.
-- There's no formal support or SLAs for the preview - so please reach out to your account or other contact with any questions or feedback; and
-- We may terminate the preview or your access at any time;
-
+Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. 
+API clients for all services are generated from specification files that are synchronized from the main platform. 
+You are highly encouraged to pin the exact dependency version and read the [changelog](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) 
+where Databricks documents the changes. Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-py/blob/main/CHANGELOG.md) 
+backward-incompatible changes, such as renaming some type names to bring more consistency.

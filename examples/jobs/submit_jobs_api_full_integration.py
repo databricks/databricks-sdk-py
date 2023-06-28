@@ -13,10 +13,9 @@ cluster_id = w.clusters.ensure_cluster_is_running(
 
 run = w.jobs.submit(run_name=f'sdk-{time.time_ns()}',
                     tasks=[
-                        jobs.RunSubmitTaskSettings(
-                            existing_cluster_id=cluster_id,
-                            notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                            task_key=f'sdk-{time.time_ns()}')
+                        jobs.SubmitTask(existing_cluster_id=cluster_id,
+                                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                        task_key=f'sdk-{time.time_ns()}')
                     ]).result()
 
 # cleanup

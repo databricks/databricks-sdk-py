@@ -1,5 +1,5 @@
-Databricks SDK for Python
--------------------------
+Databricks SDK for Python (Beta)
+--------------------------------
 
 The Databricks SDK for Python includes functionality to accelerate development with Python for the Databricks Lakehouse.
 It covers all public `Databricks REST API <https://docs.databricks.com/api>`_ operations.
@@ -10,11 +10,8 @@ performing intelligent retries. Install it via
 
   $ pip install databricks-sdk
 
-.. note::
-
-   The Databricks SDK for Python is in an Experimental state. To provide feedback, ask questions, and report issues, use the Issues tab in the Databricks SDK for Python repository in GitHub.
-
-   During the Experimental period, Databricks is actively working on stabilizing the Databricks SDK for Python’s interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to install a specific version of the Databricks SDK for Python package and read the changelog where Databricks documents the changes. Databricks may have minor documented backward-incompatible changes, such as renaming the functions or some class names to bring more consistency.
+This SDK is supported for production use cases, but we do expect future releases to have `some interface changes <https://github.com/databricks/databricks-sdk-py#interface-stability>`_.
+We are keen to hear feedback from you on these SDKs. Please `file GitHub issues <https://github.com/databricks/databricks-sdk-py/issues>`_, and we will address them.
 
 .. toctree::
    :maxdepth: 2

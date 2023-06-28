@@ -117,23 +117,24 @@ class CreateRepo:
 @dataclass
 class CreateScope:
     scope: str
+    backend_azure_keyvault: Optional['AzureKeyVaultSecretScopeMetadata'] = None
     initial_manage_principal: Optional[str] = None
-    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
     scope_backend_type: Optional['ScopeBackendType'] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.backend_azure_keyvault: body['backend_azure_keyvault'] = self.backend_azure_keyvault.as_dict()
         if self.initial_manage_principal is not None:
             body['initial_manage_principal'] = self.initial_manage_principal
-        if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
         if self.scope is not None: body['scope'] = self.scope
         if self.scope_backend_type is not None: body['scope_backend_type'] = self.scope_backend_type.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateScope':
-        return cls(initial_manage_principal=d.get('initial_manage_principal', None),
-                   keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
+        return cls(backend_azure_keyvault=_from_dict(d, 'backend_azure_keyvault',
+                                                     AzureKeyVaultSecretScopeMetadata),
+                   initial_manage_principal=d.get('initial_manage_principal', None),
                    scope=d.get('scope', None),
                    scope_backend_type=_enum(d, 'scope_backend_type', ScopeBackendType))
 
@@ -1004,8 +1005,8 @@ class SecretsAPI:
     def create_scope(self,
                      scope: str,
                      *,
+                     backend_azure_keyvault: Optional[AzureKeyVaultSecretScopeMetadata] = None,
                      initial_manage_principal: Optional[str] = None,
-                     keyvault_metadata: Optional[AzureKeyVaultSecretScopeMetadata] = None,
                      scope_backend_type: Optional[ScopeBackendType] = None,
                      **kwargs):
         """Create a new secret scope.
@@ -1015,10 +1016,10 @@ class SecretsAPI:
         
         :param scope: str
           Scope name requested by the user. Scope names are unique.
+        :param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
+          The metadata for the secret scope if the type is `AZURE_KEYVAULT`
         :param initial_manage_principal: str (optional)
           The principal that is initially granted `MANAGE` permission to the created scope.
-        :param keyvault_metadata: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
-          The metadata for the secret scope if the type is `AZURE_KEYVAULT`
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
           The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
         
@@ -1026,8 +1027,8 @@ class SecretsAPI:
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateScope(initial_manage_principal=initial_manage_principal,
-                                  keyvault_metadata=keyvault_metadata,
+            request = CreateScope(backend_azure_keyvault=backend_azure_keyvault,
+                                  initial_manage_principal=initial_manage_principal,
                                   scope=scope,
                                   scope_backend_type=scope_backend_type)
         body = request.as_dict()
@@ -1208,8 +1209,9 @@ class SecretsAPI:
         or revoked access.
         
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_ALREADY_EXISTS` if a
-        permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission is
-        invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+        permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission or
+        principal is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API
+        call.
         
         :param scope: str
           The name of the scope to apply permissions to.

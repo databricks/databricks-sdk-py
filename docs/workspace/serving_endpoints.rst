@@ -38,7 +38,7 @@ Serving endpoints
           The core config of the serving endpoint.
         
         :returns:
-          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
@@ -54,8 +54,7 @@ Serving endpoints
 
     .. py:method:: export_metrics(name)
 
-        Retrieve the metrics corresponding to a serving endpoint for the current time in Prometheus or
-        OpenMetrics exposition format.
+        Retrieve the metrics associated with a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
@@ -126,6 +125,6 @@ Serving endpoints
           The traffic config defining how invocations to the serving endpoint should be routed.
         
         :returns:
-          long-running operation waiter for :class:`ServingEndpointDetailed`.
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         

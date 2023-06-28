@@ -11,7 +11,7 @@ def test_jobs(w):
 
 
 def test_submitting_jobs(w, random, env_or_skip):
-    import databricks.sdk.service.jobs as j
+    from databricks.sdk.service import compute, jobs
 
     py_on_dbfs = f'/home/{w.current_user.me().user_name}/sample.py'
     with w.dbfs.open(py_on_dbfs, write=True, overwrite=True) as f:
@@ -19,20 +19,20 @@ def test_submitting_jobs(w, random, env_or_skip):
 
     waiter = w.jobs.submit(run_name=f'py-sdk-{random(8)}',
                            tasks=[
-                               j.RunSubmitTaskSettings(
+                               jobs.SubmitTask(
                                    task_key='pi',
-                                   new_cluster=j.BaseClusterInfo(
+                                   new_cluster=compute.ClusterSpec(
                                        spark_version=w.clusters.select_spark_version(long_term_support=True),
                                        # node_type_id=w.clusters.select_node_type(local_disk=True),
                                        instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
                                        num_workers=1),
-                                   spark_python_task=j.SparkPythonTask(python_file=f'dbfs:{py_on_dbfs}'),
+                                   spark_python_task=jobs.SparkPythonTask(python_file=f'dbfs:{py_on_dbfs}'),
                                )
                            ])
 
     logging.info(f'starting to poll: {waiter.run_id}')
 
-    def print_status(run: j.Run):
+    def print_status(run: jobs.Run):
         statuses = [f'{t.task_key}: {t.state.life_cycle_state}' for t in run.tasks]
         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
 
@@ -74,17 +74,16 @@ def test_last_job_runs(w):
 
 
 def test_create_job(w):
-    from databricks.sdk.service.jobs import (BaseClusterInfo, JobCluster,
-                                             JobTaskSettings, PythonWheelTask)
+    from databricks.sdk.service import compute, jobs
 
-    cluster = JobCluster(job_cluster_key="cluster1",
-                         new_cluster=BaseClusterInfo(
-                             num_workers=2,
-                             spark_version=w.clusters.select_spark_version(),
-                             node_type_id=w.clusters.select_node_type(local_disk=True)))
+    cluster = jobs.JobCluster(job_cluster_key="cluster1",
+                              new_cluster=compute.ClusterSpec(
+                                  num_workers=2,
+                                  spark_version=w.clusters.select_spark_version(),
+                                  node_type_id=w.clusters.select_node_type(local_disk=True)))
 
-    task1 = JobTaskSettings(task_key="task1",
-                            job_cluster_key="cluster1",
-                            python_wheel_task=PythonWheelTask(entry_point="test", package_name="deepspeed"))
+    task1 = jobs.Task(task_key="task1",
+                      job_cluster_key="cluster1",
+                      python_wheel_task=jobs.PythonWheelTask(entry_point="test", package_name="deepspeed"))
 
     w.jobs.create(job_clusters=[cluster], tasks=[task1])

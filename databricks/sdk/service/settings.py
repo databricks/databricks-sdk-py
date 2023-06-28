@@ -130,6 +130,27 @@ class DeleteIpAccessListRequest:
 
 
 @dataclass
+class DeletePersonalComputeSettingRequest:
+    """Delete Personal Compute setting"""
+
+    etag: Optional[str] = None
+
+
+@dataclass
+class DeletePersonalComputeSettingResponse:
+    etag: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeletePersonalComputeSettingResponse':
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
 class DeleteTokenManagementRequest:
     """Delete a token"""
 
@@ -298,6 +319,26 @@ class PersonalComputeMessageEnum(Enum):
 
 
 @dataclass
+class PersonalComputeSetting:
+    personal_compute: 'PersonalComputeMessage'
+    etag: Optional[str] = None
+    setting_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.personal_compute: body['personal_compute'] = self.personal_compute.as_dict()
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PersonalComputeSetting':
+        return cls(etag=d.get('etag', None),
+                   personal_compute=_from_dict(d, 'personal_compute', PersonalComputeMessage),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
 class PublicTokenInfo:
     comment: Optional[str] = None
     creation_time: Optional[int] = None
@@ -325,26 +366,6 @@ class ReadPersonalComputeSettingRequest:
     """Get Personal Compute setting"""
 
     etag: Optional[str] = None
-
-
-@dataclass
-class ReadPersonalComputeSettingResponse:
-    setting_name: str
-    personal_compute: 'PersonalComputeMessage'
-    etag: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.etag is not None: body['etag'] = self.etag
-        if self.personal_compute: body['personal_compute'] = self.personal_compute.as_dict()
-        if self.setting_name is not None: body['setting_name'] = self.setting_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ReadPersonalComputeSettingResponse':
-        return cls(etag=d.get('etag', None),
-                   personal_compute=_from_dict(d, 'personal_compute', PersonalComputeMessage),
-                   setting_name=d.get('setting_name', None))
 
 
 @dataclass
@@ -449,6 +470,25 @@ class UpdateIpAccessList:
                    label=d.get('label', None),
                    list_id=d.get('list_id', None),
                    list_type=_enum(d, 'list_type', ListType))
+
+
+@dataclass
+class UpdatePersonalComputeSettingRequest:
+    """Update Personal Compute setting"""
+
+    allow_missing: Optional[bool] = None
+    setting: Optional['PersonalComputeSetting'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdatePersonalComputeSettingRequest':
+        return cls(allow_missing=d.get('allow_missing', None),
+                   setting=_from_dict(d, 'setting', PersonalComputeSetting))
 
 
 WorkspaceConf = Dict[str, str]
@@ -673,10 +713,36 @@ class AccountSettingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def delete_personal_compute_setting(self,
+                                        *,
+                                        etag: Optional[str] = None,
+                                        **kwargs) -> DeletePersonalComputeSettingResponse:
+        """Delete Personal Compute setting.
+        
+        TBD
+        
+        :param etag: str (optional)
+          TBD
+        
+        :returns: :class:`DeletePersonalComputeSettingResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = DeletePersonalComputeSettingRequest(etag=etag)
+
+        query = {}
+        if etag: query['etag'] = request.etag
+
+        json = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            query=query)
+        return DeletePersonalComputeSettingResponse.from_dict(json)
+
     def read_personal_compute_setting(self,
                                       *,
                                       etag: Optional[str] = None,
-                                      **kwargs) -> ReadPersonalComputeSettingResponse:
+                                      **kwargs) -> PersonalComputeSetting:
         """Get Personal Compute setting.
         
         TBD
@@ -684,7 +750,7 @@ class AccountSettingsAPI:
         :param etag: str (optional)
           TBD
         
-        :returns: :class:`ReadPersonalComputeSettingResponse`
+        :returns: :class:`PersonalComputeSetting`
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -697,7 +763,33 @@ class AccountSettingsAPI:
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             query=query)
-        return ReadPersonalComputeSettingResponse.from_dict(json)
+        return PersonalComputeSetting.from_dict(json)
+
+    def update_personal_compute_setting(self,
+                                        *,
+                                        allow_missing: Optional[bool] = None,
+                                        setting: Optional[PersonalComputeSetting] = None,
+                                        **kwargs) -> PersonalComputeSetting:
+        """Update Personal Compute setting.
+        
+        TBD
+        
+        :param allow_missing: bool (optional)
+          TBD
+        :param setting: :class:`PersonalComputeSetting` (optional)
+        
+        :returns: :class:`PersonalComputeSetting`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdatePersonalComputeSettingRequest(allow_missing=allow_missing, setting=setting)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            body=body)
+        return PersonalComputeSetting.from_dict(json)
 
 
 class IpAccessListsAPI:
