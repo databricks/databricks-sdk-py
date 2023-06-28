@@ -1,12 +1,14 @@
 # Databricks SDK for Python (Beta)
 
-![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)
-![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)
+[![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)](https://pypistats.org/packages/databricks-sdk)
+[![PyPI - License](https://img.shields.io/pypi/l/databricks-sdk)](https://github.com/databricks/databricks-sdk-py/blob/main/LICENSE)
 [![databricks-sdk](https://snyk.io/advisor/python/databricks-sdk/badge.svg)](https://snyk.io/advisor/python/databricks-sdk)
 ![PyPI](https://img.shields.io/pypi/v/databricks-sdk)
 [![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
 
-**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html) 
+[Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
+but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
+We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-py/issues), and we will address them. 
 | See also the [SDK for Java](https://github.com/databricks/databricks-sdk-java) 
 | See also the [SDK for Go](https://github.com/databricks/databricks-sdk-go) 
 | See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
@@ -30,7 +32,6 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Logging](#logging)
 - [Integration with `dbutils`](#interaction-with-dbutils)
 - [Interface stability](#interface-stability)
-- [Disclaimer](#disclaimer)
 
 ## Getting started
 
