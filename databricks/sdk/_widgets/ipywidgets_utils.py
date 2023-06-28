@@ -75,10 +75,6 @@ class IPyWidgetUtil(WidgetUtils):
             widget_selection.SelectMultiple(value=(defaultValue, ),
                                             options=[("__EMPTY__", ""), *list(zip(choices, choices))]), label)
 
-    @property
-    def _widget_names(self) -> typing.List[str]:
-        return list(self._widgets.keys())
-
     def _get(self, name: str) -> str:
         return self._widgets[name].value
 

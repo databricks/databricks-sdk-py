@@ -8,10 +8,6 @@ class DefaultValueOnlyWidgetUtils(WidgetUtils):
     def __init__(self) -> None:
         self._widgets: typing.Dict[str, str] = {}
 
-    @property
-    def _widget_names(self):
-        return list(self._widgets.keys())
-
     def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):
         self._widgets[name] = defaultValue
 

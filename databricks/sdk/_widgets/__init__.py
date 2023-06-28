@@ -6,11 +6,6 @@ from abc import ABC, abstractmethod
 
 class WidgetUtils(ABC):
 
-    @property
-    @abstractmethod
-    def _widget_names(self) -> typing.List[str]:
-        pass
-
     def get(self, name: str):
         return self._get(name)
 
