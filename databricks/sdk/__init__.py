@@ -1,3 +1,5 @@
+from pdb import run
+from build.lib.databricks.sdk import runtime
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
@@ -59,6 +61,22 @@ from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
 
 
+def _make_dbutils(config: client.Config):
+    # We try to directly check if we are in runtime, instead of
+    # trying to import from databricks.sdk.runtime. This is to prevent
+    # remote dbutils from being created without the config, which is both
+    # expensive (will need to check all credential providers) and can
+    # throw errors (when no env vars are set).
+    try:
+        from dbruntime import UserNamespaceInitializer
+    except ImportError:
+        return dbutils.RemoteDbUtils(config)
+
+    # We are in runtime, so we can use the runtime dbutils
+    from databricks.sdk.runtime import dbutils as runtime_dbutils
+    return runtime_dbutils
+
+
 class WorkspaceClient:
 
     def __init__(self,
@@ -108,7 +126,7 @@ class WorkspaceClient:
                                    product=product,
                                    product_version=product_version)
         self.config = config.copy()
-        self.dbutils = dbutils.RemoteDbUtils(self.config)
+        self._dbutils = _make_dbutils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
