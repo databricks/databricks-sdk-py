@@ -124,7 +124,7 @@ class WorkspaceClient:
                                    product=product,
                                    product_version=product_version)
         self.config = config.copy()
-        self._dbutils = _make_dbutils(self.config)
+        self.dbutils = _make_dbutils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
