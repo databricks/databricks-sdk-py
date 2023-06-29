@@ -102,7 +102,7 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
         if ctx is None:
             logger.debug('Empty REPL context returned, skipping runtime auth')
             return None
-        cfg.host = f'https://{ctx.browserHostName}'
+        cfg.host = f'https://{ctx.workspaceUrl}'
 
         def inner() -> Dict[str, str]:
             ctx = get_context()
