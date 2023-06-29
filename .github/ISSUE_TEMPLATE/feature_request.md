@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: Feature Request
 about: Suggest a new feature or improvement for the Python SDK for Databricks.
 title: "[FEATURE] "
 labels: ''
