@@ -566,7 +566,7 @@ class Config:
     def is_account_client(self) -> bool:
         if not self.host:
             return False
-        return "https://accounts." in self.host
+        return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
 
     @property
     def arm_environment(self) -> AzureEnvironment:
