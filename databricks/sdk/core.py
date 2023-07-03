@@ -357,7 +357,7 @@ class MetadataServiceTokenSource(Refreshable):
     METADATA_SERVICE_VERSION = "1"
     METADATA_SERVICE_VERSION_HEADER = "X-Databricks-Metadata-Version"
     METADATA_SERVICE_HOST_HEADER = "X-Databricks-Host"
-    _metadata_service_timeout = 10 # seconds
+    _metadata_service_timeout = 10  # seconds
 
     def __init__(self, cfg: 'Config'):
         super().__init__()
@@ -746,7 +746,7 @@ class Config:
             value = os.environ.get(attr.env)
             if not value:
                 continue
-            self._inner[attr.name] = value
+            self._inner[attr.name] = value.strip('"').strip("'")
             found = True
         if found:
             logger.debug('Loaded from environment')
@@ -877,7 +877,7 @@ class ApiClient:
             status_forcelist=[429],
             allowed_methods={"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS),
             respect_retry_after_header=True,
-            raise_on_status=False, # return original response when retries have been exhausted
+            raise_on_status=False,  # return original response when retries have been exhausted
         )
 
         self._session = requests.Session()
