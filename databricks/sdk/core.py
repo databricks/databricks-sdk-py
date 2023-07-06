@@ -102,7 +102,7 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
         if ctx is None:
             logger.debug('Empty REPL context returned, skipping runtime auth')
             return None
-        cfg.host = f'https://{ctx.browserHostName}'
+        cfg.host = f'https://{ctx.workspaceUrl}'
 
         def inner() -> Dict[str, str]:
             ctx = get_context()
@@ -566,7 +566,7 @@ class Config:
     def is_account_client(self) -> bool:
         if not self.host:
             return False
-        return "https://accounts." in self.host
+        return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
 
     @property
     def arm_environment(self) -> AzureEnvironment:
