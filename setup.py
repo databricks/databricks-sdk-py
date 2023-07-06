@@ -1,4 +1,6 @@
-import io, pathlib
+import io
+import pathlib
+
 from setuptools import setup, find_packages
 
 version_data = {}
@@ -12,7 +14,9 @@ setup(name="databricks-sdk",
       python_requires=">=3.7",
       install_requires=["requests>=2.28.1,<3"],
       extras_require={"dev": ["pytest", "pytest-cov", "pytest-xdist", "pytest-mock",
-                              "yapf", "pycodestyle", "autoflake", "isort", "wheel"]},
+                              "yapf", "pycodestyle", "autoflake", "isort", "wheel",
+                              "ipython", "ipywidgets"],
+                      "notebook": ["ipython>=8,<9", "ipywidgets>=8,<9"]},
       author="Serge Smertin",
       author_email="serge.smertin@databricks.com",
       description="Databricks SDK for Python (Beta)",

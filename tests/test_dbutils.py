@@ -184,14 +184,14 @@ def test_any_proxy(dbutils_proxy):
     command = ('\n'
                '        import json\n'
                '        (args, kwargs) = json.loads(\'[["a"], {}]\')\n'
-               '        result = dbutils.widgets.getParameter(*args, **kwargs)\n'
+               '        result = dbutils.notebook.exit(*args, **kwargs)\n'
                '        dbutils.notebook.exit(json.dumps(result))\n'
                '        ')
-    dbutils, assertions = dbutils_proxy('b', command)
+    dbutils, assertions = dbutils_proxy('a', command)
 
-    param = dbutils.widgets.getParameter('a')
+    param = dbutils.notebook.exit("a")
 
-    assert param == 'b'
+    assert param == 'a'
 
     assertions()
 
