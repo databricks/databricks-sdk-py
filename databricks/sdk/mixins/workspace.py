@@ -84,7 +84,7 @@ class WorkspaceExt(WorkspaceAPI):
             return self._api.do('POST', '/api/2.0/workspace/import', files={'content': content}, data=data)
         except DatabricksError as e:
             if e.error_code == 'INVALID_PARAMETER_VALUE':
-                msg = f'Perhaps you forgot to specify the `format=ExportFormat.AUTO`. {e}'
+                msg = f'Perhaps you forgot to specify the `format=ImportFormat.AUTO`. {e}'
                 raise DatabricksError(message=msg, error_code=e.error_code)
             else:
                 raise e
