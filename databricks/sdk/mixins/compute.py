@@ -213,19 +213,27 @@ class ClustersExt(compute.ClustersAPI):
         """Ensures that given cluster is running, regardless of the current state"""
         timeout = datetime.timedelta(minutes=20)
         deadline = time.time() + timeout.total_seconds()
-        while time.time() < deadline:
+        cluster_running = False
+        while time.time() < deadline and not cluster_running:
             try:
                 state = compute.State
                 info = self.get(cluster_id)
-                if info.state == state.TERMINATED:
+                if info.state == state.RUNNING:
+                    cluster_running = True
+                elif info.state == state.TERMINATED:
                     self.start(cluster_id).result()
+                    cluster_running = True
                 elif info.state == state.TERMINATING:
                     self.wait_get_cluster_terminated(cluster_id)
                     self.start(cluster_id).result()
+                    cluster_running = True
                 elif info.state in (state.PENDING, state.RESIZING, state.RESTARTING):
                     self.wait_get_cluster_running(cluster_id)
+                    cluster_running = True
                 elif info.state in (state.ERROR, state.UNKNOWN):
                     raise RuntimeError(f'Cluster {info.cluster_name} is {info.state}: {info.state_message}')
             except OperationFailed as e:
-                _LOG.debug(f'Operation failed, retrying', exc_info=e)
-        raise TimeoutError(f'timed out after {timeout}')
+                _LOG.debug('Operation failed, retrying', exc_info=e)
+
+        if not cluster_running:
+            raise TimeoutError(f'timed out after {timeout}')
