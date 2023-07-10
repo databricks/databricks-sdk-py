@@ -1324,7 +1324,7 @@ class SharesAPI:
             request = SharePermissionsRequest(name=name)
 
         json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{request.name}/permissions')
-        return PermissionsList.from_dict(json)
+        return catalog.PermissionsList.from_dict(json)
 
     def update(self,
                name: str,
