@@ -7,4 +7,4 @@ w = WorkspaceClient()
 
 cluster_id = os.environ["TEST_DEFAULT_CLUSTER_ID"]
 
-command_context = w.command_execution.start(cluster_id, compute.Language.python)
+command_context = w.command_execution.start(cluster_id, compute.Language.PYTHON)

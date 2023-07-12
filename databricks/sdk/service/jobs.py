@@ -498,14 +498,14 @@ class GetRunRequest:
 
 class GitProvider(Enum):
 
-    AWSCODECOMMIT = 'awsCodeCommit'
-    AZUREDEVOPSSERVICES = 'azureDevOpsServices'
-    BITBUCKETCLOUD = 'bitbucketCloud'
-    BITBUCKETSERVER = 'bitbucketServer'
-    GITHUB = 'gitHub'
-    GITHUBENTERPRISE = 'gitHubEnterprise'
-    GITLAB = 'gitLab'
-    GITLABENTERPRISEEDITION = 'gitLabEnterpriseEdition'
+    AWS_CODE_COMMIT = 'awsCodeCommit'
+    AZURE_DEV_OPS_SERVICES = 'azureDevOpsServices'
+    BITBUCKET_CLOUD = 'bitbucketCloud'
+    BITBUCKET_SERVER = 'bitbucketServer'
+    GIT_HUB = 'gitHub'
+    GIT_HUB_ENTERPRISE = 'gitHubEnterprise'
+    GIT_LAB = 'gitLab'
+    GIT_LAB_ENTERPRISE_EDITION = 'gitLabEnterpriseEdition'
 
 
 @dataclass

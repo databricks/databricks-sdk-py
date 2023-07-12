@@ -555,7 +555,7 @@ class DeleteTransitionRequestRequest:
 class DeleteTransitionRequestStage(Enum):
 
     ARCHIVED = 'Archived'
-    NONE_ = 'None'
+    NONE = 'None'
     PRODUCTION = 'Production'
     STAGING = 'Staging'
 
@@ -1925,7 +1925,7 @@ class Stage(Enum):
     """This describes an enum"""
 
     ARCHIVED = 'Archived'
-    NONE_ = 'None'
+    NONE = 'None'
     PRODUCTION = 'Production'
     STAGING = 'Staging'
 

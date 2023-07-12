@@ -24,7 +24,7 @@ account_level_group_name = os.environ["TEST_DATA_ENG_GROUP"]
 created_table = w.tables.get(get=table_full_name)
 
 x = w.grants.update(full_name=created_table.full_name,
-                    securable_type=catalog.SecurableType.table,
+                    securable_type=catalog.SecurableType.TABLE,
                     changes=[
                         catalog.PermissionsChange(add=[catalog.Privilege.MODIFY, catalog.Privilege.SELECT],
                                                   principal=account_level_group_name)
