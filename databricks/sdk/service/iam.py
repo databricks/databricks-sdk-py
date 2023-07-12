@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -265,6 +265,7 @@ class Group:
     groups: Optional['List[ComplexValue]'] = None
     id: Optional[str] = None
     members: Optional['List[ComplexValue]'] = None
+    meta: Optional['ResourceMeta'] = None
     roles: Optional['List[ComplexValue]'] = None
 
     def as_dict(self) -> dict:
@@ -275,6 +276,7 @@ class Group:
         if self.groups: body['groups'] = [v.as_dict() for v in self.groups]
         if self.id is not None: body['id'] = self.id
         if self.members: body['members'] = [v.as_dict() for v in self.members]
+        if self.meta: body['meta'] = self.meta.as_dict()
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
         return body
 
@@ -286,6 +288,7 @@ class Group:
                    groups=_repeated(d, 'groups', ComplexValue),
                    id=d.get('id', None),
                    members=_repeated(d, 'members', ComplexValue),
+                   meta=_from_dict(d, 'meta', ResourceMeta),
                    roles=_repeated(d, 'roles', ComplexValue))
 
 
@@ -402,8 +405,8 @@ class ListServicePrincipalsRequest:
 
 class ListSortOrder(Enum):
 
-    ascending = 'ascending'
-    descending = 'descending'
+    ASCENDING = 'ascending'
+    DESCENDING = 'descending'
 
 
 @dataclass
@@ -490,29 +493,33 @@ class ObjectPermissions:
 class PartialUpdate:
     id: Optional[str] = None
     operations: Optional['List[Patch]'] = None
+    schema: Optional['List[PatchSchema]'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.id is not None: body['id'] = self.id
-        if self.operations: body['operations'] = [v.as_dict() for v in self.operations]
+        if self.operations: body['Operations'] = [v.as_dict() for v in self.operations]
+        if self.schema: body['schema'] = [v for v in self.schema]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PartialUpdate':
-        return cls(id=d.get('id', None), operations=_repeated(d, 'operations', Patch))
+        return cls(id=d.get('id', None),
+                   operations=_repeated(d, 'Operations', Patch),
+                   schema=d.get('schema', None))
 
 
 @dataclass
 class Patch:
     op: Optional['PatchOp'] = None
     path: Optional[str] = None
-    value: Optional[str] = None
+    value: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.op is not None: body['op'] = self.op.value
         if self.path is not None: body['path'] = self.path
-        if self.value is not None: body['value'] = self.value
+        if self.value: body['value'] = self.value
         return body
 
     @classmethod
@@ -523,9 +530,14 @@ class Patch:
 class PatchOp(Enum):
     """Type of patch operation."""
 
-    add = 'add'
-    remove = 'remove'
-    replace = 'replace'
+    ADD = 'add'
+    REMOVE = 'remove'
+    REPLACE = 'replace'
+
+
+class PatchSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_API_MESSAGES20_PATCH_OP = 'urn:ietf:params:scim:api:messages:2.0:PatchOp'
 
 
 @dataclass
@@ -683,6 +695,20 @@ class PrincipalOutput:
                    principal_id=d.get('principal_id', None),
                    service_principal_name=d.get('service_principal_name', None),
                    user_name=d.get('user_name', None))
+
+
+@dataclass
+class ResourceMeta:
+    resource_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.resource_type is not None: body['resourceType'] = self.resource_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ResourceMeta':
+        return cls(resource_type=d.get('resourceType', None))
 
 
 @dataclass
@@ -1044,6 +1070,7 @@ class AccountGroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
+               meta: Optional[ResourceMeta] = None,
                roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> Group:
         """Create a new group.
@@ -1058,6 +1085,8 @@ class AccountGroupsAPI:
         :param id: str (optional)
           Databricks group ID
         :param members: List[:class:`ComplexValue`] (optional)
+        :param meta: :class:`ResourceMeta` (optional)
+          Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
         
         :returns: :class:`Group`
@@ -1070,6 +1099,7 @@ class AccountGroupsAPI:
                             groups=groups,
                             id=id,
                             members=members,
+                            meta=meta,
                             roles=roles)
         body = request.as_dict()
 
@@ -1167,7 +1197,12 @@ class AccountGroupsAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
+    def patch(self,
+              id: str,
+              *,
+              operations: Optional[List[Patch]] = None,
+              schema: Optional[List[PatchSchema]] = None,
+              **kwargs):
         """Update group details.
         
         Partially updates the details of a group.
@@ -1175,12 +1210,14 @@ class AccountGroupsAPI:
         :param id: str
           Unique ID for a group in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations)
+            request = PartialUpdate(id=id, operations=operations, schema=schema)
         body = request.as_dict()
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}',
@@ -1194,6 +1231,7 @@ class AccountGroupsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
+               meta: Optional[ResourceMeta] = None,
                roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace a group.
@@ -1208,6 +1246,8 @@ class AccountGroupsAPI:
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
+        :param meta: :class:`ResourceMeta` (optional)
+          Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
         
         
@@ -1220,6 +1260,7 @@ class AccountGroupsAPI:
                             groups=groups,
                             id=id,
                             members=members,
+                            meta=meta,
                             roles=roles)
         body = request.as_dict()
         self._api.do('PUT',
@@ -1379,7 +1420,12 @@ class AccountServicePrincipalsAPI:
                             query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
+    def patch(self,
+              id: str,
+              *,
+              operations: Optional[List[Patch]] = None,
+              schema: Optional[List[PatchSchema]] = None,
+              **kwargs):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks account.
@@ -1387,12 +1433,14 @@ class AccountServicePrincipalsAPI:
         :param id: str
           Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations)
+            request = PartialUpdate(id=id, operations=operations, schema=schema)
         body = request.as_dict()
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}',
@@ -1606,7 +1654,12 @@ class AccountUsersAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
+    def patch(self,
+              id: str,
+              *,
+              operations: Optional[List[Patch]] = None,
+              schema: Optional[List[PatchSchema]] = None,
+              **kwargs):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -1614,12 +1667,14 @@ class AccountUsersAPI:
         :param id: str
           Unique ID for a user in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations)
+            request = PartialUpdate(id=id, operations=operations, schema=schema)
         body = request.as_dict()
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}',
@@ -1713,6 +1768,7 @@ class GroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
+               meta: Optional[ResourceMeta] = None,
                roles: Optional[List[ComplexValue]] = None,
                **kwargs) -> Group:
         """Create a new group.
@@ -1727,6 +1783,8 @@ class GroupsAPI:
         :param id: str (optional)
           Databricks group ID
         :param members: List[:class:`ComplexValue`] (optional)
+        :param meta: :class:`ResourceMeta` (optional)
+          Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
         
         :returns: :class:`Group`
@@ -1739,6 +1797,7 @@ class GroupsAPI:
                             groups=groups,
                             id=id,
                             members=members,
+                            meta=meta,
                             roles=roles)
         body = request.as_dict()
 
@@ -1836,7 +1895,12 @@ class GroupsAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
+    def patch(self,
+              id: str,
+              *,
+              operations: Optional[List[Patch]] = None,
+              schema: Optional[List[PatchSchema]] = None,
+              **kwargs):
         """Update group details.
         
         Partially updates the details of a group.
@@ -1844,12 +1908,14 @@ class GroupsAPI:
         :param id: str
           Unique ID for a group in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations)
+            request = PartialUpdate(id=id, operations=operations, schema=schema)
         body = request.as_dict()
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Groups/{request.id}', body=body)
 
@@ -1861,6 +1927,7 @@ class GroupsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
+               meta: Optional[ResourceMeta] = None,
                roles: Optional[List[ComplexValue]] = None,
                **kwargs):
         """Replace a group.
@@ -1875,6 +1942,8 @@ class GroupsAPI:
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
+        :param meta: :class:`ResourceMeta` (optional)
+          Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
         
         
@@ -1887,6 +1956,7 @@ class GroupsAPI:
                             groups=groups,
                             id=id,
                             members=members,
+                            meta=meta,
                             roles=roles)
         body = request.as_dict()
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Groups/{request.id}', body=body)
@@ -2146,7 +2216,12 @@ class ServicePrincipalsAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
+    def patch(self,
+              id: str,
+              *,
+              operations: Optional[List[Patch]] = None,
+              schema: Optional[List[PatchSchema]] = None,
+              **kwargs):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks workspace.
@@ -2154,12 +2229,14 @@ class ServicePrincipalsAPI:
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations)
+            request = PartialUpdate(id=id, operations=operations, schema=schema)
         body = request.as_dict()
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}', body=body)
 
@@ -2369,7 +2446,12 @@ class UsersAPI:
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, **kwargs):
+    def patch(self,
+              id: str,
+              *,
+              operations: Optional[List[Patch]] = None,
+              schema: Optional[List[PatchSchema]] = None,
+              **kwargs):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -2377,12 +2459,14 @@ class UsersAPI:
         :param id: str
           Unique ID for a user in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations)
+            request = PartialUpdate(id=id, operations=operations, schema=schema)
         body = request.as_dict()
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{request.id}', body=body)
 

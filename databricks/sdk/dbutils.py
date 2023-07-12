@@ -205,7 +205,7 @@ class RemoteDbUtils:
                 return self._ctx
             self._clusters.ensure_cluster_is_running(self._cluster_id)
             self._ctx = self._commands.create(cluster_id=self._cluster_id,
-                                              language=compute.Language.python).result()
+                                              language=compute.Language.PYTHON).result()
         return self._ctx
 
     def __getattr__(self, util) -> '_ProxyUtil':
@@ -258,10 +258,10 @@ class _ProxyCall:
     _ascii_escape_re = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]')
 
     def _is_failed(self, results: compute.Results) -> bool:
-        return results.result_type == compute.ResultType.error
+        return results.result_type == compute.ResultType.ERROR
 
     def _text(self, results: compute.Results) -> str:
-        if results.result_type != compute.ResultType.text:
+        if results.result_type != compute.ResultType.TEXT:
             return ''
         return self._out_re.sub("", str(results.data))
 
@@ -305,10 +305,10 @@ class _ProxyCall:
         '''
         ctx = self._context_factory()
         result = self._commands.execute(cluster_id=self._cluster_id,
-                                        language=compute.Language.python,
+                                        language=compute.Language.PYTHON,
                                         context_id=ctx.id,
                                         command=code).result()
-        if result.status == compute.CommandStatus.Finished:
+        if result.status == compute.CommandStatus.FINISHED:
             self._raise_if_failed(result.results)
             raw = result.results.data
             return json.loads(raw)

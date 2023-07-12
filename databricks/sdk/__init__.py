@@ -48,7 +48,7 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              IpAccessListsAPI,
                                              TokenManagementAPI, TokensAPI,
                                              WorkspaceConfAPI)
-from databricks.sdk.service.sharing import (ProvidersAPI,
+from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
 from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
@@ -114,6 +114,7 @@ class WorkspaceClient:
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
+        self.clean_rooms = CleanRoomsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
         self.clusters = ClustersExt(self.api_client)
         self.command_execution = CommandExecutionAPI(self.api_client)
