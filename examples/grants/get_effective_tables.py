@@ -21,7 +21,7 @@ table_full_name = "%s.%s.%s" % (created_catalog.name, created_schema.name, table
 
 created_table = w.tables.get(get=table_full_name)
 
-grants = w.grants.get_effective(get_effective=catalog.SecurableType.TABLE)
+grants = w.grants.get_effective(get_effective=catalog.SecurableType.table)
 
 # cleanup
 w.schemas.delete(delete=created_schema.full_name)

@@ -1011,10 +1011,10 @@ class DisableRequest:
 
 class DisableSchemaName(Enum):
 
-    access = 'access'
-    billing = 'billing'
-    lineage = 'lineage'
-    operational_data = 'operational_data'
+    ACCESS = 'access'
+    BILLING = 'billing'
+    LINEAGE = 'lineage'
+    OPERATIONAL_DATA = 'operational_data'
 
 
 @dataclass
@@ -1116,10 +1116,10 @@ class EnableRequest:
 
 class EnableSchemaName(Enum):
 
-    access = 'access'
-    billing = 'billing'
-    lineage = 'lineage'
-    operational_data = 'operational_data'
+    ACCESS = 'access'
+    BILLING = 'billing'
+    LINEAGE = 'lineage'
+    OPERATIONAL_DATA = 'operational_data'
 
 
 @dataclass
@@ -2110,16 +2110,17 @@ SecurablePropertiesMap = Dict[str, str]
 class SecurableType(Enum):
     """The type of Unity Catalog securable"""
 
-    CATALOG = 'CATALOG'
-    EXTERNAL_LOCATION = 'EXTERNAL_LOCATION'
-    FUNCTION = 'FUNCTION'
-    METASTORE = 'METASTORE'
-    PROVIDER = 'PROVIDER'
-    RECIPIENT = 'RECIPIENT'
-    SCHEMA = 'SCHEMA'
-    SHARE = 'SHARE'
-    STORAGE_CREDENTIAL = 'STORAGE_CREDENTIAL'
-    TABLE = 'TABLE'
+    CATALOG = 'catalog'
+    EXTERNAL_LOCATION = 'external_location'
+    FUNCTION = 'function'
+    METASTORE = 'metastore'
+    PIPELINE = 'pipeline'
+    PROVIDER = 'provider'
+    RECIPIENT = 'recipient'
+    SCHEMA = 'schema'
+    SHARE = 'share'
+    STORAGE_CREDENTIAL = 'storage_credential'
+    TABLE = 'table'
 
 
 @dataclass
@@ -2698,6 +2699,24 @@ class UpdateStorageCredential:
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
+
+
+@dataclass
+class UpdateTableRequest:
+    """Update a table owner."""
+
+    full_name: str
+    owner: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.owner is not None: body['owner'] = self.owner
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateTableRequest':
+        return cls(full_name=d.get('full_name', None), owner=d.get('owner', None))
 
 
 @dataclass
@@ -4733,7 +4752,7 @@ class SystemSchemasAPI:
             request = EnableRequest(metastore_id=metastore_id, schema_name=schema_name)
 
         self._api.do(
-            'POST',
+            'PUT',
             f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name.value}'
         )
 
@@ -5007,6 +5026,26 @@ class TablesAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+    def update(self, full_name: str, *, owner: Optional[str] = None, **kwargs):
+        """Update a table owner.
+        
+        Change the owner of the table. The caller must be the owner of the parent catalog, have the
+        **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner
+        of the table and have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+        privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the table.
+        :param owner: str (optional)
+        
+        
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdateTableRequest(full_name=full_name, owner=owner)
+        body = request.as_dict()
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/tables/{request.full_name}', body=body)
 
 
 class VolumesAPI:

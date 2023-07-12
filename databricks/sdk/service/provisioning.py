@@ -431,11 +431,11 @@ class ErrorType(Enum):
     """The AWS resource associated with this error: credentials, VPC, subnet, security group, or
     network ACL."""
 
-    credentials = 'credentials'
-    networkAcl = 'networkAcl'
-    securityGroup = 'securityGroup'
-    subnet = 'subnet'
-    vpc = 'vpc'
+    CREDENTIALS = 'credentials'
+    NETWORKACL = 'networkAcl'
+    SECURITYGROUP = 'securityGroup'
+    SUBNET = 'subnet'
+    VPC = 'vpc'
 
 
 @dataclass
@@ -988,8 +988,8 @@ class VpcStatus(Enum):
 class WarningType(Enum):
     """The AWS resource associated with this warning: a subnet or a security group."""
 
-    securityGroup = 'securityGroup'
-    subnet = 'subnet'
+    SECURITYGROUP = 'securityGroup'
+    SUBNET = 'subnet'
 
 
 @dataclass

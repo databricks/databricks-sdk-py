@@ -101,8 +101,7 @@ def dbutils_proxy(mocker):
     from databricks.sdk.core import Config
     from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
-    from databricks.sdk.service.compute import (ClusterDetails, CommandStatus,
-                                                CommandStatusResponse, Created,
+    from databricks.sdk.service.compute import (ClusterDetails, CommandStatus, CommandStatusResponse, Created,
                                                 Language, Results, State)
 
     from .conftest import noop_credentials

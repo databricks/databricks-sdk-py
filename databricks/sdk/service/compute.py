@@ -209,8 +209,8 @@ class CloudProviderNodeInfo:
 
 class CloudProviderNodeStatus(Enum):
 
-    NotAvailableInRegion = 'NotAvailableInRegion'
-    NotEnabledOnSubscription = 'NotEnabledOnSubscription'
+    NOTAVAILABLEINREGION = 'NotAvailableInRegion'
+    NOTENABLEDONSUBSCRIPTION = 'NotEnabledOnSubscription'
 
 
 @dataclass
@@ -664,12 +664,12 @@ class Command:
 
 class CommandStatus(Enum):
 
-    Cancelled = 'Cancelled'
-    Cancelling = 'Cancelling'
-    Error = 'Error'
-    Finished = 'Finished'
-    Queued = 'Queued'
-    Running = 'Running'
+    CANCELLED = 'Cancelled'
+    CANCELLING = 'Cancelling'
+    ERROR = 'Error'
+    FINISHED = 'Finished'
+    QUEUED = 'Queued'
+    RUNNING = 'Running'
 
 
 @dataclass
@@ -723,9 +723,9 @@ class ComputeSpecKind(Enum):
 
 class ContextStatus(Enum):
 
-    Error = 'Error'
-    Pending = 'Pending'
-    Running = 'Running'
+    ERROR = 'Error'
+    PENDING = 'Pending'
+    RUNNING = 'Running'
 
 
 @dataclass
@@ -1813,6 +1813,8 @@ class GetInstancePoolRequest:
 
 @dataclass
 class GetPolicyFamilyRequest:
+    """Get policy family information"""
+
     policy_family_id: str
 
 
@@ -2227,9 +2229,9 @@ class InstanceProfile:
 
 class Language(Enum):
 
-    python = 'python'
-    scala = 'scala'
-    sql = 'sql'
+    PYTHON = 'python'
+    SCALA = 'scala'
+    SQL = 'sql'
 
 
 @dataclass
@@ -2428,6 +2430,8 @@ class ListPoliciesResponse:
 
 @dataclass
 class ListPolicyFamiliesRequest:
+    """List policy families"""
+
     max_results: Optional[int] = None
     page_token: Optional[str] = None
 
@@ -2809,11 +2813,11 @@ class RestartCluster:
 
 class ResultType(Enum):
 
-    error = 'error'
-    image = 'image'
-    images = 'images'
-    table = 'table'
-    text = 'text'
+    ERROR = 'error'
+    IMAGE = 'image'
+    IMAGES = 'images'
+    TABLE = 'table'
+    TEXT = 'text'
 
 
 @dataclass
@@ -3057,8 +3061,8 @@ class TerminationReasonCode(Enum):
     INVALID_SPARK_IMAGE = 'INVALID_SPARK_IMAGE'
     IP_EXHAUSTION_FAILURE = 'IP_EXHAUSTION_FAILURE'
     JOB_FINISHED = 'JOB_FINISHED'
-    K8S_AUTOSCALING_FAILURE = 'K8S_AUTOSCALING_FAILURE'
-    K8S_DBR_CLUSTER_LAUNCH_TIMEOUT = 'K8S_DBR_CLUSTER_LAUNCH_TIMEOUT'
+    KS_AUTOSCALING_FAILURE = 'K8S_AUTOSCALING_FAILURE'
+    KS_DBR_CLUSTER_LAUNCH_TIMEOUT = 'K8S_DBR_CLUSTER_LAUNCH_TIMEOUT'
     METASTORE_COMPONENT_UNHEALTHY = 'METASTORE_COMPONENT_UNHEALTHY'
     NEPHOS_RESOURCE_MANAGEMENT = 'NEPHOS_RESOURCE_MANAGEMENT'
     NETWORK_CONFIGURATION_FAILURE = 'NETWORK_CONFIGURATION_FAILURE'
@@ -4999,11 +5003,10 @@ class InstanceProfilesAPI:
           
           [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         :param is_meta_instance_profile: bool (optional)
-          By default, Databricks validates that it has sufficient permissions to launch instances with the
-          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
-          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
-          requested instance type is not supported in your requested availability zone`), you can pass this
-          flag to skip the validation and forcibly add the instance profile.
+          Boolean flag indicating whether the instance profile should only be used in credential passthrough
+          scenarios. If true, it means the instance profile contains an meta IAM role which could assume a
+          wide range of roles. Therefore it should always be used with authorization. This field is optional,
+          the default value is `false`.
         :param skip_validation: bool (optional)
           By default, Databricks validates that it has sufficient permissions to launch instances with the
           instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
@@ -5054,11 +5057,10 @@ class InstanceProfilesAPI:
           
           [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         :param is_meta_instance_profile: bool (optional)
-          By default, Databricks validates that it has sufficient permissions to launch instances with the
-          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
-          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
-          requested instance type is not supported in your requested availability zone`), you can pass this
-          flag to skip the validation and forcibly add the instance profile.
+          Boolean flag indicating whether the instance profile should only be used in credential passthrough
+          scenarios. If true, it means the instance profile contains an meta IAM role which could assume a
+          wide range of roles. Therefore it should always be used with authorization. This field is optional,
+          the default value is `false`.
         
         
         """
@@ -5226,7 +5228,14 @@ class PolicyFamiliesAPI:
         self._api = api_client
 
     def get(self, policy_family_id: str, **kwargs) -> PolicyFamily:
-
+        """Get policy family information.
+        
+        Retrieve the information for an policy family based on its identifier.
+        
+        :param policy_family_id: str
+        
+        :returns: :class:`PolicyFamily`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = GetPolicyFamilyRequest(policy_family_id=policy_family_id)
@@ -5239,7 +5248,17 @@ class PolicyFamiliesAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None,
              **kwargs) -> Iterator[PolicyFamily]:
-
+        """List policy families.
+        
+        Retrieve a list of policy families. This API is paginated.
+        
+        :param max_results: int (optional)
+          The max number of policy families to return.
+        :param page_token: str (optional)
+          A token that can be used to get the next page of results.
+        
+        :returns: Iterator over :class:`PolicyFamily`
+        """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = ListPolicyFamiliesRequest(max_results=max_results, page_token=page_token)

@@ -554,10 +554,10 @@ class DeleteTransitionRequestRequest:
 
 class DeleteTransitionRequestStage(Enum):
 
-    Archived = 'Archived'
-    None_ = 'None'
-    Production = 'Production'
-    Staging = 'Staging'
+    ARCHIVED = 'Archived'
+    NONE_ = 'None'
+    PRODUCTION = 'Production'
+    STAGING = 'Staging'
 
 
 @dataclass
@@ -1924,10 +1924,10 @@ class SetTag:
 class Stage(Enum):
     """This describes an enum"""
 
-    Archived = 'Archived'
-    None_ = 'None'
-    Production = 'Production'
-    Staging = 'Staging'
+    ARCHIVED = 'Archived'
+    NONE_ = 'None'
+    PRODUCTION = 'Production'
+    STAGING = 'Staging'
 
 
 class Status(Enum):
