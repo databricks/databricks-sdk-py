@@ -116,14 +116,14 @@ def dbutils_proxy(mocker):
         command_execute = mocker.patch(
             'databricks.sdk.service.compute.CommandExecutionAPI.execute',
             return_value=Wait(lambda **kwargs: CommandStatusResponse(
-                results=Results(data=json.dumps(results_data)), status=CommandStatus.Finished)))
+                results=Results(data=json.dumps(results_data)), status=CommandStatus.FINISHED)))
 
         def assertions():
             cluster_get.assert_called_with('x')
-            context_create.assert_called_with(cluster_id='x', language=Language.python)
+            context_create.assert_called_with(cluster_id='x', language=Language.PYTHON)
             command_execute.assert_called_with(cluster_id='x',
                                                context_id='y',
-                                               language=Language.python,
+                                               language=Language.PYTHON,
                                                command=expect_command)
 
         dbutils = RemoteDbUtils(
