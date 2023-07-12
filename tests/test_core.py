@@ -6,7 +6,8 @@ import string
 
 import pytest
 
-from databricks.sdk.core import (Config, CredentialsProvider, DatabricksCliTokenSource, HeaderFactory,
+from databricks.sdk.core import (Config, CredentialsProvider,
+                                 DatabricksCliTokenSource, HeaderFactory,
                                  databricks_cli)
 from databricks.sdk.version import __version__
 

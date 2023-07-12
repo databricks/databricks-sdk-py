@@ -1,7 +1,8 @@
 from typing import BinaryIO, Iterator, Optional
 
 from ..core import DatabricksError
-from ..service.workspace import (ExportFormat, ImportFormat, Language, ObjectInfo, ObjectType, WorkspaceAPI)
+from ..service.workspace import (ExportFormat, ImportFormat, Language,
+                                 ObjectInfo, ObjectType, WorkspaceAPI)
 
 
 def _fqcn(x: any) -> str:

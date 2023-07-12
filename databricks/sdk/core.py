@@ -22,8 +22,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
-from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable, Token, TokenCache,
-                    TokenSource)
+from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
+                    Token, TokenCache, TokenSource)
 from .version import __version__
 
 __all__ = ['Config', 'DatabricksError']

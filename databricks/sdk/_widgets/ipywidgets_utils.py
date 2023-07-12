@@ -1,7 +1,8 @@
 import typing
 
 from IPython.core.display_functions import display
-from ipywidgets.widgets import (ValueWidget, Widget, widget_box, widget_selection, widget_string)
+from ipywidgets.widgets import (ValueWidget, Widget, widget_box,
+                                widget_selection, widget_string)
 
 from .default_widgets_utils import WidgetUtils
 
