@@ -40,7 +40,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{else if .Enum}}class {{.PascalName}}(Enum):
     {{if .Description}}"""{{.Comment "    " 100 | trimSuffix "\"" }}"""{{end}}
     {{range .Enum }}
-    {{.Content}}{{if eq .Content "None"}}_{{end}} = '{{.Content}}'{{end}}{{end}}
+    {{.ConstantName}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
@@ -218,7 +218,7 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-call-paginated" -}}
         {{if .Pagination.MultiRequest}}
-        {{if .Pagination.NeedsOffsetDedupe -}}
+        {{if .NeedsOffsetDedupe -}}
         # deduplicate items that may have been added during iteration
         seen = set()
         {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.0/clusters/events")) }}
@@ -228,8 +228,8 @@ class {{.Name}}API:{{if .Description}}
           if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
             return
           for v in json['{{.Pagination.Results.Name}}']:
-            {{if .Pagination.NeedsOffsetDedupe -}}
-            i = v['{{.Pagination.Entity.IdentifierField.Name}}']
+            {{if .NeedsOffsetDedupe -}}
+            i = v['{{.IdentifierField.Name}}']
             if i in seen:
               continue
             seen.add(i)

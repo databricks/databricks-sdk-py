@@ -117,14 +117,14 @@ def dbutils_proxy(mocker):
         command_execute = mocker.patch(
             'databricks.sdk.service.compute.CommandExecutionAPI.execute',
             return_value=Wait(lambda **kwargs: CommandStatusResponse(
-                results=Results(data=json.dumps(results_data)), status=CommandStatus.Finished)))
+                results=Results(data=json.dumps(results_data)), status=CommandStatus.FINISHED)))
 
         def assertions():
             cluster_get.assert_called_with('x')
-            context_create.assert_called_with(cluster_id='x', language=Language.python)
+            context_create.assert_called_with(cluster_id='x', language=Language.PYTHON)
             command_execute.assert_called_with(cluster_id='x',
                                                context_id='y',
-                                               language=Language.python,
+                                               language=Language.PYTHON,
                                                command=expect_command)
 
         dbutils = RemoteDbUtils(
@@ -184,14 +184,14 @@ def test_any_proxy(dbutils_proxy):
     command = ('\n'
                '        import json\n'
                '        (args, kwargs) = json.loads(\'[["a"], {}]\')\n'
-               '        result = dbutils.widgets.getParameter(*args, **kwargs)\n'
+               '        result = dbutils.notebook.exit(*args, **kwargs)\n'
                '        dbutils.notebook.exit(json.dumps(result))\n'
                '        ')
-    dbutils, assertions = dbutils_proxy('b', command)
+    dbutils, assertions = dbutils_proxy('a', command)
 
-    param = dbutils.widgets.getParameter('a')
+    param = dbutils.notebook.exit("a")
 
-    assert param == 'b'
+    assert param == 'a'
 
     assertions()
 
