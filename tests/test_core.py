@@ -192,3 +192,18 @@ def test_config_copy_deep_copies_user_agent_other_info(config):
     config_copy.with_user_agent_extra("test", "test2")
     assert "test/test2" in config_copy.user_agent
     assert "test/test2" not in config.user_agent
+
+
+def test_config_accounts_aws_is_accounts_host(config):
+    config.host = "https://accounts.cloud.databricks.com"
+    assert config.is_account_client
+
+
+def test_config_accounts_dod_is_accounts_host(config):
+    config.host = "https://accounts-dod.cloud.databricks.us"
+    assert config.is_account_client
+
+
+def test_config_workspace_is_not_accounts_host(config):
+    config.host = "https://westeurope.azuredatabricks.net"
+    assert not config.is_account_client

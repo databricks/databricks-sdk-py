@@ -175,6 +175,19 @@ class RemoteDbUtils:
 
         self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
+        self._widgets = None
+
+    # When we import widget_impl, the init file checks whether user has the
+    # correct dependencies required for running on notebook or not (ipywidgets etc).
+    # We only want these checks (and the subsequent errors and warnings), to
+    # happen when the user actually uses widgets.
+    @property
+    def widgets(self):
+        if self._widgets is None:
+            from ._widgets import widget_impl
+            self._widgets = widget_impl()
+
+        return self._widgets
 
     @property
     def _cluster_id(self) -> str:
@@ -192,7 +205,7 @@ class RemoteDbUtils:
                 return self._ctx
             self._clusters.ensure_cluster_is_running(self._cluster_id)
             self._ctx = self._commands.create(cluster_id=self._cluster_id,
-                                              language=compute.Language.python).result()
+                                              language=compute.Language.PYTHON).result()
         return self._ctx
 
     def __getattr__(self, util) -> '_ProxyUtil':
@@ -245,10 +258,10 @@ class _ProxyCall:
     _ascii_escape_re = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]')
 
     def _is_failed(self, results: compute.Results) -> bool:
-        return results.result_type == compute.ResultType.error
+        return results.result_type == compute.ResultType.ERROR
 
     def _text(self, results: compute.Results) -> str:
-        if results.result_type != compute.ResultType.text:
+        if results.result_type != compute.ResultType.TEXT:
             return ''
         return self._out_re.sub("", str(results.data))
 
@@ -292,10 +305,10 @@ class _ProxyCall:
         '''
         ctx = self._context_factory()
         result = self._commands.execute(cluster_id=self._cluster_id,
-                                        language=compute.Language.python,
+                                        language=compute.Language.PYTHON,
                                         context_id=ctx.id,
                                         command=code).result()
-        if result.status == compute.CommandStatus.Finished:
+        if result.status == compute.CommandStatus.FINISHED:
             self._raise_if_failed(result.results)
             raw = result.results.data
             return json.loads(raw)

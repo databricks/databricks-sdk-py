@@ -252,7 +252,7 @@ To find code examples that demonstrate how to call the Databricks SDK for Python
 When you invoke a long-running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities
 to reach the correct state or return the error message in case of failure. All long-running operations return generic `Wait` instance with `result()`
 method to get a result of long-running operation, once it's finished. Databricks SDK for Python picks the most reasonable default timeouts for
-every method, but sometimes you may find yourself in a situation, where you'd want to provide `datatime.timedelta()` as the value of `timeout`
+every method, but sometimes you may find yourself in a situation, where you'd want to provide `datetime.timedelta()` as the value of `timeout`
 argument to `result()` method.
 
 There are a number of long-running operations in Databricks APIs such as managing:

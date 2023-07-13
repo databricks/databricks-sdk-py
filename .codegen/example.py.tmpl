@@ -43,7 +43,7 @@ import time, base64, os
 {{- else if eq .Type "lookup" -}}
     {{template "expr" .X}}.{{.Field.SnakeName}}
 {{- else if eq .Type "enum" -}}
-    {{.Package}}.{{.Entity.PascalName}}.{{.Content}}{{if eq .Content "None"}}_{{end}}
+    {{.Package}}.{{.Entity.PascalName}}.{{.ConstantName}}
 {{- else if eq .Type "variable" -}}
     {{if eq .SnakeName "true"}}True
     {{- else if eq .SnakeName "false"}}False
