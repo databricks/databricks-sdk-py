@@ -113,8 +113,8 @@ class {{.Name}}API:{{if .Description}}
     def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}},
       timeout=timedelta(minutes={{.Timeout}}), callback: Optional[Callable[[{{.Poll.Response.PascalName}}], None]] = None) -> {{.Poll.Response.PascalName}}:
       deadline = time.time() + timeout.total_seconds()
-      target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{if .Failure}}
-      failure_states = ({{range .Failure}}{{.Entity.PascalName}}.{{.Content}}, {{end}}){{end}}
+      target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.ConstantName}}, {{end}}){{if .Failure}}
+      failure_states = ({{range .Failure}}{{.Entity.PascalName}}.{{.ConstantName}}, {{end}}){{end}}
       status_message = 'polling...'
       attempt = 1
       while time.time() < deadline:
