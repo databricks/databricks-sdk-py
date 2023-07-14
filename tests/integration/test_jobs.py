@@ -87,3 +87,29 @@ def test_create_job(w):
                       python_wheel_task=jobs.PythonWheelTask(entry_point="test", package_name="deepspeed"))
 
     w.jobs.create(job_clusters=[cluster], tasks=[task1])
+
+def test_permission_level_job(w):
+    from databricks.sdk.service import jobs, iam, compute
+    
+    task1 = jobs.Task(task_key="task1",
+                      job_cluster_key="cluster1",
+                      python_wheel_task=jobs.PythonWheelTask(entry_point="test", package_name="deepspeed"))
+    
+    cluster = jobs.JobCluster(job_cluster_key="cluster1",
+                              new_cluster=compute.ClusterSpec(
+                                  num_workers=2,
+                                  spark_version=w.clusters.select_spark_version(),
+                                  node_type_id=w.clusters.select_node_type(local_disk=True)))
+    
+    access_control_list = [
+        iam.AccessControlRequest(
+            group_name = 'gp_manage',
+            permission_level = iam.PermissionLevel('CAN_MANAGE')
+        ),
+        iam.AccessControlRequest(
+            group_name = 'gp_read',
+            permission_level = iam.PermissionLevel('CAN_READ')
+        )
+    ]
+
+    w.jobs.create(job_clusters=[cluster], tasks=[task1], access_control_list = [access_control_list])
