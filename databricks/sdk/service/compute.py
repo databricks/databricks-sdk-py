@@ -4284,8 +4284,8 @@ class CommandExecutionAPI:
             timeout=timedelta(minutes=20),
             callback: Optional[Callable[[CommandStatusResponse], None]] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
-        target_states = (CommandStatus.Cancelled, )
-        failure_states = (CommandStatus.Error, )
+        target_states = (CommandStatus.CANCELLED, )
+        failure_states = (CommandStatus.ERROR, )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:
@@ -4319,8 +4319,8 @@ class CommandExecutionAPI:
             timeout=timedelta(minutes=20),
             callback: Optional[Callable[[CommandStatusResponse], None]] = None) -> CommandStatusResponse:
         deadline = time.time() + timeout.total_seconds()
-        target_states = (CommandStatus.Finished, CommandStatus.Error, )
-        failure_states = (CommandStatus.Cancelled, CommandStatus.Cancelling, )
+        target_states = (CommandStatus.FINISHED, CommandStatus.ERROR, )
+        failure_states = (CommandStatus.CANCELLED, CommandStatus.CANCELLING, )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:
@@ -4351,8 +4351,8 @@ class CommandExecutionAPI:
             timeout=timedelta(minutes=20),
             callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
         deadline = time.time() + timeout.total_seconds()
-        target_states = (ContextStatus.Running, )
-        failure_states = (ContextStatus.Error, )
+        target_states = (ContextStatus.RUNNING, )
+        failure_states = (ContextStatus.ERROR, )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:
