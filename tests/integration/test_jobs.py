@@ -112,4 +112,4 @@ def test_permission_level_job(w):
         )
     ]
 
-    w.jobs.create(job_clusters=[cluster], tasks=[task1], access_control_list = [access_control_list])
+    w.jobs.create(job_clusters=[cluster], tasks=[task1], access_control_list = access_control_list)
