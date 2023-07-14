@@ -594,7 +594,7 @@ class PermissionAssignments:
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignments':
         return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignment))
 
-
+@dataclass
 class PermissionLevel(Enum):
     """Permission level"""
 
