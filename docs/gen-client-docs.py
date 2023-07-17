@@ -134,21 +134,26 @@ class Generator:
     def __init__(self):
         self.mapping = self._load_mapping()
 
-    def _load_mapping(self) -> dict[str, Tag]:
-        mapping = {}
-        pkgs = {p.name: p for p in self.packages}
+    def _spec_file(self) -> str:
+        if 'DATABRICKS_OPENAPI_SPEC' in os.environ:
+            return os.environ['DATABRICKS_OPENAPI_SPEC']
         with open(os.path.expanduser('~/.openapi-codegen.json'), 'r') as f:
             config = json.load(f)
             if 'spec' not in config:
                 raise ValueError('Cannot find OpenAPI spec')
-            with open(config['spec'], 'r') as fspec:
-                spec = json.load(fspec)
-                for tag in spec['tags']:
-                    t = Tag(name=tag['name'],
-                            service=tag['x-databricks-service'],
-                            is_account=tag.get('x-databricks-is-accounts', False),
-                            package=pkgs[tag['x-databricks-package']])
-                    mapping[tag['name']] = t
+            return config['spec']
+
+    def _load_mapping(self) -> dict[str, Tag]:
+        mapping = {}
+        pkgs = {p.name: p for p in self.packages}
+        with open(self._spec_file(), 'r') as fspec:
+            spec = json.load(fspec)
+            for tag in spec['tags']:
+                t = Tag(name=tag['name'],
+                        service=tag['x-databricks-service'],
+                        is_account=tag.get('x-databricks-is-accounts', False),
+                        package=pkgs[tag['x-databricks-package']])
+                mapping[tag['name']] = t
         return mapping
 
     def class_methods(self, inst) -> list[MethodDoc]:
@@ -216,12 +221,12 @@ class Generator:
             f.write(f'''
 {label}
 {'=' * len(label)}
- 
+
 {description}
- 
+
 .. toctree::
   :maxdepth: 1
-  
+
   {all}''')
 
     def _write_client_package_doc(self, folder: str, pkg: Package, services: list[str]):
@@ -230,12 +235,12 @@ class Generator:
             f.write(f'''
 {pkg.label}
 {'=' * len(pkg.label)}
- 
+
 {pkg.description}
- 
+
 .. toctree::
   :maxdepth: 1
-  
+
   {all}''')
 
 
