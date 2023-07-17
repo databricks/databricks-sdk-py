@@ -18,9 +18,7 @@ def _repeated(d: Dict[str, any], field: str, cls: Type) -> any:
 def _enum(d: Dict[str, any], field: str, cls: Type) -> any:
     if field not in d or not d[field]:
         return None
-    if d[field] not in getattr(cls, '__members__').values():
-        return None
-    return d[field]
+    return next((v for v in getattr(cls, '__members__').values() if v.value == d[field]), None)
 
 
 ReturnType = TypeVar('ReturnType')
