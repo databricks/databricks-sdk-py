@@ -130,7 +130,7 @@ Account Service Principals
         :returns: Iterator over :class:`ServicePrincipal`
         
 
-    .. py:method:: patch(id [, operations])
+    .. py:method:: patch(id [, operations, schema])
 
         Update service principal details.
         
@@ -139,6 +139,8 @@ Account Service Principals
         :param id: str
           Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         

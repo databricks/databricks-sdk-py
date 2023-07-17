@@ -45,9 +45,9 @@ Alerts
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
-          ID of the query evaluated by the alert.
+          Query ID.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the alert. The default is ther user's home folder.
+          The identifier of the workspace folder containing the object.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
@@ -167,7 +167,7 @@ Alerts
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
-          ID of the query evaluated by the alert.
+          Query ID.
         :param alert_id: str
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.

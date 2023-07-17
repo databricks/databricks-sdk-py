@@ -432,8 +432,8 @@ class ErrorType(Enum):
     network ACL."""
 
     CREDENTIALS = 'credentials'
-    NETWORK_ACL = 'networkAcl'
-    SECURITY_GROUP = 'securityGroup'
+    NETWORKACL = 'networkAcl'
+    SECURITYGROUP = 'securityGroup'
     SUBNET = 'subnet'
     VPC = 'vpc'
 
@@ -988,7 +988,7 @@ class VpcStatus(Enum):
 class WarningType(Enum):
     """The AWS resource associated with this warning: a subnet or a security group."""
 
-    SECURITY_GROUP = 'securityGroup'
+    SECURITYGROUP = 'securityGroup'
     SUBNET = 'subnet'
 
 

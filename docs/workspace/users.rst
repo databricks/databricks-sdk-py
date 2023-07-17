@@ -116,7 +116,7 @@ Users
             
             all_users = w.users.list(attributes="id,userName",
                                      sort_by="userName",
-                                     sort_order=iam.ListSortOrder.descending)
+                                     sort_order=iam.ListSortOrder.DESCENDING)
 
         List users.
         
@@ -146,7 +146,7 @@ Users
         :returns: Iterator over :class:`User`
         
 
-    .. py:method:: patch(id [, operations])
+    .. py:method:: patch(id [, operations, schema])
 
         Update user details.
         
@@ -155,6 +155,8 @@ Users
         :param id: str
           Unique ID for a user in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         
