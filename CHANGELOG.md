@@ -1,5 +1,10 @@
 # Version changelog
 
+## 0.2.1
+
+* Support older versions of `urllib3` and Databricks Runtime with regards to `DEFAULT_METHOD_WHITELIST` change to `DEFAULT_ALLOWED_METHODS` ([#240](https://github.com/databricks/databricks-sdk-py/pull/240)).
+
+
 ## 0.2.0
 
 * Add Issue Templates ([#208](https://github.com/databricks/databricks-sdk-py/pull/208)).
