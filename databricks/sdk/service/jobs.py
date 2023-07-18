@@ -257,6 +257,7 @@ class CreateJob:
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
+    health: Optional['JobsHealthRules'] = None
     job_clusters: Optional['List[JobCluster]'] = None
     max_concurrent_runs: Optional[int] = None
     name: Optional[str] = None
@@ -279,6 +280,7 @@ class CreateJob:
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.health: body['health'] = self.health.as_dict()
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
         if self.name is not None: body['name'] = self.name
@@ -301,6 +303,7 @@ class CreateJob:
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   health=_from_dict(d, 'health', JobsHealthRules),
                    job_clusters=_repeated(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
@@ -625,6 +628,7 @@ class JobCompute:
 @dataclass
 class JobEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
+    on_duration_warning_threshold_exceeded: Optional['List[str]'] = None
     on_failure: Optional['List[str]'] = None
     on_start: Optional['List[str]'] = None
     on_success: Optional['List[str]'] = None
@@ -633,6 +637,10 @@ class JobEmailNotifications:
         body = {}
         if self.no_alert_for_skipped_runs is not None:
             body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        if self.on_duration_warning_threshold_exceeded:
+            body['on_duration_warning_threshold_exceeded'] = [
+                v for v in self.on_duration_warning_threshold_exceeded
+            ]
         if self.on_failure: body['on_failure'] = [v for v in self.on_failure]
         if self.on_start: body['on_start'] = [v for v in self.on_start]
         if self.on_success: body['on_success'] = [v for v in self.on_success]
@@ -641,6 +649,8 @@ class JobEmailNotifications:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobEmailNotifications':
         return cls(no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None),
+                   on_duration_warning_threshold_exceeded=d.get('on_duration_warning_threshold_exceeded',
+                                                                None),
                    on_failure=d.get('on_failure', None),
                    on_start=d.get('on_start', None),
                    on_success=d.get('on_success', None))
@@ -731,6 +741,7 @@ class JobSettings:
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
+    health: Optional['JobsHealthRules'] = None
     job_clusters: Optional['List[JobCluster]'] = None
     max_concurrent_runs: Optional[int] = None
     name: Optional[str] = None
@@ -751,6 +762,7 @@ class JobSettings:
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.health: body['health'] = self.health.as_dict()
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
         if self.name is not None: body['name'] = self.name
@@ -772,6 +784,7 @@ class JobSettings:
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   health=_from_dict(d, 'health', JobsHealthRules),
                    job_clusters=_repeated(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
@@ -814,6 +827,54 @@ class JobSourceDirtyState(Enum):
 
     DISCONNECTED = 'DISCONNECTED'
     NOT_SYNCED = 'NOT_SYNCED'
+
+
+class JobsHealthMetric(Enum):
+    """Specifies the health metric that is being evaluated for a particular health rule."""
+
+    RUN_DURATION_SECONDS = 'RUN_DURATION_SECONDS'
+
+
+class JobsHealthOperator(Enum):
+    """Specifies the operator used to compare the health metric value with the specified threshold."""
+
+    GREATER_THAN = 'GREATER_THAN'
+
+
+@dataclass
+class JobsHealthRule:
+    metric: Optional['JobsHealthMetric'] = None
+    op: Optional['JobsHealthOperator'] = None
+    value: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.metric is not None: body['metric'] = self.metric.value
+        if self.op is not None: body['op'] = self.op.value
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobsHealthRule':
+        return cls(metric=_enum(d, 'metric', JobsHealthMetric),
+                   op=_enum(d, 'op', JobsHealthOperator),
+                   value=d.get('value', None))
+
+
+@dataclass
+class JobsHealthRules:
+    """An optional set of health rules that can be defined for this job."""
+
+    rules: Optional['List[JobsHealthRule]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.rules: body['rules'] = [v.as_dict() for v in self.rules]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobsHealthRules':
+        return cls(rules=_repeated(d, 'rules', JobsHealthRule))
 
 
 @dataclass
@@ -2068,6 +2129,7 @@ class SubmitRun:
     access_control_list: Optional['List[iam.AccessControlRequest]'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     git_source: Optional['GitSource'] = None
+    health: Optional['JobsHealthRules'] = None
     idempotency_token: Optional[str] = None
     notification_settings: Optional['JobNotificationSettings'] = None
     run_name: Optional[str] = None
@@ -2081,6 +2143,7 @@ class SubmitRun:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.health: body['health'] = self.health.as_dict()
         if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.run_name is not None: body['run_name'] = self.run_name
@@ -2094,6 +2157,7 @@ class SubmitRun:
         return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   health=_from_dict(d, 'health', JobsHealthRules),
                    idempotency_token=d.get('idempotency_token', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    run_name=d.get('run_name', None),
@@ -2123,6 +2187,7 @@ class SubmitTask:
     depends_on: Optional['List[TaskDependency]'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     existing_cluster_id: Optional[str] = None
+    health: Optional['JobsHealthRules'] = None
     libraries: Optional['List[compute.Library]'] = None
     new_cluster: Optional['compute.ClusterSpec'] = None
     notebook_task: Optional['NotebookTask'] = None
@@ -2141,6 +2206,7 @@ class SubmitTask:
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.health: body['health'] = self.health.as_dict()
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
@@ -2161,6 +2227,7 @@ class SubmitTask:
                    depends_on=_repeated(d, 'depends_on', TaskDependency),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
+                   health=_from_dict(d, 'health', JobsHealthRules),
                    libraries=_repeated(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
@@ -2185,6 +2252,7 @@ class Task:
     description: Optional[str] = None
     email_notifications: Optional['TaskEmailNotifications'] = None
     existing_cluster_id: Optional[str] = None
+    health: Optional['JobsHealthRules'] = None
     job_cluster_key: Optional[str] = None
     libraries: Optional['List[compute.Library]'] = None
     max_retries: Optional[int] = None
@@ -2212,6 +2280,7 @@ class Task:
         if self.description is not None: body['description'] = self.description
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.health: body['health'] = self.health.as_dict()
         if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.max_retries is not None: body['max_retries'] = self.max_retries
@@ -2242,6 +2311,7 @@ class Task:
                    description=d.get('description', None),
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
+                   health=_from_dict(d, 'health', JobsHealthRules),
                    job_cluster_key=d.get('job_cluster_key', None),
                    libraries=_repeated(d, 'libraries', compute.Library),
                    max_retries=d.get('max_retries', None),
@@ -2280,12 +2350,17 @@ class TaskDependency:
 
 @dataclass
 class TaskEmailNotifications:
+    on_duration_warning_threshold_exceeded: Optional['List[str]'] = None
     on_failure: Optional['List[str]'] = None
     on_start: Optional['List[str]'] = None
     on_success: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.on_duration_warning_threshold_exceeded:
+            body['on_duration_warning_threshold_exceeded'] = [
+                v for v in self.on_duration_warning_threshold_exceeded
+            ]
         if self.on_failure: body['on_failure'] = [v for v in self.on_failure]
         if self.on_start: body['on_start'] = [v for v in self.on_start]
         if self.on_success: body['on_success'] = [v for v in self.on_success]
@@ -2293,7 +2368,9 @@ class TaskEmailNotifications:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TaskEmailNotifications':
-        return cls(on_failure=d.get('on_failure', None),
+        return cls(on_duration_warning_threshold_exceeded=d.get('on_duration_warning_threshold_exceeded',
+                                                                None),
+                   on_failure=d.get('on_failure', None),
                    on_start=d.get('on_start', None),
                    on_success=d.get('on_success', None))
 
@@ -2470,12 +2547,18 @@ class Webhook:
 
 @dataclass
 class WebhookNotifications:
+    on_duration_warning_threshold_exceeded: Optional[
+        'List[WebhookNotificationsOnDurationWarningThresholdExceededItem]'] = None
     on_failure: Optional['List[Webhook]'] = None
     on_start: Optional['List[Webhook]'] = None
     on_success: Optional['List[Webhook]'] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.on_duration_warning_threshold_exceeded:
+            body['on_duration_warning_threshold_exceeded'] = [
+                v.as_dict() for v in self.on_duration_warning_threshold_exceeded
+            ]
         if self.on_failure: body['on_failure'] = [v.as_dict() for v in self.on_failure]
         if self.on_start: body['on_start'] = [v.as_dict() for v in self.on_start]
         if self.on_success: body['on_success'] = [v.as_dict() for v in self.on_success]
@@ -2483,9 +2566,26 @@ class WebhookNotifications:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WebhookNotifications':
-        return cls(on_failure=_repeated(d, 'on_failure', Webhook),
+        return cls(on_duration_warning_threshold_exceeded=_repeated(
+            d, 'on_duration_warning_threshold_exceeded',
+            WebhookNotificationsOnDurationWarningThresholdExceededItem),
+                   on_failure=_repeated(d, 'on_failure', Webhook),
                    on_start=_repeated(d, 'on_start', Webhook),
                    on_success=_repeated(d, 'on_success', Webhook))
+
+
+@dataclass
+class WebhookNotificationsOnDurationWarningThresholdExceededItem:
+    id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WebhookNotificationsOnDurationWarningThresholdExceededItem':
+        return cls(id=d.get('id', None))
 
 
 class JobsAPI:
@@ -2588,6 +2688,7 @@ class JobsAPI:
                email_notifications: Optional[JobEmailNotifications] = None,
                format: Optional[Format] = None,
                git_source: Optional[GitSource] = None,
+               health: Optional[JobsHealthRules] = None,
                job_clusters: Optional[List[JobCluster]] = None,
                max_concurrent_runs: Optional[int] = None,
                name: Optional[str] = None,
@@ -2621,6 +2722,8 @@ class JobsAPI:
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote repository containing the notebooks used by this job's
           notebook tasks.
+        :param health: :class:`JobsHealthRules` (optional)
+          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -2639,7 +2742,7 @@ class JobsAPI:
           This value cannot exceed 1000\. Setting this value to 0 causes all new runs to be skipped. The
           default behavior is to allow only 1 concurrent run.
         :param name: str (optional)
-          An optional name for the job.
+          An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           `email_notifications` and `webhook_notifications` for this job.
@@ -2681,6 +2784,7 @@ class JobsAPI:
                                 email_notifications=email_notifications,
                                 format=format,
                                 git_source=git_source,
+                                health=health,
                                 job_clusters=job_clusters,
                                 max_concurrent_runs=max_concurrent_runs,
                                 name=name,
@@ -3299,6 +3403,7 @@ class JobsAPI:
                access_control_list: Optional[List[iam.AccessControlRequest]] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                git_source: Optional[GitSource] = None,
+               health: Optional[JobsHealthRules] = None,
                idempotency_token: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
                run_name: Optional[str] = None,
@@ -3320,6 +3425,8 @@ class JobsAPI:
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote repository containing the notebooks used by this job's
           notebook tasks.
+        :param health: :class:`JobsHealthRules` (optional)
+          An optional set of health rules that can be defined for this job.
         :param idempotency_token: str (optional)
           An optional token that can be used to guarantee the idempotency of job run requests. If a run with
           the provided token already exists, the request does not create a new run but returns the ID of the
@@ -3354,6 +3461,7 @@ class JobsAPI:
             request = SubmitRun(access_control_list=access_control_list,
                                 email_notifications=email_notifications,
                                 git_source=git_source,
+                                health=health,
                                 idempotency_token=idempotency_token,
                                 notification_settings=notification_settings,
                                 run_name=run_name,
@@ -3372,6 +3480,7 @@ class JobsAPI:
         access_control_list: Optional[List[iam.AccessControlRequest]] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         git_source: Optional[GitSource] = None,
+        health: Optional[JobsHealthRules] = None,
         idempotency_token: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
         run_name: Optional[str] = None,
@@ -3382,6 +3491,7 @@ class JobsAPI:
         return self.submit(access_control_list=access_control_list,
                            email_notifications=email_notifications,
                            git_source=git_source,
+                           health=health,
                            idempotency_token=idempotency_token,
                            notification_settings=notification_settings,
                            run_name=run_name,

@@ -35,7 +35,7 @@ Account Metastores
         :returns: :class:`AccountsMetastoreInfo`
         
 
-    .. py:method:: delete(metastore_id)
+    .. py:method:: delete(metastore_id [, force])
 
         Delete a metastore.
         
@@ -44,6 +44,8 @@ Account Metastores
         
         :param metastore_id: str
           Unity Catalog metastore ID
+        :param force: bool (optional)
+          Force deletion even if the metastore is not empty. Default is false.
         
         
         

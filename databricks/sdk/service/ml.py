@@ -2592,7 +2592,7 @@ class ExperimentsAPI:
         
         The following limits also apply to metric, param, and tag keys and values:
         
-        * Metric keyes, param keys, and tag keys can be up to 250 characters in length * Parameter and tag
+        * Metric keys, param keys, and tag keys can be up to 250 characters in length * Parameter and tag
         values can be up to 250 characters in length
         
         :param metrics: List[:class:`Metric`] (optional)
