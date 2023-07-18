@@ -871,13 +871,20 @@ class ApiClient:
         self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
         self._user_agent_base = cfg.user_agent
 
+        # Since urllib3 v1.26.0, Retry.DEFAULT_METHOD_WHITELIST is deprecated in favor of
+        # Retry.DEFAULT_ALLOWED_METHODS. We need to support both versions.
+        if 'DEFAULT_ALLOWED_METHODS' in dir(Retry):
+            retry_kwargs = {'allowed_methods': {"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS)}
+        else:
+            retry_kwargs = {'method_whitelist': {"POST"} | set(Retry.DEFAULT_METHOD_WHITELIST)}
+
         retry_strategy = Retry(
             total=6,
             backoff_factor=1,
             status_forcelist=[429],
-            allowed_methods={"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS),
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
+            **retry_kwargs,
         )
 
         self._session = requests.Session()
