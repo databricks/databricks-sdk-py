@@ -218,8 +218,3 @@ def test_config_can_be_subclassed():
 
     with pytest.raises(ValueError): # As opposed to `KeyError`.
         DatabricksConfig()
-
-
-if __name__ == "__main__":
-    import conftest
-    test_config_accounts_dod_is_accounts_host(conftest.config.__pytest_wrapped__.obj())
