@@ -122,6 +122,40 @@ Metastores
         
         
 
+    .. py:method:: enable_optimization(metastore_id, enable)
+
+        Usage:
+
+        .. code-block::
+
+            import os
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            
+            w = WorkspaceClient()
+            
+            created = w.metastores.create(name=f'sdk-{time.time_ns()}',
+                                          storage_root="s3://%s/%s" %
+                                          (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
+            
+            auto_maintenance = w.metastores.enable_optimization(enable=True, metastore_id=created.metastore_id)
+            
+            # cleanup
+            w.metastores.delete(id=created.metastore_id, force=True)
+
+        Toggle predictive optimization on the metastore.
+        
+        Enables or disables predictive optimization on the metastore.
+        
+        :param metastore_id: str
+          Unique identifier of metastore.
+        :param enable: bool
+          Whether to enable predictive optimization on the metastore.
+        
+        :returns: :class:`UpdatePredictiveOptimizationResponse`
+        
+
     .. py:method:: get(id)
 
         Usage:
@@ -173,40 +207,6 @@ Metastores
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
         
         :returns: Iterator over :class:`MetastoreInfo`
-        
-
-    .. py:method:: maintenance(metastore_id, enable)
-
-        Usage:
-
-        .. code-block::
-
-            import os
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            created = w.metastores.create(name=f'sdk-{time.time_ns()}',
-                                          storage_root="s3://%s/%s" %
-                                          (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
-            
-            auto_maintenance = w.metastores.maintenance(enable=True, metastore_id=created.metastore_id)
-            
-            # cleanup
-            w.metastores.delete(id=created.metastore_id, force=True)
-
-        Enables or disables auto maintenance on the metastore.
-        
-        Enables or disables auto maintenance on the metastore.
-        
-        :param metastore_id: str
-          Unique identifier of metastore.
-        :param enable: bool
-          Whether to enable auto maintenance on the metastore.
-        
-        :returns: :class:`UpdateAutoMaintenanceResponse`
         
 
     .. py:method:: summary()

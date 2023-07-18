@@ -42,7 +42,7 @@ Account Storage Credentials
         :returns: :class:`StorageCredentialInfo`
         
 
-    .. py:method:: delete(metastore_id, name)
+    .. py:method:: delete(metastore_id, name [, force])
 
         Delete a storage credential.
         
@@ -53,6 +53,8 @@ Account Storage Credentials
           Unity Catalog metastore ID
         :param name: str
           Name of the storage credential.
+        :param force: bool (optional)
+          Force deletion even if the Storage Credential is not empty. Default is false.
         
         
         

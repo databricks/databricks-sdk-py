@@ -40,11 +40,10 @@ Instance Profiles
           
           [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         :param is_meta_instance_profile: bool (optional)
-          By default, Databricks validates that it has sufficient permissions to launch instances with the
-          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
-          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
-          requested instance type is not supported in your requested availability zone`), you can pass this
-          flag to skip the validation and forcibly add the instance profile.
+          Boolean flag indicating whether the instance profile should only be used in credential passthrough
+          scenarios. If true, it means the instance profile contains an meta IAM role which could assume a
+          wide range of roles. Therefore it should always be used with authorization. This field is optional,
+          the default value is `false`.
         :param skip_validation: bool (optional)
           By default, Databricks validates that it has sufficient permissions to launch instances with the
           instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
@@ -95,11 +94,10 @@ Instance Profiles
           
           [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
         :param is_meta_instance_profile: bool (optional)
-          By default, Databricks validates that it has sufficient permissions to launch instances with the
-          instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
-          fails with an error message that does not indicate an IAM related permission issue, (e.g. `Your
-          requested instance type is not supported in your requested availability zone`), you can pass this
-          flag to skip the validation and forcibly add the instance profile.
+          Boolean flag indicating whether the instance profile should only be used in credential passthrough
+          scenarios. If true, it means the instance profile contains an meta IAM role which could assume a
+          wide range of roles. Therefore it should always be used with authorization. This field is optional,
+          the default value is `false`.
         
         
         
