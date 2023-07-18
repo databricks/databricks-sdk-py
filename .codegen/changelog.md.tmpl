@@ -1,0 +1,55 @@
+# Version changelog
+
+## {{.Version}}
+
+{{range .Changes -}}
+ * {{.}}.
+{{end}}{{- if .ApiChanges}}
+API Changes:
+{{range .ApiChanges}}
+ * {{.Action}} {{template "what" .}}{{if .Extra}} {{.Extra}}{{with .Other}} {{template "what" .}}{{end}}{{end}}.
+{{- end}}
+
+OpenAPI SHA: {{.Sha}}, Date: {{.Changed}}
+{{- end}}{{if .DependencyUpdates}}
+Dependency updates:
+{{range .DependencyUpdates}}
+ * {{.}}.
+{{- end -}}
+{{end}}
+
+## {{.PrevVersion}}
+
+{{- define "what" -}}
+    {{if eq .X "package" -}}
+        `databricks.sdk.service.{{.Package.Name}}` package
+    {{- else if eq .X "service" -}}
+        {{template "service" .Service}}
+    {{- else if eq .X "method" -}}
+        `{{.Method.SnakeName}}()` method for {{template "service" .Method.Service}}
+    {{- else if eq .X "entity" -}}
+        {{template "entity" .Entity}} dataclass
+    {{- else if eq .X "field" -}}
+        `{{.Field.SnakeName}}` field for {{template "entity" .Field.Of}}
+    {{- end}}
+{{- end -}}
+
+{{- define "service" -}}
+    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.SnakeName}}](https://databricks-sdk-py.readthedocs.io/en/latest/{{if .IsAccounts}}account{{else}}workspace{{end}}/{{.SnakeName}}.html) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
+{{- end -}}
+
+{{- define "entity" -}}
+    {{- if not . }}any /* ERROR */
+	{{- else if .IsEmpty}}`any`
+	{{- else if .PascalName}}`databricks.sdk.service.{{.Package.Name}}.{{.PascalName}}`
+	{{- else if .IsAny}}`any`
+	{{- else if .IsString}}`str`
+	{{- else if .IsBool}}`bool`
+	{{- else if .IsInt64}}`int`
+	{{- else if .IsFloat64}}`float`
+	{{- else if .IsInt}}`int`
+	{{- else if .ArrayValue }}list[{{template "entity" .ArrayValue}}]
+	{{- else if .MapValue }}dict[str,{{template "entity" .MapValue}}]
+	{{- else}}`databricks.sdk.service.{{.Package.Name}}.{{.PascalName}}`
+	{{- end -}}
+{{- end -}}
