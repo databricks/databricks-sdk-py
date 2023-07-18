@@ -877,6 +877,7 @@ class DeleteAccountMetastoreRequest:
     """Delete a metastore"""
 
     metastore_id: str
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -885,6 +886,7 @@ class DeleteAccountStorageCredentialRequest:
 
     metastore_id: str
     name: str
+    force: Optional[bool] = None
 
 
 @dataclass
@@ -2415,42 +2417,6 @@ class UnassignRequest:
 
 
 @dataclass
-class UpdateAutoMaintenance:
-    metastore_id: str
-    enable: bool
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.enable is not None: body['enable'] = self.enable
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateAutoMaintenance':
-        return cls(enable=d.get('enable', None), metastore_id=d.get('metastore_id', None))
-
-
-@dataclass
-class UpdateAutoMaintenanceResponse:
-    state: Optional[bool] = None
-    user_id: Optional[int] = None
-    username: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.state is not None: body['state'] = self.state
-        if self.user_id is not None: body['user_id'] = self.user_id
-        if self.username is not None: body['username'] = self.username
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateAutoMaintenanceResponse':
-        return cls(state=d.get('state', None),
-                   user_id=d.get('user_id', None),
-                   username=d.get('username', None))
-
-
-@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
@@ -2630,6 +2596,42 @@ class UpdatePermissions:
         return cls(changes=_repeated(d, 'changes', PermissionsChange),
                    full_name=d.get('full_name', None),
                    securable_type=_enum(d, 'securable_type', SecurableType))
+
+
+@dataclass
+class UpdatePredictiveOptimization:
+    metastore_id: str
+    enable: bool
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.enable is not None: body['enable'] = self.enable
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdatePredictiveOptimization':
+        return cls(enable=d.get('enable', None), metastore_id=d.get('metastore_id', None))
+
+
+@dataclass
+class UpdatePredictiveOptimizationResponse:
+    state: Optional[bool] = None
+    user_id: Optional[int] = None
+    username: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.state is not None: body['state'] = self.state
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.username is not None: body['username'] = self.username
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdatePredictiveOptimizationResponse':
+        return cls(state=d.get('state', None),
+                   user_id=d.get('user_id', None),
+                   username=d.get('username', None))
 
 
 @dataclass
@@ -3069,7 +3071,7 @@ class AccountMetastoresAPI:
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/metastores', body=body)
         return AccountsMetastoreInfo.from_dict(json)
 
-    def delete(self, metastore_id: str, **kwargs):
+    def delete(self, metastore_id: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a metastore.
         
         Deletes a Unity Catalog metastore for an account, both specified by ID. Please add a header
@@ -3077,14 +3079,21 @@ class AccountMetastoresAPI:
         
         :param metastore_id: str
           Unity Catalog metastore ID
+        :param force: bool (optional)
+          Force deletion even if the metastore is not empty. Default is false.
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = DeleteAccountMetastoreRequest(metastore_id=metastore_id)
+            request = DeleteAccountMetastoreRequest(force=force, metastore_id=metastore_id)
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}')
+        query = {}
+        if force: query['force'] = request.force
+
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}',
+                     query=query)
 
     def get(self, metastore_id: str, **kwargs) -> AccountsMetastoreInfo:
         """Get a metastore.
@@ -3183,7 +3192,7 @@ class AccountStorageCredentialsAPI:
             body=body)
         return StorageCredentialInfo.from_dict(json)
 
-    def delete(self, metastore_id: str, name: str, **kwargs):
+    def delete(self, metastore_id: str, name: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a storage credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
@@ -3193,17 +3202,22 @@ class AccountStorageCredentialsAPI:
           Unity Catalog metastore ID
         :param name: str
           Name of the storage credential.
+        :param force: bool (optional)
+          Force deletion even if the Storage Credential is not empty. Default is false.
         
         
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = DeleteAccountStorageCredentialRequest(metastore_id=metastore_id, name=name)
+            request = DeleteAccountStorageCredentialRequest(force=force, metastore_id=metastore_id, name=name)
+
+        query = {}
+        if force: query['force'] = request.force
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/',
+            query=query)
 
     def get(self, metastore_id: str, name: str, **kwargs) -> StorageCredentialInfo:
         """Gets the named storage credential.
@@ -4148,6 +4162,27 @@ class MetastoresAPI:
 
         self._api.do('DELETE', f'/api/2.1/unity-catalog/metastores/{request.id}', query=query)
 
+    def enable_optimization(self, metastore_id: str, enable: bool,
+                            **kwargs) -> UpdatePredictiveOptimizationResponse:
+        """Toggle predictive optimization on the metastore.
+        
+        Enables or disables predictive optimization on the metastore.
+        
+        :param metastore_id: str
+          Unique identifier of metastore.
+        :param enable: bool
+          Whether to enable predictive optimization on the metastore.
+        
+        :returns: :class:`UpdatePredictiveOptimizationResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = UpdatePredictiveOptimization(enable=enable, metastore_id=metastore_id)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body)
+        return UpdatePredictiveOptimizationResponse.from_dict(json)
+
     def get(self, id: str, **kwargs) -> MetastoreInfo:
         """Get a metastore.
         
@@ -4177,26 +4212,6 @@ class MetastoresAPI:
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores')
         return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
-
-    def maintenance(self, metastore_id: str, enable: bool, **kwargs) -> UpdateAutoMaintenanceResponse:
-        """Enables or disables auto maintenance on the metastore.
-        
-        Enables or disables auto maintenance on the metastore.
-        
-        :param metastore_id: str
-          Unique identifier of metastore.
-        :param enable: bool
-          Whether to enable auto maintenance on the metastore.
-        
-        :returns: :class:`UpdateAutoMaintenanceResponse`
-        """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateAutoMaintenance(enable=enable, metastore_id=metastore_id)
-        body = request.as_dict()
-
-        json = self._api.do('PATCH', '/api/2.0/auto-maintenance/service', body=body)
-        return UpdateAutoMaintenanceResponse.from_dict(json)
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.

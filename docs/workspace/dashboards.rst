@@ -33,8 +33,7 @@ Dashboards
         :param name: str (optional)
           The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the dashboard. The default is the user's home
-          folder.
+          The identifier of the workspace folder containing the object.
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`

@@ -624,7 +624,6 @@ class PipelineLibrary:
     jar: Optional[str] = None
     maven: Optional['compute.MavenLibrary'] = None
     notebook: Optional['NotebookLibrary'] = None
-    whl: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -632,7 +631,6 @@ class PipelineLibrary:
         if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
-        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -640,8 +638,7 @@ class PipelineLibrary:
         return cls(file=_from_dict(d, 'file', FileLibrary),
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', compute.MavenLibrary),
-                   notebook=_from_dict(d, 'notebook', NotebookLibrary),
-                   whl=d.get('whl', None))
+                   notebook=_from_dict(d, 'notebook', NotebookLibrary))
 
 
 @dataclass

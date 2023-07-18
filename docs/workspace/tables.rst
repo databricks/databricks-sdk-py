@@ -171,3 +171,19 @@ Tables
         
         :returns: Iterator over :class:`TableSummary`
         
+
+    .. py:method:: update(full_name [, owner])
+
+        Update a table owner.
+        
+        Change the owner of the table. The caller must be the owner of the parent catalog, have the
+        **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner
+        of the table and have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+        privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the table.
+        :param owner: str (optional)
+        
+        
+        
