@@ -207,3 +207,19 @@ def test_config_accounts_dod_is_accounts_host(config):
 def test_config_workspace_is_not_accounts_host(config):
     config.host = "https://westeurope.azuredatabricks.net"
     assert not config.is_account_client
+
+
+def test_config_can_be_subclassed():
+
+    class DatabricksConfig(Config):
+
+        def __init__(self):
+            super().__init__()
+
+    with pytest.raises(ValueError): # As opposed to `KeyError`.
+        DatabricksConfig()
+
+
+if __name__ == "__main__":
+    import conftest
+    test_config_accounts_dod_is_accounts_host(conftest.config.__pytest_wrapped__.obj())
