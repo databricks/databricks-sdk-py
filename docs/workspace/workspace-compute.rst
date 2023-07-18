@@ -1,12 +1,12 @@
 
 Compute
 =======
- 
+
 Use and configure compute for Databricks
- 
+
 .. toctree::
   :maxdepth: 1
-  
+
   cluster_policies
   clusters
   command_execution

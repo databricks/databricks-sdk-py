@@ -1,12 +1,12 @@
 
 Workspace APIs
 ==============
- 
+
 These APIs are available from WorkspaceClient
- 
+
 .. toctree::
   :maxdepth: 1
-  
+
   workspace-workspace
   workspace-compute
   workspace-jobs

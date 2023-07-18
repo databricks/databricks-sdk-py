@@ -421,7 +421,7 @@ Clusters
             
             cluster_id = os.environ["TEST_DEFAULT_CLUSTER_ID"]
             
-            context = w.command_execution.create(cluster_id=cluster_id, language=compute.Language.python).result()
+            context = w.command_execution.create(cluster_id=cluster_id, language=compute.Language.PYTHON).result()
             
             w.clusters.ensure_cluster_is_running(cluster_id)
             
