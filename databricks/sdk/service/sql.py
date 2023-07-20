@@ -3101,21 +3101,25 @@ class QueryHistoryAPI:
                                               max_results=max_results,
                                               page_token=page_token)
 
-        query = {}
-        if filter_by: query['filter_by'] = request.filter_by.as_dict()
-        if include_metrics: query['include_metrics'] = request.include_metrics
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
+        body = {}
+        if filter_by: body['filter_by'] = request.filter_by.as_dict()
+        if include_metrics: body['include_metrics'] = request.include_metrics
+        if max_results: body['max_results'] = request.max_results
+        if page_token: body['page_token'] = request.page_token
 
+        # Only the first request can include the filter and params need to be in the body.
+        # Ref: https://github.com/databricks/databricks-sdk-py/issues/99
+        json = self._api.do('GET', '/api/2.0/sql/history/queries', body=body)
+        del body['filter_by']
         while True:
-            json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query)
             if 'res' not in json or not json['res']:
                 return
             for v in json['res']:
                 yield QueryInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
-            query['page_token'] = json['next_page_token']
+            body['page_token'] = json['next_page_token']
+            json = self._api.do('GET', '/api/2.0/sql/history/queries', body=body)
 
 
 class StatementExecutionAPI:
