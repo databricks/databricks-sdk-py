@@ -665,7 +665,7 @@ class PrivilegeAssignment:
     def as_dict(self) -> dict:
         body = {}
         if self.principal is not None: body['principal'] = self.principal
-        if self.privileges: body['privileges'] = [v for v in self.privileges]
+        if self.privileges: body['privileges'] = [v.value for v in self.privileges]
         return body
 
     @classmethod
