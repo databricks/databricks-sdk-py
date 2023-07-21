@@ -1540,7 +1540,7 @@ class QueryFilter:
     def as_dict(self) -> dict:
         body = {}
         if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
-        if self.statuses: body['statuses'] = [v for v in self.statuses]
+        if self.statuses: body['statuses'] = [v.value for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
         if self.warehouse_ids: body['warehouse_ids'] = [v for v in self.warehouse_ids]
         return body

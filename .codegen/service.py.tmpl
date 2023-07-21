@@ -55,7 +55,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 {{- define "as_request_type" -}}
 	{{- if not .Entity }}None # ERROR: No Type
-	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{else}}v{{end}} for v in self.{{.SnakeName}}]
+	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{ else if .Entity.ArrayValue.Enum }}v.value{{else}}v{{end}} for v in self.{{.SnakeName}}]
 	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{.SnakeName}}.as_dict()
 	{{- else if .Entity.Enum }}self.{{.SnakeName}}.value
 	{{- else}}self.{{.SnakeName}}{{- end -}}

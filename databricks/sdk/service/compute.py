@@ -199,7 +199,7 @@ class CloudProviderNodeInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.status: body['status'] = [v for v in self.status]
+        if self.status: body['status'] = [v.value for v in self.status]
         return body
 
     @classmethod
@@ -1679,7 +1679,7 @@ class GetEvents:
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.end_time is not None: body['end_time'] = self.end_time
-        if self.event_types: body['event_types'] = [v for v in self.event_types]
+        if self.event_types: body['event_types'] = [v.value for v in self.event_types]
         if self.limit is not None: body['limit'] = self.limit
         if self.offset is not None: body['offset'] = self.offset
         if self.order is not None: body['order'] = self.order.value
