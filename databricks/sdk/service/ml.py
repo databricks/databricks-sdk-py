@@ -134,7 +134,7 @@ class CommentObject:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.available_actions: body['available_actions'] = [v for v in self.available_actions]
+        if self.available_actions: body['available_actions'] = [v.value for v in self.available_actions]
         if self.comment is not None: body['comment'] = self.comment
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.id is not None: body['id'] = self.id
@@ -308,7 +308,7 @@ class CreateRegistryWebhook:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.events: body['events'] = [v for v in self.events]
+        if self.events: body['events'] = [v.value for v in self.events]
         if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
         if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
         if self.model_name is not None: body['model_name'] = self.model_name
@@ -1418,7 +1418,7 @@ class RegistryWebhook:
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.description is not None: body['description'] = self.description
-        if self.events: body['events'] = [v for v in self.events]
+        if self.events: body['events'] = [v.value for v in self.events]
         if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
         if self.id is not None: body['id'] = self.id
         if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
@@ -2025,7 +2025,7 @@ class TransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.available_actions: body['available_actions'] = [v for v in self.available_actions]
+        if self.available_actions: body['available_actions'] = [v.value for v in self.available_actions]
         if self.comment is not None: body['comment'] = self.comment
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.to_stage is not None: body['to_stage'] = self.to_stage.value
@@ -2149,7 +2149,7 @@ class UpdateRegistryWebhook:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.events: body['events'] = [v for v in self.events]
+        if self.events: body['events'] = [v.value for v in self.events]
         if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
         if self.id is not None: body['id'] = self.id
         if self.job_spec: body['job_spec'] = self.job_spec.as_dict()

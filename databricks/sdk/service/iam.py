@@ -499,7 +499,7 @@ class PartialUpdate:
         body = {}
         if self.id is not None: body['id'] = self.id
         if self.operations: body['Operations'] = [v.as_dict() for v in self.operations]
-        if self.schema: body['schema'] = [v for v in self.schema]
+        if self.schema: body['schema'] = [v.value for v in self.schema]
         return body
 
     @classmethod
@@ -569,7 +569,7 @@ class PermissionAssignment:
     def as_dict(self) -> dict:
         body = {}
         if self.error is not None: body['error'] = self.error
-        if self.permissions: body['permissions'] = [v for v in self.permissions]
+        if self.permissions: body['permissions'] = [v.value for v in self.permissions]
         if self.principal: body['principal'] = self.principal.as_dict()
         return body
 
@@ -810,7 +810,7 @@ class UpdateWorkspaceAssignments:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permissions: body['permissions'] = [v for v in self.permissions]
+        if self.permissions: body['permissions'] = [v.value for v in self.permissions]
         if self.principal_id is not None: body['principal_id'] = self.principal_id
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
