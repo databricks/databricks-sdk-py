@@ -146,7 +146,7 @@ class CreateCustomerManagedKeyRequest:
         body = {}
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
         if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
-        if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
+        if self.use_cases: body['use_cases'] = [v.value for v in self.use_cases]
         return body
 
     @classmethod
@@ -355,7 +355,7 @@ class CustomerManagedKey:
         if self.customer_managed_key_id is not None:
             body['customer_managed_key_id'] = self.customer_managed_key_id
         if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
-        if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
+        if self.use_cases: body['use_cases'] = [v.value for v in self.use_cases]
         return body
 
     @classmethod
