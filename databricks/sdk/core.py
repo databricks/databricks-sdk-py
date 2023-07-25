@@ -14,7 +14,7 @@ import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Callable, Dict, Iterable, List, Optional, Union, Any
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
