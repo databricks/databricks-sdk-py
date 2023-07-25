@@ -924,11 +924,13 @@ class ApiClient:
         def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:
             for k1, v1 in d.items():
                 if isinstance(v1, dict):
-                    v1 = flatten_dict(v1)
-                for k2, v2 in v1.items():
-                    yield f"{k1}.{k2}", v2
+                    v1 = dict(flatten_dict(v1))
+                    for k2, v2 in v1.items():
+                        yield f"{k1}.{k2}", v2
+                else:
+                    yield k1, v1
 
-        flattened = flatten_dict(with_fixed_bools)
+        flattened = dict(flatten_dict(with_fixed_bools))
         return flattened
 
     def do(self,
