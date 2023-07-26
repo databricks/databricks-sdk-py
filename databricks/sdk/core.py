@@ -14,7 +14,7 @@ import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Callable, Dict, Iterable, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
@@ -915,7 +915,27 @@ class ApiClient:
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
             return None
-        return {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+        with_fixed_bools = {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+
+        # Query parameters may be nested, e.g.
+        # {'filter_by': {'user_ids': [123, 456]}}
+        # The HTTP-compatible representation of this is
+        # filter_by.user_ids=123&filter_by.user_ids=456
+        # To achieve this, we convert the above dictionary to
+        # {'filter_by.user_ids': [123, 456]}
+        # See the following for more information:
+        # https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#google.api.HttpRule
+        def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:
+            for k1, v1 in d.items():
+                if isinstance(v1, dict):
+                    v1 = dict(flatten_dict(v1))
+                    for k2, v2 in v1.items():
+                        yield f"{k1}.{k2}", v2
+                else:
+                    yield k1, v1
+
+        flattened = dict(flatten_dict(with_fixed_bools))
+        return flattened
 
     def do(self,
            method: str,
