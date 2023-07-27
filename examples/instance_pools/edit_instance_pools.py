@@ -13,4 +13,4 @@ w.instance_pools.edit(instance_pool_id=created.instance_pool_id,
                       node_type_id=smallest)
 
 # cleanup
-w.instance_pools.delete(delete=created.instance_pool_id)
+w.instance_pools.delete(instance_pool_id=created.instance_pool_id)

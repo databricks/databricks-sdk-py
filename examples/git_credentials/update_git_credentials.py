@@ -12,4 +12,4 @@ w.git_credentials.update(credential_id=cr.credential_id,
                          personal_access_token=f'sdk-{time.time_ns()}')
 
 # cleanup
-w.git_credentials.delete(delete=cr.credential_id)
+w.git_credentials.delete(credential_id=cr.credential_id)

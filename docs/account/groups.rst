@@ -24,7 +24,7 @@ Account Groups
             group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
 
         Create a new group.
         
@@ -59,7 +59,7 @@ Account Groups
             
             group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
             
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
 
         Delete a group.
         
@@ -85,10 +85,10 @@ Account Groups
             
             group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
             
-            fetch = w.groups.get(get=group.id)
+            fetch = w.groups.get(id=group.id)
             
             # cleanup
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
 
         Get group details.
         

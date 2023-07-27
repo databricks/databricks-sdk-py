@@ -7,4 +7,4 @@ w = WorkspaceClient()
 created_share = w.shares.create(name=f'sdk-{time.time_ns()}')
 
 # cleanup
-w.shares.delete(delete=created_share.name)
+w.shares.delete(name=created_share.name)

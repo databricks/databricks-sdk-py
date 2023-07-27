@@ -1936,10 +1936,9 @@ class WorkspacesAPI:
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account. For example, `us-east4`.
         :param managed_services_customer_managed_key_id: str (optional)
-          The ID of the workspace's managed services encryption key configuration object. This is used to
-          encrypt the workspace's notebook and secret data in the control plane, in addition to Databricks SQL
-          queries and query history. The provided key configuration object property `use_cases` must contain
-          `MANAGED_SERVICES`.
+          The ID of the workspace's managed services encryption key configuration object. This is used to help
+          protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query
+          history. The provided key configuration object property `use_cases` must contain `MANAGED_SERVICES`.
         :param network_id: str (optional)
         :param pricing_tier: :class:`PricingTier` (optional)
           The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].

@@ -9,7 +9,7 @@ Catalogs
     the workspaces in a Databricks account. Users in different workspaces can share access to the same data,
     depending on privileges granted centrally in Unity Catalog.
 
-    .. py:method:: create(name [, comment, properties, provider_name, share_name, storage_root])
+    .. py:method:: create(name [, comment, connection_name, properties, provider_name, share_name, storage_root])
 
         Usage:
 
@@ -35,6 +35,8 @@ Catalogs
           Name of catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param connection_name: str (optional)
+          The name of the connection to an external data source.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
@@ -78,7 +80,7 @@ Catalogs
             
             created = w.catalogs.create(name=f'sdk-{time.time_ns()}')
             
-            _ = w.catalogs.get(get=created.name)
+            _ = w.catalogs.get(name=created.name)
             
             # cleanup
             w.catalogs.delete(name=created.name, force=True)

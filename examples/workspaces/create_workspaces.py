@@ -21,6 +21,6 @@ created = a.workspaces.create(workspace_name=f'sdk-{time.time_ns()}',
                               storage_configuration_id=storage.storage_configuration_id).result()
 
 # cleanup
-a.storage.delete(delete=storage.storage_configuration_id)
-a.credentials.delete(delete=role.credentials_id)
-a.workspaces.delete(delete=created.workspace_id)
+a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
+a.credentials.delete(credentials_id=role.credentials_id)
+a.workspaces.delete(workspace_id=created.workspace_id)

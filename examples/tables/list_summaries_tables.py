@@ -12,5 +12,5 @@ summaries = w.tables.list_summaries(catalog_name=created_catalog.name,
                                     schema_name_pattern=created_schema.name)
 
 # cleanup
-w.schemas.delete(delete=created_schema.full_name)
+w.schemas.delete(full_name=created_schema.full_name)
 w.catalogs.delete(name=created_catalog.name, force=True)

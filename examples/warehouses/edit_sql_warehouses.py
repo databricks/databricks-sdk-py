@@ -16,4 +16,4 @@ _ = w.warehouses.edit(id=created.id,
                       auto_stop_mins=10)
 
 # cleanup
-w.warehouses.delete(delete=created.id)
+w.warehouses.delete(id=created.id)

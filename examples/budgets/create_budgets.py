@@ -14,4 +14,4 @@ created = a.budgets.create(budget=billing.Budget(
     alerts=[billing.BudgetAlert(email_notifications=["admin@example.com"], min_percentage=50)]))
 
 # cleanup
-a.budgets.delete(delete=created.budget.budget_id)
+a.budgets.delete(budget_id=created.budget.budget_id)

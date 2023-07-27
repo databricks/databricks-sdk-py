@@ -22,7 +22,7 @@ VPC Endpoint Configurations
                                              vpc_endpoint_name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            a.vpc_endpoints.delete(delete=created.vpc_endpoint_id)
+            a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)
 
         Create VPC endpoint configuration.
         
@@ -87,10 +87,10 @@ VPC Endpoint Configurations
                                              region=os.environ["AWS_REGION"],
                                              vpc_endpoint_name=f'sdk-{time.time_ns()}')
             
-            by_id = a.vpc_endpoints.get(get=created.vpc_endpoint_id)
+            by_id = a.vpc_endpoints.get(vpc_endpoint_id=created.vpc_endpoint_id)
             
             # cleanup
-            a.vpc_endpoints.delete(delete=created.vpc_endpoint_id)
+            a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)
 
         Get a VPC endpoint configuration.
         

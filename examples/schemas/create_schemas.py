@@ -10,4 +10,4 @@ created = w.schemas.create(name=f'sdk-{time.time_ns()}', catalog_name=new_catalo
 
 # cleanup
 w.catalogs.delete(name=new_catalog.name, force=True)
-w.schemas.delete(delete=created.full_name)
+w.schemas.delete(full_name=created.full_name)

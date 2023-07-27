@@ -15,4 +15,4 @@ w.global_init_scripts.update(script_id=created.script_id,
                              script=base64.b64encode(("echo 2").encode()).decode())
 
 # cleanup
-w.global_init_scripts.delete(delete=created.script_id)
+w.global_init_scripts.delete(script_id=created.script_id)

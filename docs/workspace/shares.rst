@@ -2,7 +2,10 @@ Shares
 ======
 .. py:class:: SharesAPI
 
-    Databricks Shares REST API
+    A share is a container instantiated with :method:shares/create. Once created you can iteratively register
+    a collection of existing data assets defined within the metastore using :method:shares/update. You can
+    register data assets under their original name, qualified by their original schema, or provide alternate
+    exposed names.
 
     .. py:method:: create(name [, comment])
 
@@ -19,7 +22,7 @@ Shares
             created_share = w.shares.create(name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.shares.delete(delete=created_share.name)
+            w.shares.delete(name=created_share.name)
 
         Create a share.
         
@@ -60,10 +63,10 @@ Shares
             
             created_share = w.shares.create(name=f'sdk-{time.time_ns()}')
             
-            _ = w.shares.get(get=created_share.name)
+            _ = w.shares.get(name=created_share.name)
             
             # cleanup
-            w.shares.delete(delete=created_share.name)
+            w.shares.delete(name=created_share.name)
 
         Get a share.
         
@@ -148,10 +151,10 @@ Shares
                                 ])
             
             # cleanup
-            w.schemas.delete(delete=created_schema.full_name)
+            w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-            w.tables.delete(delete=table_full_name)
-            w.shares.delete(delete=created_share.name)
+            w.tables.delete(full_name=table_full_name)
+            w.shares.delete(name=created_share.name)
 
         Update a share.
         

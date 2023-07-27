@@ -17,5 +17,5 @@ _ = w.statement_execution.execute(warehouse_id=os.environ["TEST_DEFAULT_WAREHOUS
                                   statement="CREATE TABLE %s AS SELECT 2+2 as four" % (table_name)).result()
 
 # cleanup
-w.schemas.delete(delete=created_schema.full_name)
+w.schemas.delete(full_name=created_schema.full_name)
 w.catalogs.delete(name=created_catalog.name, force=True)

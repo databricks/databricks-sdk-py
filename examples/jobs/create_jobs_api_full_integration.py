@@ -21,4 +21,4 @@ created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
                             ])
 
 # cleanup
-w.jobs.delete(delete=created_job.job_id)
+w.jobs.delete(job_id=created_job.job_id)

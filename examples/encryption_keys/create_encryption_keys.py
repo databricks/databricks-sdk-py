@@ -10,4 +10,4 @@ created = a.encryption_keys.create(aws_key_info=provisioning.CreateAwsKeyInfo(
                                    use_cases=[provisioning.KeyUseCase.MANAGED_SERVICES])
 
 # cleanup
-a.encryption_keys.delete(delete=created.customer_managed_key_id)
+a.encryption_keys.delete(customer_managed_key_id=created.customer_managed_key_id)

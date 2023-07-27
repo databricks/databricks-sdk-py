@@ -21,7 +21,7 @@ created = w.pipelines.create(
                                   })
     ])
 
-by_id = w.pipelines.get(get=created.pipeline_id)
+by_id = w.pipelines.get(pipeline_id=created.pipeline_id)
 
 # cleanup
-w.pipelines.delete(delete=created.pipeline_id)
+w.pipelines.delete(pipeline_id=created.pipeline_id)

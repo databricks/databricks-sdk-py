@@ -13,5 +13,5 @@ spn = w.service_principals.create(display_name=f'sdk-{time.time_ns()}',
 obo = w.token_management.create_obo_token(application_id=spn.application_id, lifetime_seconds=60)
 
 # cleanup
-w.service_principals.delete(delete=spn.id)
-w.token_management.delete(delete=obo.token_info.token_id)
+w.service_principals.delete(id=spn.id)
+w.token_management.delete(token_id=obo.token_info.token_id)

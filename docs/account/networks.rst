@@ -84,7 +84,7 @@ Network configurations
                                                  hex(time.time_ns())[2:]],
                                      security_group_ids=[hex(time.time_ns())[2:]])
             
-            by_id = a.networks.get(get=netw.network_id)
+            by_id = a.networks.get(network_id=netw.network_id)
 
         Get a network configuration.
         

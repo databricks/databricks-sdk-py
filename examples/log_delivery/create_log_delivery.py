@@ -22,7 +22,7 @@ created = a.log_delivery.create(log_delivery_configuration=billing.CreateLogDeli
     output_format=billing.OutputFormat.JSON))
 
 # cleanup
-a.storage.delete(delete=bucket.storage_configuration_id)
-a.credentials.delete(delete=creds.credentials_id)
+a.storage.delete(storage_configuration_id=bucket.storage_configuration_id)
+a.credentials.delete(credentials_id=creds.credentials_id)
 a.log_delivery.patch_status(log_delivery_configuration_id=created.log_delivery_configuration.config_id,
                             status=billing.LogDeliveryConfigStatus.DISABLED)

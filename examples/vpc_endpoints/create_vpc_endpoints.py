@@ -10,4 +10,4 @@ created = a.vpc_endpoints.create(aws_vpc_endpoint_id=os.environ["TEST_RELAY_VPC_
                                  vpc_endpoint_name=f'sdk-{time.time_ns()}')
 
 # cleanup
-a.vpc_endpoints.delete(delete=created.vpc_endpoint_id)
+a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)

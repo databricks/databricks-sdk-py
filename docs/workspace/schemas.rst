@@ -25,7 +25,7 @@ Schemas
             
             # cleanup
             w.catalogs.delete(name=created_catalog.name, force=True)
-            w.schemas.delete(delete=created_schema.full_name)
+            w.schemas.delete(full_name=created_schema.full_name)
 
         Create a schema.
         
@@ -75,11 +75,11 @@ Schemas
             
             created = w.schemas.create(name=f'sdk-{time.time_ns()}', catalog_name=new_catalog.name)
             
-            _ = w.schemas.get(get=created.full_name)
+            _ = w.schemas.get(full_name=created.full_name)
             
             # cleanup
             w.catalogs.delete(name=new_catalog.name, force=True)
-            w.schemas.delete(delete=created.full_name)
+            w.schemas.delete(full_name=created.full_name)
 
         Get a schema.
         
@@ -144,7 +144,7 @@ Schemas
             
             # cleanup
             w.catalogs.delete(name=new_catalog.name, force=True)
-            w.schemas.delete(delete=created.full_name)
+            w.schemas.delete(full_name=created.full_name)
 
         Update a schema.
         

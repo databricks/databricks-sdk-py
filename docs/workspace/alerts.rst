@@ -32,8 +32,8 @@ Alerts
                                     query_id=query.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
-            w.alerts.delete(delete=alert.id)
+            w.queries.delete(query_id=query.id)
+            w.alerts.delete(alert_id=alert.id)
 
         Create an alert.
         
@@ -91,11 +91,11 @@ Alerts
                                     name=f'sdk-{time.time_ns()}',
                                     query_id=query.id)
             
-            by_id = w.alerts.get(get=alert.id)
+            by_id = w.alerts.get(alert_id=alert.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
-            w.alerts.delete(delete=alert.id)
+            w.queries.delete(query_id=query.id)
+            w.alerts.delete(alert_id=alert.id)
 
         Get an alert.
         
@@ -155,8 +155,8 @@ Alerts
                             query_id=query.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
-            w.alerts.delete(delete=alert.id)
+            w.queries.delete(query_id=query.id)
+            w.alerts.delete(alert_id=alert.id)
 
         Update an alert.
         

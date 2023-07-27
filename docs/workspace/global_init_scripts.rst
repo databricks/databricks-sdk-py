@@ -29,7 +29,7 @@ Global Init Scripts
                                                    position=10)
             
             # cleanup
-            w.global_init_scripts.delete(delete=created.script_id)
+            w.global_init_scripts.delete(script_id=created.script_id)
 
         Create init script.
         
@@ -85,10 +85,10 @@ Global Init Scripts
                                                    enabled=True,
                                                    position=10)
             
-            by_id = w.global_init_scripts.get(get=created.script_id)
+            by_id = w.global_init_scripts.get(script_id=created.script_id)
             
             # cleanup
-            w.global_init_scripts.delete(delete=created.script_id)
+            w.global_init_scripts.delete(script_id=created.script_id)
 
         Get an init script.
         
@@ -144,7 +144,7 @@ Global Init Scripts
                                          script=base64.b64encode(("echo 2").encode()).decode())
             
             # cleanup
-            w.global_init_scripts.delete(delete=created.script_id)
+            w.global_init_scripts.delete(script_id=created.script_id)
 
         Update init script.
         

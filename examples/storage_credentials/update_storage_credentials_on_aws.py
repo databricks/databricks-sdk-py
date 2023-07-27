@@ -16,4 +16,4 @@ _ = w.storage_credentials.update(
     aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]))
 
 # cleanup
-w.storage_credentials.delete(delete=created.name)
+w.storage_credentials.delete(name=created.name)

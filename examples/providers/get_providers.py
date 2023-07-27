@@ -13,7 +13,7 @@ public_share_recipient = """{
 
 created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
 
-_ = w.providers.get(get=created.name)
+_ = w.providers.get(name=created.name)
 
 # cleanup
-w.providers.delete(delete=created.name)
+w.providers.delete(name=created.name)

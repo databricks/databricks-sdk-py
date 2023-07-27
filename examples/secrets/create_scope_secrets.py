@@ -12,4 +12,4 @@ w.secrets.create_scope(scope=scope_name)
 
 # cleanup
 w.secrets.delete_secret(scope=scope_name, key=key_name)
-w.secrets.delete_scope(delete_scope=scope_name)
+w.secrets.delete_scope(scope=scope_name)

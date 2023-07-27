@@ -32,7 +32,7 @@ Secret
             
             # cleanup
             w.secrets.delete_secret(scope=scope_name, key=key_name)
-            w.secrets.delete_scope(delete_scope=scope_name)
+            w.secrets.delete_scope(scope=scope_name)
 
         Create a new secret scope.
         
@@ -138,11 +138,11 @@ Secret
             
             w.secrets.create_scope(scope=scope_name)
             
-            acls = w.secrets.list_acls(list_acls=scope_name)
+            acls = w.secrets.list_acls(scope=scope_name)
             
             # cleanup
             w.secrets.delete_secret(scope=scope_name, key=key_name)
-            w.secrets.delete_scope(delete_scope=scope_name)
+            w.secrets.delete_scope(scope=scope_name)
 
         Lists ACLs.
         
@@ -196,11 +196,11 @@ Secret
             
             w.secrets.create_scope(scope=scope_name)
             
-            scrts = w.secrets.list_secrets(list_secrets=scope_name)
+            scrts = w.secrets.list_secrets(scope=scope_name)
             
             # cleanup
             w.secrets.delete_secret(scope=scope_name, key=key_name)
-            w.secrets.delete_scope(delete_scope=scope_name)
+            w.secrets.delete_scope(scope=scope_name)
 
         List secret keys.
         
@@ -241,9 +241,9 @@ Secret
             w.secrets.put_acl(scope=scope_name, permission=workspace.AclPermission.MANAGE, principal=group.display_name)
             
             # cleanup
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
             w.secrets.delete_secret(scope=scope_name, key=key_name)
-            w.secrets.delete_scope(delete_scope=scope_name)
+            w.secrets.delete_scope(scope=scope_name)
 
         Create/update an ACL.
         
@@ -304,7 +304,7 @@ Secret
             
             # cleanup
             w.secrets.delete_secret(scope=scope_name, key=key_name)
-            w.secrets.delete_scope(delete_scope=scope_name)
+            w.secrets.delete_scope(scope=scope_name)
 
         Add a secret.
         

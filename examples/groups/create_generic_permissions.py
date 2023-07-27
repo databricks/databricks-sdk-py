@@ -7,4 +7,4 @@ w = WorkspaceClient()
 group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
 
 # cleanup
-w.groups.delete(delete=group.id)
+w.groups.delete(id=group.id)

@@ -23,7 +23,7 @@ SQL Warehouses
                                           auto_stop_mins=10).result()
             
             # cleanup
-            w.warehouses.delete(delete=created.id)
+            w.warehouses.delete(id=created.id)
 
         Create a warehouse.
         
@@ -125,7 +125,7 @@ SQL Warehouses
                                   auto_stop_mins=10)
             
             # cleanup
-            w.warehouses.delete(delete=created.id)
+            w.warehouses.delete(id=created.id)
 
         Update a warehouse.
         
@@ -210,10 +210,10 @@ SQL Warehouses
                                           max_num_clusters=1,
                                           auto_stop_mins=10).result()
             
-            wh = w.warehouses.get(get=created.id)
+            wh = w.warehouses.get(id=created.id)
             
             # cleanup
-            w.warehouses.delete(delete=created.id)
+            w.warehouses.delete(id=created.id)
 
         Get warehouse info.
         
