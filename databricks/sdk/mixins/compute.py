@@ -209,7 +209,7 @@ class ClustersExt(compute.ClustersAPI):
             return nt.node_type_id
         raise ValueError("cannot determine smallest node type")
 
-    def ensure_cluster_is_running(self, cluster_id: str) -> compute.ClusterDetails:
+    def ensure_cluster_is_running(self, cluster_id: str) -> None:
         """Ensures that given cluster is running, regardless of the current state"""
         timeout = datetime.timedelta(minutes=20)
         deadline = time.time() + timeout.total_seconds()
@@ -218,14 +218,17 @@ class ClustersExt(compute.ClustersAPI):
                 state = compute.State
                 info = self.get(cluster_id)
                 if info.state == state.RUNNING:
-                    return info
+                    return
                 elif info.state == state.TERMINATED:
-                    return self.start(cluster_id).result()
+                    self.start(cluster_id).result()
+                    return
                 elif info.state == state.TERMINATING:
                     self.wait_get_cluster_terminated(cluster_id)
-                    return self.start(cluster_id).result()
+                    self.start(cluster_id).result()
+                    return
                 elif info.state in (state.PENDING, state.RESIZING, state.RESTARTING):
-                    return self.wait_get_cluster_running(cluster_id)
+                    self.wait_get_cluster_running(cluster_id)
+                    return
                 elif info.state in (state.ERROR, state.UNKNOWN):
                     raise RuntimeError(f'Cluster {info.cluster_name} is {info.state}: {info.state_message}')
             except OperationFailed as e:
