@@ -3,8 +3,9 @@
 ## 0.3.0
 
 * Fixed serialization of lists of enum values ([#248](https://github.com/databricks/databricks-sdk-py/pull/248)).
-* Handle nested query parameters in ApiClient.do() ([#249](https://github.com/databricks/databricks-sdk-py/pull/249)).
-* Improve access of `__annotations__` ([#239](https://github.com/databricks/databricks-sdk-py/pull/239)).
+* Fixed examples that used incorrect keyword argument names. (https://github.com/databricks/databricks-sdk-go/pull/560)
+* Handled nested query parameters in ApiClient.do() ([#249](https://github.com/databricks/databricks-sdk-py/pull/249)).
+* Improved access of `__annotations__` ([#239](https://github.com/databricks/databricks-sdk-py/pull/239)).
 
 API Changes:
 
