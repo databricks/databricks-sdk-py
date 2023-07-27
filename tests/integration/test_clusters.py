@@ -7,6 +7,15 @@ from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.compute import EventType
 
 
+def test_noise(w):
+    from concurrent.futures import ThreadPoolExecutor, wait
+    futures = []
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        for _ in range(100):
+            futures.append(pool.submit(w.clusters.select_node_type, local_disk=True))
+        wait(futures)
+
+
 def test_smallest_node_type(w):
     node_type_id = w.clusters.select_node_type(local_disk=True)
     assert node_type_id is not None
