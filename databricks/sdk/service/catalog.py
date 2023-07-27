@@ -452,6 +452,7 @@ class ConnectionType(Enum):
 class CreateCatalog:
     name: str
     comment: Optional[str] = None
+    connection_name: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
     provider_name: Optional[str] = None
     share_name: Optional[str] = None
@@ -460,6 +461,7 @@ class CreateCatalog:
     def as_dict(self) -> dict:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.name is not None: body['name'] = self.name
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
@@ -470,6 +472,7 @@ class CreateCatalog:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCatalog':
         return cls(comment=d.get('comment', None),
+                   connection_name=d.get('connection_name', None),
                    name=d.get('name', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
@@ -514,14 +517,18 @@ class CreateExternalLocation:
     name: str
     url: str
     credential_name: str
+    access_point: Optional[str] = None
     comment: Optional[str] = None
+    encryption_details: Optional['EncryptionDetails'] = None
     read_only: Optional[bool] = None
     skip_validation: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.access_point is not None: body['access_point'] = self.access_point
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -530,8 +537,10 @@ class CreateExternalLocation:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateExternalLocation':
-        return cls(comment=d.get('comment', None),
+        return cls(access_point=d.get('access_point', None),
+                   comment=d.get('comment', None),
                    credential_name=d.get('credential_name', None),
+                   encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None),
@@ -681,26 +690,6 @@ class CreateMetastoreAssignment:
         return cls(default_catalog_name=d.get('default_catalog_name', None),
                    metastore_id=d.get('metastore_id', None),
                    workspace_id=d.get('workspace_id', None))
-
-
-@dataclass
-class CreateMetastoreAssignmentsResponseItem:
-    message: Optional[str] = None
-    metastore_assignment: Optional['MetastoreAssignment'] = None
-    status_code: Optional[int] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.message is not None: body['message'] = self.message
-        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
-        if self.status_code is not None: body['status_code'] = self.status_code
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateMetastoreAssignmentsResponseItem':
-        return cls(message=d.get('message', None),
-                   metastore_assignment=_from_dict(d, 'metastore_assignment', MetastoreAssignment),
-                   status_code=d.get('status_code', None))
 
 
 @dataclass
@@ -1125,12 +1114,30 @@ class EnableSchemaName(Enum):
 
 
 @dataclass
+class EncryptionDetails:
+    """Encryption options that apply to clients connecting to cloud storage."""
+
+    sse_encryption_details: Optional['SseEncryptionDetails'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.sse_encryption_details: body['sse_encryption_details'] = self.sse_encryption_details.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'EncryptionDetails':
+        return cls(sse_encryption_details=_from_dict(d, 'sse_encryption_details', SseEncryptionDetails))
+
+
+@dataclass
 class ExternalLocationInfo:
+    access_point: Optional[str] = None
     comment: Optional[str] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
     credential_id: Optional[str] = None
     credential_name: Optional[str] = None
+    encryption_details: Optional['EncryptionDetails'] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
     owner: Optional[str] = None
@@ -1141,11 +1148,13 @@ class ExternalLocationInfo:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.access_point is not None: body['access_point'] = self.access_point
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -1157,11 +1166,13 @@ class ExternalLocationInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExternalLocationInfo':
-        return cls(comment=d.get('comment', None),
+        return cls(access_point=d.get('access_point', None),
+                   comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    credential_id=d.get('credential_id', None),
                    credential_name=d.get('credential_name', None),
+                   encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -1986,8 +1997,10 @@ class Privilege(Enum):
     ALL_PRIVILEGES = 'ALL_PRIVILEGES'
     CREATE = 'CREATE'
     CREATE_CATALOG = 'CREATE_CATALOG'
+    CREATE_CONNECTION = 'CREATE_CONNECTION'
     CREATE_EXTERNAL_LOCATION = 'CREATE_EXTERNAL_LOCATION'
     CREATE_EXTERNAL_TABLE = 'CREATE_EXTERNAL_TABLE'
+    CREATE_FOREIGN_CATALOG = 'CREATE_FOREIGN_CATALOG'
     CREATE_FUNCTION = 'CREATE_FUNCTION'
     CREATE_MANAGED_STORAGE = 'CREATE_MANAGED_STORAGE'
     CREATE_MATERIALIZED_VIEW = 'CREATE_MATERIALIZED_VIEW'
@@ -2007,6 +2020,7 @@ class Privilege(Enum):
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
     USAGE = 'USAGE'
     USE_CATALOG = 'USE_CATALOG'
+    USE_CONNECTION = 'USE_CONNECTION'
     USE_MARKETPLACE_ASSETS = 'USE_MARKETPLACE_ASSETS'
     USE_PROVIDER = 'USE_PROVIDER'
     USE_RECIPIENT = 'USE_RECIPIENT'
@@ -2113,6 +2127,7 @@ class SecurableType(Enum):
     """The type of Unity Catalog securable"""
 
     CATALOG = 'catalog'
+    CONNECTION = 'connection'
     EXTERNAL_LOCATION = 'external_location'
     FUNCTION = 'function'
     METASTORE = 'metastore'
@@ -2123,6 +2138,32 @@ class SecurableType(Enum):
     SHARE = 'share'
     STORAGE_CREDENTIAL = 'storage_credential'
     TABLE = 'table'
+
+
+@dataclass
+class SseEncryptionDetails:
+    """Server-Side Encryption properties for clients communicating with AWS s3."""
+
+    algorithm: 'SseEncryptionDetailsAlgorithm'
+    aws_kms_key_arn: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.algorithm is not None: body['algorithm'] = self.algorithm.value
+        if self.aws_kms_key_arn is not None: body['aws_kms_key_arn'] = self.aws_kms_key_arn
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SseEncryptionDetails':
+        return cls(algorithm=_enum(d, 'algorithm', SseEncryptionDetailsAlgorithm),
+                   aws_kms_key_arn=d.get('aws_kms_key_arn', None))
+
+
+class SseEncryptionDetailsAlgorithm(Enum):
+    """The type of key encryption to use (affects headers from s3 client)."""
+
+    AWS_SSE_KMS = 'AWS_SSE_KMS'
+    AWS_SSE_S3 = 'AWS_SSE_S3'
 
 
 @dataclass
@@ -2267,6 +2308,7 @@ class TableDependency:
 
 @dataclass
 class TableInfo:
+    access_point: Optional[str] = None
     catalog_name: Optional[str] = None
     columns: Optional['List[ColumnInfo]'] = None
     comment: Optional[str] = None
@@ -2278,6 +2320,7 @@ class TableInfo:
     delta_runtime_properties_kvpairs: Optional['DeltaRuntimePropertiesKvPairs'] = None
     effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
     enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    encryption_details: Optional['EncryptionDetails'] = None
     full_name: Optional[str] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -2298,6 +2341,7 @@ class TableInfo:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.access_point is not None: body['access_point'] = self.access_point
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
         if self.comment is not None: body['comment'] = self.comment
@@ -2313,6 +2357,7 @@ class TableInfo:
             body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
         if self.enable_auto_maintenance is not None:
             body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
+        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2335,7 +2380,8 @@ class TableInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableInfo':
-        return cls(catalog_name=d.get('catalog_name', None),
+        return cls(access_point=d.get('access_point', None),
+                   catalog_name=d.get('catalog_name', None),
                    columns=_repeated(d, 'columns', ColumnInfo),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -2348,6 +2394,7 @@ class TableInfo:
                    effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
                                                               EffectiveAutoMaintenanceFlag),
                    enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
+                   encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2464,8 +2511,10 @@ class UpdateConnection:
 
 @dataclass
 class UpdateExternalLocation:
+    access_point: Optional[str] = None
     comment: Optional[str] = None
     credential_name: Optional[str] = None
+    encryption_details: Optional['EncryptionDetails'] = None
     force: Optional[bool] = None
     name: Optional[str] = None
     owner: Optional[str] = None
@@ -2474,8 +2523,10 @@ class UpdateExternalLocation:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.access_point is not None: body['access_point'] = self.access_point
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.force is not None: body['force'] = self.force
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2485,8 +2536,10 @@ class UpdateExternalLocation:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateExternalLocation':
-        return cls(comment=d.get('comment', None),
+        return cls(access_point=d.get('access_point', None),
+                   comment=d.get('comment', None),
                    credential_name=d.get('credential_name', None),
+                   encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    force=d.get('force', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -2857,10 +2910,12 @@ class ValidationResultResult(Enum):
 
 @dataclass
 class VolumeInfo:
+    access_point: Optional[str] = None
     catalog_name: Optional[str] = None
     comment: Optional[str] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
+    encryption_details: Optional['EncryptionDetails'] = None
     full_name: Optional[str] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -2874,10 +2929,12 @@ class VolumeInfo:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.access_point is not None: body['access_point'] = self.access_point
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
+        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2892,10 +2949,12 @@ class VolumeInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'VolumeInfo':
-        return cls(catalog_name=d.get('catalog_name', None),
+        return cls(access_point=d.get('access_point', None),
+                   catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
+                   encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2925,11 +2984,10 @@ class AccountMetastoreAssignmentsAPI:
                metastore_id: str,
                *,
                metastore_assignment: Optional[CreateMetastoreAssignment] = None,
-               **kwargs) -> Iterator[CreateMetastoreAssignmentsResponseItem]:
+               **kwargs):
         """Assigns a workspace to a metastore.
         
-        Creates an assignment to a metastore for a workspace Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Creates an assignment to a metastore for a workspace
         
         :param workspace_id: int
           Workspace ID.
@@ -2937,7 +2995,7 @@ class AccountMetastoreAssignmentsAPI:
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
         
-        :returns: Iterator over :class:`CreateMetastoreAssignmentsResponseItem`
+        
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
@@ -2945,18 +3003,15 @@ class AccountMetastoreAssignmentsAPI:
                                                         metastore_id=metastore_id,
                                                         workspace_id=workspace_id)
         body = request.as_dict()
-
-        json = self._api.do(
+        self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
             body=body)
-        return [CreateMetastoreAssignmentsResponseItem.from_dict(v) for v in json]
 
     def delete(self, workspace_id: int, metastore_id: str, **kwargs):
         """Delete a metastore assignment.
         
-        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore. Please add a
-        header X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
         
         :param workspace_id: int
           Workspace ID.
@@ -2980,8 +3035,7 @@ class AccountMetastoreAssignmentsAPI:
         
         Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
         a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
-        will not be found and a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
-        2.0 to access this API.
+        will not be found and a 404 returned.
         
         :param workspace_id: int
           Workspace ID.
@@ -2999,8 +3053,7 @@ class AccountMetastoreAssignmentsAPI:
     def list(self, metastore_id: str, **kwargs) -> Iterator[MetastoreAssignment]:
         """Get all workspaces assigned to a metastore.
         
-        Gets a list of all Databricks workspace IDs that have been assigned to given metastore. Please add a
-        header X-Databricks-Account-Console-API-Version: 2.0 to access this API
+        Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
         
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -3024,7 +3077,7 @@ class AccountMetastoreAssignmentsAPI:
         """Updates a metastore assignment to a workspaces.
         
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
-        updated. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        updated.
         
         :param workspace_id: int
           Workspace ID.
@@ -3056,8 +3109,7 @@ class AccountMetastoresAPI:
     def create(self, *, metastore_info: Optional[CreateMetastore] = None, **kwargs) -> AccountsMetastoreInfo:
         """Create metastore.
         
-        Creates a Unity Catalog metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
-        to access this API.
+        Creates a Unity Catalog metastore.
         
         :param metastore_info: :class:`CreateMetastore` (optional)
         
@@ -3074,8 +3126,7 @@ class AccountMetastoresAPI:
     def delete(self, metastore_id: str, *, force: Optional[bool] = None, **kwargs):
         """Delete a metastore.
         
-        Deletes a Unity Catalog metastore for an account, both specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Deletes a Unity Catalog metastore for an account, both specified by ID.
         
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -3098,8 +3149,7 @@ class AccountMetastoresAPI:
     def get(self, metastore_id: str, **kwargs) -> AccountsMetastoreInfo:
         """Get a metastore.
         
-        Gets a Unity Catalog metastore from an account, both specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Gets a Unity Catalog metastore from an account, both specified by ID.
         
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -3117,8 +3167,7 @@ class AccountMetastoresAPI:
     def list(self) -> ListMetastoresResponse:
         """Get all metastores associated with an account.
         
-        Gets all Unity Catalog metastores associated with an account specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Gets all Unity Catalog metastores associated with an account specified by ID.
         
         :returns: :class:`ListMetastoresResponse`
         """
@@ -3133,8 +3182,7 @@ class AccountMetastoresAPI:
                **kwargs) -> AccountsMetastoreInfo:
         """Update a metastore.
         
-        Updates an existing Unity Catalog metastore. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Updates an existing Unity Catalog metastore.
         
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -3309,6 +3357,7 @@ class CatalogsAPI:
                name: str,
                *,
                comment: Optional[str] = None,
+               connection_name: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None,
                provider_name: Optional[str] = None,
                share_name: Optional[str] = None,
@@ -3323,6 +3372,8 @@ class CatalogsAPI:
           Name of catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param connection_name: str (optional)
+          The name of the connection to an external data source.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
@@ -3339,6 +3390,7 @@ class CatalogsAPI:
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
             request = CreateCatalog(comment=comment,
+                                    connection_name=connection_name,
                                     name=name,
                                     properties=properties,
                                     provider_name=provider_name,
@@ -3590,7 +3642,9 @@ class ExternalLocationsAPI:
                url: str,
                credential_name: str,
                *,
+               access_point: Optional[str] = None,
                comment: Optional[str] = None,
+               encryption_details: Optional[EncryptionDetails] = None,
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None,
                **kwargs) -> ExternalLocationInfo:
@@ -3606,8 +3660,12 @@ class ExternalLocationsAPI:
           Path URL of the external location.
         :param credential_name: str
           Name of the storage credential used with this location.
+        :param access_point: str (optional)
+          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -3617,8 +3675,10 @@ class ExternalLocationsAPI:
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = CreateExternalLocation(comment=comment,
+            request = CreateExternalLocation(access_point=access_point,
+                                             comment=comment,
                                              credential_name=credential_name,
+                                             encryption_details=encryption_details,
                                              name=name,
                                              read_only=read_only,
                                              skip_validation=skip_validation,
@@ -3684,8 +3744,10 @@ class ExternalLocationsAPI:
     def update(self,
                name: str,
                *,
+               access_point: Optional[str] = None,
                comment: Optional[str] = None,
                credential_name: Optional[str] = None,
+               encryption_details: Optional[EncryptionDetails] = None,
                force: Optional[bool] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
@@ -3699,10 +3761,14 @@ class ExternalLocationsAPI:
         
         :param name: str
           Name of the external location.
+        :param access_point: str (optional)
+          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param owner: str (optional)
@@ -3716,8 +3782,10 @@ class ExternalLocationsAPI:
         """
         request = kwargs.get('request', None)
         if not request: # request is not given through keyed args
-            request = UpdateExternalLocation(comment=comment,
+            request = UpdateExternalLocation(access_point=access_point,
+                                             comment=comment,
                                              credential_name=credential_name,
+                                             encryption_details=encryption_details,
                                              force=force,
                                              name=name,
                                              owner=owner,

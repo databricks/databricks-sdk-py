@@ -10,7 +10,7 @@ created = w.global_init_scripts.create(name=f'sdk-{time.time_ns()}',
                                        enabled=True,
                                        position=10)
 
-by_id = w.global_init_scripts.get(get=created.script_id)
+by_id = w.global_init_scripts.get(script_id=created.script_id)
 
 # cleanup
-w.global_init_scripts.delete(delete=created.script_id)
+w.global_init_scripts.delete(script_id=created.script_id)

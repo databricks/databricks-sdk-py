@@ -18,4 +18,4 @@ clstr = w.clusters.create(cluster_name=cluster_name,
 _ = w.clusters.restart(cluster_id=clstr.cluster_id).result()
 
 # cleanup
-w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+w.clusters.permanent_delete(cluster_id=clstr.cluster_id)

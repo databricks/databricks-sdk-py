@@ -46,10 +46,10 @@ Jobs
                                                       timeout_seconds=0)
                                         ])
             
-            w.jobs.cancel_all_runs(cancel_all_runs=created_job.job_id)
+            w.jobs.cancel_all_runs(job_id=created_job.job_id)
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Cancel all runs of a job.
         
@@ -95,7 +95,7 @@ Jobs
             cancelled_run = w.jobs.cancel_run(run_id=run_now_response.response.run_id).result()
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Cancel a job run.
         
@@ -139,7 +139,7 @@ Jobs
                                         ])
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Create a new job.
         
@@ -273,7 +273,7 @@ Jobs
             exported_view = w.jobs.export_run(run_id=run_by_id.tasks[0].run_id, views_to_export="CODE")
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Export and retrieve a job run.
         
@@ -313,10 +313,10 @@ Jobs
                                                     task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
-            output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job.
         
@@ -354,10 +354,10 @@ Jobs
                                                     task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
-            output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job run.
         
@@ -397,10 +397,10 @@ Jobs
                                                     task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
-            output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get the output for a single run.
         
@@ -528,7 +528,7 @@ Jobs
                                              run_id=run_now_response.response.run_id).result()
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Repair a job run.
         
@@ -649,12 +649,12 @@ Jobs
             
             new_name = f'sdk-{time.time_ns()}'
             
-            by_id = w.jobs.get(get=created_job.job_id)
+            by_id = w.jobs.get(job_id=created_job.job_id)
             
             w.jobs.reset(job_id=by_id.job_id, new_settings=jobs.JobSettings(name=new_name, tasks=by_id.settings.tasks))
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Overwrites all settings for a job.
         
@@ -703,7 +703,7 @@ Jobs
             run_by_id = w.jobs.run_now(job_id=created_job.job_id).result()
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Trigger a new job run.
         
@@ -825,7 +825,7 @@ Jobs
                                 ]).result()
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Create and trigger a one-time run.
         
@@ -906,7 +906,7 @@ Jobs
             w.jobs.update(job_id=created_job.job_id, new_settings=jobs.JobSettings(name=new_name, max_concurrent_runs=5))
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Partially update a job.
         

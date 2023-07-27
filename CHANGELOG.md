@@ -1,5 +1,39 @@
 # Version changelog
 
+## 0.3.0
+
+* Fixed serialization of lists of enum values ([#248](https://github.com/databricks/databricks-sdk-py/pull/248)).
+* Fixed examples that used incorrect keyword argument names. (https://github.com/databricks/databricks-sdk-go/pull/560)
+* Handled nested query parameters in ApiClient.do() ([#249](https://github.com/databricks/databricks-sdk-py/pull/249)).
+* Improved access of `__annotations__` ([#239](https://github.com/databricks/databricks-sdk-py/pull/239)).
+
+API Changes:
+
+ * Changed `create()` method for [a.account_metastore_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_metastore_assignments.html) account-level service to no longer return `databricks.sdk.service.catalog.CreateMetastoreAssignmentsResponseItemList` dataclass.
+ * Added `connection_name` field for `databricks.sdk.service.catalog.CreateCatalog`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+ * Removed `databricks.sdk.service.catalog.CreateMetastoreAssignmentsResponseItem` dataclass.
+ * Added `access_point` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.VolumeInfo`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.VolumeInfo`.
+ * Added `databricks.sdk.service.catalog.EncryptionDetails` dataclass.
+ * Added `databricks.sdk.service.catalog.SseEncryptionDetails` dataclass.
+ * Added `databricks.sdk.service.catalog.SseEncryptionDetailsAlgorithm` dataclass.
+ * Added [a.account_network_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_network_policy.html) account-level service.
+ * Added `databricks.sdk.service.settings.AccountNetworkPolicyMessage` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteAccountNetworkPolicyRequest` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteAccountNetworkPolicyResponse` dataclass.
+ * Added `databricks.sdk.service.settings.ReadAccountNetworkPolicyRequest` dataclass.
+ * Added `databricks.sdk.service.settings.UpdateAccountNetworkPolicyRequest` dataclass.
+
+OpenAPI SHA: a1b6c1ecfaab6635911d3c060a8dd797ac6b2d4d, Date: 2023-07-27
+
 ## 0.2.1
 
 * Support older versions of `urllib3` and Databricks Runtime with regards to `DEFAULT_METHOD_WHITELIST` change to `DEFAULT_ALLOWED_METHODS` ([#240](https://github.com/databricks/databricks-sdk-py/pull/240)).

@@ -13,4 +13,4 @@ a.private_access.replace(private_access_settings_id=created.private_access_setti
                          region=os.environ["AWS_REGION"])
 
 # cleanup
-a.private_access.delete(delete=created.private_access_settings_id)
+a.private_access.delete(private_access_settings_id=created.private_access_settings_id)

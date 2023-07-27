@@ -2,7 +2,19 @@ Recipients
 ==========
 .. py:class:: RecipientsAPI
 
-    Databricks Recipients REST API
+    A recipient is an object you create using :method:recipients/create to represent an organization which you
+    want to allow access shares. The way how sharing works differs depending on whether or not your recipient
+    has access to a Databricks workspace that is enabled for Unity Catalog:
+    
+    - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
+    recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
+    is the key identifier that enables the secure connection. This sharing mode is called
+    **Databricks-to-Databricks sharing**.
+    
+    - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
+    create a recipient object, Databricks generates an activation link you can send to the recipient. The
+    recipient follows the activation link to download the credential file, and then uses the credential file
+    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**.
 
     .. py:method:: create(name, authentication_type [, comment, data_recipient_global_metastore_id, ip_access_list, owner, properties_kvpairs, sharing_code])
 
@@ -19,7 +31,7 @@ Recipients
             created = w.recipients.create(name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.recipients.delete(delete=created.name)
+            w.recipients.delete(name=created.name)
 
         Create a share recipient.
         
@@ -75,10 +87,10 @@ Recipients
             
             created = w.recipients.create(name=f'sdk-{time.time_ns()}')
             
-            _ = w.recipients.get(get=created.name)
+            _ = w.recipients.get(name=created.name)
             
             # cleanup
-            w.recipients.delete(delete=created.name)
+            w.recipients.delete(name=created.name)
 
         Get a share recipient.
         
@@ -136,7 +148,7 @@ Recipients
             recipient_info = w.recipients.rotate_token(name=created.name, existing_token_expire_in_seconds=0)
             
             # cleanup
-            w.recipients.delete(delete=created.name)
+            w.recipients.delete(name=created.name)
 
         Rotate a token.
         
@@ -167,10 +179,10 @@ Recipients
             
             created = w.recipients.create(name=f'sdk-{time.time_ns()}')
             
-            share_permissions = w.recipients.share_permissions(share_permissions=created.name)
+            share_permissions = w.recipients.share_permissions(name=created.name)
             
             # cleanup
-            w.recipients.delete(delete=created.name)
+            w.recipients.delete(name=created.name)
 
         Get recipient share permissions.
         
@@ -200,7 +212,7 @@ Recipients
             w.recipients.update(name=created.name, comment=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.recipients.delete(delete=created.name)
+            w.recipients.delete(name=created.name)
 
         Update a share recipient.
         

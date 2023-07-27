@@ -11,4 +11,4 @@ ri = w.repos.create(path=root, url="https://github.com/shreyas-goenka/empty-repo
 w.repos.update(repo_id=ri.id, branch="foo")
 
 # cleanup
-w.repos.delete(delete=ri.id)
+w.repos.delete(repo_id=ri.id)

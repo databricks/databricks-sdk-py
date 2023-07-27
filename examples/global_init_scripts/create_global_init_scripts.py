@@ -11,4 +11,4 @@ created = w.global_init_scripts.create(name=f'sdk-{time.time_ns()}',
                                        position=10)
 
 # cleanup
-w.global_init_scripts.delete(delete=created.script_id)
+w.global_init_scripts.delete(script_id=created.script_id)

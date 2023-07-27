@@ -19,11 +19,11 @@ _ = w.statement_execution.execute(warehouse_id=os.environ["TEST_DEFAULT_WAREHOUS
 
 table_full_name = "%s.%s.%s" % (created_catalog.name, created_schema.name, table_name)
 
-created_table = w.tables.get(get=table_full_name)
+created_table = w.tables.get(full_name=table_full_name)
 
-grants = w.grants.get_effective(get_effective=catalog.SecurableType.TABLE)
+grants = w.grants.get_effective(securable_type=catalog.SecurableType.TABLE, full_name=created_table.full_name)
 
 # cleanup
-w.schemas.delete(delete=created_schema.full_name)
+w.schemas.delete(full_name=created_schema.full_name)
 w.catalogs.delete(name=created_catalog.name, force=True)
-w.tables.delete(delete=table_full_name)
+w.tables.delete(full_name=table_full_name)

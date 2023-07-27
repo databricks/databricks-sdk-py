@@ -11,7 +11,7 @@ query = w.queries.create(name=f'sdk-{time.time_ns()}',
                          description="test query from Go SDK",
                          query="SHOW TABLES")
 
-by_id = w.queries.get(get=query.id)
+by_id = w.queries.get(query_id=query.id)
 
 # cleanup
-w.queries.delete(delete=query.id)
+w.queries.delete(query_id=query.id)

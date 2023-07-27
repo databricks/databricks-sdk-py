@@ -26,7 +26,7 @@ Storage configurations
                 root_bucket_info=provisioning.RootBucketInfo(bucket_name=os.environ["TEST_ROOT_BUCKET"]))
             
             # cleanup
-            a.storage.delete(delete=storage.storage_configuration_id)
+            a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
 
         Create new storage configuration.
         
@@ -77,7 +77,7 @@ Storage configurations
             storage = a.storage.create(storage_configuration_name=f'sdk-{time.time_ns()}',
                                        root_bucket_info=provisioning.RootBucketInfo(bucket_name=f'sdk-{time.time_ns()}'))
             
-            by_id = a.storage.get(get=storage.storage_configuration_id)
+            by_id = a.storage.get(storage_configuration_id=storage.storage_configuration_id)
 
         Get storage configuration.
         

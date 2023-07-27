@@ -14,4 +14,4 @@ created = w.cluster_policies.create(name=f'sdk-{time.time_ns()}',
 """)
 
 # cleanup
-w.cluster_policies.delete(delete=created.policy_id)
+w.cluster_policies.delete(policy_id=created.policy_id)

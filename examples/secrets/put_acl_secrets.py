@@ -16,6 +16,6 @@ w.secrets.create_scope(scope=scope_name)
 w.secrets.put_acl(scope=scope_name, permission=workspace.AclPermission.MANAGE, principal=group.display_name)
 
 # cleanup
-w.groups.delete(delete=group.id)
+w.groups.delete(id=group.id)
 w.secrets.delete_secret(scope=scope_name, key=key_name)
-w.secrets.delete_scope(delete_scope=scope_name)
+w.secrets.delete_scope(scope=scope_name)

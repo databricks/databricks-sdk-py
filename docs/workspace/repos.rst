@@ -29,7 +29,7 @@ Repos
             ri = w.repos.create(path=root, url="https://github.com/shreyas-goenka/empty-repo.git", provider="github")
             
             # cleanup
-            w.repos.delete(delete=ri.id)
+            w.repos.delete(repo_id=ri.id)
 
         Create a repo.
         
@@ -79,10 +79,10 @@ Repos
             
             ri = w.repos.create(path=root, url="https://github.com/shreyas-goenka/empty-repo.git", provider="github")
             
-            by_id = w.repos.get(get=ri.id)
+            by_id = w.repos.get(repo_id=ri.id)
             
             # cleanup
-            w.repos.delete(delete=ri.id)
+            w.repos.delete(repo_id=ri.id)
 
         Get a repo.
         
@@ -140,7 +140,7 @@ Repos
             w.repos.update(repo_id=ri.id, branch="foo")
             
             # cleanup
-            w.repos.delete(delete=ri.id)
+            w.repos.delete(repo_id=ri.id)
 
         Update a repo.
         

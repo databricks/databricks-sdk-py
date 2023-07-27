@@ -19,4 +19,4 @@ run = w.jobs.submit(run_name=f'sdk-{time.time_ns()}',
                     ]).result()
 
 # cleanup
-w.jobs.delete_run(delete_run=run.run_id)
+w.jobs.delete_run(run_id=run.run_id)

@@ -12,4 +12,4 @@ _ = w.schemas.update(full_name=created.full_name, comment=f'sdk-{time.time_ns()}
 
 # cleanup
 w.catalogs.delete(name=new_catalog.name, force=True)
-w.schemas.delete(delete=created.full_name)
+w.schemas.delete(full_name=created.full_name)

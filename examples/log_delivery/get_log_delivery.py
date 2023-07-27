@@ -21,10 +21,10 @@ created = a.log_delivery.create(log_delivery_configuration=billing.CreateLogDeli
     log_type=billing.LogType.AUDIT_LOGS,
     output_format=billing.OutputFormat.JSON))
 
-by_id = a.log_delivery.get(get=created.log_delivery_configuration.config_id)
+by_id = a.log_delivery.get(log_delivery_configuration_id=created.log_delivery_configuration.config_id)
 
 # cleanup
-a.storage.delete(delete=bucket.storage_configuration_id)
-a.credentials.delete(delete=creds.credentials_id)
+a.storage.delete(storage_configuration_id=bucket.storage_configuration_id)
+a.credentials.delete(credentials_id=creds.credentials_id)
 a.log_delivery.patch_status(log_delivery_configuration_id=created.log_delivery_configuration.config_id,
                             status=billing.LogDeliveryConfigStatus.DISABLED)

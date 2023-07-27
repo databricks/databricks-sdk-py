@@ -29,7 +29,7 @@ _ = w.shares.update(name=created_share.name,
                     ])
 
 # cleanup
-w.schemas.delete(delete=created_schema.full_name)
+w.schemas.delete(full_name=created_schema.full_name)
 w.catalogs.delete(name=created_catalog.name, force=True)
-w.tables.delete(delete=table_full_name)
-w.shares.delete(delete=created_share.name)
+w.tables.delete(full_name=table_full_name)
+w.shares.delete(name=created_share.name)

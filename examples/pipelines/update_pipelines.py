@@ -35,4 +35,4 @@ w.pipelines.update(
     ])
 
 # cleanup
-w.pipelines.delete(delete=created.pipeline_id)
+w.pipelines.delete(pipeline_id=created.pipeline_id)

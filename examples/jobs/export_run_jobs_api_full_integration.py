@@ -25,4 +25,4 @@ run_by_id = w.jobs.run_now(job_id=created_job.job_id).result()
 exported_view = w.jobs.export_run(run_id=run_by_id.tasks[0].run_id, views_to_export="CODE")
 
 # cleanup
-w.jobs.delete(delete=created_job.job_id)
+w.jobs.delete(job_id=created_job.job_id)

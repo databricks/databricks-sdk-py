@@ -17,5 +17,5 @@ alert = w.alerts.create(options=sql.AlertOptions(column="1", op="==", value="1")
                         query_id=query.id)
 
 # cleanup
-w.queries.delete(delete=query.id)
-w.alerts.delete(delete=alert.id)
+w.queries.delete(query_id=query.id)
+w.alerts.delete(alert_id=alert.id)

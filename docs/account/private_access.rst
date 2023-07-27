@@ -21,7 +21,7 @@ Private Access Settings
                                               region=os.environ["AWS_REGION"])
             
             # cleanup
-            a.private_access.delete(delete=created.private_access_settings_id)
+            a.private_access.delete(private_access_settings_id=created.private_access_settings_id)
 
         Create private access settings.
         
@@ -103,10 +103,10 @@ Private Access Settings
             created = a.private_access.create(private_access_settings_name=f'sdk-{time.time_ns()}',
                                               region=os.environ["AWS_REGION"])
             
-            by_id = a.private_access.get(get=created.private_access_settings_id)
+            by_id = a.private_access.get(private_access_settings_id=created.private_access_settings_id)
             
             # cleanup
-            a.private_access.delete(delete=created.private_access_settings_id)
+            a.private_access.delete(private_access_settings_id=created.private_access_settings_id)
 
         Get a private access settings object.
         
@@ -164,7 +164,7 @@ Private Access Settings
                                      region=os.environ["AWS_REGION"])
             
             # cleanup
-            a.private_access.delete(delete=created.private_access_settings_id)
+            a.private_access.delete(private_access_settings_id=created.private_access_settings_id)
 
         Replace private access settings.
         

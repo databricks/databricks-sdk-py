@@ -23,7 +23,7 @@ Dashboards
             created = w.dashboards.create(name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.dashboards.delete(delete=created.id)
+            w.dashboards.delete(dashboard_id=created.id)
 
         Create a dashboard object.
         
@@ -53,10 +53,10 @@ Dashboards
             
             created = w.dashboards.create(name=f'sdk-{time.time_ns()}')
             
-            w.dashboards.delete(delete=created.id)
+            w.dashboards.delete(dashboard_id=created.id)
             
             # cleanup
-            w.dashboards.delete(delete=created.id)
+            w.dashboards.delete(dashboard_id=created.id)
 
         Remove a dashboard.
         
@@ -82,10 +82,10 @@ Dashboards
             
             created = w.dashboards.create(name=f'sdk-{time.time_ns()}')
             
-            by_id = w.dashboards.get(get=created.id)
+            by_id = w.dashboards.get(dashboard_id=created.id)
             
             # cleanup
-            w.dashboards.delete(delete=created.id)
+            w.dashboards.delete(dashboard_id=created.id)
 
         Retrieve a definition.
         
@@ -142,7 +142,7 @@ Dashboards
             w.dashboards.restore(dashboard_id=created.id)
             
             # cleanup
-            w.dashboards.delete(delete=created.id)
+            w.dashboards.delete(dashboard_id=created.id)
 
         Restore a dashboard.
         

@@ -7,4 +7,4 @@ w = WorkspaceClient()
 token = w.tokens.create(comment=f'sdk-{time.time_ns()}', lifetime_seconds=300)
 
 # cleanup
-w.tokens.delete(delete=token.token_info.token_id)
+w.tokens.delete(token_id=token.token_info.token_id)

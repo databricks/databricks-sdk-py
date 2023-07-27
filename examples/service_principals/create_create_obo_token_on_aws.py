@@ -11,4 +11,4 @@ spn = w.service_principals.create(display_name=f'sdk-{time.time_ns()}',
                                   groups=[iam.ComplexValue(value=groups["admins"])])
 
 # cleanup
-w.service_principals.delete(delete=spn.id)
+w.service_principals.delete(id=spn.id)

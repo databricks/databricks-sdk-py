@@ -52,8 +52,8 @@ Clusters
             w.clusters.change_owner(cluster_id=clstr.cluster_id, owner_username=other_owner.user_name)
             
             # cleanup
-            w.users.delete(delete=other_owner.id)
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.users.delete(id=other_owner.id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Change cluster owner.
         
@@ -91,7 +91,7 @@ Clusters
                                       num_workers=1).result()
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Create new cluster.
         
@@ -229,10 +229,10 @@ Clusters
                                       autotermination_minutes=15,
                                       num_workers=1).result()
             
-            _ = w.clusters.delete(delete=clstr.cluster_id).result()
+            _ = w.clusters.delete(cluster_id=clstr.cluster_id).result()
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Terminate cluster.
         
@@ -279,7 +279,7 @@ Clusters
                                 num_workers=2).result()
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Update cluster configuration.
         
@@ -456,7 +456,7 @@ Clusters
             events = w.clusters.events(cluster_id=clstr.cluster_id)
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         List cluster activity events.
         
@@ -507,10 +507,10 @@ Clusters
                                       autotermination_minutes=15,
                                       num_workers=1).result()
             
-            by_id = w.clusters.get(get=clstr.cluster_id)
+            by_id = w.clusters.get(cluster_id=clstr.cluster_id)
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Get cluster info.
         
@@ -623,10 +623,10 @@ Clusters
                                       autotermination_minutes=15,
                                       num_workers=1).result()
             
-            w.clusters.pin(pin=clstr.cluster_id)
+            w.clusters.pin(cluster_id=clstr.cluster_id)
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Pin cluster.
         
@@ -665,7 +665,7 @@ Clusters
             by_id = w.clusters.resize(cluster_id=clstr.cluster_id, num_workers=1).result()
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Resize cluster.
         
@@ -718,7 +718,7 @@ Clusters
             _ = w.clusters.restart(cluster_id=clstr.cluster_id).result()
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Restart cluster.
         
@@ -823,10 +823,10 @@ Clusters
                                       autotermination_minutes=15,
                                       num_workers=1).result()
             
-            _ = w.clusters.start(start=clstr.cluster_id).result()
+            _ = w.clusters.start(cluster_id=clstr.cluster_id).result()
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Start terminated cluster.
         
@@ -868,10 +868,10 @@ Clusters
                                       autotermination_minutes=15,
                                       num_workers=1).result()
             
-            w.clusters.unpin(unpin=clstr.cluster_id)
+            w.clusters.unpin(cluster_id=clstr.cluster_id)
             
             # cleanup
-            w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+            w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Unpin cluster.
         

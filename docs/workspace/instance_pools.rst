@@ -34,7 +34,7 @@ Instance Pools
             created = w.instance_pools.create(instance_pool_name=f'sdk-{time.time_ns()}', node_type_id=smallest)
             
             # cleanup
-            w.instance_pools.delete(delete=created.instance_pool_id)
+            w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
         Create a new instance pool.
         
@@ -125,7 +125,7 @@ Instance Pools
                                   node_type_id=smallest)
             
             # cleanup
-            w.instance_pools.delete(delete=created.instance_pool_id)
+            w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
         Edit an existing instance pool.
         
@@ -201,10 +201,10 @@ Instance Pools
             
             created = w.instance_pools.create(instance_pool_name=f'sdk-{time.time_ns()}', node_type_id=smallest)
             
-            by_id = w.instance_pools.get(get=created.instance_pool_id)
+            by_id = w.instance_pools.get(instance_pool_id=created.instance_pool_id)
             
             # cleanup
-            w.instance_pools.delete(delete=created.instance_pool_id)
+            w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
         Get instance pool information.
         

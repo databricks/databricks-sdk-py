@@ -25,4 +25,4 @@ a.budgets.update(budget_id=created.budget.budget_id,
                                        ]))
 
 # cleanup
-a.budgets.delete(delete=created.budget.budget_id)
+a.budgets.delete(budget_id=created.budget.budget_id)
