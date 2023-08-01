@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Union
 
 is_local_implementation = True
 
@@ -42,7 +43,7 @@ except ImportError:
 
     from . import dbutils_stub
 
-    dbutils_type = dbutils_stub.dbutils | RemoteDbUtils
+    dbutils_type = Union[dbutils_stub.dbutils, RemoteDbUtils]
 
     try:
         from .stub import *
