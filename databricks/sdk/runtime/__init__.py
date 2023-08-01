@@ -38,16 +38,16 @@ except ImportError:
     # OSS implementation
     is_local_implementation = True
 
-    try:
-        from . import stub
-        from .stub import *
-        dbutils_type = Type[stub.dbutils]
-    except (ImportError, NameError):
-        from databricks.sdk.dbutils import RemoteDbUtils
+    from databricks.sdk.dbutils import RemoteDbUtils
 
+    from . import stub
+    dbutils_type = Type[stub.dbutils] | RemoteDbUtils
+
+    try:
+        from .stub import *
+    except (ImportError, NameError):
         # this assumes that all environment variables are set
         dbutils = RemoteDbUtils()
-        dbutils_type = RemoteDbUtils
 
     dbutils = cast(dbutils_type, dbutils)
 
