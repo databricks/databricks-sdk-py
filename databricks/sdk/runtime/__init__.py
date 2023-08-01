@@ -33,15 +33,16 @@ try:
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
 except ImportError:
-    from typing import Type, cast
+    from typing import cast
 
     # OSS implementation
     is_local_implementation = True
 
     from databricks.sdk.dbutils import RemoteDbUtils
 
-    from . import stub
-    dbutils_type = Type[stub.dbutils] | RemoteDbUtils
+    from . import dbutils_stub
+
+    dbutils_type = type[dbutils_stub.dbutils] | RemoteDbUtils
 
     try:
         from .stub import *
