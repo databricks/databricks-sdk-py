@@ -33,7 +33,7 @@ try:
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
 except ImportError:
-    from typing import cast
+    from typing import cast, Type
 
     # OSS implementation
     is_local_implementation = True
@@ -42,7 +42,7 @@ except ImportError:
 
     from . import dbutils_stub
 
-    dbutils_type = type[dbutils_stub.dbutils] | RemoteDbUtils
+    dbutils_type = Type[dbutils_stub.dbutils] | RemoteDbUtils
 
     try:
         from .stub import *
