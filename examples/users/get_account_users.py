@@ -6,7 +6,7 @@ a = AccountClient()
 
 user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
 
-by_id = a.users.get(get=user.id)
+by_id = a.users.get(id=user.id)
 
 # cleanup
-a.users.delete(delete=user.id)
+a.users.delete(id=user.id)
