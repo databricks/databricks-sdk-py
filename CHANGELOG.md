@@ -1,5 +1,12 @@
 # Version changelog
 
+## 0.3.1
+
+* Added timeout to `w.clusters.ensure_cluster_running()` ([#227](https://github.com/databricks/databricks-sdk-py/pull/227)).
+* Fixed `debug_headers` type hints for `WorkspaceClient` and `AccountClient` ([#258](https://github.com/databricks/databricks-sdk-py/pull/258)).
+* Made dbutils typecast use a valid type variable ([#259](https://github.com/databricks/databricks-sdk-py/pull/259)).
+
+
 ## 0.3.0
 
 * Fixed serialization of lists of enum values ([#248](https://github.com/databricks/databricks-sdk-py/pull/248)).
