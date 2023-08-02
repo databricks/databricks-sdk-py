@@ -12,4 +12,4 @@ query = w.queries.create(name=f'sdk-{time.time_ns()}',
                          query="SHOW TABLES")
 
 # cleanup
-w.queries.delete(delete=query.id)
+w.queries.delete(query_id=query.id)

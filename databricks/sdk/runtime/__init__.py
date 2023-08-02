@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Union
+
 is_local_implementation = True
 
 # All objects that are injected into the Notebook's user namespace should also be made
@@ -31,15 +35,23 @@ try:
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
 except ImportError:
+    from typing import cast
+
     # OSS implementation
     is_local_implementation = True
+
+    from databricks.sdk.dbutils import RemoteDbUtils
+
+    from . import dbutils_stub
+
+    dbutils_type = Union[dbutils_stub.dbutils, RemoteDbUtils]
 
     try:
         from .stub import *
     except (ImportError, NameError):
-        from databricks.sdk.dbutils import RemoteDbUtils
-
         # this assumes that all environment variables are set
         dbutils = RemoteDbUtils()
+
+    dbutils = cast(dbutils_type, dbutils)
 
 __all__ = ['dbutils'] if is_local_implementation else dbruntime_objects

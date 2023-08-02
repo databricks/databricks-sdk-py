@@ -23,4 +23,4 @@ _ = w.clusters.edit(cluster_id=clstr.cluster_id,
                     num_workers=2).result()
 
 # cleanup
-w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+w.clusters.permanent_delete(cluster_id=clstr.cluster_id)

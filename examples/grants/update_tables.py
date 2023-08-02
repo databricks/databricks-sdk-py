@@ -21,7 +21,7 @@ table_full_name = "%s.%s.%s" % (created_catalog.name, created_schema.name, table
 
 account_level_group_name = os.environ["TEST_DATA_ENG_GROUP"]
 
-created_table = w.tables.get(get=table_full_name)
+created_table = w.tables.get(full_name=table_full_name)
 
 x = w.grants.update(full_name=created_table.full_name,
                     securable_type=catalog.SecurableType.TABLE,
@@ -31,6 +31,6 @@ x = w.grants.update(full_name=created_table.full_name,
                     ])
 
 # cleanup
-w.schemas.delete(delete=created_schema.full_name)
+w.schemas.delete(full_name=created_schema.full_name)
 w.catalogs.delete(name=created_catalog.name, force=True)
-w.tables.delete(delete=table_full_name)
+w.tables.delete(full_name=table_full_name)

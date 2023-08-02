@@ -20,5 +20,5 @@ clstr = w.clusters.create(cluster_name=cluster_name,
 w.clusters.change_owner(cluster_id=clstr.cluster_id, owner_username=other_owner.user_name)
 
 # cleanup
-w.users.delete(delete=other_owner.id)
-w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+w.users.delete(id=other_owner.id)
+w.clusters.permanent_delete(cluster_id=clstr.cluster_id)

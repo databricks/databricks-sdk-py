@@ -12,4 +12,4 @@ w.service_principals.update(id=created.id,
                             roles=[iam.ComplexValue(value="xyz")])
 
 # cleanup
-w.service_principals.delete(delete=created.id)
+w.service_principals.delete(id=created.id)

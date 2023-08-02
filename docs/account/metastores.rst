@@ -27,23 +27,23 @@ Account Metastores
 
         Create metastore.
         
-        Creates a Unity Catalog metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
-        to access this API.
+        Creates a Unity Catalog metastore.
         
         :param metastore_info: :class:`CreateMetastore` (optional)
         
         :returns: :class:`AccountsMetastoreInfo`
         
 
-    .. py:method:: delete(metastore_id)
+    .. py:method:: delete(metastore_id [, force])
 
         Delete a metastore.
         
-        Deletes a Unity Catalog metastore for an account, both specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Deletes a Unity Catalog metastore for an account, both specified by ID.
         
         :param metastore_id: str
           Unity Catalog metastore ID
+        :param force: bool (optional)
+          Force deletion even if the metastore is not empty. Default is false.
         
         
         
@@ -65,15 +65,14 @@ Account Metastores
                                           storage_root="s3://%s/%s" %
                                           (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
             
-            _ = w.metastores.get(get=created.metastore_id)
+            _ = w.metastores.get(id=created.metastore_id)
             
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
         Get a metastore.
         
-        Gets a Unity Catalog metastore from an account, both specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Gets a Unity Catalog metastore from an account, both specified by ID.
         
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -95,8 +94,7 @@ Account Metastores
 
         Get all metastores associated with an account.
         
-        Gets all Unity Catalog metastores associated with an account specified by ID. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Gets all Unity Catalog metastores associated with an account specified by ID.
         
         :returns: :class:`ListMetastoresResponse`
         
@@ -125,8 +123,7 @@ Account Metastores
 
         Update a metastore.
         
-        Updates an existing Unity Catalog metastore. Please add a header
-        X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+        Updates an existing Unity Catalog metastore.
         
         :param metastore_id: str
           Unity Catalog metastore ID

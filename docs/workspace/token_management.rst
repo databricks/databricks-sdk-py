@@ -26,8 +26,8 @@ Token management
             obo = w.token_management.create_obo_token(application_id=spn.application_id, lifetime_seconds=60)
             
             # cleanup
-            w.service_principals.delete(delete=spn.id)
-            w.token_management.delete(delete=obo.token_info.token_id)
+            w.service_principals.delete(id=spn.id)
+            w.token_management.delete(token_id=obo.token_info.token_id)
 
         Create on-behalf token.
         
@@ -75,11 +75,11 @@ Token management
             
             obo = w.token_management.create_obo_token(application_id=spn.application_id, lifetime_seconds=60)
             
-            by_id = w.token_management.get(get=obo.token_info.token_id)
+            by_id = w.token_management.get(token_id=obo.token_info.token_id)
             
             # cleanup
-            w.service_principals.delete(delete=spn.id)
-            w.token_management.delete(delete=obo.token_info.token_id)
+            w.service_principals.delete(id=spn.id)
+            w.token_management.delete(token_id=obo.token_info.token_id)
 
         Get token info.
         

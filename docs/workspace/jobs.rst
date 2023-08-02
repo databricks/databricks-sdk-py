@@ -46,10 +46,10 @@ Jobs
                                                       timeout_seconds=0)
                                         ])
             
-            w.jobs.cancel_all_runs(cancel_all_runs=created_job.job_id)
+            w.jobs.cancel_all_runs(job_id=created_job.job_id)
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Cancel all runs of a job.
         
@@ -95,7 +95,7 @@ Jobs
             cancelled_run = w.jobs.cancel_run(run_id=run_now_response.response.run_id).result()
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Cancel a job run.
         
@@ -110,7 +110,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: create( [, access_control_list, compute, continuous, email_notifications, format, git_source, job_clusters, max_concurrent_runs, name, notification_settings, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
+    .. py:method:: create( [, access_control_list, compute, continuous, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
 
         Usage:
 
@@ -139,7 +139,7 @@ Jobs
                                         ])
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Create a new job.
         
@@ -161,6 +161,8 @@ Jobs
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote repository containing the notebooks used by this job's
           notebook tasks.
+        :param health: :class:`JobsHealthRules` (optional)
+          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -179,10 +181,12 @@ Jobs
           This value cannot exceed 1000\. Setting this value to 0 causes all new runs to be skipped. The
           default behavior is to allow only 1 concurrent run.
         :param name: str (optional)
-          An optional name for the job.
+          An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           `email_notifications` and `webhook_notifications` for this job.
+        :param parameters: List[:class:`JobParameterDefinition`] (optional)
+          Job-level parameter definitions
         :param run_as: :class:`JobRunAs` (optional)
           Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
           service principal that the job runs as. If not specified, the job runs as the user who created the
@@ -269,7 +273,7 @@ Jobs
             exported_view = w.jobs.export_run(run_id=run_by_id.tasks[0].run_id, views_to_export="CODE")
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Export and retrieve a job run.
         
@@ -309,10 +313,10 @@ Jobs
                                                     task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
-            output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job.
         
@@ -350,10 +354,10 @@ Jobs
                                                     task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
-            output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job run.
         
@@ -393,10 +397,10 @@ Jobs
                                                     task_key=f'sdk-{time.time_ns()}')
                                 ]).result()
             
-            output = w.jobs.get_run_output(get_run_output=run.tasks[0].run_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get the output for a single run.
         
@@ -434,8 +438,8 @@ Jobs
         :param expand_tasks: bool (optional)
           Whether to include task and cluster details in the response.
         :param limit: int (optional)
-          The number of jobs to return. This value must be greater than 0 and less or equal to 25. The default
-          value is 20.
+          The number of jobs to return. This value must be greater than 0 and less or equal to 100. The
+          default value is 20.
         :param name: str (optional)
           A filter on the list based on the exact (case insensitive) job name.
         :param offset: int (optional)
@@ -488,7 +492,7 @@ Jobs
         :returns: Iterator over :class:`BaseRun`
         
 
-    .. py:method:: repair_run(run_id [, dbt_commands, jar_params, latest_repair_id, notebook_params, pipeline_params, python_named_params, python_params, rerun_all_failed_tasks, rerun_tasks, spark_submit_params, sql_params])
+    .. py:method:: repair_run(run_id [, dbt_commands, jar_params, latest_repair_id, notebook_params, pipeline_params, python_named_params, python_params, rerun_all_failed_tasks, rerun_dependent_tasks, rerun_tasks, spark_submit_params, sql_params])
 
         Usage:
 
@@ -524,7 +528,7 @@ Jobs
                                              run_id=run_now_response.response.run_id).result()
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Repair a job run.
         
@@ -584,7 +588,10 @@ Jobs
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param rerun_all_failed_tasks: bool (optional)
-          If true, repair all failed tasks. Only one of rerun_tasks or rerun_all_failed_tasks can be used.
+          If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be used.
+        :param rerun_dependent_tasks: bool (optional)
+          If true, repair all tasks that depend on the tasks in `rerun_tasks`, even if they were previously
+          successful. Can be also used in combination with `rerun_all_failed_tasks`.
         :param rerun_tasks: List[str] (optional)
           The task keys of the task runs to repair.
         :param spark_submit_params: List[str] (optional)
@@ -642,12 +649,12 @@ Jobs
             
             new_name = f'sdk-{time.time_ns()}'
             
-            by_id = w.jobs.get(get=created_job.job_id)
+            by_id = w.jobs.get(job_id=created_job.job_id)
             
             w.jobs.reset(job_id=by_id.job_id, new_settings=jobs.JobSettings(name=new_name, tasks=by_id.settings.tasks))
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Overwrites all settings for a job.
         
@@ -665,7 +672,7 @@ Jobs
         
         
 
-    .. py:method:: run_now(job_id [, dbt_commands, idempotency_token, jar_params, notebook_params, pipeline_params, python_named_params, python_params, spark_submit_params, sql_params])
+    .. py:method:: run_now(job_id [, dbt_commands, idempotency_token, jar_params, job_parameters, notebook_params, pipeline_params, python_named_params, python_params, spark_submit_params, sql_params])
 
         Usage:
 
@@ -696,7 +703,7 @@ Jobs
             run_by_id = w.jobs.run_now(job_id=created_job.job_id).result()
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Trigger a new job run.
         
@@ -729,6 +736,8 @@ Jobs
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
+        :param job_parameters: List[Dict[str,str]] (optional)
+          Job-level parameters used in the run
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
           "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
@@ -789,7 +798,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit( [, access_control_list, git_source, idempotency_token, notification_settings, run_name, tasks, timeout_seconds, webhook_notifications])
+    .. py:method:: submit( [, access_control_list, email_notifications, git_source, health, idempotency_token, notification_settings, run_name, tasks, timeout_seconds, webhook_notifications])
 
         Usage:
 
@@ -816,7 +825,7 @@ Jobs
                                 ]).result()
             
             # cleanup
-            w.jobs.delete_run(delete_run=run.run_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Create and trigger a one-time run.
         
@@ -826,9 +835,14 @@ Jobs
         
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param email_notifications: :class:`JobEmailNotifications` (optional)
+          An optional set of email addresses notified when the run begins or completes. The default behavior
+          is to not send any emails.
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote repository containing the notebooks used by this job's
           notebook tasks.
+        :param health: :class:`JobsHealthRules` (optional)
+          An optional set of health rules that can be defined for this job.
         :param idempotency_token: str (optional)
           An optional token that can be used to guarantee the idempotency of job run requests. If a run with
           the provided token already exists, the request does not create a new run but returns the ID of the
@@ -892,7 +906,7 @@ Jobs
             w.jobs.update(job_id=created_job.job_id, new_settings=jobs.JobSettings(name=new_name, max_concurrent_runs=5))
             
             # cleanup
-            w.jobs.delete(delete=created_job.job_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Partially update a job.
         

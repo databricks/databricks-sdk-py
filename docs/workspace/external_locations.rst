@@ -13,7 +13,7 @@ External Locations
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
-    .. py:method:: create(name, url, credential_name [, comment, read_only, skip_validation])
+    .. py:method:: create(name, url, credential_name [, access_point, comment, encryption_details, read_only, skip_validation])
 
         Usage:
 
@@ -50,8 +50,12 @@ External Locations
           Path URL of the external location.
         :param credential_name: str
           Name of the storage credential used with this location.
+        :param access_point: str (optional)
+          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -135,7 +139,7 @@ External Locations
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name [, comment, credential_name, force, owner, read_only, url])
+    .. py:method:: update(name [, access_point, comment, credential_name, encryption_details, force, owner, read_only, url])
 
         Usage:
 
@@ -162,8 +166,8 @@ External Locations
                                             url="s3://%s/%s" % (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
             
             # cleanup
-            w.storage_credentials.delete(delete=credential.name)
-            w.external_locations.delete(delete=created.name)
+            w.storage_credentials.delete(name=credential.name)
+            w.external_locations.delete(name=created.name)
 
         Update an external location.
         
@@ -173,10 +177,14 @@ External Locations
         
         :param name: str
           Name of the external location.
+        :param access_point: str (optional)
+          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param encryption_details: :class:`EncryptionDetails` (optional)
+          Encryption options that apply to clients connecting to cloud storage.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param owner: str (optional)

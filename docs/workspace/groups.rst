@@ -9,7 +9,7 @@ Groups
     instead of to users individually. All Databricks workspace identities can be assigned as members of
     groups, and members inherit permissions that are assigned to their group.
 
-    .. py:method:: create( [, display_name, entitlements, external_id, groups, id, members, roles])
+    .. py:method:: create( [, display_name, entitlements, external_id, groups, id, members, meta, roles])
 
         Usage:
 
@@ -24,7 +24,7 @@ Groups
             group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
 
         Create a new group.
         
@@ -38,6 +38,8 @@ Groups
         :param id: str (optional)
           Databricks group ID
         :param members: List[:class:`ComplexValue`] (optional)
+        :param meta: :class:`ResourceMeta` (optional)
+          Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
         
         :returns: :class:`Group`
@@ -57,7 +59,7 @@ Groups
             
             group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
             
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
 
         Delete a group.
         
@@ -83,10 +85,10 @@ Groups
             
             group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
             
-            fetch = w.groups.get(get=group.id)
+            fetch = w.groups.get(id=group.id)
             
             # cleanup
-            w.groups.delete(delete=group.id)
+            w.groups.delete(id=group.id)
 
         Get group details.
         
@@ -127,7 +129,7 @@ Groups
         :returns: Iterator over :class:`Group`
         
 
-    .. py:method:: patch(id [, operations])
+    .. py:method:: patch(id [, operations, schema])
 
         Update group details.
         
@@ -136,11 +138,13 @@ Groups
         :param id: str
           Unique ID for a group in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         
 
-    .. py:method:: update(id [, display_name, entitlements, external_id, groups, members, roles])
+    .. py:method:: update(id [, display_name, entitlements, external_id, groups, members, meta, roles])
 
         Replace a group.
         
@@ -154,6 +158,8 @@ Groups
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
+        :param meta: :class:`ResourceMeta` (optional)
+          Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
         
         

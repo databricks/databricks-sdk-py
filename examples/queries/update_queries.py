@@ -18,4 +18,4 @@ updated = w.queries.update(query_id=query.id,
                            query="SELECT 2+2")
 
 # cleanup
-w.queries.delete(delete=query.id)
+w.queries.delete(query_id=query.id)

@@ -16,4 +16,4 @@ created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str
 _ = w.providers.update(name=created.name, comment="Comment for update")
 
 # cleanup
-w.providers.delete(delete=created.name)
+w.providers.delete(name=created.name)

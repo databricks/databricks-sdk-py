@@ -27,7 +27,7 @@ Credential configurations
                     role_arn=os.environ["TEST_CROSSACCOUNT_ARN"])))
             
             # cleanup
-            a.credentials.delete(delete=role.credentials_id)
+            a.credentials.delete(credentials_id=role.credentials_id)
 
         Create credential configuration.
         
@@ -83,10 +83,10 @@ Credential configurations
                 aws_credentials=provisioning.CreateCredentialAwsCredentials(sts_role=provisioning.CreateCredentialStsRole(
                     role_arn=os.environ["TEST_CROSSACCOUNT_ARN"])))
             
-            by_id = a.credentials.get(get=role.credentials_id)
+            by_id = a.credentials.get(credentials_id=role.credentials_id)
             
             # cleanup
-            a.credentials.delete(delete=role.credentials_id)
+            a.credentials.delete(credentials_id=role.credentials_id)
 
         Get credential configuration.
         

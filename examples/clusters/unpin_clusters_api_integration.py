@@ -15,7 +15,7 @@ clstr = w.clusters.create(cluster_name=cluster_name,
                           autotermination_minutes=15,
                           num_workers=1).result()
 
-w.clusters.unpin(unpin=clstr.cluster_id)
+w.clusters.unpin(cluster_id=clstr.cluster_id)
 
 # cleanup
-w.clusters.permanent_delete(permanent_delete=clstr.cluster_id)
+w.clusters.permanent_delete(cluster_id=clstr.cluster_id)

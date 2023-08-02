@@ -6,7 +6,7 @@ w = WorkspaceClient()
 
 created = w.service_principals.create(display_name=f'sdk-{time.time_ns()}')
 
-by_id = w.service_principals.get(get=created.id)
+by_id = w.service_principals.get(id=created.id)
 
 # cleanup
-w.service_principals.delete(delete=created.id)
+w.service_principals.delete(id=created.id)

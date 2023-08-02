@@ -43,7 +43,7 @@ Cluster Policies
             """)
             
             # cleanup
-            w.cluster_policies.delete(delete=created.policy_id)
+            w.cluster_policies.delete(policy_id=created.policy_id)
 
         Create a new policy.
         
@@ -108,7 +108,7 @@ Cluster Policies
                     }
             """)
             
-            policy = w.cluster_policies.get(get=created.policy_id)
+            policy = w.cluster_policies.get(policy_id=created.policy_id)
             
             w.cluster_policies.edit(policy_id=policy.policy_id,
                                     name=policy.name,
@@ -121,7 +121,7 @@ Cluster Policies
             """)
             
             # cleanup
-            w.cluster_policies.delete(delete=created.policy_id)
+            w.cluster_policies.delete(policy_id=created.policy_id)
 
         Update a cluster policy.
         
@@ -177,10 +177,10 @@ Cluster Policies
                     }
             """)
             
-            policy = w.cluster_policies.get(get=created.policy_id)
+            policy = w.cluster_policies.get(policy_id=created.policy_id)
             
             # cleanup
-            w.cluster_policies.delete(delete=created.policy_id)
+            w.cluster_policies.delete(policy_id=created.policy_id)
 
         Get entity.
         

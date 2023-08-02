@@ -12,4 +12,4 @@ creds = a.credentials.create(
         role_arn=os.environ["TEST_LOGDELIVERY_ARN"])))
 
 # cleanup
-a.credentials.delete(delete=creds.credentials_id)
+a.credentials.delete(credentials_id=creds.credentials_id)

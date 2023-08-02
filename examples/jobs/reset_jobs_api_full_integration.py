@@ -22,9 +22,9 @@ created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
 
 new_name = f'sdk-{time.time_ns()}'
 
-by_id = w.jobs.get(get=created_job.job_id)
+by_id = w.jobs.get(job_id=created_job.job_id)
 
 w.jobs.reset(job_id=by_id.job_id, new_settings=jobs.JobSettings(name=new_name, tasks=by_id.settings.tasks))
 
 # cleanup
-w.jobs.delete(delete=created_job.job_id)
+w.jobs.delete(job_id=created_job.job_id)

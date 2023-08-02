@@ -27,7 +27,7 @@ Account Service Principals
                                               groups=[iam.ComplexValue(value=groups["admins"])])
             
             # cleanup
-            w.service_principals.delete(delete=spn.id)
+            w.service_principals.delete(id=spn.id)
 
         Create a service principal.
         
@@ -75,10 +75,10 @@ Account Service Principals
             
             created = w.service_principals.create(display_name=f'sdk-{time.time_ns()}')
             
-            by_id = w.service_principals.get(get=created.id)
+            by_id = w.service_principals.get(id=created.id)
             
             # cleanup
-            w.service_principals.delete(delete=created.id)
+            w.service_principals.delete(id=created.id)
 
         Get service principal details.
         
@@ -130,7 +130,7 @@ Account Service Principals
         :returns: Iterator over :class:`ServicePrincipal`
         
 
-    .. py:method:: patch(id [, operations])
+    .. py:method:: patch(id [, operations, schema])
 
         Update service principal details.
         
@@ -139,6 +139,8 @@ Account Service Principals
         :param id: str
           Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         
@@ -163,7 +165,7 @@ Account Service Principals
                                         roles=[iam.ComplexValue(value="xyz")])
             
             # cleanup
-            w.service_principals.delete(delete=created.id)
+            w.service_principals.delete(id=created.id)
 
         Replace service principal.
         

@@ -6,4 +6,4 @@ w = WorkspaceClient()
 
 user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
 
-w.users.delete(delete=user.id)
+w.users.delete(id=user.id)

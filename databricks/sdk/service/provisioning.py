@@ -146,7 +146,7 @@ class CreateCustomerManagedKeyRequest:
         body = {}
         if self.aws_key_info: body['aws_key_info'] = self.aws_key_info.as_dict()
         if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
-        if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
+        if self.use_cases: body['use_cases'] = [v.value for v in self.use_cases]
         return body
 
     @classmethod
@@ -355,7 +355,7 @@ class CustomerManagedKey:
         if self.customer_managed_key_id is not None:
             body['customer_managed_key_id'] = self.customer_managed_key_id
         if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info.as_dict()
-        if self.use_cases: body['use_cases'] = [v for v in self.use_cases]
+        if self.use_cases: body['use_cases'] = [v.value for v in self.use_cases]
         return body
 
     @classmethod
@@ -431,11 +431,11 @@ class ErrorType(Enum):
     """The AWS resource associated with this error: credentials, VPC, subnet, security group, or
     network ACL."""
 
-    credentials = 'credentials'
-    networkAcl = 'networkAcl'
-    securityGroup = 'securityGroup'
-    subnet = 'subnet'
-    vpc = 'vpc'
+    CREDENTIALS = 'credentials'
+    NETWORK_ACL = 'networkAcl'
+    SECURITY_GROUP = 'securityGroup'
+    SUBNET = 'subnet'
+    VPC = 'vpc'
 
 
 @dataclass
@@ -988,8 +988,8 @@ class VpcStatus(Enum):
 class WarningType(Enum):
     """The AWS resource associated with this warning: a subnet or a security group."""
 
-    securityGroup = 'securityGroup'
-    subnet = 'subnet'
+    SECURITY_GROUP = 'securityGroup'
+    SUBNET = 'subnet'
 
 
 @dataclass
@@ -1936,10 +1936,9 @@ class WorkspacesAPI:
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account. For example, `us-east4`.
         :param managed_services_customer_managed_key_id: str (optional)
-          The ID of the workspace's managed services encryption key configuration object. This is used to
-          encrypt the workspace's notebook and secret data in the control plane, in addition to Databricks SQL
-          queries and query history. The provided key configuration object property `use_cases` must contain
-          `MANAGED_SERVICES`.
+          The ID of the workspace's managed services encryption key configuration object. This is used to help
+          protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query
+          history. The provided key configuration object property `use_cases` must contain `MANAGED_SERVICES`.
         :param network_id: str (optional)
         :param pricing_tier: :class:`PricingTier` (optional)
           The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].

@@ -1,5 +1,133 @@
 # Version changelog
 
+## 0.3.0
+
+* Fixed serialization of lists of enum values ([#248](https://github.com/databricks/databricks-sdk-py/pull/248)).
+* Fixed examples that used incorrect keyword argument names. (https://github.com/databricks/databricks-sdk-go/pull/560)
+* Handled nested query parameters in ApiClient.do() ([#249](https://github.com/databricks/databricks-sdk-py/pull/249)).
+* Improved access of `__annotations__` ([#239](https://github.com/databricks/databricks-sdk-py/pull/239)).
+
+API Changes:
+
+ * Changed `create()` method for [a.account_metastore_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_metastore_assignments.html) account-level service to no longer return `databricks.sdk.service.catalog.CreateMetastoreAssignmentsResponseItemList` dataclass.
+ * Added `connection_name` field for `databricks.sdk.service.catalog.CreateCatalog`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+ * Removed `databricks.sdk.service.catalog.CreateMetastoreAssignmentsResponseItem` dataclass.
+ * Added `access_point` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+ * Added `access_point` field for `databricks.sdk.service.catalog.VolumeInfo`.
+ * Added `encryption_details` field for `databricks.sdk.service.catalog.VolumeInfo`.
+ * Added `databricks.sdk.service.catalog.EncryptionDetails` dataclass.
+ * Added `databricks.sdk.service.catalog.SseEncryptionDetails` dataclass.
+ * Added `databricks.sdk.service.catalog.SseEncryptionDetailsAlgorithm` dataclass.
+ * Added [a.account_network_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_network_policy.html) account-level service.
+ * Added `databricks.sdk.service.settings.AccountNetworkPolicyMessage` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteAccountNetworkPolicyRequest` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteAccountNetworkPolicyResponse` dataclass.
+ * Added `databricks.sdk.service.settings.ReadAccountNetworkPolicyRequest` dataclass.
+ * Added `databricks.sdk.service.settings.UpdateAccountNetworkPolicyRequest` dataclass.
+
+OpenAPI SHA: a1b6c1ecfaab6635911d3c060a8dd797ac6b2d4d, Date: 2023-07-27
+
+## 0.2.1
+
+* Support older versions of `urllib3` and Databricks Runtime with regards to `DEFAULT_METHOD_WHITELIST` change to `DEFAULT_ALLOWED_METHODS` ([#240](https://github.com/databricks/databricks-sdk-py/pull/240)).
+
+
+## 0.2.0
+
+* Add Issue Templates ([#208](https://github.com/databricks/databricks-sdk-py/pull/208)).
+* Fixed notebook native auth for jobs ([#209](https://github.com/databricks/databricks-sdk-py/pull/209)).
+* Replace `datatime.timedelta()` with `datetime.timedelta()` in codebase ([#207](https://github.com/databricks/databricks-sdk-py/pull/207)).
+* Support dod in python sdk ([#212](https://github.com/databricks/databricks-sdk-py/pull/212)).
+* [DECO-1115] Add local implementation for `dbutils.widgets` ([#93](https://github.com/databricks/databricks-sdk-py/pull/93)).
+* Fix error message, ExportFormat -> ImportFormat ([#220](https://github.com/databricks/databricks-sdk-py/pull/220)).
+* Regenerate Python SDK using recent OpenAPI Specification ([#229](https://github.com/databricks/databricks-sdk-py/pull/229)).
+* Make workspace client also return runtime dbutils when in dbr ([#210](https://github.com/databricks/databricks-sdk-py/pull/210)).
+* Use .ConstantName defining target enum states for waiters ([#230](https://github.com/databricks/databricks-sdk-py/pull/230)).
+* Fix enum deserialization ([#234](https://github.com/databricks/databricks-sdk-py/pull/234)).
+* Fix enum deserialization, take 2 ([#235](https://github.com/databricks/databricks-sdk-py/pull/235)).
+* Added toolchain configuration to `.codegen.json` ([#236](https://github.com/databricks/databricks-sdk-py/pull/236)).
+* Make OpenAPI spec location configurable ([#237](https://github.com/databricks/databricks-sdk-py/pull/237)).
+* Rearrange imports in `databricks.sdk.runtime` to improve local editor experience ([#219](https://github.com/databricks/databricks-sdk-py/pull/219)).
+* Updated account-level and workspace-level user management examples ([#241](https://github.com/databricks/databricks-sdk-py/pull/241)).
+
+API Changes:
+
+ * Removed `maintenance()` method for [w.metastores](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/metastores.html) workspace-level service.
+ * Added `enable_optimization()` method for [w.metastores](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/metastores.html) workspace-level service.
+ * Added `update()` method for [w.tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tables.html) workspace-level service.
+ * Added `force` field for `databricks.sdk.service.catalog.DeleteAccountMetastoreRequest`.
+ * Added `force` field for `databricks.sdk.service.catalog.DeleteAccountStorageCredentialRequest`.
+ * Removed `databricks.sdk.service.catalog.UpdateAutoMaintenance` dataclass.
+ * Removed `databricks.sdk.service.catalog.UpdateAutoMaintenanceResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdatePredictiveOptimization` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdatePredictiveOptimizationResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdateTableRequest` dataclass.
+ * Added `schema` field for `databricks.sdk.service.iam.PartialUpdate`.
+ * Added `databricks.sdk.service.iam.PatchSchema` dataclass.
+ * Added `trigger_info` field for `databricks.sdk.service.jobs.BaseRun`.
+ * Added `health` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Added `job_source` field for `databricks.sdk.service.jobs.GitSource`.
+ * Added `on_duration_warning_threshold_exceeded` field for `databricks.sdk.service.jobs.JobEmailNotifications`.
+ * Added `health` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Added `trigger_info` field for `databricks.sdk.service.jobs.Run`.
+ * Added `run_job_output` field for `databricks.sdk.service.jobs.RunOutput`.
+ * Added `run_job_task` field for `databricks.sdk.service.jobs.RunTask`.
+ * Added `email_notifications` field for `databricks.sdk.service.jobs.SubmitRun`.
+ * Added `health` field for `databricks.sdk.service.jobs.SubmitRun`.
+ * Added `email_notifications` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added `health` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added `notification_settings` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added `health` field for `databricks.sdk.service.jobs.Task`.
+ * Added `run_job_task` field for `databricks.sdk.service.jobs.Task`.
+ * Added `on_duration_warning_threshold_exceeded` field for `databricks.sdk.service.jobs.TaskEmailNotifications`.
+ * Added `on_duration_warning_threshold_exceeded` field for `databricks.sdk.service.jobs.WebhookNotifications`.
+ * Added `databricks.sdk.service.jobs.JobSource` dataclass.
+ * Added `databricks.sdk.service.jobs.JobSourceDirtyState` dataclass.
+ * Added `databricks.sdk.service.jobs.JobsHealthMetric` dataclass.
+ * Added `databricks.sdk.service.jobs.JobsHealthOperator` dataclass.
+ * Added `databricks.sdk.service.jobs.JobsHealthRule` dataclass.
+ * Added `databricks.sdk.service.jobs.JobsHealthRules` dataclass.
+ * Added `databricks.sdk.service.jobs.RunJobOutput` dataclass.
+ * Added `databricks.sdk.service.jobs.RunJobTask` dataclass.
+ * Added `databricks.sdk.service.jobs.TriggerInfo` dataclass.
+ * Added `databricks.sdk.service.jobs.WebhookNotificationsOnDurationWarningThresholdExceededItem` dataclass.
+ * Removed `whl` field for `databricks.sdk.service.pipelines.PipelineLibrary`.
+ * Changed `delete_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service with new required argument order.
+ * Changed `read_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service with new required argument order.
+ * Changed `etag` field for `databricks.sdk.service.settings.DeletePersonalComputeSettingRequest` to be required.
+ * Changed `etag` field for `databricks.sdk.service.settings.ReadPersonalComputeSettingRequest` to be required.
+ * Added [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service.
+ * Added `databricks.sdk.service.sharing.CentralCleanRoomInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomAssetInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomCatalog` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomCatalogUpdate` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomCollaboratorInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomNotebookInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.CleanRoomTableInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.ColumnInfo` dataclass.
+ * Added `databricks.sdk.service.sharing.ColumnMask` dataclass.
+ * Added `databricks.sdk.service.sharing.ColumnTypeName` dataclass.
+ * Added `databricks.sdk.service.sharing.CreateCleanRoom` dataclass.
+ * Added `databricks.sdk.service.sharing.DeleteCleanRoomRequest` dataclass.
+ * Added `databricks.sdk.service.sharing.GetCleanRoomRequest` dataclass.
+ * Added `databricks.sdk.service.sharing.ListCleanRoomsResponse` dataclass.
+ * Added `databricks.sdk.service.sharing.UpdateCleanRoom` dataclass.
+ * Changed `query` field for `databricks.sdk.service.sql.Alert` to `databricks.sdk.service.sql.AlertQuery` dataclass.
+ * Changed `value` field for `databricks.sdk.service.sql.AlertOptions` to `any` dataclass.
+ * Removed `is_db_admin` field for `databricks.sdk.service.sql.User`.
+ * Removed `profile_image_url` field for `databricks.sdk.service.sql.User`.
+ * Added `databricks.sdk.service.sql.AlertQuery` dataclass.
+
+OpenAPI SHA: 0a1949ba96f71680dad30e06973eaae85b1307bb, Date: 2023-07-18
+
 ## 0.1.12
 
 * Beta release ([#198](https://github.com/databricks/databricks-sdk-py/pull/198)).

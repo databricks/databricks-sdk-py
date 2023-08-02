@@ -20,11 +20,14 @@ Account Users
 
             import time
             
-            from databricks.sdk import WorkspaceClient
+            from databricks.sdk import AccountClient
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            
+            # cleanup
+            a.users.delete(delete=user.id)
 
         Create a new user.
         
@@ -64,7 +67,7 @@ Account Users
             
             other_owner = w.users.create(user_name=f'sdk-{time.time_ns()}@example.com')
             
-            w.users.delete(delete=other_owner.id)
+            w.users.delete(id=other_owner.id)
 
         Delete a user.
         
@@ -85,13 +88,16 @@ Account Users
 
             import time
             
-            from databricks.sdk import WorkspaceClient
+            from databricks.sdk import AccountClient
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
             
-            fetch = w.users.get(get=user.id)
+            by_id = a.users.get(get=user.id)
+            
+            # cleanup
+            a.users.delete(delete=user.id)
 
         Get user details.
         
@@ -116,7 +122,7 @@ Account Users
             
             all_users = w.users.list(attributes="id,userName",
                                      sort_by="userName",
-                                     sort_order=iam.ListSortOrder.descending)
+                                     sort_order=iam.ListSortOrder.DESCENDING)
 
         List users.
         
@@ -146,7 +152,30 @@ Account Users
         :returns: Iterator over :class:`User`
         
 
-    .. py:method:: patch(id [, operations])
+    .. py:method:: patch(id [, operations, schema])
+
+        Usage:
+
+        .. code-block::
+
+            import time
+            
+            from databricks.sdk import AccountClient
+            from databricks.sdk.service import iam
+            
+            a = AccountClient()
+            
+            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            
+            a.users.patch(id=user.id,
+                          schema=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES20_PATCH_OP],
+                          operations=[
+                              iam.Patch(op=iam.PatchOp.ADD,
+                                        value=iam.User(roles=[iam.ComplexValue(value="account_admin")]))
+                          ])
+            
+            # cleanup
+            a.users.delete(delete=user.id)
 
         Update user details.
         
@@ -155,6 +184,8 @@ Account Users
         :param id: str
           Unique ID for a user in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
+        :param schema: List[:class:`PatchSchema`] (optional)
+          The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         

@@ -14,7 +14,7 @@ import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Callable, Dict, Iterable, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
@@ -702,10 +702,14 @@ class Config:
         """ Returns a list of Databricks SDK configuration metadata """
         if hasattr(cls, '_attributes'):
             return cls._attributes
-        # Python 3.7 compatibility: getting type hints require extra hop, as described in
-        # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
-        # https://docs.python.org/3/howto/annotations.html
-        anno = cls.__dict__['__annotations__']
+        if sys.version_info[1] >= 10:
+            import inspect
+            anno = inspect.get_annotations(cls)
+        else:
+            # Python 3.7 compatibility: getting type hints require extra hop, as described in
+            # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
+            # https://docs.python.org/3/howto/annotations.html
+            anno = cls.__dict__['__annotations__']
         attrs = []
         for name, v in cls.__dict__.items():
             if type(v) != ConfigAttribute:
@@ -871,13 +875,20 @@ class ApiClient:
         self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
         self._user_agent_base = cfg.user_agent
 
+        # Since urllib3 v1.26.0, Retry.DEFAULT_METHOD_WHITELIST is deprecated in favor of
+        # Retry.DEFAULT_ALLOWED_METHODS. We need to support both versions.
+        if 'DEFAULT_ALLOWED_METHODS' in dir(Retry):
+            retry_kwargs = {'allowed_methods': {"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS)}
+        else:
+            retry_kwargs = {'method_whitelist': {"POST"} | set(Retry.DEFAULT_METHOD_WHITELIST)}
+
         retry_strategy = Retry(
             total=6,
             backoff_factor=1,
             status_forcelist=[429],
-            allowed_methods={"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS),
             respect_retry_after_header=True,
             raise_on_status=False, # return original response when retries have been exhausted
+            **retry_kwargs,
         )
 
         self._session = requests.Session()
@@ -904,7 +915,27 @@ class ApiClient:
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
             return None
-        return {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+        with_fixed_bools = {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+
+        # Query parameters may be nested, e.g.
+        # {'filter_by': {'user_ids': [123, 456]}}
+        # The HTTP-compatible representation of this is
+        # filter_by.user_ids=123&filter_by.user_ids=456
+        # To achieve this, we convert the above dictionary to
+        # {'filter_by.user_ids': [123, 456]}
+        # See the following for more information:
+        # https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#google.api.HttpRule
+        def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:
+            for k1, v1 in d.items():
+                if isinstance(v1, dict):
+                    v1 = dict(flatten_dict(v1))
+                    for k2, v2 in v1.items():
+                        yield f"{k1}.{k2}", v2
+                else:
+                    yield k1, v1
+
+        flattened = dict(flatten_dict(with_fixed_bools))
+        return flattened
 
     def do(self,
            method: str,

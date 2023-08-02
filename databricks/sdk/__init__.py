@@ -44,11 +44,12 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  WorkspacesAPI)
 from databricks.sdk.service.serving import ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
+                                             AccountNetworkPolicyAPI,
                                              AccountSettingsAPI,
                                              IpAccessListsAPI,
                                              TokenManagementAPI, TokensAPI,
                                              WorkspaceConfAPI)
-from databricks.sdk.service.sharing import (ProvidersAPI,
+from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
 from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
@@ -57,6 +58,22 @@ from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
                                         StatementExecutionAPI, WarehousesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
+
+
+def _make_dbutils(config: client.Config):
+    # We try to directly check if we are in runtime, instead of
+    # trying to import from databricks.sdk.runtime. This is to prevent
+    # remote dbutils from being created without the config, which is both
+    # expensive (will need to check all credential providers) and can
+    # throw errors (when no env vars are set).
+    try:
+        from dbruntime import UserNamespaceInitializer
+    except ImportError:
+        return dbutils.RemoteDbUtils(config)
+
+    # We are in runtime, so we can use the runtime dbutils
+    from databricks.sdk.runtime import dbutils as runtime_dbutils
+    return runtime_dbutils
 
 
 class WorkspaceClient:
@@ -108,12 +125,13 @@ class WorkspaceClient:
                                    product=product,
                                    product_version=product_version)
         self.config = config.copy()
-        self.dbutils = dbutils.RemoteDbUtils(self.config)
+        self.dbutils = _make_dbutils(self.config)
         self.api_client = client.ApiClient(self.config)
         self.files = FilesMixin(self.api_client)
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
+        self.clean_rooms = CleanRoomsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
         self.clusters = ClustersExt(self.api_client)
         self.command_execution = CommandExecutionAPI(self.api_client)
@@ -227,6 +245,7 @@ class AccountClient:
         self.log_delivery = LogDeliveryAPI(self.api_client)
         self.metastore_assignments = AccountMetastoreAssignmentsAPI(self.api_client)
         self.metastores = AccountMetastoresAPI(self.api_client)
+        self.network_policy = AccountNetworkPolicyAPI(self.api_client)
         self.networks = NetworksAPI(self.api_client)
         self.o_auth_enrollment = OAuthEnrollmentAPI(self.api_client)
         self.private_access = PrivateAccessAPI(self.api_client)

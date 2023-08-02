@@ -2,7 +2,8 @@ Providers
 =========
 .. py:class:: ProvidersAPI
 
-    Databricks Providers REST API
+    A data provider is an object representing the organization in the real world who shares the data. A
+    provider contains shares which further contain the shared data.
 
     .. py:method:: create(name, authentication_type [, comment, recipient_profile_str])
 
@@ -26,7 +27,7 @@ Providers
             created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
             
             # cleanup
-            w.providers.delete(delete=created.name)
+            w.providers.delete(name=created.name)
 
         Create an auth provider.
         
@@ -79,10 +80,10 @@ Providers
             
             created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
             
-            _ = w.providers.get(get=created.name)
+            _ = w.providers.get(name=created.name)
             
             # cleanup
-            w.providers.delete(delete=created.name)
+            w.providers.delete(name=created.name)
 
         Get a provider.
         
@@ -145,7 +146,7 @@ Providers
             shares = w.providers.list_shares(name=created.name)
             
             # cleanup
-            w.providers.delete(delete=created.name)
+            w.providers.delete(name=created.name)
 
         List shares by Provider.
         
@@ -183,7 +184,7 @@ Providers
             _ = w.providers.update(name=created.name, comment="Comment for update")
             
             # cleanup
-            w.providers.delete(delete=created.name)
+            w.providers.delete(name=created.name)
 
         Update a provider.
         

@@ -52,12 +52,12 @@ Tables
             
             table_full_name = "%s.%s.%s" % (created_catalog.name, created_schema.name, table_name)
             
-            created_table = w.tables.get(get=table_full_name)
+            created_table = w.tables.get(full_name=table_full_name)
             
             # cleanup
-            w.schemas.delete(delete=created_schema.full_name)
+            w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-            w.tables.delete(delete=table_full_name)
+            w.tables.delete(full_name=table_full_name)
 
         Get a table.
         
@@ -93,7 +93,7 @@ Tables
             all_tables = w.tables.list(catalog_name=created_catalog.name, schema_name=created_schema.name)
             
             # cleanup
-            w.schemas.delete(delete=created_schema.full_name)
+            w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
 
         List tables.
@@ -142,7 +142,7 @@ Tables
                                                 schema_name_pattern=created_schema.name)
             
             # cleanup
-            w.schemas.delete(delete=created_schema.full_name)
+            w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
 
         List table summaries.
@@ -170,4 +170,20 @@ Tables
           A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
         
         :returns: Iterator over :class:`TableSummary`
+        
+
+    .. py:method:: update(full_name [, owner])
+
+        Update a table owner.
+        
+        Change the owner of the table. The caller must be the owner of the parent catalog, have the
+        **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner
+        of the table and have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+        privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the table.
+        :param owner: str (optional)
+        
+        
         

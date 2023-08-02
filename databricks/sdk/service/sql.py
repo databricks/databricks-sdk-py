@@ -44,7 +44,7 @@ class Alert:
     name: Optional[str] = None
     options: Optional['AlertOptions'] = None
     parent: Optional[str] = None
-    query: Optional['Query'] = None
+    query: Optional['AlertQuery'] = None
     rearm: Optional[int] = None
     state: Optional['AlertState'] = None
     updated_at: Optional[str] = None
@@ -73,7 +73,7 @@ class Alert:
                    name=d.get('name', None),
                    options=_from_dict(d, 'options', AlertOptions),
                    parent=d.get('parent', None),
-                   query=_from_dict(d, 'query', Query),
+                   query=_from_dict(d, 'query', AlertQuery),
                    rearm=d.get('rearm', None),
                    state=_enum(d, 'state', AlertState),
                    updated_at=d.get('updated_at', None),
@@ -86,7 +86,7 @@ class AlertOptions:
 
     column: str
     op: str
-    value: str
+    value: Any
     custom_body: Optional[str] = None
     custom_subject: Optional[str] = None
     muted: Optional[bool] = None
@@ -98,7 +98,7 @@ class AlertOptions:
         if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
         if self.muted is not None: body['muted'] = self.muted
         if self.op is not None: body['op'] = self.op
-        if self.value is not None: body['value'] = self.value
+        if self.value: body['value'] = self.value
         return body
 
     @classmethod
@@ -111,13 +111,63 @@ class AlertOptions:
                    value=d.get('value', None))
 
 
+@dataclass
+class AlertQuery:
+    created_at: Optional[str] = None
+    data_source_id: Optional[str] = None
+    description: Optional[str] = None
+    id: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    is_safe: Optional[bool] = None
+    name: Optional[str] = None
+    options: Optional['QueryOptions'] = None
+    query: Optional[str] = None
+    tags: Optional['List[str]'] = None
+    updated_at: Optional[str] = None
+    user_id: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.is_archived is not None: body['is_archived'] = self.is_archived
+        if self.is_draft is not None: body['is_draft'] = self.is_draft
+        if self.is_safe is not None: body['is_safe'] = self.is_safe
+        if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options.as_dict()
+        if self.query is not None: body['query'] = self.query
+        if self.tags: body['tags'] = [v for v in self.tags]
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AlertQuery':
+        return cls(created_at=d.get('created_at', None),
+                   data_source_id=d.get('data_source_id', None),
+                   description=d.get('description', None),
+                   id=d.get('id', None),
+                   is_archived=d.get('is_archived', None),
+                   is_draft=d.get('is_draft', None),
+                   is_safe=d.get('is_safe', None),
+                   name=d.get('name', None),
+                   options=_from_dict(d, 'options', QueryOptions),
+                   query=d.get('query', None),
+                   tags=d.get('tags', None),
+                   updated_at=d.get('updated_at', None),
+                   user_id=d.get('user_id', None))
+
+
 class AlertState(Enum):
     """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
     and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
 
-    ok = 'ok'
-    triggered = 'triggered'
-    unknown = 'unknown'
+    OK = 'ok'
+    TRIGGERED = 'triggered'
+    UNKNOWN = 'unknown'
 
 
 @dataclass
@@ -162,7 +212,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -1182,8 +1231,8 @@ class ListDashboardsRequest:
 
 class ListOrder(Enum):
 
-    created_at = 'created_at'
-    name = 'name'
+    CREATED_AT = 'created_at'
+    NAME = 'name'
 
 
 @dataclass
@@ -1273,19 +1322,19 @@ class ListWarehousesResponse:
 class ObjectType(Enum):
     """A singular noun object type."""
 
-    alert = 'alert'
-    dashboard = 'dashboard'
-    data_source = 'data_source'
-    query = 'query'
+    ALERT = 'alert'
+    DASHBOARD = 'dashboard'
+    DATA_SOURCE = 'data_source'
+    QUERY = 'query'
 
 
 class ObjectTypePlural(Enum):
     """Always a plural of the object type."""
 
-    alerts = 'alerts'
-    dashboards = 'dashboards'
-    data_sources = 'data_sources'
-    queries = 'queries'
+    ALERTS = 'alerts'
+    DASHBOARDS = 'dashboards'
+    DATA_SOURCES = 'data_sources'
+    QUERIES = 'queries'
 
 
 @dataclass
@@ -1314,9 +1363,9 @@ class OdbcParams:
 class OwnableObjectType(Enum):
     """The singular form of the type of object which can be owned."""
 
-    alert = 'alert'
-    dashboard = 'dashboard'
-    query = 'query'
+    ALERT = 'alert'
+    DASHBOARD = 'dashboard'
+    QUERY = 'query'
 
 
 @dataclass
@@ -1345,9 +1394,9 @@ class Parameter:
 class ParameterType(Enum):
     """Parameters can have several different types."""
 
-    datetime = 'datetime'
-    number = 'number'
-    text = 'text'
+    DATETIME = 'datetime'
+    NUMBER = 'number'
+    TEXT = 'text'
 
 
 class PermissionLevel(Enum):
@@ -1490,7 +1539,7 @@ class QueryFilter:
     def as_dict(self) -> dict:
         body = {}
         if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
-        if self.statuses: body['statuses'] = [v for v in self.statuses]
+        if self.statuses: body['statuses'] = [v.value for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
         if self.warehouse_ids: body['warehouse_ids'] = [v for v in self.warehouse_ids]
         return body
@@ -2107,7 +2156,7 @@ class Success:
 
 class SuccessMessage(Enum):
 
-    Success = 'Success'
+    SUCCESS = 'Success'
 
 
 @dataclass
@@ -2293,26 +2342,18 @@ class TransferOwnershipRequest:
 class User:
     email: Optional[str] = None
     id: Optional[int] = None
-    is_db_admin: Optional[bool] = None
     name: Optional[str] = None
-    profile_image_url: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.email is not None: body['email'] = self.email
         if self.id is not None: body['id'] = self.id
-        if self.is_db_admin is not None: body['is_db_admin'] = self.is_db_admin
         if self.name is not None: body['name'] = self.name
-        if self.profile_image_url is not None: body['profile_image_url'] = self.profile_image_url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'User':
-        return cls(email=d.get('email', None),
-                   id=d.get('id', None),
-                   is_db_admin=d.get('is_db_admin', None),
-                   name=d.get('name', None),
-                   profile_image_url=d.get('profile_image_url', None))
+        return cls(email=d.get('email', None), id=d.get('id', None), name=d.get('name', None))
 
 
 @dataclass
@@ -2459,9 +2500,9 @@ class AlertsAPI:
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
-          ID of the query evaluated by the alert.
+          Query ID.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the alert. The default is ther user's home folder.
+          The identifier of the workspace folder containing the object.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
@@ -2536,7 +2577,7 @@ class AlertsAPI:
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
-          ID of the query evaluated by the alert.
+          Query ID.
         :param alert_id: str
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
@@ -2576,8 +2617,7 @@ class DashboardsAPI:
         :param name: str (optional)
           The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the dashboard. The default is the user's home
-          folder.
+          The identifier of the workspace folder containing the object.
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
@@ -2841,19 +2881,19 @@ class QueriesAPI:
         **Note**: You cannot add a visualization until you create the query.
         
         :param data_source_id: str (optional)
-          The ID of the data source / SQL warehouse where this query will run.
+          Data source ID.
         :param description: str (optional)
-          General description that can convey additional information about this query such as usage notes.
+          General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
-          The name or title of this query to display in list views.
+          The title of this query that appears in list views, widget headings, and on the query page.
         :param options: Any (optional)
           Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
           `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
           overridden at runtime.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the query. The default is the user's home folder.
+          The identifier of the workspace folder containing the object.
         :param query: str (optional)
-          The text of the query.
+          The text of the query to be run.
         
         :returns: :class:`Query`
         """
@@ -2995,17 +3035,17 @@ class QueriesAPI:
         
         :param query_id: str
         :param data_source_id: str (optional)
-          The ID of the data source / SQL warehouse where this query will run.
+          Data source ID.
         :param description: str (optional)
-          General description that can convey additional information about this query such as usage notes.
+          General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
-          The name or title of this query to display in list views.
+          The title of this query that appears in list views, widget headings, and on the query page.
         :param options: Any (optional)
           Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
           `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
           overridden at runtime.
         :param query: str (optional)
-          The text of the query.
+          The text of the query to be run.
         
         :returns: :class:`Query`
         """

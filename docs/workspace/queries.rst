@@ -26,7 +26,7 @@ Queries / Results
                                      query="SHOW TABLES")
             
             # cleanup
-            w.queries.delete(delete=query.id)
+            w.queries.delete(query_id=query.id)
 
         Create a new query definition.
         
@@ -40,19 +40,19 @@ Queries / Results
         **Note**: You cannot add a visualization until you create the query.
         
         :param data_source_id: str (optional)
-          The ID of the data source / SQL warehouse where this query will run.
+          Data source ID.
         :param description: str (optional)
-          General description that can convey additional information about this query such as usage notes.
+          General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
-          The name or title of this query to display in list views.
+          The title of this query that appears in list views, widget headings, and on the query page.
         :param options: Any (optional)
           Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
           `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
           overridden at runtime.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the query. The default is the user's home folder.
+          The identifier of the workspace folder containing the object.
         :param query: str (optional)
-          The text of the query.
+          The text of the query to be run.
         
         :returns: :class:`Query`
         
@@ -88,10 +88,10 @@ Queries / Results
                                      description="test query from Go SDK",
                                      query="SHOW TABLES")
             
-            by_id = w.queries.get(get=query.id)
+            by_id = w.queries.get(query_id=query.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
+            w.queries.delete(query_id=query.id)
 
         Get a query definition.
         
@@ -171,7 +171,7 @@ Queries / Results
                                        query="SELECT 2+2")
             
             # cleanup
-            w.queries.delete(delete=query.id)
+            w.queries.delete(query_id=query.id)
 
         Change a query definition.
         
@@ -181,17 +181,17 @@ Queries / Results
         
         :param query_id: str
         :param data_source_id: str (optional)
-          The ID of the data source / SQL warehouse where this query will run.
+          Data source ID.
         :param description: str (optional)
-          General description that can convey additional information about this query such as usage notes.
+          General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
-          The name or title of this query to display in list views.
+          The title of this query that appears in list views, widget headings, and on the query page.
         :param options: Any (optional)
           Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
           `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
           overridden at runtime.
         :param query: str (optional)
-          The text of the query.
+          The text of the query to be run.
         
         :returns: :class:`Query`
         

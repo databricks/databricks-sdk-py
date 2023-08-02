@@ -7,4 +7,4 @@ w = WorkspaceClient()
 created = w.dashboards.create(name=f'sdk-{time.time_ns()}')
 
 # cleanup
-w.dashboards.delete(delete=created.id)
+w.dashboards.delete(dashboard_id=created.id)

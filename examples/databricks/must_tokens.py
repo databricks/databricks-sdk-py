@@ -10,4 +10,4 @@ wsc_inner = w.databricks.must(
     new_workspace_client(databricks.Config(host=w.config.host, token=token.token_value, auth_type="pat")))
 
 # cleanup
-w.tokens.delete(delete=token.token_info.token_id)
+w.tokens.delete(token_id=token.token_info.token_id)

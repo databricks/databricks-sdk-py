@@ -43,7 +43,7 @@ Pipelines
                 ])
             
             # cleanup
-            w.pipelines.delete(delete=created.pipeline_id)
+            w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         Create a pipeline.
         
@@ -132,10 +132,10 @@ Pipelines
                                               })
                 ])
             
-            by_id = w.pipelines.get(get=created.pipeline_id)
+            by_id = w.pipelines.get(pipeline_id=created.pipeline_id)
             
             # cleanup
-            w.pipelines.delete(delete=created.pipeline_id)
+            w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         Get a pipeline.
         
@@ -190,7 +190,7 @@ Pipelines
             events = w.pipelines.list_pipeline_events(pipeline_id=created.pipeline_id)
             
             # cleanup
-            w.pipelines.delete(delete=created.pipeline_id)
+            w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         List pipeline events.
         
@@ -367,7 +367,7 @@ Pipelines
                 ])
             
             # cleanup
-            w.pipelines.delete(delete=created.pipeline_id)
+            w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         Edit a pipeline.
         

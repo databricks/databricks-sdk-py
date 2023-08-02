@@ -16,4 +16,4 @@ created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str
 shares = w.providers.list_shares(name=created.name)
 
 # cleanup
-w.providers.delete(delete=created.name)
+w.providers.delete(name=created.name)

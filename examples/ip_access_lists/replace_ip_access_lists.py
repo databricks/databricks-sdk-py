@@ -16,4 +16,4 @@ w.ip_access_lists.replace(ip_access_list_id=created.ip_access_list.list_id,
                           enabled=False)
 
 # cleanup
-w.ip_access_lists.delete(delete=created.ip_access_list.list_id)
+w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)

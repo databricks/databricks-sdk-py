@@ -28,4 +28,4 @@ repaired_run = w.jobs.repair_run(rerun_tasks=[cancelled_run.tasks[0].task_key],
                                  run_id=run_now_response.response.run_id).result()
 
 # cleanup
-w.jobs.delete(delete=created_job.job_id)
+w.jobs.delete(job_id=created_job.job_id)

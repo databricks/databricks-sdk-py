@@ -32,8 +32,8 @@ Alerts
                                     query_id=query.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
-            w.alerts.delete(delete=alert.id)
+            w.queries.delete(query_id=query.id)
+            w.alerts.delete(alert_id=alert.id)
 
         Create an alert.
         
@@ -45,9 +45,9 @@ Alerts
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
-          ID of the query evaluated by the alert.
+          Query ID.
         :param parent: str (optional)
-          The identifier of the workspace folder containing the alert. The default is ther user's home folder.
+          The identifier of the workspace folder containing the object.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
@@ -91,11 +91,11 @@ Alerts
                                     name=f'sdk-{time.time_ns()}',
                                     query_id=query.id)
             
-            by_id = w.alerts.get(get=alert.id)
+            by_id = w.alerts.get(alert_id=alert.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
-            w.alerts.delete(delete=alert.id)
+            w.queries.delete(query_id=query.id)
+            w.alerts.delete(alert_id=alert.id)
 
         Get an alert.
         
@@ -155,8 +155,8 @@ Alerts
                             query_id=query.id)
             
             # cleanup
-            w.queries.delete(delete=query.id)
-            w.alerts.delete(delete=alert.id)
+            w.queries.delete(query_id=query.id)
+            w.alerts.delete(alert_id=alert.id)
 
         Update an alert.
         
@@ -167,7 +167,7 @@ Alerts
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
-          ID of the query evaluated by the alert.
+          Query ID.
         :param alert_id: str
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.

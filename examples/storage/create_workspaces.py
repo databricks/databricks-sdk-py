@@ -11,4 +11,4 @@ storage = a.storage.create(
     root_bucket_info=provisioning.RootBucketInfo(bucket_name=os.environ["TEST_ROOT_BUCKET"]))
 
 # cleanup
-a.storage.delete(delete=storage.storage_configuration_id)
+a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
