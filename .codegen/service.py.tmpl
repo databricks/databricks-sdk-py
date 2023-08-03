@@ -8,7 +8,7 @@ import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
-from ._internal import _enum, _from_dict, _repeated, Wait
+from ._internal import _enum, _from_dict, _repeated, _validated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -17,7 +17,7 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 
 # all definitions in this file are in alphabetical order
 {{range .Types}}
-{{if .Fields -}}@dataclass
+{{if .Fields -}}{{if not .IsRequest}}@dataclass
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
     {{end}}{{- range .RequiredFields | alphanumOnly}}
@@ -34,7 +34,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
         return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{$f.SnakeName}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
-
+{{end}}
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
 {{else if .MapValue}}{{.PascalName}} = {{template "type-nq" .}}
 {{else if .Enum}}class {{.PascalName}}(Enum):
@@ -156,7 +156,7 @@ class {{.Name}}API:{{if .Description}}
       {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
         {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
-      {{- end}}, **kwargs
+      {{- end}}
     {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}
         {{with .Request}}{{range .RequiredFields}}
@@ -179,9 +179,7 @@ class {{.Name}}API:{{if .Description}}
           {{template "type-doc" .Response}}
         {{- end}}{{end}}
         """{{end}}
-        {{if .Request -}}request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-          request = {{template "type-nq" .Request}}({{range $i, $f := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}})
+        {{if .Request -}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-call" .}}
@@ -196,12 +194,21 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-serialize" -}}
-        {{if .Request.HasJsonField}}body = request.as_dict(){{end}}{{if .Request.HasQueryField}}
-        query = {}
-        {{- range .Request.Fields}}{{if .IsQuery}}
-        if {{.SnakeName}}: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
-        {{end}}
+        {{if or .Request.HasJsonField .Request.HasQueryField -}}
+        {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
+        query = {}{{end}}
+        {{- range .Request.Fields}}
+        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
+        {{- end}}
 {{- end}}
+
+{{- define "method-param-bind" -}}
+      {{- if not .Entity }}None # ERROR: No Type
+      {{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}_validated('{{.SnakeName}} item', {{.Entity.ArrayValue.PascalName}}, v){{else}}v{{end}} for v in {{.SnakeName}}]
+      {{- else if .Entity.IsObject }}_validated('{{.SnakeName}}', {{.Entity.PascalName}}, {{.SnakeName}})
+      {{- else if .Entity.Enum }}_validated('{{.SnakeName}}', {{.Entity.PascalName}}, {{.SnakeName}})
+      {{- else}}{{.SnakeName}}{{- end -}}
+{{- end -}}
 
 {{define "method-call" -}}
         {{if .Pagination -}}{{template "method-call-paginated" .}}
@@ -213,7 +220,7 @@ class {{.Name}}API:{{if .Description}}
         {{if .Response}}op_response = {{end}}{{template "method-do" .}}
         return Wait(self.{{.Wait.SnakeName}}
           {{if .Response}}, response = {{.Response.PascalName}}.from_dict(op_response){{end}}
-          {{range .Wait.Binding}}, {{.PollField.SnakeName}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}request.{{.Bind.SnakeName}}{{end}}
+          {{range .Wait.Binding}}, {{.PollField.SnakeName}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}{{.Bind.SnakeName}}{{end}}
         {{- end}})
 {{- end}}
 
@@ -269,7 +276,7 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-do" -}}
 self._api.do('{{.Verb}}', {{if .PathParts -}}
-  f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}request.{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
+  f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
 {{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
 {{- end}}
 
@@ -288,10 +295,3 @@ self._api.do('{{.Verb}}', {{if .PathParts -}}
   {{- end}}{{end}}
 {{- end}}
 
-{{- define "method-param-bind" -}}
-{{- if not .Entity }}None # ERROR: No Type
-{{- else if .Entity.ArrayValue }}[{{if .Entity.ArrayValue.IsObject}}v.as_dict(){{else}}v{{end}} for v in request.{{.SnakeName}}]
-{{- else if .Entity.IsObject }}request.{{.SnakeName}}.as_dict()
-{{- else if .Entity.Enum }}request.{{.SnakeName}}.value
-{{- else}}request.{{.SnakeName}}{{- end -}}
-{{- end -}}
