@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -26,7 +26,7 @@ class Budget:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
+        if self.alerts: body['alerts'] = [_validated('alerts item', BudgetAlert, v) for v in self.alerts]
         if self.end_date is not None: body['end_date'] = self.end_date
         if self.filter is not None: body['filter'] = self.filter
         if self.name is not None: body['name'] = self.name
@@ -71,7 +71,8 @@ class BudgetList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.budgets: body['budgets'] = [v.as_dict() for v in self.budgets]
+        if self.budgets:
+            body['budgets'] = [_validated('budgets item', BudgetWithStatus, v) for v in self.budgets]
         return body
 
     @classmethod
@@ -97,7 +98,7 @@ class BudgetWithStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
+        if self.alerts: body['alerts'] = [_validated('alerts item', BudgetAlert, v) for v in self.alerts]
         if self.budget_id is not None: body['budget_id'] = self.budget_id
         if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.end_date is not None: body['end_date'] = self.end_date
@@ -105,7 +106,10 @@ class BudgetWithStatus:
         if self.name is not None: body['name'] = self.name
         if self.period is not None: body['period'] = self.period
         if self.start_date is not None: body['start_date'] = self.start_date
-        if self.status_daily: body['status_daily'] = [v.as_dict() for v in self.status_daily]
+        if self.status_daily:
+            body['status_daily'] = [
+                _validated('status_daily item', BudgetWithStatusStatusDailyItem, v) for v in self.status_daily
+            ]
         if self.target_amount is not None: body['target_amount'] = self.target_amount
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
@@ -159,9 +163,11 @@ class CreateLogDeliveryConfigurationParams:
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
         if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
         if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_type is not None: body['log_type'] = self.log_type.value
-        if self.output_format is not None: body['output_format'] = self.output_format.value
-        if self.status is not None: body['status'] = self.status.value
+        if self.log_type is not None: body['log_type'] = _validated('log_type', LogType, self.log_type)
+        if self.output_format is not None:
+            body['output_format'] = _validated('output_format', OutputFormat, self.output_format)
+        if self.status is not None:
+            body['status'] = _validated('status', LogDeliveryConfigStatus, self.status)
         if self.storage_configuration_id is not None:
             body['storage_configuration_id'] = self.storage_configuration_id
         if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
@@ -226,10 +232,14 @@ class LogDeliveryConfiguration:
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
         if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
         if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_delivery_status: body['log_delivery_status'] = self.log_delivery_status.as_dict()
-        if self.log_type is not None: body['log_type'] = self.log_type.value
-        if self.output_format is not None: body['output_format'] = self.output_format.value
-        if self.status is not None: body['status'] = self.status.value
+        if self.log_delivery_status:
+            body['log_delivery_status'] = _validated('log_delivery_status', LogDeliveryStatus,
+                                                     self.log_delivery_status)
+        if self.log_type is not None: body['log_type'] = _validated('log_type', LogType, self.log_type)
+        if self.output_format is not None:
+            body['output_format'] = _validated('output_format', OutputFormat, self.output_format)
+        if self.status is not None:
+            body['status'] = _validated('status', LogDeliveryConfigStatus, self.status)
         if self.storage_configuration_id is not None:
             body['storage_configuration_id'] = self.storage_configuration_id
         if self.update_time is not None: body['update_time'] = self.update_time
@@ -269,7 +279,7 @@ class LogDeliveryStatus:
         if self.last_successful_attempt_time is not None:
             body['last_successful_attempt_time'] = self.last_successful_attempt_time
         if self.message is not None: body['message'] = self.message
-        if self.status is not None: body['status'] = self.status.value
+        if self.status is not None: body['status'] = _validated('status', DeliveryStatus, self.status)
         return body
 
     @classmethod
@@ -322,7 +332,8 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         body = {}
         if self.log_delivery_configuration_id is not None:
             body['log_delivery_configuration_id'] = self.log_delivery_configuration_id
-        if self.status is not None: body['status'] = self.status.value
+        if self.status is not None:
+            body['status'] = _validated('status', LogDeliveryConfigStatus, self.status)
         return body
 
     @classmethod
@@ -338,7 +349,7 @@ class WrappedBudget:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget: body['budget'] = _validated('budget', Budget, self.budget)
         if self.budget_id is not None: body['budget_id'] = self.budget_id
         return body
 
@@ -353,7 +364,7 @@ class WrappedBudgetWithStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget: body['budget'] = _validated('budget', BudgetWithStatus, self.budget)
         return body
 
     @classmethod
@@ -368,7 +379,9 @@ class WrappedCreateLogDeliveryConfiguration:
     def as_dict(self) -> dict:
         body = {}
         if self.log_delivery_configuration:
-            body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
+            body['log_delivery_configuration'] = _validated('log_delivery_configuration',
+                                                            CreateLogDeliveryConfigurationParams,
+                                                            self.log_delivery_configuration)
         return body
 
     @classmethod
@@ -384,7 +397,9 @@ class WrappedLogDeliveryConfiguration:
     def as_dict(self) -> dict:
         body = {}
         if self.log_delivery_configuration:
-            body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
+            body['log_delivery_configuration'] = _validated('log_delivery_configuration',
+                                                            LogDeliveryConfiguration,
+                                                            self.log_delivery_configuration)
         return body
 
     @classmethod
@@ -400,7 +415,10 @@ class WrappedLogDeliveryConfigurations:
     def as_dict(self) -> dict:
         body = {}
         if self.log_delivery_configurations:
-            body['log_delivery_configurations'] = [v.as_dict() for v in self.log_delivery_configurations]
+            body['log_delivery_configurations'] = [
+                _validated('log_delivery_configurations item', LogDeliveryConfiguration, v)
+                for v in self.log_delivery_configurations
+            ]
         return body
 
     @classmethod
@@ -465,7 +483,7 @@ class BudgetsAPI:
         :returns: :class:`WrappedBudgetWithStatus`
         """
         body = {}
-        if budget is not None: body['budget'] = budget.as_dict()
+        if budget is not None: body['budget'] = _validated('budget', Budget, budget)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/budget', body=body)
         return WrappedBudgetWithStatus.from_dict(json)
@@ -523,7 +541,7 @@ class BudgetsAPI:
         
         """
         body = {}
-        if budget is not None: body['budget'] = budget.as_dict()
+        if budget is not None: body['budget'] = _validated('budget', Budget, budget)
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}', body=body)
 
 
@@ -612,7 +630,9 @@ class LogDeliveryAPI:
         """
         body = {}
         if log_delivery_configuration is not None:
-            body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
+            body['log_delivery_configuration'] = _validated('log_delivery_configuration',
+                                                            CreateLogDeliveryConfigurationParams,
+                                                            log_delivery_configuration)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/log-delivery', body=body)
         return WrappedLogDeliveryConfiguration.from_dict(json)
@@ -653,7 +673,7 @@ class LogDeliveryAPI:
 
         query = {}
         if credentials_id is not None: query['credentials_id'] = credentials_id
-        if status is not None: query['status'] = status.value
+        if status is not None: query['status'] = _validated('status', LogDeliveryConfigStatus, status)
         if storage_configuration_id is not None: query['storage_configuration_id'] = storage_configuration_id
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/log-delivery', query=query)
@@ -678,7 +698,7 @@ class LogDeliveryAPI:
         
         """
         body = {}
-        if status is not None: body['status'] = status.value
+        if status is not None: body['status'] = _validated('status', LogDeliveryConfigStatus, status)
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
                      body=body)

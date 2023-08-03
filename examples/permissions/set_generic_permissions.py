@@ -11,12 +11,12 @@ group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
 
 obj = w.workspace.get_status(path=notebook_path)
 
-w.permissions.set(request_object_type="notebooks",
-                  request_object_id="%d" % (obj.object_id),
-                  access_control_list=[
-                      iam.AccessControlRequest(group_name=group.display_name,
-                                               permission_level=iam.PermissionLevel.CAN_RUN)
-                  ])
+_ = w.permissions.set(request_object_type="notebooks",
+                      request_object_id="%d" % (obj.object_id),
+                      access_control_list=[
+                          iam.AccessControlRequest(group_name=group.display_name,
+                                                   permission_level=iam.PermissionLevel.CAN_RUN)
+                      ])
 
 # cleanup
 w.groups.delete(id=group.id)

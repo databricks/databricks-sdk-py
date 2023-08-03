@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _repeated
+from ._internal import _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -116,7 +116,7 @@ class ListStatusResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.files: body['files'] = [v.as_dict() for v in self.files]
+        if self.files: body['files'] = [_validated('files item', FileInfo, v) for v in self.files]
         return body
 
     @classmethod

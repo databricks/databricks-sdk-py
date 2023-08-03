@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -25,7 +25,8 @@ class AccessControl:
     def as_dict(self) -> dict:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', PermissionLevel, self.permission_level)
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
@@ -56,13 +57,13 @@ class Alert:
         if self.id is not None: body['id'] = self.id
         if self.last_triggered_at is not None: body['last_triggered_at'] = self.last_triggered_at
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
+        if self.options: body['options'] = _validated('options', AlertOptions, self.options)
         if self.parent is not None: body['parent'] = self.parent
-        if self.query: body['query'] = self.query.as_dict()
+        if self.query: body['query'] = _validated('query', AlertQuery, self.query)
         if self.rearm is not None: body['rearm'] = self.rearm
-        if self.state is not None: body['state'] = self.state.value
+        if self.state is not None: body['state'] = _validated('state', AlertState, self.state)
         if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.user: body['user'] = self.user.as_dict()
+        if self.user: body['user'] = _validated('user', User, self.user)
         return body
 
     @classmethod
@@ -137,7 +138,7 @@ class AlertQuery:
         if self.is_draft is not None: body['is_draft'] = self.is_draft
         if self.is_safe is not None: body['is_safe'] = self.is_safe
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
+        if self.options: body['options'] = _validated('options', QueryOptions, self.options)
         if self.query is not None: body['query'] = self.query
         if self.tags: body['tags'] = [v for v in self.tags]
         if self.updated_at is not None: body['updated_at'] = self.updated_at
@@ -178,7 +179,7 @@ class Channel:
     def as_dict(self) -> dict:
         body = {}
         if self.dbsql_version is not None: body['dbsql_version'] = self.dbsql_version
-        if self.name is not None: body['name'] = self.name.value
+        if self.name is not None: body['name'] = _validated('name', ChannelName, self.name)
         return body
 
     @classmethod
@@ -196,7 +197,7 @@ class ChannelInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.dbsql_version is not None: body['dbsql_version'] = self.dbsql_version
-        if self.name is not None: body['name'] = self.name.value
+        if self.name is not None: body['name'] = _validated('name', ChannelName, self.name)
         return body
 
     @classmethod
@@ -261,7 +262,8 @@ class ColumnInfo:
         if self.name is not None: body['name'] = self.name
         if self.position is not None: body['position'] = self.position
         if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
-        if self.type_name is not None: body['type_name'] = self.type_name.value
+        if self.type_name is not None:
+            body['type_name'] = _validated('type_name', ColumnInfoTypeName, self.type_name)
         if self.type_precision is not None: body['type_precision'] = self.type_precision
         if self.type_scale is not None: body['type_scale'] = self.type_scale
         if self.type_text is not None: body['type_text'] = self.type_text
@@ -313,7 +315,7 @@ class CreateAlert:
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
+        if self.options: body['options'] = _validated('options', AlertOptions, self.options)
         if self.parent is not None: body['parent'] = self.parent
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.rearm is not None: body['rearm'] = self.rearm
@@ -347,7 +349,7 @@ class CreateWarehouseRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
-        if self.channel: body['channel'] = self.channel.as_dict()
+        if self.channel: body['channel'] = _validated('channel', Channel, self.channel)
         if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
         if self.creator_name is not None: body['creator_name'] = self.creator_name
         if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
@@ -358,9 +360,12 @@ class CreateWarehouseRequest:
         if self.min_num_clusters is not None: body['min_num_clusters'] = self.min_num_clusters
         if self.name is not None: body['name'] = self.name
         if self.spot_instance_policy is not None:
-            body['spot_instance_policy'] = self.spot_instance_policy.value
-        if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
+            body['spot_instance_policy'] = _validated('spot_instance_policy', SpotInstancePolicy,
+                                                      self.spot_instance_policy)
+        if self.tags: body['tags'] = _validated('tags', EndpointTags, self.tags)
+        if self.warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', CreateWarehouseRequestWarehouseType,
+                                                self.warehouse_type)
         return body
 
     @classmethod
@@ -436,15 +441,16 @@ class Dashboard:
         if self.is_draft is not None: body['is_draft'] = self.is_draft
         if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
+        if self.options: body['options'] = _validated('options', DashboardOptions, self.options)
         if self.parent is not None: body['parent'] = self.parent
-        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
+        if self.permission_tier is not None:
+            body['permission_tier'] = _validated('permission_tier', PermissionLevel, self.permission_tier)
         if self.slug is not None: body['slug'] = self.slug
         if self.tags: body['tags'] = [v for v in self.tags]
         if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.user: body['user'] = self.user.as_dict()
+        if self.user: body['user'] = _validated('user', User, self.user)
         if self.user_id is not None: body['user_id'] = self.user_id
-        if self.widgets: body['widgets'] = [v.as_dict() for v in self.widgets]
+        if self.widgets: body['widgets'] = [_validated('widgets item', Widget, v) for v in self.widgets]
         return body
 
     @classmethod
@@ -560,7 +566,7 @@ class EditAlert:
         body = {}
         if self.alert_id is not None: body['alert_id'] = self.alert_id
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
+        if self.options: body['options'] = _validated('options', AlertOptions, self.options)
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.rearm is not None: body['rearm'] = self.rearm
         return body
@@ -594,7 +600,7 @@ class EditWarehouseRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
-        if self.channel: body['channel'] = self.channel.as_dict()
+        if self.channel: body['channel'] = _validated('channel', Channel, self.channel)
         if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
         if self.creator_name is not None: body['creator_name'] = self.creator_name
         if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
@@ -606,9 +612,12 @@ class EditWarehouseRequest:
         if self.min_num_clusters is not None: body['min_num_clusters'] = self.min_num_clusters
         if self.name is not None: body['name'] = self.name
         if self.spot_instance_policy is not None:
-            body['spot_instance_policy'] = self.spot_instance_policy.value
-        if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
+            body['spot_instance_policy'] = _validated('spot_instance_policy', SpotInstancePolicy,
+                                                      self.spot_instance_policy)
+        if self.tags: body['tags'] = _validated('tags', EndpointTags, self.tags)
+        if self.warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', EditWarehouseRequestWarehouseType,
+                                                self.warehouse_type)
         return body
 
     @classmethod
@@ -665,9 +674,10 @@ class EndpointHealth:
     def as_dict(self) -> dict:
         body = {}
         if self.details is not None: body['details'] = self.details
-        if self.failure_reason: body['failure_reason'] = self.failure_reason.as_dict()
+        if self.failure_reason:
+            body['failure_reason'] = _validated('failure_reason', TerminationReason, self.failure_reason)
         if self.message is not None: body['message'] = self.message
-        if self.status is not None: body['status'] = self.status.value
+        if self.status is not None: body['status'] = _validated('status', Status, self.status)
         if self.summary is not None: body['summary'] = self.summary
         return body
 
@@ -706,13 +716,13 @@ class EndpointInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
-        if self.channel: body['channel'] = self.channel.as_dict()
+        if self.channel: body['channel'] = _validated('channel', Channel, self.channel)
         if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
         if self.creator_name is not None: body['creator_name'] = self.creator_name
         if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
         if self.enable_serverless_compute is not None:
             body['enable_serverless_compute'] = self.enable_serverless_compute
-        if self.health: body['health'] = self.health.as_dict()
+        if self.health: body['health'] = _validated('health', EndpointHealth, self.health)
         if self.id is not None: body['id'] = self.id
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         if self.jdbc_url is not None: body['jdbc_url'] = self.jdbc_url
@@ -721,12 +731,15 @@ class EndpointInfo:
         if self.name is not None: body['name'] = self.name
         if self.num_active_sessions is not None: body['num_active_sessions'] = self.num_active_sessions
         if self.num_clusters is not None: body['num_clusters'] = self.num_clusters
-        if self.odbc_params: body['odbc_params'] = self.odbc_params.as_dict()
+        if self.odbc_params: body['odbc_params'] = _validated('odbc_params', OdbcParams, self.odbc_params)
         if self.spot_instance_policy is not None:
-            body['spot_instance_policy'] = self.spot_instance_policy.value
-        if self.state is not None: body['state'] = self.state.value
-        if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
+            body['spot_instance_policy'] = _validated('spot_instance_policy', SpotInstancePolicy,
+                                                      self.spot_instance_policy)
+        if self.state is not None: body['state'] = _validated('state', State, self.state)
+        if self.tags: body['tags'] = _validated('tags', EndpointTags, self.tags)
+        if self.warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', EndpointInfoWarehouseType,
+                                                self.warehouse_type)
         return body
 
     @classmethod
@@ -784,7 +797,10 @@ class EndpointTags:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.custom_tags: body['custom_tags'] = [v.as_dict() for v in self.custom_tags]
+        if self.custom_tags:
+            body['custom_tags'] = [
+                _validated('custom_tags item', EndpointTagPair, v) for v in self.custom_tags
+            ]
         return body
 
     @classmethod
@@ -808,9 +824,11 @@ class ExecuteStatementRequest:
         body = {}
         if self.byte_limit is not None: body['byte_limit'] = self.byte_limit
         if self.catalog is not None: body['catalog'] = self.catalog
-        if self.disposition is not None: body['disposition'] = self.disposition.value
-        if self.format is not None: body['format'] = self.format.value
-        if self.on_wait_timeout is not None: body['on_wait_timeout'] = self.on_wait_timeout.value
+        if self.disposition is not None:
+            body['disposition'] = _validated('disposition', Disposition, self.disposition)
+        if self.format is not None: body['format'] = _validated('format', Format, self.format)
+        if self.on_wait_timeout is not None:
+            body['on_wait_timeout'] = _validated('on_wait_timeout', TimeoutAction, self.on_wait_timeout)
         if self.schema is not None: body['schema'] = self.schema
         if self.statement is not None: body['statement'] = self.statement
         if self.wait_timeout is not None: body['wait_timeout'] = self.wait_timeout
@@ -839,10 +857,10 @@ class ExecuteStatementResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.manifest: body['manifest'] = self.manifest.as_dict()
-        if self.result: body['result'] = self.result.as_dict()
+        if self.manifest: body['manifest'] = _validated('manifest', ResultManifest, self.manifest)
+        if self.result: body['result'] = _validated('result', ResultData, self.result)
         if self.statement_id is not None: body['statement_id'] = self.statement_id
-        if self.status: body['status'] = self.status.as_dict()
+        if self.status: body['status'] = _validated('status', StatementStatus, self.status)
         return body
 
     @classmethod
@@ -939,9 +957,12 @@ class GetResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', AccessControl, v) for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type.value
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', ObjectType, self.object_type)
         return body
 
     @classmethod
@@ -960,10 +981,10 @@ class GetStatementResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.manifest: body['manifest'] = self.manifest.as_dict()
-        if self.result: body['result'] = self.result.as_dict()
+        if self.manifest: body['manifest'] = _validated('manifest', ResultManifest, self.manifest)
+        if self.result: body['result'] = _validated('result', ResultData, self.result)
         if self.statement_id is not None: body['statement_id'] = self.statement_id
-        if self.status: body['status'] = self.status.as_dict()
+        if self.status: body['status'] = _validated('status', StatementStatus, self.status)
         return body
 
     @classmethod
@@ -980,7 +1001,11 @@ class GetWarehousePermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', WarehousePermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -1014,13 +1039,13 @@ class GetWarehouseResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.auto_stop_mins is not None: body['auto_stop_mins'] = self.auto_stop_mins
-        if self.channel: body['channel'] = self.channel.as_dict()
+        if self.channel: body['channel'] = _validated('channel', Channel, self.channel)
         if self.cluster_size is not None: body['cluster_size'] = self.cluster_size
         if self.creator_name is not None: body['creator_name'] = self.creator_name
         if self.enable_photon is not None: body['enable_photon'] = self.enable_photon
         if self.enable_serverless_compute is not None:
             body['enable_serverless_compute'] = self.enable_serverless_compute
-        if self.health: body['health'] = self.health.as_dict()
+        if self.health: body['health'] = _validated('health', EndpointHealth, self.health)
         if self.id is not None: body['id'] = self.id
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         if self.jdbc_url is not None: body['jdbc_url'] = self.jdbc_url
@@ -1029,12 +1054,15 @@ class GetWarehouseResponse:
         if self.name is not None: body['name'] = self.name
         if self.num_active_sessions is not None: body['num_active_sessions'] = self.num_active_sessions
         if self.num_clusters is not None: body['num_clusters'] = self.num_clusters
-        if self.odbc_params: body['odbc_params'] = self.odbc_params.as_dict()
+        if self.odbc_params: body['odbc_params'] = _validated('odbc_params', OdbcParams, self.odbc_params)
         if self.spot_instance_policy is not None:
-            body['spot_instance_policy'] = self.spot_instance_policy.value
-        if self.state is not None: body['state'] = self.state.value
-        if self.tags: body['tags'] = self.tags.as_dict()
-        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
+            body['spot_instance_policy'] = _validated('spot_instance_policy', SpotInstancePolicy,
+                                                      self.spot_instance_policy)
+        if self.state is not None: body['state'] = _validated('state', State, self.state)
+        if self.tags: body['tags'] = _validated('tags', EndpointTags, self.tags)
+        if self.warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', GetWarehouseResponseWarehouseType,
+                                                self.warehouse_type)
         return body
 
     @classmethod
@@ -1084,19 +1112,31 @@ class GetWorkspaceWarehouseConfigResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.channel: body['channel'] = self.channel.as_dict()
-        if self.config_param: body['config_param'] = self.config_param.as_dict()
+        if self.channel: body['channel'] = _validated('channel', Channel, self.channel)
+        if self.config_param:
+            body['config_param'] = _validated('config_param', RepeatedEndpointConfPairs, self.config_param)
         if self.data_access_config:
-            body['data_access_config'] = [v.as_dict() for v in self.data_access_config]
+            body['data_access_config'] = [
+                _validated('data_access_config item', EndpointConfPair, v) for v in self.data_access_config
+            ]
         if self.enabled_warehouse_types:
-            body['enabled_warehouse_types'] = [v.as_dict() for v in self.enabled_warehouse_types]
-        if self.global_param: body['global_param'] = self.global_param.as_dict()
+            body['enabled_warehouse_types'] = [
+                _validated('enabled_warehouse_types item', WarehouseTypePair, v)
+                for v in self.enabled_warehouse_types
+            ]
+        if self.global_param:
+            body['global_param'] = _validated('global_param', RepeatedEndpointConfPairs, self.global_param)
         if self.google_service_account is not None:
             body['google_service_account'] = self.google_service_account
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.security_policy is not None: body['security_policy'] = self.security_policy.value
+        if self.security_policy is not None:
+            body['security_policy'] = _validated('security_policy',
+                                                 GetWorkspaceWarehouseConfigResponseSecurityPolicy,
+                                                 self.security_policy)
         if self.sql_configuration_parameters:
-            body['sql_configuration_parameters'] = self.sql_configuration_parameters.as_dict()
+            body['sql_configuration_parameters'] = _validated('sql_configuration_parameters',
+                                                              RepeatedEndpointConfPairs,
+                                                              self.sql_configuration_parameters)
         return body
 
     @classmethod
@@ -1122,10 +1162,26 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
     PASSTHROUGH = 'PASSTHROUGH'
 
 
+@dataclass
+class ListDashboardsRequest:
+    """Get dashboard objects"""
+
+    order: Optional['ListOrder'] = None
+    q: Optional[str] = None
+
+
 class ListOrder(Enum):
 
     CREATED_AT = 'created_at'
     NAME = 'name'
+
+
+@dataclass
+class ListQueriesRequest:
+    """Get a list of queries"""
+
+    order: Optional[str] = None
+    q: Optional[str] = None
 
 
 @dataclass
@@ -1138,7 +1194,7 @@ class ListQueriesResponse:
         body = {}
         if self.has_next_page is not None: body['has_next_page'] = self.has_next_page
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.res: body['res'] = [v.as_dict() for v in self.res]
+        if self.res: body['res'] = [_validated('res item', QueryInfo, v) for v in self.res]
         return body
 
     @classmethod
@@ -1146,6 +1202,15 @@ class ListQueriesResponse:
         return cls(has_next_page=d.get('has_next_page', None),
                    next_page_token=d.get('next_page_token', None),
                    res=_repeated(d, 'res', QueryInfo))
+
+
+@dataclass
+class ListQueryHistoryRequest:
+    """List Queries"""
+
+    filter_by: Optional['QueryFilter'] = None
+    include_metrics: Optional[bool] = None
+    max_results: Optional[int] = None
 
 
 @dataclass
@@ -1160,7 +1225,7 @@ class ListResponse:
         if self.count is not None: body['count'] = self.count
         if self.page is not None: body['page'] = self.page
         if self.page_size is not None: body['page_size'] = self.page_size
-        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        if self.results: body['results'] = [_validated('results item', Dashboard, v) for v in self.results]
         return body
 
     @classmethod
@@ -1177,7 +1242,8 @@ class ListWarehousesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.warehouses: body['warehouses'] = [v.as_dict() for v in self.warehouses]
+        if self.warehouses:
+            body['warehouses'] = [_validated('warehouses item', EndpointInfo, v) for v in self.warehouses]
         return body
 
     @classmethod
@@ -1245,7 +1311,7 @@ class Parameter:
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.title is not None: body['title'] = self.title
-        if self.type is not None: body['type'] = self.type.value
+        if self.type is not None: body['type'] = _validated('type', ParameterType, self.type)
         if self.value: body['value'] = self.value
         return body
 
@@ -1321,20 +1387,25 @@ class Query:
         if self.is_draft is not None: body['is_draft'] = self.is_draft
         if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
         if self.is_safe is not None: body['is_safe'] = self.is_safe
-        if self.last_modified_by: body['last_modified_by'] = self.last_modified_by.as_dict()
+        if self.last_modified_by:
+            body['last_modified_by'] = _validated('last_modified_by', User, self.last_modified_by)
         if self.last_modified_by_id is not None: body['last_modified_by_id'] = self.last_modified_by_id
         if self.latest_query_data_id is not None: body['latest_query_data_id'] = self.latest_query_data_id
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
+        if self.options: body['options'] = _validated('options', QueryOptions, self.options)
         if self.parent is not None: body['parent'] = self.parent
-        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
+        if self.permission_tier is not None:
+            body['permission_tier'] = _validated('permission_tier', PermissionLevel, self.permission_tier)
         if self.query is not None: body['query'] = self.query
         if self.query_hash is not None: body['query_hash'] = self.query_hash
         if self.tags: body['tags'] = [v for v in self.tags]
         if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.user: body['user'] = self.user.as_dict()
+        if self.user: body['user'] = _validated('user', User, self.user)
         if self.user_id is not None: body['user_id'] = self.user_id
-        if self.visualizations: body['visualizations'] = [v.as_dict() for v in self.visualizations]
+        if self.visualizations:
+            body['visualizations'] = [
+                _validated('visualizations item', Visualization, v) for v in self.visualizations
+            ]
         return body
 
     @classmethod
@@ -1404,8 +1475,11 @@ class QueryFilter:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
-        if self.statuses: body['statuses'] = [v.value for v in self.statuses]
+        if self.query_start_time_range:
+            body['query_start_time_range'] = _validated('query_start_time_range', TimeRange,
+                                                        self.query_start_time_range)
+        if self.statuses:
+            body['statuses'] = [_validated('statuses item', QueryStatus, v) for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
         if self.warehouse_ids: body['warehouse_ids'] = [v for v in self.warehouse_ids]
         return body
@@ -1448,7 +1522,8 @@ class QueryInfo:
         body = {}
         if self.can_subscribe_to_live_query is not None:
             body['canSubscribeToLiveQuery'] = self.can_subscribe_to_live_query
-        if self.channel_used: body['channel_used'] = self.channel_used.as_dict()
+        if self.channel_used:
+            body['channel_used'] = _validated('channel_used', ChannelInfo, self.channel_used)
         if self.duration is not None: body['duration'] = self.duration
         if self.endpoint_id is not None: body['endpoint_id'] = self.endpoint_id
         if self.error_message is not None: body['error_message'] = self.error_message
@@ -1457,16 +1532,18 @@ class QueryInfo:
         if self.execution_end_time_ms is not None: body['execution_end_time_ms'] = self.execution_end_time_ms
         if self.is_final is not None: body['is_final'] = self.is_final
         if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
-        if self.metrics: body['metrics'] = self.metrics.as_dict()
-        if self.plans_state is not None: body['plans_state'] = self.plans_state.value
+        if self.metrics: body['metrics'] = _validated('metrics', QueryMetrics, self.metrics)
+        if self.plans_state is not None:
+            body['plans_state'] = _validated('plans_state', PlansState, self.plans_state)
         if self.query_end_time_ms is not None: body['query_end_time_ms'] = self.query_end_time_ms
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.query_start_time_ms is not None: body['query_start_time_ms'] = self.query_start_time_ms
         if self.query_text is not None: body['query_text'] = self.query_text
         if self.rows_produced is not None: body['rows_produced'] = self.rows_produced
         if self.spark_ui_url is not None: body['spark_ui_url'] = self.spark_ui_url
-        if self.statement_type is not None: body['statement_type'] = self.statement_type.value
-        if self.status is not None: body['status'] = self.status.value
+        if self.statement_type is not None:
+            body['statement_type'] = _validated('statement_type', QueryStatementType, self.statement_type)
+        if self.status is not None: body['status'] = _validated('status', QueryStatus, self.status)
         if self.user_id is not None: body['user_id'] = self.user_id
         if self.user_name is not None: body['user_name'] = self.user_name
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
@@ -1511,7 +1588,7 @@ class QueryList:
         if self.count is not None: body['count'] = self.count
         if self.page is not None: body['page'] = self.page
         if self.page_size is not None: body['page_size'] = self.page_size
-        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        if self.results: body['results'] = [_validated('results item', Query, v) for v in self.results]
         return body
 
     @classmethod
@@ -1625,7 +1702,8 @@ class QueryOptions:
     def as_dict(self) -> dict:
         body = {}
         if self.moved_to_trash_at is not None: body['moved_to_trash_at'] = self.moved_to_trash_at
-        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', Parameter, v) for v in self.parameters]
         return body
 
     @classmethod
@@ -1707,9 +1785,14 @@ class RepeatedEndpointConfPairs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_pair: body['config_pair'] = [v.as_dict() for v in self.config_pair]
+        if self.config_pair:
+            body['config_pair'] = [
+                _validated('config_pair item', EndpointConfPair, v) for v in self.config_pair
+            ]
         if self.configuration_pairs:
-            body['configuration_pairs'] = [v.as_dict() for v in self.configuration_pairs]
+            body['configuration_pairs'] = [
+                _validated('configuration_pairs item', EndpointConfPair, v) for v in self.configuration_pairs
+            ]
         return body
 
     @classmethod
@@ -1737,8 +1820,11 @@ class ResultData:
         body = {}
         if self.byte_count is not None: body['byte_count'] = self.byte_count
         if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
-        if self.data_array: body['data_array'] = [v for v in self.data_array]
-        if self.external_links: body['external_links'] = [v.as_dict() for v in self.external_links]
+        if self.data_array: body['data_array'] = [[v for v in v] for v in self.data_array]
+        if self.external_links:
+            body['external_links'] = [
+                _validated('external_links item', ExternalLink, v) for v in self.external_links
+            ]
         if self.next_chunk_index is not None: body['next_chunk_index'] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
             body['next_chunk_internal_link'] = self.next_chunk_internal_link
@@ -1771,9 +1857,9 @@ class ResultManifest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.chunks: body['chunks'] = [v.as_dict() for v in self.chunks]
-        if self.format is not None: body['format'] = self.format.value
-        if self.schema: body['schema'] = self.schema.as_dict()
+        if self.chunks: body['chunks'] = [_validated('chunks item', ChunkInfo, v) for v in self.chunks]
+        if self.format is not None: body['format'] = _validated('format', Format, self.format)
+        if self.schema: body['schema'] = _validated('schema', ResultSchema, self.schema)
         if self.total_byte_count is not None: body['total_byte_count'] = self.total_byte_count
         if self.total_chunk_count is not None: body['total_chunk_count'] = self.total_chunk_count
         if self.total_row_count is not None: body['total_row_count'] = self.total_row_count
@@ -1799,7 +1885,7 @@ class ResultSchema:
     def as_dict(self) -> dict:
         body = {}
         if self.column_count is not None: body['column_count'] = self.column_count
-        if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
+        if self.columns: body['columns'] = [_validated('columns item', ColumnInfo, v) for v in self.columns]
         return body
 
     @classmethod
@@ -1814,7 +1900,8 @@ class ServiceError:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error_code is not None: body['error_code'] = self.error_code.value
+        if self.error_code is not None:
+            body['error_code'] = _validated('error_code', ServiceErrorCode, self.error_code)
         if self.message is not None: body['message'] = self.message
         return body
 
@@ -1850,9 +1937,12 @@ class SetResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', AccessControl, v) for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type.value
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', ObjectType, self.object_type)
         return body
 
     @classmethod
@@ -1876,19 +1966,31 @@ class SetWorkspaceWarehouseConfigRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.channel: body['channel'] = self.channel.as_dict()
-        if self.config_param: body['config_param'] = self.config_param.as_dict()
+        if self.channel: body['channel'] = _validated('channel', Channel, self.channel)
+        if self.config_param:
+            body['config_param'] = _validated('config_param', RepeatedEndpointConfPairs, self.config_param)
         if self.data_access_config:
-            body['data_access_config'] = [v.as_dict() for v in self.data_access_config]
+            body['data_access_config'] = [
+                _validated('data_access_config item', EndpointConfPair, v) for v in self.data_access_config
+            ]
         if self.enabled_warehouse_types:
-            body['enabled_warehouse_types'] = [v.as_dict() for v in self.enabled_warehouse_types]
-        if self.global_param: body['global_param'] = self.global_param.as_dict()
+            body['enabled_warehouse_types'] = [
+                _validated('enabled_warehouse_types item', WarehouseTypePair, v)
+                for v in self.enabled_warehouse_types
+            ]
+        if self.global_param:
+            body['global_param'] = _validated('global_param', RepeatedEndpointConfPairs, self.global_param)
         if self.google_service_account is not None:
             body['google_service_account'] = self.google_service_account
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.security_policy is not None: body['security_policy'] = self.security_policy.value
+        if self.security_policy is not None:
+            body['security_policy'] = _validated('security_policy',
+                                                 SetWorkspaceWarehouseConfigRequestSecurityPolicy,
+                                                 self.security_policy)
         if self.sql_configuration_parameters:
-            body['sql_configuration_parameters'] = self.sql_configuration_parameters.as_dict()
+            body['sql_configuration_parameters'] = _validated('sql_configuration_parameters',
+                                                              RepeatedEndpointConfPairs,
+                                                              self.sql_configuration_parameters)
         return body
 
     @classmethod
@@ -1957,8 +2059,8 @@ class StatementStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error: body['error'] = self.error.as_dict()
-        if self.state is not None: body['state'] = self.state.value
+        if self.error: body['error'] = _validated('error', ServiceError, self.error)
+        if self.state is not None: body['state'] = _validated('state', StatementState, self.state)
         return body
 
     @classmethod
@@ -1981,7 +2083,7 @@ class Success:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.message is not None: body['message'] = self.message.value
+        if self.message is not None: body['message'] = _validated('message', SuccessMessage, self.message)
         return body
 
     @classmethod
@@ -2002,9 +2104,9 @@ class TerminationReason:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.code is not None: body['code'] = self.code.value
+        if self.code is not None: body['code'] = _validated('code', TerminationReasonCode, self.code)
         if self.parameters: body['parameters'] = self.parameters
-        if self.type is not None: body['type'] = self.type.value
+        if self.type is not None: body['type'] = _validated('type', TerminationReasonType, self.type)
         return body
 
     @classmethod
@@ -2216,7 +2318,9 @@ class WarehouseAccessControlRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', WarehousePermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -2240,7 +2344,10 @@ class WarehouseAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', WarehousePermission, v) for v in self.all_permissions
+            ]
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -2267,7 +2374,9 @@ class WarehousePermission:
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', WarehousePermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -2294,7 +2403,10 @@ class WarehousePermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WarehouseAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
@@ -2314,7 +2426,9 @@ class WarehousePermissionsDescription:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', WarehousePermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -2331,7 +2445,10 @@ class WarehousePermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WarehouseAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
@@ -2349,7 +2466,9 @@ class WarehouseTypePair:
     def as_dict(self) -> dict:
         body = {}
         if self.enabled is not None: body['enabled'] = self.enabled
-        if self.warehouse_type is not None: body['warehouse_type'] = self.warehouse_type.value
+        if self.warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', WarehouseTypePairWarehouseType,
+                                                self.warehouse_type)
         return body
 
     @classmethod
@@ -2376,8 +2495,9 @@ class Widget:
     def as_dict(self) -> dict:
         body = {}
         if self.id is not None: body['id'] = self.id
-        if self.options: body['options'] = self.options.as_dict()
-        if self.visualization: body['visualization'] = self.visualization.as_dict()
+        if self.options: body['options'] = _validated('options', WidgetOptions, self.options)
+        if self.visualization:
+            body['visualization'] = _validated('visualization', Visualization, self.visualization)
         if self.width is not None: body['width'] = self.width
         return body
 
@@ -2458,7 +2578,7 @@ class AlertsAPI:
         """
         body = {}
         if name is not None: body['name'] = name
-        if options is not None: body['options'] = options.as_dict()
+        if options is not None: body['options'] = _validated('options', AlertOptions, options)
         if parent is not None: body['parent'] = parent
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
@@ -2529,7 +2649,7 @@ class AlertsAPI:
         """
         body = {}
         if name is not None: body['name'] = name
-        if options is not None: body['options'] = options.as_dict()
+        if options is not None: body['options'] = _validated('options', AlertOptions, options)
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
         self._api.do('PUT', f'/api/2.0/preview/sql/alerts/{alert_id}', body=body)
@@ -2622,7 +2742,7 @@ class DashboardsAPI:
         """
 
         query = {}
-        if order is not None: query['order'] = order.value
+        if order is not None: query['order'] = _validated('order', ListOrder, order)
         if page is not None: query['page'] = page
         if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
@@ -2733,7 +2853,9 @@ class DbsqlPermissionsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', AccessControl, v) for v in access_control_list
+            ]
 
         json = self._api.do('POST',
                             f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
@@ -2989,7 +3111,7 @@ class QueryHistoryAPI:
         """
 
         query = {}
-        if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if filter_by is not None: query['filter_by'] = _validated('filter_by', QueryFilter, filter_by)
         if include_metrics is not None: query['include_metrics'] = include_metrics
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
@@ -3284,9 +3406,10 @@ class StatementExecutionAPI:
         body = {}
         if byte_limit is not None: body['byte_limit'] = byte_limit
         if catalog is not None: body['catalog'] = catalog
-        if disposition is not None: body['disposition'] = disposition.value
-        if format is not None: body['format'] = format.value
-        if on_wait_timeout is not None: body['on_wait_timeout'] = on_wait_timeout.value
+        if disposition is not None: body['disposition'] = _validated('disposition', Disposition, disposition)
+        if format is not None: body['format'] = _validated('format', Format, format)
+        if on_wait_timeout is not None:
+            body['on_wait_timeout'] = _validated('on_wait_timeout', TimeoutAction, on_wait_timeout)
         if schema is not None: body['schema'] = schema
         if statement is not None: body['statement'] = statement
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout
@@ -3484,7 +3607,7 @@ class WarehousesAPI:
         """
         body = {}
         if auto_stop_mins is not None: body['auto_stop_mins'] = auto_stop_mins
-        if channel is not None: body['channel'] = channel.as_dict()
+        if channel is not None: body['channel'] = _validated('channel', Channel, channel)
         if cluster_size is not None: body['cluster_size'] = cluster_size
         if creator_name is not None: body['creator_name'] = creator_name
         if enable_photon is not None: body['enable_photon'] = enable_photon
@@ -3494,9 +3617,13 @@ class WarehousesAPI:
         if max_num_clusters is not None: body['max_num_clusters'] = max_num_clusters
         if min_num_clusters is not None: body['min_num_clusters'] = min_num_clusters
         if name is not None: body['name'] = name
-        if spot_instance_policy is not None: body['spot_instance_policy'] = spot_instance_policy.value
-        if tags is not None: body['tags'] = tags.as_dict()
-        if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
+        if spot_instance_policy is not None:
+            body['spot_instance_policy'] = _validated('spot_instance_policy', SpotInstancePolicy,
+                                                      spot_instance_policy)
+        if tags is not None: body['tags'] = _validated('tags', EndpointTags, tags)
+        if warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', CreateWarehouseRequestWarehouseType,
+                                                warehouse_type)
         op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
         return Wait(self.wait_get_warehouse_running,
                     response=CreateWarehouseResponse.from_dict(op_response),
@@ -3631,7 +3758,7 @@ class WarehousesAPI:
         """
         body = {}
         if auto_stop_mins is not None: body['auto_stop_mins'] = auto_stop_mins
-        if channel is not None: body['channel'] = channel.as_dict()
+        if channel is not None: body['channel'] = _validated('channel', Channel, channel)
         if cluster_size is not None: body['cluster_size'] = cluster_size
         if creator_name is not None: body['creator_name'] = creator_name
         if enable_photon is not None: body['enable_photon'] = enable_photon
@@ -3641,9 +3768,13 @@ class WarehousesAPI:
         if max_num_clusters is not None: body['max_num_clusters'] = max_num_clusters
         if min_num_clusters is not None: body['min_num_clusters'] = min_num_clusters
         if name is not None: body['name'] = name
-        if spot_instance_policy is not None: body['spot_instance_policy'] = spot_instance_policy.value
-        if tags is not None: body['tags'] = tags.as_dict()
-        if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
+        if spot_instance_policy is not None:
+            body['spot_instance_policy'] = _validated('spot_instance_policy', SpotInstancePolicy,
+                                                      spot_instance_policy)
+        if tags is not None: body['tags'] = _validated('tags', EndpointTags, tags)
+        if warehouse_type is not None:
+            body['warehouse_type'] = _validated('warehouse_type', EditWarehouseRequestWarehouseType,
+                                                warehouse_type)
         self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body)
         return Wait(self.wait_get_warehouse_running, id=id)
 
@@ -3770,7 +3901,10 @@ class WarehousesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WarehouseAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT', f'/api/2.0/permissions/warehouses/{warehouse_id}', body=body)
         return WarehousePermissions.from_dict(json)
@@ -3817,18 +3951,30 @@ class WarehousesAPI:
         
         """
         body = {}
-        if channel is not None: body['channel'] = channel.as_dict()
-        if config_param is not None: body['config_param'] = config_param.as_dict()
+        if channel is not None: body['channel'] = _validated('channel', Channel, channel)
+        if config_param is not None:
+            body['config_param'] = _validated('config_param', RepeatedEndpointConfPairs, config_param)
         if data_access_config is not None:
-            body['data_access_config'] = [v.as_dict() for v in data_access_config]
+            body['data_access_config'] = [
+                _validated('data_access_config item', EndpointConfPair, v) for v in data_access_config
+            ]
         if enabled_warehouse_types is not None:
-            body['enabled_warehouse_types'] = [v.as_dict() for v in enabled_warehouse_types]
-        if global_param is not None: body['global_param'] = global_param.as_dict()
+            body['enabled_warehouse_types'] = [
+                _validated('enabled_warehouse_types item', WarehouseTypePair, v)
+                for v in enabled_warehouse_types
+            ]
+        if global_param is not None:
+            body['global_param'] = _validated('global_param', RepeatedEndpointConfPairs, global_param)
         if google_service_account is not None: body['google_service_account'] = google_service_account
         if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
-        if security_policy is not None: body['security_policy'] = security_policy.value
+        if security_policy is not None:
+            body['security_policy'] = _validated('security_policy',
+                                                 SetWorkspaceWarehouseConfigRequestSecurityPolicy,
+                                                 security_policy)
         if sql_configuration_parameters is not None:
-            body['sql_configuration_parameters'] = sql_configuration_parameters.as_dict()
+            body['sql_configuration_parameters'] = _validated('sql_configuration_parameters',
+                                                              RepeatedEndpointConfPairs,
+                                                              sql_configuration_parameters)
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)
 
     def start(self, id: str) -> Wait[GetWarehouseResponse]:
@@ -3887,7 +4033,10 @@ class WarehousesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WarehouseAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH', f'/api/2.0/permissions/warehouses/{warehouse_id}', body=body)
         return WarehousePermissions.from_dict(json)

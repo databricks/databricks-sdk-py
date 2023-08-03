@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -44,21 +44,23 @@ class CreatePipeline:
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
-        if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.clusters:
+            body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
         if self.continuous is not None: body['continuous'] = self.continuous
         if self.development is not None: body['development'] = self.development
         if self.dry_run is not None: body['dry_run'] = self.dry_run
         if self.edition is not None: body['edition'] = self.edition
-        if self.filters: body['filters'] = self.filters.as_dict()
+        if self.filters: body['filters'] = _validated('filters', Filters, self.filters)
         if self.id is not None: body['id'] = self.id
-        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
+        if self.libraries:
+            body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in self.libraries]
         if self.name is not None: body['name'] = self.name
         if self.photon is not None: body['photon'] = self.photon
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
-        if self.trigger: body['trigger'] = self.trigger.as_dict()
+        if self.trigger: body['trigger'] = _validated('trigger', PipelineTrigger, self.trigger)
         return body
 
     @classmethod
@@ -90,7 +92,9 @@ class CreatePipelineResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.effective_settings: body['effective_settings'] = self.effective_settings.as_dict()
+        if self.effective_settings:
+            body['effective_settings'] = _validated('effective_settings', PipelineSpec,
+                                                    self.effective_settings)
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
@@ -160,23 +164,25 @@ class EditPipeline:
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
-        if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.clusters:
+            body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
         if self.continuous is not None: body['continuous'] = self.continuous
         if self.development is not None: body['development'] = self.development
         if self.edition is not None: body['edition'] = self.edition
         if self.expected_last_modified is not None:
             body['expected_last_modified'] = self.expected_last_modified
-        if self.filters: body['filters'] = self.filters.as_dict()
+        if self.filters: body['filters'] = _validated('filters', Filters, self.filters)
         if self.id is not None: body['id'] = self.id
-        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
+        if self.libraries:
+            body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in self.libraries]
         if self.name is not None: body['name'] = self.name
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
-        if self.trigger: body['trigger'] = self.trigger.as_dict()
+        if self.trigger: body['trigger'] = _validated('trigger', PipelineTrigger, self.trigger)
         return body
 
     @classmethod
@@ -209,7 +215,10 @@ class ErrorDetail:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.exceptions: body['exceptions'] = [v.as_dict() for v in self.exceptions]
+        if self.exceptions:
+            body['exceptions'] = [
+                _validated('exceptions item', SerializedException, v) for v in self.exceptions
+            ]
         if self.fatal is not None: body['fatal'] = self.fatal
         return body
 
@@ -263,7 +272,11 @@ class GetPipelinePermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', PipelinePermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -290,14 +303,18 @@ class GetPipelineResponse:
         if self.cause is not None: body['cause'] = self.cause
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.health is not None: body['health'] = self.health.value
+        if self.health is not None:
+            body['health'] = _validated('health', GetPipelineResponseHealth, self.health)
         if self.last_modified is not None: body['last_modified'] = self.last_modified
-        if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
+        if self.latest_updates:
+            body['latest_updates'] = [
+                _validated('latest_updates item', UpdateStateInfo, v) for v in self.latest_updates
+            ]
         if self.name is not None: body['name'] = self.name
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
-        if self.spec: body['spec'] = self.spec.as_dict()
-        if self.state is not None: body['state'] = self.state.value
+        if self.spec: body['spec'] = _validated('spec', PipelineSpec, self.spec)
+        if self.state is not None: body['state'] = _validated('state', PipelineState, self.state)
         return body
 
     @classmethod
@@ -328,12 +345,22 @@ class GetUpdateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.update: body['update'] = self.update.as_dict()
+        if self.update: body['update'] = _validated('update', UpdateInfo, self.update)
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetUpdateResponse':
         return cls(update=_from_dict(d, 'update', UpdateInfo))
+
+
+@dataclass
+class ListPipelineEventsRequest:
+    """List pipeline events"""
+
+    pipeline_id: str
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
 
 
 @dataclass
@@ -344,7 +371,7 @@ class ListPipelineEventsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.events: body['events'] = [v.as_dict() for v in self.events]
+        if self.events: body['events'] = [_validated('events item', PipelineEvent, v) for v in self.events]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
@@ -357,6 +384,15 @@ class ListPipelineEventsResponse:
 
 
 @dataclass
+class ListPipelinesRequest:
+    """List pipelines"""
+
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+
+
+@dataclass
 class ListPipelinesResponse:
     next_page_token: Optional[str] = None
     statuses: Optional['List[PipelineStateInfo]'] = None
@@ -364,7 +400,8 @@ class ListPipelinesResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.statuses: body['statuses'] = [v.as_dict() for v in self.statuses]
+        if self.statuses:
+            body['statuses'] = [_validated('statuses item', PipelineStateInfo, v) for v in self.statuses]
         return body
 
     @classmethod
@@ -383,7 +420,7 @@ class ListUpdatesResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
-        if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
+        if self.updates: body['updates'] = [_validated('updates item', UpdateInfo, v) for v in self.updates]
         return body
 
     @classmethod
@@ -487,7 +524,9 @@ class PipelineAccessControlRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', PipelinePermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -511,7 +550,10 @@ class PipelineAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', PipelinePermission, v) for v in self.all_permissions
+            ]
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -552,15 +594,21 @@ class PipelineCluster:
         body = {}
         if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
-        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
-        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
-        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
-        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
+        if self.autoscale: body['autoscale'] = _validated('autoscale', compute.AutoScale, self.autoscale)
+        if self.aws_attributes:
+            body['aws_attributes'] = _validated('aws_attributes', compute.AwsAttributes, self.aws_attributes)
+        if self.azure_attributes:
+            body['azure_attributes'] = _validated('azure_attributes', compute.AzureAttributes,
+                                                  self.azure_attributes)
+        if self.cluster_log_conf:
+            body['cluster_log_conf'] = _validated('cluster_log_conf', compute.ClusterLogConf,
+                                                  self.cluster_log_conf)
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.driver_instance_pool_id is not None:
             body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.gcp_attributes:
+            body['gcp_attributes'] = _validated('gcp_attributes', compute.GcpAttributes, self.gcp_attributes)
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         if self.label is not None: body['label'] = self.label
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
@@ -606,14 +654,15 @@ class PipelineEvent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error: body['error'] = self.error.as_dict()
+        if self.error: body['error'] = _validated('error', ErrorDetail, self.error)
         if self.event_type is not None: body['event_type'] = self.event_type
         if self.id is not None: body['id'] = self.id
-        if self.level is not None: body['level'] = self.level.value
-        if self.maturity_level is not None: body['maturity_level'] = self.maturity_level.value
+        if self.level is not None: body['level'] = _validated('level', EventLevel, self.level)
+        if self.maturity_level is not None:
+            body['maturity_level'] = _validated('maturity_level', MaturityLevel, self.maturity_level)
         if self.message is not None: body['message'] = self.message
-        if self.origin: body['origin'] = self.origin.as_dict()
-        if self.sequence: body['sequence'] = self.sequence.as_dict()
+        if self.origin: body['origin'] = _validated('origin', Origin, self.origin)
+        if self.sequence: body['sequence'] = _validated('sequence', Sequencing, self.sequence)
         if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
@@ -639,10 +688,10 @@ class PipelineLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.file: body['file'] = self.file.as_dict()
+        if self.file: body['file'] = _validated('file', FileLibrary, self.file)
         if self.jar is not None: body['jar'] = self.jar
-        if self.maven: body['maven'] = self.maven.as_dict()
-        if self.notebook: body['notebook'] = self.notebook.as_dict()
+        if self.maven: body['maven'] = _validated('maven', compute.MavenLibrary, self.maven)
+        if self.notebook: body['notebook'] = _validated('notebook', NotebookLibrary, self.notebook)
         return body
 
     @classmethod
@@ -663,7 +712,9 @@ class PipelinePermission:
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', PipelinePermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -691,7 +742,10 @@ class PipelinePermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', PipelineAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
@@ -711,7 +765,9 @@ class PipelinePermissionsDescription:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', PipelinePermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -728,7 +784,10 @@ class PipelinePermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', PipelineAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
@@ -761,20 +820,22 @@ class PipelineSpec:
         body = {}
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
-        if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.clusters:
+            body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
         if self.continuous is not None: body['continuous'] = self.continuous
         if self.development is not None: body['development'] = self.development
         if self.edition is not None: body['edition'] = self.edition
-        if self.filters: body['filters'] = self.filters.as_dict()
+        if self.filters: body['filters'] = _validated('filters', Filters, self.filters)
         if self.id is not None: body['id'] = self.id
-        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
+        if self.libraries:
+            body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in self.libraries]
         if self.name is not None: body['name'] = self.name
         if self.photon is not None: body['photon'] = self.photon
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
-        if self.trigger: body['trigger'] = self.trigger.as_dict()
+        if self.trigger: body['trigger'] = _validated('trigger', PipelineTrigger, self.trigger)
         return body
 
     @classmethod
@@ -825,11 +886,14 @@ class PipelineStateInfo:
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
+        if self.latest_updates:
+            body['latest_updates'] = [
+                _validated('latest_updates item', UpdateStateInfo, v) for v in self.latest_updates
+            ]
         if self.name is not None: body['name'] = self.name
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
-        if self.state is not None: body['state'] = self.state.value
+        if self.state is not None: body['state'] = _validated('state', PipelineState, self.state)
         return body
 
     @classmethod
@@ -850,7 +914,7 @@ class PipelineTrigger:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cron: body['cron'] = self.cron.as_dict()
+        if self.cron: body['cron'] = _validated('cron', CronTrigger, self.cron)
         if self.manual: body['manual'] = self.manual
         return body
 
@@ -867,7 +931,8 @@ class Sequencing:
     def as_dict(self) -> dict:
         body = {}
         if self.control_plane_seq_no is not None: body['control_plane_seq_no'] = self.control_plane_seq_no
-        if self.data_plane_id: body['data_plane_id'] = self.data_plane_id.as_dict()
+        if self.data_plane_id:
+            body['data_plane_id'] = _validated('data_plane_id', DataPlaneId, self.data_plane_id)
         return body
 
     @classmethod
@@ -886,7 +951,7 @@ class SerializedException:
         body = {}
         if self.class_name is not None: body['class_name'] = self.class_name
         if self.message is not None: body['message'] = self.message
-        if self.stack: body['stack'] = [v.as_dict() for v in self.stack]
+        if self.stack: body['stack'] = [_validated('stack item', StackFrame, v) for v in self.stack]
         return body
 
     @classmethod
@@ -929,7 +994,7 @@ class StartUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause is not None: body['cause'] = self.cause.value
+        if self.cause is not None: body['cause'] = _validated('cause', StartUpdateCause, self.cause)
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.full_refresh_selection:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
@@ -985,16 +1050,16 @@ class UpdateInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause is not None: body['cause'] = self.cause.value
+        if self.cause is not None: body['cause'] = _validated('cause', UpdateInfoCause, self.cause)
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.config: body['config'] = self.config.as_dict()
+        if self.config: body['config'] = _validated('config', PipelineSpec, self.config)
         if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.full_refresh_selection:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
-        if self.state is not None: body['state'] = self.state.value
+        if self.state is not None: body['state'] = _validated('state', UpdateInfoState, self.state)
         if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
@@ -1048,7 +1113,7 @@ class UpdateStateInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.state is not None: body['state'] = self.state.value
+        if self.state is not None: body['state'] = _validated('state', UpdateStateInfoState, self.state)
         if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
@@ -1221,21 +1286,23 @@ class PipelinesAPI:
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
         if catalog is not None: body['catalog'] = catalog
         if channel is not None: body['channel'] = channel
-        if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
+        if clusters is not None:
+            body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in clusters]
         if configuration is not None: body['configuration'] = configuration
         if continuous is not None: body['continuous'] = continuous
         if development is not None: body['development'] = development
         if dry_run is not None: body['dry_run'] = dry_run
         if edition is not None: body['edition'] = edition
-        if filters is not None: body['filters'] = filters.as_dict()
+        if filters is not None: body['filters'] = _validated('filters', Filters, filters)
         if id is not None: body['id'] = id
-        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
+        if libraries is not None:
+            body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in libraries]
         if name is not None: body['name'] = name
         if photon is not None: body['photon'] = photon
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target
-        if trigger is not None: body['trigger'] = trigger.as_dict()
+        if trigger is not None: body['trigger'] = _validated('trigger', PipelineTrigger, trigger)
 
         json = self._api.do('POST', '/api/2.0/pipelines', body=body)
         return CreatePipelineResponse.from_dict(json)
@@ -1470,7 +1537,10 @@ class PipelinesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', PipelineAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT', f'/api/2.0/permissions/pipelines/{pipeline_id}', body=body)
         return PipelinePermissions.from_dict(json)
@@ -1502,7 +1572,7 @@ class PipelinesAPI:
         :returns: :class:`StartUpdateResponse`
         """
         body = {}
-        if cause is not None: body['cause'] = cause.value
+        if cause is not None: body['cause'] = _validated('cause', StartUpdateCause, cause)
         if full_refresh is not None: body['full_refresh'] = full_refresh
         if full_refresh_selection is not None:
             body['full_refresh_selection'] = [v for v in full_refresh_selection]
@@ -1603,21 +1673,23 @@ class PipelinesAPI:
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
         if catalog is not None: body['catalog'] = catalog
         if channel is not None: body['channel'] = channel
-        if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
+        if clusters is not None:
+            body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in clusters]
         if configuration is not None: body['configuration'] = configuration
         if continuous is not None: body['continuous'] = continuous
         if development is not None: body['development'] = development
         if edition is not None: body['edition'] = edition
         if expected_last_modified is not None: body['expected_last_modified'] = expected_last_modified
-        if filters is not None: body['filters'] = filters.as_dict()
+        if filters is not None: body['filters'] = _validated('filters', Filters, filters)
         if id is not None: body['id'] = id
-        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
+        if libraries is not None:
+            body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in libraries]
         if name is not None: body['name'] = name
         if photon is not None: body['photon'] = photon
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target
-        if trigger is not None: body['trigger'] = trigger.as_dict()
+        if trigger is not None: body['trigger'] = _validated('trigger', PipelineTrigger, trigger)
         self._api.do('PUT', f'/api/2.0/pipelines/{pipeline_id}', body=body)
 
     def update_pipeline_permissions(
@@ -1637,7 +1709,10 @@ class PipelinesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', PipelineAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH', f'/api/2.0/permissions/pipelines/{pipeline_id}', body=body)
         return PipelinePermissions.from_dict(json)

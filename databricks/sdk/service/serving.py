@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -37,7 +37,7 @@ class CreateServingEndpoint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config: body['config'] = self.config.as_dict()
+        if self.config: body['config'] = _validated('config', EndpointCoreConfigInput, self.config)
         if self.name is not None: body['name'] = self.name
         return body
 
@@ -55,8 +55,12 @@ class EndpointCoreConfigInput:
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
-        if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
-        if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
+        if self.served_models:
+            body['served_models'] = [
+                _validated('served_models item', ServedModelInput, v) for v in self.served_models
+            ]
+        if self.traffic_config:
+            body['traffic_config'] = _validated('traffic_config', TrafficConfig, self.traffic_config)
         return body
 
     @classmethod
@@ -75,8 +79,12 @@ class EndpointCoreConfigOutput:
     def as_dict(self) -> dict:
         body = {}
         if self.config_version is not None: body['config_version'] = self.config_version
-        if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
-        if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
+        if self.served_models:
+            body['served_models'] = [
+                _validated('served_models item', ServedModelOutput, v) for v in self.served_models
+            ]
+        if self.traffic_config:
+            body['traffic_config'] = _validated('traffic_config', TrafficConfig, self.traffic_config)
         return body
 
     @classmethod
@@ -92,7 +100,10 @@ class EndpointCoreConfigSummary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
+        if self.served_models:
+            body['served_models'] = [
+                _validated('served_models item', ServedModelSpec, v) for v in self.served_models
+            ]
         return body
 
     @classmethod
@@ -110,9 +121,13 @@ class EndpointPendingConfig:
     def as_dict(self) -> dict:
         body = {}
         if self.config_version is not None: body['config_version'] = self.config_version
-        if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
+        if self.served_models:
+            body['served_models'] = [
+                _validated('served_models item', ServedModelOutput, v) for v in self.served_models
+            ]
         if self.start_time is not None: body['start_time'] = self.start_time
-        if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
+        if self.traffic_config:
+            body['traffic_config'] = _validated('traffic_config', TrafficConfig, self.traffic_config)
         return body
 
     @classmethod
@@ -130,8 +145,9 @@ class EndpointState:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_update is not None: body['config_update'] = self.config_update.value
-        if self.ready is not None: body['ready'] = self.ready.value
+        if self.config_update is not None:
+            body['config_update'] = _validated('config_update', EndpointStateConfigUpdate, self.config_update)
+        if self.ready is not None: body['ready'] = _validated('ready', EndpointStateReady, self.ready)
         return body
 
     @classmethod
@@ -166,7 +182,11 @@ class GetServingEndpointPermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', ServingEndpointPermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -180,7 +200,8 @@ class ListEndpointsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.endpoints: body['endpoints'] = [v.as_dict() for v in self.endpoints]
+        if self.endpoints:
+            body['endpoints'] = [_validated('endpoints item', ServingEndpoint, v) for v in self.endpoints]
         return body
 
     @classmethod
@@ -274,7 +295,7 @@ class ServedModelOutput:
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
-        if self.state: body['state'] = self.state.as_dict()
+        if self.state: body['state'] = _validated('state', ServedModelState, self.state)
         if self.workload_size is not None: body['workload_size'] = self.workload_size
         return body
 
@@ -319,7 +340,8 @@ class ServedModelState:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.deployment is not None: body['deployment'] = self.deployment.value
+        if self.deployment is not None:
+            body['deployment'] = _validated('deployment', ServedModelStateDeployment, self.deployment)
         if self.deployment_state_message is not None:
             body['deployment_state_message'] = self.deployment_state_message
         return body
@@ -374,14 +396,14 @@ class ServingEndpoint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config: body['config'] = self.config.as_dict()
+        if self.config: body['config'] = _validated('config', EndpointCoreConfigSummary, self.config)
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
         if self.id is not None: body['id'] = self.id
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.name is not None: body['name'] = self.name
-        if self.state: body['state'] = self.state.as_dict()
+        if self.state: body['state'] = _validated('state', EndpointState, self.state)
         return body
 
     @classmethod
@@ -405,7 +427,9 @@ class ServingEndpointAccessControlRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ServingEndpointPermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -429,7 +453,10 @@ class ServingEndpointAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', ServingEndpointPermission, v) for v in self.all_permissions
+            ]
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -460,16 +487,19 @@ class ServingEndpointDetailed:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config: body['config'] = self.config.as_dict()
+        if self.config: body['config'] = _validated('config', EndpointCoreConfigOutput, self.config)
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
         if self.id is not None: body['id'] = self.id
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.name is not None: body['name'] = self.name
-        if self.pending_config: body['pending_config'] = self.pending_config.as_dict()
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
-        if self.state: body['state'] = self.state.as_dict()
+        if self.pending_config:
+            body['pending_config'] = _validated('pending_config', EndpointPendingConfig, self.pending_config)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ServingEndpointDetailedPermissionLevel,
+                                                  self.permission_level)
+        if self.state: body['state'] = _validated('state', EndpointState, self.state)
         return body
 
     @classmethod
@@ -503,7 +533,9 @@ class ServingEndpointPermission:
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ServingEndpointPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -530,7 +562,10 @@ class ServingEndpointPermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', ServingEndpointAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
@@ -551,7 +586,9 @@ class ServingEndpointPermissionsDescription:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ServingEndpointPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -568,7 +605,10 @@ class ServingEndpointPermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', ServingEndpointAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
         if self.serving_endpoint_id is not None: body['serving_endpoint_id'] = self.serving_endpoint_id
         return body
 
@@ -585,7 +625,7 @@ class TrafficConfig:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.routes: body['routes'] = [v.as_dict() for v in self.routes]
+        if self.routes: body['routes'] = [_validated('routes item', Route, v) for v in self.routes]
         return body
 
     @classmethod
@@ -670,7 +710,7 @@ class ServingEndpointsAPI:
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
         body = {}
-        if config is not None: body['config'] = config.as_dict()
+        if config is not None: body['config'] = _validated('config', EndpointCoreConfigInput, config)
         if name is not None: body['name'] = name
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating,
@@ -809,7 +849,10 @@ class ServingEndpointsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', ServingEndpointAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT', f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}', body=body)
         return ServingEndpointPermissions.from_dict(json)
@@ -838,8 +881,12 @@ class ServingEndpointsAPI:
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
         body = {}
-        if served_models is not None: body['served_models'] = [v.as_dict() for v in served_models]
-        if traffic_config is not None: body['traffic_config'] = traffic_config.as_dict()
+        if served_models is not None:
+            body['served_models'] = [
+                _validated('served_models item', ServedModelInput, v) for v in served_models
+            ]
+        if traffic_config is not None:
+            body['traffic_config'] = _validated('traffic_config', TrafficConfig, traffic_config)
         op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{name}/config', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
@@ -874,7 +921,10 @@ class ServingEndpointsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', ServingEndpointAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',

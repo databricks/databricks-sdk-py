@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -19,7 +19,8 @@ class AclItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission is not None: body['permission'] = self.permission.value
+        if self.permission is not None:
+            body['permission'] = _validated('permission', AclPermission, self.permission)
         if self.principal is not None: body['principal'] = self.principal
         return body
 
@@ -102,7 +103,8 @@ class CreateRepo:
         body = {}
         if self.path is not None: body['path'] = self.path
         if self.provider is not None: body['provider'] = self.provider
-        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
+        if self.sparse_checkout:
+            body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckout, self.sparse_checkout)
         if self.url is not None: body['url'] = self.url
         return body
 
@@ -123,11 +125,16 @@ class CreateScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.backend_azure_keyvault: body['backend_azure_keyvault'] = self.backend_azure_keyvault.as_dict()
+        if self.backend_azure_keyvault:
+            body['backend_azure_keyvault'] = _validated('backend_azure_keyvault',
+                                                        AzureKeyVaultSecretScopeMetadata,
+                                                        self.backend_azure_keyvault)
         if self.initial_manage_principal is not None:
             body['initial_manage_principal'] = self.initial_manage_principal
         if self.scope is not None: body['scope'] = self.scope
-        if self.scope_backend_type is not None: body['scope_backend_type'] = self.scope_backend_type.value
+        if self.scope_backend_type is not None:
+            body['scope_backend_type'] = _validated('scope_backend_type', ScopeBackendType,
+                                                    self.scope_backend_type)
         return body
 
     @classmethod
@@ -250,7 +257,10 @@ class GetCredentialsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credentials: body['credentials'] = [v.as_dict() for v in self.credentials]
+        if self.credentials:
+            body['credentials'] = [
+                _validated('credentials item', CredentialInfo, v) for v in self.credentials
+            ]
         return body
 
     @classmethod
@@ -264,7 +274,11 @@ class GetRepoPermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', RepoPermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -278,7 +292,11 @@ class GetWorkspaceObjectPermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', WorkspaceObjectPermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -297,8 +315,8 @@ class Import:
     def as_dict(self) -> dict:
         body = {}
         if self.content is not None: body['content'] = self.content
-        if self.format is not None: body['format'] = self.format.value
-        if self.language is not None: body['language'] = self.language.value
+        if self.format is not None: body['format'] = _validated('format', ImportFormat, self.format)
+        if self.language is not None: body['language'] = _validated('language', Language, self.language)
         if self.overwrite is not None: body['overwrite'] = self.overwrite
         if self.path is not None: body['path'] = self.path
         return body
@@ -347,12 +365,19 @@ class ListAclsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items: body['items'] = [v.as_dict() for v in self.items]
+        if self.items: body['items'] = [_validated('items item', AclItem, v) for v in self.items]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
         return cls(items=_repeated(d, 'items', AclItem))
+
+
+@dataclass
+class ListReposRequest:
+    """Get repos"""
+
+    path_prefix: Optional[str] = None
 
 
 @dataclass
@@ -363,7 +388,7 @@ class ListReposResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.repos: body['repos'] = [v.as_dict() for v in self.repos]
+        if self.repos: body['repos'] = [_validated('repos item', RepoInfo, v) for v in self.repos]
         return body
 
     @classmethod
@@ -377,7 +402,7 @@ class ListResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
+        if self.objects: body['objects'] = [_validated('objects item', ObjectInfo, v) for v in self.objects]
         return body
 
     @classmethod
@@ -391,7 +416,7 @@ class ListScopesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.scopes: body['scopes'] = [v.as_dict() for v in self.scopes]
+        if self.scopes: body['scopes'] = [_validated('scopes item', SecretScope, v) for v in self.scopes]
         return body
 
     @classmethod
@@ -405,7 +430,8 @@ class ListSecretsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
+        if self.secrets:
+            body['secrets'] = [_validated('secrets item', SecretMetadata, v) for v in self.secrets]
         return body
 
     @classmethod
@@ -440,10 +466,11 @@ class ObjectInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.created_at is not None: body['created_at'] = self.created_at
-        if self.language is not None: body['language'] = self.language.value
+        if self.language is not None: body['language'] = _validated('language', Language, self.language)
         if self.modified_at is not None: body['modified_at'] = self.modified_at
         if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type.value
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', ObjectType, self.object_type)
         if self.path is not None: body['path'] = self.path
         if self.size is not None: body['size'] = self.size
         return body
@@ -480,7 +507,8 @@ class PutAcl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission is not None: body['permission'] = self.permission.value
+        if self.permission is not None:
+            body['permission'] = _validated('permission', AclPermission, self.permission)
         if self.principal is not None: body['principal'] = self.principal
         if self.scope is not None: body['scope'] = self.scope
         return body
@@ -525,7 +553,9 @@ class RepoAccessControlRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', RepoPermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -549,7 +579,10 @@ class RepoAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', RepoPermission, v) for v in self.all_permissions
+            ]
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -583,7 +616,8 @@ class RepoInfo:
         if self.id is not None: body['id'] = self.id
         if self.path is not None: body['path'] = self.path
         if self.provider is not None: body['provider'] = self.provider
-        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
+        if self.sparse_checkout:
+            body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckout, self.sparse_checkout)
         if self.url is not None: body['url'] = self.url
         return body
 
@@ -608,7 +642,9 @@ class RepoPermission:
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', RepoPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -636,7 +672,10 @@ class RepoPermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', RepoAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
@@ -656,7 +695,9 @@ class RepoPermissionsDescription:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', RepoPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -673,7 +714,10 @@ class RepoPermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', RepoAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
         if self.repo_id is not None: body['repo_id'] = self.repo_id
         return body
 
@@ -714,8 +758,11 @@ class SecretScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.backend_type is not None: body['backend_type'] = self.backend_type.value
-        if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
+        if self.backend_type is not None:
+            body['backend_type'] = _validated('backend_type', ScopeBackendType, self.backend_type)
+        if self.keyvault_metadata:
+            body['keyvault_metadata'] = _validated('keyvault_metadata', AzureKeyVaultSecretScopeMetadata,
+                                                   self.keyvault_metadata)
         if self.name is not None: body['name'] = self.name
         return body
 
@@ -788,7 +835,9 @@ class UpdateRepo:
         body = {}
         if self.branch is not None: body['branch'] = self.branch
         if self.repo_id is not None: body['repo_id'] = self.repo_id
-        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
+        if self.sparse_checkout:
+            body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckoutUpdate,
+                                                 self.sparse_checkout)
         if self.tag is not None: body['tag'] = self.tag
         return body
 
@@ -810,7 +859,9 @@ class WorkspaceObjectAccessControlRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', WorkspaceObjectPermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -834,7 +885,10 @@ class WorkspaceObjectAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', WorkspaceObjectPermission, v) for v in self.all_permissions
+            ]
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -861,7 +915,9 @@ class WorkspaceObjectPermission:
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', WorkspaceObjectPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -889,7 +945,10 @@ class WorkspaceObjectPermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WorkspaceObjectAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
         if self.object_id is not None: body['object_id'] = self.object_id
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
@@ -910,7 +969,9 @@ class WorkspaceObjectPermissionsDescription:
     def as_dict(self) -> dict:
         body = {}
         if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', WorkspaceObjectPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -928,7 +989,10 @@ class WorkspaceObjectPermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WorkspaceObjectAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
         if self.workspace_object_id is not None: body['workspace_object_id'] = self.workspace_object_id
         if self.workspace_object_type is not None: body['workspace_object_type'] = self.workspace_object_type
         return body
@@ -1091,7 +1155,8 @@ class ReposAPI:
         body = {}
         if path is not None: body['path'] = path
         if provider is not None: body['provider'] = provider
-        if sparse_checkout is not None: body['sparse_checkout'] = sparse_checkout.as_dict()
+        if sparse_checkout is not None:
+            body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckout, sparse_checkout)
         if url is not None: body['url'] = url
 
         json = self._api.do('POST', '/api/2.0/repos', body=body)
@@ -1201,7 +1266,10 @@ class ReposAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', RepoAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT', f'/api/2.0/permissions/repos/{repo_id}', body=body)
         return RepoPermissions.from_dict(json)
@@ -1233,7 +1301,8 @@ class ReposAPI:
         """
         body = {}
         if branch is not None: body['branch'] = branch
-        if sparse_checkout is not None: body['sparse_checkout'] = sparse_checkout.as_dict()
+        if sparse_checkout is not None:
+            body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckoutUpdate, sparse_checkout)
         if tag is not None: body['tag'] = tag
         self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body)
 
@@ -1254,7 +1323,10 @@ class ReposAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', RepoAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH', f'/api/2.0/permissions/repos/{repo_id}', body=body)
         return RepoPermissions.from_dict(json)
@@ -1298,10 +1370,14 @@ class SecretsAPI:
         """
         body = {}
         if backend_azure_keyvault is not None:
-            body['backend_azure_keyvault'] = backend_azure_keyvault.as_dict()
+            body['backend_azure_keyvault'] = _validated('backend_azure_keyvault',
+                                                        AzureKeyVaultSecretScopeMetadata,
+                                                        backend_azure_keyvault)
         if initial_manage_principal is not None: body['initial_manage_principal'] = initial_manage_principal
         if scope is not None: body['scope'] = scope
-        if scope_backend_type is not None: body['scope_backend_type'] = scope_backend_type.value
+        if scope_backend_type is not None:
+            body['scope_backend_type'] = _validated('scope_backend_type', ScopeBackendType,
+                                                    scope_backend_type)
         self._api.do('POST', '/api/2.0/secrets/scopes/create', body=body)
 
     def delete_acl(self, scope: str, principal: str):
@@ -1480,7 +1556,7 @@ class SecretsAPI:
         
         """
         body = {}
-        if permission is not None: body['permission'] = permission.value
+        if permission is not None: body['permission'] = _validated('permission', AclPermission, permission)
         if principal is not None: body['principal'] = principal
         if scope is not None: body['scope'] = scope
         self._api.do('POST', '/api/2.0/secrets/acls/put', body=body)
@@ -1588,7 +1664,7 @@ class WorkspaceAPI:
         """
 
         query = {}
-        if format is not None: query['format'] = format.value
+        if format is not None: query['format'] = _validated('format', ExportFormat, format)
         if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/workspace/export', query=query)
@@ -1691,8 +1767,8 @@ class WorkspaceAPI:
         """
         body = {}
         if content is not None: body['content'] = content
-        if format is not None: body['format'] = format.value
-        if language is not None: body['language'] = language.value
+        if format is not None: body['format'] = _validated('format', ImportFormat, format)
+        if language is not None: body['language'] = _validated('language', Language, language)
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
@@ -1760,7 +1836,10 @@ class WorkspaceAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WorkspaceObjectAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT',
                             f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
@@ -1789,7 +1868,10 @@ class WorkspaceAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', WorkspaceObjectAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',

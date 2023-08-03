@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -18,7 +18,8 @@ class AccountsCreateMetastore:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastore_info: body['metastore_info'] = self.metastore_info.as_dict()
+        if self.metastore_info:
+            body['metastore_info'] = _validated('metastore_info', CreateMetastore, self.metastore_info)
         return body
 
     @classmethod
@@ -34,7 +35,9 @@ class AccountsCreateMetastoreAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        if self.metastore_assignment:
+            body['metastore_assignment'] = _validated('metastore_assignment', CreateMetastoreAssignment,
+                                                      self.metastore_assignment)
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
@@ -53,7 +56,9 @@ class AccountsCreateStorageCredential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_info: body['credential_info'] = self.credential_info.as_dict()
+        if self.credential_info:
+            body['credential_info'] = _validated('credential_info', CreateStorageCredential,
+                                                 self.credential_info)
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         return body
 
@@ -69,7 +74,9 @@ class AccountsMetastoreAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        if self.metastore_assignment:
+            body['metastore_assignment'] = _validated('metastore_assignment', MetastoreAssignment,
+                                                      self.metastore_assignment)
         return body
 
     @classmethod
@@ -83,7 +90,8 @@ class AccountsMetastoreInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastore_info: body['metastore_info'] = self.metastore_info.as_dict()
+        if self.metastore_info:
+            body['metastore_info'] = _validated('metastore_info', MetastoreInfo, self.metastore_info)
         return body
 
     @classmethod
@@ -99,7 +107,8 @@ class AccountsUpdateMetastore:
     def as_dict(self) -> dict:
         body = {}
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.metastore_info: body['metastore_info'] = self.metastore_info.as_dict()
+        if self.metastore_info:
+            body['metastore_info'] = _validated('metastore_info', UpdateMetastore, self.metastore_info)
         return body
 
     @classmethod
@@ -116,7 +125,9 @@ class AccountsUpdateMetastoreAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastore_assignment: body['metastore_assignment'] = self.metastore_assignment.as_dict()
+        if self.metastore_assignment:
+            body['metastore_assignment'] = _validated('metastore_assignment', UpdateMetastoreAssignment,
+                                                      self.metastore_assignment)
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
@@ -136,7 +147,9 @@ class AccountsUpdateStorageCredential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_info: body['credential_info'] = self.credential_info.as_dict()
+        if self.credential_info:
+            body['credential_info'] = _validated('credential_info', UpdateStorageCredential,
+                                                 self.credential_info)
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         return body
@@ -232,16 +245,21 @@ class CatalogInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_type is not None: body['catalog_type'] = self.catalog_type.value
+        if self.catalog_type is not None:
+            body['catalog_type'] = _validated('catalog_type', CatalogType, self.catalog_type)
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.effective_auto_maintenance_flag:
-            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
+            body['effective_auto_maintenance_flag'] = _validated('effective_auto_maintenance_flag',
+                                                                 EffectiveAutoMaintenanceFlag,
+                                                                 self.effective_auto_maintenance_flag)
         if self.enable_auto_maintenance is not None:
-            body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
-        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
+            body['enable_auto_maintenance'] = _validated('enable_auto_maintenance', EnableAutoMaintenance,
+                                                         self.enable_auto_maintenance)
+        if self.isolation_mode is not None:
+            body['isolation_mode'] = _validated('isolation_mode', IsolationMode, self.isolation_mode)
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
@@ -305,14 +323,15 @@ class ColumnInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
-        if self.mask: body['mask'] = self.mask.as_dict()
+        if self.mask: body['mask'] = _validated('mask', ColumnMask, self.mask)
         if self.name is not None: body['name'] = self.name
         if self.nullable is not None: body['nullable'] = self.nullable
         if self.partition_index is not None: body['partition_index'] = self.partition_index
         if self.position is not None: body['position'] = self.position
         if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
         if self.type_json is not None: body['type_json'] = self.type_json
-        if self.type_name is not None: body['type_name'] = self.type_name.value
+        if self.type_name is not None:
+            body['type_name'] = _validated('type_name', ColumnTypeName, self.type_name)
         if self.type_precision is not None: body['type_precision'] = self.type_precision
         if self.type_scale is not None: body['type_scale'] = self.type_scale
         if self.type_text is not None: body['type_text'] = self.type_text
@@ -400,10 +419,12 @@ class ConnectionInfo:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_id is not None: body['connection_id'] = self.connection_id
-        if self.connection_type is not None: body['connection_type'] = self.connection_type.value
+        if self.connection_type is not None:
+            body['connection_type'] = _validated('connection_type', ConnectionType, self.connection_type)
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
-        if self.credential_type is not None: body['credential_type'] = self.credential_type.value
+        if self.credential_type is not None:
+            body['credential_type'] = _validated('credential_type', CredentialType, self.credential_type)
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -493,7 +514,8 @@ class CreateConnection:
     def as_dict(self) -> dict:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
-        if self.connection_type is not None: body['connection_type'] = self.connection_type.value
+        if self.connection_type is not None:
+            body['connection_type'] = _validated('connection_type', ConnectionType, self.connection_type)
         if self.name is not None: body['name'] = self.name
         if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
         if self.owner is not None: body['owner'] = self.owner
@@ -528,7 +550,9 @@ class CreateExternalLocation:
         if self.access_point is not None: body['access_point'] = self.access_point
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
-        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.encryption_details:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    self.encryption_details)
         if self.name is not None: body['name'] = self.name
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -575,25 +599,41 @@ class CreateFunction:
         body = {}
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.comment is not None: body['comment'] = self.comment
-        if self.data_type is not None: body['data_type'] = self.data_type.value
+        if self.data_type is not None:
+            body['data_type'] = _validated('data_type', ColumnTypeName, self.data_type)
         if self.external_language is not None: body['external_language'] = self.external_language
         if self.external_name is not None: body['external_name'] = self.external_name
         if self.full_data_type is not None: body['full_data_type'] = self.full_data_type
-        if self.input_params: body['input_params'] = [v.as_dict() for v in self.input_params]
+        if self.input_params:
+            body['input_params'] = [
+                _validated('input_params item', FunctionParameterInfo, v) for v in self.input_params
+            ]
         if self.is_deterministic is not None: body['is_deterministic'] = self.is_deterministic
         if self.is_null_call is not None: body['is_null_call'] = self.is_null_call
         if self.name is not None: body['name'] = self.name
-        if self.parameter_style is not None: body['parameter_style'] = self.parameter_style.value
+        if self.parameter_style is not None:
+            body['parameter_style'] = _validated('parameter_style', CreateFunctionParameterStyle,
+                                                 self.parameter_style)
         if self.properties: body['properties'] = self.properties
-        if self.return_params: body['return_params'] = [v.as_dict() for v in self.return_params]
-        if self.routine_body is not None: body['routine_body'] = self.routine_body.value
+        if self.return_params:
+            body['return_params'] = [
+                _validated('return_params item', FunctionParameterInfo, v) for v in self.return_params
+            ]
+        if self.routine_body is not None:
+            body['routine_body'] = _validated('routine_body', CreateFunctionRoutineBody, self.routine_body)
         if self.routine_definition is not None: body['routine_definition'] = self.routine_definition
         if self.routine_dependencies:
-            body['routine_dependencies'] = [v.as_dict() for v in self.routine_dependencies]
+            body['routine_dependencies'] = [
+                _validated('routine_dependencies item', Dependency, v) for v in self.routine_dependencies
+            ]
         if self.schema_name is not None: body['schema_name'] = self.schema_name
-        if self.security_type is not None: body['security_type'] = self.security_type.value
+        if self.security_type is not None:
+            body['security_type'] = _validated('security_type', CreateFunctionSecurityType,
+                                               self.security_type)
         if self.specific_name is not None: body['specific_name'] = self.specific_name
-        if self.sql_data_access is not None: body['sql_data_access'] = self.sql_data_access.value
+        if self.sql_data_access is not None:
+            body['sql_data_access'] = _validated('sql_data_access', CreateFunctionSqlDataAccess,
+                                                 self.sql_data_access)
         if self.sql_path is not None: body['sql_path'] = self.sql_path
         return body
 
@@ -731,10 +771,13 @@ class CreateStorageCredential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.aws_iam_role: body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, self.aws_iam_role)
+        if self.azure_managed_identity:
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        self.azure_managed_identity)
         if self.azure_service_principal:
-            body['azure_service_principal'] = self.azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         self.azure_service_principal)
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
@@ -762,7 +805,7 @@ class CreateTableConstraint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.constraint: body['constraint'] = self.constraint.as_dict()
+        if self.constraint: body['constraint'] = _validated('constraint', TableConstraint, self.constraint)
         if self.full_name_arg is not None: body['full_name_arg'] = self.full_name_arg
         return body
 
@@ -788,7 +831,8 @@ class CreateVolumeRequestContent:
         if self.name is not None: body['name'] = self.name
         if self.schema_name is not None: body['schema_name'] = self.schema_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.volume_type is not None: body['volume_type'] = self.volume_type.value
+        if self.volume_type is not None:
+            body['volume_type'] = _validated('volume_type', VolumeType, self.volume_type)
         return body
 
     @classmethod
@@ -880,8 +924,8 @@ class Dependency:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.function: body['function'] = self.function.as_dict()
-        if self.table: body['table'] = self.table.as_dict()
+        if self.function: body['function'] = _validated('function', FunctionDependency, self.function)
+        if self.table: body['table'] = _validated('table', TableDependency, self.table)
         return body
 
     @classmethod
@@ -907,8 +951,11 @@ class EffectiveAutoMaintenanceFlag:
     def as_dict(self) -> dict:
         body = {}
         if self.inherited_from_name is not None: body['inherited_from_name'] = self.inherited_from_name
-        if self.inherited_from_type is not None: body['inherited_from_type'] = self.inherited_from_type.value
-        if self.value is not None: body['value'] = self.value.value
+        if self.inherited_from_type is not None:
+            body['inherited_from_type'] = _validated('inherited_from_type',
+                                                     EffectiveAutoMaintenanceFlagInheritedFromType,
+                                                     self.inherited_from_type)
+        if self.value is not None: body['value'] = _validated('value', EnableAutoMaintenance, self.value)
         return body
 
     @classmethod
@@ -934,7 +981,10 @@ class EffectivePermissionsList:
     def as_dict(self) -> dict:
         body = {}
         if self.privilege_assignments:
-            body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
+            body['privilege_assignments'] = [
+                _validated('privilege_assignments item', EffectivePrivilegeAssignment, v)
+                for v in self.privilege_assignments
+            ]
         return body
 
     @classmethod
@@ -951,8 +1001,10 @@ class EffectivePrivilege:
     def as_dict(self) -> dict:
         body = {}
         if self.inherited_from_name is not None: body['inherited_from_name'] = self.inherited_from_name
-        if self.inherited_from_type is not None: body['inherited_from_type'] = self.inherited_from_type.value
-        if self.privilege is not None: body['privilege'] = self.privilege.value
+        if self.inherited_from_type is not None:
+            body['inherited_from_type'] = _validated('inherited_from_type', SecurableType,
+                                                     self.inherited_from_type)
+        if self.privilege is not None: body['privilege'] = _validated('privilege', Privilege, self.privilege)
         return body
 
     @classmethod
@@ -970,7 +1022,10 @@ class EffectivePrivilegeAssignment:
     def as_dict(self) -> dict:
         body = {}
         if self.principal is not None: body['principal'] = self.principal
-        if self.privileges: body['privileges'] = [v.as_dict() for v in self.privileges]
+        if self.privileges:
+            body['privileges'] = [
+                _validated('privileges item', EffectivePrivilege, v) for v in self.privileges
+            ]
         return body
 
     @classmethod
@@ -1003,7 +1058,9 @@ class EncryptionDetails:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.sse_encryption_details: body['sse_encryption_details'] = self.sse_encryption_details.as_dict()
+        if self.sse_encryption_details:
+            body['sse_encryption_details'] = _validated('sse_encryption_details', SseEncryptionDetails,
+                                                        self.sse_encryption_details)
         return body
 
     @classmethod
@@ -1036,7 +1093,9 @@ class ExternalLocationInfo:
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.credential_name is not None: body['credential_name'] = self.credential_name
-        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.encryption_details:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    self.encryption_details)
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -1141,29 +1200,44 @@ class FunctionInfo:
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
-        if self.data_type is not None: body['data_type'] = self.data_type.value
+        if self.data_type is not None:
+            body['data_type'] = _validated('data_type', ColumnTypeName, self.data_type)
         if self.external_language is not None: body['external_language'] = self.external_language
         if self.external_name is not None: body['external_name'] = self.external_name
         if self.full_data_type is not None: body['full_data_type'] = self.full_data_type
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.function_id is not None: body['function_id'] = self.function_id
-        if self.input_params: body['input_params'] = [v.as_dict() for v in self.input_params]
+        if self.input_params:
+            body['input_params'] = [
+                _validated('input_params item', FunctionParameterInfo, v) for v in self.input_params
+            ]
         if self.is_deterministic is not None: body['is_deterministic'] = self.is_deterministic
         if self.is_null_call is not None: body['is_null_call'] = self.is_null_call
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
-        if self.parameter_style is not None: body['parameter_style'] = self.parameter_style.value
+        if self.parameter_style is not None:
+            body['parameter_style'] = _validated('parameter_style', FunctionInfoParameterStyle,
+                                                 self.parameter_style)
         if self.properties: body['properties'] = self.properties
-        if self.return_params: body['return_params'] = [v.as_dict() for v in self.return_params]
-        if self.routine_body is not None: body['routine_body'] = self.routine_body.value
+        if self.return_params:
+            body['return_params'] = [
+                _validated('return_params item', FunctionParameterInfo, v) for v in self.return_params
+            ]
+        if self.routine_body is not None:
+            body['routine_body'] = _validated('routine_body', FunctionInfoRoutineBody, self.routine_body)
         if self.routine_definition is not None: body['routine_definition'] = self.routine_definition
         if self.routine_dependencies:
-            body['routine_dependencies'] = [v.as_dict() for v in self.routine_dependencies]
+            body['routine_dependencies'] = [
+                _validated('routine_dependencies item', Dependency, v) for v in self.routine_dependencies
+            ]
         if self.schema_name is not None: body['schema_name'] = self.schema_name
-        if self.security_type is not None: body['security_type'] = self.security_type.value
+        if self.security_type is not None:
+            body['security_type'] = _validated('security_type', FunctionInfoSecurityType, self.security_type)
         if self.specific_name is not None: body['specific_name'] = self.specific_name
-        if self.sql_data_access is not None: body['sql_data_access'] = self.sql_data_access.value
+        if self.sql_data_access is not None:
+            body['sql_data_access'] = _validated('sql_data_access', FunctionInfoSqlDataAccess,
+                                                 self.sql_data_access)
         if self.sql_path is not None: body['sql_path'] = self.sql_path
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
@@ -1252,12 +1326,15 @@ class FunctionParameterInfo:
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
         if self.parameter_default is not None: body['parameter_default'] = self.parameter_default
-        if self.parameter_mode is not None: body['parameter_mode'] = self.parameter_mode.value
-        if self.parameter_type is not None: body['parameter_type'] = self.parameter_type.value
+        if self.parameter_mode is not None:
+            body['parameter_mode'] = _validated('parameter_mode', FunctionParameterMode, self.parameter_mode)
+        if self.parameter_type is not None:
+            body['parameter_type'] = _validated('parameter_type', FunctionParameterType, self.parameter_type)
         if self.position is not None: body['position'] = self.position
         if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
         if self.type_json is not None: body['type_json'] = self.type_json
-        if self.type_name is not None: body['type_name'] = self.type_name.value
+        if self.type_name is not None:
+            body['type_name'] = _validated('type_name', ColumnTypeName, self.type_name)
         if self.type_precision is not None: body['type_precision'] = self.type_precision
         if self.type_scale is not None: body['type_scale'] = self.type_scale
         if self.type_text is not None: body['type_text'] = self.type_text
@@ -1325,7 +1402,10 @@ class GetMetastoreSummaryResponse:
         if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
-        if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.delta_sharing_scope is not None:
+            body['delta_sharing_scope'] = _validated('delta_sharing_scope',
+                                                     GetMetastoreSummaryResponseDeltaSharingScope,
+                                                     self.delta_sharing_scope)
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -1386,7 +1466,8 @@ class ListCatalogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalogs: body['catalogs'] = [v.as_dict() for v in self.catalogs]
+        if self.catalogs:
+            body['catalogs'] = [_validated('catalogs item', CatalogInfo, v) for v in self.catalogs]
         return body
 
     @classmethod
@@ -1400,7 +1481,10 @@ class ListConnectionsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.connections: body['connections'] = [v.as_dict() for v in self.connections]
+        if self.connections:
+            body['connections'] = [
+                _validated('connections item', ConnectionInfo, v) for v in self.connections
+            ]
         return body
 
     @classmethod
@@ -1415,7 +1499,10 @@ class ListExternalLocationsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.external_locations:
-            body['external_locations'] = [v.as_dict() for v in self.external_locations]
+            body['external_locations'] = [
+                _validated('external_locations item', ExternalLocationInfo, v)
+                for v in self.external_locations
+            ]
         return body
 
     @classmethod
@@ -1429,7 +1516,8 @@ class ListFunctionsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.functions: body['functions'] = [v.as_dict() for v in self.functions]
+        if self.functions:
+            body['functions'] = [_validated('functions item', FunctionInfo, v) for v in self.functions]
         return body
 
     @classmethod
@@ -1443,7 +1531,8 @@ class ListMetastoresResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastores: body['metastores'] = [v.as_dict() for v in self.metastores]
+        if self.metastores:
+            body['metastores'] = [_validated('metastores item', MetastoreInfo, v) for v in self.metastores]
         return body
 
     @classmethod
@@ -1457,7 +1546,7 @@ class ListSchemasResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
+        if self.schemas: body['schemas'] = [_validated('schemas item', SchemaInfo, v) for v in self.schemas]
         return body
 
     @classmethod
@@ -1472,7 +1561,10 @@ class ListStorageCredentialsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.storage_credentials:
-            body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
+            body['storage_credentials'] = [
+                _validated('storage_credentials item', StorageCredentialInfo, v)
+                for v in self.storage_credentials
+            ]
         return body
 
     @classmethod
@@ -1481,12 +1573,23 @@ class ListStorageCredentialsResponse:
 
 
 @dataclass
+class ListSummariesRequest:
+    """List table summaries"""
+
+    catalog_name: str
+    max_results: Optional[int] = None
+    schema_name_pattern: Optional[str] = None
+    table_name_pattern: Optional[str] = None
+
+
+@dataclass
 class ListSystemSchemasResponse:
     schemas: Optional['List[SystemSchemaInfo]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
+        if self.schemas:
+            body['schemas'] = [_validated('schemas item', SystemSchemaInfo, v) for v in self.schemas]
         return body
 
     @classmethod
@@ -1502,13 +1605,23 @@ class ListTableSummariesResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.tables: body['tables'] = [v.as_dict() for v in self.tables]
+        if self.tables: body['tables'] = [_validated('tables item', TableSummary, v) for v in self.tables]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTableSummariesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
                    tables=_repeated(d, 'tables', TableSummary))
+
+
+@dataclass
+class ListTablesRequest:
+    """List tables"""
+
+    catalog_name: str
+    schema_name: str
+    include_delta_metadata: Optional[bool] = None
+    max_results: Optional[int] = None
 
 
 @dataclass
@@ -1519,7 +1632,7 @@ class ListTablesResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.tables: body['tables'] = [v.as_dict() for v in self.tables]
+        if self.tables: body['tables'] = [_validated('tables item', TableInfo, v) for v in self.tables]
         return body
 
     @classmethod
@@ -1533,7 +1646,7 @@ class ListVolumesResponseContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.volumes: body['volumes'] = [v.as_dict() for v in self.volumes]
+        if self.volumes: body['volumes'] = [_validated('volumes item', VolumeInfo, v) for v in self.volumes]
         return body
 
     @classmethod
@@ -1594,7 +1707,9 @@ class MetastoreInfo:
         if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
-        if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.delta_sharing_scope is not None:
+            body['delta_sharing_scope'] = _validated('delta_sharing_scope', MetastoreInfoDeltaSharingScope,
+                                                     self.delta_sharing_scope)
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -1663,9 +1778,9 @@ class PermissionsChange:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.add: body['add'] = [v.value for v in self.add]
+        if self.add: body['add'] = [_validated('add item', Privilege, v) for v in self.add]
         if self.principal is not None: body['principal'] = self.principal
-        if self.remove: body['remove'] = [v.value for v in self.remove]
+        if self.remove: body['remove'] = [_validated('remove item', Privilege, v) for v in self.remove]
         return body
 
     @classmethod
@@ -1680,7 +1795,10 @@ class PermissionsList:
     def as_dict(self) -> dict:
         body = {}
         if self.privilege_assignments:
-            body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
+            body['privilege_assignments'] = [
+                _validated('privilege_assignments item', PrivilegeAssignment, v)
+                for v in self.privilege_assignments
+            ]
         return body
 
     @classmethod
@@ -1750,7 +1868,8 @@ class PrivilegeAssignment:
     def as_dict(self) -> dict:
         body = {}
         if self.principal is not None: body['principal'] = self.principal
-        if self.privileges: body['privileges'] = [v.value for v in self.privileges]
+        if self.privileges:
+            body['privileges'] = [_validated('privileges item', Privilege, v) for v in self.privileges]
         return body
 
     @classmethod
@@ -1788,9 +1907,12 @@ class SchemaInfo:
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.effective_auto_maintenance_flag:
-            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
+            body['effective_auto_maintenance_flag'] = _validated('effective_auto_maintenance_flag',
+                                                                 EffectiveAutoMaintenanceFlag,
+                                                                 self.effective_auto_maintenance_flag)
         if self.enable_auto_maintenance is not None:
-            body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
+            body['enable_auto_maintenance'] = _validated('enable_auto_maintenance', EnableAutoMaintenance,
+                                                         self.enable_auto_maintenance)
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -1854,7 +1976,8 @@ class SseEncryptionDetails:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.algorithm is not None: body['algorithm'] = self.algorithm.value
+        if self.algorithm is not None:
+            body['algorithm'] = _validated('algorithm', SseEncryptionDetailsAlgorithm, self.algorithm)
         if self.aws_kms_key_arn is not None: body['aws_kms_key_arn'] = self.aws_kms_key_arn
         return body
 
@@ -1891,15 +2014,20 @@ class StorageCredentialInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.aws_iam_role: body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, self.aws_iam_role)
+        if self.azure_managed_identity:
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        self.azure_managed_identity)
         if self.azure_service_principal:
-            body['azure_service_principal'] = self.azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         self.azure_service_principal)
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account',
+                                                                DatabricksGcpServiceAccountResponse,
+                                                                self.databricks_gcp_service_account)
         if self.id is not None: body['id'] = self.id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -1939,7 +2067,7 @@ class SystemSchemaInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.schema is not None: body['schema'] = self.schema
-        if self.state is not None: body['state'] = self.state.value
+        if self.state is not None: body['state'] = _validated('state', SystemSchemaInfoState, self.state)
         return body
 
     @classmethod
@@ -1969,9 +2097,15 @@ class TableConstraint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.foreign_key_constraint: body['foreign_key_constraint'] = self.foreign_key_constraint.as_dict()
-        if self.named_table_constraint: body['named_table_constraint'] = self.named_table_constraint.as_dict()
-        if self.primary_key_constraint: body['primary_key_constraint'] = self.primary_key_constraint.as_dict()
+        if self.foreign_key_constraint:
+            body['foreign_key_constraint'] = _validated('foreign_key_constraint', ForeignKeyConstraint,
+                                                        self.foreign_key_constraint)
+        if self.named_table_constraint:
+            body['named_table_constraint'] = _validated('named_table_constraint', NamedTableConstraint,
+                                                        self.named_table_constraint)
+        if self.primary_key_constraint:
+            body['primary_key_constraint'] = _validated('primary_key_constraint', PrimaryKeyConstraint,
+                                                        self.primary_key_constraint)
         return body
 
     @classmethod
@@ -1987,7 +2121,10 @@ class TableConstraintList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.table_constraints: body['table_constraints'] = [v.as_dict() for v in self.table_constraints]
+        if self.table_constraints:
+            body['table_constraints'] = [
+                _validated('table_constraints item', TableConstraint, v) for v in self.table_constraints
+            ]
         return body
 
     @classmethod
@@ -2048,39 +2185,54 @@ class TableInfo:
         body = {}
         if self.access_point is not None: body['access_point'] = self.access_point
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
+        if self.columns: body['columns'] = [_validated('columns item', ColumnInfo, v) for v in self.columns]
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.data_access_configuration_id is not None:
             body['data_access_configuration_id'] = self.data_access_configuration_id
-        if self.data_source_format is not None: body['data_source_format'] = self.data_source_format.value
+        if self.data_source_format is not None:
+            body['data_source_format'] = _validated('data_source_format', DataSourceFormat,
+                                                    self.data_source_format)
         if self.deleted_at is not None: body['deleted_at'] = self.deleted_at
         if self.delta_runtime_properties_kvpairs:
-            body['delta_runtime_properties_kvpairs'] = self.delta_runtime_properties_kvpairs.as_dict()
+            body['delta_runtime_properties_kvpairs'] = _validated('delta_runtime_properties_kvpairs',
+                                                                  DeltaRuntimePropertiesKvPairs,
+                                                                  self.delta_runtime_properties_kvpairs)
         if self.effective_auto_maintenance_flag:
-            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
+            body['effective_auto_maintenance_flag'] = _validated('effective_auto_maintenance_flag',
+                                                                 EffectiveAutoMaintenanceFlag,
+                                                                 self.effective_auto_maintenance_flag)
         if self.enable_auto_maintenance is not None:
-            body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
-        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+            body['enable_auto_maintenance'] = _validated('enable_auto_maintenance', EnableAutoMaintenance,
+                                                         self.enable_auto_maintenance)
+        if self.encryption_details:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    self.encryption_details)
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
-        if self.row_filter: body['row_filter'] = self.row_filter.as_dict()
+        if self.row_filter: body['row_filter'] = _validated('row_filter', TableRowFilter, self.row_filter)
         if self.schema_name is not None: body['schema_name'] = self.schema_name
         if self.sql_path is not None: body['sql_path'] = self.sql_path
         if self.storage_credential_name is not None:
             body['storage_credential_name'] = self.storage_credential_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.table_constraints: body['table_constraints'] = self.table_constraints.as_dict()
+        if self.table_constraints:
+            body['table_constraints'] = _validated('table_constraints', TableConstraintList,
+                                                   self.table_constraints)
         if self.table_id is not None: body['table_id'] = self.table_id
-        if self.table_type is not None: body['table_type'] = self.table_type.value
+        if self.table_type is not None:
+            body['table_type'] = _validated('table_type', TableType, self.table_type)
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         if self.view_definition is not None: body['view_definition'] = self.view_definition
-        if self.view_dependencies: body['view_dependencies'] = [v.as_dict() for v in self.view_dependencies]
+        if self.view_dependencies:
+            body['view_dependencies'] = [
+                _validated('view_dependencies item', Dependency, v) for v in self.view_dependencies
+            ]
         return body
 
     @classmethod
@@ -2143,7 +2295,8 @@ class TableSummary:
     def as_dict(self) -> dict:
         body = {}
         if self.full_name is not None: body['full_name'] = self.full_name
-        if self.table_type is not None: body['table_type'] = self.table_type.value
+        if self.table_type is not None:
+            body['table_type'] = _validated('table_type', TableType, self.table_type)
         return body
 
     @classmethod
@@ -2171,7 +2324,8 @@ class UpdateCatalog:
     def as_dict(self) -> dict:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
-        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
+        if self.isolation_mode is not None:
+            body['isolation_mode'] = _validated('isolation_mode', IsolationMode, self.isolation_mode)
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
@@ -2223,7 +2377,9 @@ class UpdateExternalLocation:
         if self.access_point is not None: body['access_point'] = self.access_point
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
-        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.encryption_details:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    self.encryption_details)
         if self.force is not None: body['force'] = self.force
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2278,7 +2434,9 @@ class UpdateMetastore:
         if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
-        if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.delta_sharing_scope is not None:
+            body['delta_sharing_scope'] = _validated('delta_sharing_scope', UpdateMetastoreDeltaSharingScope,
+                                                     self.delta_sharing_scope)
         if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2336,9 +2494,11 @@ class UpdatePermissions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
+        if self.changes:
+            body['changes'] = [_validated('changes item', PermissionsChange, v) for v in self.changes]
         if self.full_name is not None: body['full_name'] = self.full_name
-        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
+        if self.securable_type is not None:
+            body['securable_type'] = _validated('securable_type', SecurableType, self.securable_type)
         return body
 
     @classmethod
@@ -2425,10 +2585,13 @@ class UpdateStorageCredential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.aws_iam_role: body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, self.aws_iam_role)
+        if self.azure_managed_identity:
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        self.azure_managed_identity)
         if self.azure_service_principal:
-            body['azure_service_principal'] = self.azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         self.azure_service_principal)
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
@@ -2509,10 +2672,13 @@ class ValidateStorageCredential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.aws_iam_role: body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, self.aws_iam_role)
+        if self.azure_managed_identity:
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        self.azure_managed_identity)
         if self.azure_service_principal:
-            body['azure_service_principal'] = self.azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         self.azure_service_principal)
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.external_location_name is not None:
@@ -2542,7 +2708,8 @@ class ValidateStorageCredentialResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.is_dir is not None: body['isDir'] = self.is_dir
-        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        if self.results:
+            body['results'] = [_validated('results item', ValidationResult, v) for v in self.results]
         return body
 
     @classmethod
@@ -2559,8 +2726,9 @@ class ValidationResult:
     def as_dict(self) -> dict:
         body = {}
         if self.message is not None: body['message'] = self.message
-        if self.operation is not None: body['operation'] = self.operation.value
-        if self.result is not None: body['result'] = self.result.value
+        if self.operation is not None:
+            body['operation'] = _validated('operation', ValidationResultOperation, self.operation)
+        if self.result is not None: body['result'] = _validated('result', ValidationResultResult, self.result)
         return body
 
     @classmethod
@@ -2613,7 +2781,9 @@ class VolumeInfo:
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
-        if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.encryption_details:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    self.encryption_details)
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2623,7 +2793,8 @@ class VolumeInfo:
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         if self.volume_id is not None: body['volume_id'] = self.volume_id
-        if self.volume_type is not None: body['volume_type'] = self.volume_type.value
+        if self.volume_type is not None:
+            body['volume_type'] = _validated('volume_type', VolumeType, self.volume_type)
         return body
 
     @classmethod
@@ -2676,7 +2847,9 @@ class AccountMetastoreAssignmentsAPI:
         
         """
         body = {}
-        if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
+        if metastore_assignment is not None:
+            body['metastore_assignment'] = _validated('metastore_assignment', CreateMetastoreAssignment,
+                                                      metastore_assignment)
         self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}',
@@ -2750,7 +2923,9 @@ class AccountMetastoreAssignmentsAPI:
         
         """
         body = {}
-        if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
+        if metastore_assignment is not None:
+            body['metastore_assignment'] = _validated('metastore_assignment', UpdateMetastoreAssignment,
+                                                      metastore_assignment)
         self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}',
@@ -2774,7 +2949,8 @@ class AccountMetastoresAPI:
         :returns: :class:`AccountsMetastoreInfo`
         """
         body = {}
-        if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
+        if metastore_info is not None:
+            body['metastore_info'] = _validated('metastore_info', CreateMetastore, metastore_info)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/metastores', body=body)
         return AccountsMetastoreInfo.from_dict(json)
@@ -2838,7 +3014,8 @@ class AccountMetastoresAPI:
         :returns: :class:`AccountsMetastoreInfo`
         """
         body = {}
-        if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
+        if metastore_info is not None:
+            body['metastore_info'] = _validated('metastore_info', UpdateMetastore, metastore_info)
 
         json = self._api.do('PUT',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
@@ -2873,7 +3050,8 @@ class AccountStorageCredentialsAPI:
         :returns: :class:`StorageCredentialInfo`
         """
         body = {}
-        if credential_info is not None: body['credential_info'] = credential_info.as_dict()
+        if credential_info is not None:
+            body['credential_info'] = _validated('credential_info', CreateStorageCredential, credential_info)
 
         json = self._api.do(
             'POST',
@@ -2956,7 +3134,8 @@ class AccountStorageCredentialsAPI:
         :returns: :class:`StorageCredentialInfo`
         """
         body = {}
-        if credential_info is not None: body['credential_info'] = credential_info.as_dict()
+        if credential_info is not None:
+            body['credential_info'] = _validated('credential_info', UpdateStorageCredential, credential_info)
 
         json = self._api.do(
             'PUT',
@@ -3095,7 +3274,8 @@ class CatalogsAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
-        if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
+        if isolation_mode is not None:
+            body['isolation_mode'] = _validated('isolation_mode', IsolationMode, isolation_mode)
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
 
@@ -3151,7 +3331,8 @@ class ConnectionsAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
-        if connection_type is not None: body['connection_type'] = connection_type.value
+        if connection_type is not None:
+            body['connection_type'] = _validated('connection_type', ConnectionType, connection_type)
         if name is not None: body['name'] = name
         if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
         if owner is not None: body['owner'] = owner
@@ -3275,7 +3456,9 @@ class ExternalLocationsAPI:
         if access_point is not None: body['access_point'] = access_point
         if comment is not None: body['comment'] = comment
         if credential_name is not None: body['credential_name'] = credential_name
-        if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if encryption_details is not None:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    encryption_details)
         if name is not None: body['name'] = name
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -3372,7 +3555,9 @@ class ExternalLocationsAPI:
         if access_point is not None: body['access_point'] = access_point
         if comment is not None: body['comment'] = comment
         if credential_name is not None: body['credential_name'] = credential_name
-        if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if encryption_details is not None:
+            body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
+                                                    encryption_details)
         if force is not None: body['force'] = force
         if owner is not None: body['owner'] = owner
         if read_only is not None: body['read_only'] = read_only
@@ -3474,25 +3659,39 @@ class FunctionsAPI:
         body = {}
         if catalog_name is not None: body['catalog_name'] = catalog_name
         if comment is not None: body['comment'] = comment
-        if data_type is not None: body['data_type'] = data_type.value
+        if data_type is not None: body['data_type'] = _validated('data_type', ColumnTypeName, data_type)
         if external_language is not None: body['external_language'] = external_language
         if external_name is not None: body['external_name'] = external_name
         if full_data_type is not None: body['full_data_type'] = full_data_type
-        if input_params is not None: body['input_params'] = [v.as_dict() for v in input_params]
+        if input_params is not None:
+            body['input_params'] = [
+                _validated('input_params item', FunctionParameterInfo, v) for v in input_params
+            ]
         if is_deterministic is not None: body['is_deterministic'] = is_deterministic
         if is_null_call is not None: body['is_null_call'] = is_null_call
         if name is not None: body['name'] = name
-        if parameter_style is not None: body['parameter_style'] = parameter_style.value
+        if parameter_style is not None:
+            body['parameter_style'] = _validated('parameter_style', CreateFunctionParameterStyle,
+                                                 parameter_style)
         if properties is not None: body['properties'] = properties
-        if return_params is not None: body['return_params'] = [v.as_dict() for v in return_params]
-        if routine_body is not None: body['routine_body'] = routine_body.value
+        if return_params is not None:
+            body['return_params'] = [
+                _validated('return_params item', FunctionParameterInfo, v) for v in return_params
+            ]
+        if routine_body is not None:
+            body['routine_body'] = _validated('routine_body', CreateFunctionRoutineBody, routine_body)
         if routine_definition is not None: body['routine_definition'] = routine_definition
         if routine_dependencies is not None:
-            body['routine_dependencies'] = [v.as_dict() for v in routine_dependencies]
+            body['routine_dependencies'] = [
+                _validated('routine_dependencies item', Dependency, v) for v in routine_dependencies
+            ]
         if schema_name is not None: body['schema_name'] = schema_name
-        if security_type is not None: body['security_type'] = security_type.value
+        if security_type is not None:
+            body['security_type'] = _validated('security_type', CreateFunctionSecurityType, security_type)
         if specific_name is not None: body['specific_name'] = specific_name
-        if sql_data_access is not None: body['sql_data_access'] = sql_data_access.value
+        if sql_data_access is not None:
+            body['sql_data_access'] = _validated('sql_data_access', CreateFunctionSqlDataAccess,
+                                                 sql_data_access)
         if sql_path is not None: body['sql_path'] = sql_path
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body)
@@ -3678,7 +3877,8 @@ class GrantsAPI:
         :returns: :class:`PermissionsList`
         """
         body = {}
-        if changes is not None: body['changes'] = [v.as_dict() for v in changes]
+        if changes is not None:
+            body['changes'] = [_validated('changes item', PermissionsChange, v) for v in changes]
 
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
@@ -3889,7 +4089,9 @@ class MetastoresAPI:
         if delta_sharing_recipient_token_lifetime_in_seconds is not None:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = delta_sharing_recipient_token_lifetime_in_seconds
-        if delta_sharing_scope is not None: body['delta_sharing_scope'] = delta_sharing_scope.value
+        if delta_sharing_scope is not None:
+            body['delta_sharing_scope'] = _validated('delta_sharing_scope', UpdateMetastoreDeltaSharingScope,
+                                                     delta_sharing_scope)
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
         if privilege_model_version is not None: body['privilege_model_version'] = privilege_model_version
@@ -4112,11 +4314,14 @@ class StorageCredentialsAPI:
         :returns: :class:`StorageCredentialInfo`
         """
         body = {}
-        if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
+        if aws_iam_role is not None:
+            body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, aws_iam_role)
         if azure_managed_identity is not None:
-            body['azure_managed_identity'] = azure_managed_identity.as_dict()
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        azure_managed_identity)
         if azure_service_principal is not None:
-            body['azure_service_principal'] = azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         azure_service_principal)
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account
@@ -4216,11 +4421,14 @@ class StorageCredentialsAPI:
         :returns: :class:`StorageCredentialInfo`
         """
         body = {}
-        if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
+        if aws_iam_role is not None:
+            body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, aws_iam_role)
         if azure_managed_identity is not None:
-            body['azure_managed_identity'] = azure_managed_identity.as_dict()
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        azure_managed_identity)
         if azure_service_principal is not None:
-            body['azure_service_principal'] = azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         azure_service_principal)
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account
@@ -4274,11 +4482,14 @@ class StorageCredentialsAPI:
         :returns: :class:`ValidateStorageCredentialResponse`
         """
         body = {}
-        if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
+        if aws_iam_role is not None:
+            body['aws_iam_role'] = _validated('aws_iam_role', AwsIamRole, aws_iam_role)
         if azure_managed_identity is not None:
-            body['azure_managed_identity'] = azure_managed_identity.as_dict()
+            body['azure_managed_identity'] = _validated('azure_managed_identity', AzureManagedIdentity,
+                                                        azure_managed_identity)
         if azure_service_principal is not None:
-            body['azure_service_principal'] = azure_service_principal.as_dict()
+            body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
+                                                         azure_service_principal)
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account
         if external_location_name is not None: body['external_location_name'] = external_location_name
@@ -4383,7 +4594,7 @@ class TableConstraintsAPI:
         :returns: :class:`TableConstraint`
         """
         body = {}
-        if constraint is not None: body['constraint'] = constraint.as_dict()
+        if constraint is not None: body['constraint'] = _validated('constraint', TableConstraint, constraint)
         if full_name_arg is not None: body['full_name_arg'] = full_name_arg
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body)
@@ -4646,7 +4857,7 @@ class VolumesAPI:
         if name is not None: body['name'] = name
         if schema_name is not None: body['schema_name'] = schema_name
         if storage_location is not None: body['storage_location'] = storage_location
-        if volume_type is not None: body['volume_type'] = volume_type.value
+        if volume_type is not None: body['volume_type'] = _validated('volume_type', VolumeType, volume_type)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body)
         return VolumeInfo.from_dict(json)
