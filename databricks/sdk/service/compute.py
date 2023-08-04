@@ -3898,7 +3898,7 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if end_time is not None: body['end_time'] = end_time
-        if event_types is not None: body['event_types'] = [v for v in event_types]
+        if event_types is not None: body['event_types'] = [v.value for v in event_types]
         if limit is not None: body['limit'] = limit
         if offset is not None: body['offset'] = offset
         if order is not None: body['order'] = order.value
