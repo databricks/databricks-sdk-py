@@ -180,13 +180,6 @@ class CreateLogDeliveryConfigurationParams:
                    workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
-@dataclass
-class DeleteBudgetRequest:
-    """Delete budget"""
-
-    budget_id: str
-
-
 class DeliveryStatus(Enum):
     """This describes an enum"""
 
@@ -195,38 +188,6 @@ class DeliveryStatus(Enum):
     SUCCEEDED = 'SUCCEEDED'
     SYSTEM_FAILURE = 'SYSTEM_FAILURE'
     USER_FAILURE = 'USER_FAILURE'
-
-
-@dataclass
-class DownloadRequest:
-    """Return billable usage logs"""
-
-    start_month: str
-    end_month: str
-    personal_data: Optional[bool] = None
-
-
-@dataclass
-class GetBudgetRequest:
-    """Get budget and its status"""
-
-    budget_id: str
-
-
-@dataclass
-class GetLogDeliveryRequest:
-    """Get log delivery configuration"""
-
-    log_delivery_configuration_id: str
-
-
-@dataclass
-class ListLogDeliveryRequest:
-    """Get all log delivery configurations"""
-
-    credentials_id: Optional[str] = None
-    status: Optional['LogDeliveryConfigStatus'] = None
-    storage_configuration_id: Optional[str] = None
 
 
 class LogDeliveryConfigStatus(Enum):
@@ -455,7 +416,7 @@ class BillableUsageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None, **kwargs):
+    def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None):
         """Return billable usage logs.
         
         Returns billable usage logs in CSV format for the specified account and date range. For the data
@@ -478,17 +439,11 @@ class BillableUsageAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DownloadRequest(end_month=end_month,
-                                      personal_data=personal_data,
-                                      start_month=start_month)
 
         query = {}
-        if end_month: query['end_month'] = request.end_month
-        if personal_data: query['personal_data'] = request.personal_data
-        if start_month: query['start_month'] = request.start_month
-
+        if end_month is not None: query['end_month'] = end_month
+        if personal_data is not None: query['personal_data'] = personal_data
+        if start_month is not None: query['start_month'] = start_month
         self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/usage/download', query=query)
 
 
@@ -499,7 +454,7 @@ class BudgetsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, budget: Budget, **kwargs) -> WrappedBudgetWithStatus:
+    def create(self, budget: Budget) -> WrappedBudgetWithStatus:
         """Create a new budget.
         
         Creates a new budget in the specified account.
@@ -509,15 +464,13 @@ class BudgetsAPI:
         
         :returns: :class:`WrappedBudgetWithStatus`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WrappedBudget(budget=budget)
-        body = request.as_dict()
+        body = {}
+        if budget is not None: body['budget'] = budget.as_dict()
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/budget', body=body)
         return WrappedBudgetWithStatus.from_dict(json)
 
-    def delete(self, budget_id: str, **kwargs):
+    def delete(self, budget_id: str):
         """Delete budget.
         
         Deletes the budget specified by its UUID.
@@ -527,13 +480,10 @@ class BudgetsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteBudgetRequest(budget_id=budget_id)
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}')
 
-    def get(self, budget_id: str, **kwargs) -> WrappedBudgetWithStatus:
+    def get(self, budget_id: str) -> WrappedBudgetWithStatus:
         """Get budget and its status.
         
         Gets the budget specified by its UUID, including noncumulative status for each day that the budget is
@@ -544,11 +494,8 @@ class BudgetsAPI:
         
         :returns: :class:`WrappedBudgetWithStatus`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetBudgetRequest(budget_id=budget_id)
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}')
         return WrappedBudgetWithStatus.from_dict(json)
 
     def list(self) -> Iterator[BudgetWithStatus]:
@@ -563,7 +510,7 @@ class BudgetsAPI:
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget')
         return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
 
-    def update(self, budget: Budget, budget_id: str, **kwargs):
+    def update(self, budget: Budget, budget_id: str):
         """Modify budget.
         
         Modifies a budget in this account. Budget properties are completely overwritten.
@@ -575,13 +522,9 @@ class BudgetsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WrappedBudget(budget=budget, budget_id=budget_id)
-        body = request.as_dict()
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/budget/{request.budget_id}',
-                     body=body)
+        body = {}
+        if budget is not None: body['budget'] = budget.as_dict()
+        self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}', body=body)
 
 
 class LogDeliveryAPI:
@@ -635,10 +578,11 @@ class LogDeliveryAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               *,
-               log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None,
-               **kwargs) -> WrappedLogDeliveryConfiguration:
+    def create(
+        self,
+        *,
+        log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None
+    ) -> WrappedLogDeliveryConfiguration:
         """Create a new log delivery configuration.
         
         Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
@@ -666,16 +610,14 @@ class LogDeliveryAPI:
         
         :returns: :class:`WrappedLogDeliveryConfiguration`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WrappedCreateLogDeliveryConfiguration(
-                log_delivery_configuration=log_delivery_configuration)
-        body = request.as_dict()
+        body = {}
+        if log_delivery_configuration is not None:
+            body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/log-delivery', body=body)
         return WrappedLogDeliveryConfiguration.from_dict(json)
 
-    def get(self, log_delivery_configuration_id: str, **kwargs) -> WrappedLogDeliveryConfiguration:
+    def get(self, log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration:
         """Get log delivery configuration.
         
         Gets a Databricks log delivery configuration object for an account, both specified by ID.
@@ -685,21 +627,16 @@ class LogDeliveryAPI:
         
         :returns: :class:`WrappedLogDeliveryConfiguration`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetLogDeliveryRequest(log_delivery_configuration_id=log_delivery_configuration_id)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{request.log_delivery_configuration_id}')
+            'GET', f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}')
         return WrappedLogDeliveryConfiguration.from_dict(json)
 
     def list(self,
              *,
              credentials_id: Optional[str] = None,
              status: Optional[LogDeliveryConfigStatus] = None,
-             storage_configuration_id: Optional[str] = None,
-             **kwargs) -> Iterator[LogDeliveryConfiguration]:
+             storage_configuration_id: Optional[str] = None) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
         
         Gets all Databricks log delivery configurations associated with an account specified by ID.
@@ -713,21 +650,16 @@ class LogDeliveryAPI:
         
         :returns: Iterator over :class:`LogDeliveryConfiguration`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListLogDeliveryRequest(credentials_id=credentials_id,
-                                             status=status,
-                                             storage_configuration_id=storage_configuration_id)
 
         query = {}
-        if credentials_id: query['credentials_id'] = request.credentials_id
-        if status: query['status'] = request.status.value
-        if storage_configuration_id: query['storage_configuration_id'] = request.storage_configuration_id
+        if credentials_id is not None: query['credentials_id'] = credentials_id
+        if status is not None: query['status'] = status.value
+        if storage_configuration_id is not None: query['storage_configuration_id'] = storage_configuration_id
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/log-delivery', query=query)
         return [LogDeliveryConfiguration.from_dict(v) for v in json.get('log_delivery_configurations', [])]
 
-    def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str, **kwargs):
+    def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str):
         """Enable or disable log delivery configuration.
         
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
@@ -745,12 +677,8 @@ class LogDeliveryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateLogDeliveryConfigurationStatusRequest(
-                log_delivery_configuration_id=log_delivery_configuration_id, status=status)
-        body = request.as_dict()
-        self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{request.log_delivery_configuration_id}',
-            body=body)
+        body = {}
+        if status is not None: body['status'] = status.value
+        self._api.do('PATCH',
+                     f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
+                     body=body)

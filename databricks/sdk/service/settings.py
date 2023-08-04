@@ -131,20 +131,6 @@ class CreateTokenResponse:
 
 
 @dataclass
-class DeleteAccountIpAccessListRequest:
-    """Delete access list"""
-
-    ip_access_list_id: str
-
-
-@dataclass
-class DeleteAccountNetworkPolicyRequest:
-    """Delete Account Network Policy"""
-
-    etag: str
-
-
-@dataclass
 class DeleteAccountNetworkPolicyResponse:
     etag: str
 
@@ -156,20 +142,6 @@ class DeleteAccountNetworkPolicyResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DeleteAccountNetworkPolicyResponse':
         return cls(etag=d.get('etag', None))
-
-
-@dataclass
-class DeleteIpAccessListRequest:
-    """Delete access list"""
-
-    ip_access_list_id: str
-
-
-@dataclass
-class DeletePersonalComputeSettingRequest:
-    """Delete Personal Compute setting"""
-
-    etag: str
 
 
 @dataclass
@@ -187,13 +159,6 @@ class DeletePersonalComputeSettingResponse:
 
 
 @dataclass
-class DeleteTokenManagementRequest:
-    """Delete a token"""
-
-    token_id: str
-
-
-@dataclass
 class FetchIpAccessListResponse:
     ip_access_list: Optional['IpAccessListInfo'] = None
 
@@ -205,20 +170,6 @@ class FetchIpAccessListResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FetchIpAccessListResponse':
         return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
-
-
-@dataclass
-class GetAccountIpAccessListRequest:
-    """Get IP access list"""
-
-    ip_access_list_id: str
-
-
-@dataclass
-class GetIpAccessListRequest:
-    """Get access list"""
-
-    ip_access_list_id: str
 
 
 @dataclass
@@ -247,20 +198,6 @@ class GetIpAccessListsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetIpAccessListsResponse':
         return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
-
-
-@dataclass
-class GetStatusRequest:
-    """Check configuration status"""
-
-    keys: str
-
-
-@dataclass
-class GetTokenManagementRequest:
-    """Get token info"""
-
-    token_id: str
 
 
 @dataclass
@@ -302,14 +239,6 @@ class IpAccessListInfo:
                    list_type=_enum(d, 'list_type', ListType),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
-
-
-@dataclass
-class ListTokenManagementRequest:
-    """List all tokens"""
-
-    created_by_id: Optional[str] = None
-    created_by_username: Optional[str] = None
 
 
 @dataclass
@@ -402,20 +331,6 @@ class PublicTokenInfo:
 
 
 @dataclass
-class ReadAccountNetworkPolicyRequest:
-    """Get Account Network Policy"""
-
-    etag: str
-
-
-@dataclass
-class ReadPersonalComputeSettingRequest:
-    """Get Personal Compute setting"""
-
-    etag: str
-
-
-@dataclass
 class ReplaceIpAccessList:
     label: str
     list_type: 'ListType'
@@ -491,25 +406,6 @@ class TokenInfo:
 
 
 @dataclass
-class UpdateAccountNetworkPolicyRequest:
-    """Update Account Network Policy"""
-
-    allow_missing: Optional[bool] = None
-    setting: Optional['AccountNetworkPolicyMessage'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
-        if self.setting: body['setting'] = self.setting.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateAccountNetworkPolicyRequest':
-        return cls(allow_missing=d.get('allow_missing', None),
-                   setting=_from_dict(d, 'setting', AccountNetworkPolicyMessage))
-
-
-@dataclass
 class UpdateIpAccessList:
     label: str
     list_type: 'ListType'
@@ -538,25 +434,6 @@ class UpdateIpAccessList:
                    list_type=_enum(d, 'list_type', ListType))
 
 
-@dataclass
-class UpdatePersonalComputeSettingRequest:
-    """Update Personal Compute setting"""
-
-    allow_missing: Optional[bool] = None
-    setting: Optional['PersonalComputeSetting'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
-        if self.setting: body['setting'] = self.setting.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdatePersonalComputeSettingRequest':
-        return cls(allow_missing=d.get('allow_missing', None),
-                   setting=_from_dict(d, 'setting', PersonalComputeSetting))
-
-
 WorkspaceConf = Dict[str, str]
 
 
@@ -583,8 +460,7 @@ class AccountIpAccessListsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, label: str, list_type: ListType, ip_addresses: List[str],
-               **kwargs) -> CreateIpAccessListResponse:
+    def create(self, label: str, list_type: ListType, ip_addresses: List[str]) -> CreateIpAccessListResponse:
         """Create access list.
         
         Creates an IP access list for the account.
@@ -610,17 +486,17 @@ class AccountIpAccessListsAPI:
         
         :returns: :class:`CreateIpAccessListResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateIpAccessList(ip_addresses=ip_addresses, label=label, list_type=list_type)
-        body = request.as_dict()
+        body = {}
+        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
+        if label is not None: body['label'] = label
+        if list_type is not None: body['list_type'] = list_type.value
 
         json = self._api.do('POST',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
                             body=body)
         return CreateIpAccessListResponse.from_dict(json)
 
-    def delete(self, ip_access_list_id: str, **kwargs):
+    def delete(self, ip_access_list_id: str):
         """Delete access list.
         
         Deletes an IP access list, specified by its list ID.
@@ -630,15 +506,11 @@ class AccountIpAccessListsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountIpAccessListRequest(ip_access_list_id=ip_access_list_id)
 
-        self._api.do(
-            'DELETE',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{request.ip_access_list_id}')
+        self._api.do('DELETE',
+                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}')
 
-    def get(self, ip_access_list_id: str, **kwargs) -> GetIpAccessListResponse:
+    def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
         """Get IP access list.
         
         Gets an IP access list, specified by its list ID.
@@ -648,13 +520,9 @@ class AccountIpAccessListsAPI:
         
         :returns: :class:`GetIpAccessListResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountIpAccessListRequest(ip_access_list_id=ip_access_list_id)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{request.ip_access_list_id}')
+            'GET', f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}')
         return GetIpAccessListResponse.from_dict(json)
 
     def list(self) -> Iterator[IpAccessListInfo]:
@@ -675,8 +543,7 @@ class AccountIpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: Optional[str] = None,
-                **kwargs):
+                list_id: Optional[str] = None):
         """Replace access list.
         
         Replaces an IP access list, specified by its ID.
@@ -704,19 +571,15 @@ class AccountIpAccessListsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ReplaceIpAccessList(enabled=enabled,
-                                          ip_access_list_id=ip_access_list_id,
-                                          ip_addresses=ip_addresses,
-                                          label=label,
-                                          list_id=list_id,
-                                          list_type=list_type)
-        body = request.as_dict()
-        self._api.do(
-            'PUT',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{request.ip_access_list_id}',
-            body=body)
+        body = {}
+        if enabled is not None: body['enabled'] = enabled
+        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
+        if label is not None: body['label'] = label
+        if list_id is not None: body['list_id'] = list_id
+        if list_type is not None: body['list_type'] = list_type.value
+        self._api.do('PUT',
+                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                     body=body)
 
     def update(self,
                label: str,
@@ -725,8 +588,7 @@ class AccountIpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: Optional[str] = None,
-               **kwargs):
+               list_id: Optional[str] = None):
         """Update access list.
         
         Updates an existing IP access list, specified by its ID.
@@ -758,19 +620,15 @@ class AccountIpAccessListsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateIpAccessList(enabled=enabled,
-                                         ip_access_list_id=ip_access_list_id,
-                                         ip_addresses=ip_addresses,
-                                         label=label,
-                                         list_id=list_id,
-                                         list_type=list_type)
-        body = request.as_dict()
-        self._api.do(
-            'PATCH',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{request.ip_access_list_id}',
-            body=body)
+        body = {}
+        if enabled is not None: body['enabled'] = enabled
+        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
+        if label is not None: body['label'] = label
+        if list_id is not None: body['list_id'] = list_id
+        if list_type is not None: body['list_type'] = list_type.value
+        self._api.do('PATCH',
+                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                     body=body)
 
 
 class AccountNetworkPolicyAPI:
@@ -784,7 +642,7 @@ class AccountNetworkPolicyAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_account_network_policy(self, etag: str, **kwargs) -> DeleteAccountNetworkPolicyResponse:
+    def delete_account_network_policy(self, etag: str) -> DeleteAccountNetworkPolicyResponse:
         """Delete Account Network Policy.
         
         Reverts back all the account network policies back to default.
@@ -798,12 +656,9 @@ class AccountNetworkPolicyAPI:
         
         :returns: :class:`DeleteAccountNetworkPolicyResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountNetworkPolicyRequest(etag=etag)
 
         query = {}
-        if etag: query['etag'] = request.etag
+        if etag is not None: query['etag'] = etag
 
         json = self._api.do(
             'DELETE',
@@ -811,7 +666,7 @@ class AccountNetworkPolicyAPI:
             query=query)
         return DeleteAccountNetworkPolicyResponse.from_dict(json)
 
-    def read_account_network_policy(self, etag: str, **kwargs) -> AccountNetworkPolicyMessage:
+    def read_account_network_policy(self, etag: str) -> AccountNetworkPolicyMessage:
         """Get Account Network Policy.
         
         Gets the value of Account level Network Policy.
@@ -825,12 +680,9 @@ class AccountNetworkPolicyAPI:
         
         :returns: :class:`AccountNetworkPolicyMessage`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ReadAccountNetworkPolicyRequest(etag=etag)
 
         query = {}
-        if etag: query['etag'] = request.etag
+        if etag is not None: query['etag'] = etag
 
         json = self._api.do(
             'GET',
@@ -838,11 +690,11 @@ class AccountNetworkPolicyAPI:
             query=query)
         return AccountNetworkPolicyMessage.from_dict(json)
 
-    def update_account_network_policy(self,
-                                      *,
-                                      allow_missing: Optional[bool] = None,
-                                      setting: Optional[AccountNetworkPolicyMessage] = None,
-                                      **kwargs) -> AccountNetworkPolicyMessage:
+    def update_account_network_policy(
+            self,
+            *,
+            allow_missing: Optional[bool] = None,
+            setting: Optional[AccountNetworkPolicyMessage] = None) -> AccountNetworkPolicyMessage:
         """Update Account Network Policy.
         
         Updates the policy content of Account level Network Policy.
@@ -853,10 +705,9 @@ class AccountNetworkPolicyAPI:
         
         :returns: :class:`AccountNetworkPolicyMessage`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateAccountNetworkPolicyRequest(allow_missing=allow_missing, setting=setting)
-        body = request.as_dict()
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if setting is not None: body['setting'] = setting.as_dict()
 
         json = self._api.do(
             'PATCH',
@@ -877,7 +728,7 @@ class AccountSettingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_personal_compute_setting(self, etag: str, **kwargs) -> DeletePersonalComputeSettingResponse:
+    def delete_personal_compute_setting(self, etag: str) -> DeletePersonalComputeSettingResponse:
         """Delete Personal Compute setting.
         
         Reverts back the Personal Compute setting value to default (ON)
@@ -891,12 +742,9 @@ class AccountSettingsAPI:
         
         :returns: :class:`DeletePersonalComputeSettingResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeletePersonalComputeSettingRequest(etag=etag)
 
         query = {}
-        if etag: query['etag'] = request.etag
+        if etag is not None: query['etag'] = etag
 
         json = self._api.do(
             'DELETE',
@@ -904,7 +752,7 @@ class AccountSettingsAPI:
             query=query)
         return DeletePersonalComputeSettingResponse.from_dict(json)
 
-    def read_personal_compute_setting(self, etag: str, **kwargs) -> PersonalComputeSetting:
+    def read_personal_compute_setting(self, etag: str) -> PersonalComputeSetting:
         """Get Personal Compute setting.
         
         Gets the value of the Personal Compute setting.
@@ -918,12 +766,9 @@ class AccountSettingsAPI:
         
         :returns: :class:`PersonalComputeSetting`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ReadPersonalComputeSettingRequest(etag=etag)
 
         query = {}
-        if etag: query['etag'] = request.etag
+        if etag is not None: query['etag'] = etag
 
         json = self._api.do(
             'GET',
@@ -931,11 +776,11 @@ class AccountSettingsAPI:
             query=query)
         return PersonalComputeSetting.from_dict(json)
 
-    def update_personal_compute_setting(self,
-                                        *,
-                                        allow_missing: Optional[bool] = None,
-                                        setting: Optional[PersonalComputeSetting] = None,
-                                        **kwargs) -> PersonalComputeSetting:
+    def update_personal_compute_setting(
+            self,
+            *,
+            allow_missing: Optional[bool] = None,
+            setting: Optional[PersonalComputeSetting] = None) -> PersonalComputeSetting:
         """Update Personal Compute setting.
         
         Updates the value of the Personal Compute setting.
@@ -946,10 +791,9 @@ class AccountSettingsAPI:
         
         :returns: :class:`PersonalComputeSetting`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdatePersonalComputeSettingRequest(allow_missing=allow_missing, setting=setting)
-        body = request.as_dict()
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if setting is not None: body['setting'] = setting.as_dict()
 
         json = self._api.do(
             'PATCH',
@@ -980,8 +824,7 @@ class IpAccessListsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, label: str, list_type: ListType, ip_addresses: List[str],
-               **kwargs) -> CreateIpAccessListResponse:
+    def create(self, label: str, list_type: ListType, ip_addresses: List[str]) -> CreateIpAccessListResponse:
         """Create access list.
         
         Creates an IP access list for this workspace.
@@ -1008,15 +851,15 @@ class IpAccessListsAPI:
         
         :returns: :class:`CreateIpAccessListResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateIpAccessList(ip_addresses=ip_addresses, label=label, list_type=list_type)
-        body = request.as_dict()
+        body = {}
+        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
+        if label is not None: body['label'] = label
+        if list_type is not None: body['list_type'] = list_type.value
 
         json = self._api.do('POST', '/api/2.0/ip-access-lists', body=body)
         return CreateIpAccessListResponse.from_dict(json)
 
-    def delete(self, ip_access_list_id: str, **kwargs):
+    def delete(self, ip_access_list_id: str):
         """Delete access list.
         
         Deletes an IP access list, specified by its list ID.
@@ -1026,13 +869,10 @@ class IpAccessListsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteIpAccessListRequest(ip_access_list_id=ip_access_list_id)
 
-        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{request.ip_access_list_id}')
+        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}')
 
-    def get(self, ip_access_list_id: str, **kwargs) -> FetchIpAccessListResponse:
+    def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
         """Get access list.
         
         Gets an IP access list, specified by its list ID.
@@ -1042,11 +882,8 @@ class IpAccessListsAPI:
         
         :returns: :class:`FetchIpAccessListResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetIpAccessListRequest(ip_access_list_id=ip_access_list_id)
 
-        json = self._api.do('GET', f'/api/2.0/ip-access-lists/{request.ip_access_list_id}')
+        json = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}')
         return FetchIpAccessListResponse.from_dict(json)
 
     def list(self) -> Iterator[IpAccessListInfo]:
@@ -1067,8 +904,7 @@ class IpAccessListsAPI:
                 enabled: bool,
                 ip_access_list_id: str,
                 *,
-                list_id: Optional[str] = None,
-                **kwargs):
+                list_id: Optional[str] = None):
         """Replace access list.
         
         Replaces an IP access list, specified by its ID.
@@ -1097,16 +933,13 @@ class IpAccessListsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ReplaceIpAccessList(enabled=enabled,
-                                          ip_access_list_id=ip_access_list_id,
-                                          ip_addresses=ip_addresses,
-                                          label=label,
-                                          list_id=list_id,
-                                          list_type=list_type)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/ip-access-lists/{request.ip_access_list_id}', body=body)
+        body = {}
+        if enabled is not None: body['enabled'] = enabled
+        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
+        if label is not None: body['label'] = label
+        if list_id is not None: body['list_id'] = list_id
+        if list_type is not None: body['list_type'] = list_type.value
+        self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body)
 
     def update(self,
                label: str,
@@ -1115,8 +948,7 @@ class IpAccessListsAPI:
                enabled: bool,
                ip_access_list_id: str,
                *,
-               list_id: Optional[str] = None,
-               **kwargs):
+               list_id: Optional[str] = None):
         """Update access list.
         
         Updates an existing IP access list, specified by its ID.
@@ -1149,16 +981,13 @@ class IpAccessListsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateIpAccessList(enabled=enabled,
-                                         ip_access_list_id=ip_access_list_id,
-                                         ip_addresses=ip_addresses,
-                                         label=label,
-                                         list_id=list_id,
-                                         list_type=list_type)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/ip-access-lists/{request.ip_access_list_id}', body=body)
+        body = {}
+        if enabled is not None: body['enabled'] = enabled
+        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
+        if label is not None: body['label'] = label
+        if list_id is not None: body['list_id'] = list_id
+        if list_type is not None: body['list_type'] = list_type.value
+        self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body)
 
 
 class TokenManagementAPI:
@@ -1172,8 +1001,7 @@ class TokenManagementAPI:
                          application_id: str,
                          lifetime_seconds: int,
                          *,
-                         comment: Optional[str] = None,
-                         **kwargs) -> CreateOboTokenResponse:
+                         comment: Optional[str] = None) -> CreateOboTokenResponse:
         """Create on-behalf token.
         
         Creates a token on behalf of a service principal.
@@ -1187,17 +1015,15 @@ class TokenManagementAPI:
         
         :returns: :class:`CreateOboTokenResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateOboTokenRequest(application_id=application_id,
-                                            comment=comment,
-                                            lifetime_seconds=lifetime_seconds)
-        body = request.as_dict()
+        body = {}
+        if application_id is not None: body['application_id'] = application_id
+        if comment is not None: body['comment'] = comment
+        if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
 
         json = self._api.do('POST', '/api/2.0/token-management/on-behalf-of/tokens', body=body)
         return CreateOboTokenResponse.from_dict(json)
 
-    def delete(self, token_id: str, **kwargs):
+    def delete(self, token_id: str):
         """Delete a token.
         
         Deletes a token, specified by its ID.
@@ -1207,13 +1033,10 @@ class TokenManagementAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTokenManagementRequest(token_id=token_id)
 
-        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{request.token_id}')
+        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}')
 
-    def get(self, token_id: str, **kwargs) -> TokenInfo:
+    def get(self, token_id: str) -> TokenInfo:
         """Get token info.
         
         Gets information about a token, specified by its ID.
@@ -1223,18 +1046,14 @@ class TokenManagementAPI:
         
         :returns: :class:`TokenInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetTokenManagementRequest(token_id=token_id)
 
-        json = self._api.do('GET', f'/api/2.0/token-management/tokens/{request.token_id}')
+        json = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}')
         return TokenInfo.from_dict(json)
 
     def list(self,
              *,
              created_by_id: Optional[str] = None,
-             created_by_username: Optional[str] = None,
-             **kwargs) -> Iterator[TokenInfo]:
+             created_by_username: Optional[str] = None) -> Iterator[TokenInfo]:
         """List all tokens.
         
         Lists all tokens associated with the specified workspace or user.
@@ -1246,14 +1065,10 @@ class TokenManagementAPI:
         
         :returns: Iterator over :class:`TokenInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListTokenManagementRequest(created_by_id=created_by_id,
-                                                 created_by_username=created_by_username)
 
         query = {}
-        if created_by_id: query['created_by_id'] = request.created_by_id
-        if created_by_username: query['created_by_username'] = request.created_by_username
+        if created_by_id is not None: query['created_by_id'] = created_by_id
+        if created_by_username is not None: query['created_by_username'] = created_by_username
 
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
@@ -1269,8 +1084,7 @@ class TokensAPI:
     def create(self,
                *,
                comment: Optional[str] = None,
-               lifetime_seconds: Optional[int] = None,
-               **kwargs) -> CreateTokenResponse:
+               lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
         """Create a user token.
         
         Creates and returns a token for a user. If this call is made through token authentication, it creates
@@ -1286,15 +1100,14 @@ class TokensAPI:
         
         :returns: :class:`CreateTokenResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateTokenRequest(comment=comment, lifetime_seconds=lifetime_seconds)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
 
         json = self._api.do('POST', '/api/2.0/token/create', body=body)
         return CreateTokenResponse.from_dict(json)
 
-    def delete(self, token_id: str, **kwargs):
+    def delete(self, token_id: str):
         """Revoke token.
         
         Revokes an access token.
@@ -1306,10 +1119,8 @@ class TokensAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RevokeTokenRequest(token_id=token_id)
-        body = request.as_dict()
+        body = {}
+        if token_id is not None: body['token_id'] = token_id
         self._api.do('POST', '/api/2.0/token/delete', body=body)
 
     def list(self) -> Iterator[TokenInfo]:
@@ -1330,7 +1141,7 @@ class WorkspaceConfAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_status(self, keys: str, **kwargs) -> WorkspaceConf:
+    def get_status(self, keys: str) -> WorkspaceConf:
         """Check configuration status.
         
         Gets the configuration status for a workspace.
@@ -1339,17 +1150,14 @@ class WorkspaceConfAPI:
         
         :returns: Dict[str,str]
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStatusRequest(keys=keys)
 
         query = {}
-        if keys: query['keys'] = request.keys
+        if keys is not None: query['keys'] = keys
 
         json = self._api.do('GET', '/api/2.0/workspace-conf', query=query)
         return WorkspaceConf.from_dict(json)
 
-    def set_status(self, **kwargs):
+    def set_status(self):
         """Enable/disable features.
         
         Sets the configuration status for a workspace, including enabling or disabling it.
@@ -1357,8 +1165,5 @@ class WorkspaceConfAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Dict[str, str]()
 
         self._api.do('PATCH', '/api/2.0/workspace-conf')

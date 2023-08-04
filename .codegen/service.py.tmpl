@@ -197,8 +197,8 @@ class {{.Name}}API:{{if .Description}}
         {{if or .Request.HasJsonField .Request.HasQueryField -}}
         {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
         query = {}{{end}}
-        {{- range .Request.Fields}}
-        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
+        {{- range .Request.Fields}}{{if not .IsPath}}
+        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{- end}}
 {{- end}}
 
