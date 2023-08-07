@@ -442,14 +442,6 @@ class ExportRunOutput:
 
 
 @dataclass
-class ExportRunRequest:
-    """Export and retrieve a job run"""
-
-    run_id: int
-    views_to_export: Optional['ViewsToExport'] = None
-
-
-@dataclass
 class FileArrivalTriggerConfiguration:
     min_time_between_triggers_seconds: Optional[int] = None
     url: Optional[str] = None
@@ -475,28 +467,6 @@ class Format(Enum):
 
     MULTI_TASK = 'MULTI_TASK'
     SINGLE_TASK = 'SINGLE_TASK'
-
-
-@dataclass
-class GetJobRequest:
-    """Get a single job"""
-
-    job_id: int
-
-
-@dataclass
-class GetRunOutputRequest:
-    """Get the output for a single run"""
-
-    run_id: int
-
-
-@dataclass
-class GetRunRequest:
-    """Get a single job run"""
-
-    run_id: int
-    include_history: Optional[bool] = None
 
 
 class GitProvider(Enum):
@@ -878,17 +848,6 @@ class JobsHealthRules:
 
 
 @dataclass
-class ListJobsRequest:
-    """List jobs"""
-
-    expand_tasks: Optional[bool] = None
-    limit: Optional[int] = None
-    name: Optional[str] = None
-    offset: Optional[int] = None
-    page_token: Optional[str] = None
-
-
-@dataclass
 class ListJobsResponse:
     has_more: Optional[bool] = None
     jobs: Optional['List[BaseJob]'] = None
@@ -909,22 +868,6 @@ class ListJobsResponse:
                    jobs=_repeated(d, 'jobs', BaseJob),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
-
-
-@dataclass
-class ListRunsRequest:
-    """List job runs"""
-
-    active_only: Optional[bool] = None
-    completed_only: Optional[bool] = None
-    expand_tasks: Optional[bool] = None
-    job_id: Optional[int] = None
-    limit: Optional[int] = None
-    offset: Optional[int] = None
-    page_token: Optional[str] = None
-    run_type: Optional['ListRunsRunType'] = None
-    start_time_from: Optional[int] = None
-    start_time_to: Optional[int] = None
 
 
 @dataclass
@@ -2640,7 +2583,7 @@ class JobsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def cancel_all_runs(self, job_id: int, **kwargs):
+    def cancel_all_runs(self, job_id: int):
         """Cancel all runs of a job.
         
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
@@ -2651,13 +2594,11 @@ class JobsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CancelAllRuns(job_id=job_id)
-        body = request.as_dict()
+        body = {}
+        if job_id is not None: body['job_id'] = job_id
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body)
 
-    def cancel_run(self, run_id: int, **kwargs) -> Wait[Run]:
+    def cancel_run(self, run_id: int) -> Wait[Run]:
         """Cancel a job run.
         
         Cancels a job run. The run is canceled asynchronously, so it may still be running when this request
@@ -2670,12 +2611,10 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CancelRun(run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body)
-        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=request.run_id)
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
     def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
         return self.cancel_run(run_id=run_id).result(timeout=timeout)
@@ -2700,8 +2639,7 @@ class JobsAPI:
                tasks: Optional[List[Task]] = None,
                timeout_seconds: Optional[int] = None,
                trigger: Optional[TriggerSettings] = None,
-               webhook_notifications: Optional[WebhookNotifications] = None,
-               **kwargs) -> CreateResponse:
+               webhook_notifications: Optional[WebhookNotifications] = None) -> CreateResponse:
         """Create a new job.
         
         Create a new job.
@@ -2776,33 +2714,31 @@ class JobsAPI:
         
         :returns: :class:`CreateResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateJob(access_control_list=access_control_list,
-                                compute=compute,
-                                continuous=continuous,
-                                email_notifications=email_notifications,
-                                format=format,
-                                git_source=git_source,
-                                health=health,
-                                job_clusters=job_clusters,
-                                max_concurrent_runs=max_concurrent_runs,
-                                name=name,
-                                notification_settings=notification_settings,
-                                parameters=parameters,
-                                run_as=run_as,
-                                schedule=schedule,
-                                tags=tags,
-                                tasks=tasks,
-                                timeout_seconds=timeout_seconds,
-                                trigger=trigger,
-                                webhook_notifications=webhook_notifications)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None: body['access_control_list'] = [v for v in access_control_list]
+        if compute is not None: body['compute'] = [v.as_dict() for v in compute]
+        if continuous is not None: body['continuous'] = continuous.as_dict()
+        if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
+        if format is not None: body['format'] = format.value
+        if git_source is not None: body['git_source'] = git_source.as_dict()
+        if health is not None: body['health'] = health.as_dict()
+        if job_clusters is not None: body['job_clusters'] = [v.as_dict() for v in job_clusters]
+        if max_concurrent_runs is not None: body['max_concurrent_runs'] = max_concurrent_runs
+        if name is not None: body['name'] = name
+        if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
+        if parameters is not None: body['parameters'] = [v.as_dict() for v in parameters]
+        if run_as is not None: body['run_as'] = run_as.as_dict()
+        if schedule is not None: body['schedule'] = schedule.as_dict()
+        if tags is not None: body['tags'] = tags
+        if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
+        if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
+        if trigger is not None: body['trigger'] = trigger.as_dict()
+        if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
 
         json = self._api.do('POST', '/api/2.1/jobs/create', body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, job_id: int, **kwargs):
+    def delete(self, job_id: int):
         """Delete a job.
         
         Deletes a job.
@@ -2812,13 +2748,11 @@ class JobsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteJob(job_id=job_id)
-        body = request.as_dict()
+        body = {}
+        if job_id is not None: body['job_id'] = job_id
         self._api.do('POST', '/api/2.1/jobs/delete', body=body)
 
-    def delete_run(self, run_id: int, **kwargs):
+    def delete_run(self, run_id: int):
         """Delete a job run.
         
         Deletes a non-active run. Returns an error if the run is active.
@@ -2828,17 +2762,11 @@ class JobsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRun(run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.1/jobs/runs/delete', body=body)
 
-    def export_run(self,
-                   run_id: int,
-                   *,
-                   views_to_export: Optional[ViewsToExport] = None,
-                   **kwargs) -> ExportRunOutput:
+    def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
         """Export and retrieve a job run.
         
         Export and retrieve the job run task.
@@ -2850,18 +2778,15 @@ class JobsAPI:
         
         :returns: :class:`ExportRunOutput`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ExportRunRequest(run_id=run_id, views_to_export=views_to_export)
 
         query = {}
-        if run_id: query['run_id'] = request.run_id
-        if views_to_export: query['views_to_export'] = request.views_to_export.value
+        if run_id is not None: query['run_id'] = run_id
+        if views_to_export is not None: query['views_to_export'] = views_to_export.value
 
         json = self._api.do('GET', '/api/2.1/jobs/runs/export', query=query)
         return ExportRunOutput.from_dict(json)
 
-    def get(self, job_id: int, **kwargs) -> Job:
+    def get(self, job_id: int) -> Job:
         """Get a single job.
         
         Retrieves the details for a single job.
@@ -2871,17 +2796,14 @@ class JobsAPI:
         
         :returns: :class:`Job`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetJobRequest(job_id=job_id)
 
         query = {}
-        if job_id: query['job_id'] = request.job_id
+        if job_id is not None: query['job_id'] = job_id
 
         json = self._api.do('GET', '/api/2.1/jobs/get', query=query)
         return Job.from_dict(json)
 
-    def get_run(self, run_id: int, *, include_history: Optional[bool] = None, **kwargs) -> Run:
+    def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -2893,18 +2815,15 @@ class JobsAPI:
         
         :returns: :class:`Run`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRunRequest(include_history=include_history, run_id=run_id)
 
         query = {}
-        if include_history: query['include_history'] = request.include_history
-        if run_id: query['run_id'] = request.run_id
+        if include_history is not None: query['include_history'] = include_history
+        if run_id is not None: query['run_id'] = run_id
 
         json = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query)
         return Run.from_dict(json)
 
-    def get_run_output(self, run_id: int, **kwargs) -> RunOutput:
+    def get_run_output(self, run_id: int) -> RunOutput:
         """Get the output for a single run.
         
         Retrieve the output and metadata of a single task run. When a notebook task returns a value through
@@ -2921,12 +2840,9 @@ class JobsAPI:
         
         :returns: :class:`RunOutput`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRunOutputRequest(run_id=run_id)
 
         query = {}
-        if run_id: query['run_id'] = request.run_id
+        if run_id is not None: query['run_id'] = run_id
 
         json = self._api.do('GET', '/api/2.1/jobs/runs/get-output', query=query)
         return RunOutput.from_dict(json)
@@ -2937,8 +2853,7 @@ class JobsAPI:
              limit: Optional[int] = None,
              name: Optional[str] = None,
              offset: Optional[int] = None,
-             page_token: Optional[str] = None,
-             **kwargs) -> Iterator[BaseJob]:
+             page_token: Optional[str] = None) -> Iterator[BaseJob]:
         """List jobs.
         
         Retrieves a list of jobs.
@@ -2960,20 +2875,13 @@ class JobsAPI:
         
         :returns: Iterator over :class:`BaseJob`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListJobsRequest(expand_tasks=expand_tasks,
-                                      limit=limit,
-                                      name=name,
-                                      offset=offset,
-                                      page_token=page_token)
 
         query = {}
-        if expand_tasks: query['expand_tasks'] = request.expand_tasks
-        if limit: query['limit'] = request.limit
-        if name: query['name'] = request.name
-        if offset: query['offset'] = request.offset
-        if page_token: query['page_token'] = request.page_token
+        if expand_tasks is not None: query['expand_tasks'] = expand_tasks
+        if limit is not None: query['limit'] = limit
+        if name is not None: query['name'] = name
+        if offset is not None: query['offset'] = offset
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
@@ -2996,8 +2904,7 @@ class JobsAPI:
                   page_token: Optional[str] = None,
                   run_type: Optional[ListRunsRunType] = None,
                   start_time_from: Optional[int] = None,
-                  start_time_to: Optional[int] = None,
-                  **kwargs) -> Iterator[BaseRun]:
+                  start_time_to: Optional[int] = None) -> Iterator[BaseRun]:
         """List job runs.
         
         List runs in descending order by start time.
@@ -3034,30 +2941,18 @@ class JobsAPI:
         
         :returns: Iterator over :class:`BaseRun`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListRunsRequest(active_only=active_only,
-                                      completed_only=completed_only,
-                                      expand_tasks=expand_tasks,
-                                      job_id=job_id,
-                                      limit=limit,
-                                      offset=offset,
-                                      page_token=page_token,
-                                      run_type=run_type,
-                                      start_time_from=start_time_from,
-                                      start_time_to=start_time_to)
 
         query = {}
-        if active_only: query['active_only'] = request.active_only
-        if completed_only: query['completed_only'] = request.completed_only
-        if expand_tasks: query['expand_tasks'] = request.expand_tasks
-        if job_id: query['job_id'] = request.job_id
-        if limit: query['limit'] = request.limit
-        if offset: query['offset'] = request.offset
-        if page_token: query['page_token'] = request.page_token
-        if run_type: query['run_type'] = request.run_type.value
-        if start_time_from: query['start_time_from'] = request.start_time_from
-        if start_time_to: query['start_time_to'] = request.start_time_to
+        if active_only is not None: query['active_only'] = active_only
+        if completed_only is not None: query['completed_only'] = completed_only
+        if expand_tasks is not None: query['expand_tasks'] = expand_tasks
+        if job_id is not None: query['job_id'] = job_id
+        if limit is not None: query['limit'] = limit
+        if offset is not None: query['offset'] = offset
+        if page_token is not None: query['page_token'] = page_token
+        if run_type is not None: query['run_type'] = run_type.value
+        if start_time_from is not None: query['start_time_from'] = start_time_from
+        if start_time_to is not None: query['start_time_to'] = start_time_to
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query)
@@ -3083,8 +2978,7 @@ class JobsAPI:
                    rerun_dependent_tasks: Optional[bool] = None,
                    rerun_tasks: Optional[List[str]] = None,
                    spark_submit_params: Optional[List[str]] = None,
-                   sql_params: Optional[Dict[str, str]] = None,
-                   **kwargs) -> Wait[Run]:
+                   sql_params: Optional[Dict[str, str]] = None) -> Wait[Run]:
         """Repair a job run.
         
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
@@ -3173,26 +3067,24 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RepairRun(dbt_commands=dbt_commands,
-                                jar_params=jar_params,
-                                latest_repair_id=latest_repair_id,
-                                notebook_params=notebook_params,
-                                pipeline_params=pipeline_params,
-                                python_named_params=python_named_params,
-                                python_params=python_params,
-                                rerun_all_failed_tasks=rerun_all_failed_tasks,
-                                rerun_dependent_tasks=rerun_dependent_tasks,
-                                rerun_tasks=rerun_tasks,
-                                run_id=run_id,
-                                spark_submit_params=spark_submit_params,
-                                sql_params=sql_params)
-        body = request.as_dict()
+        body = {}
+        if dbt_commands is not None: body['dbt_commands'] = [v for v in dbt_commands]
+        if jar_params is not None: body['jar_params'] = [v for v in jar_params]
+        if latest_repair_id is not None: body['latest_repair_id'] = latest_repair_id
+        if notebook_params is not None: body['notebook_params'] = notebook_params
+        if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
+        if python_named_params is not None: body['python_named_params'] = python_named_params
+        if python_params is not None: body['python_params'] = [v for v in python_params]
+        if rerun_all_failed_tasks is not None: body['rerun_all_failed_tasks'] = rerun_all_failed_tasks
+        if rerun_dependent_tasks is not None: body['rerun_dependent_tasks'] = rerun_dependent_tasks
+        if rerun_tasks is not None: body['rerun_tasks'] = [v for v in rerun_tasks]
+        if run_id is not None: body['run_id'] = run_id
+        if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
+        if sql_params is not None: body['sql_params'] = sql_params
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RepairRunResponse.from_dict(op_response),
-                    run_id=request.run_id)
+                    run_id=run_id)
 
     def repair_run_and_wait(
         self,
@@ -3225,7 +3117,7 @@ class JobsAPI:
                                spark_submit_params=spark_submit_params,
                                sql_params=sql_params).result(timeout=timeout)
 
-    def reset(self, job_id: int, new_settings: JobSettings, **kwargs):
+    def reset(self, job_id: int, new_settings: JobSettings):
         """Overwrites all settings for a job.
         
         Overwrites all the settings for a specific job. Use the Update endpoint to update job settings
@@ -3241,10 +3133,9 @@ class JobsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ResetJob(job_id=job_id, new_settings=new_settings)
-        body = request.as_dict()
+        body = {}
+        if job_id is not None: body['job_id'] = job_id
+        if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         self._api.do('POST', '/api/2.1/jobs/reset', body=body)
 
     def run_now(self,
@@ -3259,8 +3150,7 @@ class JobsAPI:
                 python_named_params: Optional[Dict[str, str]] = None,
                 python_params: Optional[List[str]] = None,
                 spark_submit_params: Optional[List[str]] = None,
-                sql_params: Optional[Dict[str, str]] = None,
-                **kwargs) -> Wait[Run]:
+                sql_params: Optional[Dict[str, str]] = None) -> Wait[Run]:
         """Trigger a new job run.
         
         Run a job and return the `run_id` of the triggered run.
@@ -3353,20 +3243,18 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RunNow(dbt_commands=dbt_commands,
-                             idempotency_token=idempotency_token,
-                             jar_params=jar_params,
-                             job_id=job_id,
-                             job_parameters=job_parameters,
-                             notebook_params=notebook_params,
-                             pipeline_params=pipeline_params,
-                             python_named_params=python_named_params,
-                             python_params=python_params,
-                             spark_submit_params=spark_submit_params,
-                             sql_params=sql_params)
-        body = request.as_dict()
+        body = {}
+        if dbt_commands is not None: body['dbt_commands'] = [v for v in dbt_commands]
+        if idempotency_token is not None: body['idempotency_token'] = idempotency_token
+        if jar_params is not None: body['jar_params'] = [v for v in jar_params]
+        if job_id is not None: body['job_id'] = job_id
+        if job_parameters is not None: body['job_parameters'] = [v for v in job_parameters]
+        if notebook_params is not None: body['notebook_params'] = notebook_params
+        if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
+        if python_named_params is not None: body['python_named_params'] = python_named_params
+        if python_params is not None: body['python_params'] = [v for v in python_params]
+        if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
+        if sql_params is not None: body['sql_params'] = sql_params
         op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RunNowResponse.from_dict(op_response),
@@ -3409,8 +3297,7 @@ class JobsAPI:
                run_name: Optional[str] = None,
                tasks: Optional[List[SubmitTask]] = None,
                timeout_seconds: Optional[int] = None,
-               webhook_notifications: Optional[WebhookNotifications] = None,
-               **kwargs) -> Wait[Run]:
+               webhook_notifications: Optional[WebhookNotifications] = None) -> Wait[Run]:
         """Create and trigger a one-time run.
         
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -3456,19 +3343,17 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SubmitRun(access_control_list=access_control_list,
-                                email_notifications=email_notifications,
-                                git_source=git_source,
-                                health=health,
-                                idempotency_token=idempotency_token,
-                                notification_settings=notification_settings,
-                                run_name=run_name,
-                                tasks=tasks,
-                                timeout_seconds=timeout_seconds,
-                                webhook_notifications=webhook_notifications)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None: body['access_control_list'] = [v for v in access_control_list]
+        if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
+        if git_source is not None: body['git_source'] = git_source.as_dict()
+        if health is not None: body['health'] = health.as_dict()
+        if idempotency_token is not None: body['idempotency_token'] = idempotency_token
+        if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
+        if run_name is not None: body['run_name'] = run_name
+        if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
+        if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
+        if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=SubmitRunResponse.from_dict(op_response),
@@ -3503,8 +3388,7 @@ class JobsAPI:
                job_id: int,
                *,
                fields_to_remove: Optional[List[str]] = None,
-               new_settings: Optional[JobSettings] = None,
-               **kwargs):
+               new_settings: Optional[JobSettings] = None):
         """Partially update a job.
         
         Add, update, or remove specific settings of an existing job. Use the ResetJob to overwrite all job
@@ -3529,8 +3413,8 @@ class JobsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateJob(fields_to_remove=fields_to_remove, job_id=job_id, new_settings=new_settings)
-        body = request.as_dict()
+        body = {}
+        if fields_to_remove is not None: body['fields_to_remove'] = [v for v in fields_to_remove]
+        if job_id is not None: body['job_id'] = job_id
+        if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         self._api.do('POST', '/api/2.1/jobs/update', body=body)
