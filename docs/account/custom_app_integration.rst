@@ -8,7 +8,7 @@ OAuth Custom App Integration
     **Note:** You can only add/use the OAuth custom application integrations when OAuth enrollment status is
     enabled. For more details see :method:OAuthEnrollment/create
 
-    .. py:method:: create(name, redirect_urls [, confidential, token_access_policy])
+    .. py:method:: create(name, redirect_urls [, confidential, scopes, token_access_policy])
 
         Create Custom OAuth App Integration.
         
@@ -22,6 +22,9 @@ OAuth Custom App Integration
           List of oauth redirect urls
         :param confidential: bool (optional)
           indicates if an oauth client-secret should be generated
+        :param scopes: List[str] (optional)
+          OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid,
+          profile, email.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
         

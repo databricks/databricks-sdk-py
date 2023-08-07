@@ -144,6 +144,30 @@ Pipelines
         :returns: :class:`GetPipelineResponse`
         
 
+    .. py:method:: get_pipeline_permission_levels(pipeline_id)
+
+        Get pipeline permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        
+        :returns: :class:`GetPipelinePermissionLevelsResponse`
+        
+
+    .. py:method:: get_pipeline_permissions(pipeline_id)
+
+        Get pipeline permissions.
+        
+        Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        
+        :returns: :class:`PipelinePermissions`
+        
+
     .. py:method:: get_update(pipeline_id, update_id)
 
         Get a pipeline update.
@@ -289,6 +313,19 @@ Pipelines
           See :method:wait_get_pipeline_running for more details.
         
 
+    .. py:method:: set_pipeline_permissions(pipeline_id [, access_control_list])
+
+        Set pipeline permissions.
+        
+        Sets permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
+        
+        :returns: :class:`PipelinePermissions`
+        
+
     .. py:method:: start_update(pipeline_id [, cause, full_refresh, full_refresh_selection, refresh_selection])
 
         Queue a pipeline update.
@@ -417,4 +454,17 @@ Pipelines
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
         
         
+        
+
+    .. py:method:: update_pipeline_permissions(pipeline_id [, access_control_list])
+
+        Update pipeline permissions.
+        
+        Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
+        
+        :returns: :class:`PipelinePermissions`
         

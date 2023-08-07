@@ -94,6 +94,30 @@ Repos
         :returns: :class:`RepoInfo`
         
 
+    .. py:method:: get_repo_permission_levels(repo_id)
+
+        Get repo permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        
+        :returns: :class:`GetRepoPermissionLevelsResponse`
+        
+
+    .. py:method:: get_repo_permissions(repo_id)
+
+        Get repo permissions.
+        
+        Gets the permissions of a repo. Repos can inherit permissions from their root object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        
+        :returns: :class:`RepoPermissions`
+        
+
     .. py:method:: list( [, next_page_token, path_prefix])
 
         Usage:
@@ -119,6 +143,19 @@ Repos
           Filters repos that have paths starting with the given path prefix.
         
         :returns: Iterator over :class:`RepoInfo`
+        
+
+    .. py:method:: set_repo_permissions(repo_id [, access_control_list])
+
+        Set repo permissions.
+        
+        Sets permissions on a repo. Repos can inherit permissions from their root object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
+        
+        :returns: :class:`RepoPermissions`
         
 
     .. py:method:: update(repo_id [, branch, sparse_checkout, tag])
@@ -160,4 +197,17 @@ Repos
           instead of the detached HEAD.
         
         
+        
+
+    .. py:method:: update_repo_permissions(repo_id [, access_control_list])
+
+        Update repo permissions.
+        
+        Updates the permissions on a repo. Repos can inherit permissions from their root object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
+        
+        :returns: :class:`RepoPermissions`
         

@@ -543,6 +543,141 @@ class Experiment:
 
 
 @dataclass
+class ExperimentAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['ExperimentPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class ExperimentAccessControlResponse:
+    all_permissions: Optional['List[ExperimentPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', ExperimentPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class ExperimentPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['ExperimentPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel))
+
+
+class ExperimentPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_EDIT = 'CAN_EDIT'
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_READ = 'CAN_READ'
+
+
+@dataclass
+class ExperimentPermissions:
+    access_control_list: Optional['List[ExperimentAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', ExperimentAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class ExperimentPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['ExperimentPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel))
+
+
+@dataclass
+class ExperimentPermissionsRequest:
+    access_control_list: Optional['List[ExperimentAccessControlRequest]'] = None
+    experiment_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', ExperimentAccessControlRequest),
+                   experiment_id=d.get('experiment_id', None))
+
+
+@dataclass
 class ExperimentTag:
     key: Optional[str] = None
     value: Optional[str] = None
@@ -588,6 +723,20 @@ class GetExperimentByNameResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentByNameResponse':
         return cls(experiment=_from_dict(d, 'experiment', Experiment))
+
+
+@dataclass
+class GetExperimentPermissionLevelsResponse:
+    permission_levels: Optional['List[ExperimentPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ExperimentPermissionsDescription))
 
 
 @dataclass
@@ -677,6 +826,20 @@ class GetModelVersionResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
+
+
+@dataclass
+class GetRegisteredModelPermissionLevelsResponse:
+    permission_levels: Optional['List[RegisteredModelPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', RegisteredModelPermissionsDescription))
 
 
 @dataclass
@@ -1243,6 +1406,145 @@ class PermissionLevel(Enum):
     CAN_MANAGE_PRODUCTION_VERSIONS = 'CAN_MANAGE_PRODUCTION_VERSIONS'
     CAN_MANAGE_STAGING_VERSIONS = 'CAN_MANAGE_STAGING_VERSIONS'
     CAN_READ = 'CAN_READ'
+
+
+@dataclass
+class RegisteredModelAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['RegisteredModelPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class RegisteredModelAccessControlResponse:
+    all_permissions: Optional['List[RegisteredModelPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', RegisteredModelPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class RegisteredModelPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['RegisteredModelPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel))
+
+
+class RegisteredModelPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_EDIT = 'CAN_EDIT'
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MANAGE_PRODUCTION_VERSIONS = 'CAN_MANAGE_PRODUCTION_VERSIONS'
+    CAN_MANAGE_STAGING_VERSIONS = 'CAN_MANAGE_STAGING_VERSIONS'
+    CAN_READ = 'CAN_READ'
+
+
+@dataclass
+class RegisteredModelPermissions:
+    access_control_list: Optional['List[RegisteredModelAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 RegisteredModelAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class RegisteredModelPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['RegisteredModelPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel))
+
+
+@dataclass
+class RegisteredModelPermissionsRequest:
+    access_control_list: Optional['List[RegisteredModelAccessControlRequest]'] = None
+    registered_model_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.registered_model_id is not None: body['registered_model_id'] = self.registered_model_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 RegisteredModelAccessControlRequest),
+                   registered_model_id=d.get('registered_model_id', None))
 
 
 @dataclass
@@ -2201,6 +2503,34 @@ class ExperimentsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query)
         return Experiment.from_dict(json)
 
+    def get_experiment_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
+        """Get experiment permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`GetExperimentPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels')
+        return GetExperimentPermissionLevelsResponse.from_dict(json)
+
+    def get_experiment_permissions(self, experiment_id: str) -> ExperimentPermissions:
+        """Get experiment permissions.
+        
+        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`ExperimentPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}')
+        return ExperimentPermissions.from_dict(json)
+
     def get_history(self,
                     metric_key: str,
                     *,
@@ -2641,6 +2971,29 @@ class ExperimentsAPI:
                 return
             body['page_token'] = json['next_page_token']
 
+    def set_experiment_permissions(
+            self,
+            experiment_id: str,
+            *,
+            access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+    ) -> ExperimentPermissions:
+        """Set experiment permissions.
+        
+        Sets permissions on an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
+        
+        :returns: :class:`ExperimentPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/experiments/{experiment_id}', body=body)
+        return ExperimentPermissions.from_dict(json)
+
     def set_experiment_tag(self, experiment_id: str, key: str, value: str):
         """Set a tag.
         
@@ -2705,6 +3058,29 @@ class ExperimentsAPI:
         if experiment_id is not None: body['experiment_id'] = experiment_id
         if new_name is not None: body['new_name'] = new_name
         self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body)
+
+    def update_experiment_permissions(
+            self,
+            experiment_id: str,
+            *,
+            access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+    ) -> ExperimentPermissions:
+        """Update experiment permissions.
+        
+        Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
+        
+        :returns: :class:`ExperimentPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/experiments/{experiment_id}', body=body)
+        return ExperimentPermissions.from_dict(json)
 
     def update_run(self,
                    *,
@@ -2973,7 +3349,7 @@ class ModelRegistryAPI:
         """
         body = {}
         if description is not None: body['description'] = description
-        if events is not None: body['events'] = [v for v in events]
+        if events is not None: body['events'] = [v.value for v in events]
         if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
         if job_spec is not None: body['job_spec'] = job_spec.as_dict()
         if model_name is not None: body['model_name'] = model_name
@@ -3209,6 +3585,37 @@ class ModelRegistryAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get-download-uri', query=query)
         return GetModelVersionDownloadUriResponse.from_dict(json)
 
+    def get_registered_model_permission_levels(
+            self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
+        """Get registered model permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        
+        :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels')
+        return GetRegisteredModelPermissionLevelsResponse.from_dict(json)
+
+    def get_registered_model_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
+        """Get registered model permissions.
+        
+        Gets the permissions of a registered model. Registered models can inherit permissions from their root
+        object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        
+        :returns: :class:`RegisteredModelPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/registered-models/{registered_model_id}')
+        return RegisteredModelPermissions.from_dict(json)
+
     def list_models(self,
                     *,
                     max_results: Optional[int] = None,
@@ -3283,7 +3690,7 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if events is not None: query['events'] = [v for v in events]
+        if events is not None: query['events'] = [v.value for v in events]
         if model_name is not None: query['model_name'] = model_name
         if page_token is not None: query['page_token'] = page_token
 
@@ -3486,6 +3893,30 @@ class ModelRegistryAPI:
         if version is not None: body['version'] = version
         self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body)
 
+    def set_registered_model_permissions(
+        self,
+        registered_model_id: str,
+        *,
+        access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
+    ) -> RegisteredModelPermissions:
+        """Set registered model permissions.
+        
+        Sets permissions on a registered model. Registered models can inherit permissions from their root
+        object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
+        
+        :returns: :class:`RegisteredModelPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/registered-models/{registered_model_id}', body=body)
+        return RegisteredModelPermissions.from_dict(json)
+
     def test_registry_webhook(self,
                               id: str,
                               *,
@@ -3613,6 +4044,32 @@ class ModelRegistryAPI:
         if version is not None: body['version'] = version
         self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body)
 
+    def update_registered_model_permissions(
+        self,
+        registered_model_id: str,
+        *,
+        access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
+    ) -> RegisteredModelPermissions:
+        """Update registered model permissions.
+        
+        Updates the permissions on a registered model. Registered models can inherit permissions from their
+        root object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
+        
+        :returns: :class:`RegisteredModelPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/registered-models/{registered_model_id}',
+                            body=body)
+        return RegisteredModelPermissions.from_dict(json)
+
     def update_webhook(self,
                        id: str,
                        *,
@@ -3669,7 +4126,7 @@ class ModelRegistryAPI:
         """
         body = {}
         if description is not None: body['description'] = description
-        if events is not None: body['events'] = [v for v in events]
+        if events is not None: body['events'] = [v.value for v in events]
         if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
         if id is not None: body['id'] = id
         if job_spec is not None: body['job_spec'] = job_spec.as_dict()

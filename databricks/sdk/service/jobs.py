@@ -469,6 +469,20 @@ class Format(Enum):
     SINGLE_TASK = 'SINGLE_TASK'
 
 
+@dataclass
+class GetJobPermissionLevelsResponse:
+    permission_levels: Optional['List[JobPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetJobPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', JobPermissionsDescription))
+
+
 class GitProvider(Enum):
 
     AWS_CODE_COMMIT = 'awsCodeCommit'
@@ -560,6 +574,57 @@ class Job:
                    run_as_user_name=d.get('run_as_user_name', None),
                    settings=_from_dict(d, 'settings', JobSettings),
                    trigger_history=_from_dict(d, 'trigger_history', TriggerHistory))
+
+
+@dataclass
+class JobAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['JobPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', JobPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class JobAccessControlResponse:
+    all_permissions: Optional['List[JobPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', JobPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
 
 
 @dataclass
@@ -677,6 +742,91 @@ class JobParameterDefinition:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobParameterDefinition':
         return cls(default=d.get('default', None), name=d.get('name', None))
+
+
+@dataclass
+class JobPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['JobPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', JobPermissionLevel))
+
+
+class JobPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MANAGE_RUN = 'CAN_MANAGE_RUN'
+    CAN_VIEW = 'CAN_VIEW'
+    IS_OWNER = 'IS_OWNER'
+
+
+@dataclass
+class JobPermissions:
+    access_control_list: Optional['List[JobAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', JobAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class JobPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['JobPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', JobPermissionLevel))
+
+
+@dataclass
+class JobPermissionsRequest:
+    access_control_list: Optional['List[JobAccessControlRequest]'] = None
+    job_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.job_id is not None: body['job_id'] = self.job_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', JobAccessControlRequest),
+                   job_id=d.get('job_id', None))
 
 
 @dataclass
@@ -2803,6 +2953,34 @@ class JobsAPI:
         json = self._api.do('GET', '/api/2.1/jobs/get', query=query)
         return Job.from_dict(json)
 
+    def get_job_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
+        """Get job permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        
+        :returns: :class:`GetJobPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels')
+        return GetJobPermissionLevelsResponse.from_dict(json)
+
+    def get_job_permissions(self, job_id: str) -> JobPermissions:
+        """Get job permissions.
+        
+        Gets the permissions of a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        
+        :returns: :class:`JobPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}')
+        return JobPermissions.from_dict(json)
+
     def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
         """Get a single job run.
         
@@ -3286,6 +3464,28 @@ class JobsAPI:
                             spark_submit_params=spark_submit_params,
                             sql_params=sql_params).result(timeout=timeout)
 
+    def set_job_permissions(
+            self,
+            job_id: str,
+            *,
+            access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
+        """Set job permissions.
+        
+        Sets permissions on a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        
+        :returns: :class:`JobPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/jobs/{job_id}', body=body)
+        return JobPermissions.from_dict(json)
+
     def submit(self,
                *,
                access_control_list: Optional[List[iam.AccessControlRequest]] = None,
@@ -3418,3 +3618,25 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         self._api.do('POST', '/api/2.1/jobs/update', body=body)
+
+    def update_job_permissions(
+            self,
+            job_id: str,
+            *,
+            access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
+        """Update job permissions.
+        
+        Updates the permissions on a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        
+        :returns: :class:`JobPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body)
+        return JobPermissions.from_dict(json)

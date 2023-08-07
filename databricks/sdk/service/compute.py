@@ -214,6 +214,57 @@ class CloudProviderNodeStatus(Enum):
 
 
 @dataclass
+class ClusterAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['ClusterPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', ClusterPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class ClusterAccessControlResponse:
+    all_permissions: Optional['List[ClusterPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', ClusterPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class ClusterAttributes:
     spark_version: str
     autotermination_minutes: Optional[int] = None
@@ -506,6 +557,224 @@ class ClusterLogConf:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterLogConf':
         return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo), s3=_from_dict(d, 's3', S3StorageInfo))
+
+
+@dataclass
+class ClusterPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['ClusterPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', ClusterPermissionLevel))
+
+
+class ClusterPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_ATTACH_TO = 'CAN_ATTACH_TO'
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_RESTART = 'CAN_RESTART'
+
+
+@dataclass
+class ClusterPermissions:
+    access_control_list: Optional['List[ClusterAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', ClusterAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class ClusterPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['ClusterPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', ClusterPermissionLevel))
+
+
+@dataclass
+class ClusterPermissionsRequest:
+    access_control_list: Optional['List[ClusterAccessControlRequest]'] = None
+    cluster_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', ClusterAccessControlRequest),
+                   cluster_id=d.get('cluster_id', None))
+
+
+@dataclass
+class ClusterPolicyAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['ClusterPolicyPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', ClusterPolicyPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class ClusterPolicyAccessControlResponse:
+    all_permissions: Optional['List[ClusterPolicyPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', ClusterPolicyPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class ClusterPolicyPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['ClusterPolicyPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', ClusterPolicyPermissionLevel))
+
+
+class ClusterPolicyPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_USE = 'CAN_USE'
+
+
+@dataclass
+class ClusterPolicyPermissions:
+    access_control_list: Optional['List[ClusterPolicyAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 ClusterPolicyAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class ClusterPolicyPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['ClusterPolicyPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', ClusterPolicyPermissionLevel))
+
+
+@dataclass
+class ClusterPolicyPermissionsRequest:
+    access_control_list: Optional['List[ClusterPolicyAccessControlRequest]'] = None
+    cluster_policy_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.cluster_policy_id is not None: body['cluster_policy_id'] = self.cluster_policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', ClusterPolicyAccessControlRequest),
+                   cluster_policy_id=d.get('cluster_policy_id', None))
 
 
 @dataclass
@@ -1621,6 +1890,34 @@ class GcpAvailability(Enum):
 
 
 @dataclass
+class GetClusterPermissionLevelsResponse:
+    permission_levels: Optional['List[ClusterPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPermissionsDescription))
+
+
+@dataclass
+class GetClusterPolicyPermissionLevelsResponse:
+    permission_levels: Optional['List[ClusterPolicyPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPolicyPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPolicyPermissionsDescription))
+
+
+@dataclass
 class GetEvents:
     cluster_id: str
     end_time: Optional[int] = None
@@ -1750,6 +2047,20 @@ class GetInstancePool:
                    state=_enum(d, 'state', InstancePoolState),
                    stats=_from_dict(d, 'stats', InstancePoolStats),
                    status=_from_dict(d, 'status', InstancePoolStatus))
+
+
+@dataclass
+class GetInstancePoolPermissionLevelsResponse:
+    permission_levels: Optional['List[InstancePoolPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetInstancePoolPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', InstancePoolPermissionsDescription))
 
 
 @dataclass
@@ -1925,6 +2236,57 @@ class InstallLibraries:
 
 
 @dataclass
+class InstancePoolAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['InstancePoolPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', InstancePoolPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class InstancePoolAccessControlResponse:
+    all_permissions: Optional['List[InstancePoolPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', InstancePoolPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class InstancePoolAndStats:
     aws_attributes: Optional['InstancePoolAwsAttributes'] = None
     azure_attributes: Optional['InstancePoolAzureAttributes'] = None
@@ -2092,6 +2454,89 @@ class InstancePoolGcpAttributes:
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolGcpAttributes':
         return cls(gcp_availability=_enum(d, 'gcp_availability', GcpAvailability),
                    local_ssd_count=d.get('local_ssd_count', None))
+
+
+@dataclass
+class InstancePoolPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['InstancePoolPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', InstancePoolPermissionLevel))
+
+
+class InstancePoolPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_ATTACH_TO = 'CAN_ATTACH_TO'
+    CAN_MANAGE = 'CAN_MANAGE'
+
+
+@dataclass
+class InstancePoolPermissions:
+    access_control_list: Optional['List[InstancePoolAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', InstancePoolAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class InstancePoolPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['InstancePoolPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', InstancePoolPermissionLevel))
+
+
+@dataclass
+class InstancePoolPermissionsRequest:
+    access_control_list: Optional['List[InstancePoolAccessControlRequest]'] = None
+    instance_pool_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', InstancePoolAccessControlRequest),
+                   instance_pool_id=d.get('instance_pool_id', None))
 
 
 class InstancePoolState(Enum):
@@ -3228,6 +3673,37 @@ class ClusterPoliciesAPI:
         json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
         return Policy.from_dict(json)
 
+    def get_cluster_policy_permission_levels(
+            self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
+        """Get cluster policy permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        
+        :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels')
+        return GetClusterPolicyPermissionLevelsResponse.from_dict(json)
+
+    def get_cluster_policy_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
+        """Get cluster policy permissions.
+        
+        Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
+        object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        
+        :returns: :class:`ClusterPolicyPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}')
+        return ClusterPolicyPermissions.from_dict(json)
+
     def list(self,
              *,
              sort_column: Optional[ListSortColumn] = None,
@@ -3252,6 +3728,53 @@ class ClusterPoliciesAPI:
 
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query)
         return [Policy.from_dict(v) for v in json.get('policies', [])]
+
+    def set_cluster_policy_permissions(
+        self,
+        cluster_policy_id: str,
+        *,
+        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
+    ) -> ClusterPolicyPermissions:
+        """Set cluster policy permissions.
+        
+        Sets permissions on a cluster policy. Cluster policies can inherit permissions from their root object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPolicyPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}', body=body)
+        return ClusterPolicyPermissions.from_dict(json)
+
+    def update_cluster_policy_permissions(
+        self,
+        cluster_policy_id: str,
+        *,
+        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
+    ) -> ClusterPolicyPermissions:
+        """Update cluster policy permissions.
+        
+        Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
+        object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPolicyPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}', body=body)
+        return ClusterPolicyPermissions.from_dict(json)
 
 
 class ClustersAPI:
@@ -3932,6 +4455,34 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterDetails.from_dict(json)
 
+    def get_cluster_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
+        """Get cluster permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        
+        :returns: :class:`GetClusterPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels')
+        return GetClusterPermissionLevelsResponse.from_dict(json)
+
+    def get_cluster_permissions(self, cluster_id: str) -> ClusterPermissions:
+        """Get cluster permissions.
+        
+        Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        
+        :returns: :class:`ClusterPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}')
+        return ClusterPermissions.from_dict(json)
+
     def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
         """List all clusters.
         
@@ -4087,6 +4638,28 @@ class ClustersAPI:
                          timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
+    def set_cluster_permissions(
+            self,
+            cluster_id: str,
+            *,
+            access_control_list: Optional[List[ClusterAccessControlRequest]] = None) -> ClusterPermissions:
+        """Set cluster permissions.
+        
+        Sets permissions on a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body)
+        return ClusterPermissions.from_dict(json)
+
     def spark_versions(self) -> GetSparkVersionsResponse:
         """List available Spark versions.
         
@@ -4138,6 +4711,28 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/unpin', body=body)
+
+    def update_cluster_permissions(
+            self,
+            cluster_id: str,
+            *,
+            access_control_list: Optional[List[ClusterAccessControlRequest]] = None) -> ClusterPermissions:
+        """Update cluster permissions.
+        
+        Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/clusters/{cluster_id}', body=body)
+        return ClusterPermissions.from_dict(json)
 
 
 class CommandExecutionAPI:
@@ -4794,6 +5389,36 @@ class InstancePoolsAPI:
         json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query)
         return GetInstancePool.from_dict(json)
 
+    def get_instance_pool_permission_levels(self,
+                                            instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
+        """Get instance pool permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        
+        :returns: :class:`GetInstancePoolPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels')
+        return GetInstancePoolPermissionLevelsResponse.from_dict(json)
+
+    def get_instance_pool_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
+        """Get instance pool permissions.
+        
+        Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
+        object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        
+        :returns: :class:`InstancePoolPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}')
+        return InstancePoolPermissions.from_dict(json)
+
     def list(self) -> Iterator[InstancePoolAndStats]:
         """List instance pool info.
         
@@ -4804,6 +5429,53 @@ class InstancePoolsAPI:
 
         json = self._api.do('GET', '/api/2.0/instance-pools/list')
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
+
+    def set_instance_pool_permissions(
+        self,
+        instance_pool_id: str,
+        *,
+        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
+    ) -> InstancePoolPermissions:
+        """Set instance pool permissions.
+        
+        Sets permissions on an instance pool. Instance pools can inherit permissions from their root object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
+        
+        :returns: :class:`InstancePoolPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', body=body)
+        return InstancePoolPermissions.from_dict(json)
+
+    def update_instance_pool_permissions(
+        self,
+        instance_pool_id: str,
+        *,
+        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
+    ) -> InstancePoolPermissions:
+        """Update instance pool permissions.
+        
+        Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
+        object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
+        
+        :returns: :class:`InstancePoolPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', body=body)
+        return InstancePoolPermissions.from_dict(json)
 
 
 class InstanceProfilesAPI:

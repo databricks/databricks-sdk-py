@@ -258,6 +258,20 @@ class Filters:
 
 
 @dataclass
+class GetPipelinePermissionLevelsResponse:
+    permission_levels: Optional['List[PipelinePermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetPipelinePermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', PipelinePermissionsDescription))
+
+
+@dataclass
 class GetPipelineResponse:
     cause: Optional[str] = None
     cluster_id: Optional[str] = None
@@ -464,6 +478,57 @@ class Origin:
 
 
 @dataclass
+class PipelineAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['PipelinePermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelineAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', PipelinePermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class PipelineAccessControlResponse:
+    all_permissions: Optional['List[PipelinePermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelineAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', PipelinePermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class PipelineCluster:
     apply_policy_default_values: Optional[bool] = None
     autoscale: Optional['compute.AutoScale'] = None
@@ -586,6 +651,91 @@ class PipelineLibrary:
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', compute.MavenLibrary),
                    notebook=_from_dict(d, 'notebook', NotebookLibrary))
+
+
+@dataclass
+class PipelinePermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['PipelinePermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', PipelinePermissionLevel))
+
+
+class PipelinePermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_RUN = 'CAN_RUN'
+    CAN_VIEW = 'CAN_VIEW'
+    IS_OWNER = 'IS_OWNER'
+
+
+@dataclass
+class PipelinePermissions:
+    access_control_list: Optional['List[PipelineAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', PipelineAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class PipelinePermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['PipelinePermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', PipelinePermissionLevel))
+
+
+@dataclass
+class PipelinePermissionsRequest:
+    access_control_list: Optional['List[PipelineAccessControlRequest]'] = None
+    pipeline_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', PipelineAccessControlRequest),
+                   pipeline_id=d.get('pipeline_id', None))
 
 
 @dataclass
@@ -1113,6 +1263,34 @@ class PipelinesAPI:
         json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}')
         return GetPipelineResponse.from_dict(json)
 
+    def get_pipeline_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
+        """Get pipeline permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        
+        :returns: :class:`GetPipelinePermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels')
+        return GetPipelinePermissionLevelsResponse.from_dict(json)
+
+    def get_pipeline_permissions(self, pipeline_id: str) -> PipelinePermissions:
+        """Get pipeline permissions.
+        
+        Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        
+        :returns: :class:`PipelinePermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/pipelines/{pipeline_id}')
+        return PipelinePermissions.from_dict(json)
+
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
         """Get a pipeline update.
         
@@ -1275,6 +1453,28 @@ class PipelinesAPI:
     def reset_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.reset(pipeline_id=pipeline_id).result(timeout=timeout)
 
+    def set_pipeline_permissions(
+            self,
+            pipeline_id: str,
+            *,
+            access_control_list: Optional[List[PipelineAccessControlRequest]] = None) -> PipelinePermissions:
+        """Set pipeline permissions.
+        
+        Sets permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
+        
+        :returns: :class:`PipelinePermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/pipelines/{pipeline_id}', body=body)
+        return PipelinePermissions.from_dict(json)
+
     def start_update(self,
                      pipeline_id: str,
                      *,
@@ -1419,3 +1619,25 @@ class PipelinesAPI:
         if target is not None: body['target'] = target
         if trigger is not None: body['trigger'] = trigger.as_dict()
         self._api.do('PUT', f'/api/2.0/pipelines/{pipeline_id}', body=body)
+
+    def update_pipeline_permissions(
+            self,
+            pipeline_id: str,
+            *,
+            access_control_list: Optional[List[PipelineAccessControlRequest]] = None) -> PipelinePermissions:
+        """Update pipeline permissions.
+        
+        Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
+        
+        :returns: :class:`PipelinePermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/pipelines/{pipeline_id}', body=body)
+        return PipelinePermissions.from_dict(json)

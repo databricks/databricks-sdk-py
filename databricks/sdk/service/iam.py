@@ -39,6 +39,7 @@ class AccessControlRequest:
 @dataclass
 class AccessControlResponse:
     all_permissions: Optional['List[Permission]'] = None
+    display_name: Optional[str] = None
     group_name: Optional[str] = None
     service_principal_name: Optional[str] = None
     user_name: Optional[str] = None
@@ -46,6 +47,7 @@ class AccessControlResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
@@ -55,6 +57,7 @@ class AccessControlResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccessControlResponse':
         return cls(all_permissions=_repeated(d, 'all_permissions', Permission),
+                   display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
                    user_name=d.get('user_name', None))
@@ -85,16 +88,30 @@ class ComplexValue:
 
 @dataclass
 class GetAssignableRolesForResourceResponse:
-    roles: Optional['List[str]'] = None
+    roles: Optional['List[Role]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.roles: body['roles'] = [v for v in self.roles]
+        if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetAssignableRolesForResourceResponse':
-        return cls(roles=d.get('roles', None))
+        return cls(roles=_repeated(d, 'roles', Role))
+
+
+@dataclass
+class GetPasswordPermissionLevelsResponse:
+    permission_levels: Optional['List[PasswordPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetPasswordPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', PasswordPermissionsDescription))
 
 
 @dataclass
@@ -292,6 +309,136 @@ class PartialUpdate:
         return cls(id=d.get('id', None),
                    operations=_repeated(d, 'Operations', Patch),
                    schema=d.get('schema', None))
+
+
+@dataclass
+class PasswordAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['PasswordPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PasswordAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', PasswordPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class PasswordAccessControlResponse:
+    all_permissions: Optional['List[PasswordPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PasswordAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', PasswordPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class PasswordPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['PasswordPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', PasswordPermissionLevel))
+
+
+class PasswordPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_USE = 'CAN_USE'
+
+
+@dataclass
+class PasswordPermissions:
+    access_control_list: Optional['List[PasswordAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', PasswordAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class PasswordPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['PasswordPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', PasswordPermissionLevel))
+
+
+@dataclass
+class PasswordPermissionsRequest:
+    access_control_list: Optional['List[PasswordAccessControlRequest]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', PasswordAccessControlRequest))
 
 
 @dataclass
@@ -494,6 +641,20 @@ class ResourceMeta:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResourceMeta':
         return cls(resource_type=d.get('resourceType', None))
+
+
+@dataclass
+class Role:
+    name: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Role':
+        return cls(name=d.get('name', None))
 
 
 @dataclass
@@ -966,7 +1127,7 @@ class AccountGroupsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}', body=body)
 
     def update(self,
@@ -1158,7 +1319,7 @@ class AccountServicePrincipalsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
                      body=body)
@@ -1367,7 +1528,7 @@ class AccountUsersAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}', body=body)
 
     def update(self,
@@ -1581,7 +1742,7 @@ class GroupsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body)
 
     def update(self,
@@ -1625,7 +1786,49 @@ class GroupsAPI:
 
 class PermissionsAPI:
     """Permissions API are used to create read, write, edit, update and manage access for various users on
-    different objects and endpoints."""
+    different objects and endpoints.
+    
+    * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or attach to
+    clusters.
+    
+    * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users can use cluster
+    policies.
+    
+    * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage which users can view,
+    manage, run, cancel, or own a Delta Live Tables pipeline.
+    
+    * **[Job permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a
+    job.
+    
+    * **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or
+    manage MLflow experiments.
+    
+    * **[MLflow registered model permissions](:service:modelregistry)** — Manage which users can read, edit,
+    or manage MLflow registered models.
+    
+    * **[Password permissions](:service:users)** — Manage which users can use password login when SSO is
+    enabled.
+    
+    * **[Instance Pool permissions](:service:instancepools)** — Manage which users can manage or attach to
+    pools.
+    
+    * **[Repo permissions](repos)** — Manage which users can read, run, edit, or manage a repo.
+    
+    * **[Serving endpoint permissions](:service:servingendpoints)** — Manage which users can view, query, or
+    manage a serving endpoint.
+    
+    * **[SQL warehouse permissions](:service:warehouses)** — Manage which users can use or manage SQL
+    warehouses.
+    
+    * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or use tokens.
+    
+    * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run, edit, or
+    manage directories, files, and notebooks.
+    
+    For the mapping of the required permissions for specific actions or abilities and other important
+    information, see [Access Control].
+    
+    [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1633,8 +1836,8 @@ class PermissionsAPI:
     def get(self, request_object_type: str, request_object_id: str) -> ObjectPermissions:
         """Get object permissions.
         
-        Gets the permission of an object. Objects can inherit permissions from their parent objects or root
-        objects.
+        Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
+        object.
         
         :param request_object_type: str
           <needs content>
@@ -1648,7 +1851,7 @@ class PermissionsAPI:
 
     def get_permission_levels(self, request_object_type: str,
                               request_object_id: str) -> GetPermissionLevelsResponse:
-        """Get permission levels.
+        """Get object permission levels.
         
         Gets the permission levels that a user can have on an object.
         
@@ -1668,44 +1871,53 @@ class PermissionsAPI:
             request_object_type: str,
             request_object_id: str,
             *,
-            access_control_list: Optional[List[AccessControlRequest]] = None):
-        """Set permissions.
+            access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
+        """Set object permissions.
         
-        Sets permissions on object. Objects can inherit permissions from their parent objects and root
-        objects.
+        Sets permissions on an object. Objects can inherit permissions from their parent objects or root
+        object.
         
         :param request_object_type: str
           <needs content>
         :param request_object_id: str
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
-        
+        :returns: :class:`ObjectPermissions`
         """
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        self._api.do('PUT', f'/api/2.0/permissions/{request_object_type}/{request_object_id}', body=body)
+
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                            body=body)
+        return ObjectPermissions.from_dict(json)
 
     def update(self,
                request_object_type: str,
                request_object_id: str,
                *,
-               access_control_list: Optional[List[AccessControlRequest]] = None):
-        """Update permission.
+               access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
+        """Update object permissions.
         
-        Updates the permissions on an object.
+        Updates the permissions on an object. Objects can inherit permissions from their parent objects or
+        root object.
         
         :param request_object_type: str
           <needs content>
         :param request_object_id: str
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
-        
+        :returns: :class:`ObjectPermissions`
         """
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        self._api.do('PATCH', f'/api/2.0/permissions/{request_object_type}/{request_object_id}', body=body)
+
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                            body=body)
+        return ObjectPermissions.from_dict(json)
 
 
 class ServicePrincipalsAPI:
@@ -1854,7 +2066,7 @@ class ServicePrincipalsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body)
 
     def update(self,
@@ -1991,6 +2203,28 @@ class UsersAPI:
         json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}')
         return User.from_dict(json)
 
+    def get_password_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
+        """Get password permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :returns: :class:`GetPasswordPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', '/api/2.0/permissions/authorization/passwords/permissionLevels')
+        return GetPasswordPermissionLevelsResponse.from_dict(json)
+
+    def get_password_permissions(self) -> PasswordPermissions:
+        """Get password permissions.
+        
+        Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
+        
+        :returns: :class:`PasswordPermissions`
+        """
+
+        json = self._api.do('GET', '/api/2.0/permissions/authorization/passwords')
+        return PasswordPermissions.from_dict(json)
+
     def list(self,
              *,
              attributes: Optional[str] = None,
@@ -2059,8 +2293,27 @@ class UsersAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
+
+    def set_password_permissions(
+            self,
+            *,
+            access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
+        """Set password permissions.
+        
+        Sets permissions on all passwords. Passwords can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
+        
+        :returns: :class:`PasswordPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', '/api/2.0/permissions/authorization/passwords', body=body)
+        return PasswordPermissions.from_dict(json)
 
     def update(self,
                id: str,
@@ -2107,6 +2360,25 @@ class UsersAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         if user_name is not None: body['userName'] = user_name
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
+
+    def update_password_permissions(
+            self,
+            *,
+            access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
+        """Update password permissions.
+        
+        Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
+        
+        :returns: :class:`PasswordPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PATCH', '/api/2.0/permissions/authorization/passwords', body=body)
+        return PasswordPermissions.from_dict(json)
 
 
 class WorkspaceAssignmentAPI:
@@ -2184,7 +2456,7 @@ class WorkspaceAssignmentAPI:
         
         """
         body = {}
-        if permissions is not None: body['permissions'] = [v for v in permissions]
+        if permissions is not None: body['permissions'] = [v.value for v in permissions]
         self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}',
