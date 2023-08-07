@@ -1890,6 +1890,34 @@ class GcpAvailability(Enum):
 
 
 @dataclass
+class GetClusterPermissionLevelsResponse:
+    permission_levels: Optional['List[ClusterPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPermissionsDescription))
+
+
+@dataclass
+class GetClusterPolicyPermissionLevelsResponse:
+    permission_levels: Optional['List[ClusterPolicyPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPolicyPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPolicyPermissionsDescription))
+
+
+@dataclass
 class GetEvents:
     cluster_id: str
     end_time: Optional[int] = None
@@ -2019,6 +2047,20 @@ class GetInstancePool:
                    state=_enum(d, 'state', InstancePoolState),
                    stats=_from_dict(d, 'stats', InstancePoolStats),
                    status=_from_dict(d, 'status', InstancePoolStatus))
+
+
+@dataclass
+class GetInstancePoolPermissionLevelsResponse:
+    permission_levels: Optional['List[InstancePoolPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetInstancePoolPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', InstancePoolPermissionsDescription))
 
 
 @dataclass
@@ -3631,8 +3673,8 @@ class ClusterPoliciesAPI:
         json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
         return Policy.from_dict(json)
 
-    def get_cluster_policy_permission_levels(self, cluster_policy_id: str,
-                                             **kwargs) -> GetClusterPolicyPermissionLevelsResponse:
+    def get_cluster_policy_permission_levels(
+            self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
         """Get cluster policy permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3642,15 +3684,12 @@ class ClusterPoliciesAPI:
         
         :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetClusterPolicyPermissionLevelsRequest(cluster_policy_id=cluster_policy_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/permissions/cluster-policies/{request.cluster_policy_id}/permissionLevels')
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels')
         return GetClusterPolicyPermissionLevelsResponse.from_dict(json)
 
-    def get_cluster_policy_permissions(self, cluster_policy_id: str, **kwargs) -> ClusterPolicyPermissions:
+    def get_cluster_policy_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
         """Get cluster policy permissions.
         
         Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
@@ -3661,11 +3700,8 @@ class ClusterPoliciesAPI:
         
         :returns: :class:`ClusterPolicyPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetClusterPolicyPermissionsRequest(cluster_policy_id=cluster_policy_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/cluster-policies/{request.cluster_policy_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}')
         return ClusterPolicyPermissions.from_dict(json)
 
     def list(self,
@@ -3693,12 +3729,12 @@ class ClusterPoliciesAPI:
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query)
         return [Policy.from_dict(v) for v in json.get('policies', [])]
 
-    def set_cluster_policy_permissions(self,
-                                       cluster_policy_id: str,
-                                       *,
-                                       access_control_list: Optional[
-                                           List[ClusterPolicyAccessControlRequest]] = None,
-                                       **kwargs) -> ClusterPolicyPermissions:
+    def set_cluster_policy_permissions(
+        self,
+        cluster_policy_id: str,
+        *,
+        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
+    ) -> ClusterPolicyPermissions:
         """Set cluster policy permissions.
         
         Sets permissions on a cluster policy. Cluster policies can inherit permissions from their root object.
@@ -3709,23 +3745,19 @@ class ClusterPoliciesAPI:
         
         :returns: :class:`ClusterPolicyPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ClusterPolicyPermissionsRequest(access_control_list=access_control_list,
-                                                      cluster_policy_id=cluster_policy_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/cluster-policies/{request.cluster_policy_id}',
-                            body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}', body=body)
         return ClusterPolicyPermissions.from_dict(json)
 
-    def update_cluster_policy_permissions(self,
-                                          cluster_policy_id: str,
-                                          *,
-                                          access_control_list: Optional[
-                                              List[ClusterPolicyAccessControlRequest]] = None,
-                                          **kwargs) -> ClusterPolicyPermissions:
+    def update_cluster_policy_permissions(
+        self,
+        cluster_policy_id: str,
+        *,
+        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
+    ) -> ClusterPolicyPermissions:
         """Update cluster policy permissions.
         
         Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
@@ -3737,15 +3769,11 @@ class ClusterPoliciesAPI:
         
         :returns: :class:`ClusterPolicyPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ClusterPolicyPermissionsRequest(access_control_list=access_control_list,
-                                                      cluster_policy_id=cluster_policy_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/cluster-policies/{request.cluster_policy_id}',
-                            body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}', body=body)
         return ClusterPolicyPermissions.from_dict(json)
 
 
@@ -4427,6 +4455,34 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterDetails.from_dict(json)
 
+    def get_cluster_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
+        """Get cluster permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        
+        :returns: :class:`GetClusterPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels')
+        return GetClusterPermissionLevelsResponse.from_dict(json)
+
+    def get_cluster_permissions(self, cluster_id: str) -> ClusterPermissions:
+        """Get cluster permissions.
+        
+        Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        
+        :returns: :class:`ClusterPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}')
+        return ClusterPermissions.from_dict(json)
+
     def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
         """List all clusters.
         
@@ -4582,11 +4638,11 @@ class ClustersAPI:
                          timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
-    def set_cluster_permissions(self,
-                                cluster_id: str,
-                                *,
-                                access_control_list: Optional[List[ClusterAccessControlRequest]] = None,
-                                **kwargs) -> ClusterPermissions:
+    def set_cluster_permissions(
+            self,
+            cluster_id: str,
+            *,
+            access_control_list: Optional[List[ClusterAccessControlRequest]] = None) -> ClusterPermissions:
         """Set cluster permissions.
         
         Sets permissions on a cluster. Clusters can inherit permissions from their root object.
@@ -4597,13 +4653,11 @@ class ClustersAPI:
         
         :returns: :class:`ClusterPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ClusterPermissionsRequest(access_control_list=access_control_list,
-                                                cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT', f'/api/2.0/permissions/clusters/{request.cluster_id}', body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body)
         return ClusterPermissions.from_dict(json)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -4658,11 +4712,11 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/unpin', body=body)
 
-    def update_cluster_permissions(self,
-                                   cluster_id: str,
-                                   *,
-                                   access_control_list: Optional[List[ClusterAccessControlRequest]] = None,
-                                   **kwargs) -> ClusterPermissions:
+    def update_cluster_permissions(
+            self,
+            cluster_id: str,
+            *,
+            access_control_list: Optional[List[ClusterAccessControlRequest]] = None) -> ClusterPermissions:
         """Update cluster permissions.
         
         Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
@@ -4673,13 +4727,11 @@ class ClustersAPI:
         
         :returns: :class:`ClusterPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ClusterPermissionsRequest(access_control_list=access_control_list,
-                                                cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH', f'/api/2.0/permissions/clusters/{request.cluster_id}', body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/clusters/{cluster_id}', body=body)
         return ClusterPermissions.from_dict(json)
 
 
@@ -5337,8 +5389,8 @@ class InstancePoolsAPI:
         json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query)
         return GetInstancePool.from_dict(json)
 
-    def get_instance_pool_permission_levels(self, instance_pool_id: str,
-                                            **kwargs) -> GetInstancePoolPermissionLevelsResponse:
+    def get_instance_pool_permission_levels(self,
+                                            instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
         """Get instance pool permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -5348,15 +5400,11 @@ class InstancePoolsAPI:
         
         :returns: :class:`GetInstancePoolPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetInstancePoolPermissionLevelsRequest(instance_pool_id=instance_pool_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/permissions/instance-pools/{request.instance_pool_id}/permissionLevels')
+        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels')
         return GetInstancePoolPermissionLevelsResponse.from_dict(json)
 
-    def get_instance_pool_permissions(self, instance_pool_id: str, **kwargs) -> InstancePoolPermissions:
+    def get_instance_pool_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
         """Get instance pool permissions.
         
         Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
@@ -5367,11 +5415,8 @@ class InstancePoolsAPI:
         
         :returns: :class:`InstancePoolPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetInstancePoolPermissionsRequest(instance_pool_id=instance_pool_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{request.instance_pool_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}')
         return InstancePoolPermissions.from_dict(json)
 
     def list(self) -> Iterator[InstancePoolAndStats]:
@@ -5385,12 +5430,12 @@ class InstancePoolsAPI:
         json = self._api.do('GET', '/api/2.0/instance-pools/list')
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
 
-    def set_instance_pool_permissions(self,
-                                      instance_pool_id: str,
-                                      *,
-                                      access_control_list: Optional[
-                                          List[InstancePoolAccessControlRequest]] = None,
-                                      **kwargs) -> InstancePoolPermissions:
+    def set_instance_pool_permissions(
+        self,
+        instance_pool_id: str,
+        *,
+        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
+    ) -> InstancePoolPermissions:
         """Set instance pool permissions.
         
         Sets permissions on an instance pool. Instance pools can inherit permissions from their root object.
@@ -5401,23 +5446,19 @@ class InstancePoolsAPI:
         
         :returns: :class:`InstancePoolPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = InstancePoolPermissionsRequest(access_control_list=access_control_list,
-                                                     instance_pool_id=instance_pool_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/instance-pools/{request.instance_pool_id}',
-                            body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', body=body)
         return InstancePoolPermissions.from_dict(json)
 
-    def update_instance_pool_permissions(self,
-                                         instance_pool_id: str,
-                                         *,
-                                         access_control_list: Optional[
-                                             List[InstancePoolAccessControlRequest]] = None,
-                                         **kwargs) -> InstancePoolPermissions:
+    def update_instance_pool_permissions(
+        self,
+        instance_pool_id: str,
+        *,
+        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
+    ) -> InstancePoolPermissions:
         """Update instance pool permissions.
         
         Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
@@ -5429,15 +5470,11 @@ class InstancePoolsAPI:
         
         :returns: :class:`InstancePoolPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = InstancePoolPermissionsRequest(access_control_list=access_control_list,
-                                                     instance_pool_id=instance_pool_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/instance-pools/{request.instance_pool_id}',
-                            body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', body=body)
         return InstancePoolPermissions.from_dict(json)
 
 

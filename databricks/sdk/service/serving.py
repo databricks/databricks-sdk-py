@@ -161,6 +161,20 @@ class EndpointStateReady(Enum):
 
 
 @dataclass
+class GetServingEndpointPermissionLevelsResponse:
+    permission_levels: Optional['List[ServingEndpointPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetServingEndpointPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ServingEndpointPermissionsDescription))
+
+
+@dataclass
 class ListEndpointsResponse:
     endpoints: Optional['List[ServingEndpoint]'] = None
 
@@ -707,8 +721,8 @@ class ServingEndpointsAPI:
         json = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}')
         return ServingEndpointDetailed.from_dict(json)
 
-    def get_serving_endpoint_permission_levels(self, serving_endpoint_id: str,
-                                               **kwargs) -> GetServingEndpointPermissionLevelsResponse:
+    def get_serving_endpoint_permission_levels(
+            self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
         """Get serving endpoint permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -718,16 +732,12 @@ class ServingEndpointsAPI:
         
         :returns: :class:`GetServingEndpointPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetServingEndpointPermissionLevelsRequest(serving_endpoint_id=serving_endpoint_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}/permissionLevels')
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels')
         return GetServingEndpointPermissionLevelsResponse.from_dict(json)
 
-    def get_serving_endpoint_permissions(self, serving_endpoint_id: str,
-                                         **kwargs) -> ServingEndpointPermissions:
+    def get_serving_endpoint_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
         """Get serving endpoint permissions.
         
         Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
@@ -738,11 +748,8 @@ class ServingEndpointsAPI:
         
         :returns: :class:`ServingEndpointPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetServingEndpointPermissionsRequest(serving_endpoint_id=serving_endpoint_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}')
         return ServingEndpointPermissions.from_dict(json)
 
     def list(self) -> Iterator[ServingEndpoint]:
@@ -783,12 +790,12 @@ class ServingEndpointsAPI:
         json = self._api.do('POST', f'/serving-endpoints/{name}/invocations')
         return QueryEndpointResponse.from_dict(json)
 
-    def set_serving_endpoint_permissions(self,
-                                         serving_endpoint_id: str,
-                                         *,
-                                         access_control_list: Optional[
-                                             List[ServingEndpointAccessControlRequest]] = None,
-                                         **kwargs) -> ServingEndpointPermissions:
+    def set_serving_endpoint_permissions(
+        self,
+        serving_endpoint_id: str,
+        *,
+        access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None
+    ) -> ServingEndpointPermissions:
         """Set serving endpoint permissions.
         
         Sets permissions on a serving endpoint. Serving endpoints can inherit permissions from their root
@@ -800,15 +807,11 @@ class ServingEndpointsAPI:
         
         :returns: :class:`ServingEndpointPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ServingEndpointPermissionsRequest(access_control_list=access_control_list,
-                                                        serving_endpoint_id=serving_endpoint_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}',
-                            body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}', body=body)
         return ServingEndpointPermissions.from_dict(json)
 
     def update_config(self,
@@ -852,12 +855,12 @@ class ServingEndpointsAPI:
         return self.update_config(name=name, served_models=served_models,
                                   traffic_config=traffic_config).result(timeout=timeout)
 
-    def update_serving_endpoint_permissions(self,
-                                            serving_endpoint_id: str,
-                                            *,
-                                            access_control_list: Optional[
-                                                List[ServingEndpointAccessControlRequest]] = None,
-                                            **kwargs) -> ServingEndpointPermissions:
+    def update_serving_endpoint_permissions(
+        self,
+        serving_endpoint_id: str,
+        *,
+        access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None
+    ) -> ServingEndpointPermissions:
         """Update serving endpoint permissions.
         
         Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
@@ -869,13 +872,11 @@ class ServingEndpointsAPI:
         
         :returns: :class:`ServingEndpointPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ServingEndpointPermissionsRequest(access_control_list=access_control_list,
-                                                        serving_endpoint_id=serving_endpoint_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
         json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}',
+                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                             body=body)
         return ServingEndpointPermissions.from_dict(json)

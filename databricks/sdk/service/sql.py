@@ -975,6 +975,20 @@ class GetStatementResponse:
 
 
 @dataclass
+class GetWarehousePermissionLevelsResponse:
+    permission_levels: Optional['List[WarehousePermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetWarehousePermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', WarehousePermissionsDescription))
+
+
+@dataclass
 class GetWarehouseResponse:
     auto_stop_mins: Optional[int] = None
     channel: Optional['Channel'] = None
@@ -3681,8 +3695,7 @@ class WarehousesAPI:
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}')
         return GetWarehouseResponse.from_dict(json)
 
-    def get_warehouse_permission_levels(self, warehouse_id: str,
-                                        **kwargs) -> GetWarehousePermissionLevelsResponse:
+    def get_warehouse_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
         """Get SQL warehouse permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3692,14 +3705,11 @@ class WarehousesAPI:
         
         :returns: :class:`GetWarehousePermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWarehousePermissionLevelsRequest(warehouse_id=warehouse_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{request.warehouse_id}/permissionLevels')
+        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels')
         return GetWarehousePermissionLevelsResponse.from_dict(json)
 
-    def get_warehouse_permissions(self, warehouse_id: str, **kwargs) -> WarehousePermissions:
+    def get_warehouse_permissions(self, warehouse_id: str) -> WarehousePermissions:
         """Get SQL warehouse permissions.
         
         Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
@@ -3710,11 +3720,8 @@ class WarehousesAPI:
         
         :returns: :class:`WarehousePermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWarehousePermissionsRequest(warehouse_id=warehouse_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{request.warehouse_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}')
         return WarehousePermissions.from_dict(json)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
@@ -3749,8 +3756,8 @@ class WarehousesAPI:
     def set_warehouse_permissions(self,
                                   warehouse_id: str,
                                   *,
-                                  access_control_list: Optional[List[WarehouseAccessControlRequest]] = None,
-                                  **kwargs) -> WarehousePermissions:
+                                  access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
+                                  ) -> WarehousePermissions:
         """Set SQL warehouse permissions.
         
         Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root object.
@@ -3761,13 +3768,11 @@ class WarehousesAPI:
         
         :returns: :class:`WarehousePermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WarehousePermissionsRequest(access_control_list=access_control_list,
-                                                  warehouse_id=warehouse_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT', f'/api/2.0/permissions/warehouses/{request.warehouse_id}', body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/warehouses/{warehouse_id}', body=body)
         return WarehousePermissions.from_dict(json)
 
     def set_workspace_warehouse_config(
@@ -3867,9 +3872,8 @@ class WarehousesAPI:
     def update_warehouse_permissions(self,
                                      warehouse_id: str,
                                      *,
-                                     access_control_list: Optional[
-                                         List[WarehouseAccessControlRequest]] = None,
-                                     **kwargs) -> WarehousePermissions:
+                                     access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
+                                     ) -> WarehousePermissions:
         """Update SQL warehouse permissions.
         
         Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
@@ -3881,11 +3885,9 @@ class WarehousesAPI:
         
         :returns: :class:`WarehousePermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WarehousePermissionsRequest(access_control_list=access_control_list,
-                                                  warehouse_id=warehouse_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH', f'/api/2.0/permissions/warehouses/{request.warehouse_id}', body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/warehouses/{warehouse_id}', body=body)
         return WarehousePermissions.from_dict(json)

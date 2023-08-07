@@ -101,6 +101,20 @@ class GetAssignableRolesForResourceResponse:
 
 
 @dataclass
+class GetPasswordPermissionLevelsResponse:
+    permission_levels: Optional['List[PasswordPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetPasswordPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', PasswordPermissionsDescription))
+
+
+@dataclass
 class GetPermissionLevelsResponse:
     permission_levels: Optional['List[PermissionsDescription]'] = None
 
@@ -1113,7 +1127,7 @@ class AccountGroupsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}', body=body)
 
     def update(self,
@@ -1305,7 +1319,7 @@ class AccountServicePrincipalsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
                      body=body)
@@ -1514,7 +1528,7 @@ class AccountUsersAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}', body=body)
 
     def update(self,
@@ -1728,7 +1742,7 @@ class GroupsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body)
 
     def update(self,
@@ -1837,7 +1851,7 @@ class PermissionsAPI:
 
     def get_permission_levels(self, request_object_type: str,
                               request_object_id: str) -> GetPermissionLevelsResponse:
-        """Get permission levels.
+        """Get object permission levels.
         
         Gets the permission levels that a user can have on an object.
         
@@ -1857,8 +1871,8 @@ class PermissionsAPI:
             request_object_type: str,
             request_object_id: str,
             *,
-            access_control_list: Optional[List[AccessControlRequest]] = None):
-        """Set permissions.
+            access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
+        """Set object permissions.
         
         Sets permissions on an object. Objects can inherit permissions from their parent objects or root
         object.
@@ -1873,14 +1887,18 @@ class PermissionsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        self._api.do('PUT', f'/api/2.0/permissions/{request_object_type}/{request_object_id}', body=body)
+
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                            body=body)
+        return ObjectPermissions.from_dict(json)
 
     def update(self,
                request_object_type: str,
                request_object_id: str,
                *,
-               access_control_list: Optional[List[AccessControlRequest]] = None):
-        """Update permission.
+               access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
+        """Update object permissions.
         
         Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.
@@ -1895,7 +1913,11 @@ class PermissionsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        self._api.do('PATCH', f'/api/2.0/permissions/{request_object_type}/{request_object_id}', body=body)
+
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                            body=body)
+        return ObjectPermissions.from_dict(json)
 
 
 class ServicePrincipalsAPI:
@@ -2044,7 +2066,7 @@ class ServicePrincipalsAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body)
 
     def update(self,
@@ -2271,13 +2293,13 @@ class UsersAPI:
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v for v in schema]
+        if schema is not None: body['schema'] = [v.value for v in schema]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
 
-    def set_password_permissions(self,
-                                 *,
-                                 access_control_list: Optional[List[PasswordAccessControlRequest]] = None,
-                                 **kwargs) -> PasswordPermissions:
+    def set_password_permissions(
+            self,
+            *,
+            access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
         """Set password permissions.
         
         Sets permissions on all passwords. Passwords can inherit permissions from their root object.
@@ -2286,10 +2308,9 @@ class UsersAPI:
         
         :returns: :class:`PasswordPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PasswordPermissionsRequest(access_control_list=access_control_list)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
         json = self._api.do('PUT', '/api/2.0/permissions/authorization/passwords', body=body)
         return PasswordPermissions.from_dict(json)
@@ -2340,10 +2361,10 @@ class UsersAPI:
         if user_name is not None: body['userName'] = user_name
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
 
-    def update_password_permissions(self,
-                                    *,
-                                    access_control_list: Optional[List[PasswordAccessControlRequest]] = None,
-                                    **kwargs) -> PasswordPermissions:
+    def update_password_permissions(
+            self,
+            *,
+            access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
         """Update password permissions.
         
         Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
@@ -2352,10 +2373,9 @@ class UsersAPI:
         
         :returns: :class:`PasswordPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PasswordPermissionsRequest(access_control_list=access_control_list)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
         json = self._api.do('PATCH', '/api/2.0/permissions/authorization/passwords', body=body)
         return PasswordPermissions.from_dict(json)
@@ -2436,7 +2456,7 @@ class WorkspaceAssignmentAPI:
         
         """
         body = {}
-        if permissions is not None: body['permissions'] = [v for v in permissions]
+        if permissions is not None: body['permissions'] = [v.value for v in permissions]
         self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}',

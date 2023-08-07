@@ -726,6 +726,20 @@ class GetExperimentByNameResponse:
 
 
 @dataclass
+class GetExperimentPermissionLevelsResponse:
+    permission_levels: Optional['List[ExperimentPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ExperimentPermissionsDescription))
+
+
+@dataclass
 class GetLatestVersionsRequest:
     name: str
     stages: Optional['List[str]'] = None
@@ -812,6 +826,20 @@ class GetModelVersionResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
+
+
+@dataclass
+class GetRegisteredModelPermissionLevelsResponse:
+    permission_levels: Optional['List[RegisteredModelPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', RegisteredModelPermissionsDescription))
 
 
 @dataclass
@@ -2475,8 +2503,7 @@ class ExperimentsAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query)
         return Experiment.from_dict(json)
 
-    def get_experiment_permission_levels(self, experiment_id: str,
-                                         **kwargs) -> GetExperimentPermissionLevelsResponse:
+    def get_experiment_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Get experiment permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -2486,15 +2513,11 @@ class ExperimentsAPI:
         
         :returns: :class:`GetExperimentPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetExperimentPermissionLevelsRequest(experiment_id=experiment_id)
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/experiments/{request.experiment_id}/permissionLevels')
+        json = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels')
         return GetExperimentPermissionLevelsResponse.from_dict(json)
 
-    def get_experiment_permissions(self, experiment_id: str, **kwargs) -> ExperimentPermissions:
+    def get_experiment_permissions(self, experiment_id: str) -> ExperimentPermissions:
         """Get experiment permissions.
         
         Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
@@ -2504,11 +2527,8 @@ class ExperimentsAPI:
         
         :returns: :class:`ExperimentPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetExperimentPermissionsRequest(experiment_id=experiment_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/experiments/{request.experiment_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}')
         return ExperimentPermissions.from_dict(json)
 
     def get_history(self,
@@ -2951,6 +2971,29 @@ class ExperimentsAPI:
                 return
             body['page_token'] = json['next_page_token']
 
+    def set_experiment_permissions(
+            self,
+            experiment_id: str,
+            *,
+            access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+    ) -> ExperimentPermissions:
+        """Set experiment permissions.
+        
+        Sets permissions on an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
+        
+        :returns: :class:`ExperimentPermissions`
+        """
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/experiments/{experiment_id}', body=body)
+        return ExperimentPermissions.from_dict(json)
+
     def set_experiment_tag(self, experiment_id: str, key: str, value: str):
         """Set a tag.
         
@@ -3016,12 +3059,12 @@ class ExperimentsAPI:
         if new_name is not None: body['new_name'] = new_name
         self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body)
 
-    def update_experiment_permissions(self,
-                                      experiment_id: str,
-                                      *,
-                                      access_control_list: Optional[
-                                          List[ExperimentAccessControlRequest]] = None,
-                                      **kwargs) -> ExperimentPermissions:
+    def update_experiment_permissions(
+            self,
+            experiment_id: str,
+            *,
+            access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+    ) -> ExperimentPermissions:
         """Update experiment permissions.
         
         Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
@@ -3032,13 +3075,11 @@ class ExperimentsAPI:
         
         :returns: :class:`ExperimentPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ExperimentPermissionsRequest(access_control_list=access_control_list,
-                                                   experiment_id=experiment_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH', f'/api/2.0/permissions/experiments/{request.experiment_id}', body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/experiments/{experiment_id}', body=body)
         return ExperimentPermissions.from_dict(json)
 
     def update_run(self,
@@ -3308,7 +3349,7 @@ class ModelRegistryAPI:
         """
         body = {}
         if description is not None: body['description'] = description
-        if events is not None: body['events'] = [v for v in events]
+        if events is not None: body['events'] = [v.value for v in events]
         if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
         if job_spec is not None: body['job_spec'] = job_spec.as_dict()
         if model_name is not None: body['model_name'] = model_name
@@ -3544,8 +3585,8 @@ class ModelRegistryAPI:
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get-download-uri', query=query)
         return GetModelVersionDownloadUriResponse.from_dict(json)
 
-    def get_registered_model_permission_levels(self, registered_model_id: str,
-                                               **kwargs) -> GetRegisteredModelPermissionLevelsResponse:
+    def get_registered_model_permission_levels(
+            self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
         """Get registered model permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3555,16 +3596,12 @@ class ModelRegistryAPI:
         
         :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRegisteredModelPermissionLevelsRequest(registered_model_id=registered_model_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/permissions/registered-models/{request.registered_model_id}/permissionLevels')
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels')
         return GetRegisteredModelPermissionLevelsResponse.from_dict(json)
 
-    def get_registered_model_permissions(self, registered_model_id: str,
-                                         **kwargs) -> RegisteredModelPermissions:
+    def get_registered_model_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
         """Get registered model permissions.
         
         Gets the permissions of a registered model. Registered models can inherit permissions from their root
@@ -3575,11 +3612,8 @@ class ModelRegistryAPI:
         
         :returns: :class:`RegisteredModelPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRegisteredModelPermissionsRequest(registered_model_id=registered_model_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/registered-models/{request.registered_model_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/registered-models/{registered_model_id}')
         return RegisteredModelPermissions.from_dict(json)
 
     def list_models(self,
@@ -3656,7 +3690,7 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if events is not None: query['events'] = [v for v in events]
+        if events is not None: query['events'] = [v.value for v in events]
         if model_name is not None: query['model_name'] = model_name
         if page_token is not None: query['page_token'] = page_token
 
@@ -3859,12 +3893,12 @@ class ModelRegistryAPI:
         if version is not None: body['version'] = version
         self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body)
 
-    def set_registered_model_permissions(self,
-                                         registered_model_id: str,
-                                         *,
-                                         access_control_list: Optional[
-                                             List[RegisteredModelAccessControlRequest]] = None,
-                                         **kwargs) -> RegisteredModelPermissions:
+    def set_registered_model_permissions(
+        self,
+        registered_model_id: str,
+        *,
+        access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
+    ) -> RegisteredModelPermissions:
         """Set registered model permissions.
         
         Sets permissions on a registered model. Registered models can inherit permissions from their root
@@ -3876,15 +3910,11 @@ class ModelRegistryAPI:
         
         :returns: :class:`RegisteredModelPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RegisteredModelPermissionsRequest(access_control_list=access_control_list,
-                                                        registered_model_id=registered_model_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/registered-models/{request.registered_model_id}',
-                            body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/registered-models/{registered_model_id}', body=body)
         return RegisteredModelPermissions.from_dict(json)
 
     def test_registry_webhook(self,
@@ -4014,12 +4044,12 @@ class ModelRegistryAPI:
         if version is not None: body['version'] = version
         self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body)
 
-    def update_registered_model_permissions(self,
-                                            registered_model_id: str,
-                                            *,
-                                            access_control_list: Optional[
-                                                List[RegisteredModelAccessControlRequest]] = None,
-                                            **kwargs) -> RegisteredModelPermissions:
+    def update_registered_model_permissions(
+        self,
+        registered_model_id: str,
+        *,
+        access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
+    ) -> RegisteredModelPermissions:
         """Update registered model permissions.
         
         Updates the permissions on a registered model. Registered models can inherit permissions from their
@@ -4031,14 +4061,12 @@ class ModelRegistryAPI:
         
         :returns: :class:`RegisteredModelPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RegisteredModelPermissionsRequest(access_control_list=access_control_list,
-                                                        registered_model_id=registered_model_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
         json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/registered-models/{request.registered_model_id}',
+                            f'/api/2.0/permissions/registered-models/{registered_model_id}',
                             body=body)
         return RegisteredModelPermissions.from_dict(json)
 
@@ -4098,7 +4126,7 @@ class ModelRegistryAPI:
         """
         body = {}
         if description is not None: body['description'] = description
-        if events is not None: body['events'] = [v for v in events]
+        if events is not None: body['events'] = [v.value for v in events]
         if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
         if id is not None: body['id'] = id
         if job_spec is not None: body['job_spec'] = job_spec.as_dict()

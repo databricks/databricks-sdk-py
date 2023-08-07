@@ -259,6 +259,34 @@ class GetCredentialsResponse:
 
 
 @dataclass
+class GetRepoPermissionLevelsResponse:
+    permission_levels: Optional['List[RepoPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetRepoPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', RepoPermissionsDescription))
+
+
+@dataclass
+class GetWorkspaceObjectPermissionLevelsResponse:
+    permission_levels: Optional['List[WorkspaceObjectPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceObjectPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
+
+
+@dataclass
 class Import:
     path: str
     content: Optional[str] = None
@@ -1096,7 +1124,7 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/repos/{repo_id}')
         return RepoInfo.from_dict(json)
 
-    def get_repo_permission_levels(self, repo_id: str, **kwargs) -> GetRepoPermissionLevelsResponse:
+    def get_repo_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
         """Get repo permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1106,14 +1134,11 @@ class ReposAPI:
         
         :returns: :class:`GetRepoPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRepoPermissionLevelsRequest(repo_id=repo_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/repos/{request.repo_id}/permissionLevels')
+        json = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}/permissionLevels')
         return GetRepoPermissionLevelsResponse.from_dict(json)
 
-    def get_repo_permissions(self, repo_id: str, **kwargs) -> RepoPermissions:
+    def get_repo_permissions(self, repo_id: str) -> RepoPermissions:
         """Get repo permissions.
         
         Gets the permissions of a repo. Repos can inherit permissions from their root object.
@@ -1123,11 +1148,8 @@ class ReposAPI:
         
         :returns: :class:`RepoPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRepoPermissionsRequest(repo_id=repo_id)
 
-        json = self._api.do('GET', f'/api/2.0/permissions/repos/{request.repo_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}')
         return RepoPermissions.from_dict(json)
 
     def list(self,
@@ -1162,11 +1184,11 @@ class ReposAPI:
                 return
             query['next_page_token'] = json['next_page_token']
 
-    def set_repo_permissions(self,
-                             repo_id: str,
-                             *,
-                             access_control_list: Optional[List[RepoAccessControlRequest]] = None,
-                             **kwargs) -> RepoPermissions:
+    def set_repo_permissions(
+            self,
+            repo_id: str,
+            *,
+            access_control_list: Optional[List[RepoAccessControlRequest]] = None) -> RepoPermissions:
         """Set repo permissions.
         
         Sets permissions on a repo. Repos can inherit permissions from their root object.
@@ -1177,12 +1199,11 @@ class ReposAPI:
         
         :returns: :class:`RepoPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RepoPermissionsRequest(access_control_list=access_control_list, repo_id=repo_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT', f'/api/2.0/permissions/repos/{request.repo_id}', body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/repos/{repo_id}', body=body)
         return RepoPermissions.from_dict(json)
 
     def update(self,
@@ -1216,11 +1237,11 @@ class ReposAPI:
         if tag is not None: body['tag'] = tag
         self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body)
 
-    def update_repo_permissions(self,
-                                repo_id: str,
-                                *,
-                                access_control_list: Optional[List[RepoAccessControlRequest]] = None,
-                                **kwargs) -> RepoPermissions:
+    def update_repo_permissions(
+            self,
+            repo_id: str,
+            *,
+            access_control_list: Optional[List[RepoAccessControlRequest]] = None) -> RepoPermissions:
         """Update repo permissions.
         
         Updates the permissions on a repo. Repos can inherit permissions from their root object.
@@ -1231,12 +1252,11 @@ class ReposAPI:
         
         :returns: :class:`RepoPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RepoPermissionsRequest(access_control_list=access_control_list, repo_id=repo_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH', f'/api/2.0/permissions/repos/{request.repo_id}', body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/repos/{repo_id}', body=body)
         return RepoPermissions.from_dict(json)
 
 
@@ -1592,8 +1612,9 @@ class WorkspaceAPI:
         json = self._api.do('GET', '/api/2.0/workspace/get-status', query=query)
         return ObjectInfo.from_dict(json)
 
-    def get_workspace_object_permission_levels(self, workspace_object_type: str, workspace_object_id: str,
-                                               **kwargs) -> GetWorkspaceObjectPermissionLevelsResponse:
+    def get_workspace_object_permission_levels(
+            self, workspace_object_type: str,
+            workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Get workspace object permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1605,19 +1626,13 @@ class WorkspaceAPI:
         
         :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWorkspaceObjectPermissionLevelsRequest(workspace_object_id=workspace_object_id,
-                                                                workspace_object_type=workspace_object_type)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}/permissionLevels'
-        )
+            'GET', f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}/permissionLevels')
         return GetWorkspaceObjectPermissionLevelsResponse.from_dict(json)
 
-    def get_workspace_object_permissions(self, workspace_object_type: str, workspace_object_id: str,
-                                         **kwargs) -> WorkspaceObjectPermissions:
+    def get_workspace_object_permissions(self, workspace_object_type: str,
+                                         workspace_object_id: str) -> WorkspaceObjectPermissions:
         """Get workspace object permissions.
         
         Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
@@ -1630,13 +1645,8 @@ class WorkspaceAPI:
         
         :returns: :class:`WorkspaceObjectPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWorkspaceObjectPermissionsRequest(workspace_object_id=workspace_object_id,
-                                                           workspace_object_type=workspace_object_type)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}')
         return WorkspaceObjectPermissions.from_dict(json)
 
     def import_(self,
@@ -1728,13 +1738,13 @@ class WorkspaceAPI:
         if path is not None: body['path'] = path
         self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body)
 
-    def set_workspace_object_permissions(self,
-                                         workspace_object_type: str,
-                                         workspace_object_id: str,
-                                         *,
-                                         access_control_list: Optional[
-                                             List[WorkspaceObjectAccessControlRequest]] = None,
-                                         **kwargs) -> WorkspaceObjectPermissions:
+    def set_workspace_object_permissions(
+        self,
+        workspace_object_type: str,
+        workspace_object_id: str,
+        *,
+        access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
+    ) -> WorkspaceObjectPermissions:
         """Set workspace object permissions.
         
         Sets permissions on a workspace object. Workspace objects can inherit permissions from their parent
@@ -1748,26 +1758,22 @@ class WorkspaceAPI:
         
         :returns: :class:`WorkspaceObjectPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WorkspaceObjectPermissionsRequest(access_control_list=access_control_list,
-                                                        workspace_object_id=workspace_object_id,
-                                                        workspace_object_type=workspace_object_type)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do(
-            'PUT',
-            f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}',
-            body=body)
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
+                            body=body)
         return WorkspaceObjectPermissions.from_dict(json)
 
-    def update_workspace_object_permissions(self,
-                                            workspace_object_type: str,
-                                            workspace_object_id: str,
-                                            *,
-                                            access_control_list: Optional[
-                                                List[WorkspaceObjectAccessControlRequest]] = None,
-                                            **kwargs) -> WorkspaceObjectPermissions:
+    def update_workspace_object_permissions(
+        self,
+        workspace_object_type: str,
+        workspace_object_id: str,
+        *,
+        access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
+    ) -> WorkspaceObjectPermissions:
         """Update workspace object permissions.
         
         Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
@@ -1781,15 +1787,11 @@ class WorkspaceAPI:
         
         :returns: :class:`WorkspaceObjectPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = WorkspaceObjectPermissionsRequest(access_control_list=access_control_list,
-                                                        workspace_object_id=workspace_object_id,
-                                                        workspace_object_type=workspace_object_type)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do(
-            'PATCH',
-            f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}',
-            body=body)
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
+                            body=body)
         return WorkspaceObjectPermissions.from_dict(json)

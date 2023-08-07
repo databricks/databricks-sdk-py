@@ -337,6 +337,7 @@ class CustomAppIntegrationAPI:
                redirect_urls: List[str],
                *,
                confidential: Optional[bool] = None,
+               scopes: Optional[List[str]] = None,
                token_access_policy: Optional[TokenAccessPolicy] = None) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
         
@@ -362,6 +363,7 @@ class CustomAppIntegrationAPI:
         if confidential is not None: body['confidential'] = confidential
         if name is not None: body['name'] = name
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
+        if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
 
         json = self._api.do('POST',

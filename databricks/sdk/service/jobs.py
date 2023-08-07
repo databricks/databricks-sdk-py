@@ -469,6 +469,20 @@ class Format(Enum):
     SINGLE_TASK = 'SINGLE_TASK'
 
 
+@dataclass
+class GetJobPermissionLevelsResponse:
+    permission_levels: Optional['List[JobPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetJobPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', JobPermissionsDescription))
+
+
 class GitProvider(Enum):
 
     AWS_CODE_COMMIT = 'awsCodeCommit'
@@ -2939,6 +2953,34 @@ class JobsAPI:
         json = self._api.do('GET', '/api/2.1/jobs/get', query=query)
         return Job.from_dict(json)
 
+    def get_job_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
+        """Get job permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        
+        :returns: :class:`GetJobPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels')
+        return GetJobPermissionLevelsResponse.from_dict(json)
+
+    def get_job_permissions(self, job_id: str) -> JobPermissions:
+        """Get job permissions.
+        
+        Gets the permissions of a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        
+        :returns: :class:`JobPermissions`
+        """
+
+        json = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}')
+        return JobPermissions.from_dict(json)
+
     def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
         """Get a single job run.
         
@@ -3422,11 +3464,11 @@ class JobsAPI:
                             spark_submit_params=spark_submit_params,
                             sql_params=sql_params).result(timeout=timeout)
 
-    def set_job_permissions(self,
-                            job_id: str,
-                            *,
-                            access_control_list: Optional[List[JobAccessControlRequest]] = None,
-                            **kwargs) -> JobPermissions:
+    def set_job_permissions(
+            self,
+            job_id: str,
+            *,
+            access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
         """Set job permissions.
         
         Sets permissions on a job. Jobs can inherit permissions from their root object.
@@ -3437,12 +3479,11 @@ class JobsAPI:
         
         :returns: :class:`JobPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = JobPermissionsRequest(access_control_list=access_control_list, job_id=job_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PUT', f'/api/2.0/permissions/jobs/{request.job_id}', body=body)
+        json = self._api.do('PUT', f'/api/2.0/permissions/jobs/{job_id}', body=body)
         return JobPermissions.from_dict(json)
 
     def submit(self,
@@ -3578,11 +3619,11 @@ class JobsAPI:
         if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         self._api.do('POST', '/api/2.1/jobs/update', body=body)
 
-    def update_job_permissions(self,
-                               job_id: str,
-                               *,
-                               access_control_list: Optional[List[JobAccessControlRequest]] = None,
-                               **kwargs) -> JobPermissions:
+    def update_job_permissions(
+            self,
+            job_id: str,
+            *,
+            access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
         """Update job permissions.
         
         Updates the permissions on a job. Jobs can inherit permissions from their root object.
@@ -3593,10 +3634,9 @@ class JobsAPI:
         
         :returns: :class:`JobPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = JobPermissionsRequest(access_control_list=access_control_list, job_id=job_id)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{request.job_id}', body=body)
+        json = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body)
         return JobPermissions.from_dict(json)

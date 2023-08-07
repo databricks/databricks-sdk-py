@@ -1121,7 +1121,7 @@ class EncryptionKeysAPI:
         body = {}
         if aws_key_info is not None: body['aws_key_info'] = aws_key_info.as_dict()
         if gcp_key_info is not None: body['gcp_key_info'] = gcp_key_info.as_dict()
-        if use_cases is not None: body['use_cases'] = [v for v in use_cases]
+        if use_cases is not None: body['use_cases'] = [v.value for v in use_cases]
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys',
@@ -1840,6 +1840,9 @@ class WorkspacesAPI:
             body['cloud_resource_container'] = cloud_resource_container.as_dict()
         if credentials_id is not None: body['credentials_id'] = credentials_id
         if deployment_name is not None: body['deployment_name'] = deployment_name
+        if gcp_managed_network_config is not None:
+            body['gcp_managed_network_config'] = gcp_managed_network_config.as_dict()
+        if gke_config is not None: body['gke_config'] = gke_config.as_dict()
         if location is not None: body['location'] = location
         if managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
