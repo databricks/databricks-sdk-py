@@ -1,5 +1,221 @@
 # Version changelog
 
+## 0.4.0
+
+To simplify documentation and management of object permissions, this release features a major reorganization of how permissions APIs are structured in the SDK. Rather than using a single permissions.get() API for all services, each service supporting permissions has its own permissions APIs. Follow these steps to migrate to the current SDK:
+
+ * Change `w.permissions.get()` and `w.permissions.get_by_request_object_id_and_request_object_type()` to `w.<Service>.get_<Service>_permissions()`
+ * Change `w.permissions.get_permission_levels()` to `w.<Service>.get_<Service>_permission_levels()`
+ * Change `w.permissions.set()` to `w.<Service>.set_<Service>_permissions()`
+ * Change `w.permissions.update()` to `w.<Service>.update_<Service>_permissions()`
+
+API Changes:
+
+ * Added `get_cluster_policy_permission_levels()` method for [w.cluster_policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cluster_policies.html) workspace-level service.
+ * Added `get_cluster_policy_permissions()` method for [w.cluster_policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cluster_policies.html) workspace-level service.
+ * Added `set_cluster_policy_permissions()` method for [w.cluster_policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cluster_policies.html) workspace-level service.
+ * Added `update_cluster_policy_permissions()` method for [w.cluster_policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cluster_policies.html) workspace-level service.
+ * Added `get_cluster_permission_levels()` method for [w.clusters](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clusters.html) workspace-level service.
+ * Added `get_cluster_permissions()` method for [w.clusters](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clusters.html) workspace-level service.
+ * Added `set_cluster_permissions()` method for [w.clusters](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clusters.html) workspace-level service.
+ * Added `update_cluster_permissions()` method for [w.clusters](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clusters.html) workspace-level service.
+ * Added `get_instance_pool_permission_levels()` method for [w.instance_pools](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/instance_pools.html) workspace-level service.
+ * Added `get_instance_pool_permissions()` method for [w.instance_pools](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/instance_pools.html) workspace-level service.
+ * Added `set_instance_pool_permissions()` method for [w.instance_pools](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/instance_pools.html) workspace-level service.
+ * Added `update_instance_pool_permissions()` method for [w.instance_pools](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/instance_pools.html) workspace-level service.
+ * Added `databricks.sdk.service.compute.ClusterAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPermission` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPermissions` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyPermission` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyPermissions` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.compute.ClusterPolicyPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.GetClusterPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.GetClusterPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.compute.GetClusterPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.GetClusterPolicyPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.GetClusterPolicyPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.compute.GetClusterPolicyPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.GetInstancePoolPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.GetInstancePoolPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.compute.GetInstancePoolPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolPermission` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolPermissions` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.compute.InstancePoolPermissionsRequest` dataclass.
+ * Changed `set()` method for [w.permissions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/permissions.html) workspace-level service to start returning `databricks.sdk.service.iam.ObjectPermissions` dataclass.
+ * Changed `update()` method for [w.permissions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/permissions.html) workspace-level service to start returning `databricks.sdk.service.iam.ObjectPermissions` dataclass.
+ * Added `get_password_permission_levels()` method for [w.users](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/users.html) workspace-level service.
+ * Added `get_password_permissions()` method for [w.users](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/users.html) workspace-level service.
+ * Added `set_password_permissions()` method for [w.users](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/users.html) workspace-level service.
+ * Added `update_password_permissions()` method for [w.users](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/users.html) workspace-level service.
+ * Added `display_name` field for `databricks.sdk.service.iam.AccessControlResponse`.
+ * Changed `roles` field for `databricks.sdk.service.iam.GetAssignableRolesForResourceResponse` to `databricks.sdk.service.iam.RoleList` dataclass.
+ * Added `databricks.sdk.service.iam.GetPasswordPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordPermission` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordPermissions` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.iam.PasswordPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.iam.Role` dataclass.
+ * Added `get_job_permission_levels()` method for [w.jobs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/jobs.html) workspace-level service.
+ * Added `get_job_permissions()` method for [w.jobs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/jobs.html) workspace-level service.
+ * Added `set_job_permissions()` method for [w.jobs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/jobs.html) workspace-level service.
+ * Added `update_job_permissions()` method for [w.jobs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/jobs.html) workspace-level service.
+ * Added `databricks.sdk.service.jobs.GetJobPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.jobs.GetJobPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.jobs.GetJobPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.jobs.JobAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.jobs.JobAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.jobs.JobPermission` dataclass.
+ * Added `databricks.sdk.service.jobs.JobPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.jobs.JobPermissions` dataclass.
+ * Added `databricks.sdk.service.jobs.JobPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.jobs.JobPermissionsRequest` dataclass.
+ * Added `get_experiment_permission_levels()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service.
+ * Added `get_experiment_permissions()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service.
+ * Added `set_experiment_permissions()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service.
+ * Added `update_experiment_permissions()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service.
+ * Added `get_registered_model_permission_levels()` method for [w.model_registry](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/model_registry.html) workspace-level service.
+ * Added `get_registered_model_permissions()` method for [w.model_registry](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/model_registry.html) workspace-level service.
+ * Added `set_registered_model_permissions()` method for [w.model_registry](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/model_registry.html) workspace-level service.
+ * Added `update_registered_model_permissions()` method for [w.model_registry](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/model_registry.html) workspace-level service.
+ * Added `databricks.sdk.service.ml.ExperimentAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.ml.ExperimentAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.ml.ExperimentPermission` dataclass.
+ * Added `databricks.sdk.service.ml.ExperimentPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.ml.ExperimentPermissions` dataclass.
+ * Added `databricks.sdk.service.ml.ExperimentPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.ml.ExperimentPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.ml.GetExperimentPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.ml.GetExperimentPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.ml.GetExperimentPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.ml.GetRegisteredModelPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.ml.GetRegisteredModelPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.ml.GetRegisteredModelPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelPermission` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelPermissions` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.ml.RegisteredModelPermissionsRequest` dataclass.
+ * Added `scopes` field for `databricks.sdk.service.oauth2.CreateCustomAppIntegration`.
+ * Added `get_pipeline_permission_levels()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines.html) workspace-level service.
+ * Added `get_pipeline_permissions()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines.html) workspace-level service.
+ * Added `set_pipeline_permissions()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines.html) workspace-level service.
+ * Added `update_pipeline_permissions()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines.html) workspace-level service.
+ * Added `databricks.sdk.service.pipelines.GetPipelinePermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.pipelines.GetPipelinePermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.pipelines.GetPipelinePermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelineAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelineAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelinePermission` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelinePermissionLevel` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelinePermissions` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelinePermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.pipelines.PipelinePermissionsRequest` dataclass.
+ * Added `gcp_managed_network_config` field for `databricks.sdk.service.provisioning.CreateWorkspaceRequest`.
+ * Added `gke_config` field for `databricks.sdk.service.provisioning.CreateWorkspaceRequest`.
+ * Added `get_serving_endpoint_permission_levels()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Added `get_serving_endpoint_permissions()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Added `set_serving_endpoint_permissions()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Added `update_serving_endpoint_permissions()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Added `instance_profile_arn` field for `databricks.sdk.service.serving.ServedModelInput`.
+ * Added `instance_profile_arn` field for `databricks.sdk.service.serving.ServedModelOutput`.
+ * Added `databricks.sdk.service.serving.GetServingEndpointPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.serving.GetServingEndpointPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.serving.GetServingEndpointPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointPermission` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointPermissions` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.serving.ServingEndpointPermissionsRequest` dataclass.
+ * Added `get_token_permission_levels()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service.
+ * Added `get_token_permissions()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service.
+ * Added `set_token_permissions()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service.
+ * Added `update_token_permissions()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service.
+ * Added `databricks.sdk.service.settings.GetTokenPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.settings.TokenAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.settings.TokenAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.settings.TokenPermission` dataclass.
+ * Added `databricks.sdk.service.settings.TokenPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.settings.TokenPermissions` dataclass.
+ * Added `databricks.sdk.service.settings.TokenPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.settings.TokenPermissionsRequest` dataclass.
+ * Added `get_warehouse_permission_levels()` method for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/warehouses.html) workspace-level service.
+ * Added `get_warehouse_permissions()` method for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/warehouses.html) workspace-level service.
+ * Added `set_warehouse_permissions()` method for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/warehouses.html) workspace-level service.
+ * Added `update_warehouse_permissions()` method for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/warehouses.html) workspace-level service.
+ * Added `can_subscribe_to_live_query` field for `databricks.sdk.service.sql.QueryInfo`.
+ * Removed `queued_overload_time_ms` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Removed `queued_provisioning_time_ms` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Removed `total_files_count` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Removed `total_partitions_count` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `metadata_time_ms` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `overloading_queue_start_timestamp` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `planning_phases` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `planning_time_ms` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `provisioning_queue_start_timestamp` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `pruned_bytes` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `pruned_files_count` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `query_compilation_start_timestamp` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `query_execution_time_ms` field for `databricks.sdk.service.sql.QueryMetrics`.
+ * Added `databricks.sdk.service.sql.GetWarehousePermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.sql.GetWarehousePermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.sql.GetWarehousePermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.sql.WarehouseAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.sql.WarehouseAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.sql.WarehousePermission` dataclass.
+ * Added `databricks.sdk.service.sql.WarehousePermissionLevel` dataclass.
+ * Added `databricks.sdk.service.sql.WarehousePermissions` dataclass.
+ * Added `databricks.sdk.service.sql.WarehousePermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.sql.WarehousePermissionsRequest` dataclass.
+ * Added `get_repo_permission_levels()` method for [w.repos](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/repos.html) workspace-level service.
+ * Added `get_repo_permissions()` method for [w.repos](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/repos.html) workspace-level service.
+ * Added `set_repo_permissions()` method for [w.repos](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/repos.html) workspace-level service.
+ * Added `update_repo_permissions()` method for [w.repos](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/repos.html) workspace-level service.
+ * Added `get_workspace_object_permission_levels()` method for [w.workspace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/workspace.html) workspace-level service.
+ * Added `get_workspace_object_permissions()` method for [w.workspace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/workspace.html) workspace-level service.
+ * Added `set_workspace_object_permissions()` method for [w.workspace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/workspace.html) workspace-level service.
+ * Added `update_workspace_object_permissions()` method for [w.workspace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/workspace.html) workspace-level service.
+ * Added `databricks.sdk.service.workspace.GetRepoPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.GetRepoPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.workspace.GetRepoPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.GetWorkspaceObjectPermissionLevelsRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.GetWorkspaceObjectPermissionLevelsResponse` dataclass.
+ * Added `databricks.sdk.service.workspace.GetWorkspaceObjectPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoPermission` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoPermissions` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.workspace.RepoPermissionsRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectAccessControlRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectAccessControlResponse` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectPermission` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectPermissionLevel` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectPermissions` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectPermissionsDescription` dataclass.
+ * Added `databricks.sdk.service.workspace.WorkspaceObjectPermissionsRequest` dataclass.
+
+OpenAPI SHA: 386b65ecdc825b9c3ed4aa7ca88e2e5baf9d87df, Date: 2023-08-07
+
 ## 0.3.1
 
 * Added timeout to `w.clusters.ensure_cluster_running()` ([#227](https://github.com/databricks/databricks-sdk-py/pull/227)).
