@@ -902,13 +902,6 @@ class ClusterSpec:
 
 
 @dataclass
-class ClusterStatusRequest:
-    """Get status"""
-
-    cluster_id: str
-
-
-@dataclass
 class Command:
     cluster_id: Optional[str] = None
     command: Optional[str] = None
@@ -939,15 +932,6 @@ class CommandStatus(Enum):
     FINISHED = 'Finished'
     QUEUED = 'Queued'
     RUNNING = 'Running'
-
-
-@dataclass
-class CommandStatusRequest:
-    """Get command info"""
-
-    cluster_id: str
-    context_id: str
-    command_id: str
 
 
 @dataclass
@@ -995,14 +979,6 @@ class ContextStatus(Enum):
     ERROR = 'Error'
     PENDING = 'Pending'
     RUNNING = 'Running'
-
-
-@dataclass
-class ContextStatusRequest:
-    """Get status"""
-
-    cluster_id: str
-    context_id: str
 
 
 @dataclass
@@ -1352,13 +1328,6 @@ class DeleteCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DeleteCluster':
         return cls(cluster_id=d.get('cluster_id', None))
-
-
-@dataclass
-class DeleteGlobalInitScriptRequest:
-    """Delete init script"""
-
-    script_id: str
 
 
 @dataclass
@@ -1921,76 +1890,6 @@ class GcpAvailability(Enum):
 
 
 @dataclass
-class GetClusterPermissionLevelsRequest:
-    """Get cluster permission levels"""
-
-    cluster_id: str
-
-
-@dataclass
-class GetClusterPermissionLevelsResponse:
-    permission_levels: Optional['List[ClusterPermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPermissionsDescription))
-
-
-@dataclass
-class GetClusterPermissionsRequest:
-    """Get cluster permissions"""
-
-    cluster_id: str
-
-
-@dataclass
-class GetClusterPolicyPermissionLevelsRequest:
-    """Get cluster policy permission levels"""
-
-    cluster_policy_id: str
-
-
-@dataclass
-class GetClusterPolicyPermissionLevelsResponse:
-    permission_levels: Optional['List[ClusterPolicyPermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPolicyPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPolicyPermissionsDescription))
-
-
-@dataclass
-class GetClusterPolicyPermissionsRequest:
-    """Get cluster policy permissions"""
-
-    cluster_policy_id: str
-
-
-@dataclass
-class GetClusterPolicyRequest:
-    """Get entity"""
-
-    policy_id: str
-
-
-@dataclass
-class GetClusterRequest:
-    """Get cluster info"""
-
-    cluster_id: str
-
-
-@dataclass
 class GetEvents:
     cluster_id: str
     end_time: Optional[int] = None
@@ -2047,13 +1946,6 @@ class GetEventsResponse:
         return cls(events=_repeated(d, 'events', ClusterEvent),
                    next_page=_from_dict(d, 'next_page', GetEvents),
                    total_count=d.get('total_count', None))
-
-
-@dataclass
-class GetGlobalInitScriptRequest:
-    """Get an init script"""
-
-    script_id: str
 
 
 @dataclass
@@ -2127,48 +2019,6 @@ class GetInstancePool:
                    state=_enum(d, 'state', InstancePoolState),
                    stats=_from_dict(d, 'stats', InstancePoolStats),
                    status=_from_dict(d, 'status', InstancePoolStatus))
-
-
-@dataclass
-class GetInstancePoolPermissionLevelsRequest:
-    """Get instance pool permission levels"""
-
-    instance_pool_id: str
-
-
-@dataclass
-class GetInstancePoolPermissionLevelsResponse:
-    permission_levels: Optional['List[InstancePoolPermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetInstancePoolPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', InstancePoolPermissionsDescription))
-
-
-@dataclass
-class GetInstancePoolPermissionsRequest:
-    """Get instance pool permissions"""
-
-    instance_pool_id: str
-
-
-@dataclass
-class GetInstancePoolRequest:
-    """Get instance pool information"""
-
-    instance_pool_id: str
-
-
-@dataclass
-class GetPolicyFamilyRequest:
-    """Get policy family information"""
-
-    policy_family_id: str
 
 
 @dataclass
@@ -2817,21 +2667,6 @@ class ListAvailableZonesResponse:
 
 
 @dataclass
-class ListClusterPoliciesRequest:
-    """Get a cluster policy"""
-
-    sort_column: Optional['ListSortColumn'] = None
-    sort_order: Optional['ListSortOrder'] = None
-
-
-@dataclass
-class ListClustersRequest:
-    """List all clusters"""
-
-    can_use_client: Optional[str] = None
-
-
-@dataclass
 class ListClustersResponse:
     clusters: Optional['List[ClusterDetails]'] = None
 
@@ -2913,14 +2748,6 @@ class ListPoliciesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPoliciesResponse':
         return cls(policies=_repeated(d, 'policies', Policy))
-
-
-@dataclass
-class ListPolicyFamiliesRequest:
-    """List policy families"""
-
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
 
 
 @dataclass
@@ -3679,8 +3506,7 @@ class ClusterPoliciesAPI:
                description: Optional[str] = None,
                max_clusters_per_user: Optional[int] = None,
                policy_family_definition_overrides: Optional[str] = None,
-               policy_family_id: Optional[str] = None,
-               **kwargs) -> CreatePolicyResponse:
+               policy_family_id: Optional[str] = None) -> CreatePolicyResponse:
         """Create a new policy.
         
         Creates a new policy with prescribed settings.
@@ -3710,20 +3536,19 @@ class ClusterPoliciesAPI:
         
         :returns: :class:`CreatePolicyResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreatePolicy(definition=definition,
-                                   description=description,
-                                   max_clusters_per_user=max_clusters_per_user,
-                                   name=name,
-                                   policy_family_definition_overrides=policy_family_definition_overrides,
-                                   policy_family_id=policy_family_id)
-        body = request.as_dict()
+        body = {}
+        if definition is not None: body['definition'] = definition
+        if description is not None: body['description'] = description
+        if max_clusters_per_user is not None: body['max_clusters_per_user'] = max_clusters_per_user
+        if name is not None: body['name'] = name
+        if policy_family_definition_overrides is not None:
+            body['policy_family_definition_overrides'] = policy_family_definition_overrides
+        if policy_family_id is not None: body['policy_family_id'] = policy_family_id
 
         json = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body)
         return CreatePolicyResponse.from_dict(json)
 
-    def delete(self, policy_id: str, **kwargs):
+    def delete(self, policy_id: str):
         """Delete a cluster policy.
         
         Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
@@ -3733,10 +3558,8 @@ class ClusterPoliciesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeletePolicy(policy_id=policy_id)
-        body = request.as_dict()
+        body = {}
+        if policy_id is not None: body['policy_id'] = policy_id
         self._api.do('POST', '/api/2.0/policies/clusters/delete', body=body)
 
     def edit(self,
@@ -3747,8 +3570,7 @@ class ClusterPoliciesAPI:
              description: Optional[str] = None,
              max_clusters_per_user: Optional[int] = None,
              policy_family_definition_overrides: Optional[str] = None,
-             policy_family_id: Optional[str] = None,
-             **kwargs):
+             policy_family_id: Optional[str] = None):
         """Update a cluster policy.
         
         Update an existing policy for cluster. This operation may make some clusters governed by the previous
@@ -3781,19 +3603,18 @@ class ClusterPoliciesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EditPolicy(definition=definition,
-                                 description=description,
-                                 max_clusters_per_user=max_clusters_per_user,
-                                 name=name,
-                                 policy_family_definition_overrides=policy_family_definition_overrides,
-                                 policy_family_id=policy_family_id,
-                                 policy_id=policy_id)
-        body = request.as_dict()
+        body = {}
+        if definition is not None: body['definition'] = definition
+        if description is not None: body['description'] = description
+        if max_clusters_per_user is not None: body['max_clusters_per_user'] = max_clusters_per_user
+        if name is not None: body['name'] = name
+        if policy_family_definition_overrides is not None:
+            body['policy_family_definition_overrides'] = policy_family_definition_overrides
+        if policy_family_id is not None: body['policy_family_id'] = policy_family_id
+        if policy_id is not None: body['policy_id'] = policy_id
         self._api.do('POST', '/api/2.0/policies/clusters/edit', body=body)
 
-    def get(self, policy_id: str, **kwargs) -> Policy:
+    def get(self, policy_id: str) -> Policy:
         """Get entity.
         
         Get a cluster policy entity. Creation and editing is available to admins only.
@@ -3803,12 +3624,9 @@ class ClusterPoliciesAPI:
         
         :returns: :class:`Policy`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetClusterPolicyRequest(policy_id=policy_id)
 
         query = {}
-        if policy_id: query['policy_id'] = request.policy_id
+        if policy_id is not None: query['policy_id'] = policy_id
 
         json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
         return Policy.from_dict(json)
@@ -3853,8 +3671,7 @@ class ClusterPoliciesAPI:
     def list(self,
              *,
              sort_column: Optional[ListSortColumn] = None,
-             sort_order: Optional[ListSortOrder] = None,
-             **kwargs) -> Iterator[Policy]:
+             sort_order: Optional[ListSortOrder] = None) -> Iterator[Policy]:
         """Get a cluster policy.
         
         Returns a list of policies accessible by the requesting user.
@@ -3868,13 +3685,10 @@ class ClusterPoliciesAPI:
         
         :returns: Iterator over :class:`Policy`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListClusterPoliciesRequest(sort_column=sort_column, sort_order=sort_order)
 
         query = {}
-        if sort_column: query['sort_column'] = request.sort_column.value
-        if sort_order: query['sort_order'] = request.sort_order.value
+        if sort_column is not None: query['sort_column'] = sort_column.value
+        if sort_order is not None: query['sort_order'] = sort_order.value
 
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query)
         return [Policy.from_dict(v) for v in json.get('policies', [])]
@@ -4023,7 +3837,7 @@ class ClustersAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def change_owner(self, cluster_id: str, owner_username: str, **kwargs):
+    def change_owner(self, cluster_id: str, owner_username: str):
         """Change cluster owner.
         
         Change the owner of the cluster. You must be an admin to perform this operation.
@@ -4035,10 +3849,9 @@ class ClustersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ChangeClusterOwner(cluster_id=cluster_id, owner_username=owner_username)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if owner_username is not None: body['owner_username'] = owner_username
         self._api.do('POST', '/api/2.0/clusters/change-owner', body=body)
 
     def create(self,
@@ -4067,8 +3880,7 @@ class ClustersAPI:
                spark_conf: Optional[Dict[str, str]] = None,
                spark_env_vars: Optional[Dict[str, str]] = None,
                ssh_public_keys: Optional[List[str]] = None,
-               workload_type: Optional[WorkloadType] = None,
-               **kwargs) -> Wait[ClusterDetails]:
+               workload_type: Optional[WorkloadType] = None) -> Wait[ClusterDetails]:
         """Create new cluster.
         
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
@@ -4181,34 +3993,34 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCluster(apply_policy_default_values=apply_policy_default_values,
-                                    autoscale=autoscale,
-                                    autotermination_minutes=autotermination_minutes,
-                                    aws_attributes=aws_attributes,
-                                    azure_attributes=azure_attributes,
-                                    cluster_log_conf=cluster_log_conf,
-                                    cluster_name=cluster_name,
-                                    cluster_source=cluster_source,
-                                    custom_tags=custom_tags,
-                                    driver_instance_pool_id=driver_instance_pool_id,
-                                    driver_node_type_id=driver_node_type_id,
-                                    enable_elastic_disk=enable_elastic_disk,
-                                    enable_local_disk_encryption=enable_local_disk_encryption,
-                                    gcp_attributes=gcp_attributes,
-                                    init_scripts=init_scripts,
-                                    instance_pool_id=instance_pool_id,
-                                    node_type_id=node_type_id,
-                                    num_workers=num_workers,
-                                    policy_id=policy_id,
-                                    runtime_engine=runtime_engine,
-                                    spark_conf=spark_conf,
-                                    spark_env_vars=spark_env_vars,
-                                    spark_version=spark_version,
-                                    ssh_public_keys=ssh_public_keys,
-                                    workload_type=workload_type)
-        body = request.as_dict()
+        body = {}
+        if apply_policy_default_values is not None:
+            body['apply_policy_default_values'] = apply_policy_default_values
+        if autoscale is not None: body['autoscale'] = autoscale.as_dict()
+        if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
+        if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
+        if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if cluster_log_conf is not None: body['cluster_log_conf'] = cluster_log_conf.as_dict()
+        if cluster_name is not None: body['cluster_name'] = cluster_name
+        if cluster_source is not None: body['cluster_source'] = cluster_source.value
+        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if driver_instance_pool_id is not None: body['driver_instance_pool_id'] = driver_instance_pool_id
+        if driver_node_type_id is not None: body['driver_node_type_id'] = driver_node_type_id
+        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = enable_local_disk_encryption
+        if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
+        if init_scripts is not None: body['init_scripts'] = [v.as_dict() for v in init_scripts]
+        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if node_type_id is not None: body['node_type_id'] = node_type_id
+        if num_workers is not None: body['num_workers'] = num_workers
+        if policy_id is not None: body['policy_id'] = policy_id
+        if runtime_engine is not None: body['runtime_engine'] = runtime_engine.value
+        if spark_conf is not None: body['spark_conf'] = spark_conf
+        if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
+        if spark_version is not None: body['spark_version'] = spark_version
+        if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
         return Wait(self.wait_get_cluster_running,
                     response=CreateClusterResponse.from_dict(op_response),
@@ -4269,7 +4081,7 @@ class ClustersAPI:
                            ssh_public_keys=ssh_public_keys,
                            workload_type=workload_type).result(timeout=timeout)
 
-    def delete(self, cluster_id: str, **kwargs) -> Wait[ClusterDetails]:
+    def delete(self, cluster_id: str) -> Wait[ClusterDetails]:
         """Terminate cluster.
         
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
@@ -4283,12 +4095,10 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_terminated for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteCluster(cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/delete', body=body)
-        return Wait(self.wait_get_cluster_terminated, cluster_id=request.cluster_id)
+        return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
 
     def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.delete(cluster_id=cluster_id).result(timeout=timeout)
@@ -4323,8 +4133,7 @@ class ClustersAPI:
              spark_conf: Optional[Dict[str, str]] = None,
              spark_env_vars: Optional[Dict[str, str]] = None,
              ssh_public_keys: Optional[List[str]] = None,
-             workload_type: Optional[WorkloadType] = None,
-             **kwargs) -> Wait[ClusterDetails]:
+             workload_type: Optional[WorkloadType] = None) -> Wait[ClusterDetails]:
         """Update cluster configuration.
         
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -4449,40 +4258,40 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EditCluster(apply_policy_default_values=apply_policy_default_values,
-                                  autoscale=autoscale,
-                                  autotermination_minutes=autotermination_minutes,
-                                  aws_attributes=aws_attributes,
-                                  azure_attributes=azure_attributes,
-                                  cluster_id=cluster_id,
-                                  cluster_log_conf=cluster_log_conf,
-                                  cluster_name=cluster_name,
-                                  cluster_source=cluster_source,
-                                  custom_tags=custom_tags,
-                                  data_security_mode=data_security_mode,
-                                  docker_image=docker_image,
-                                  driver_instance_pool_id=driver_instance_pool_id,
-                                  driver_node_type_id=driver_node_type_id,
-                                  enable_elastic_disk=enable_elastic_disk,
-                                  enable_local_disk_encryption=enable_local_disk_encryption,
-                                  gcp_attributes=gcp_attributes,
-                                  init_scripts=init_scripts,
-                                  instance_pool_id=instance_pool_id,
-                                  node_type_id=node_type_id,
-                                  num_workers=num_workers,
-                                  policy_id=policy_id,
-                                  runtime_engine=runtime_engine,
-                                  single_user_name=single_user_name,
-                                  spark_conf=spark_conf,
-                                  spark_env_vars=spark_env_vars,
-                                  spark_version=spark_version,
-                                  ssh_public_keys=ssh_public_keys,
-                                  workload_type=workload_type)
-        body = request.as_dict()
+        body = {}
+        if apply_policy_default_values is not None:
+            body['apply_policy_default_values'] = apply_policy_default_values
+        if autoscale is not None: body['autoscale'] = autoscale.as_dict()
+        if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
+        if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
+        if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_log_conf is not None: body['cluster_log_conf'] = cluster_log_conf.as_dict()
+        if cluster_name is not None: body['cluster_name'] = cluster_name
+        if cluster_source is not None: body['cluster_source'] = cluster_source.value
+        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if data_security_mode is not None: body['data_security_mode'] = data_security_mode.value
+        if docker_image is not None: body['docker_image'] = docker_image.as_dict()
+        if driver_instance_pool_id is not None: body['driver_instance_pool_id'] = driver_instance_pool_id
+        if driver_node_type_id is not None: body['driver_node_type_id'] = driver_node_type_id
+        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = enable_local_disk_encryption
+        if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
+        if init_scripts is not None: body['init_scripts'] = [v.as_dict() for v in init_scripts]
+        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if node_type_id is not None: body['node_type_id'] = node_type_id
+        if num_workers is not None: body['num_workers'] = num_workers
+        if policy_id is not None: body['policy_id'] = policy_id
+        if runtime_engine is not None: body['runtime_engine'] = runtime_engine.value
+        if single_user_name is not None: body['single_user_name'] = single_user_name
+        if spark_conf is not None: body['spark_conf'] = spark_conf
+        if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
+        if spark_version is not None: body['spark_version'] = spark_version
+        if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
-        return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def edit_and_wait(
         self,
@@ -4555,8 +4364,7 @@ class ClustersAPI:
                limit: Optional[int] = None,
                offset: Optional[int] = None,
                order: Optional[GetEventsOrder] = None,
-               start_time: Optional[int] = None,
-               **kwargs) -> Iterator[ClusterEvent]:
+               start_time: Optional[int] = None) -> Iterator[ClusterEvent]:
         """List cluster activity events.
         
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
@@ -4582,16 +4390,14 @@ class ClustersAPI:
         
         :returns: Iterator over :class:`ClusterEvent`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetEvents(cluster_id=cluster_id,
-                                end_time=end_time,
-                                event_types=event_types,
-                                limit=limit,
-                                offset=offset,
-                                order=order,
-                                start_time=start_time)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if end_time is not None: body['end_time'] = end_time
+        if event_types is not None: body['event_types'] = [v.value for v in event_types]
+        if limit is not None: body['limit'] = limit
+        if offset is not None: body['offset'] = offset
+        if order is not None: body['order'] = order.value
+        if start_time is not None: body['start_time'] = start_time
 
         while True:
             json = self._api.do('POST', '/api/2.0/clusters/events', body=body)
@@ -4603,7 +4409,7 @@ class ClustersAPI:
                 return
             body = json['next_page']
 
-    def get(self, cluster_id: str, **kwargs) -> ClusterDetails:
+    def get(self, cluster_id: str) -> ClusterDetails:
         """Get cluster info.
         
         Retrieves the information for a cluster given its identifier. Clusters can be described while they are
@@ -4614,51 +4420,14 @@ class ClustersAPI:
         
         :returns: :class:`ClusterDetails`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetClusterRequest(cluster_id=cluster_id)
 
         query = {}
-        if cluster_id: query['cluster_id'] = request.cluster_id
+        if cluster_id is not None: query['cluster_id'] = cluster_id
 
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterDetails.from_dict(json)
 
-    def get_cluster_permission_levels(self, cluster_id: str, **kwargs) -> GetClusterPermissionLevelsResponse:
-        """Get cluster permission levels.
-        
-        Gets the permission levels that a user can have on an object.
-        
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
-        
-        :returns: :class:`GetClusterPermissionLevelsResponse`
-        """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetClusterPermissionLevelsRequest(cluster_id=cluster_id)
-
-        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{request.cluster_id}/permissionLevels')
-        return GetClusterPermissionLevelsResponse.from_dict(json)
-
-    def get_cluster_permissions(self, cluster_id: str, **kwargs) -> ClusterPermissions:
-        """Get cluster permissions.
-        
-        Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
-        
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
-        
-        :returns: :class:`ClusterPermissions`
-        """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetClusterPermissionsRequest(cluster_id=cluster_id)
-
-        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{request.cluster_id}')
-        return ClusterPermissions.from_dict(json)
-
-    def list(self, *, can_use_client: Optional[str] = None, **kwargs) -> Iterator[ClusterDetails]:
+    def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
         """List all clusters.
         
         Return information about all pinned clusters, active clusters, up to 200 of the most recently
@@ -4677,12 +4446,9 @@ class ClustersAPI:
         
         :returns: Iterator over :class:`ClusterDetails`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListClustersRequest(can_use_client=can_use_client)
 
         query = {}
-        if can_use_client: query['can_use_client'] = request.can_use_client
+        if can_use_client is not None: query['can_use_client'] = can_use_client
 
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query)
         return [ClusterDetails.from_dict(v) for v in json.get('clusters', [])]
@@ -4710,7 +4476,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/list-zones')
         return ListAvailableZonesResponse.from_dict(json)
 
-    def permanent_delete(self, cluster_id: str, **kwargs):
+    def permanent_delete(self, cluster_id: str):
         """Permanently delete cluster.
         
         Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously
@@ -4724,13 +4490,11 @@ class ClustersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PermanentDeleteCluster(cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/permanent-delete', body=body)
 
-    def pin(self, cluster_id: str, **kwargs):
+    def pin(self, cluster_id: str):
         """Pin cluster.
         
         Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
@@ -4741,18 +4505,15 @@ class ClustersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PinCluster(cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/pin', body=body)
 
     def resize(self,
                cluster_id: str,
                *,
                autoscale: Optional[AutoScale] = None,
-               num_workers: Optional[int] = None,
-               **kwargs) -> Wait[ClusterDetails]:
+               num_workers: Optional[int] = None) -> Wait[ClusterDetails]:
         """Resize cluster.
         
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
@@ -4777,12 +4538,12 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ResizeCluster(autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers)
-        body = request.as_dict()
+        body = {}
+        if autoscale is not None: body['autoscale'] = autoscale.as_dict()
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if num_workers is not None: body['num_workers'] = num_workers
         self._api.do('POST', '/api/2.0/clusters/resize', body=body)
-        return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def resize_and_wait(self,
                         cluster_id: str,
@@ -4793,11 +4554,7 @@ class ClustersAPI:
         return self.resize(autoscale=autoscale, cluster_id=cluster_id,
                            num_workers=num_workers).result(timeout=timeout)
 
-    def restart(self,
-                cluster_id: str,
-                *,
-                restart_user: Optional[str] = None,
-                **kwargs) -> Wait[ClusterDetails]:
+    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None) -> Wait[ClusterDetails]:
         """Restart cluster.
         
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
@@ -4812,12 +4569,11 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RestartCluster(cluster_id=cluster_id, restart_user=restart_user)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if restart_user is not None: body['restart_user'] = restart_user
         self._api.do('POST', '/api/2.0/clusters/restart', body=body)
-        return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def restart_and_wait(self,
                          cluster_id: str,
@@ -4861,7 +4617,7 @@ class ClustersAPI:
         json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
         return GetSparkVersionsResponse.from_dict(json)
 
-    def start(self, cluster_id: str, **kwargs) -> Wait[ClusterDetails]:
+    def start(self, cluster_id: str) -> Wait[ClusterDetails]:
         """Start terminated cluster.
         
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
@@ -4878,17 +4634,15 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = StartCluster(cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/start', body=body)
-        return Wait(self.wait_get_cluster_running, cluster_id=request.cluster_id)
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
 
-    def unpin(self, cluster_id: str, **kwargs):
+    def unpin(self, cluster_id: str):
         """Unpin cluster.
         
         Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
@@ -4900,10 +4654,8 @@ class ClustersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UnpinCluster(cluster_id=cluster_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
         self._api.do('POST', '/api/2.0/clusters/unpin', body=body)
 
     def update_cluster_permissions(self,
@@ -5041,8 +4793,7 @@ class CommandExecutionAPI:
                *,
                cluster_id: Optional[str] = None,
                command_id: Optional[str] = None,
-               context_id: Optional[str] = None,
-               **kwargs) -> Wait[CommandStatusResponse]:
+               context_id: Optional[str] = None) -> Wait[CommandStatusResponse]:
         """Cancel a command.
         
         Cancels a currently running command within an execution context.
@@ -5057,15 +4808,15 @@ class CommandExecutionAPI:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_cancelled for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CancelCommand(cluster_id=cluster_id, command_id=command_id, context_id=context_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['clusterId'] = cluster_id
+        if command_id is not None: body['commandId'] = command_id
+        if context_id is not None: body['contextId'] = context_id
         self._api.do('POST', '/api/1.2/commands/cancel', body=body)
         return Wait(self.wait_command_status_command_execution_cancelled,
-                    cluster_id=request.cluster_id,
-                    command_id=request.command_id,
-                    context_id=request.context_id)
+                    cluster_id=cluster_id,
+                    command_id=command_id,
+                    context_id=context_id)
 
     def cancel_and_wait(
         self,
@@ -5077,8 +4828,7 @@ class CommandExecutionAPI:
         return self.cancel(cluster_id=cluster_id, command_id=command_id,
                            context_id=context_id).result(timeout=timeout)
 
-    def command_status(self, cluster_id: str, context_id: str, command_id: str,
-                       **kwargs) -> CommandStatusResponse:
+    def command_status(self, cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse:
         """Get command info.
         
         Gets the status of and, if available, the results from a currently executing command.
@@ -5091,21 +4841,16 @@ class CommandExecutionAPI:
         
         :returns: :class:`CommandStatusResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CommandStatusRequest(cluster_id=cluster_id,
-                                           command_id=command_id,
-                                           context_id=context_id)
 
         query = {}
-        if cluster_id: query['clusterId'] = request.cluster_id
-        if command_id: query['commandId'] = request.command_id
-        if context_id: query['contextId'] = request.context_id
+        if cluster_id is not None: query['clusterId'] = cluster_id
+        if command_id is not None: query['commandId'] = command_id
+        if context_id is not None: query['contextId'] = context_id
 
         json = self._api.do('GET', '/api/1.2/commands/status', query=query)
         return CommandStatusResponse.from_dict(json)
 
-    def context_status(self, cluster_id: str, context_id: str, **kwargs) -> ContextStatusResponse:
+    def context_status(self, cluster_id: str, context_id: str) -> ContextStatusResponse:
         """Get status.
         
         Gets the status for an execution context.
@@ -5115,13 +4860,10 @@ class CommandExecutionAPI:
         
         :returns: :class:`ContextStatusResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ContextStatusRequest(cluster_id=cluster_id, context_id=context_id)
 
         query = {}
-        if cluster_id: query['clusterId'] = request.cluster_id
-        if context_id: query['contextId'] = request.context_id
+        if cluster_id is not None: query['clusterId'] = cluster_id
+        if context_id is not None: query['contextId'] = context_id
 
         json = self._api.do('GET', '/api/1.2/contexts/status', query=query)
         return ContextStatusResponse.from_dict(json)
@@ -5129,8 +4871,7 @@ class CommandExecutionAPI:
     def create(self,
                *,
                cluster_id: Optional[str] = None,
-               language: Optional[Language] = None,
-               **kwargs) -> Wait[ContextStatusResponse]:
+               language: Optional[Language] = None) -> Wait[ContextStatusResponse]:
         """Create an execution context.
         
         Creates an execution context for running cluster commands.
@@ -5145,14 +4886,13 @@ class CommandExecutionAPI:
           Long-running operation waiter for :class:`ContextStatusResponse`.
           See :method:wait_context_status_command_execution_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateContext(cluster_id=cluster_id, language=language)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['clusterId'] = cluster_id
+        if language is not None: body['language'] = language.value
         op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body)
         return Wait(self.wait_context_status_command_execution_running,
                     response=Created.from_dict(op_response),
-                    cluster_id=request.cluster_id,
+                    cluster_id=cluster_id,
                     context_id=op_response['id'])
 
     def create_and_wait(
@@ -5163,7 +4903,7 @@ class CommandExecutionAPI:
         timeout=timedelta(minutes=20)) -> ContextStatusResponse:
         return self.create(cluster_id=cluster_id, language=language).result(timeout=timeout)
 
-    def destroy(self, cluster_id: str, context_id: str, **kwargs):
+    def destroy(self, cluster_id: str, context_id: str):
         """Delete an execution context.
         
         Deletes an execution context.
@@ -5173,10 +4913,9 @@ class CommandExecutionAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DestroyContext(cluster_id=cluster_id, context_id=context_id)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['clusterId'] = cluster_id
+        if context_id is not None: body['contextId'] = context_id
         self._api.do('POST', '/api/1.2/contexts/destroy', body=body)
 
     def execute(self,
@@ -5184,8 +4923,7 @@ class CommandExecutionAPI:
                 cluster_id: Optional[str] = None,
                 command: Optional[str] = None,
                 context_id: Optional[str] = None,
-                language: Optional[Language] = None,
-                **kwargs) -> Wait[CommandStatusResponse]:
+                language: Optional[Language] = None) -> Wait[CommandStatusResponse]:
         """Run a command.
         
         Runs a cluster command in the given execution context, using the provided language.
@@ -5204,19 +4942,17 @@ class CommandExecutionAPI:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_finished_or_error for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Command(cluster_id=cluster_id,
-                              command=command,
-                              context_id=context_id,
-                              language=language)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['clusterId'] = cluster_id
+        if command is not None: body['command'] = command
+        if context_id is not None: body['contextId'] = context_id
+        if language is not None: body['language'] = language.value
         op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body)
         return Wait(self.wait_command_status_command_execution_finished_or_error,
                     response=Created.from_dict(op_response),
-                    cluster_id=request.cluster_id,
+                    cluster_id=cluster_id,
                     command_id=op_response['id'],
-                    context_id=request.context_id)
+                    context_id=context_id)
 
     def execute_and_wait(
         self,
@@ -5247,8 +4983,7 @@ class GlobalInitScriptsAPI:
                script: str,
                *,
                enabled: Optional[bool] = None,
-               position: Optional[int] = None,
-               **kwargs) -> CreateResponse:
+               position: Optional[int] = None) -> CreateResponse:
         """Create init script.
         
         Creates a new global init script in this workspace.
@@ -5272,18 +5007,16 @@ class GlobalInitScriptsAPI:
         
         :returns: :class:`CreateResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GlobalInitScriptCreateRequest(enabled=enabled,
-                                                    name=name,
-                                                    position=position,
-                                                    script=script)
-        body = request.as_dict()
+        body = {}
+        if enabled is not None: body['enabled'] = enabled
+        if name is not None: body['name'] = name
+        if position is not None: body['position'] = position
+        if script is not None: body['script'] = script
 
         json = self._api.do('POST', '/api/2.0/global-init-scripts', body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, script_id: str, **kwargs):
+    def delete(self, script_id: str):
         """Delete init script.
         
         Deletes a global init script.
@@ -5293,13 +5026,10 @@ class GlobalInitScriptsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteGlobalInitScriptRequest(script_id=script_id)
 
-        self._api.do('DELETE', f'/api/2.0/global-init-scripts/{request.script_id}')
+        self._api.do('DELETE', f'/api/2.0/global-init-scripts/{script_id}')
 
-    def get(self, script_id: str, **kwargs) -> GlobalInitScriptDetailsWithContent:
+    def get(self, script_id: str) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
         
         Gets all the details of a script, including its Base64-encoded contents.
@@ -5309,11 +5039,8 @@ class GlobalInitScriptsAPI:
         
         :returns: :class:`GlobalInitScriptDetailsWithContent`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetGlobalInitScriptRequest(script_id=script_id)
 
-        json = self._api.do('GET', f'/api/2.0/global-init-scripts/{request.script_id}')
+        json = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}')
         return GlobalInitScriptDetailsWithContent.from_dict(json)
 
     def list(self) -> Iterator[GlobalInitScriptDetails]:
@@ -5335,8 +5062,7 @@ class GlobalInitScriptsAPI:
                script_id: str,
                *,
                enabled: Optional[bool] = None,
-               position: Optional[int] = None,
-               **kwargs):
+               position: Optional[int] = None):
         """Update init script.
         
         Updates a global init script, specifying only the fields to change. All fields are optional.
@@ -5363,15 +5089,12 @@ class GlobalInitScriptsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GlobalInitScriptUpdateRequest(enabled=enabled,
-                                                    name=name,
-                                                    position=position,
-                                                    script=script,
-                                                    script_id=script_id)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/global-init-scripts/{request.script_id}', body=body)
+        body = {}
+        if enabled is not None: body['enabled'] = enabled
+        if name is not None: body['name'] = name
+        if position is not None: body['position'] = position
+        if script is not None: body['script'] = script
+        self._api.do('PATCH', f'/api/2.0/global-init-scripts/{script_id}', body=body)
 
 
 class InstancePoolsAPI:
@@ -5408,8 +5131,7 @@ class InstancePoolsAPI:
                max_capacity: Optional[int] = None,
                min_idle_instances: Optional[int] = None,
                preloaded_docker_images: Optional[List[DockerImage]] = None,
-               preloaded_spark_versions: Optional[List[str]] = None,
-               **kwargs) -> CreateInstancePoolResponse:
+               preloaded_spark_versions: Optional[List[str]] = None) -> CreateInstancePoolResponse:
         """Create a new instance pool.
         
         Creates a new instance pool using idle and ready-to-use cloud instances.
@@ -5465,29 +5187,30 @@ class InstancePoolsAPI:
         
         :returns: :class:`CreateInstancePoolResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateInstancePool(
-                aws_attributes=aws_attributes,
-                azure_attributes=azure_attributes,
-                custom_tags=custom_tags,
-                disk_spec=disk_spec,
-                enable_elastic_disk=enable_elastic_disk,
-                gcp_attributes=gcp_attributes,
-                idle_instance_autotermination_minutes=idle_instance_autotermination_minutes,
-                instance_pool_fleet_attributes=instance_pool_fleet_attributes,
-                instance_pool_name=instance_pool_name,
-                max_capacity=max_capacity,
-                min_idle_instances=min_idle_instances,
-                node_type_id=node_type_id,
-                preloaded_docker_images=preloaded_docker_images,
-                preloaded_spark_versions=preloaded_spark_versions)
-        body = request.as_dict()
+        body = {}
+        if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
+        if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if disk_spec is not None: body['disk_spec'] = disk_spec.as_dict()
+        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
+        if idle_instance_autotermination_minutes is not None:
+            body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
+        if instance_pool_fleet_attributes is not None:
+            body['instance_pool_fleet_attributes'] = instance_pool_fleet_attributes.as_dict()
+        if instance_pool_name is not None: body['instance_pool_name'] = instance_pool_name
+        if max_capacity is not None: body['max_capacity'] = max_capacity
+        if min_idle_instances is not None: body['min_idle_instances'] = min_idle_instances
+        if node_type_id is not None: body['node_type_id'] = node_type_id
+        if preloaded_docker_images is not None:
+            body['preloaded_docker_images'] = [v.as_dict() for v in preloaded_docker_images]
+        if preloaded_spark_versions is not None:
+            body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
 
         json = self._api.do('POST', '/api/2.0/instance-pools/create', body=body)
         return CreateInstancePoolResponse.from_dict(json)
 
-    def delete(self, instance_pool_id: str, **kwargs):
+    def delete(self, instance_pool_id: str):
         """Delete an instance pool.
         
         Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
@@ -5497,10 +5220,8 @@ class InstancePoolsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteInstancePool(instance_pool_id=instance_pool_id)
-        body = request.as_dict()
+        body = {}
+        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
         self._api.do('POST', '/api/2.0/instance-pools/delete', body=body)
 
     def edit(self,
@@ -5519,8 +5240,7 @@ class InstancePoolsAPI:
              max_capacity: Optional[int] = None,
              min_idle_instances: Optional[int] = None,
              preloaded_docker_images: Optional[List[DockerImage]] = None,
-             preloaded_spark_versions: Optional[List[str]] = None,
-             **kwargs):
+             preloaded_spark_versions: Optional[List[str]] = None):
         """Edit an existing instance pool.
         
         Modifies the configuration of an existing instance pool.
@@ -5578,28 +5298,29 @@ class InstancePoolsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EditInstancePool(
-                aws_attributes=aws_attributes,
-                azure_attributes=azure_attributes,
-                custom_tags=custom_tags,
-                disk_spec=disk_spec,
-                enable_elastic_disk=enable_elastic_disk,
-                gcp_attributes=gcp_attributes,
-                idle_instance_autotermination_minutes=idle_instance_autotermination_minutes,
-                instance_pool_fleet_attributes=instance_pool_fleet_attributes,
-                instance_pool_id=instance_pool_id,
-                instance_pool_name=instance_pool_name,
-                max_capacity=max_capacity,
-                min_idle_instances=min_idle_instances,
-                node_type_id=node_type_id,
-                preloaded_docker_images=preloaded_docker_images,
-                preloaded_spark_versions=preloaded_spark_versions)
-        body = request.as_dict()
+        body = {}
+        if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
+        if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if disk_spec is not None: body['disk_spec'] = disk_spec.as_dict()
+        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
+        if idle_instance_autotermination_minutes is not None:
+            body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
+        if instance_pool_fleet_attributes is not None:
+            body['instance_pool_fleet_attributes'] = instance_pool_fleet_attributes.as_dict()
+        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if instance_pool_name is not None: body['instance_pool_name'] = instance_pool_name
+        if max_capacity is not None: body['max_capacity'] = max_capacity
+        if min_idle_instances is not None: body['min_idle_instances'] = min_idle_instances
+        if node_type_id is not None: body['node_type_id'] = node_type_id
+        if preloaded_docker_images is not None:
+            body['preloaded_docker_images'] = [v.as_dict() for v in preloaded_docker_images]
+        if preloaded_spark_versions is not None:
+            body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
         self._api.do('POST', '/api/2.0/instance-pools/edit', body=body)
 
-    def get(self, instance_pool_id: str, **kwargs) -> GetInstancePool:
+    def get(self, instance_pool_id: str) -> GetInstancePool:
         """Get instance pool information.
         
         Retrieve the information for an instance pool based on its identifier.
@@ -5609,12 +5330,9 @@ class InstancePoolsAPI:
         
         :returns: :class:`GetInstancePool`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetInstancePoolRequest(instance_pool_id=instance_pool_id)
 
         query = {}
-        if instance_pool_id: query['instance_pool_id'] = request.instance_pool_id
+        if instance_pool_id is not None: query['instance_pool_id'] = instance_pool_id
 
         json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query)
         return GetInstancePool.from_dict(json)
@@ -5738,8 +5456,7 @@ class InstanceProfilesAPI:
             *,
             iam_role_arn: Optional[str] = None,
             is_meta_instance_profile: Optional[bool] = None,
-            skip_validation: Optional[bool] = None,
-            **kwargs):
+            skip_validation: Optional[bool] = None):
         """Register an instance profile.
         
         In the UI, you can select the instance profile when launching clusters. This API is only available to
@@ -5769,21 +5486,18 @@ class InstanceProfilesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AddInstanceProfile(iam_role_arn=iam_role_arn,
-                                         instance_profile_arn=instance_profile_arn,
-                                         is_meta_instance_profile=is_meta_instance_profile,
-                                         skip_validation=skip_validation)
-        body = request.as_dict()
+        body = {}
+        if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
+        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
+        if is_meta_instance_profile is not None: body['is_meta_instance_profile'] = is_meta_instance_profile
+        if skip_validation is not None: body['skip_validation'] = skip_validation
         self._api.do('POST', '/api/2.0/instance-profiles/add', body=body)
 
     def edit(self,
              instance_profile_arn: str,
              *,
              iam_role_arn: Optional[str] = None,
-             is_meta_instance_profile: Optional[bool] = None,
-             **kwargs):
+             is_meta_instance_profile: Optional[bool] = None):
         """Edit an instance profile.
         
         The only supported field to change is the optional IAM role ARN associated with the instance profile.
@@ -5817,12 +5531,10 @@ class InstanceProfilesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = InstanceProfile(iam_role_arn=iam_role_arn,
-                                      instance_profile_arn=instance_profile_arn,
-                                      is_meta_instance_profile=is_meta_instance_profile)
-        body = request.as_dict()
+        body = {}
+        if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
+        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
+        if is_meta_instance_profile is not None: body['is_meta_instance_profile'] = is_meta_instance_profile
         self._api.do('POST', '/api/2.0/instance-profiles/edit', body=body)
 
     def list(self) -> Iterator[InstanceProfile]:
@@ -5838,7 +5550,7 @@ class InstanceProfilesAPI:
         json = self._api.do('GET', '/api/2.0/instance-profiles/list')
         return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
 
-    def remove(self, instance_profile_arn: str, **kwargs):
+    def remove(self, instance_profile_arn: str):
         """Remove the instance profile.
         
         Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
@@ -5851,10 +5563,8 @@ class InstanceProfilesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RemoveInstanceProfile(instance_profile_arn=instance_profile_arn)
-        body = request.as_dict()
+        body = {}
+        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
         self._api.do('POST', '/api/2.0/instance-profiles/remove', body=body)
 
 
@@ -5892,7 +5602,7 @@ class LibrariesAPI:
         json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses')
         return ListAllClusterLibraryStatusesResponse.from_dict(json)
 
-    def cluster_status(self, cluster_id: str, **kwargs) -> ClusterLibraryStatuses:
+    def cluster_status(self, cluster_id: str) -> ClusterLibraryStatuses:
         """Get status.
         
         Get the status of libraries on a cluster. A status will be available for all libraries installed on
@@ -5913,17 +5623,14 @@ class LibrariesAPI:
         
         :returns: :class:`ClusterLibraryStatuses`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ClusterStatusRequest(cluster_id=cluster_id)
 
         query = {}
-        if cluster_id: query['cluster_id'] = request.cluster_id
+        if cluster_id is not None: query['cluster_id'] = cluster_id
 
         json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query)
         return ClusterLibraryStatuses.from_dict(json)
 
-    def install(self, cluster_id: str, libraries: List[Library], **kwargs):
+    def install(self, cluster_id: str, libraries: List[Library]):
         """Add a library.
         
         Add libraries to be installed on a cluster. The installation is asynchronous; it happens in the
@@ -5939,13 +5646,12 @@ class LibrariesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = InstallLibraries(cluster_id=cluster_id, libraries=libraries)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
         self._api.do('POST', '/api/2.0/libraries/install', body=body)
 
-    def uninstall(self, cluster_id: str, libraries: List[Library], **kwargs):
+    def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Uninstall libraries.
         
         Set libraries to be uninstalled on a cluster. The libraries won't be uninstalled until the cluster is
@@ -5959,10 +5665,9 @@ class LibrariesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UninstallLibraries(cluster_id=cluster_id, libraries=libraries)
-        body = request.as_dict()
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
         self._api.do('POST', '/api/2.0/libraries/uninstall', body=body)
 
 
@@ -5980,7 +5685,7 @@ class PolicyFamiliesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, policy_family_id: str, **kwargs) -> PolicyFamily:
+    def get(self, policy_family_id: str) -> PolicyFamily:
         """Get policy family information.
         
         Retrieve the information for an policy family based on its identifier.
@@ -5989,18 +5694,14 @@ class PolicyFamiliesAPI:
         
         :returns: :class:`PolicyFamily`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPolicyFamilyRequest(policy_family_id=policy_family_id)
 
-        json = self._api.do('GET', f'/api/2.0/policy-families/{request.policy_family_id}')
+        json = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}')
         return PolicyFamily.from_dict(json)
 
     def list(self,
              *,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None,
-             **kwargs) -> Iterator[PolicyFamily]:
+             page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
         """List policy families.
         
         Retrieve a list of policy families. This API is paginated.
@@ -6012,13 +5713,10 @@ class PolicyFamiliesAPI:
         
         :returns: Iterator over :class:`PolicyFamily`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListPolicyFamiliesRequest(max_results=max_results, page_token=page_token)
 
         query = {}
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/policy-families', query=query)

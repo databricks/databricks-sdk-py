@@ -104,13 +104,6 @@ class CreatePublishedAppIntegrationOutput:
 
 
 @dataclass
-class CreateServicePrincipalSecretRequest:
-    """Create service principal secret"""
-
-    service_principal_id: int
-
-
-@dataclass
 class CreateServicePrincipalSecretResponse:
     create_time: Optional[str] = None
     id: Optional[str] = None
@@ -140,28 +133,6 @@ class CreateServicePrincipalSecretResponse:
 
 
 @dataclass
-class DeleteCustomAppIntegrationRequest:
-    """Delete Custom OAuth App Integration"""
-
-    integration_id: str
-
-
-@dataclass
-class DeletePublishedAppIntegrationRequest:
-    """Delete Published OAuth App Integration"""
-
-    integration_id: str
-
-
-@dataclass
-class DeleteServicePrincipalSecretRequest:
-    """Delete service principal secret"""
-
-    service_principal_id: int
-    secret_id: str
-
-
-@dataclass
 class GetCustomAppIntegrationOutput:
     client_id: Optional[str] = None
     confidential: Optional[bool] = None
@@ -188,13 +159,6 @@ class GetCustomAppIntegrationOutput:
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
-
-
-@dataclass
-class GetCustomAppIntegrationRequest:
-    """Get OAuth Custom App Integration"""
-
-    integration_id: str
 
 
 @dataclass
@@ -235,13 +199,6 @@ class GetPublishedAppIntegrationOutput:
 
 
 @dataclass
-class GetPublishedAppIntegrationRequest:
-    """Get OAuth Published App Integration"""
-
-    integration_id: str
-
-
-@dataclass
 class GetPublishedAppIntegrationsOutput:
     apps: Optional['List[GetPublishedAppIntegrationOutput]'] = None
 
@@ -253,13 +210,6 @@ class GetPublishedAppIntegrationsOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPublishedAppIntegrationsOutput':
         return cls(apps=_repeated(d, 'apps', GetPublishedAppIntegrationOutput))
-
-
-@dataclass
-class ListServicePrincipalSecretsRequest:
-    """List service principal secrets"""
-
-    service_principal_id: int
 
 
 @dataclass
@@ -387,9 +337,7 @@ class CustomAppIntegrationAPI:
                redirect_urls: List[str],
                *,
                confidential: Optional[bool] = None,
-               scopes: Optional[List[str]] = None,
-               token_access_policy: Optional[TokenAccessPolicy] = None,
-               **kwargs) -> CreateCustomAppIntegrationOutput:
+               token_access_policy: Optional[TokenAccessPolicy] = None) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
         
         Create Custom OAuth App Integration.
@@ -410,21 +358,18 @@ class CustomAppIntegrationAPI:
         
         :returns: :class:`CreateCustomAppIntegrationOutput`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCustomAppIntegration(confidential=confidential,
-                                                 name=name,
-                                                 redirect_urls=redirect_urls,
-                                                 scopes=scopes,
-                                                 token_access_policy=token_access_policy)
-        body = request.as_dict()
+        body = {}
+        if confidential is not None: body['confidential'] = confidential
+        if name is not None: body['name'] = name
+        if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
+        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                             body=body)
         return CreateCustomAppIntegrationOutput.from_dict(json)
 
-    def delete(self, integration_id: str, **kwargs):
+    def delete(self, integration_id: str):
         """Delete Custom OAuth App Integration.
         
         Delete an existing Custom OAuth App Integration. You can retrieve the custom oauth app integration via
@@ -435,16 +380,12 @@ class CustomAppIntegrationAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteCustomAppIntegrationRequest(integration_id=integration_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{request.integration_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}')
 
-    def get(self, integration_id: str, **kwargs) -> GetCustomAppIntegrationOutput:
+    def get(self, integration_id: str) -> GetCustomAppIntegrationOutput:
         """Get OAuth Custom App Integration.
         
         Gets the Custom OAuth App Integration for the given integration id.
@@ -454,14 +395,10 @@ class CustomAppIntegrationAPI:
         
         :returns: :class:`GetCustomAppIntegrationOutput`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetCustomAppIntegrationRequest(integration_id=integration_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{request.integration_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}')
         return GetCustomAppIntegrationOutput.from_dict(json)
 
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
@@ -479,8 +416,7 @@ class CustomAppIntegrationAPI:
                integration_id: str,
                *,
                redirect_urls: Optional[List[str]] = None,
-               token_access_policy: Optional[TokenAccessPolicy] = None,
-               **kwargs):
+               token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Custom OAuth App Integration.
         
         Updates an existing custom OAuth App Integration. You can retrieve the custom oauth app integration
@@ -495,15 +431,12 @@ class CustomAppIntegrationAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateCustomAppIntegration(integration_id=integration_id,
-                                                 redirect_urls=redirect_urls,
-                                                 token_access_policy=token_access_policy)
-        body = request.as_dict()
+        body = {}
+        if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
+        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         self._api.do(
             'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{request.integration_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
             body=body)
 
 
@@ -517,7 +450,7 @@ class OAuthEnrollmentAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, enable_all_published_apps: Optional[bool] = None, **kwargs):
+    def create(self, *, enable_all_published_apps: Optional[bool] = None):
         """Create OAuth Enrollment request.
         
         Create an OAuth Enrollment request to enroll OAuth for this account and optionally enable the OAuth
@@ -533,10 +466,9 @@ class OAuthEnrollmentAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateOAuthEnrollment(enable_all_published_apps=enable_all_published_apps)
-        body = request.as_dict()
+        body = {}
+        if enable_all_published_apps is not None:
+            body['enable_all_published_apps'] = enable_all_published_apps
         self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment', body=body)
 
     def get(self) -> OAuthEnrollmentStatus:
@@ -564,11 +496,11 @@ class PublishedAppIntegrationAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               *,
-               app_id: Optional[str] = None,
-               token_access_policy: Optional[TokenAccessPolicy] = None,
-               **kwargs) -> CreatePublishedAppIntegrationOutput:
+    def create(
+            self,
+            *,
+            app_id: Optional[str] = None,
+            token_access_policy: Optional[TokenAccessPolicy] = None) -> CreatePublishedAppIntegrationOutput:
         """Create Published OAuth App Integration.
         
         Create Published OAuth App Integration.
@@ -582,17 +514,16 @@ class PublishedAppIntegrationAPI:
         
         :returns: :class:`CreatePublishedAppIntegrationOutput`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreatePublishedAppIntegration(app_id=app_id, token_access_policy=token_access_policy)
-        body = request.as_dict()
+        body = {}
+        if app_id is not None: body['app_id'] = app_id
+        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                             body=body)
         return CreatePublishedAppIntegrationOutput.from_dict(json)
 
-    def delete(self, integration_id: str, **kwargs):
+    def delete(self, integration_id: str):
         """Delete Published OAuth App Integration.
         
         Delete an existing Published OAuth App Integration. You can retrieve the published oauth app
@@ -603,16 +534,12 @@ class PublishedAppIntegrationAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeletePublishedAppIntegrationRequest(integration_id=integration_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}')
 
-    def get(self, integration_id: str, **kwargs) -> GetPublishedAppIntegrationOutput:
+    def get(self, integration_id: str) -> GetPublishedAppIntegrationOutput:
         """Get OAuth Published App Integration.
         
         Gets the Published OAuth App Integration for the given integration id.
@@ -622,14 +549,10 @@ class PublishedAppIntegrationAPI:
         
         :returns: :class:`GetPublishedAppIntegrationOutput`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPublishedAppIntegrationRequest(integration_id=integration_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}')
         return GetPublishedAppIntegrationOutput.from_dict(json)
 
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
@@ -644,11 +567,7 @@ class PublishedAppIntegrationAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations')
         return [GetPublishedAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
 
-    def update(self,
-               integration_id: str,
-               *,
-               token_access_policy: Optional[TokenAccessPolicy] = None,
-               **kwargs):
+    def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
         
         Updates an existing published OAuth App Integration. You can retrieve the published oauth app
@@ -661,14 +580,11 @@ class PublishedAppIntegrationAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdatePublishedAppIntegration(integration_id=integration_id,
-                                                    token_access_policy=token_access_policy)
-        body = request.as_dict()
+        body = {}
+        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         self._api.do(
             'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{request.integration_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
             body=body)
 
 
@@ -688,7 +604,7 @@ class ServicePrincipalSecretsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, service_principal_id: int, **kwargs) -> CreateServicePrincipalSecretResponse:
+    def create(self, service_principal_id: int) -> CreateServicePrincipalSecretResponse:
         """Create service principal secret.
         
         Create a secret for the given service principal.
@@ -698,17 +614,14 @@ class ServicePrincipalSecretsAPI:
         
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateServicePrincipalSecretRequest(service_principal_id=service_principal_id)
 
         json = self._api.do(
             'POST',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{request.service_principal_id}/credentials/secrets'
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets'
         )
         return CreateServicePrincipalSecretResponse.from_dict(json)
 
-    def delete(self, service_principal_id: int, secret_id: str, **kwargs):
+    def delete(self, service_principal_id: int, secret_id: str):
         """Delete service principal secret.
         
         Delete a secret from the given service principal.
@@ -720,17 +633,13 @@ class ServicePrincipalSecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteServicePrincipalSecretRequest(secret_id=secret_id,
-                                                          service_principal_id=service_principal_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{request.service_principal_id}/credentials/secrets/{request.secret_id},'
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},'
         )
 
-    def list(self, service_principal_id: int, **kwargs) -> Iterator[SecretInfo]:
+    def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
         """List service principal secrets.
         
         List all secrets associated with the given service principal. This operation only returns information
@@ -741,12 +650,9 @@ class ServicePrincipalSecretsAPI:
         
         :returns: Iterator over :class:`SecretInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListServicePrincipalSecretsRequest(service_principal_id=service_principal_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{request.service_principal_id}/credentials/secrets'
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets'
         )
         return [SecretInfo.from_dict(v) for v in json.get('secrets', [])]

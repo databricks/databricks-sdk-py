@@ -192,20 +192,6 @@ class DeleteAcl:
 
 
 @dataclass
-class DeleteGitCredentialRequest:
-    """Delete a credential"""
-
-    credential_id: int
-
-
-@dataclass
-class DeleteRepoRequest:
-    """Delete a repo"""
-
-    repo_id: int
-
-
-@dataclass
 class DeleteScope:
     scope: str
 
@@ -245,14 +231,6 @@ class ExportFormat(Enum):
 
 
 @dataclass
-class ExportRequest:
-    """Export a workspace object"""
-
-    path: str
-    format: Optional['ExportFormat'] = None
-
-
-@dataclass
 class ExportResponse:
     content: Optional[str] = None
 
@@ -267,14 +245,6 @@ class ExportResponse:
 
 
 @dataclass
-class GetAclRequest:
-    """Get secret ACL details"""
-
-    scope: str
-    principal: str
-
-
-@dataclass
 class GetCredentialsResponse:
     credentials: Optional['List[CredentialInfo]'] = None
 
@@ -286,85 +256,6 @@ class GetCredentialsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetCredentialsResponse':
         return cls(credentials=_repeated(d, 'credentials', CredentialInfo))
-
-
-@dataclass
-class GetGitCredentialRequest:
-    """Get a credential entry"""
-
-    credential_id: int
-
-
-@dataclass
-class GetRepoPermissionLevelsRequest:
-    """Get repo permission levels"""
-
-    repo_id: str
-
-
-@dataclass
-class GetRepoPermissionLevelsResponse:
-    permission_levels: Optional['List[RepoPermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetRepoPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', RepoPermissionsDescription))
-
-
-@dataclass
-class GetRepoPermissionsRequest:
-    """Get repo permissions"""
-
-    repo_id: str
-
-
-@dataclass
-class GetRepoRequest:
-    """Get a repo"""
-
-    repo_id: int
-
-
-@dataclass
-class GetStatusRequest:
-    """Get status"""
-
-    path: str
-
-
-@dataclass
-class GetWorkspaceObjectPermissionLevelsRequest:
-    """Get workspace object permission levels"""
-
-    workspace_object_type: str
-    workspace_object_id: str
-
-
-@dataclass
-class GetWorkspaceObjectPermissionLevelsResponse:
-    permission_levels: Optional['List[WorkspaceObjectPermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceObjectPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
-
-
-@dataclass
-class GetWorkspaceObjectPermissionsRequest:
-    """Get workspace object permissions"""
-
-    workspace_object_type: str
-    workspace_object_id: str
 
 
 @dataclass
@@ -423,13 +314,6 @@ class Language(Enum):
 
 
 @dataclass
-class ListAclsRequest:
-    """Lists ACLs"""
-
-    scope: str
-
-
-@dataclass
 class ListAclsResponse:
     items: Optional['List[AclItem]'] = None
 
@@ -441,14 +325,6 @@ class ListAclsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
         return cls(items=_repeated(d, 'items', AclItem))
-
-
-@dataclass
-class ListReposRequest:
-    """Get repos"""
-
-    next_page_token: Optional[str] = None
-    path_prefix: Optional[str] = None
 
 
 @dataclass
@@ -496,13 +372,6 @@ class ListScopesResponse:
 
 
 @dataclass
-class ListSecretsRequest:
-    """List secret keys"""
-
-    scope: str
-
-
-@dataclass
 class ListSecretsResponse:
     secrets: Optional['List[SecretMetadata]'] = None
 
@@ -514,14 +383,6 @@ class ListSecretsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSecretsResponse':
         return cls(secrets=_repeated(d, 'secrets', SecretMetadata))
-
-
-@dataclass
-class ListWorkspaceRequest:
-    """List contents"""
-
-    path: str
-    notebooks_modified_after: Optional[int] = None
 
 
 @dataclass
@@ -1066,8 +927,7 @@ class GitCredentialsAPI:
                git_provider: str,
                *,
                git_username: Optional[str] = None,
-               personal_access_token: Optional[str] = None,
-               **kwargs) -> CreateCredentialsResponse:
+               personal_access_token: Optional[str] = None) -> CreateCredentialsResponse:
         """Create a credential entry.
         
         Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
@@ -1085,17 +945,15 @@ class GitCredentialsAPI:
         
         :returns: :class:`CreateCredentialsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCredentials(git_provider=git_provider,
-                                        git_username=git_username,
-                                        personal_access_token=personal_access_token)
-        body = request.as_dict()
+        body = {}
+        if git_provider is not None: body['git_provider'] = git_provider
+        if git_username is not None: body['git_username'] = git_username
+        if personal_access_token is not None: body['personal_access_token'] = personal_access_token
 
         json = self._api.do('POST', '/api/2.0/git-credentials', body=body)
         return CreateCredentialsResponse.from_dict(json)
 
-    def delete(self, credential_id: int, **kwargs):
+    def delete(self, credential_id: int):
         """Delete a credential.
         
         Deletes the specified Git credential.
@@ -1105,13 +963,10 @@ class GitCredentialsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteGitCredentialRequest(credential_id=credential_id)
 
-        self._api.do('DELETE', f'/api/2.0/git-credentials/{request.credential_id}')
+        self._api.do('DELETE', f'/api/2.0/git-credentials/{credential_id}')
 
-    def get(self, credential_id: int, **kwargs) -> CredentialInfo:
+    def get(self, credential_id: int) -> CredentialInfo:
         """Get a credential entry.
         
         Gets the Git credential with the specified credential ID.
@@ -1121,11 +976,8 @@ class GitCredentialsAPI:
         
         :returns: :class:`CredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetGitCredentialRequest(credential_id=credential_id)
 
-        json = self._api.do('GET', f'/api/2.0/git-credentials/{request.credential_id}')
+        json = self._api.do('GET', f'/api/2.0/git-credentials/{credential_id}')
         return CredentialInfo.from_dict(json)
 
     def list(self) -> Iterator[CredentialInfo]:
@@ -1144,8 +996,7 @@ class GitCredentialsAPI:
                *,
                git_provider: Optional[str] = None,
                git_username: Optional[str] = None,
-               personal_access_token: Optional[str] = None,
-               **kwargs):
+               personal_access_token: Optional[str] = None):
         """Update a credential.
         
         Updates the specified Git credential.
@@ -1163,14 +1014,11 @@ class GitCredentialsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateCredentials(credential_id=credential_id,
-                                        git_provider=git_provider,
-                                        git_username=git_username,
-                                        personal_access_token=personal_access_token)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/git-credentials/{request.credential_id}', body=body)
+        body = {}
+        if git_provider is not None: body['git_provider'] = git_provider
+        if git_username is not None: body['git_username'] = git_username
+        if personal_access_token is not None: body['personal_access_token'] = personal_access_token
+        self._api.do('PATCH', f'/api/2.0/git-credentials/{credential_id}', body=body)
 
 
 class ReposAPI:
@@ -1192,8 +1040,7 @@ class ReposAPI:
                provider: str,
                *,
                path: Optional[str] = None,
-               sparse_checkout: Optional[SparseCheckout] = None,
-               **kwargs) -> RepoInfo:
+               sparse_checkout: Optional[SparseCheckout] = None) -> RepoInfo:
         """Create a repo.
         
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
@@ -1213,15 +1060,16 @@ class ReposAPI:
         
         :returns: :class:`RepoInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRepo(path=path, provider=provider, sparse_checkout=sparse_checkout, url=url)
-        body = request.as_dict()
+        body = {}
+        if path is not None: body['path'] = path
+        if provider is not None: body['provider'] = provider
+        if sparse_checkout is not None: body['sparse_checkout'] = sparse_checkout.as_dict()
+        if url is not None: body['url'] = url
 
         json = self._api.do('POST', '/api/2.0/repos', body=body)
         return RepoInfo.from_dict(json)
 
-    def delete(self, repo_id: int, **kwargs):
+    def delete(self, repo_id: int):
         """Delete a repo.
         
         Deletes the specified repo.
@@ -1231,13 +1079,10 @@ class ReposAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRepoRequest(repo_id=repo_id)
 
-        self._api.do('DELETE', f'/api/2.0/repos/{request.repo_id}')
+        self._api.do('DELETE', f'/api/2.0/repos/{repo_id}')
 
-    def get(self, repo_id: int, **kwargs) -> RepoInfo:
+    def get(self, repo_id: int) -> RepoInfo:
         """Get a repo.
         
         Returns the repo with the given repo ID.
@@ -1247,11 +1092,8 @@ class ReposAPI:
         
         :returns: :class:`RepoInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRepoRequest(repo_id=repo_id)
 
-        json = self._api.do('GET', f'/api/2.0/repos/{request.repo_id}')
+        json = self._api.do('GET', f'/api/2.0/repos/{repo_id}')
         return RepoInfo.from_dict(json)
 
     def get_repo_permission_levels(self, repo_id: str, **kwargs) -> GetRepoPermissionLevelsResponse:
@@ -1291,8 +1133,7 @@ class ReposAPI:
     def list(self,
              *,
              next_page_token: Optional[str] = None,
-             path_prefix: Optional[str] = None,
-             **kwargs) -> Iterator[RepoInfo]:
+             path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
@@ -1306,13 +1147,10 @@ class ReposAPI:
         
         :returns: Iterator over :class:`RepoInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListReposRequest(next_page_token=next_page_token, path_prefix=path_prefix)
 
         query = {}
-        if next_page_token: query['next_page_token'] = request.next_page_token
-        if path_prefix: query['path_prefix'] = request.path_prefix
+        if next_page_token is not None: query['next_page_token'] = next_page_token
+        if path_prefix is not None: query['path_prefix'] = path_prefix
 
         while True:
             json = self._api.do('GET', '/api/2.0/repos', query=query)
@@ -1352,8 +1190,7 @@ class ReposAPI:
                *,
                branch: Optional[str] = None,
                sparse_checkout: Optional[SparseCheckoutUpdate] = None,
-               tag: Optional[str] = None,
-               **kwargs):
+               tag: Optional[str] = None):
         """Update a repo.
         
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
@@ -1373,11 +1210,11 @@ class ReposAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateRepo(branch=branch, repo_id=repo_id, sparse_checkout=sparse_checkout, tag=tag)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/repos/{request.repo_id}', body=body)
+        body = {}
+        if branch is not None: body['branch'] = branch
+        if sparse_checkout is not None: body['sparse_checkout'] = sparse_checkout.as_dict()
+        if tag is not None: body['tag'] = tag
+        self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body)
 
     def update_repo_permissions(self,
                                 repo_id: str,
@@ -1422,8 +1259,7 @@ class SecretsAPI:
                      *,
                      backend_azure_keyvault: Optional[AzureKeyVaultSecretScopeMetadata] = None,
                      initial_manage_principal: Optional[str] = None,
-                     scope_backend_type: Optional[ScopeBackendType] = None,
-                     **kwargs):
+                     scope_backend_type: Optional[ScopeBackendType] = None):
         """Create a new secret scope.
         
         The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
@@ -1440,16 +1276,15 @@ class SecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateScope(backend_azure_keyvault=backend_azure_keyvault,
-                                  initial_manage_principal=initial_manage_principal,
-                                  scope=scope,
-                                  scope_backend_type=scope_backend_type)
-        body = request.as_dict()
+        body = {}
+        if backend_azure_keyvault is not None:
+            body['backend_azure_keyvault'] = backend_azure_keyvault.as_dict()
+        if initial_manage_principal is not None: body['initial_manage_principal'] = initial_manage_principal
+        if scope is not None: body['scope'] = scope
+        if scope_backend_type is not None: body['scope_backend_type'] = scope_backend_type.value
         self._api.do('POST', '/api/2.0/secrets/scopes/create', body=body)
 
-    def delete_acl(self, scope: str, principal: str, **kwargs):
+    def delete_acl(self, scope: str, principal: str):
         """Delete an ACL.
         
         Deletes the given ACL on the given scope.
@@ -1465,13 +1300,12 @@ class SecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAcl(principal=principal, scope=scope)
-        body = request.as_dict()
+        body = {}
+        if principal is not None: body['principal'] = principal
+        if scope is not None: body['scope'] = scope
         self._api.do('POST', '/api/2.0/secrets/acls/delete', body=body)
 
-    def delete_scope(self, scope: str, **kwargs):
+    def delete_scope(self, scope: str):
         """Delete a secret scope.
         
         Deletes a secret scope.
@@ -1484,13 +1318,11 @@ class SecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteScope(scope=scope)
-        body = request.as_dict()
+        body = {}
+        if scope is not None: body['scope'] = scope
         self._api.do('POST', '/api/2.0/secrets/scopes/delete', body=body)
 
-    def delete_secret(self, scope: str, key: str, **kwargs):
+    def delete_secret(self, scope: str, key: str):
         """Delete a secret.
         
         Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
@@ -1506,13 +1338,12 @@ class SecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteSecret(key=key, scope=scope)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if scope is not None: body['scope'] = scope
         self._api.do('POST', '/api/2.0/secrets/delete', body=body)
 
-    def get_acl(self, scope: str, principal: str, **kwargs) -> AclItem:
+    def get_acl(self, scope: str, principal: str) -> AclItem:
         """Get secret ACL details.
         
         Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
@@ -1528,18 +1359,15 @@ class SecretsAPI:
         
         :returns: :class:`AclItem`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAclRequest(principal=principal, scope=scope)
 
         query = {}
-        if principal: query['principal'] = request.principal
-        if scope: query['scope'] = request.scope
+        if principal is not None: query['principal'] = principal
+        if scope is not None: query['scope'] = scope
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/get', query=query)
         return AclItem.from_dict(json)
 
-    def list_acls(self, scope: str, **kwargs) -> Iterator[AclItem]:
+    def list_acls(self, scope: str) -> Iterator[AclItem]:
         """Lists ACLs.
         
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
@@ -1552,12 +1380,9 @@ class SecretsAPI:
         
         :returns: Iterator over :class:`AclItem`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAclsRequest(scope=scope)
 
         query = {}
-        if scope: query['scope'] = request.scope
+        if scope is not None: query['scope'] = scope
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query)
         return [AclItem.from_dict(v) for v in json.get('items', [])]
@@ -1575,7 +1400,7 @@ class SecretsAPI:
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list')
         return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
 
-    def list_secrets(self, scope: str, **kwargs) -> Iterator[SecretMetadata]:
+    def list_secrets(self, scope: str) -> Iterator[SecretMetadata]:
         """List secret keys.
         
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
@@ -1590,17 +1415,14 @@ class SecretsAPI:
         
         :returns: Iterator over :class:`SecretMetadata`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListSecretsRequest(scope=scope)
 
         query = {}
-        if scope: query['scope'] = request.scope
+        if scope is not None: query['scope'] = scope
 
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query)
         return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
 
-    def put_acl(self, scope: str, principal: str, permission: AclPermission, **kwargs):
+    def put_acl(self, scope: str, principal: str, permission: AclPermission):
         """Create/update an ACL.
         
         Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
@@ -1637,10 +1459,10 @@ class SecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PutAcl(permission=permission, principal=principal, scope=scope)
-        body = request.as_dict()
+        body = {}
+        if permission is not None: body['permission'] = permission.value
+        if principal is not None: body['principal'] = principal
+        if scope is not None: body['scope'] = scope
         self._api.do('POST', '/api/2.0/secrets/acls/put', body=body)
 
     def put_secret(self,
@@ -1648,8 +1470,7 @@ class SecretsAPI:
                    key: str,
                    *,
                    bytes_value: Optional[str] = None,
-                   string_value: Optional[str] = None,
-                   **kwargs):
+                   string_value: Optional[str] = None):
         """Add a secret.
         
         Inserts a secret under the provided scope with the given name. If a secret already exists with the
@@ -1679,10 +1500,11 @@ class SecretsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PutSecret(bytes_value=bytes_value, key=key, scope=scope, string_value=string_value)
-        body = request.as_dict()
+        body = {}
+        if bytes_value is not None: body['bytes_value'] = bytes_value
+        if key is not None: body['key'] = key
+        if scope is not None: body['scope'] = scope
+        if string_value is not None: body['string_value'] = string_value
         self._api.do('POST', '/api/2.0/secrets/put', body=body)
 
 
@@ -1695,7 +1517,7 @@ class WorkspaceAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None):
         """Delete a workspace object.
         
         Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
@@ -1714,13 +1536,12 @@ class WorkspaceAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Delete(path=path, recursive=recursive)
-        body = request.as_dict()
+        body = {}
+        if path is not None: body['path'] = path
+        if recursive is not None: body['recursive'] = recursive
         self._api.do('POST', '/api/2.0/workspace/delete', body=body)
 
-    def export(self, path: str, *, format: Optional[ExportFormat] = None, **kwargs) -> ExportResponse:
+    def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
         """Export a workspace object.
         
         Exports an object or the contents of an entire directory.
@@ -1745,18 +1566,15 @@ class WorkspaceAPI:
         
         :returns: :class:`ExportResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ExportRequest(format=format, path=path)
 
         query = {}
-        if format: query['format'] = request.format.value
-        if path: query['path'] = request.path
+        if format is not None: query['format'] = format.value
+        if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/workspace/export', query=query)
         return ExportResponse.from_dict(json)
 
-    def get_status(self, path: str, **kwargs) -> ObjectInfo:
+    def get_status(self, path: str) -> ObjectInfo:
         """Get status.
         
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
@@ -1767,12 +1585,9 @@ class WorkspaceAPI:
         
         :returns: :class:`ObjectInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStatusRequest(path=path)
 
         query = {}
-        if path: query['path'] = request.path
+        if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/workspace/get-status', query=query)
         return ObjectInfo.from_dict(json)
@@ -1830,8 +1645,7 @@ class WorkspaceAPI:
                 content: Optional[str] = None,
                 format: Optional[ImportFormat] = None,
                 language: Optional[Language] = None,
-                overwrite: Optional[bool] = None,
-                **kwargs):
+                overwrite: Optional[bool] = None):
         """Import a workspace object.
         
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
@@ -1865,21 +1679,15 @@ class WorkspaceAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Import(content=content,
-                             format=format,
-                             language=language,
-                             overwrite=overwrite,
-                             path=path)
-        body = request.as_dict()
+        body = {}
+        if content is not None: body['content'] = content
+        if format is not None: body['format'] = format.value
+        if language is not None: body['language'] = language.value
+        if overwrite is not None: body['overwrite'] = overwrite
+        if path is not None: body['path'] = path
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
 
-    def list(self,
-             path: str,
-             *,
-             notebooks_modified_after: Optional[int] = None,
-             **kwargs) -> Iterator[ObjectInfo]:
+    def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
         """List contents.
         
         Lists the contents of a directory, or the object if it is not a directory. If the input path does not
@@ -1892,18 +1700,15 @@ class WorkspaceAPI:
         
         :returns: Iterator over :class:`ObjectInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListWorkspaceRequest(notebooks_modified_after=notebooks_modified_after, path=path)
 
         query = {}
-        if notebooks_modified_after: query['notebooks_modified_after'] = request.notebooks_modified_after
-        if path: query['path'] = request.path
+        if notebooks_modified_after is not None: query['notebooks_modified_after'] = notebooks_modified_after
+        if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query)
         return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
 
-    def mkdirs(self, path: str, **kwargs):
+    def mkdirs(self, path: str):
         """Create a directory.
         
         Creates the specified directory (and necessary parent directories if they do not exist). If there is
@@ -1919,10 +1724,8 @@ class WorkspaceAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Mkdirs(path=path)
-        body = request.as_dict()
+        body = {}
+        if path is not None: body['path'] = path
         self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body)
 
     def set_workspace_object_permissions(self,

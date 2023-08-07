@@ -376,55 +376,6 @@ class CustomerManagedKey:
                    use_cases=d.get('use_cases', None))
 
 
-@dataclass
-class DeleteCredentialRequest:
-    """Delete credential configuration"""
-
-    credentials_id: str
-
-
-@dataclass
-class DeleteEncryptionKeyRequest:
-    """Delete encryption key configuration"""
-
-    customer_managed_key_id: str
-
-
-@dataclass
-class DeleteNetworkRequest:
-    """Delete a network configuration"""
-
-    network_id: str
-
-
-@dataclass
-class DeletePrivateAccesRequest:
-    """Delete a private access settings object"""
-
-    private_access_settings_id: str
-
-
-@dataclass
-class DeleteStorageRequest:
-    """Delete storage configuration"""
-
-    storage_configuration_id: str
-
-
-@dataclass
-class DeleteVpcEndpointRequest:
-    """Delete VPC endpoint configuration"""
-
-    vpc_endpoint_id: str
-
-
-@dataclass
-class DeleteWorkspaceRequest:
-    """Delete a workspace"""
-
-    workspace_id: int
-
-
 class EndpointUseCase(Enum):
     """This enumeration represents the type of Databricks VPC [endpoint service] that was used when
     creating this VPC endpoint.
@@ -559,55 +510,6 @@ class GcpVpcEndpointInfo:
                    psc_connection_id=d.get('psc_connection_id', None),
                    psc_endpoint_name=d.get('psc_endpoint_name', None),
                    service_attachment_id=d.get('service_attachment_id', None))
-
-
-@dataclass
-class GetCredentialRequest:
-    """Get credential configuration"""
-
-    credentials_id: str
-
-
-@dataclass
-class GetEncryptionKeyRequest:
-    """Get encryption key configuration"""
-
-    customer_managed_key_id: str
-
-
-@dataclass
-class GetNetworkRequest:
-    """Get a network configuration"""
-
-    network_id: str
-
-
-@dataclass
-class GetPrivateAccesRequest:
-    """Get a private access settings object"""
-
-    private_access_settings_id: str
-
-
-@dataclass
-class GetStorageRequest:
-    """Get storage configuration"""
-
-    storage_configuration_id: str
-
-
-@dataclass
-class GetVpcEndpointRequest:
-    """Get a VPC endpoint configuration"""
-
-    vpc_endpoint_id: str
-
-
-@dataclass
-class GetWorkspaceRequest:
-    """Get a workspace"""
-
-    workspace_id: int
 
 
 @dataclass
@@ -1101,8 +1003,7 @@ class CredentialsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, credentials_name: str, aws_credentials: CreateCredentialAwsCredentials,
-               **kwargs) -> Credential:
+    def create(self, credentials_name: str, aws_credentials: CreateCredentialAwsCredentials) -> Credential:
         """Create credential configuration.
         
         Creates a Databricks credential configuration that represents cloud cross-account credentials for a
@@ -1124,16 +1025,14 @@ class CredentialsAPI:
         
         :returns: :class:`Credential`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCredentialRequest(aws_credentials=aws_credentials,
-                                              credentials_name=credentials_name)
-        body = request.as_dict()
+        body = {}
+        if aws_credentials is not None: body['aws_credentials'] = aws_credentials.as_dict()
+        if credentials_name is not None: body['credentials_name'] = credentials_name
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/credentials', body=body)
         return Credential.from_dict(json)
 
-    def delete(self, credentials_id: str, **kwargs):
+    def delete(self, credentials_id: str):
         """Delete credential configuration.
         
         Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
@@ -1144,14 +1043,10 @@ class CredentialsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteCredentialRequest(credentials_id=credentials_id)
 
-        self._api.do('DELETE',
-                     f'/api/2.0/accounts/{self._api.account_id}/credentials/{request.credentials_id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}')
 
-    def get(self, credentials_id: str, **kwargs) -> Credential:
+    def get(self, credentials_id: str) -> Credential:
         """Get credential configuration.
         
         Gets a Databricks credential configuration object for an account, both specified by ID.
@@ -1161,12 +1056,8 @@ class CredentialsAPI:
         
         :returns: :class:`Credential`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetCredentialRequest(credentials_id=credentials_id)
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/credentials/{request.credentials_id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}')
         return Credential.from_dict(json)
 
     def list(self) -> Iterator[Credential]:
@@ -1203,8 +1094,7 @@ class EncryptionKeysAPI:
                use_cases: List[KeyUseCase],
                *,
                aws_key_info: Optional[CreateAwsKeyInfo] = None,
-               gcp_key_info: Optional[CreateGcpKeyInfo] = None,
-               **kwargs) -> CustomerManagedKey:
+               gcp_key_info: Optional[CreateGcpKeyInfo] = None) -> CustomerManagedKey:
         """Create encryption key configuration.
         
         Creates a customer-managed key configuration object for an account, specified by ID. This operation
@@ -1228,19 +1118,17 @@ class EncryptionKeysAPI:
         
         :returns: :class:`CustomerManagedKey`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCustomerManagedKeyRequest(aws_key_info=aws_key_info,
-                                                      gcp_key_info=gcp_key_info,
-                                                      use_cases=use_cases)
-        body = request.as_dict()
+        body = {}
+        if aws_key_info is not None: body['aws_key_info'] = aws_key_info.as_dict()
+        if gcp_key_info is not None: body['gcp_key_info'] = gcp_key_info.as_dict()
+        if use_cases is not None: body['use_cases'] = [v for v in use_cases]
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys',
                             body=body)
         return CustomerManagedKey.from_dict(json)
 
-    def delete(self, customer_managed_key_id: str, **kwargs):
+    def delete(self, customer_managed_key_id: str):
         """Delete encryption key configuration.
         
         Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
@@ -1251,16 +1139,12 @@ class EncryptionKeysAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteEncryptionKeyRequest(customer_managed_key_id=customer_managed_key_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{request.customer_managed_key_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{customer_managed_key_id}')
 
-    def get(self, customer_managed_key_id: str, **kwargs) -> CustomerManagedKey:
+    def get(self, customer_managed_key_id: str) -> CustomerManagedKey:
         """Get encryption key configuration.
         
         Gets a customer-managed key configuration object for an account, specified by ID. This operation
@@ -1281,14 +1165,10 @@ class EncryptionKeysAPI:
         
         :returns: :class:`CustomerManagedKey`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetEncryptionKeyRequest(customer_managed_key_id=customer_managed_key_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{request.customer_managed_key_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{customer_managed_key_id}')
         return CustomerManagedKey.from_dict(json)
 
     def list(self) -> Iterator[CustomerManagedKey]:
@@ -1326,8 +1206,7 @@ class NetworksAPI:
                security_group_ids: Optional[List[str]] = None,
                subnet_ids: Optional[List[str]] = None,
                vpc_endpoints: Optional[NetworkVpcEndpoints] = None,
-               vpc_id: Optional[str] = None,
-               **kwargs) -> Network:
+               vpc_id: Optional[str] = None) -> Network:
         """Create network configuration.
         
         Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
@@ -1355,20 +1234,18 @@ class NetworksAPI:
         
         :returns: :class:`Network`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateNetworkRequest(gcp_network_info=gcp_network_info,
-                                           network_name=network_name,
-                                           security_group_ids=security_group_ids,
-                                           subnet_ids=subnet_ids,
-                                           vpc_endpoints=vpc_endpoints,
-                                           vpc_id=vpc_id)
-        body = request.as_dict()
+        body = {}
+        if gcp_network_info is not None: body['gcp_network_info'] = gcp_network_info.as_dict()
+        if network_name is not None: body['network_name'] = network_name
+        if security_group_ids is not None: body['security_group_ids'] = [v for v in security_group_ids]
+        if subnet_ids is not None: body['subnet_ids'] = [v for v in subnet_ids]
+        if vpc_endpoints is not None: body['vpc_endpoints'] = vpc_endpoints.as_dict()
+        if vpc_id is not None: body['vpc_id'] = vpc_id
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/networks', body=body)
         return Network.from_dict(json)
 
-    def delete(self, network_id: str, **kwargs):
+    def delete(self, network_id: str):
         """Delete a network configuration.
         
         Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
@@ -1381,13 +1258,10 @@ class NetworksAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteNetworkRequest(network_id=network_id)
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/networks/{request.network_id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/networks/{network_id}')
 
-    def get(self, network_id: str, **kwargs) -> Network:
+    def get(self, network_id: str) -> Network:
         """Get a network configuration.
         
         Gets a Databricks network configuration, which represents a cloud VPC and its resources.
@@ -1397,11 +1271,8 @@ class NetworksAPI:
         
         :returns: :class:`Network`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetNetworkRequest(network_id=network_id)
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks/{request.network_id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks/{network_id}')
         return Network.from_dict(json)
 
     def list(self) -> Iterator[Network]:
@@ -1430,8 +1301,7 @@ class PrivateAccessAPI:
                *,
                allowed_vpc_endpoint_ids: Optional[List[str]] = None,
                private_access_level: Optional[PrivateAccessLevel] = None,
-               public_access_enabled: Optional[bool] = None,
-               **kwargs) -> PrivateAccessSettings:
+               public_access_enabled: Optional[bool] = None) -> PrivateAccessSettings:
         """Create private access settings.
         
         Creates a private access settings object, which specifies how your workspace is accessed over [AWS
@@ -1477,22 +1347,21 @@ class PrivateAccessAPI:
         
         :returns: :class:`PrivateAccessSettings`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpsertPrivateAccessSettingsRequest(
-                allowed_vpc_endpoint_ids=allowed_vpc_endpoint_ids,
-                private_access_level=private_access_level,
-                private_access_settings_name=private_access_settings_name,
-                public_access_enabled=public_access_enabled,
-                region=region)
-        body = request.as_dict()
+        body = {}
+        if allowed_vpc_endpoint_ids is not None:
+            body['allowed_vpc_endpoint_ids'] = [v for v in allowed_vpc_endpoint_ids]
+        if private_access_level is not None: body['private_access_level'] = private_access_level.value
+        if private_access_settings_name is not None:
+            body['private_access_settings_name'] = private_access_settings_name
+        if public_access_enabled is not None: body['public_access_enabled'] = public_access_enabled
+        if region is not None: body['region'] = region
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/private-access-settings',
                             body=body)
         return PrivateAccessSettings.from_dict(json)
 
-    def delete(self, private_access_settings_id: str, **kwargs):
+    def delete(self, private_access_settings_id: str):
         """Delete a private access settings object.
         
         Deletes a private access settings object, which determines how your workspace is accessed over [AWS
@@ -1508,16 +1377,12 @@ class PrivateAccessAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeletePrivateAccesRequest(private_access_settings_id=private_access_settings_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{request.private_access_settings_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}')
 
-    def get(self, private_access_settings_id: str, **kwargs) -> PrivateAccessSettings:
+    def get(self, private_access_settings_id: str) -> PrivateAccessSettings:
         """Get a private access settings object.
         
         Gets a private access settings object, which specifies how your workspace is accessed over [AWS
@@ -1533,14 +1398,10 @@ class PrivateAccessAPI:
         
         :returns: :class:`PrivateAccessSettings`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPrivateAccesRequest(private_access_settings_id=private_access_settings_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{request.private_access_settings_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}')
         return PrivateAccessSettings.from_dict(json)
 
     def list(self) -> Iterator[PrivateAccessSettings]:
@@ -1561,8 +1422,7 @@ class PrivateAccessAPI:
                 *,
                 allowed_vpc_endpoint_ids: Optional[List[str]] = None,
                 private_access_level: Optional[PrivateAccessLevel] = None,
-                public_access_enabled: Optional[bool] = None,
-                **kwargs):
+                public_access_enabled: Optional[bool] = None):
         """Replace private access settings.
         
         Updates an existing private access settings object, which specifies how your workspace is accessed
@@ -1615,19 +1475,17 @@ class PrivateAccessAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpsertPrivateAccessSettingsRequest(
-                allowed_vpc_endpoint_ids=allowed_vpc_endpoint_ids,
-                private_access_level=private_access_level,
-                private_access_settings_id=private_access_settings_id,
-                private_access_settings_name=private_access_settings_name,
-                public_access_enabled=public_access_enabled,
-                region=region)
-        body = request.as_dict()
+        body = {}
+        if allowed_vpc_endpoint_ids is not None:
+            body['allowed_vpc_endpoint_ids'] = [v for v in allowed_vpc_endpoint_ids]
+        if private_access_level is not None: body['private_access_level'] = private_access_level.value
+        if private_access_settings_name is not None:
+            body['private_access_settings_name'] = private_access_settings_name
+        if public_access_enabled is not None: body['public_access_enabled'] = public_access_enabled
+        if region is not None: body['region'] = region
         self._api.do(
             'PUT',
-            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{request.private_access_settings_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}',
             body=body)
 
 
@@ -1640,8 +1498,8 @@ class StorageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, storage_configuration_name: str, root_bucket_info: RootBucketInfo,
-               **kwargs) -> StorageConfiguration:
+    def create(self, storage_configuration_name: str,
+               root_bucket_info: RootBucketInfo) -> StorageConfiguration:
         """Create new storage configuration.
         
         Creates new storage configuration for an account, specified by ID. Uploads a storage configuration
@@ -1661,18 +1519,17 @@ class StorageAPI:
         
         :returns: :class:`StorageConfiguration`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateStorageConfigurationRequest(root_bucket_info=root_bucket_info,
-                                                        storage_configuration_name=storage_configuration_name)
-        body = request.as_dict()
+        body = {}
+        if root_bucket_info is not None: body['root_bucket_info'] = root_bucket_info.as_dict()
+        if storage_configuration_name is not None:
+            body['storage_configuration_name'] = storage_configuration_name
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/storage-configurations',
                             body=body)
         return StorageConfiguration.from_dict(json)
 
-    def delete(self, storage_configuration_id: str, **kwargs):
+    def delete(self, storage_configuration_id: str):
         """Delete storage configuration.
         
         Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
@@ -1683,16 +1540,12 @@ class StorageAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteStorageRequest(storage_configuration_id=storage_configuration_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{request.storage_configuration_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{storage_configuration_id}')
 
-    def get(self, storage_configuration_id: str, **kwargs) -> StorageConfiguration:
+    def get(self, storage_configuration_id: str) -> StorageConfiguration:
         """Get storage configuration.
         
         Gets a Databricks storage configuration for an account, both specified by ID.
@@ -1702,14 +1555,10 @@ class StorageAPI:
         
         :returns: :class:`StorageConfiguration`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStorageRequest(storage_configuration_id=storage_configuration_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{request.storage_configuration_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{storage_configuration_id}')
         return StorageConfiguration.from_dict(json)
 
     def list(self) -> Iterator[StorageConfiguration]:
@@ -1735,8 +1584,7 @@ class VpcEndpointsAPI:
                *,
                aws_vpc_endpoint_id: Optional[str] = None,
                gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo] = None,
-               region: Optional[str] = None,
-               **kwargs) -> VpcEndpoint:
+               region: Optional[str] = None) -> VpcEndpoint:
         """Create VPC endpoint configuration.
         
         Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
@@ -1763,18 +1611,16 @@ class VpcEndpointsAPI:
         
         :returns: :class:`VpcEndpoint`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateVpcEndpointRequest(aws_vpc_endpoint_id=aws_vpc_endpoint_id,
-                                               gcp_vpc_endpoint_info=gcp_vpc_endpoint_info,
-                                               region=region,
-                                               vpc_endpoint_name=vpc_endpoint_name)
-        body = request.as_dict()
+        body = {}
+        if aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = aws_vpc_endpoint_id
+        if gcp_vpc_endpoint_info is not None: body['gcp_vpc_endpoint_info'] = gcp_vpc_endpoint_info.as_dict()
+        if region is not None: body['region'] = region
+        if vpc_endpoint_name is not None: body['vpc_endpoint_name'] = vpc_endpoint_name
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints', body=body)
         return VpcEndpoint.from_dict(json)
 
-    def delete(self, vpc_endpoint_id: str, **kwargs):
+    def delete(self, vpc_endpoint_id: str):
         """Delete VPC endpoint configuration.
         
         Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint] that can communicate
@@ -1791,14 +1637,10 @@ class VpcEndpointsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
 
-        self._api.do('DELETE',
-                     f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{request.vpc_endpoint_id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}')
 
-    def get(self, vpc_endpoint_id: str, **kwargs) -> VpcEndpoint:
+    def get(self, vpc_endpoint_id: str) -> VpcEndpoint:
         """Get a VPC endpoint configuration.
         
         Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
@@ -1812,12 +1654,9 @@ class VpcEndpointsAPI:
         
         :returns: :class:`VpcEndpoint`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetVpcEndpointRequest(vpc_endpoint_id=vpc_endpoint_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{request.vpc_endpoint_id}')
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}')
         return VpcEndpoint.from_dict(json)
 
     def list(self) -> Iterator[VpcEndpoint]:
@@ -1893,8 +1732,7 @@ class WorkspacesAPI:
                pricing_tier: Optional[PricingTier] = None,
                private_access_settings_id: Optional[str] = None,
                storage_configuration_id: Optional[str] = None,
-               storage_customer_managed_key_id: Optional[str] = None,
-               **kwargs) -> Wait[Workspace]:
+               storage_customer_managed_key_id: Optional[str] = None) -> Wait[Workspace]:
         """Create a new workspace.
         
         Creates a new workspace.
@@ -1995,25 +1833,24 @@ class WorkspacesAPI:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateWorkspaceRequest(
-                aws_region=aws_region,
-                cloud=cloud,
-                cloud_resource_container=cloud_resource_container,
-                credentials_id=credentials_id,
-                deployment_name=deployment_name,
-                gcp_managed_network_config=gcp_managed_network_config,
-                gke_config=gke_config,
-                location=location,
-                managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
-                network_id=network_id,
-                pricing_tier=pricing_tier,
-                private_access_settings_id=private_access_settings_id,
-                storage_configuration_id=storage_configuration_id,
-                storage_customer_managed_key_id=storage_customer_managed_key_id,
-                workspace_name=workspace_name)
-        body = request.as_dict()
+        body = {}
+        if aws_region is not None: body['aws_region'] = aws_region
+        if cloud is not None: body['cloud'] = cloud
+        if cloud_resource_container is not None:
+            body['cloud_resource_container'] = cloud_resource_container.as_dict()
+        if credentials_id is not None: body['credentials_id'] = credentials_id
+        if deployment_name is not None: body['deployment_name'] = deployment_name
+        if location is not None: body['location'] = location
+        if managed_services_customer_managed_key_id is not None:
+            body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
+        if network_id is not None: body['network_id'] = network_id
+        if pricing_tier is not None: body['pricing_tier'] = pricing_tier.value
+        if private_access_settings_id is not None:
+            body['private_access_settings_id'] = private_access_settings_id
+        if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
+        if storage_customer_managed_key_id is not None:
+            body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
+        if workspace_name is not None: body['workspace_name'] = workspace_name
         op_response = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
         return Wait(self.wait_get_workspace_running,
                     response=Workspace.from_dict(op_response),
@@ -2054,7 +1891,7 @@ class WorkspacesAPI:
                            storage_customer_managed_key_id=storage_customer_managed_key_id,
                            workspace_name=workspace_name).result(timeout=timeout)
 
-    def delete(self, workspace_id: int, **kwargs):
+    def delete(self, workspace_id: int):
         """Delete a workspace.
         
         Terminates and deletes a Databricks workspace. From an API perspective, deletion is immediate.
@@ -2069,13 +1906,10 @@ class WorkspacesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteWorkspaceRequest(workspace_id=workspace_id)
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}')
 
-    def get(self, workspace_id: int, **kwargs) -> Workspace:
+    def get(self, workspace_id: int) -> Workspace:
         """Get a workspace.
         
         Gets information including status for a Databricks workspace, specified by ID. In the response, the
@@ -2096,12 +1930,8 @@ class WorkspacesAPI:
         
         :returns: :class:`Workspace`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWorkspaceRequest(workspace_id=workspace_id)
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}')
         return Workspace.from_dict(json)
 
     def list(self) -> Iterator[Workspace]:
@@ -2126,8 +1956,7 @@ class WorkspacesAPI:
                managed_services_customer_managed_key_id: Optional[str] = None,
                network_id: Optional[str] = None,
                storage_configuration_id: Optional[str] = None,
-               storage_customer_managed_key_id: Optional[str] = None,
-               **kwargs) -> Wait[Workspace]:
+               storage_customer_managed_key_id: Optional[str] = None) -> Wait[Workspace]:
         """Update workspace configuration.
         
         Updates a workspace configuration for either a running workspace or a failed workspace. The elements
@@ -2247,21 +2076,19 @@ class WorkspacesAPI:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateWorkspaceRequest(
-                aws_region=aws_region,
-                credentials_id=credentials_id,
-                managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
-                network_id=network_id,
-                storage_configuration_id=storage_configuration_id,
-                storage_customer_managed_key_id=storage_customer_managed_key_id,
-                workspace_id=workspace_id)
-        body = request.as_dict()
+        body = {}
+        if aws_region is not None: body['aws_region'] = aws_region
+        if credentials_id is not None: body['credentials_id'] = credentials_id
+        if managed_services_customer_managed_key_id is not None:
+            body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
+        if network_id is not None: body['network_id'] = network_id
+        if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
+        if storage_customer_managed_key_id is not None:
+            body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
         self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
                      body=body)
-        return Wait(self.wait_get_workspace_running, workspace_id=request.workspace_id)
+        return Wait(self.wait_get_workspace_running, workspace_id=workspace_id)
 
     def update_and_wait(
         self,

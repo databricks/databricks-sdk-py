@@ -87,84 +87,6 @@ class ComplexValue:
 
 
 @dataclass
-class DeleteAccountGroupRequest:
-    """Delete a group"""
-
-    id: str
-
-
-@dataclass
-class DeleteAccountServicePrincipalRequest:
-    """Delete a service principal"""
-
-    id: str
-
-
-@dataclass
-class DeleteAccountUserRequest:
-    """Delete a user"""
-
-    id: str
-
-
-@dataclass
-class DeleteGroupRequest:
-    """Delete a group"""
-
-    id: str
-
-
-@dataclass
-class DeleteServicePrincipalRequest:
-    """Delete a service principal"""
-
-    id: str
-
-
-@dataclass
-class DeleteUserRequest:
-    """Delete a user"""
-
-    id: str
-
-
-@dataclass
-class DeleteWorkspaceAssignmentRequest:
-    """Delete permissions assignment"""
-
-    workspace_id: int
-    principal_id: int
-
-
-@dataclass
-class GetAccountGroupRequest:
-    """Get group details"""
-
-    id: str
-
-
-@dataclass
-class GetAccountServicePrincipalRequest:
-    """Get service principal details"""
-
-    id: str
-
-
-@dataclass
-class GetAccountUserRequest:
-    """Get user details"""
-
-    id: str
-
-
-@dataclass
-class GetAssignableRolesForResourceRequest:
-    """Get assignable roles for a resource"""
-
-    resource: str
-
-
-@dataclass
 class GetAssignableRolesForResourceResponse:
     roles: Optional['List[Role]'] = None
 
@@ -179,35 +101,6 @@ class GetAssignableRolesForResourceResponse:
 
 
 @dataclass
-class GetGroupRequest:
-    """Get group details"""
-
-    id: str
-
-
-@dataclass
-class GetPasswordPermissionLevelsResponse:
-    permission_levels: Optional['List[PasswordPermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetPasswordPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PasswordPermissionsDescription))
-
-
-@dataclass
-class GetPermissionLevelsRequest:
-    """Get object permission levels"""
-
-    request_object_type: str
-    request_object_id: str
-
-
-@dataclass
 class GetPermissionLevelsResponse:
     permission_levels: Optional['List[PermissionsDescription]'] = None
 
@@ -219,43 +112,6 @@ class GetPermissionLevelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPermissionLevelsResponse':
         return cls(permission_levels=_repeated(d, 'permission_levels', PermissionsDescription))
-
-
-@dataclass
-class GetPermissionRequest:
-    """Get object permissions"""
-
-    request_object_type: str
-    request_object_id: str
-
-
-@dataclass
-class GetRuleSetRequest:
-    """Get a rule set"""
-
-    name: str
-    etag: str
-
-
-@dataclass
-class GetServicePrincipalRequest:
-    """Get service principal details"""
-
-    id: str
-
-
-@dataclass
-class GetUserRequest:
-    """Get user details"""
-
-    id: str
-
-
-@dataclass
-class GetWorkspaceAssignmentRequest:
-    """List workspace permissions"""
-
-    workspace_id: int
 
 
 @dataclass
@@ -310,58 +166,6 @@ class Group:
 
 
 @dataclass
-class ListAccountGroupsRequest:
-    """List group details"""
-
-    attributes: Optional[str] = None
-    count: Optional[int] = None
-    excluded_attributes: Optional[str] = None
-    filter: Optional[str] = None
-    sort_by: Optional[str] = None
-    sort_order: Optional['ListSortOrder'] = None
-    start_index: Optional[int] = None
-
-
-@dataclass
-class ListAccountServicePrincipalsRequest:
-    """List service principals"""
-
-    attributes: Optional[str] = None
-    count: Optional[int] = None
-    excluded_attributes: Optional[str] = None
-    filter: Optional[str] = None
-    sort_by: Optional[str] = None
-    sort_order: Optional['ListSortOrder'] = None
-    start_index: Optional[int] = None
-
-
-@dataclass
-class ListAccountUsersRequest:
-    """List users"""
-
-    attributes: Optional[str] = None
-    count: Optional[int] = None
-    excluded_attributes: Optional[str] = None
-    filter: Optional[str] = None
-    sort_by: Optional[str] = None
-    sort_order: Optional['ListSortOrder'] = None
-    start_index: Optional[int] = None
-
-
-@dataclass
-class ListGroupsRequest:
-    """List group details"""
-
-    attributes: Optional[str] = None
-    count: Optional[int] = None
-    excluded_attributes: Optional[str] = None
-    filter: Optional[str] = None
-    sort_by: Optional[str] = None
-    sort_order: Optional['ListSortOrder'] = None
-    start_index: Optional[int] = None
-
-
-@dataclass
 class ListGroupsResponse:
     items_per_page: Optional[int] = None
     resources: Optional['List[Group]'] = None
@@ -407,36 +211,10 @@ class ListServicePrincipalResponse:
                    total_results=d.get('totalResults', None))
 
 
-@dataclass
-class ListServicePrincipalsRequest:
-    """List service principals"""
-
-    attributes: Optional[str] = None
-    count: Optional[int] = None
-    excluded_attributes: Optional[str] = None
-    filter: Optional[str] = None
-    sort_by: Optional[str] = None
-    sort_order: Optional['ListSortOrder'] = None
-    start_index: Optional[int] = None
-
-
 class ListSortOrder(Enum):
 
     ASCENDING = 'ascending'
     DESCENDING = 'descending'
-
-
-@dataclass
-class ListUsersRequest:
-    """List users"""
-
-    attributes: Optional[str] = None
-    count: Optional[int] = None
-    excluded_attributes: Optional[str] = None
-    filter: Optional[str] = None
-    sort_by: Optional[str] = None
-    sort_order: Optional['ListSortOrder'] = None
-    start_index: Optional[int] = None
 
 
 @dataclass
@@ -460,13 +238,6 @@ class ListUsersResponse:
                    resources=_repeated(d, 'Resources', User),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
-
-
-@dataclass
-class ListWorkspaceAssignmentRequest:
-    """Get permission assignments"""
-
-    workspace_id: int
 
 
 @dataclass
@@ -1053,8 +824,7 @@ class AccountAccessControlAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_assignable_roles_for_resource(self, resource: str,
-                                          **kwargs) -> GetAssignableRolesForResourceResponse:
+    def get_assignable_roles_for_resource(self, resource: str) -> GetAssignableRolesForResourceResponse:
         """Get assignable roles for a resource.
         
         Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
@@ -1065,12 +835,9 @@ class AccountAccessControlAPI:
         
         :returns: :class:`GetAssignableRolesForResourceResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAssignableRolesForResourceRequest(resource=resource)
 
         query = {}
-        if resource: query['resource'] = request.resource
+        if resource is not None: query['resource'] = resource
 
         json = self._api.do(
             'GET',
@@ -1078,7 +845,7 @@ class AccountAccessControlAPI:
             query=query)
         return GetAssignableRolesForResourceResponse.from_dict(json)
 
-    def get_rule_set(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+    def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
         """Get a rule set.
         
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
@@ -1096,20 +863,17 @@ class AccountAccessControlAPI:
         
         :returns: :class:`RuleSetResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRuleSetRequest(etag=etag, name=name)
 
         query = {}
-        if etag: query['etag'] = request.etag
-        if name: query['name'] = request.name
+        if etag is not None: query['etag'] = etag
+        if name is not None: query['name'] = name
 
         json = self._api.do('GET',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
                             query=query)
         return RuleSetResponse.from_dict(json)
 
-    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest, **kwargs) -> RuleSetResponse:
+    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
         """Update a rule set.
         
         Replace the rules of a rule set. First, use get to read the current version of the rule set before
@@ -1121,10 +885,9 @@ class AccountAccessControlAPI:
         
         :returns: :class:`RuleSetResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateRuleSetRequest(name=name, rule_set=rule_set)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if rule_set is not None: body['rule_set'] = rule_set.as_dict()
 
         json = self._api.do('PUT',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
@@ -1140,8 +903,7 @@ class AccountAccessControlProxyAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_assignable_roles_for_resource(self, resource: str,
-                                          **kwargs) -> GetAssignableRolesForResourceResponse:
+    def get_assignable_roles_for_resource(self, resource: str) -> GetAssignableRolesForResourceResponse:
         """Get assignable roles for a resource.
         
         Gets all the roles that can be granted on an account-level resource. A role is grantable if the rule
@@ -1152,17 +914,14 @@ class AccountAccessControlProxyAPI:
         
         :returns: :class:`GetAssignableRolesForResourceResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAssignableRolesForResourceRequest(resource=resource)
 
         query = {}
-        if resource: query['resource'] = request.resource
+        if resource is not None: query['resource'] = resource
 
         json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/assignable-roles', query=query)
         return GetAssignableRolesForResourceResponse.from_dict(json)
 
-    def get_rule_set(self, name: str, etag: str, **kwargs) -> RuleSetResponse:
+    def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
         """Get a rule set.
         
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
@@ -1180,18 +939,15 @@ class AccountAccessControlProxyAPI:
         
         :returns: :class:`RuleSetResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRuleSetRequest(etag=etag, name=name)
 
         query = {}
-        if etag: query['etag'] = request.etag
-        if name: query['name'] = request.name
+        if etag is not None: query['etag'] = etag
+        if name is not None: query['name'] = name
 
         json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/rule-sets', query=query)
         return RuleSetResponse.from_dict(json)
 
-    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest, **kwargs) -> RuleSetResponse:
+    def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
         """Update a rule set.
         
         Replace the rules of a rule set. First, use a GET rule set request to read the current version of the
@@ -1203,10 +959,9 @@ class AccountAccessControlProxyAPI:
         
         :returns: :class:`RuleSetResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateRuleSetRequest(name=name, rule_set=rule_set)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if rule_set is not None: body['rule_set'] = rule_set.as_dict()
 
         json = self._api.do('PUT', '/api/2.0/preview/accounts/access-control/rule-sets', body=body)
         return RuleSetResponse.from_dict(json)
@@ -1232,8 +987,7 @@ class AccountGroupsAPI:
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs) -> Group:
+               roles: Optional[List[ComplexValue]] = None) -> Group:
         """Create a new group.
         
         Creates a group in the Databricks account with a unique name, using the supplied group details.
@@ -1252,22 +1006,20 @@ class AccountGroupsAPI:
         
         :returns: :class:`Group`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Group(display_name=display_name,
-                            entitlements=entitlements,
-                            external_id=external_id,
-                            groups=groups,
-                            id=id,
-                            members=members,
-                            meta=meta,
-                            roles=roles)
-        body = request.as_dict()
+        body = {}
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if id is not None: body['id'] = id
+        if members is not None: body['members'] = [v.as_dict() for v in members]
+        if meta is not None: body['meta'] = meta.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', body=body)
         return Group.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a group.
         
         Deletes a group from the Databricks account.
@@ -1277,13 +1029,10 @@ class AccountGroupsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountGroupRequest(id=id)
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}')
 
-    def get(self, id: str, **kwargs) -> Group:
+    def get(self, id: str) -> Group:
         """Get group details.
         
         Gets the information for a specific group in the Databricks account.
@@ -1293,11 +1042,8 @@ class AccountGroupsAPI:
         
         :returns: :class:`Group`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountGroupRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}')
         return Group.from_dict(json)
 
     def list(self,
@@ -1308,8 +1054,7 @@ class AccountGroupsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None,
-             **kwargs) -> Iterator[Group]:
+             start_index: Optional[int] = None) -> Iterator[Group]:
         """List group details.
         
         Gets all details of the groups associated with the Databricks account.
@@ -1336,24 +1081,15 @@ class AccountGroupsAPI:
         
         :returns: Iterator over :class:`Group`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountGroupsRequest(attributes=attributes,
-                                               count=count,
-                                               excluded_attributes=excluded_attributes,
-                                               filter=filter,
-                                               sort_by=sort_by,
-                                               sort_order=sort_order,
-                                               start_index=start_index)
 
         query = {}
-        if attributes: query['attributes'] = request.attributes
-        if count: query['count'] = request.count
-        if excluded_attributes: query['excludedAttributes'] = request.excluded_attributes
-        if filter: query['filter'] = request.filter
-        if sort_by: query['sortBy'] = request.sort_by
-        if sort_order: query['sortOrder'] = request.sort_order.value
-        if start_index: query['startIndex'] = request.start_index
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
@@ -1362,8 +1098,7 @@ class AccountGroupsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None,
-              **kwargs):
+              schema: Optional[List[PatchSchema]] = None):
         """Update group details.
         
         Partially updates the details of a group.
@@ -1376,13 +1111,10 @@ class AccountGroupsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations, schema=schema)
-        body = request.as_dict()
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}',
-                     body=body)
+        body = {}
+        if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
+        if schema is not None: body['schema'] = [v for v in schema]
+        self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}', body=body)
 
     def update(self,
                id: str,
@@ -1393,8 +1125,7 @@ class AccountGroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs):
+               roles: Optional[List[ComplexValue]] = None):
         """Replace a group.
         
         Updates the details of a group by replacing the entire group entity.
@@ -1413,20 +1144,15 @@ class AccountGroupsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Group(display_name=display_name,
-                            entitlements=entitlements,
-                            external_id=external_id,
-                            groups=groups,
-                            id=id,
-                            members=members,
-                            meta=meta,
-                            roles=roles)
-        body = request.as_dict()
-        self._api.do('PUT',
-                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{request.id}',
-                     body=body)
+        body = {}
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if members is not None: body['members'] = [v.as_dict() for v in members]
+        if meta is not None: body['meta'] = meta.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        self._api.do('PUT', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}', body=body)
 
 
 class AccountServicePrincipalsAPI:
@@ -1448,8 +1174,7 @@ class AccountServicePrincipalsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs) -> ServicePrincipal:
+               roles: Optional[List[ComplexValue]] = None) -> ServicePrincipal:
         """Create a service principal.
         
         Creates a new service principal in the Databricks account.
@@ -1469,24 +1194,22 @@ class AccountServicePrincipalsAPI:
         
         :returns: :class:`ServicePrincipal`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ServicePrincipal(active=active,
-                                       application_id=application_id,
-                                       display_name=display_name,
-                                       entitlements=entitlements,
-                                       external_id=external_id,
-                                       groups=groups,
-                                       id=id,
-                                       roles=roles)
-        body = request.as_dict()
+        body = {}
+        if active is not None: body['active'] = active
+        if application_id is not None: body['applicationId'] = application_id
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if id is not None: body['id'] = id
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             body=body)
         return ServicePrincipal.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a service principal.
         
         Delete a single service principal in the Databricks account.
@@ -1496,14 +1219,10 @@ class AccountServicePrincipalsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountServicePrincipalRequest(id=id)
 
-        self._api.do('DELETE',
-                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}')
 
-    def get(self, id: str, **kwargs) -> ServicePrincipal:
+    def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
         
         Gets the details for a single service principal define in the Databricks account.
@@ -1513,12 +1232,8 @@ class AccountServicePrincipalsAPI:
         
         :returns: :class:`ServicePrincipal`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountServicePrincipalRequest(id=id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}')
         return ServicePrincipal.from_dict(json)
 
     def list(self,
@@ -1529,8 +1244,7 @@ class AccountServicePrincipalsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None,
-             **kwargs) -> Iterator[ServicePrincipal]:
+             start_index: Optional[int] = None) -> Iterator[ServicePrincipal]:
         """List service principals.
         
         Gets the set of service principals associated with a Databricks account.
@@ -1557,24 +1271,15 @@ class AccountServicePrincipalsAPI:
         
         :returns: Iterator over :class:`ServicePrincipal`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountServicePrincipalsRequest(attributes=attributes,
-                                                          count=count,
-                                                          excluded_attributes=excluded_attributes,
-                                                          filter=filter,
-                                                          sort_by=sort_by,
-                                                          sort_order=sort_order,
-                                                          start_index=start_index)
 
         query = {}
-        if attributes: query['attributes'] = request.attributes
-        if count: query['count'] = request.count
-        if excluded_attributes: query['excludedAttributes'] = request.excluded_attributes
-        if filter: query['filter'] = request.filter
-        if sort_by: query['sortBy'] = request.sort_by
-        if sort_order: query['sortOrder'] = request.sort_order.value
-        if start_index: query['startIndex'] = request.start_index
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
@@ -1585,8 +1290,7 @@ class AccountServicePrincipalsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None,
-              **kwargs):
+              schema: Optional[List[PatchSchema]] = None):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks account.
@@ -1599,12 +1303,11 @@ class AccountServicePrincipalsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations, schema=schema)
-        body = request.as_dict()
+        body = {}
+        if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
+        if schema is not None: body['schema'] = [v for v in schema]
         self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
                      body=body)
 
     def update(self,
@@ -1616,8 +1319,7 @@ class AccountServicePrincipalsAPI:
                entitlements: Optional[List[ComplexValue]] = None,
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs):
+               roles: Optional[List[ComplexValue]] = None):
         """Replace service principal.
         
         Updates the details of a single service principal.
@@ -1639,19 +1341,16 @@ class AccountServicePrincipalsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ServicePrincipal(active=active,
-                                       application_id=application_id,
-                                       display_name=display_name,
-                                       entitlements=entitlements,
-                                       external_id=external_id,
-                                       groups=groups,
-                                       id=id,
-                                       roles=roles)
-        body = request.as_dict()
+        body = {}
+        if active is not None: body['active'] = active
+        if application_id is not None: body['applicationId'] = application_id
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         self._api.do('PUT',
-                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{request.id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
                      body=body)
 
 
@@ -1680,8 +1379,7 @@ class AccountUsersAPI:
                id: Optional[str] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
-               user_name: Optional[str] = None,
-               **kwargs) -> User:
+               user_name: Optional[str] = None) -> User:
         """Create a new user.
         
         Creates a new user in the Databricks account. This new user will also be added to the Databricks
@@ -1705,24 +1403,22 @@ class AccountUsersAPI:
         
         :returns: :class:`User`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = User(active=active,
-                           display_name=display_name,
-                           emails=emails,
-                           entitlements=entitlements,
-                           external_id=external_id,
-                           groups=groups,
-                           id=id,
-                           name=name,
-                           roles=roles,
-                           user_name=user_name)
-        body = request.as_dict()
+        body = {}
+        if active is not None: body['active'] = active
+        if display_name is not None: body['displayName'] = display_name
+        if emails is not None: body['emails'] = [v.as_dict() for v in emails]
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if id is not None: body['id'] = id
+        if name is not None: body['name'] = name.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if user_name is not None: body['userName'] = user_name
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', body=body)
         return User.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a user.
         
         Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
@@ -1733,13 +1429,10 @@ class AccountUsersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountUserRequest(id=id)
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}')
 
-    def get(self, id: str, **kwargs) -> User:
+    def get(self, id: str) -> User:
         """Get user details.
         
         Gets information for a specific user in Databricks account.
@@ -1749,11 +1442,8 @@ class AccountUsersAPI:
         
         :returns: :class:`User`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountUserRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}')
         return User.from_dict(json)
 
     def list(self,
@@ -1764,8 +1454,7 @@ class AccountUsersAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None,
-             **kwargs) -> Iterator[User]:
+             start_index: Optional[int] = None) -> Iterator[User]:
         """List users.
         
         Gets details for all the users associated with a Databricks account.
@@ -1793,24 +1482,15 @@ class AccountUsersAPI:
         
         :returns: Iterator over :class:`User`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountUsersRequest(attributes=attributes,
-                                              count=count,
-                                              excluded_attributes=excluded_attributes,
-                                              filter=filter,
-                                              sort_by=sort_by,
-                                              sort_order=sort_order,
-                                              start_index=start_index)
 
         query = {}
-        if attributes: query['attributes'] = request.attributes
-        if count: query['count'] = request.count
-        if excluded_attributes: query['excludedAttributes'] = request.excluded_attributes
-        if filter: query['filter'] = request.filter
-        if sort_by: query['sortBy'] = request.sort_by
-        if sort_order: query['sortOrder'] = request.sort_order.value
-        if start_index: query['startIndex'] = request.start_index
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
@@ -1819,8 +1499,7 @@ class AccountUsersAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None,
-              **kwargs):
+              schema: Optional[List[PatchSchema]] = None):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -1833,13 +1512,10 @@ class AccountUsersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations, schema=schema)
-        body = request.as_dict()
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}',
-                     body=body)
+        body = {}
+        if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
+        if schema is not None: body['schema'] = [v for v in schema]
+        self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}', body=body)
 
     def update(self,
                id: str,
@@ -1852,8 +1528,7 @@ class AccountUsersAPI:
                groups: Optional[List[ComplexValue]] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
-               user_name: Optional[str] = None,
-               **kwargs):
+               user_name: Optional[str] = None):
         """Replace a user.
         
         Replaces a user's information with the data supplied in request.
@@ -1876,20 +1551,17 @@ class AccountUsersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = User(active=active,
-                           display_name=display_name,
-                           emails=emails,
-                           entitlements=entitlements,
-                           external_id=external_id,
-                           groups=groups,
-                           id=id,
-                           name=name,
-                           roles=roles,
-                           user_name=user_name)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{request.id}', body=body)
+        body = {}
+        if active is not None: body['active'] = active
+        if display_name is not None: body['displayName'] = display_name
+        if emails is not None: body['emails'] = [v.as_dict() for v in emails]
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if name is not None: body['name'] = name.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if user_name is not None: body['userName'] = user_name
+        self._api.do('PUT', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}', body=body)
 
 
 class CurrentUserAPI:
@@ -1930,8 +1602,7 @@ class GroupsAPI:
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs) -> Group:
+               roles: Optional[List[ComplexValue]] = None) -> Group:
         """Create a new group.
         
         Creates a group in the Databricks workspace with a unique name, using the supplied group details.
@@ -1950,22 +1621,20 @@ class GroupsAPI:
         
         :returns: :class:`Group`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Group(display_name=display_name,
-                            entitlements=entitlements,
-                            external_id=external_id,
-                            groups=groups,
-                            id=id,
-                            members=members,
-                            meta=meta,
-                            roles=roles)
-        body = request.as_dict()
+        body = {}
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if id is not None: body['id'] = id
+        if members is not None: body['members'] = [v.as_dict() for v in members]
+        if meta is not None: body['meta'] = meta.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
 
         json = self._api.do('POST', '/api/2.0/preview/scim/v2/Groups', body=body)
         return Group.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a group.
         
         Deletes a group from the Databricks workspace.
@@ -1975,13 +1644,10 @@ class GroupsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteGroupRequest(id=id)
 
-        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Groups/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Groups/{id}')
 
-    def get(self, id: str, **kwargs) -> Group:
+    def get(self, id: str) -> Group:
         """Get group details.
         
         Gets the information for a specific group in the Databricks workspace.
@@ -1991,11 +1657,8 @@ class GroupsAPI:
         
         :returns: :class:`Group`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetGroupRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Groups/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Groups/{id}')
         return Group.from_dict(json)
 
     def list(self,
@@ -2006,8 +1669,7 @@ class GroupsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None,
-             **kwargs) -> Iterator[Group]:
+             start_index: Optional[int] = None) -> Iterator[Group]:
         """List group details.
         
         Gets all details of the groups associated with the Databricks workspace.
@@ -2034,24 +1696,15 @@ class GroupsAPI:
         
         :returns: Iterator over :class:`Group`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListGroupsRequest(attributes=attributes,
-                                        count=count,
-                                        excluded_attributes=excluded_attributes,
-                                        filter=filter,
-                                        sort_by=sort_by,
-                                        sort_order=sort_order,
-                                        start_index=start_index)
 
         query = {}
-        if attributes: query['attributes'] = request.attributes
-        if count: query['count'] = request.count
-        if excluded_attributes: query['excludedAttributes'] = request.excluded_attributes
-        if filter: query['filter'] = request.filter
-        if sort_by: query['sortBy'] = request.sort_by
-        if sort_order: query['sortOrder'] = request.sort_order.value
-        if start_index: query['startIndex'] = request.start_index
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
@@ -2060,8 +1713,7 @@ class GroupsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None,
-              **kwargs):
+              schema: Optional[List[PatchSchema]] = None):
         """Update group details.
         
         Partially updates the details of a group.
@@ -2074,11 +1726,10 @@ class GroupsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations, schema=schema)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Groups/{request.id}', body=body)
+        body = {}
+        if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
+        if schema is not None: body['schema'] = [v for v in schema]
+        self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body)
 
     def update(self,
                id: str,
@@ -2089,8 +1740,7 @@ class GroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs):
+               roles: Optional[List[ComplexValue]] = None):
         """Replace a group.
         
         Updates the details of a group by replacing the entire group entity.
@@ -2109,18 +1759,15 @@ class GroupsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Group(display_name=display_name,
-                            entitlements=entitlements,
-                            external_id=external_id,
-                            groups=groups,
-                            id=id,
-                            members=members,
-                            meta=meta,
-                            roles=roles)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/preview/scim/v2/Groups/{request.id}', body=body)
+        body = {}
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if members is not None: body['members'] = [v.as_dict() for v in members]
+        if meta is not None: body['meta'] = meta.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        self._api.do('PUT', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body)
 
 
 class PermissionsAPI:
@@ -2172,7 +1819,7 @@ class PermissionsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, request_object_type: str, request_object_id: str, **kwargs) -> ObjectPermissions:
+    def get(self, request_object_type: str, request_object_id: str) -> ObjectPermissions:
         """Get object permissions.
         
         Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
@@ -2184,18 +1831,13 @@ class PermissionsAPI:
         
         :returns: :class:`ObjectPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPermissionRequest(request_object_id=request_object_id,
-                                           request_object_type=request_object_type)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}')
+        json = self._api.do('GET', f'/api/2.0/permissions/{request_object_type}/{request_object_id}')
         return ObjectPermissions.from_dict(json)
 
-    def get_permission_levels(self, request_object_type: str, request_object_id: str,
-                              **kwargs) -> GetPermissionLevelsResponse:
-        """Get object permission levels.
+    def get_permission_levels(self, request_object_type: str,
+                              request_object_id: str) -> GetPermissionLevelsResponse:
+        """Get permission levels.
         
         Gets the permission levels that a user can have on an object.
         
@@ -2206,24 +1848,17 @@ class PermissionsAPI:
         
         :returns: :class:`GetPermissionLevelsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPermissionLevelsRequest(request_object_id=request_object_id,
-                                                 request_object_type=request_object_type)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}/permissionLevels'
-        )
+            'GET', f'/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels')
         return GetPermissionLevelsResponse.from_dict(json)
 
     def set(self,
             request_object_type: str,
             request_object_id: str,
             *,
-            access_control_list: Optional[List[AccessControlRequest]] = None,
-            **kwargs) -> ObjectPermissions:
-        """Set object permissions.
+            access_control_list: Optional[List[AccessControlRequest]] = None):
+        """Set permissions.
         
         Sets permissions on an object. Objects can inherit permissions from their parent objects or root
         object.
@@ -2235,25 +1870,17 @@ class PermissionsAPI:
         
         :returns: :class:`ObjectPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PermissionsRequest(access_control_list=access_control_list,
-                                         request_object_id=request_object_id,
-                                         request_object_type=request_object_type)
-        body = request.as_dict()
-
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}',
-                            body=body)
-        return ObjectPermissions.from_dict(json)
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        self._api.do('PUT', f'/api/2.0/permissions/{request_object_type}/{request_object_id}', body=body)
 
     def update(self,
                request_object_type: str,
                request_object_id: str,
                *,
-               access_control_list: Optional[List[AccessControlRequest]] = None,
-               **kwargs) -> ObjectPermissions:
-        """Update object permissions.
+               access_control_list: Optional[List[AccessControlRequest]] = None):
+        """Update permission.
         
         Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.
@@ -2265,17 +1892,10 @@ class PermissionsAPI:
         
         :returns: :class:`ObjectPermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PermissionsRequest(access_control_list=access_control_list,
-                                         request_object_id=request_object_id,
-                                         request_object_type=request_object_type)
-        body = request.as_dict()
-
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/{request.request_object_type}/{request.request_object_id}',
-                            body=body)
-        return ObjectPermissions.from_dict(json)
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        self._api.do('PATCH', f'/api/2.0/permissions/{request_object_type}/{request_object_id}', body=body)
 
 
 class ServicePrincipalsAPI:
@@ -2297,8 +1917,7 @@ class ServicePrincipalsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs) -> ServicePrincipal:
+               roles: Optional[List[ComplexValue]] = None) -> ServicePrincipal:
         """Create a service principal.
         
         Creates a new service principal in the Databricks workspace.
@@ -2318,22 +1937,20 @@ class ServicePrincipalsAPI:
         
         :returns: :class:`ServicePrincipal`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ServicePrincipal(active=active,
-                                       application_id=application_id,
-                                       display_name=display_name,
-                                       entitlements=entitlements,
-                                       external_id=external_id,
-                                       groups=groups,
-                                       id=id,
-                                       roles=roles)
-        body = request.as_dict()
+        body = {}
+        if active is not None: body['active'] = active
+        if application_id is not None: body['applicationId'] = application_id
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if id is not None: body['id'] = id
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
 
         json = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body)
         return ServicePrincipal.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a service principal.
         
         Delete a single service principal in the Databricks workspace.
@@ -2343,13 +1960,10 @@ class ServicePrincipalsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteServicePrincipalRequest(id=id)
 
-        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}')
 
-    def get(self, id: str, **kwargs) -> ServicePrincipal:
+    def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
         
         Gets the details for a single service principal define in the Databricks workspace.
@@ -2359,11 +1973,8 @@ class ServicePrincipalsAPI:
         
         :returns: :class:`ServicePrincipal`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetServicePrincipalRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}')
         return ServicePrincipal.from_dict(json)
 
     def list(self,
@@ -2374,8 +1985,7 @@ class ServicePrincipalsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None,
-             **kwargs) -> Iterator[ServicePrincipal]:
+             start_index: Optional[int] = None) -> Iterator[ServicePrincipal]:
         """List service principals.
         
         Gets the set of service principals associated with a Databricks workspace.
@@ -2402,24 +2012,15 @@ class ServicePrincipalsAPI:
         
         :returns: Iterator over :class:`ServicePrincipal`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListServicePrincipalsRequest(attributes=attributes,
-                                                   count=count,
-                                                   excluded_attributes=excluded_attributes,
-                                                   filter=filter,
-                                                   sort_by=sort_by,
-                                                   sort_order=sort_order,
-                                                   start_index=start_index)
 
         query = {}
-        if attributes: query['attributes'] = request.attributes
-        if count: query['count'] = request.count
-        if excluded_attributes: query['excludedAttributes'] = request.excluded_attributes
-        if filter: query['filter'] = request.filter
-        if sort_by: query['sortBy'] = request.sort_by
-        if sort_order: query['sortOrder'] = request.sort_order.value
-        if start_index: query['startIndex'] = request.start_index
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
@@ -2428,8 +2029,7 @@ class ServicePrincipalsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None,
-              **kwargs):
+              schema: Optional[List[PatchSchema]] = None):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks workspace.
@@ -2442,11 +2042,10 @@ class ServicePrincipalsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations, schema=schema)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}', body=body)
+        body = {}
+        if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
+        if schema is not None: body['schema'] = [v for v in schema]
+        self._api.do('PATCH', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body)
 
     def update(self,
                id: str,
@@ -2457,8 +2056,7 @@ class ServicePrincipalsAPI:
                entitlements: Optional[List[ComplexValue]] = None,
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
-               roles: Optional[List[ComplexValue]] = None,
-               **kwargs):
+               roles: Optional[List[ComplexValue]] = None):
         """Replace service principal.
         
         Updates the details of a single service principal.
@@ -2480,18 +2078,15 @@ class ServicePrincipalsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ServicePrincipal(active=active,
-                                       application_id=application_id,
-                                       display_name=display_name,
-                                       entitlements=entitlements,
-                                       external_id=external_id,
-                                       groups=groups,
-                                       id=id,
-                                       roles=roles)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/preview/scim/v2/ServicePrincipals/{request.id}', body=body)
+        body = {}
+        if active is not None: body['active'] = active
+        if application_id is not None: body['applicationId'] = application_id
+        if display_name is not None: body['displayName'] = display_name
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        self._api.do('PUT', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body)
 
 
 class UsersAPI:
@@ -2519,8 +2114,7 @@ class UsersAPI:
                id: Optional[str] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
-               user_name: Optional[str] = None,
-               **kwargs) -> User:
+               user_name: Optional[str] = None) -> User:
         """Create a new user.
         
         Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
@@ -2544,24 +2138,22 @@ class UsersAPI:
         
         :returns: :class:`User`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = User(active=active,
-                           display_name=display_name,
-                           emails=emails,
-                           entitlements=entitlements,
-                           external_id=external_id,
-                           groups=groups,
-                           id=id,
-                           name=name,
-                           roles=roles,
-                           user_name=user_name)
-        body = request.as_dict()
+        body = {}
+        if active is not None: body['active'] = active
+        if display_name is not None: body['displayName'] = display_name
+        if emails is not None: body['emails'] = [v.as_dict() for v in emails]
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if id is not None: body['id'] = id
+        if name is not None: body['name'] = name.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if user_name is not None: body['userName'] = user_name
 
         json = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body)
         return User.from_dict(json)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a user.
         
         Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
@@ -2572,13 +2164,10 @@ class UsersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteUserRequest(id=id)
 
-        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Users/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Users/{id}')
 
-    def get(self, id: str, **kwargs) -> User:
+    def get(self, id: str) -> User:
         """Get user details.
         
         Gets information for a specific user in Databricks workspace.
@@ -2588,11 +2177,8 @@ class UsersAPI:
         
         :returns: :class:`User`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetUserRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}')
         return User.from_dict(json)
 
     def get_password_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
@@ -2625,8 +2211,7 @@ class UsersAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None,
-             **kwargs) -> Iterator[User]:
+             start_index: Optional[int] = None) -> Iterator[User]:
         """List users.
         
         Gets details for all the users associated with a Databricks workspace.
@@ -2654,24 +2239,15 @@ class UsersAPI:
         
         :returns: Iterator over :class:`User`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListUsersRequest(attributes=attributes,
-                                       count=count,
-                                       excluded_attributes=excluded_attributes,
-                                       filter=filter,
-                                       sort_by=sort_by,
-                                       sort_order=sort_order,
-                                       start_index=start_index)
 
         query = {}
-        if attributes: query['attributes'] = request.attributes
-        if count: query['count'] = request.count
-        if excluded_attributes: query['excludedAttributes'] = request.excluded_attributes
-        if filter: query['filter'] = request.filter
-        if sort_by: query['sortBy'] = request.sort_by
-        if sort_order: query['sortOrder'] = request.sort_order.value
-        if start_index: query['startIndex'] = request.start_index
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
@@ -2680,8 +2256,7 @@ class UsersAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None,
-              **kwargs):
+              schema: Optional[List[PatchSchema]] = None):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -2694,11 +2269,10 @@ class UsersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PartialUpdate(id=id, operations=operations, schema=schema)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{request.id}', body=body)
+        body = {}
+        if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
+        if schema is not None: body['schema'] = [v for v in schema]
+        self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
 
     def set_password_permissions(self,
                                  *,
@@ -2731,8 +2305,7 @@ class UsersAPI:
                groups: Optional[List[ComplexValue]] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
-               user_name: Optional[str] = None,
-               **kwargs):
+               user_name: Optional[str] = None):
         """Replace a user.
         
         Replaces a user's information with the data supplied in request.
@@ -2755,20 +2328,17 @@ class UsersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = User(active=active,
-                           display_name=display_name,
-                           emails=emails,
-                           entitlements=entitlements,
-                           external_id=external_id,
-                           groups=groups,
-                           id=id,
-                           name=name,
-                           roles=roles,
-                           user_name=user_name)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{request.id}', body=body)
+        body = {}
+        if active is not None: body['active'] = active
+        if display_name is not None: body['displayName'] = display_name
+        if emails is not None: body['emails'] = [v.as_dict() for v in emails]
+        if entitlements is not None: body['entitlements'] = [v.as_dict() for v in entitlements]
+        if external_id is not None: body['externalId'] = external_id
+        if groups is not None: body['groups'] = [v.as_dict() for v in groups]
+        if name is not None: body['name'] = name.as_dict()
+        if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if user_name is not None: body['userName'] = user_name
+        self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
 
     def update_password_permissions(self,
                                     *,
@@ -2798,7 +2368,7 @@ class WorkspaceAssignmentAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, workspace_id: int, principal_id: int, **kwargs):
+    def delete(self, workspace_id: int, principal_id: int):
         """Delete permissions assignment.
         
         Deletes the workspace permissions assignment in a given account and workspace for the specified
@@ -2811,16 +2381,13 @@ class WorkspaceAssignmentAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteWorkspaceAssignmentRequest(principal_id=principal_id, workspace_id=workspace_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}'
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}'
         )
 
-    def get(self, workspace_id: int, **kwargs) -> WorkspacePermissions:
+    def get(self, workspace_id: int) -> WorkspacePermissions:
         """List workspace permissions.
         
         Get an array of workspace permissions for the specified account and workspace.
@@ -2830,17 +2397,14 @@ class WorkspaceAssignmentAPI:
         
         :returns: :class:`WorkspacePermissions`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWorkspaceAssignmentRequest(workspace_id=workspace_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/permissions'
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/permissions'
         )
         return WorkspacePermissions.from_dict(json)
 
-    def list(self, workspace_id: int, **kwargs) -> Iterator[PermissionAssignment]:
+    def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
         """Get permission assignments.
         
         Get the permission assignments for the specified Databricks account and Databricks workspace.
@@ -2850,17 +2414,13 @@ class WorkspaceAssignmentAPI:
         
         :returns: Iterator over :class:`PermissionAssignment`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListWorkspaceAssignmentRequest(workspace_id=workspace_id)
 
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments')
         return [PermissionAssignment.from_dict(v) for v in json.get('permission_assignments', [])]
 
-    def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int, **kwargs):
+    def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
@@ -2875,13 +2435,9 @@ class WorkspaceAssignmentAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateWorkspaceAssignments(permissions=permissions,
-                                                 principal_id=principal_id,
-                                                 workspace_id=workspace_id)
-        body = request.as_dict()
+        body = {}
+        if permissions is not None: body['permissions'] = [v for v in permissions]
         self._api.do(
             'PUT',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/permissionassignments/principals/{request.principal_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}',
             body=body)

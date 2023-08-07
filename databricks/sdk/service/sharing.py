@@ -394,63 +394,6 @@ class CreateShare:
 
 
 @dataclass
-class DeleteCleanRoomRequest:
-    """Delete a clean room"""
-
-    name_arg: str
-
-
-@dataclass
-class DeleteProviderRequest:
-    """Delete a provider"""
-
-    name: str
-
-
-@dataclass
-class DeleteRecipientRequest:
-    """Delete a share recipient"""
-
-    name: str
-
-
-@dataclass
-class DeleteShareRequest:
-    """Delete a share"""
-
-    name: str
-
-
-@dataclass
-class GetActivationUrlInfoRequest:
-    """Get a share activation URL"""
-
-    activation_url: str
-
-
-@dataclass
-class GetCleanRoomRequest:
-    """Get a clean room"""
-
-    name_arg: str
-    include_remote_details: Optional[bool] = None
-
-
-@dataclass
-class GetProviderRequest:
-    """Get a provider"""
-
-    name: str
-
-
-@dataclass
-class GetRecipientRequest:
-    """Get a share recipient"""
-
-    name: str
-
-
-@dataclass
 class GetRecipientSharePermissionsResponse:
     permissions_out: Optional['List[ShareToPrivilegeAssignment]'] = None
 
@@ -462,14 +405,6 @@ class GetRecipientSharePermissionsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRecipientSharePermissionsResponse':
         return cls(permissions_out=_repeated(d, 'permissions_out', ShareToPrivilegeAssignment))
-
-
-@dataclass
-class GetShareRequest:
-    """Get a share"""
-
-    name: str
-    include_shared_data: Optional[bool] = None
 
 
 @dataclass
@@ -515,13 +450,6 @@ class ListProviderSharesResponse:
 
 
 @dataclass
-class ListProvidersRequest:
-    """List providers"""
-
-    data_provider_global_metastore_id: Optional[str] = None
-
-
-@dataclass
 class ListProvidersResponse:
     providers: Optional['List[ProviderInfo]'] = None
 
@@ -536,13 +464,6 @@ class ListProvidersResponse:
 
 
 @dataclass
-class ListRecipientsRequest:
-    """List share recipients"""
-
-    data_recipient_global_metastore_id: Optional[str] = None
-
-
-@dataclass
 class ListRecipientsResponse:
     recipients: Optional['List[RecipientInfo]'] = None
 
@@ -554,13 +475,6 @@ class ListRecipientsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRecipientsResponse':
         return cls(recipients=_repeated(d, 'recipients', RecipientInfo))
-
-
-@dataclass
-class ListSharesRequest:
-    """List shares by Provider"""
-
-    name: str
 
 
 @dataclass
@@ -864,13 +778,6 @@ class RecipientTokenInfo:
 
 
 @dataclass
-class RetrieveTokenRequest:
-    """Get an access token"""
-
-    activation_url: str
-
-
-@dataclass
 class RetrieveTokenResponse:
     bearer_token: Optional[str] = None
     endpoint: Optional[str] = None
@@ -964,13 +871,6 @@ class ShareInfo:
                    owner=d.get('owner', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
-
-
-@dataclass
-class SharePermissionsRequest:
-    """Get recipient share permissions"""
-
-    name: str
 
 
 @dataclass
@@ -1204,8 +1104,7 @@ class CleanRoomsAPI:
                name: str,
                remote_detailed_info: CentralCleanRoomInfo,
                *,
-               comment: Optional[str] = None,
-               **kwargs) -> CleanRoomInfo:
+               comment: Optional[str] = None) -> CleanRoomInfo:
         """Create a clean room.
         
         Creates a new clean room with specified colaborators. The caller must be a metastore admin or have the
@@ -1220,15 +1119,15 @@ class CleanRoomsAPI:
         
         :returns: :class:`CleanRoomInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCleanRoom(comment=comment, name=name, remote_detailed_info=remote_detailed_info)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if remote_detailed_info is not None: body['remote_detailed_info'] = remote_detailed_info.as_dict()
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/clean-rooms', body=body)
         return CleanRoomInfo.from_dict(json)
 
-    def delete(self, name_arg: str, **kwargs):
+    def delete(self, name_arg: str):
         """Delete a clean room.
         
         Deletes a data object clean room from the metastore. The caller must be an owner of the clean room.
@@ -1238,13 +1137,10 @@ class CleanRoomsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteCleanRoomRequest(name_arg=name_arg)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/clean-rooms/{request.name_arg}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}')
 
-    def get(self, name_arg: str, *, include_remote_details: Optional[bool] = None, **kwargs) -> CleanRoomInfo:
+    def get(self, name_arg: str, *, include_remote_details: Optional[bool] = None) -> CleanRoomInfo:
         """Get a clean room.
         
         Gets a data object clean room from the metastore. The caller must be a metastore admin or the owner of
@@ -1257,14 +1153,11 @@ class CleanRoomsAPI:
         
         :returns: :class:`CleanRoomInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetCleanRoomRequest(include_remote_details=include_remote_details, name_arg=name_arg)
 
         query = {}
-        if include_remote_details: query['include_remote_details'] = request.include_remote_details
+        if include_remote_details is not None: query['include_remote_details'] = include_remote_details
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/clean-rooms/{request.name_arg}', query=query)
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', query=query)
         return CleanRoomInfo.from_dict(json)
 
     def list(self) -> Iterator[CleanRoomInfo]:
@@ -1286,8 +1179,7 @@ class CleanRoomsAPI:
                catalog_updates: Optional[List[CleanRoomCatalogUpdate]] = None,
                comment: Optional[str] = None,
                name: Optional[str] = None,
-               owner: Optional[str] = None,
-               **kwargs) -> CleanRoomInfo:
+               owner: Optional[str] = None) -> CleanRoomInfo:
         """Update a clean room.
         
         Updates the clean room with the changes and data objects in the request. The caller must be the owner
@@ -1317,16 +1209,13 @@ class CleanRoomsAPI:
         
         :returns: :class:`CleanRoomInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateCleanRoom(catalog_updates=catalog_updates,
-                                      comment=comment,
-                                      name=name,
-                                      name_arg=name_arg,
-                                      owner=owner)
-        body = request.as_dict()
+        body = {}
+        if catalog_updates is not None: body['catalog_updates'] = [v.as_dict() for v in catalog_updates]
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/clean-rooms/{request.name_arg}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', body=body)
         return CleanRoomInfo.from_dict(json)
 
 
@@ -1342,8 +1231,7 @@ class ProvidersAPI:
                authentication_type: AuthenticationType,
                *,
                comment: Optional[str] = None,
-               recipient_profile_str: Optional[str] = None,
-               **kwargs) -> ProviderInfo:
+               recipient_profile_str: Optional[str] = None) -> ProviderInfo:
         """Create an auth provider.
         
         Creates a new authentication provider minimally based on a name and authentication type. The caller
@@ -1360,18 +1248,16 @@ class ProvidersAPI:
         
         :returns: :class:`ProviderInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateProvider(authentication_type=authentication_type,
-                                     comment=comment,
-                                     name=name,
-                                     recipient_profile_str=recipient_profile_str)
-        body = request.as_dict()
+        body = {}
+        if authentication_type is not None: body['authentication_type'] = authentication_type.value
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/providers', body=body)
         return ProviderInfo.from_dict(json)
 
-    def delete(self, name: str, **kwargs):
+    def delete(self, name: str):
         """Delete a provider.
         
         Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
@@ -1382,13 +1268,10 @@ class ProvidersAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteProviderRequest(name=name)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/providers/{request.name}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/providers/{name}')
 
-    def get(self, name: str, **kwargs) -> ProviderInfo:
+    def get(self, name: str) -> ProviderInfo:
         """Get a provider.
         
         Gets a specific authentication provider. The caller must supply the name of the provider, and must
@@ -1399,17 +1282,11 @@ class ProvidersAPI:
         
         :returns: :class:`ProviderInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetProviderRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}')
         return ProviderInfo.from_dict(json)
 
-    def list(self,
-             *,
-             data_provider_global_metastore_id: Optional[str] = None,
-             **kwargs) -> Iterator[ProviderInfo]:
+    def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator[ProviderInfo]:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a metastore admin or
@@ -1422,19 +1299,15 @@ class ProvidersAPI:
         
         :returns: Iterator over :class:`ProviderInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListProvidersRequest(
-                data_provider_global_metastore_id=data_provider_global_metastore_id)
 
         query = {}
-        if data_provider_global_metastore_id:
-            query['data_provider_global_metastore_id'] = request.data_provider_global_metastore_id
+        if data_provider_global_metastore_id is not None:
+            query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
         return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
 
-    def list_shares(self, name: str, **kwargs) -> Iterator[ProviderShare]:
+    def list_shares(self, name: str) -> Iterator[ProviderShare]:
         """List shares by Provider.
         
         Gets an array of a specified provider's shares within the metastore where:
@@ -1446,11 +1319,8 @@ class ProvidersAPI:
         
         :returns: Iterator over :class:`ProviderShare`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListSharesRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{request.name}/shares')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares')
         return [ProviderShare.from_dict(v) for v in json.get('shares', [])]
 
     def update(self,
@@ -1458,8 +1328,7 @@ class ProvidersAPI:
                *,
                comment: Optional[str] = None,
                owner: Optional[str] = None,
-               recipient_profile_str: Optional[str] = None,
-               **kwargs) -> ProviderInfo:
+               recipient_profile_str: Optional[str] = None) -> ProviderInfo:
         """Update a provider.
         
         Updates the information for an authentication provider, if the caller is a metastore admin or is the
@@ -1477,15 +1346,12 @@ class ProvidersAPI:
         
         :returns: :class:`ProviderInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateProvider(comment=comment,
-                                     name=name,
-                                     owner=owner,
-                                     recipient_profile_str=recipient_profile_str)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if owner is not None: body['owner'] = owner
+        if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/providers/{request.name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/providers/{name}', body=body)
         return ProviderInfo.from_dict(json)
 
 
@@ -1501,7 +1367,7 @@ class RecipientActivationAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_activation_url_info(self, activation_url: str, **kwargs):
+    def get_activation_url_info(self, activation_url: str):
         """Get a share activation URL.
         
         Gets an activation URL for a share.
@@ -1511,14 +1377,10 @@ class RecipientActivationAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetActivationUrlInfoRequest(activation_url=activation_url)
 
-        self._api.do('GET',
-                     f'/api/2.1/unity-catalog/public/data_sharing_activation_info/{request.activation_url}')
+        self._api.do('GET', f'/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}')
 
-    def retrieve_token(self, activation_url: str, **kwargs) -> RetrieveTokenResponse:
+    def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
         """Get an access token.
         
         Retrieve access token with an activation url. This is a public API without any authentication.
@@ -1528,12 +1390,8 @@ class RecipientActivationAPI:
         
         :returns: :class:`RetrieveTokenResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RetrieveTokenRequest(activation_url=activation_url)
 
-        json = self._api.do(
-            'GET', f'/api/2.1/unity-catalog/public/data_sharing_activation/{request.activation_url}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}')
         return RetrieveTokenResponse.from_dict(json)
 
 
@@ -1564,8 +1422,7 @@ class RecipientsAPI:
                ip_access_list: Optional[IpAccessList] = None,
                owner: Optional[str] = None,
                properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
-               sharing_code: Optional[str] = None,
-               **kwargs) -> RecipientInfo:
+               sharing_code: Optional[str] = None) -> RecipientInfo:
         """Create a share recipient.
         
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
@@ -1593,22 +1450,21 @@ class RecipientsAPI:
         
         :returns: :class:`RecipientInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRecipient(authentication_type=authentication_type,
-                                      comment=comment,
-                                      data_recipient_global_metastore_id=data_recipient_global_metastore_id,
-                                      ip_access_list=ip_access_list,
-                                      name=name,
-                                      owner=owner,
-                                      properties_kvpairs=properties_kvpairs,
-                                      sharing_code=sharing_code)
-        body = request.as_dict()
+        body = {}
+        if authentication_type is not None: body['authentication_type'] = authentication_type.value
+        if comment is not None: body['comment'] = comment
+        if data_recipient_global_metastore_id is not None:
+            body['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
+        if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
+        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
+        if sharing_code is not None: body['sharing_code'] = sharing_code
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/recipients', body=body)
         return RecipientInfo.from_dict(json)
 
-    def delete(self, name: str, **kwargs):
+    def delete(self, name: str):
         """Delete a share recipient.
         
         Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
@@ -1618,13 +1474,10 @@ class RecipientsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRecipientRequest(name=name)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/recipients/{request.name}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/recipients/{name}')
 
-    def get(self, name: str, **kwargs) -> RecipientInfo:
+    def get(self, name: str) -> RecipientInfo:
         """Get a share recipient.
         
         Gets a share recipient from the metastore if:
@@ -1636,17 +1489,11 @@ class RecipientsAPI:
         
         :returns: :class:`RecipientInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRecipientRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}')
         return RecipientInfo.from_dict(json)
 
-    def list(self,
-             *,
-             data_recipient_global_metastore_id: Optional[str] = None,
-             **kwargs) -> Iterator[RecipientInfo]:
+    def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator[RecipientInfo]:
         """List share recipients.
         
         Gets an array of all share recipients within the current metastore where:
@@ -1660,19 +1507,15 @@ class RecipientsAPI:
         
         :returns: Iterator over :class:`RecipientInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListRecipientsRequest(
-                data_recipient_global_metastore_id=data_recipient_global_metastore_id)
 
         query = {}
-        if data_recipient_global_metastore_id:
-            query['data_recipient_global_metastore_id'] = request.data_recipient_global_metastore_id
+        if data_recipient_global_metastore_id is not None:
+            query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query)
         return [RecipientInfo.from_dict(v) for v in json.get('recipients', [])]
 
-    def rotate_token(self, existing_token_expire_in_seconds: int, name: str, **kwargs) -> RecipientInfo:
+    def rotate_token(self, existing_token_expire_in_seconds: int, name: str) -> RecipientInfo:
         """Rotate a token.
         
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
@@ -1687,18 +1530,14 @@ class RecipientsAPI:
         
         :returns: :class:`RecipientInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RotateRecipientToken(existing_token_expire_in_seconds=existing_token_expire_in_seconds,
-                                           name=name)
-        body = request.as_dict()
+        body = {}
+        if existing_token_expire_in_seconds is not None:
+            body['existing_token_expire_in_seconds'] = existing_token_expire_in_seconds
 
-        json = self._api.do('POST',
-                            f'/api/2.1/unity-catalog/recipients/{request.name}/rotate-token',
-                            body=body)
+        json = self._api.do('POST', f'/api/2.1/unity-catalog/recipients/{name}/rotate-token', body=body)
         return RecipientInfo.from_dict(json)
 
-    def share_permissions(self, name: str, **kwargs) -> GetRecipientSharePermissionsResponse:
+    def share_permissions(self, name: str) -> GetRecipientSharePermissionsResponse:
         """Get recipient share permissions.
         
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
@@ -1709,11 +1548,8 @@ class RecipientsAPI:
         
         :returns: :class:`GetRecipientSharePermissionsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SharePermissionsRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{request.name}/share-permissions')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}/share-permissions')
         return GetRecipientSharePermissionsResponse.from_dict(json)
 
     def update(self,
@@ -1722,8 +1558,7 @@ class RecipientsAPI:
                comment: Optional[str] = None,
                ip_access_list: Optional[IpAccessList] = None,
                owner: Optional[str] = None,
-               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
-               **kwargs):
+               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None):
         """Update a share recipient.
         
         Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
@@ -1745,15 +1580,12 @@ class RecipientsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateRecipient(comment=comment,
-                                      ip_access_list=ip_access_list,
-                                      name=name,
-                                      owner=owner,
-                                      properties_kvpairs=properties_kvpairs)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.1/unity-catalog/recipients/{request.name}', body=body)
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
+        if owner is not None: body['owner'] = owner
+        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/recipients/{name}', body=body)
 
 
 class SharesAPI:
@@ -1765,7 +1597,7 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None, **kwargs) -> ShareInfo:
+    def create(self, name: str, *, comment: Optional[str] = None) -> ShareInfo:
         """Create a share.
         
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
@@ -1778,15 +1610,14 @@ class SharesAPI:
         
         :returns: :class:`ShareInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateShare(comment=comment, name=name)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/shares', body=body)
         return ShareInfo.from_dict(json)
 
-    def delete(self, name: str, **kwargs):
+    def delete(self, name: str):
         """Delete a share.
         
         Deletes a data object share from the metastore. The caller must be an owner of the share.
@@ -1796,13 +1627,10 @@ class SharesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteShareRequest(name=name)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{request.name}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{name}')
 
-    def get(self, name: str, *, include_shared_data: Optional[bool] = None, **kwargs) -> ShareInfo:
+    def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
         """Get a share.
         
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
@@ -1815,14 +1643,11 @@ class SharesAPI:
         
         :returns: :class:`ShareInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetShareRequest(include_shared_data=include_shared_data, name=name)
 
         query = {}
-        if include_shared_data: query['include_shared_data'] = request.include_shared_data
+        if include_shared_data is not None: query['include_shared_data'] = include_shared_data
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{request.name}', query=query)
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query)
         return ShareInfo.from_dict(json)
 
     def list(self) -> Iterator[ShareInfo]:
@@ -1837,7 +1662,7 @@ class SharesAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares')
         return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
 
-    def share_permissions(self, name: str, **kwargs) -> catalog.PermissionsList:
+    def share_permissions(self, name: str) -> catalog.PermissionsList:
         """Get permissions.
         
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
@@ -1848,11 +1673,8 @@ class SharesAPI:
         
         :returns: :class:`PermissionsList`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SharePermissionsRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{request.name}/permissions')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}/permissions')
         return PermissionsList.from_dict(json)
 
     def update(self,
@@ -1860,8 +1682,7 @@ class SharesAPI:
                *,
                comment: Optional[str] = None,
                owner: Optional[str] = None,
-               updates: Optional[List[SharedDataObjectUpdate]] = None,
-               **kwargs) -> ShareInfo:
+               updates: Optional[List[SharedDataObjectUpdate]] = None) -> ShareInfo:
         """Update a share.
         
         Updates the share with the changes and data objects in the request. The caller must be the owner of
@@ -1889,19 +1710,15 @@ class SharesAPI:
         
         :returns: :class:`ShareInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateShare(comment=comment, name=name, owner=owner, updates=updates)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if owner is not None: body['owner'] = owner
+        if updates is not None: body['updates'] = [v.as_dict() for v in updates]
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{request.name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}', body=body)
         return ShareInfo.from_dict(json)
 
-    def update_permissions(self,
-                           name: str,
-                           *,
-                           changes: Optional[List[catalog.PermissionsChange]] = None,
-                           **kwargs):
+    def update_permissions(self, name: str, *, changes: Optional[List[catalog.PermissionsChange]] = None):
         """Update permissions.
         
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
@@ -1917,8 +1734,6 @@ class SharesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateSharePermissions(changes=changes, name=name)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{request.name}/permissions', body=body)
+        body = {}
+        if changes is not None: body['changes'] = [v for v in changes]
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}/permissions', body=body)

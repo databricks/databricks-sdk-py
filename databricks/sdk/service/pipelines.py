@@ -134,13 +134,6 @@ class DataPlaneId:
 
 
 @dataclass
-class DeletePipelineRequest:
-    """Delete a pipeline"""
-
-    pipeline_id: str
-
-
-@dataclass
 class EditPipeline:
     allow_duplicate_names: Optional[bool] = None
     catalog: Optional[str] = None
@@ -265,41 +258,6 @@ class Filters:
 
 
 @dataclass
-class GetPipelinePermissionLevelsRequest:
-    """Get pipeline permission levels"""
-
-    pipeline_id: str
-
-
-@dataclass
-class GetPipelinePermissionLevelsResponse:
-    permission_levels: Optional['List[PipelinePermissionsDescription]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetPipelinePermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PipelinePermissionsDescription))
-
-
-@dataclass
-class GetPipelinePermissionsRequest:
-    """Get pipeline permissions"""
-
-    pipeline_id: str
-
-
-@dataclass
-class GetPipelineRequest:
-    """Get a pipeline"""
-
-    pipeline_id: str
-
-
-@dataclass
 class GetPipelineResponse:
     cause: Optional[str] = None
     cluster_id: Optional[str] = None
@@ -351,14 +309,6 @@ class GetPipelineResponseHealth(Enum):
 
 
 @dataclass
-class GetUpdateRequest:
-    """Get a pipeline update"""
-
-    pipeline_id: str
-    update_id: str
-
-
-@dataclass
 class GetUpdateResponse:
     update: Optional['UpdateInfo'] = None
 
@@ -370,17 +320,6 @@ class GetUpdateResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetUpdateResponse':
         return cls(update=_from_dict(d, 'update', UpdateInfo))
-
-
-@dataclass
-class ListPipelineEventsRequest:
-    """List pipeline events"""
-
-    pipeline_id: str
-    filter: Optional[str] = None
-    max_results: Optional[int] = None
-    order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
 
 
 @dataclass
@@ -404,16 +343,6 @@ class ListPipelineEventsResponse:
 
 
 @dataclass
-class ListPipelinesRequest:
-    """List pipelines"""
-
-    filter: Optional[str] = None
-    max_results: Optional[int] = None
-    order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
-
-
-@dataclass
 class ListPipelinesResponse:
     next_page_token: Optional[str] = None
     statuses: Optional['List[PipelineStateInfo]'] = None
@@ -428,16 +357,6 @@ class ListPipelinesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListPipelinesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
                    statuses=_repeated(d, 'statuses', PipelineStateInfo))
-
-
-@dataclass
-class ListUpdatesRequest:
-    """List pipeline updates"""
-
-    pipeline_id: str
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
-    until_update_id: Optional[str] = None
 
 
 @dataclass
@@ -927,13 +846,6 @@ class PipelineTrigger:
 
 
 @dataclass
-class ResetRequest:
-    """Reset a pipeline"""
-
-    pipeline_id: str
-
-
-@dataclass
 class Sequencing:
     control_plane_seq_no: Optional[int] = None
     data_plane_id: Optional['DataPlaneId'] = None
@@ -1042,13 +954,6 @@ class StartUpdateResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StartUpdateResponse':
         return cls(update_id=d.get('update_id', None))
-
-
-@dataclass
-class StopRequest:
-    """Stop a pipeline"""
-
-    pipeline_id: str
 
 
 @dataclass
@@ -1251,8 +1156,7 @@ class PipelinesAPI:
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
                target: Optional[str] = None,
-               trigger: Optional[PipelineTrigger] = None,
-               **kwargs) -> CreatePipelineResponse:
+               trigger: Optional[PipelineTrigger] = None) -> CreatePipelineResponse:
         """Create a pipeline.
         
         Creates a new data processing pipeline based on the requested configuration. If successful, this
@@ -1299,32 +1203,30 @@ class PipelinesAPI:
         
         :returns: :class:`CreatePipelineResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreatePipeline(allow_duplicate_names=allow_duplicate_names,
-                                     catalog=catalog,
-                                     channel=channel,
-                                     clusters=clusters,
-                                     configuration=configuration,
-                                     continuous=continuous,
-                                     development=development,
-                                     dry_run=dry_run,
-                                     edition=edition,
-                                     filters=filters,
-                                     id=id,
-                                     libraries=libraries,
-                                     name=name,
-                                     photon=photon,
-                                     serverless=serverless,
-                                     storage=storage,
-                                     target=target,
-                                     trigger=trigger)
-        body = request.as_dict()
+        body = {}
+        if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
+        if catalog is not None: body['catalog'] = catalog
+        if channel is not None: body['channel'] = channel
+        if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
+        if configuration is not None: body['configuration'] = configuration
+        if continuous is not None: body['continuous'] = continuous
+        if development is not None: body['development'] = development
+        if dry_run is not None: body['dry_run'] = dry_run
+        if edition is not None: body['edition'] = edition
+        if filters is not None: body['filters'] = filters.as_dict()
+        if id is not None: body['id'] = id
+        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
+        if name is not None: body['name'] = name
+        if photon is not None: body['photon'] = photon
+        if serverless is not None: body['serverless'] = serverless
+        if storage is not None: body['storage'] = storage
+        if target is not None: body['target'] = target
+        if trigger is not None: body['trigger'] = trigger.as_dict()
 
         json = self._api.do('POST', '/api/2.0/pipelines', body=body)
         return CreatePipelineResponse.from_dict(json)
 
-    def delete(self, pipeline_id: str, **kwargs):
+    def delete(self, pipeline_id: str):
         """Delete a pipeline.
         
         Deletes a pipeline.
@@ -1333,62 +1235,21 @@ class PipelinesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeletePipelineRequest(pipeline_id=pipeline_id)
 
-        self._api.do('DELETE', f'/api/2.0/pipelines/{request.pipeline_id}')
+        self._api.do('DELETE', f'/api/2.0/pipelines/{pipeline_id}')
 
-    def get(self, pipeline_id: str, **kwargs) -> GetPipelineResponse:
+    def get(self, pipeline_id: str) -> GetPipelineResponse:
         """Get a pipeline.
         
         :param pipeline_id: str
         
         :returns: :class:`GetPipelineResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPipelineRequest(pipeline_id=pipeline_id)
 
-        json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}')
+        json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}')
         return GetPipelineResponse.from_dict(json)
 
-    def get_pipeline_permission_levels(self, pipeline_id: str,
-                                       **kwargs) -> GetPipelinePermissionLevelsResponse:
-        """Get pipeline permission levels.
-        
-        Gets the permission levels that a user can have on an object.
-        
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-        
-        :returns: :class:`GetPipelinePermissionLevelsResponse`
-        """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPipelinePermissionLevelsRequest(pipeline_id=pipeline_id)
-
-        json = self._api.do('GET', f'/api/2.0/permissions/pipelines/{request.pipeline_id}/permissionLevels')
-        return GetPipelinePermissionLevelsResponse.from_dict(json)
-
-    def get_pipeline_permissions(self, pipeline_id: str, **kwargs) -> PipelinePermissions:
-        """Get pipeline permissions.
-        
-        Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
-        
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-        
-        :returns: :class:`PipelinePermissions`
-        """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetPipelinePermissionsRequest(pipeline_id=pipeline_id)
-
-        json = self._api.do('GET', f'/api/2.0/permissions/pipelines/{request.pipeline_id}')
-        return PipelinePermissions.from_dict(json)
-
-    def get_update(self, pipeline_id: str, update_id: str, **kwargs) -> GetUpdateResponse:
+    def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
         """Get a pipeline update.
         
         Gets an update from an active pipeline.
@@ -1400,11 +1261,8 @@ class PipelinesAPI:
         
         :returns: :class:`GetUpdateResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetUpdateRequest(pipeline_id=pipeline_id, update_id=update_id)
 
-        json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/updates/{request.update_id}')
+        json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates/{update_id}')
         return GetUpdateResponse.from_dict(json)
 
     def list_pipeline_events(self,
@@ -1413,8 +1271,7 @@ class PipelinesAPI:
                              filter: Optional[str] = None,
                              max_results: Optional[int] = None,
                              order_by: Optional[List[str]] = None,
-                             page_token: Optional[str] = None,
-                             **kwargs) -> Iterator[PipelineEvent]:
+                             page_token: Optional[str] = None) -> Iterator[PipelineEvent]:
         """List pipeline events.
         
         Retrieves events for a pipeline.
@@ -1441,22 +1298,15 @@ class PipelinesAPI:
         
         :returns: Iterator over :class:`PipelineEvent`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListPipelineEventsRequest(filter=filter,
-                                                max_results=max_results,
-                                                order_by=order_by,
-                                                page_token=page_token,
-                                                pipeline_id=pipeline_id)
 
         query = {}
-        if filter: query['filter'] = request.filter
-        if max_results: query['max_results'] = request.max_results
-        if order_by: query['order_by'] = [v for v in request.order_by]
-        if page_token: query['page_token'] = request.page_token
+        if filter is not None: query['filter'] = filter
+        if max_results is not None: query['max_results'] = max_results
+        if order_by is not None: query['order_by'] = [v for v in order_by]
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
-            json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/events', query=query)
+            json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/events', query=query)
             if 'events' not in json or not json['events']:
                 return
             for v in json['events']:
@@ -1470,8 +1320,7 @@ class PipelinesAPI:
                        filter: Optional[str] = None,
                        max_results: Optional[int] = None,
                        order_by: Optional[List[str]] = None,
-                       page_token: Optional[str] = None,
-                       **kwargs) -> Iterator[PipelineStateInfo]:
+                       page_token: Optional[str] = None) -> Iterator[PipelineStateInfo]:
         """List pipelines.
         
         Lists pipelines defined in the Delta Live Tables system.
@@ -1497,18 +1346,12 @@ class PipelinesAPI:
         
         :returns: Iterator over :class:`PipelineStateInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListPipelinesRequest(filter=filter,
-                                           max_results=max_results,
-                                           order_by=order_by,
-                                           page_token=page_token)
 
         query = {}
-        if filter: query['filter'] = request.filter
-        if max_results: query['max_results'] = request.max_results
-        if order_by: query['order_by'] = [v for v in request.order_by]
-        if page_token: query['page_token'] = request.page_token
+        if filter is not None: query['filter'] = filter
+        if max_results is not None: query['max_results'] = max_results
+        if order_by is not None: query['order_by'] = [v for v in order_by]
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query)
@@ -1525,8 +1368,7 @@ class PipelinesAPI:
                      *,
                      max_results: Optional[int] = None,
                      page_token: Optional[str] = None,
-                     until_update_id: Optional[str] = None,
-                     **kwargs) -> ListUpdatesResponse:
+                     until_update_id: Optional[str] = None) -> ListUpdatesResponse:
         """List pipeline updates.
         
         List updates for an active pipeline.
@@ -1542,22 +1384,16 @@ class PipelinesAPI:
         
         :returns: :class:`ListUpdatesResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListUpdatesRequest(max_results=max_results,
-                                         page_token=page_token,
-                                         pipeline_id=pipeline_id,
-                                         until_update_id=until_update_id)
 
         query = {}
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
-        if until_update_id: query['until_update_id'] = request.until_update_id
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        if until_update_id is not None: query['until_update_id'] = until_update_id
 
-        json = self._api.do('GET', f'/api/2.0/pipelines/{request.pipeline_id}/updates', query=query)
+        json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query)
         return ListUpdatesResponse.from_dict(json)
 
-    def reset(self, pipeline_id: str, **kwargs) -> Wait[GetPipelineResponse]:
+    def reset(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
         """Reset a pipeline.
         
         Resets a pipeline.
@@ -1568,12 +1404,9 @@ class PipelinesAPI:
           Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ResetRequest(pipeline_id=pipeline_id)
 
-        self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/reset')
-        return Wait(self.wait_get_pipeline_running, pipeline_id=request.pipeline_id)
+        self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/reset')
+        return Wait(self.wait_get_pipeline_running, pipeline_id=pipeline_id)
 
     def reset_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.reset(pipeline_id=pipeline_id).result(timeout=timeout)
@@ -1608,8 +1441,7 @@ class PipelinesAPI:
                      cause: Optional[StartUpdateCause] = None,
                      full_refresh: Optional[bool] = None,
                      full_refresh_selection: Optional[List[str]] = None,
-                     refresh_selection: Optional[List[str]] = None,
-                     **kwargs) -> StartUpdateResponse:
+                     refresh_selection: Optional[List[str]] = None) -> StartUpdateResponse:
         """Queue a pipeline update.
         
         Starts or queues a pipeline update.
@@ -1629,19 +1461,17 @@ class PipelinesAPI:
         
         :returns: :class:`StartUpdateResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = StartUpdate(cause=cause,
-                                  full_refresh=full_refresh,
-                                  full_refresh_selection=full_refresh_selection,
-                                  pipeline_id=pipeline_id,
-                                  refresh_selection=refresh_selection)
-        body = request.as_dict()
+        body = {}
+        if cause is not None: body['cause'] = cause.value
+        if full_refresh is not None: body['full_refresh'] = full_refresh
+        if full_refresh_selection is not None:
+            body['full_refresh_selection'] = [v for v in full_refresh_selection]
+        if refresh_selection is not None: body['refresh_selection'] = [v for v in refresh_selection]
 
-        json = self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/updates', body=body)
+        json = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body)
         return StartUpdateResponse.from_dict(json)
 
-    def stop(self, pipeline_id: str, **kwargs) -> Wait[GetPipelineResponse]:
+    def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
         """Stop a pipeline.
         
         Stops a pipeline.
@@ -1652,12 +1482,9 @@ class PipelinesAPI:
           Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_idle for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = StopRequest(pipeline_id=pipeline_id)
 
-        self._api.do('POST', f'/api/2.0/pipelines/{request.pipeline_id}/stop')
-        return Wait(self.wait_get_pipeline_idle, pipeline_id=request.pipeline_id)
+        self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/stop')
+        return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
 
     def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)
@@ -1682,8 +1509,7 @@ class PipelinesAPI:
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
                target: Optional[str] = None,
-               trigger: Optional[PipelineTrigger] = None,
-               **kwargs):
+               trigger: Optional[PipelineTrigger] = None):
         """Edit a pipeline.
         
         Updates a pipeline with the supplied configuration.
@@ -1733,50 +1559,23 @@ class PipelinesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EditPipeline(allow_duplicate_names=allow_duplicate_names,
-                                   catalog=catalog,
-                                   channel=channel,
-                                   clusters=clusters,
-                                   configuration=configuration,
-                                   continuous=continuous,
-                                   development=development,
-                                   edition=edition,
-                                   expected_last_modified=expected_last_modified,
-                                   filters=filters,
-                                   id=id,
-                                   libraries=libraries,
-                                   name=name,
-                                   photon=photon,
-                                   pipeline_id=pipeline_id,
-                                   serverless=serverless,
-                                   storage=storage,
-                                   target=target,
-                                   trigger=trigger)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/pipelines/{request.pipeline_id}', body=body)
-
-    def update_pipeline_permissions(self,
-                                    pipeline_id: str,
-                                    *,
-                                    access_control_list: Optional[List[PipelineAccessControlRequest]] = None,
-                                    **kwargs) -> PipelinePermissions:
-        """Update pipeline permissions.
-        
-        Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
-        
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
-        :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-        
-        :returns: :class:`PipelinePermissions`
-        """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = PipelinePermissionsRequest(access_control_list=access_control_list,
-                                                 pipeline_id=pipeline_id)
-        body = request.as_dict()
-
-        json = self._api.do('PATCH', f'/api/2.0/permissions/pipelines/{request.pipeline_id}', body=body)
-        return PipelinePermissions.from_dict(json)
+        body = {}
+        if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
+        if catalog is not None: body['catalog'] = catalog
+        if channel is not None: body['channel'] = channel
+        if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
+        if configuration is not None: body['configuration'] = configuration
+        if continuous is not None: body['continuous'] = continuous
+        if development is not None: body['development'] = development
+        if edition is not None: body['edition'] = edition
+        if expected_last_modified is not None: body['expected_last_modified'] = expected_last_modified
+        if filters is not None: body['filters'] = filters.as_dict()
+        if id is not None: body['id'] = id
+        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
+        if name is not None: body['name'] = name
+        if photon is not None: body['photon'] = photon
+        if serverless is not None: body['serverless'] = serverless
+        if storage is not None: body['storage'] = storage
+        if target is not None: body['target'] = target
+        if trigger is not None: body['trigger'] = trigger.as_dict()
+        self._api.do('PUT', f'/api/2.0/pipelines/{pipeline_id}', body=body)

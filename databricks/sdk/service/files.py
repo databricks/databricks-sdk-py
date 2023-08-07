@@ -111,20 +111,6 @@ class FileInfo:
 
 
 @dataclass
-class GetStatusRequest:
-    """Get the information of a file or directory"""
-
-    path: str
-
-
-@dataclass
-class ListDbfsRequest:
-    """List directory contents or file details"""
-
-    path: str
-
-
-@dataclass
 class ListStatusResponse:
     files: Optional['List[FileInfo]'] = None
 
@@ -189,15 +175,6 @@ class Put:
 
 
 @dataclass
-class ReadDbfsRequest:
-    """Get the contents of a file"""
-
-    path: str
-    length: Optional[int] = None
-    offset: Optional[int] = None
-
-
-@dataclass
 class ReadResponse:
     bytes_read: Optional[int] = None
     data: Optional[str] = None
@@ -220,7 +197,7 @@ class DbfsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def add_block(self, handle: int, data: str, **kwargs):
+    def add_block(self, handle: int, data: str):
         """Append data block.
         
         Appends a block of data to the stream specified by the input handle. If the handle does not exist,
@@ -235,13 +212,12 @@ class DbfsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AddBlock(data=data, handle=handle)
-        body = request.as_dict()
+        body = {}
+        if data is not None: body['data'] = data
+        if handle is not None: body['handle'] = handle
         self._api.do('POST', '/api/2.0/dbfs/add-block', body=body)
 
-    def close(self, handle: int, **kwargs):
+    def close(self, handle: int):
         """Close the stream.
         
         Closes the stream specified by the input handle. If the handle does not exist, this call throws an
@@ -252,13 +228,11 @@ class DbfsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Close(handle=handle)
-        body = request.as_dict()
+        body = {}
+        if handle is not None: body['handle'] = handle
         self._api.do('POST', '/api/2.0/dbfs/close', body=body)
 
-    def create(self, path: str, *, overwrite: Optional[bool] = None, **kwargs) -> CreateResponse:
+    def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
         """Open a stream.
         
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
@@ -277,15 +251,14 @@ class DbfsAPI:
         
         :returns: :class:`CreateResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Create(overwrite=overwrite, path=path)
-        body = request.as_dict()
+        body = {}
+        if overwrite is not None: body['overwrite'] = overwrite
+        if path is not None: body['path'] = path
 
         json = self._api.do('POST', '/api/2.0/dbfs/create', body=body)
         return CreateResponse.from_dict(json)
 
-    def delete(self, path: str, *, recursive: Optional[bool] = None, **kwargs):
+    def delete(self, path: str, *, recursive: Optional[bool] = None):
         """Delete a file/directory.
         
         Delete the file or directory (optionally recursively delete all files in the directory). This call
@@ -311,13 +284,12 @@ class DbfsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Delete(path=path, recursive=recursive)
-        body = request.as_dict()
+        body = {}
+        if path is not None: body['path'] = path
+        if recursive is not None: body['recursive'] = recursive
         self._api.do('POST', '/api/2.0/dbfs/delete', body=body)
 
-    def get_status(self, path: str, **kwargs) -> FileInfo:
+    def get_status(self, path: str) -> FileInfo:
         """Get the information of a file or directory.
         
         Gets the file information for a file or directory. If the file or directory does not exist, this call
@@ -328,17 +300,14 @@ class DbfsAPI:
         
         :returns: :class:`FileInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStatusRequest(path=path)
 
         query = {}
-        if path: query['path'] = request.path
+        if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query)
         return FileInfo.from_dict(json)
 
-    def list(self, path: str, **kwargs) -> Iterator[FileInfo]:
+    def list(self, path: str) -> Iterator[FileInfo]:
         """List directory contents or file details.
         
         List the contents of a directory, or details of the file. If the file or directory does not exist,
@@ -356,17 +325,14 @@ class DbfsAPI:
         
         :returns: Iterator over :class:`FileInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListDbfsRequest(path=path)
 
         query = {}
-        if path: query['path'] = request.path
+        if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query)
         return [FileInfo.from_dict(v) for v in json.get('files', [])]
 
-    def mkdirs(self, path: str, **kwargs):
+    def mkdirs(self, path: str):
         """Create a directory.
         
         Creates the given directory and necessary parent directories if they do not exist. If a file (not a
@@ -379,13 +345,11 @@ class DbfsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = MkDirs(path=path)
-        body = request.as_dict()
+        body = {}
+        if path is not None: body['path'] = path
         self._api.do('POST', '/api/2.0/dbfs/mkdirs', body=body)
 
-    def move(self, source_path: str, destination_path: str, **kwargs):
+    def move(self, source_path: str, destination_path: str):
         """Move a file.
         
         Moves a file from one location to another location within DBFS. If the source file does not exist,
@@ -400,13 +364,12 @@ class DbfsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Move(destination_path=destination_path, source_path=source_path)
-        body = request.as_dict()
+        body = {}
+        if destination_path is not None: body['destination_path'] = destination_path
+        if source_path is not None: body['source_path'] = source_path
         self._api.do('POST', '/api/2.0/dbfs/move', body=body)
 
-    def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None, **kwargs):
+    def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
         """Upload a file.
         
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
@@ -429,18 +392,13 @@ class DbfsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = Put(contents=contents, overwrite=overwrite, path=path)
-        body = request.as_dict()
+        body = {}
+        if contents is not None: body['contents'] = contents
+        if overwrite is not None: body['overwrite'] = overwrite
+        if path is not None: body['path'] = path
         self._api.do('POST', '/api/2.0/dbfs/put', body=body)
 
-    def read(self,
-             path: str,
-             *,
-             length: Optional[int] = None,
-             offset: Optional[int] = None,
-             **kwargs) -> ReadResponse:
+    def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
         """Get the contents of a file.
         
         Returns the contents of a file. If the file does not exist, this call throws an exception with
@@ -461,14 +419,11 @@ class DbfsAPI:
         
         :returns: :class:`ReadResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ReadDbfsRequest(length=length, offset=offset, path=path)
 
         query = {}
-        if length: query['length'] = request.length
-        if offset: query['offset'] = request.offset
-        if path: query['path'] = request.path
+        if length is not None: query['length'] = length
+        if offset is not None: query['offset'] = offset
+        if path is not None: query['path'] = path
 
         json = self._api.do('GET', '/api/2.0/dbfs/read', query=query)
         return ReadResponse.from_dict(json)
