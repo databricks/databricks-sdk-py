@@ -854,108 +854,6 @@ class DatabricksGcpServiceAccountResponse:
 
 
 @dataclass
-class DeleteAccountMetastoreAssignmentRequest:
-    """Delete a metastore assignment"""
-
-    workspace_id: int
-    metastore_id: str
-
-
-@dataclass
-class DeleteAccountMetastoreRequest:
-    """Delete a metastore"""
-
-    metastore_id: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteAccountStorageCredentialRequest:
-    """Delete a storage credential"""
-
-    metastore_id: str
-    name: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteCatalogRequest:
-    """Delete a catalog"""
-
-    name: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteConnectionRequest:
-    """Delete a connection"""
-
-    name_arg: str
-
-
-@dataclass
-class DeleteExternalLocationRequest:
-    """Delete an external location"""
-
-    name: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteFunctionRequest:
-    """Delete a function"""
-
-    name: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteMetastoreRequest:
-    """Delete a metastore"""
-
-    id: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteSchemaRequest:
-    """Delete a schema"""
-
-    full_name: str
-
-
-@dataclass
-class DeleteStorageCredentialRequest:
-    """Delete a credential"""
-
-    name: str
-    force: Optional[bool] = None
-
-
-@dataclass
-class DeleteTableConstraintRequest:
-    """Delete a table constraint"""
-
-    full_name: str
-    constraint_name: str
-    cascade: bool
-
-
-@dataclass
-class DeleteTableRequest:
-    """Delete a table"""
-
-    full_name: str
-
-
-@dataclass
-class DeleteVolumeRequest:
-    """Delete a Volume"""
-
-    full_name_arg: str
-
-
-@dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
     This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
@@ -990,14 +888,6 @@ class Dependency:
     def from_dict(cls, d: Dict[str, any]) -> 'Dependency':
         return cls(function=_from_dict(d, 'function', FunctionDependency),
                    table=_from_dict(d, 'table', TableDependency))
-
-
-@dataclass
-class DisableRequest:
-    """Disable a system schema"""
-
-    metastore_id: str
-    schema_name: 'DisableSchemaName'
 
 
 class DisableSchemaName(Enum):
@@ -1095,14 +985,6 @@ class EnableAutoMaintenance(Enum):
     DISABLE = 'DISABLE'
     ENABLE = 'ENABLE'
     INHERIT = 'INHERIT'
-
-
-@dataclass
-class EnableRequest:
-    """Enable a system schema"""
-
-    metastore_id: str
-    schema_name: 'EnableSchemaName'
 
 
 class EnableSchemaName(Enum):
@@ -1411,81 +1293,6 @@ class FunctionParameterType(Enum):
 
 
 @dataclass
-class GetAccountMetastoreAssignmentRequest:
-    """Gets the metastore assignment for a workspace"""
-
-    workspace_id: int
-
-
-@dataclass
-class GetAccountMetastoreRequest:
-    """Get a metastore"""
-
-    metastore_id: str
-
-
-@dataclass
-class GetAccountStorageCredentialRequest:
-    """Gets the named storage credential"""
-
-    metastore_id: str
-    name: str
-
-
-@dataclass
-class GetCatalogRequest:
-    """Get a catalog"""
-
-    name: str
-
-
-@dataclass
-class GetConnectionRequest:
-    """Get a connection"""
-
-    name_arg: str
-
-
-@dataclass
-class GetEffectiveRequest:
-    """Get effective permissions"""
-
-    securable_type: 'SecurableType'
-    full_name: str
-    principal: Optional[str] = None
-
-
-@dataclass
-class GetExternalLocationRequest:
-    """Get an external location"""
-
-    name: str
-
-
-@dataclass
-class GetFunctionRequest:
-    """Get a function"""
-
-    name: str
-
-
-@dataclass
-class GetGrantRequest:
-    """Get permissions"""
-
-    securable_type: 'SecurableType'
-    full_name: str
-    principal: Optional[str] = None
-
-
-@dataclass
-class GetMetastoreRequest:
-    """Get a metastore"""
-
-    id: str
-
-
-@dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
     created_at: Optional[int] = None
@@ -1566,54 +1373,11 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
     INTERNAL_AND_EXTERNAL = 'INTERNAL_AND_EXTERNAL'
 
 
-@dataclass
-class GetSchemaRequest:
-    """Get a schema"""
-
-    full_name: str
-
-
-@dataclass
-class GetStorageCredentialRequest:
-    """Get a credential"""
-
-    name: str
-
-
-@dataclass
-class GetTableRequest:
-    """Get a table"""
-
-    full_name: str
-    include_delta_metadata: Optional[bool] = None
-
-
-@dataclass
-class GetWorkspaceBindingRequest:
-    """Get catalog workspace bindings"""
-
-    name: str
-
-
 class IsolationMode(Enum):
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     ISOLATED = 'ISOLATED'
     OPEN = 'OPEN'
-
-
-@dataclass
-class ListAccountMetastoreAssignmentsRequest:
-    """Get all workspaces assigned to a metastore"""
-
-    metastore_id: str
-
-
-@dataclass
-class ListAccountStorageCredentialsRequest:
-    """Get all storage credentials assigned to a metastore"""
-
-    metastore_id: str
 
 
 @dataclass
@@ -1660,14 +1424,6 @@ class ListExternalLocationsResponse:
 
 
 @dataclass
-class ListFunctionsRequest:
-    """List functions"""
-
-    catalog_name: str
-    schema_name: str
-
-
-@dataclass
 class ListFunctionsResponse:
     functions: Optional['List[FunctionInfo]'] = None
 
@@ -1693,13 +1449,6 @@ class ListMetastoresResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListMetastoresResponse':
         return cls(metastores=_repeated(d, 'metastores', MetastoreInfo))
-
-
-@dataclass
-class ListSchemasRequest:
-    """List schemas"""
-
-    catalog_name: str
 
 
 @dataclass
@@ -1729,24 +1478,6 @@ class ListStorageCredentialsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListStorageCredentialsResponse':
         return cls(storage_credentials=_repeated(d, 'storage_credentials', StorageCredentialInfo))
-
-
-@dataclass
-class ListSummariesRequest:
-    """List table summaries"""
-
-    catalog_name: str
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
-    schema_name_pattern: Optional[str] = None
-    table_name_pattern: Optional[str] = None
-
-
-@dataclass
-class ListSystemSchemasRequest:
-    """List system schemas"""
-
-    metastore_id: str
 
 
 @dataclass
@@ -1781,17 +1512,6 @@ class ListTableSummariesResponse:
 
 
 @dataclass
-class ListTablesRequest:
-    """List tables"""
-
-    catalog_name: str
-    schema_name: str
-    include_delta_metadata: Optional[bool] = None
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
-
-
-@dataclass
 class ListTablesResponse:
     next_page_token: Optional[str] = None
     tables: Optional['List[TableInfo]'] = None
@@ -1805,14 +1525,6 @@ class ListTablesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTablesResponse':
         return cls(next_page_token=d.get('next_page_token', None), tables=_repeated(d, 'tables', TableInfo))
-
-
-@dataclass
-class ListVolumesRequest:
-    """List Volumes"""
-
-    catalog_name: str
-    schema_name: str
 
 
 @dataclass
@@ -2047,13 +1759,6 @@ class PrivilegeAssignment:
 
 
 PropertiesKvPairs = Dict[str, str]
-
-
-@dataclass
-class ReadVolumeRequest:
-    """Get a Volume"""
-
-    full_name_arg: str
 
 
 @dataclass
@@ -2456,14 +2161,6 @@ class TableType(Enum):
 
 
 @dataclass
-class UnassignRequest:
-    """Delete an assignment"""
-
-    workspace_id: int
-    metastore_id: str
-
-
-@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
@@ -2757,24 +2454,6 @@ class UpdateStorageCredential:
 
 
 @dataclass
-class UpdateTableRequest:
-    """Update a table owner."""
-
-    full_name: str
-    owner: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.owner is not None: body['owner'] = self.owner
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateTableRequest':
-        return cls(full_name=d.get('full_name', None), owner=d.get('owner', None))
-
-
-@dataclass
 class UpdateVolumeRequestContent:
     comment: Optional[str] = None
     full_name_arg: Optional[str] = None
@@ -2983,8 +2662,7 @@ class AccountMetastoreAssignmentsAPI:
                workspace_id: int,
                metastore_id: str,
                *,
-               metastore_assignment: Optional[CreateMetastoreAssignment] = None,
-               **kwargs):
+               metastore_assignment: Optional[CreateMetastoreAssignment] = None):
         """Assigns a workspace to a metastore.
         
         Creates an assignment to a metastore for a workspace
@@ -2997,18 +2675,14 @@ class AccountMetastoreAssignmentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AccountsCreateMetastoreAssignment(metastore_assignment=metastore_assignment,
-                                                        metastore_id=metastore_id,
-                                                        workspace_id=workspace_id)
-        body = request.as_dict()
+        body = {}
+        if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
         self._api.do(
             'POST',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}',
             body=body)
 
-    def delete(self, workspace_id: int, metastore_id: str, **kwargs):
+    def delete(self, workspace_id: int, metastore_id: str):
         """Delete a metastore assignment.
         
         Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
@@ -3020,17 +2694,12 @@ class AccountMetastoreAssignmentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountMetastoreAssignmentRequest(metastore_id=metastore_id,
-                                                              workspace_id=workspace_id)
 
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}')
 
-    def get(self, workspace_id: int, **kwargs) -> AccountsMetastoreAssignment:
+    def get(self, workspace_id: int) -> AccountsMetastoreAssignment:
         """Gets the metastore assignment for a workspace.
         
         Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
@@ -3042,15 +2711,12 @@ class AccountMetastoreAssignmentsAPI:
         
         :returns: :class:`AccountsMetastoreAssignment`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountMetastoreAssignmentRequest(workspace_id=workspace_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastore')
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore')
         return AccountsMetastoreAssignment.from_dict(json)
 
-    def list(self, metastore_id: str, **kwargs) -> Iterator[MetastoreAssignment]:
+    def list(self, metastore_id: str) -> Iterator[MetastoreAssignment]:
         """Get all workspaces assigned to a metastore.
         
         Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
@@ -3060,20 +2726,16 @@ class AccountMetastoreAssignmentsAPI:
         
         :returns: Iterator over :class:`MetastoreAssignment`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountMetastoreAssignmentsRequest(metastore_id=metastore_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/workspaces')
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces')
         return [MetastoreAssignment.from_dict(v) for v in json]
 
     def update(self,
                workspace_id: int,
                metastore_id: str,
                *,
-               metastore_assignment: Optional[UpdateMetastoreAssignment] = None,
-               **kwargs):
+               metastore_assignment: Optional[UpdateMetastoreAssignment] = None):
         """Updates a metastore assignment to a workspaces.
         
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
@@ -3087,15 +2749,11 @@ class AccountMetastoreAssignmentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AccountsUpdateMetastoreAssignment(metastore_assignment=metastore_assignment,
-                                                        metastore_id=metastore_id,
-                                                        workspace_id=workspace_id)
-        body = request.as_dict()
+        body = {}
+        if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
         self._api.do(
             'PUT',
-            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{request.workspace_id}/metastores/{request.metastore_id}',
+            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}',
             body=body)
 
 
@@ -3106,7 +2764,7 @@ class AccountMetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, metastore_info: Optional[CreateMetastore] = None, **kwargs) -> AccountsMetastoreInfo:
+    def create(self, *, metastore_info: Optional[CreateMetastore] = None) -> AccountsMetastoreInfo:
         """Create metastore.
         
         Creates a Unity Catalog metastore.
@@ -3115,15 +2773,13 @@ class AccountMetastoresAPI:
         
         :returns: :class:`AccountsMetastoreInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AccountsCreateMetastore(metastore_info=metastore_info)
-        body = request.as_dict()
+        body = {}
+        if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/metastores', body=body)
         return AccountsMetastoreInfo.from_dict(json)
 
-    def delete(self, metastore_id: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, metastore_id: str, *, force: Optional[bool] = None):
         """Delete a metastore.
         
         Deletes a Unity Catalog metastore for an account, both specified by ID.
@@ -3135,18 +2791,14 @@ class AccountMetastoresAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountMetastoreRequest(force=force, metastore_id=metastore_id)
 
         query = {}
-        if force: query['force'] = request.force
-
+        if force is not None: query['force'] = force
         self._api.do('DELETE',
-                     f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                      query=query)
 
-    def get(self, metastore_id: str, **kwargs) -> AccountsMetastoreInfo:
+    def get(self, metastore_id: str) -> AccountsMetastoreInfo:
         """Get a metastore.
         
         Gets a Unity Catalog metastore from an account, both specified by ID.
@@ -3156,12 +2808,8 @@ class AccountMetastoresAPI:
         
         :returns: :class:`AccountsMetastoreInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountMetastoreRequest(metastore_id=metastore_id)
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}')
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}')
         return AccountsMetastoreInfo.from_dict(json)
 
     def list(self) -> ListMetastoresResponse:
@@ -3178,8 +2826,7 @@ class AccountMetastoresAPI:
     def update(self,
                metastore_id: str,
                *,
-               metastore_info: Optional[UpdateMetastore] = None,
-               **kwargs) -> AccountsMetastoreInfo:
+               metastore_info: Optional[UpdateMetastore] = None) -> AccountsMetastoreInfo:
         """Update a metastore.
         
         Updates an existing Unity Catalog metastore.
@@ -3190,13 +2837,11 @@ class AccountMetastoresAPI:
         
         :returns: :class:`AccountsMetastoreInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AccountsUpdateMetastore(metastore_id=metastore_id, metastore_info=metastore_info)
-        body = request.as_dict()
+        body = {}
+        if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
 
         json = self._api.do('PUT',
-                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}',
+                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                             body=body)
         return AccountsMetastoreInfo.from_dict(json)
 
@@ -3210,8 +2855,7 @@ class AccountStorageCredentialsAPI:
     def create(self,
                metastore_id: str,
                *,
-               credential_info: Optional[CreateStorageCredential] = None,
-               **kwargs) -> StorageCredentialInfo:
+               credential_info: Optional[CreateStorageCredential] = None) -> StorageCredentialInfo:
         """Create a storage credential.
         
         Creates a new storage credential. The request object is specific to the cloud:
@@ -3228,19 +2872,16 @@ class AccountStorageCredentialsAPI:
         
         :returns: :class:`StorageCredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AccountsCreateStorageCredential(credential_info=credential_info,
-                                                      metastore_id=metastore_id)
-        body = request.as_dict()
+        body = {}
+        if credential_info is not None: body['credential_info'] = credential_info.as_dict()
 
         json = self._api.do(
             'POST',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             body=body)
         return StorageCredentialInfo.from_dict(json)
 
-    def delete(self, metastore_id: str, name: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, metastore_id: str, name: str, *, force: Optional[bool] = None):
         """Delete a storage credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
@@ -3255,19 +2896,15 @@ class AccountStorageCredentialsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAccountStorageCredentialRequest(force=force, metastore_id=metastore_id, name=name)
 
         query = {}
-        if force: query['force'] = request.force
-
+        if force is not None: query['force'] = force
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             query=query)
 
-    def get(self, metastore_id: str, name: str, **kwargs) -> StorageCredentialInfo:
+    def get(self, metastore_id: str, name: str) -> StorageCredentialInfo:
         """Gets the named storage credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
@@ -3280,17 +2917,12 @@ class AccountStorageCredentialsAPI:
         
         :returns: :class:`StorageCredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAccountStorageCredentialRequest(metastore_id=metastore_id, name=name)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/'
-        )
+            'GET', f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/')
         return StorageCredentialInfo.from_dict(json)
 
-    def list(self, metastore_id: str, **kwargs) -> ListStorageCredentialsResponse:
+    def list(self, metastore_id: str) -> ListStorageCredentialsResponse:
         """Get all storage credentials assigned to a metastore.
         
         Gets a list of all storage credentials that have been assigned to given metastore.
@@ -3300,21 +2932,16 @@ class AccountStorageCredentialsAPI:
         
         :returns: :class:`ListStorageCredentialsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListAccountStorageCredentialsRequest(metastore_id=metastore_id)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials')
+            'GET', f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials')
         return ListStorageCredentialsResponse.from_dict(json)
 
     def update(self,
                metastore_id: str,
                name: str,
                *,
-               credential_info: Optional[UpdateStorageCredential] = None,
-               **kwargs) -> StorageCredentialInfo:
+               credential_info: Optional[UpdateStorageCredential] = None) -> StorageCredentialInfo:
         """Updates a storage credential.
         
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
@@ -3328,16 +2955,12 @@ class AccountStorageCredentialsAPI:
         
         :returns: :class:`StorageCredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = AccountsUpdateStorageCredential(credential_info=credential_info,
-                                                      metastore_id=metastore_id,
-                                                      name=name)
-        body = request.as_dict()
+        body = {}
+        if credential_info is not None: body['credential_info'] = credential_info.as_dict()
 
         json = self._api.do(
             'PUT',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{request.metastore_id}/storage-credentials/',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             body=body)
         return StorageCredentialInfo.from_dict(json)
 
@@ -3361,8 +2984,7 @@ class CatalogsAPI:
                properties: Optional[Dict[str, str]] = None,
                provider_name: Optional[str] = None,
                share_name: Optional[str] = None,
-               storage_root: Optional[str] = None,
-               **kwargs) -> CatalogInfo:
+               storage_root: Optional[str] = None) -> CatalogInfo:
         """Create a catalog.
         
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
@@ -3387,21 +3009,19 @@ class CatalogsAPI:
         
         :returns: :class:`CatalogInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateCatalog(comment=comment,
-                                    connection_name=connection_name,
-                                    name=name,
-                                    properties=properties,
-                                    provider_name=provider_name,
-                                    share_name=share_name,
-                                    storage_root=storage_root)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if connection_name is not None: body['connection_name'] = connection_name
+        if name is not None: body['name'] = name
+        if properties is not None: body['properties'] = properties
+        if provider_name is not None: body['provider_name'] = provider_name
+        if share_name is not None: body['share_name'] = share_name
+        if storage_root is not None: body['storage_root'] = storage_root
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body)
         return CatalogInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a catalog.
         
         Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
@@ -3414,16 +3034,12 @@ class CatalogsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteCatalogRequest(force=force, name=name)
 
         query = {}
-        if force: query['force'] = request.force
+        if force is not None: query['force'] = force
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/catalogs/{name}', query=query)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/catalogs/{request.name}', query=query)
-
-    def get(self, name: str, **kwargs) -> CatalogInfo:
+    def get(self, name: str) -> CatalogInfo:
         """Get a catalog.
         
         Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
@@ -3434,11 +3050,8 @@ class CatalogsAPI:
         
         :returns: :class:`CatalogInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetCatalogRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}')
         return CatalogInfo.from_dict(json)
 
     def list(self) -> Iterator[CatalogInfo]:
@@ -3461,8 +3074,7 @@ class CatalogsAPI:
                comment: Optional[str] = None,
                isolation_mode: Optional[IsolationMode] = None,
                owner: Optional[str] = None,
-               properties: Optional[Dict[str, str]] = None,
-               **kwargs) -> CatalogInfo:
+               properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
         
         Updates the catalog that matches the supplied name. The caller must be either the owner of the
@@ -3481,16 +3093,13 @@ class CatalogsAPI:
         
         :returns: :class:`CatalogInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateCatalog(comment=comment,
-                                    isolation_mode=isolation_mode,
-                                    name=name,
-                                    owner=owner,
-                                    properties=properties)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
+        if owner is not None: body['owner'] = owner
+        if properties is not None: body['properties'] = properties
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{request.name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{name}', body=body)
         return CatalogInfo.from_dict(json)
 
 
@@ -3515,8 +3124,7 @@ class ConnectionsAPI:
                comment: Optional[str] = None,
                owner: Optional[str] = None,
                properties_kvpairs: Optional[Dict[str, str]] = None,
-               read_only: Optional[bool] = None,
-               **kwargs) -> ConnectionInfo:
+               read_only: Optional[bool] = None) -> ConnectionInfo:
         """Create a connection.
         
         Creates a new connection
@@ -3541,21 +3149,19 @@ class ConnectionsAPI:
         
         :returns: :class:`ConnectionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateConnection(comment=comment,
-                                       connection_type=connection_type,
-                                       name=name,
-                                       options_kvpairs=options_kvpairs,
-                                       owner=owner,
-                                       properties_kvpairs=properties_kvpairs,
-                                       read_only=read_only)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if connection_type is not None: body['connection_type'] = connection_type.value
+        if name is not None: body['name'] = name
+        if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
+        if owner is not None: body['owner'] = owner
+        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs
+        if read_only is not None: body['read_only'] = read_only
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body)
         return ConnectionInfo.from_dict(json)
 
-    def delete(self, name_arg: str, **kwargs):
+    def delete(self, name_arg: str):
         """Delete a connection.
         
         Deletes the connection that matches the supplied name.
@@ -3565,13 +3171,10 @@ class ConnectionsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteConnectionRequest(name_arg=name_arg)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/connections/{request.name_arg}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/connections/{name_arg}')
 
-    def get(self, name_arg: str, **kwargs) -> ConnectionInfo:
+    def get(self, name_arg: str) -> ConnectionInfo:
         """Get a connection.
         
         Gets a connection from it's name.
@@ -3581,11 +3184,8 @@ class ConnectionsAPI:
         
         :returns: :class:`ConnectionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetConnectionRequest(name_arg=name_arg)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{request.name_arg}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}')
         return ConnectionInfo.from_dict(json)
 
     def list(self) -> Iterator[ConnectionInfo]:
@@ -3599,7 +3199,7 @@ class ConnectionsAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections')
         return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
 
-    def update(self, name: str, options_kvpairs: Dict[str, str], name_arg: str, **kwargs) -> ConnectionInfo:
+    def update(self, name: str, options_kvpairs: Dict[str, str], name_arg: str) -> ConnectionInfo:
         """Update a connection.
         
         Updates the connection that matches the supplied name.
@@ -3613,12 +3213,11 @@ class ConnectionsAPI:
         
         :returns: :class:`ConnectionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateConnection(name=name, name_arg=name_arg, options_kvpairs=options_kvpairs)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{request.name_arg}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{name_arg}', body=body)
         return ConnectionInfo.from_dict(json)
 
 
@@ -3646,8 +3245,7 @@ class ExternalLocationsAPI:
                comment: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
                read_only: Optional[bool] = None,
-               skip_validation: Optional[bool] = None,
-               **kwargs) -> ExternalLocationInfo:
+               skip_validation: Optional[bool] = None) -> ExternalLocationInfo:
         """Create an external location.
         
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
@@ -3673,22 +3271,20 @@ class ExternalLocationsAPI:
         
         :returns: :class:`ExternalLocationInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateExternalLocation(access_point=access_point,
-                                             comment=comment,
-                                             credential_name=credential_name,
-                                             encryption_details=encryption_details,
-                                             name=name,
-                                             read_only=read_only,
-                                             skip_validation=skip_validation,
-                                             url=url)
-        body = request.as_dict()
+        body = {}
+        if access_point is not None: body['access_point'] = access_point
+        if comment is not None: body['comment'] = comment
+        if credential_name is not None: body['credential_name'] = credential_name
+        if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if name is not None: body['name'] = name
+        if read_only is not None: body['read_only'] = read_only
+        if skip_validation is not None: body['skip_validation'] = skip_validation
+        if url is not None: body['url'] = url
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body)
         return ExternalLocationInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete an external location.
         
         Deletes the specified external location from the metastore. The caller must be the owner of the
@@ -3701,16 +3297,12 @@ class ExternalLocationsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteExternalLocationRequest(force=force, name=name)
 
         query = {}
-        if force: query['force'] = request.force
+        if force is not None: query['force'] = force
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/external-locations/{name}', query=query)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/external-locations/{request.name}', query=query)
-
-    def get(self, name: str, **kwargs) -> ExternalLocationInfo:
+    def get(self, name: str) -> ExternalLocationInfo:
         """Get an external location.
         
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
@@ -3721,11 +3313,8 @@ class ExternalLocationsAPI:
         
         :returns: :class:`ExternalLocationInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetExternalLocationRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}')
         return ExternalLocationInfo.from_dict(json)
 
     def list(self) -> Iterator[ExternalLocationInfo]:
@@ -3751,8 +3340,7 @@ class ExternalLocationsAPI:
                force: Optional[bool] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
-               url: Optional[str] = None,
-               **kwargs) -> ExternalLocationInfo:
+               url: Optional[str] = None) -> ExternalLocationInfo:
         """Update an external location.
         
         Updates an external location in the metastore. The caller must be the owner of the external location,
@@ -3780,20 +3368,17 @@ class ExternalLocationsAPI:
         
         :returns: :class:`ExternalLocationInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateExternalLocation(access_point=access_point,
-                                             comment=comment,
-                                             credential_name=credential_name,
-                                             encryption_details=encryption_details,
-                                             force=force,
-                                             name=name,
-                                             owner=owner,
-                                             read_only=read_only,
-                                             url=url)
-        body = request.as_dict()
+        body = {}
+        if access_point is not None: body['access_point'] = access_point
+        if comment is not None: body['comment'] = comment
+        if credential_name is not None: body['credential_name'] = credential_name
+        if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if force is not None: body['force'] = force
+        if owner is not None: body['owner'] = owner
+        if read_only is not None: body['read_only'] = read_only
+        if url is not None: body['url'] = url
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/external-locations/{request.name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/external-locations/{name}', body=body)
         return ExternalLocationInfo.from_dict(json)
 
 
@@ -3829,8 +3414,7 @@ class FunctionsAPI:
                external_language: Optional[str] = None,
                external_name: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None,
-               sql_path: Optional[str] = None,
-               **kwargs) -> FunctionInfo:
+               sql_path: Optional[str] = None) -> FunctionInfo:
         """Create a function.
         
         Creates a new function
@@ -3887,35 +3471,34 @@ class FunctionsAPI:
         
         :returns: :class:`FunctionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateFunction(catalog_name=catalog_name,
-                                     comment=comment,
-                                     data_type=data_type,
-                                     external_language=external_language,
-                                     external_name=external_name,
-                                     full_data_type=full_data_type,
-                                     input_params=input_params,
-                                     is_deterministic=is_deterministic,
-                                     is_null_call=is_null_call,
-                                     name=name,
-                                     parameter_style=parameter_style,
-                                     properties=properties,
-                                     return_params=return_params,
-                                     routine_body=routine_body,
-                                     routine_definition=routine_definition,
-                                     routine_dependencies=routine_dependencies,
-                                     schema_name=schema_name,
-                                     security_type=security_type,
-                                     specific_name=specific_name,
-                                     sql_data_access=sql_data_access,
-                                     sql_path=sql_path)
-        body = request.as_dict()
+        body = {}
+        if catalog_name is not None: body['catalog_name'] = catalog_name
+        if comment is not None: body['comment'] = comment
+        if data_type is not None: body['data_type'] = data_type.value
+        if external_language is not None: body['external_language'] = external_language
+        if external_name is not None: body['external_name'] = external_name
+        if full_data_type is not None: body['full_data_type'] = full_data_type
+        if input_params is not None: body['input_params'] = [v.as_dict() for v in input_params]
+        if is_deterministic is not None: body['is_deterministic'] = is_deterministic
+        if is_null_call is not None: body['is_null_call'] = is_null_call
+        if name is not None: body['name'] = name
+        if parameter_style is not None: body['parameter_style'] = parameter_style.value
+        if properties is not None: body['properties'] = properties
+        if return_params is not None: body['return_params'] = [v.as_dict() for v in return_params]
+        if routine_body is not None: body['routine_body'] = routine_body.value
+        if routine_definition is not None: body['routine_definition'] = routine_definition
+        if routine_dependencies is not None:
+            body['routine_dependencies'] = [v.as_dict() for v in routine_dependencies]
+        if schema_name is not None: body['schema_name'] = schema_name
+        if security_type is not None: body['security_type'] = security_type.value
+        if specific_name is not None: body['specific_name'] = specific_name
+        if sql_data_access is not None: body['sql_data_access'] = sql_data_access.value
+        if sql_path is not None: body['sql_path'] = sql_path
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body)
         return FunctionInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a function.
         
         Deletes the function that matches the supplied name. For the deletion to succeed, the user must
@@ -3932,16 +3515,12 @@ class FunctionsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteFunctionRequest(force=force, name=name)
 
         query = {}
-        if force: query['force'] = request.force
+        if force is not None: query['force'] = force
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/functions/{name}', query=query)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/functions/{request.name}', query=query)
-
-    def get(self, name: str, **kwargs) -> FunctionInfo:
+    def get(self, name: str) -> FunctionInfo:
         """Get a function.
         
         Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
@@ -3957,14 +3536,11 @@ class FunctionsAPI:
         
         :returns: :class:`FunctionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetFunctionRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}')
         return FunctionInfo.from_dict(json)
 
-    def list(self, catalog_name: str, schema_name: str, **kwargs) -> Iterator[FunctionInfo]:
+    def list(self, catalog_name: str, schema_name: str) -> Iterator[FunctionInfo]:
         """List functions.
         
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
@@ -3980,18 +3556,15 @@ class FunctionsAPI:
         
         :returns: Iterator over :class:`FunctionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListFunctionsRequest(catalog_name=catalog_name, schema_name=schema_name)
 
         query = {}
-        if catalog_name: query['catalog_name'] = request.catalog_name
-        if schema_name: query['schema_name'] = request.schema_name
+        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if schema_name is not None: query['schema_name'] = schema_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query)
         return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
 
-    def update(self, name: str, *, owner: Optional[str] = None, **kwargs) -> FunctionInfo:
+    def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
         
         Updates the function that matches the supplied name. Only the owner of the function can be updated. If
@@ -4009,12 +3582,10 @@ class FunctionsAPI:
         
         :returns: :class:`FunctionInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateFunction(name=name, owner=owner)
-        body = request.as_dict()
+        body = {}
+        if owner is not None: body['owner'] = owner
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{request.name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{name}', body=body)
         return FunctionInfo.from_dict(json)
 
 
@@ -4036,8 +3607,7 @@ class GrantsAPI:
             securable_type: SecurableType,
             full_name: str,
             *,
-            principal: Optional[str] = None,
-            **kwargs) -> PermissionsList:
+            principal: Optional[str] = None) -> PermissionsList:
         """Get permissions.
         
         Gets the permissions for a securable.
@@ -4051,25 +3621,20 @@ class GrantsAPI:
         
         :returns: :class:`PermissionsList`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetGrantRequest(full_name=full_name, principal=principal, securable_type=securable_type)
 
         query = {}
-        if principal: query['principal'] = request.principal
+        if principal is not None: query['principal'] = principal
 
-        json = self._api.do(
-            'GET',
-            f'/api/2.1/unity-catalog/permissions/{request.securable_type.value}/{request.full_name}',
-            query=query)
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
+                            query=query)
         return PermissionsList.from_dict(json)
 
     def get_effective(self,
                       securable_type: SecurableType,
                       full_name: str,
                       *,
-                      principal: Optional[str] = None,
-                      **kwargs) -> EffectivePermissionsList:
+                      principal: Optional[str] = None) -> EffectivePermissionsList:
         """Get effective permissions.
         
         Gets the effective permissions for a securable.
@@ -4084,18 +3649,13 @@ class GrantsAPI:
         
         :returns: :class:`EffectivePermissionsList`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetEffectiveRequest(full_name=full_name,
-                                          principal=principal,
-                                          securable_type=securable_type)
 
         query = {}
-        if principal: query['principal'] = request.principal
+        if principal is not None: query['principal'] = principal
 
         json = self._api.do(
             'GET',
-            f'/api/2.1/unity-catalog/effective-permissions/{request.securable_type.value}/{request.full_name}',
+            f'/api/2.1/unity-catalog/effective-permissions/{securable_type.value}/{full_name}',
             query=query)
         return EffectivePermissionsList.from_dict(json)
 
@@ -4103,8 +3663,7 @@ class GrantsAPI:
                securable_type: SecurableType,
                full_name: str,
                *,
-               changes: Optional[List[PermissionsChange]] = None,
-               **kwargs) -> PermissionsList:
+               changes: Optional[List[PermissionsChange]] = None) -> PermissionsList:
         """Update permissions.
         
         Updates the permissions for a securable.
@@ -4118,15 +3677,12 @@ class GrantsAPI:
         
         :returns: :class:`PermissionsList`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdatePermissions(changes=changes, full_name=full_name, securable_type=securable_type)
-        body = request.as_dict()
+        body = {}
+        if changes is not None: body['changes'] = [v.as_dict() for v in changes]
 
-        json = self._api.do(
-            'PATCH',
-            f'/api/2.1/unity-catalog/permissions/{request.securable_type.value}/{request.full_name}',
-            body=body)
+        json = self._api.do('PATCH',
+                            f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
+                            body=body)
         return PermissionsList.from_dict(json)
 
 
@@ -4146,7 +3702,7 @@ class MetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def assign(self, metastore_id: str, default_catalog_name: str, workspace_id: int, **kwargs):
+    def assign(self, metastore_id: str, default_catalog_name: str, workspace_id: int):
         """Create an assignment.
         
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
@@ -4162,20 +3718,12 @@ class MetastoresAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateMetastoreAssignment(default_catalog_name=default_catalog_name,
-                                                metastore_id=metastore_id,
-                                                workspace_id=workspace_id)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore', body=body)
+        body = {}
+        if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
+        if metastore_id is not None: body['metastore_id'] = metastore_id
+        self._api.do('PUT', f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore', body=body)
 
-    def create(self,
-               name: str,
-               storage_root: str,
-               *,
-               region: Optional[str] = None,
-               **kwargs) -> MetastoreInfo:
+    def create(self, name: str, storage_root: str, *, region: Optional[str] = None) -> MetastoreInfo:
         """Create a metastore.
         
         Creates a new metastore based on a provided name and storage root path.
@@ -4190,10 +3738,10 @@ class MetastoresAPI:
         
         :returns: :class:`MetastoreInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateMetastore(name=name, region=region, storage_root=storage_root)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if region is not None: body['region'] = region
+        if storage_root is not None: body['storage_root'] = storage_root
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/metastores', body=body)
         return MetastoreInfo.from_dict(json)
@@ -4209,7 +3757,7 @@ class MetastoresAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment')
         return MetastoreAssignment.from_dict(json)
 
-    def delete(self, id: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, id: str, *, force: Optional[bool] = None):
         """Delete a metastore.
         
         Deletes a metastore. The caller must be a metastore admin.
@@ -4221,17 +3769,12 @@ class MetastoresAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteMetastoreRequest(force=force, id=id)
 
         query = {}
-        if force: query['force'] = request.force
+        if force is not None: query['force'] = force
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/metastores/{id}', query=query)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/metastores/{request.id}', query=query)
-
-    def enable_optimization(self, metastore_id: str, enable: bool,
-                            **kwargs) -> UpdatePredictiveOptimizationResponse:
+    def enable_optimization(self, metastore_id: str, enable: bool) -> UpdatePredictiveOptimizationResponse:
         """Toggle predictive optimization on the metastore.
         
         Enables or disables predictive optimization on the metastore.
@@ -4243,15 +3786,14 @@ class MetastoresAPI:
         
         :returns: :class:`UpdatePredictiveOptimizationResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdatePredictiveOptimization(enable=enable, metastore_id=metastore_id)
-        body = request.as_dict()
+        body = {}
+        if enable is not None: body['enable'] = enable
+        if metastore_id is not None: body['metastore_id'] = metastore_id
 
         json = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body)
         return UpdatePredictiveOptimizationResponse.from_dict(json)
 
-    def get(self, id: str, **kwargs) -> MetastoreInfo:
+    def get(self, id: str) -> MetastoreInfo:
         """Get a metastore.
         
         Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
@@ -4262,11 +3804,8 @@ class MetastoresAPI:
         
         :returns: :class:`MetastoreInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetMetastoreRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{request.id}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{id}')
         return MetastoreInfo.from_dict(json)
 
     def list(self) -> Iterator[MetastoreInfo]:
@@ -4293,7 +3832,7 @@ class MetastoresAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastore_summary')
         return GetMetastoreSummaryResponse.from_dict(json)
 
-    def unassign(self, workspace_id: int, metastore_id: str, **kwargs):
+    def unassign(self, workspace_id: int, metastore_id: str):
         """Delete an assignment.
         
         Deletes a metastore assignment. The caller must be an account administrator.
@@ -4305,16 +3844,10 @@ class MetastoresAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UnassignRequest(metastore_id=metastore_id, workspace_id=workspace_id)
 
         query = {}
-        if metastore_id: query['metastore_id'] = request.metastore_id
-
-        self._api.do('DELETE',
-                     f'/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore',
-                     query=query)
+        if metastore_id is not None: query['metastore_id'] = metastore_id
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore', query=query)
 
     def update(self,
                id: str,
@@ -4325,8 +3858,7 @@ class MetastoresAPI:
                name: Optional[str] = None,
                owner: Optional[str] = None,
                privilege_model_version: Optional[str] = None,
-               storage_root_credential_id: Optional[str] = None,
-               **kwargs) -> MetastoreInfo:
+               storage_root_credential_id: Optional[str] = None) -> MetastoreInfo:
         """Update a metastore.
         
         Updates information for a specific metastore. The caller must be a metastore admin.
@@ -4351,28 +3883,27 @@ class MetastoresAPI:
         
         :returns: :class:`MetastoreInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateMetastore(
-                delta_sharing_organization_name=delta_sharing_organization_name,
-                delta_sharing_recipient_token_lifetime_in_seconds=delta_sharing_recipient_token_lifetime_in_seconds,
-                delta_sharing_scope=delta_sharing_scope,
-                id=id,
-                name=name,
-                owner=owner,
-                privilege_model_version=privilege_model_version,
-                storage_root_credential_id=storage_root_credential_id)
-        body = request.as_dict()
+        body = {}
+        if delta_sharing_organization_name is not None:
+            body['delta_sharing_organization_name'] = delta_sharing_organization_name
+        if delta_sharing_recipient_token_lifetime_in_seconds is not None:
+            body[
+                'delta_sharing_recipient_token_lifetime_in_seconds'] = delta_sharing_recipient_token_lifetime_in_seconds
+        if delta_sharing_scope is not None: body['delta_sharing_scope'] = delta_sharing_scope.value
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
+        if privilege_model_version is not None: body['privilege_model_version'] = privilege_model_version
+        if storage_root_credential_id is not None:
+            body['storage_root_credential_id'] = storage_root_credential_id
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{request.id}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{id}', body=body)
         return MetastoreInfo.from_dict(json)
 
     def update_assignment(self,
                           workspace_id: int,
                           *,
                           default_catalog_name: Optional[str] = None,
-                          metastore_id: Optional[str] = None,
-                          **kwargs):
+                          metastore_id: Optional[str] = None):
         """Update an assignment.
         
         Updates a metastore assignment. This operation can be used to update __metastore_id__ or
@@ -4389,15 +3920,10 @@ class MetastoresAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateMetastoreAssignment(default_catalog_name=default_catalog_name,
-                                                metastore_id=metastore_id,
-                                                workspace_id=workspace_id)
-        body = request.as_dict()
-        self._api.do('PATCH',
-                     f'/api/2.1/unity-catalog/workspaces/{request.workspace_id}/metastore',
-                     body=body)
+        body = {}
+        if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
+        if metastore_id is not None: body['metastore_id'] = metastore_id
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore', body=body)
 
 
 class SchemasAPI:
@@ -4415,8 +3941,7 @@ class SchemasAPI:
                *,
                comment: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None,
-               storage_root: Optional[str] = None,
-               **kwargs) -> SchemaInfo:
+               storage_root: Optional[str] = None) -> SchemaInfo:
         """Create a schema.
         
         Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
@@ -4435,19 +3960,17 @@ class SchemasAPI:
         
         :returns: :class:`SchemaInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateSchema(catalog_name=catalog_name,
-                                   comment=comment,
-                                   name=name,
-                                   properties=properties,
-                                   storage_root=storage_root)
-        body = request.as_dict()
+        body = {}
+        if catalog_name is not None: body['catalog_name'] = catalog_name
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if properties is not None: body['properties'] = properties
+        if storage_root is not None: body['storage_root'] = storage_root
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body)
         return SchemaInfo.from_dict(json)
 
-    def delete(self, full_name: str, **kwargs):
+    def delete(self, full_name: str):
         """Delete a schema.
         
         Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
@@ -4458,13 +3981,10 @@ class SchemasAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteSchemaRequest(full_name=full_name)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/schemas/{request.full_name}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/schemas/{full_name}')
 
-    def get(self, full_name: str, **kwargs) -> SchemaInfo:
+    def get(self, full_name: str) -> SchemaInfo:
         """Get a schema.
         
         Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
@@ -4475,14 +3995,11 @@ class SchemasAPI:
         
         :returns: :class:`SchemaInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetSchemaRequest(full_name=full_name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{request.full_name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}')
         return SchemaInfo.from_dict(json)
 
-    def list(self, catalog_name: str, **kwargs) -> Iterator[SchemaInfo]:
+    def list(self, catalog_name: str) -> Iterator[SchemaInfo]:
         """List schemas.
         
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
@@ -4495,12 +4012,9 @@ class SchemasAPI:
         
         :returns: Iterator over :class:`SchemaInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListSchemasRequest(catalog_name=catalog_name)
 
         query = {}
-        if catalog_name: query['catalog_name'] = request.catalog_name
+        if catalog_name is not None: query['catalog_name'] = catalog_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query)
         return [SchemaInfo.from_dict(v) for v in json.get('schemas', [])]
@@ -4511,8 +4025,7 @@ class SchemasAPI:
                comment: Optional[str] = None,
                name: Optional[str] = None,
                owner: Optional[str] = None,
-               properties: Optional[Dict[str, str]] = None,
-               **kwargs) -> SchemaInfo:
+               properties: Optional[Dict[str, str]] = None) -> SchemaInfo:
         """Update a schema.
         
         Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
@@ -4533,16 +4046,13 @@ class SchemasAPI:
         
         :returns: :class:`SchemaInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateSchema(comment=comment,
-                                   full_name=full_name,
-                                   name=name,
-                                   owner=owner,
-                                   properties=properties)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
+        if properties is not None: body['properties'] = properties
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/schemas/{request.full_name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/schemas/{full_name}', body=body)
         return SchemaInfo.from_dict(json)
 
 
@@ -4570,8 +4080,7 @@ class StorageCredentialsAPI:
                comment: Optional[str] = None,
                databricks_gcp_service_account: Optional[Any] = None,
                read_only: Optional[bool] = None,
-               skip_validation: Optional[bool] = None,
-               **kwargs) -> StorageCredentialInfo:
+               skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Create a storage credential.
         
         Creates a new storage credential. The request object is specific to the cloud:
@@ -4602,22 +4111,23 @@ class StorageCredentialsAPI:
         
         :returns: :class:`StorageCredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateStorageCredential(aws_iam_role=aws_iam_role,
-                                              azure_managed_identity=azure_managed_identity,
-                                              azure_service_principal=azure_service_principal,
-                                              comment=comment,
-                                              databricks_gcp_service_account=databricks_gcp_service_account,
-                                              name=name,
-                                              read_only=read_only,
-                                              skip_validation=skip_validation)
-        body = request.as_dict()
+        body = {}
+        if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
+        if azure_managed_identity is not None:
+            body['azure_managed_identity'] = azure_managed_identity.as_dict()
+        if azure_service_principal is not None:
+            body['azure_service_principal'] = azure_service_principal.as_dict()
+        if comment is not None: body['comment'] = comment
+        if databricks_gcp_service_account is not None:
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+        if name is not None: body['name'] = name
+        if read_only is not None: body['read_only'] = read_only
+        if skip_validation is not None: body['skip_validation'] = skip_validation
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body)
         return StorageCredentialInfo.from_dict(json)
 
-    def delete(self, name: str, *, force: Optional[bool] = None, **kwargs):
+    def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
@@ -4630,16 +4140,12 @@ class StorageCredentialsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteStorageCredentialRequest(force=force, name=name)
 
         query = {}
-        if force: query['force'] = request.force
+        if force is not None: query['force'] = force
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/storage-credentials/{name}', query=query)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/storage-credentials/{request.name}', query=query)
-
-    def get(self, name: str, **kwargs) -> StorageCredentialInfo:
+    def get(self, name: str) -> StorageCredentialInfo:
         """Get a credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
@@ -4650,11 +4156,8 @@ class StorageCredentialsAPI:
         
         :returns: :class:`StorageCredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStorageCredentialRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}')
         return StorageCredentialInfo.from_dict(json)
 
     def list(self) -> Iterator[StorageCredentialInfo]:
@@ -4682,8 +4185,7 @@ class StorageCredentialsAPI:
                force: Optional[bool] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
-               skip_validation: Optional[bool] = None,
-               **kwargs) -> StorageCredentialInfo:
+               skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Update a credential.
         
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential
@@ -4713,21 +4215,21 @@ class StorageCredentialsAPI:
         
         :returns: :class:`StorageCredentialInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateStorageCredential(aws_iam_role=aws_iam_role,
-                                              azure_managed_identity=azure_managed_identity,
-                                              azure_service_principal=azure_service_principal,
-                                              comment=comment,
-                                              databricks_gcp_service_account=databricks_gcp_service_account,
-                                              force=force,
-                                              name=name,
-                                              owner=owner,
-                                              read_only=read_only,
-                                              skip_validation=skip_validation)
-        body = request.as_dict()
+        body = {}
+        if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
+        if azure_managed_identity is not None:
+            body['azure_managed_identity'] = azure_managed_identity.as_dict()
+        if azure_service_principal is not None:
+            body['azure_service_principal'] = azure_service_principal.as_dict()
+        if comment is not None: body['comment'] = comment
+        if databricks_gcp_service_account is not None:
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+        if force is not None: body['force'] = force
+        if owner is not None: body['owner'] = owner
+        if read_only is not None: body['read_only'] = read_only
+        if skip_validation is not None: body['skip_validation'] = skip_validation
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/storage-credentials/{request.name}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/storage-credentials/{name}', body=body)
         return StorageCredentialInfo.from_dict(json)
 
     def validate(self,
@@ -4739,8 +4241,7 @@ class StorageCredentialsAPI:
                  external_location_name: Optional[str] = None,
                  read_only: Optional[bool] = None,
                  storage_credential_name: Optional[Any] = None,
-                 url: Optional[str] = None,
-                 **kwargs) -> ValidateStorageCredentialResponse:
+                 url: Optional[str] = None) -> ValidateStorageCredentialResponse:
         """Validate a storage credential.
         
         Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
@@ -4772,17 +4273,18 @@ class StorageCredentialsAPI:
         
         :returns: :class:`ValidateStorageCredentialResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ValidateStorageCredential(aws_iam_role=aws_iam_role,
-                                                azure_managed_identity=azure_managed_identity,
-                                                azure_service_principal=azure_service_principal,
-                                                databricks_gcp_service_account=databricks_gcp_service_account,
-                                                external_location_name=external_location_name,
-                                                read_only=read_only,
-                                                storage_credential_name=storage_credential_name,
-                                                url=url)
-        body = request.as_dict()
+        body = {}
+        if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
+        if azure_managed_identity is not None:
+            body['azure_managed_identity'] = azure_managed_identity.as_dict()
+        if azure_service_principal is not None:
+            body['azure_service_principal'] = azure_service_principal.as_dict()
+        if databricks_gcp_service_account is not None:
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+        if external_location_name is not None: body['external_location_name'] = external_location_name
+        if read_only is not None: body['read_only'] = read_only
+        if storage_credential_name is not None: body['storage_credential_name'] = storage_credential_name
+        if url is not None: body['url'] = url
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/validate-storage-credentials', body=body)
         return ValidateStorageCredentialResponse.from_dict(json)
@@ -4795,7 +4297,7 @@ class SystemSchemasAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def disable(self, metastore_id: str, schema_name: DisableSchemaName, **kwargs):
+    def disable(self, metastore_id: str, schema_name: DisableSchemaName):
         """Disable a system schema.
         
         Disables the system schema and removes it from the system catalog. The caller must be an account admin
@@ -4808,16 +4310,11 @@ class SystemSchemasAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DisableRequest(metastore_id=metastore_id, schema_name=schema_name)
 
-        self._api.do(
-            'DELETE',
-            f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name.value}'
-        )
+        self._api.do('DELETE',
+                     f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name.value}')
 
-    def enable(self, metastore_id: str, schema_name: EnableSchemaName, **kwargs):
+    def enable(self, metastore_id: str, schema_name: EnableSchemaName):
         """Enable a system schema.
         
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
@@ -4830,16 +4327,11 @@ class SystemSchemasAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EnableRequest(metastore_id=metastore_id, schema_name=schema_name)
 
-        self._api.do(
-            'PUT',
-            f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas/{request.schema_name.value}'
-        )
+        self._api.do('PUT',
+                     f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name.value}')
 
-    def list(self, metastore_id: str, **kwargs) -> Iterator[SystemSchemaInfo]:
+    def list(self, metastore_id: str) -> Iterator[SystemSchemaInfo]:
         """List system schemas.
         
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
@@ -4850,11 +4342,8 @@ class SystemSchemasAPI:
         
         :returns: Iterator over :class:`SystemSchemaInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListSystemSchemasRequest(metastore_id=metastore_id)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{request.metastore_id}/systemschemas')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas')
         return [SystemSchemaInfo.from_dict(v) for v in json.get('schemas', [])]
 
 
@@ -4873,7 +4362,7 @@ class TableConstraintsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, full_name_arg: str, constraint: TableConstraint, **kwargs) -> TableConstraint:
+    def create(self, full_name_arg: str, constraint: TableConstraint) -> TableConstraint:
         """Create a table constraint.
         
         Creates a new table constraint.
@@ -4893,15 +4382,14 @@ class TableConstraintsAPI:
         
         :returns: :class:`TableConstraint`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateTableConstraint(constraint=constraint, full_name_arg=full_name_arg)
-        body = request.as_dict()
+        body = {}
+        if constraint is not None: body['constraint'] = constraint.as_dict()
+        if full_name_arg is not None: body['full_name_arg'] = full_name_arg
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body)
         return TableConstraint.from_dict(json)
 
-    def delete(self, full_name: str, constraint_name: str, cascade: bool, **kwargs):
+    def delete(self, full_name: str, constraint_name: str, cascade: bool):
         """Delete a table constraint.
         
         Deletes a table constraint.
@@ -4923,17 +4411,11 @@ class TableConstraintsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTableConstraintRequest(cascade=cascade,
-                                                   constraint_name=constraint_name,
-                                                   full_name=full_name)
 
         query = {}
-        if cascade: query['cascade'] = request.cascade
-        if constraint_name: query['constraint_name'] = request.constraint_name
-
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/constraints/{request.full_name}', query=query)
+        if cascade is not None: query['cascade'] = cascade
+        if constraint_name is not None: query['constraint_name'] = constraint_name
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/constraints/{full_name}', query=query)
 
 
 class TablesAPI:
@@ -4949,7 +4431,7 @@ class TablesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, full_name: str, **kwargs):
+    def delete(self, full_name: str):
         """Delete a table.
         
         Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
@@ -4962,13 +4444,10 @@ class TablesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTableRequest(full_name=full_name)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{request.full_name}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{full_name}')
 
-    def get(self, full_name: str, *, include_delta_metadata: Optional[bool] = None, **kwargs) -> TableInfo:
+    def get(self, full_name: str, *, include_delta_metadata: Optional[bool] = None) -> TableInfo:
         """Get a table.
         
         Gets a table from the metastore for a specific catalog and schema. The caller must be a metastore
@@ -4983,14 +4462,11 @@ class TablesAPI:
         
         :returns: :class:`TableInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetTableRequest(full_name=full_name, include_delta_metadata=include_delta_metadata)
 
         query = {}
-        if include_delta_metadata: query['include_delta_metadata'] = request.include_delta_metadata
+        if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{request.full_name}', query=query)
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query)
         return TableInfo.from_dict(json)
 
     def list(self,
@@ -4999,8 +4475,7 @@ class TablesAPI:
              *,
              include_delta_metadata: Optional[bool] = None,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None,
-             **kwargs) -> Iterator[TableInfo]:
+             page_token: Optional[str] = None) -> Iterator[TableInfo]:
         """List tables.
         
         Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
@@ -5026,20 +4501,13 @@ class TablesAPI:
         
         :returns: Iterator over :class:`TableInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListTablesRequest(catalog_name=catalog_name,
-                                        include_delta_metadata=include_delta_metadata,
-                                        max_results=max_results,
-                                        page_token=page_token,
-                                        schema_name=schema_name)
 
         query = {}
-        if catalog_name: query['catalog_name'] = request.catalog_name
-        if include_delta_metadata: query['include_delta_metadata'] = request.include_delta_metadata
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
-        if schema_name: query['schema_name'] = request.schema_name
+        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        if schema_name is not None: query['schema_name'] = schema_name
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query)
@@ -5057,8 +4525,7 @@ class TablesAPI:
                        max_results: Optional[int] = None,
                        page_token: Optional[str] = None,
                        schema_name_pattern: Optional[str] = None,
-                       table_name_pattern: Optional[str] = None,
-                       **kwargs) -> Iterator[TableSummary]:
+                       table_name_pattern: Optional[str] = None) -> Iterator[TableSummary]:
         """List table summaries.
         
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
@@ -5085,20 +4552,13 @@ class TablesAPI:
         
         :returns: Iterator over :class:`TableSummary`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListSummariesRequest(catalog_name=catalog_name,
-                                           max_results=max_results,
-                                           page_token=page_token,
-                                           schema_name_pattern=schema_name_pattern,
-                                           table_name_pattern=table_name_pattern)
 
         query = {}
-        if catalog_name: query['catalog_name'] = request.catalog_name
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
-        if schema_name_pattern: query['schema_name_pattern'] = request.schema_name_pattern
-        if table_name_pattern: query['table_name_pattern'] = request.table_name_pattern
+        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        if schema_name_pattern is not None: query['schema_name_pattern'] = schema_name_pattern
+        if table_name_pattern is not None: query['table_name_pattern'] = table_name_pattern
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query)
@@ -5110,7 +4570,7 @@ class TablesAPI:
                 return
             query['page_token'] = json['next_page_token']
 
-    def update(self, full_name: str, *, owner: Optional[str] = None, **kwargs):
+    def update(self, full_name: str, *, owner: Optional[str] = None):
         """Update a table owner.
         
         Change the owner of the table. The caller must be the owner of the parent catalog, have the
@@ -5124,11 +4584,9 @@ class TablesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateTableRequest(full_name=full_name, owner=owner)
-        body = request.as_dict()
-        self._api.do('PATCH', f'/api/2.1/unity-catalog/tables/{request.full_name}', body=body)
+        body = {}
+        if owner is not None: body['owner'] = owner
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/tables/{full_name}', body=body)
 
 
 class VolumesAPI:
@@ -5149,8 +4607,7 @@ class VolumesAPI:
                volume_type: VolumeType,
                *,
                comment: Optional[str] = None,
-               storage_location: Optional[str] = None,
-               **kwargs) -> VolumeInfo:
+               storage_location: Optional[str] = None) -> VolumeInfo:
         """Create a Volume.
         
         Creates a new volume.
@@ -5183,20 +4640,18 @@ class VolumesAPI:
         
         :returns: :class:`VolumeInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateVolumeRequestContent(catalog_name=catalog_name,
-                                                 comment=comment,
-                                                 name=name,
-                                                 schema_name=schema_name,
-                                                 storage_location=storage_location,
-                                                 volume_type=volume_type)
-        body = request.as_dict()
+        body = {}
+        if catalog_name is not None: body['catalog_name'] = catalog_name
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if schema_name is not None: body['schema_name'] = schema_name
+        if storage_location is not None: body['storage_location'] = storage_location
+        if volume_type is not None: body['volume_type'] = volume_type.value
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body)
         return VolumeInfo.from_dict(json)
 
-    def delete(self, full_name_arg: str, **kwargs):
+    def delete(self, full_name_arg: str):
         """Delete a Volume.
         
         Deletes a volume from the specified parent catalog and schema.
@@ -5210,13 +4665,10 @@ class VolumesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteVolumeRequest(full_name_arg=full_name_arg)
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{request.full_name_arg}')
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{full_name_arg}')
 
-    def list(self, catalog_name: str, schema_name: str, **kwargs) -> Iterator[VolumeInfo]:
+    def list(self, catalog_name: str, schema_name: str) -> Iterator[VolumeInfo]:
         """List Volumes.
         
         Gets an array of all volumes for the current metastore under the parent catalog and schema.
@@ -5236,18 +4688,15 @@ class VolumesAPI:
         
         :returns: Iterator over :class:`VolumeInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListVolumesRequest(catalog_name=catalog_name, schema_name=schema_name)
 
         query = {}
-        if catalog_name: query['catalog_name'] = request.catalog_name
-        if schema_name: query['schema_name'] = request.schema_name
+        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if schema_name is not None: query['schema_name'] = schema_name
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query)
         return [VolumeInfo.from_dict(v) for v in json.get('volumes', [])]
 
-    def read(self, full_name_arg: str, **kwargs) -> VolumeInfo:
+    def read(self, full_name_arg: str) -> VolumeInfo:
         """Get a Volume.
         
         Gets a volume from the metastore for a specific catalog and schema.
@@ -5261,11 +4710,8 @@ class VolumesAPI:
         
         :returns: :class:`VolumeInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ReadVolumeRequest(full_name_arg=full_name_arg)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{request.full_name_arg}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{full_name_arg}')
         return VolumeInfo.from_dict(json)
 
     def update(self,
@@ -5273,8 +4719,7 @@ class VolumesAPI:
                *,
                comment: Optional[str] = None,
                name: Optional[str] = None,
-               owner: Optional[str] = None,
-               **kwargs) -> VolumeInfo:
+               owner: Optional[str] = None) -> VolumeInfo:
         """Update a Volume.
         
         Updates the specified volume under the specified parent catalog and schema.
@@ -5296,15 +4741,12 @@ class VolumesAPI:
         
         :returns: :class:`VolumeInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateVolumeRequestContent(comment=comment,
-                                                 full_name_arg=full_name_arg,
-                                                 name=name,
-                                                 owner=owner)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/volumes/{request.full_name_arg}', body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', body=body)
         return VolumeInfo.from_dict(json)
 
 
@@ -5317,7 +4759,7 @@ class WorkspaceBindingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, name: str, **kwargs) -> CurrentWorkspaceBindings:
+    def get(self, name: str) -> CurrentWorkspaceBindings:
         """Get catalog workspace bindings.
         
         Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
@@ -5328,19 +4770,15 @@ class WorkspaceBindingsAPI:
         
         :returns: :class:`CurrentWorkspaceBindings`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWorkspaceBindingRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{request.name}')
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}')
         return CurrentWorkspaceBindings.from_dict(json)
 
     def update(self,
                name: str,
                *,
                assign_workspaces: Optional[List[int]] = None,
-               unassign_workspaces: Optional[List[int]] = None,
-               **kwargs) -> CurrentWorkspaceBindings:
+               unassign_workspaces: Optional[List[int]] = None) -> CurrentWorkspaceBindings:
         """Update catalog workspace bindings.
         
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
@@ -5355,14 +4793,9 @@ class WorkspaceBindingsAPI:
         
         :returns: :class:`CurrentWorkspaceBindings`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateWorkspaceBindings(assign_workspaces=assign_workspaces,
-                                              name=name,
-                                              unassign_workspaces=unassign_workspaces)
-        body = request.as_dict()
+        body = {}
+        if assign_workspaces is not None: body['assign_workspaces'] = [v for v in assign_workspaces]
+        if unassign_workspaces is not None: body['unassign_workspaces'] = [v for v in unassign_workspaces]
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{request.name}',
-                            body=body)
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}', body=body)
         return CurrentWorkspaceBindings.from_dict(json)

@@ -171,13 +171,6 @@ class AlertState(Enum):
 
 
 @dataclass
-class CancelExecutionRequest:
-    """Cancel statement execution"""
-
-    statement_id: str
-
-
-@dataclass
 class Channel:
     dbsql_version: Optional[str] = None
     name: Optional['ChannelName'] = None
@@ -212,7 +205,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -334,31 +326,6 @@ class CreateAlert:
                    parent=d.get('parent', None),
                    query_id=d.get('query_id', None),
                    rearm=d.get('rearm', None))
-
-
-@dataclass
-class CreateDashboardRequest:
-    """Create a dashboard object"""
-
-    is_favorite: Optional[bool] = None
-    name: Optional[str] = None
-    parent: Optional[str] = None
-    tags: Optional['List[str]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
-        if self.name is not None: body['name'] = self.name
-        if self.parent is not None: body['parent'] = self.parent
-        if self.tags: body['tags'] = [v for v in self.tags]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateDashboardRequest':
-        return cls(is_favorite=d.get('is_favorite', None),
-                   name=d.get('name', None),
-                   parent=d.get('parent', None),
-                   tags=d.get('tags', None))
 
 
 @dataclass
@@ -553,34 +520,6 @@ class DataSource:
                    type=d.get('type', None),
                    view_only=d.get('view_only', None),
                    warehouse_id=d.get('warehouse_id', None))
-
-
-@dataclass
-class DeleteAlertRequest:
-    """Delete an alert"""
-
-    alert_id: str
-
-
-@dataclass
-class DeleteDashboardRequest:
-    """Remove a dashboard"""
-
-    dashboard_id: str
-
-
-@dataclass
-class DeleteQueryRequest:
-    """Delete a query"""
-
-    query_id: str
-
-
-@dataclass
-class DeleteWarehouseRequest:
-    """Delete a warehouse"""
-
-    id: str
 
 
 class Disposition(Enum):
@@ -992,35 +931,6 @@ class Format(Enum):
 
 
 @dataclass
-class GetAlertRequest:
-    """Get an alert"""
-
-    alert_id: str
-
-
-@dataclass
-class GetDashboardRequest:
-    """Retrieve a definition"""
-
-    dashboard_id: str
-
-
-@dataclass
-class GetDbsqlPermissionRequest:
-    """Get object ACL"""
-
-    object_type: 'ObjectTypePlural'
-    object_id: str
-
-
-@dataclass
-class GetQueryRequest:
-    """Get a query definition."""
-
-    query_id: str
-
-
-@dataclass
 class GetResponse:
     access_control_list: Optional['List[AccessControl]'] = None
     object_id: Optional[str] = None
@@ -1039,13 +949,6 @@ class GetResponse:
         return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
                    object_id=d.get('object_id', None),
                    object_type=_enum(d, 'object_type', ObjectType))
-
-
-@dataclass
-class GetStatementRequest:
-    """Get status, manifest, and result first chunk"""
-
-    statement_id: str
 
 
 @dataclass
@@ -1069,21 +972,6 @@ class GetStatementResponse:
                    result=_from_dict(d, 'result', ResultData),
                    statement_id=d.get('statement_id', None),
                    status=_from_dict(d, 'status', StatementStatus))
-
-
-@dataclass
-class GetStatementResultChunkNRequest:
-    """Get result chunk by index"""
-
-    statement_id: str
-    chunk_index: int
-
-
-@dataclass
-class GetWarehouseRequest:
-    """Get warehouse info"""
-
-    id: str
 
 
 @dataclass
@@ -1220,30 +1108,10 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
     PASSTHROUGH = 'PASSTHROUGH'
 
 
-@dataclass
-class ListDashboardsRequest:
-    """Get dashboard objects"""
-
-    order: Optional['ListOrder'] = None
-    page: Optional[int] = None
-    page_size: Optional[int] = None
-    q: Optional[str] = None
-
-
 class ListOrder(Enum):
 
     CREATED_AT = 'created_at'
     NAME = 'name'
-
-
-@dataclass
-class ListQueriesRequest:
-    """Get a list of queries"""
-
-    order: Optional[str] = None
-    page: Optional[int] = None
-    page_size: Optional[int] = None
-    q: Optional[str] = None
 
 
 @dataclass
@@ -1267,16 +1135,6 @@ class ListQueriesResponse:
 
 
 @dataclass
-class ListQueryHistoryRequest:
-    """List Queries"""
-
-    filter_by: Optional['QueryFilter'] = None
-    include_metrics: Optional[bool] = None
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
-
-
-@dataclass
 class ListResponse:
     count: Optional[int] = None
     page: Optional[int] = None
@@ -1297,13 +1155,6 @@ class ListResponse:
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
                    results=_repeated(d, 'results', Dashboard))
-
-
-@dataclass
-class ListWarehousesRequest:
-    """List warehouses"""
-
-    run_as_user_id: Optional[int] = None
 
 
 @dataclass
@@ -1834,20 +1685,6 @@ class RepeatedEndpointConfPairs:
 
 
 @dataclass
-class RestoreDashboardRequest:
-    """Restore a dashboard"""
-
-    dashboard_id: str
-
-
-@dataclass
-class RestoreQueryRequest:
-    """Restore a query"""
-
-    query_id: str
-
-
-@dataclass
 class ResultData:
     """Result data chunks are delivered in either the `chunk` field when using `INLINE` disposition, or
     in the `external_link` field when using `EXTERNAL_LINKS` disposition. Exactly one of these will
@@ -1971,29 +1808,6 @@ class ServiceErrorCode(Enum):
 
 
 @dataclass
-class SetRequest:
-    """Set object ACL"""
-
-    object_type: 'ObjectTypePlural'
-    object_id: str
-    access_control_list: Optional['List[AccessControl]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None: body['objectId'] = self.object_id
-        if self.object_type is not None: body['objectType'] = self.object_type.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
-                   object_id=d.get('objectId', None),
-                   object_type=_enum(d, 'objectType', ObjectTypePlural))
-
-
-@dataclass
 class SetResponse:
     access_control_list: Optional['List[AccessControl]'] = None
     object_id: Optional[str] = None
@@ -2074,13 +1888,6 @@ class SpotInstancePolicy(Enum):
     RELIABILITY_OPTIMIZED = 'RELIABILITY_OPTIMIZED'
 
 
-@dataclass
-class StartRequest:
-    """Start a warehouse"""
-
-    id: str
-
-
 class State(Enum):
     """State of the warehouse"""
 
@@ -2132,13 +1939,6 @@ class Status(Enum):
     FAILED = 'FAILED'
     HEALTHY = 'HEALTHY'
     STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
-
-
-@dataclass
-class StopRequest:
-    """Stop a warehouse"""
-
-    id: str
 
 
 @dataclass
@@ -2318,28 +2118,6 @@ class TransferOwnershipObjectId:
 
 
 @dataclass
-class TransferOwnershipRequest:
-    """Transfer object ownership"""
-
-    object_type: 'OwnableObjectType'
-    object_id: 'TransferOwnershipObjectId'
-    new_owner: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.new_owner is not None: body['new_owner'] = self.new_owner
-        if self.object_id: body['objectId'] = self.object_id.as_dict()
-        if self.object_type is not None: body['objectType'] = self.object_type.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransferOwnershipRequest':
-        return cls(new_owner=d.get('new_owner', None),
-                   object_id=_from_dict(d, 'objectId', TransferOwnershipObjectId),
-                   object_type=_enum(d, 'objectType', OwnableObjectType))
-
-
-@dataclass
 class User:
     email: Optional[str] = None
     id: Optional[int] = None
@@ -2489,8 +2267,7 @@ class AlertsAPI:
                query_id: str,
                *,
                parent: Optional[str] = None,
-               rearm: Optional[int] = None,
-               **kwargs) -> Alert:
+               rearm: Optional[int] = None) -> Alert:
         """Create an alert.
         
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
@@ -2510,15 +2287,17 @@ class AlertsAPI:
         
         :returns: :class:`Alert`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateAlert(name=name, options=options, parent=parent, query_id=query_id, rearm=rearm)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if options is not None: body['options'] = options.as_dict()
+        if parent is not None: body['parent'] = parent
+        if query_id is not None: body['query_id'] = query_id
+        if rearm is not None: body['rearm'] = rearm
 
         json = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body)
         return Alert.from_dict(json)
 
-    def delete(self, alert_id: str, **kwargs):
+    def delete(self, alert_id: str):
         """Delete an alert.
         
         Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note:** Unlike
@@ -2528,13 +2307,10 @@ class AlertsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteAlertRequest(alert_id=alert_id)
 
-        self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{request.alert_id}')
+        self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{alert_id}')
 
-    def get(self, alert_id: str, **kwargs) -> Alert:
+    def get(self, alert_id: str) -> Alert:
         """Get an alert.
         
         Gets an alert.
@@ -2543,11 +2319,8 @@ class AlertsAPI:
         
         :returns: :class:`Alert`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetAlertRequest(alert_id=alert_id)
 
-        json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{request.alert_id}')
+        json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}')
         return Alert.from_dict(json)
 
     def list(self) -> Iterator[Alert]:
@@ -2567,8 +2340,7 @@ class AlertsAPI:
                query_id: str,
                alert_id: str,
                *,
-               rearm: Optional[int] = None,
-               **kwargs):
+               rearm: Optional[int] = None):
         """Update an alert.
         
         Updates an alert.
@@ -2586,11 +2358,12 @@ class AlertsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EditAlert(alert_id=alert_id, name=name, options=options, query_id=query_id, rearm=rearm)
-        body = request.as_dict()
-        self._api.do('PUT', f'/api/2.0/preview/sql/alerts/{request.alert_id}', body=body)
+        body = {}
+        if name is not None: body['name'] = name
+        if options is not None: body['options'] = options.as_dict()
+        if query_id is not None: body['query_id'] = query_id
+        if rearm is not None: body['rearm'] = rearm
+        self._api.do('PUT', f'/api/2.0/preview/sql/alerts/{alert_id}', body=body)
 
 
 class DashboardsAPI:
@@ -2608,8 +2381,7 @@ class DashboardsAPI:
                is_favorite: Optional[bool] = None,
                name: Optional[str] = None,
                parent: Optional[str] = None,
-               tags: Optional[List[str]] = None,
-               **kwargs) -> Dashboard:
+               tags: Optional[List[str]] = None) -> Dashboard:
         """Create a dashboard object.
         
         :param is_favorite: bool (optional)
@@ -2623,15 +2395,16 @@ class DashboardsAPI:
         
         :returns: :class:`Dashboard`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateDashboardRequest(is_favorite=is_favorite, name=name, parent=parent, tags=tags)
-        body = request.as_dict()
+        body = {}
+        if is_favorite is not None: body['is_favorite'] = is_favorite
+        if name is not None: body['name'] = name
+        if parent is not None: body['parent'] = parent
+        if tags is not None: body['tags'] = [v for v in tags]
 
         json = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body)
         return Dashboard.from_dict(json)
 
-    def delete(self, dashboard_id: str, **kwargs):
+    def delete(self, dashboard_id: str):
         """Remove a dashboard.
         
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
@@ -2641,13 +2414,10 @@ class DashboardsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteDashboardRequest(dashboard_id=dashboard_id)
 
-        self._api.do('DELETE', f'/api/2.0/preview/sql/dashboards/{request.dashboard_id}')
+        self._api.do('DELETE', f'/api/2.0/preview/sql/dashboards/{dashboard_id}')
 
-    def get(self, dashboard_id: str, **kwargs) -> Dashboard:
+    def get(self, dashboard_id: str) -> Dashboard:
         """Retrieve a definition.
         
         Returns a JSON representation of a dashboard object, including its visualization and query objects.
@@ -2656,11 +2426,8 @@ class DashboardsAPI:
         
         :returns: :class:`Dashboard`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetDashboardRequest(dashboard_id=dashboard_id)
 
-        json = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{request.dashboard_id}')
+        json = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}')
         return Dashboard.from_dict(json)
 
     def list(self,
@@ -2668,8 +2435,7 @@ class DashboardsAPI:
              order: Optional[ListOrder] = None,
              page: Optional[int] = None,
              page_size: Optional[int] = None,
-             q: Optional[str] = None,
-             **kwargs) -> Iterator[Dashboard]:
+             q: Optional[str] = None) -> Iterator[Dashboard]:
         """Get dashboard objects.
         
         Fetch a paginated list of dashboard objects.
@@ -2685,15 +2451,12 @@ class DashboardsAPI:
         
         :returns: Iterator over :class:`Dashboard`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListDashboardsRequest(order=order, page=page, page_size=page_size, q=q)
 
         query = {}
-        if order: query['order'] = request.order.value
-        if page: query['page'] = request.page
-        if page_size: query['page_size'] = request.page_size
-        if q: query['q'] = request.q
+        if order is not None: query['order'] = order.value
+        if page is not None: query['page'] = page
+        if page_size is not None: query['page_size'] = page_size
+        if q is not None: query['q'] = q
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -2710,7 +2473,7 @@ class DashboardsAPI:
                 yield Dashboard.from_dict(v)
             query['page'] += 1
 
-    def restore(self, dashboard_id: str, **kwargs):
+    def restore(self, dashboard_id: str):
         """Restore a dashboard.
         
         A restored dashboard appears in list views and searches and can be shared.
@@ -2719,11 +2482,8 @@ class DashboardsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RestoreDashboardRequest(dashboard_id=dashboard_id)
 
-        self._api.do('POST', f'/api/2.0/preview/sql/dashboards/trash/{request.dashboard_id}')
+        self._api.do('POST', f'/api/2.0/preview/sql/dashboards/trash/{dashboard_id}')
 
 
 class DataSourcesAPI:
@@ -2768,7 +2528,7 @@ class DbsqlPermissionsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, object_type: ObjectTypePlural, object_id: str, **kwargs) -> GetResponse:
+    def get(self, object_type: ObjectTypePlural, object_id: str) -> GetResponse:
         """Get object ACL.
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
@@ -2780,20 +2540,15 @@ class DbsqlPermissionsAPI:
         
         :returns: :class:`GetResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetDbsqlPermissionRequest(object_id=object_id, object_type=object_type)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}')
+        json = self._api.do('GET', f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}')
         return GetResponse.from_dict(json)
 
     def set(self,
             object_type: ObjectTypePlural,
             object_id: str,
             *,
-            access_control_list: Optional[List[AccessControl]] = None,
-            **kwargs) -> SetResponse:
+            access_control_list: Optional[List[AccessControl]] = None) -> SetResponse:
         """Set object ACL.
         
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
@@ -2807,25 +2562,20 @@ class DbsqlPermissionsAPI:
         
         :returns: :class:`SetResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetRequest(access_control_list=access_control_list,
-                                 object_id=object_id,
-                                 object_type=object_type)
-        body = request.as_dict()
+        body = {}
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
 
-        json = self._api.do(
-            'POST',
-            f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}',
-            body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
+                            body=body)
         return SetResponse.from_dict(json)
 
     def transfer_ownership(self,
                            object_type: OwnableObjectType,
                            object_id: TransferOwnershipObjectId,
                            *,
-                           new_owner: Optional[str] = None,
-                           **kwargs) -> Success:
+                           new_owner: Optional[str] = None) -> Success:
         """Transfer object ownership.
         
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
@@ -2839,17 +2589,12 @@ class DbsqlPermissionsAPI:
         
         :returns: :class:`Success`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = TransferOwnershipRequest(new_owner=new_owner,
-                                               object_id=object_id,
-                                               object_type=object_type)
-        body = request.as_dict()
+        body = {}
+        if new_owner is not None: body['new_owner'] = new_owner
 
-        json = self._api.do(
-            'POST',
-            f'/api/2.0/preview/sql/permissions/{request.object_type.value}/{request.object_id}/transfer',
-            body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
+                            body=body)
         return Success.from_dict(json)
 
 
@@ -2868,8 +2613,7 @@ class QueriesAPI:
                name: Optional[str] = None,
                options: Optional[Any] = None,
                parent: Optional[str] = None,
-               query: Optional[str] = None,
-               **kwargs) -> Query:
+               query: Optional[str] = None) -> Query:
         """Create a new query definition.
         
         Creates a new query definition. Queries created with this endpoint belong to the authenticated user
@@ -2898,20 +2642,18 @@ class QueriesAPI:
         
         :returns: :class:`Query`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = QueryPostContent(data_source_id=data_source_id,
-                                       description=description,
-                                       name=name,
-                                       options=options,
-                                       parent=parent,
-                                       query=query)
-        body = request.as_dict()
+        body = {}
+        if data_source_id is not None: body['data_source_id'] = data_source_id
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if options is not None: body['options'] = options
+        if parent is not None: body['parent'] = parent
+        if query is not None: body['query'] = query
 
         json = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body)
         return Query.from_dict(json)
 
-    def delete(self, query_id: str, **kwargs):
+    def delete(self, query_id: str):
         """Delete a query.
         
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
@@ -2921,13 +2663,10 @@ class QueriesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteQueryRequest(query_id=query_id)
 
-        self._api.do('DELETE', f'/api/2.0/preview/sql/queries/{request.query_id}')
+        self._api.do('DELETE', f'/api/2.0/preview/sql/queries/{query_id}')
 
-    def get(self, query_id: str, **kwargs) -> Query:
+    def get(self, query_id: str) -> Query:
         """Get a query definition.
         
         Retrieve a query object definition along with contextual permissions information about the currently
@@ -2937,11 +2676,8 @@ class QueriesAPI:
         
         :returns: :class:`Query`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetQueryRequest(query_id=query_id)
 
-        json = self._api.do('GET', f'/api/2.0/preview/sql/queries/{request.query_id}')
+        json = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}')
         return Query.from_dict(json)
 
     def list(self,
@@ -2949,8 +2685,7 @@ class QueriesAPI:
              order: Optional[str] = None,
              page: Optional[int] = None,
              page_size: Optional[int] = None,
-             q: Optional[str] = None,
-             **kwargs) -> Iterator[Query]:
+             q: Optional[str] = None) -> Iterator[Query]:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
@@ -2978,15 +2713,12 @@ class QueriesAPI:
         
         :returns: Iterator over :class:`Query`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListQueriesRequest(order=order, page=page, page_size=page_size, q=q)
 
         query = {}
-        if order: query['order'] = request.order
-        if page: query['page'] = request.page
-        if page_size: query['page_size'] = request.page_size
-        if q: query['q'] = request.q
+        if order is not None: query['order'] = order
+        if page is not None: query['page'] = page
+        if page_size is not None: query['page_size'] = page_size
+        if q is not None: query['q'] = q
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -3003,7 +2735,7 @@ class QueriesAPI:
                 yield Query.from_dict(v)
             query['page'] += 1
 
-    def restore(self, query_id: str, **kwargs):
+    def restore(self, query_id: str):
         """Restore a query.
         
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
@@ -3013,11 +2745,8 @@ class QueriesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RestoreQueryRequest(query_id=query_id)
 
-        self._api.do('POST', f'/api/2.0/preview/sql/queries/trash/{request.query_id}')
+        self._api.do('POST', f'/api/2.0/preview/sql/queries/trash/{query_id}')
 
     def update(self,
                query_id: str,
@@ -3026,8 +2755,7 @@ class QueriesAPI:
                description: Optional[str] = None,
                name: Optional[str] = None,
                options: Optional[Any] = None,
-               query: Optional[str] = None,
-               **kwargs) -> Query:
+               query: Optional[str] = None) -> Query:
         """Change a query definition.
         
         Modify this query definition.
@@ -3050,17 +2778,14 @@ class QueriesAPI:
         
         :returns: :class:`Query`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = QueryEditContent(data_source_id=data_source_id,
-                                       description=description,
-                                       name=name,
-                                       options=options,
-                                       query=query,
-                                       query_id=query_id)
-        body = request.as_dict()
+        body = {}
+        if data_source_id is not None: body['data_source_id'] = data_source_id
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if options is not None: body['options'] = options
+        if query is not None: body['query'] = query
 
-        json = self._api.do('POST', f'/api/2.0/preview/sql/queries/{request.query_id}', body=body)
+        json = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body)
         return Query.from_dict(json)
 
 
@@ -3075,8 +2800,7 @@ class QueryHistoryAPI:
              filter_by: Optional[QueryFilter] = None,
              include_metrics: Optional[bool] = None,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None,
-             **kwargs) -> Iterator[QueryInfo]:
+             page_token: Optional[str] = None) -> Iterator[QueryInfo]:
         """List Queries.
         
         List the history of queries through SQL warehouses.
@@ -3094,18 +2818,12 @@ class QueryHistoryAPI:
         
         :returns: Iterator over :class:`QueryInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListQueryHistoryRequest(filter_by=filter_by,
-                                              include_metrics=include_metrics,
-                                              max_results=max_results,
-                                              page_token=page_token)
 
         query = {}
-        if filter_by: query['filter_by'] = request.filter_by.as_dict()
-        if include_metrics: query['include_metrics'] = request.include_metrics
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
+        if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if include_metrics is not None: query['include_metrics'] = include_metrics
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query)
@@ -3278,7 +2996,7 @@ class StatementExecutionAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel_execution(self, statement_id: str, **kwargs):
+    def cancel_execution(self, statement_id: str):
         """Cancel statement execution.
         
         Requests that an executing statement be canceled. Callers must poll for status to see the terminal
@@ -3288,11 +3006,8 @@ class StatementExecutionAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CancelExecutionRequest(statement_id=statement_id)
 
-        self._api.do('POST', f'/api/2.0/sql/statements/{request.statement_id}/cancel')
+        self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel')
 
     def execute_statement(self,
                           *,
@@ -3304,8 +3019,7 @@ class StatementExecutionAPI:
                           schema: Optional[str] = None,
                           statement: Optional[str] = None,
                           wait_timeout: Optional[str] = None,
-                          warehouse_id: Optional[str] = None,
-                          **kwargs) -> ExecuteStatementResponse:
+                          warehouse_id: Optional[str] = None) -> ExecuteStatementResponse:
         """Execute a SQL statement.
         
         Execute a SQL statement, and if flagged as such, await its result for a specified time.
@@ -3398,23 +3112,21 @@ class StatementExecutionAPI:
         
         :returns: :class:`ExecuteStatementResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ExecuteStatementRequest(byte_limit=byte_limit,
-                                              catalog=catalog,
-                                              disposition=disposition,
-                                              format=format,
-                                              on_wait_timeout=on_wait_timeout,
-                                              schema=schema,
-                                              statement=statement,
-                                              wait_timeout=wait_timeout,
-                                              warehouse_id=warehouse_id)
-        body = request.as_dict()
+        body = {}
+        if byte_limit is not None: body['byte_limit'] = byte_limit
+        if catalog is not None: body['catalog'] = catalog
+        if disposition is not None: body['disposition'] = disposition.value
+        if format is not None: body['format'] = format.value
+        if on_wait_timeout is not None: body['on_wait_timeout'] = on_wait_timeout.value
+        if schema is not None: body['schema'] = schema
+        if statement is not None: body['statement'] = statement
+        if wait_timeout is not None: body['wait_timeout'] = wait_timeout
+        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
 
         json = self._api.do('POST', '/api/2.0/sql/statements/', body=body)
         return ExecuteStatementResponse.from_dict(json)
 
-    def get_statement(self, statement_id: str, **kwargs) -> GetStatementResponse:
+    def get_statement(self, statement_id: str) -> GetStatementResponse:
         """Get status, manifest, and result first chunk.
         
         This request can be used to poll for the statement's status. When the `status.state` field is
@@ -3429,14 +3141,11 @@ class StatementExecutionAPI:
         
         :returns: :class:`GetStatementResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStatementRequest(statement_id=statement_id)
 
-        json = self._api.do('GET', f'/api/2.0/sql/statements/{request.statement_id}')
+        json = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}')
         return GetStatementResponse.from_dict(json)
 
-    def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int, **kwargs) -> ResultData:
+    def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
         """Get result chunk by index.
         
         After the statement execution has `SUCCEEDED`, the result data can be fetched by chunks. Whereas the
@@ -3450,12 +3159,8 @@ class StatementExecutionAPI:
         
         :returns: :class:`ResultData`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetStatementResultChunkNRequest(chunk_index=chunk_index, statement_id=statement_id)
 
-        json = self._api.do(
-            'GET', f'/api/2.0/sql/statements/{request.statement_id}/result/chunks/{request.chunk_index}')
+        json = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}')
         return ResultData.from_dict(json)
 
 
@@ -3528,22 +3233,23 @@ class WarehousesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self,
-               *,
-               auto_stop_mins: Optional[int] = None,
-               channel: Optional[Channel] = None,
-               cluster_size: Optional[str] = None,
-               creator_name: Optional[str] = None,
-               enable_photon: Optional[bool] = None,
-               enable_serverless_compute: Optional[bool] = None,
-               instance_profile_arn: Optional[str] = None,
-               max_num_clusters: Optional[int] = None,
-               min_num_clusters: Optional[int] = None,
-               name: Optional[str] = None,
-               spot_instance_policy: Optional[SpotInstancePolicy] = None,
-               tags: Optional[EndpointTags] = None,
-               warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
-               **kwargs) -> Wait[GetWarehouseResponse]:
+    def create(
+            self,
+            *,
+            auto_stop_mins: Optional[int] = None,
+            channel: Optional[Channel] = None,
+            cluster_size: Optional[str] = None,
+            creator_name: Optional[str] = None,
+            enable_photon: Optional[bool] = None,
+            enable_serverless_compute: Optional[bool] = None,
+            instance_profile_arn: Optional[str] = None,
+            max_num_clusters: Optional[int] = None,
+            min_num_clusters: Optional[int] = None,
+            name: Optional[str] = None,
+            spot_instance_policy: Optional[SpotInstancePolicy] = None,
+            tags: Optional[EndpointTags] = None,
+            warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None
+    ) -> Wait[GetWarehouseResponse]:
         """Create a warehouse.
         
         Creates a new SQL warehouse.
@@ -3607,22 +3313,21 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateWarehouseRequest(auto_stop_mins=auto_stop_mins,
-                                             channel=channel,
-                                             cluster_size=cluster_size,
-                                             creator_name=creator_name,
-                                             enable_photon=enable_photon,
-                                             enable_serverless_compute=enable_serverless_compute,
-                                             instance_profile_arn=instance_profile_arn,
-                                             max_num_clusters=max_num_clusters,
-                                             min_num_clusters=min_num_clusters,
-                                             name=name,
-                                             spot_instance_policy=spot_instance_policy,
-                                             tags=tags,
-                                             warehouse_type=warehouse_type)
-        body = request.as_dict()
+        body = {}
+        if auto_stop_mins is not None: body['auto_stop_mins'] = auto_stop_mins
+        if channel is not None: body['channel'] = channel.as_dict()
+        if cluster_size is not None: body['cluster_size'] = cluster_size
+        if creator_name is not None: body['creator_name'] = creator_name
+        if enable_photon is not None: body['enable_photon'] = enable_photon
+        if enable_serverless_compute is not None:
+            body['enable_serverless_compute'] = enable_serverless_compute
+        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
+        if max_num_clusters is not None: body['max_num_clusters'] = max_num_clusters
+        if min_num_clusters is not None: body['min_num_clusters'] = min_num_clusters
+        if name is not None: body['name'] = name
+        if spot_instance_policy is not None: body['spot_instance_policy'] = spot_instance_policy.value
+        if tags is not None: body['tags'] = tags.as_dict()
+        if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
         op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body)
         return Wait(self.wait_get_warehouse_running,
                     response=CreateWarehouseResponse.from_dict(op_response),
@@ -3660,7 +3365,7 @@ class WarehousesAPI:
                            tags=tags,
                            warehouse_type=warehouse_type).result(timeout=timeout)
 
-    def delete(self, id: str, **kwargs):
+    def delete(self, id: str):
         """Delete a warehouse.
         
         Deletes a SQL warehouse.
@@ -3670,29 +3375,26 @@ class WarehousesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteWarehouseRequest(id=id)
 
-        self._api.do('DELETE', f'/api/2.0/sql/warehouses/{request.id}')
+        self._api.do('DELETE', f'/api/2.0/sql/warehouses/{id}')
 
-    def edit(self,
-             id: str,
-             *,
-             auto_stop_mins: Optional[int] = None,
-             channel: Optional[Channel] = None,
-             cluster_size: Optional[str] = None,
-             creator_name: Optional[str] = None,
-             enable_photon: Optional[bool] = None,
-             enable_serverless_compute: Optional[bool] = None,
-             instance_profile_arn: Optional[str] = None,
-             max_num_clusters: Optional[int] = None,
-             min_num_clusters: Optional[int] = None,
-             name: Optional[str] = None,
-             spot_instance_policy: Optional[SpotInstancePolicy] = None,
-             tags: Optional[EndpointTags] = None,
-             warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
-             **kwargs) -> Wait[GetWarehouseResponse]:
+    def edit(
+            self,
+            id: str,
+            *,
+            auto_stop_mins: Optional[int] = None,
+            channel: Optional[Channel] = None,
+            cluster_size: Optional[str] = None,
+            creator_name: Optional[str] = None,
+            enable_photon: Optional[bool] = None,
+            enable_serverless_compute: Optional[bool] = None,
+            instance_profile_arn: Optional[str] = None,
+            max_num_clusters: Optional[int] = None,
+            min_num_clusters: Optional[int] = None,
+            name: Optional[str] = None,
+            spot_instance_policy: Optional[SpotInstancePolicy] = None,
+            tags: Optional[EndpointTags] = None,
+            warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None) -> Wait[GetWarehouseResponse]:
         """Update a warehouse.
         
         Updates the configuration for a SQL warehouse.
@@ -3758,25 +3460,23 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EditWarehouseRequest(auto_stop_mins=auto_stop_mins,
-                                           channel=channel,
-                                           cluster_size=cluster_size,
-                                           creator_name=creator_name,
-                                           enable_photon=enable_photon,
-                                           enable_serverless_compute=enable_serverless_compute,
-                                           id=id,
-                                           instance_profile_arn=instance_profile_arn,
-                                           max_num_clusters=max_num_clusters,
-                                           min_num_clusters=min_num_clusters,
-                                           name=name,
-                                           spot_instance_policy=spot_instance_policy,
-                                           tags=tags,
-                                           warehouse_type=warehouse_type)
-        body = request.as_dict()
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/edit', body=body)
-        return Wait(self.wait_get_warehouse_running, id=request.id)
+        body = {}
+        if auto_stop_mins is not None: body['auto_stop_mins'] = auto_stop_mins
+        if channel is not None: body['channel'] = channel.as_dict()
+        if cluster_size is not None: body['cluster_size'] = cluster_size
+        if creator_name is not None: body['creator_name'] = creator_name
+        if enable_photon is not None: body['enable_photon'] = enable_photon
+        if enable_serverless_compute is not None:
+            body['enable_serverless_compute'] = enable_serverless_compute
+        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
+        if max_num_clusters is not None: body['max_num_clusters'] = max_num_clusters
+        if min_num_clusters is not None: body['min_num_clusters'] = min_num_clusters
+        if name is not None: body['name'] = name
+        if spot_instance_policy is not None: body['spot_instance_policy'] = spot_instance_policy.value
+        if tags is not None: body['tags'] = tags.as_dict()
+        if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
+        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body)
+        return Wait(self.wait_get_warehouse_running, id=id)
 
     def edit_and_wait(
         self,
@@ -3812,7 +3512,7 @@ class WarehousesAPI:
                          tags=tags,
                          warehouse_type=warehouse_type).result(timeout=timeout)
 
-    def get(self, id: str, **kwargs) -> GetWarehouseResponse:
+    def get(self, id: str) -> GetWarehouseResponse:
         """Get warehouse info.
         
         Gets the information for a single SQL warehouse.
@@ -3822,11 +3522,8 @@ class WarehousesAPI:
         
         :returns: :class:`GetWarehouseResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetWarehouseRequest(id=id)
 
-        json = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
+        json = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}')
         return GetWarehouseResponse.from_dict(json)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
@@ -3840,7 +3537,7 @@ class WarehousesAPI:
         json = self._api.do('GET', '/api/2.0/sql/config/warehouses')
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
 
-    def list(self, *, run_as_user_id: Optional[int] = None, **kwargs) -> Iterator[EndpointInfo]:
+    def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
         """List warehouses.
         
         Lists all SQL warehouses that a user has manager permissions on.
@@ -3851,12 +3548,9 @@ class WarehousesAPI:
         
         :returns: Iterator over :class:`EndpointInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListWarehousesRequest(run_as_user_id=run_as_user_id)
 
         query = {}
-        if run_as_user_id: query['run_as_user_id'] = request.run_as_user_id
+        if run_as_user_id is not None: query['run_as_user_id'] = run_as_user_id
 
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query)
         return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
@@ -3872,8 +3566,7 @@ class WarehousesAPI:
             google_service_account: Optional[str] = None,
             instance_profile_arn: Optional[str] = None,
             security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy] = None,
-            sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None,
-            **kwargs):
+            sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None):
         """Set the workspace configuration.
         
         Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
@@ -3903,22 +3596,22 @@ class WarehousesAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetWorkspaceWarehouseConfigRequest(
-                channel=channel,
-                config_param=config_param,
-                data_access_config=data_access_config,
-                enabled_warehouse_types=enabled_warehouse_types,
-                global_param=global_param,
-                google_service_account=google_service_account,
-                instance_profile_arn=instance_profile_arn,
-                security_policy=security_policy,
-                sql_configuration_parameters=sql_configuration_parameters)
-        body = request.as_dict()
+        body = {}
+        if channel is not None: body['channel'] = channel.as_dict()
+        if config_param is not None: body['config_param'] = config_param.as_dict()
+        if data_access_config is not None:
+            body['data_access_config'] = [v.as_dict() for v in data_access_config]
+        if enabled_warehouse_types is not None:
+            body['enabled_warehouse_types'] = [v.as_dict() for v in enabled_warehouse_types]
+        if global_param is not None: body['global_param'] = global_param.as_dict()
+        if google_service_account is not None: body['google_service_account'] = google_service_account
+        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
+        if security_policy is not None: body['security_policy'] = security_policy.value
+        if sql_configuration_parameters is not None:
+            body['sql_configuration_parameters'] = sql_configuration_parameters.as_dict()
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body)
 
-    def start(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
+    def start(self, id: str) -> Wait[GetWarehouseResponse]:
         """Start a warehouse.
         
         Starts a SQL warehouse.
@@ -3930,17 +3623,14 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = StartRequest(id=id)
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/start')
-        return Wait(self.wait_get_warehouse_running, id=request.id)
+        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start')
+        return Wait(self.wait_get_warehouse_running, id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
 
-    def stop(self, id: str, **kwargs) -> Wait[GetWarehouseResponse]:
+    def stop(self, id: str) -> Wait[GetWarehouseResponse]:
         """Stop a warehouse.
         
         Stops a SQL warehouse.
@@ -3952,12 +3642,9 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_stopped for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = StopRequest(id=id)
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{request.id}/stop')
-        return Wait(self.wait_get_warehouse_stopped, id=request.id)
+        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop')
+        return Wait(self.wait_get_warehouse_stopped, id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)

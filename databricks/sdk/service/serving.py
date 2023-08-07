@@ -17,15 +17,6 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
-class BuildLogsRequest:
-    """Retrieve the logs associated with building the model's environment for a given serving
-    endpoint's served model."""
-
-    name: str
-    served_model_name: str
-
-
-@dataclass
 class BuildLogsResponse:
     logs: str
 
@@ -53,13 +44,6 @@ class CreateServingEndpoint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput), name=d.get('name', None))
-
-
-@dataclass
-class DeleteServingEndpointRequest:
-    """Delete a serving endpoint"""
-
-    name: str
 
 
 @dataclass
@@ -177,20 +161,6 @@ class EndpointStateReady(Enum):
 
 
 @dataclass
-class ExportMetricsRequest:
-    """Retrieve the metrics associated with a serving endpoint"""
-
-    name: str
-
-
-@dataclass
-class GetServingEndpointRequest:
-    """Get a single serving endpoint"""
-
-    name: str
-
-
-@dataclass
 class ListEndpointsResponse:
     endpoints: Optional['List[ServingEndpoint]'] = None
 
@@ -205,14 +175,6 @@ class ListEndpointsResponse:
 
 
 @dataclass
-class LogsRequest:
-    """Retrieve the most recent log lines associated with a given serving endpoint's served model"""
-
-    name: str
-    served_model_name: str
-
-
-@dataclass
 class QueryEndpointResponse:
     predictions: 'List[Any]'
 
@@ -224,13 +186,6 @@ class QueryEndpointResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryEndpointResponse':
         return cls(predictions=d.get('predictions', None))
-
-
-@dataclass
-class QueryRequest:
-    """Query a serving endpoint with provided model input."""
-
-    name: str
 
 
 @dataclass
@@ -526,7 +481,7 @@ class ServingEndpointsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def build_logs(self, name: str, served_model_name: str, **kwargs) -> BuildLogsResponse:
+    def build_logs(self, name: str, served_model_name: str) -> BuildLogsResponse:
         """Retrieve the logs associated with building the model's environment for a given serving endpoint's
         served model.
         
@@ -539,16 +494,12 @@ class ServingEndpointsAPI:
         
         :returns: :class:`BuildLogsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = BuildLogsRequest(name=name, served_model_name=served_model_name)
 
         json = self._api.do(
-            'GET',
-            f'/api/2.0/serving-endpoints/{request.name}/served-models/{request.served_model_name}/build-logs')
+            'GET', f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs')
         return BuildLogsResponse.from_dict(json)
 
-    def create(self, name: str, config: EndpointCoreConfigInput, **kwargs) -> Wait[ServingEndpointDetailed]:
+    def create(self, name: str, config: EndpointCoreConfigInput) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
         
         :param name: str
@@ -561,10 +512,9 @@ class ServingEndpointsAPI:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateServingEndpoint(config=config, name=name)
-        body = request.as_dict()
+        body = {}
+        if config is not None: body['config'] = config.as_dict()
+        if name is not None: body['name'] = name
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
@@ -575,7 +525,7 @@ class ServingEndpointsAPI:
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
         return self.create(config=config, name=name).result(timeout=timeout)
 
-    def delete(self, name: str, **kwargs):
+    def delete(self, name: str):
         """Delete a serving endpoint.
         
         :param name: str
@@ -583,13 +533,10 @@ class ServingEndpointsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteServingEndpointRequest(name=name)
 
-        self._api.do('DELETE', f'/api/2.0/serving-endpoints/{request.name}')
+        self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}')
 
-    def export_metrics(self, name: str, **kwargs):
+    def export_metrics(self, name: str):
         """Retrieve the metrics associated with a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
@@ -600,13 +547,10 @@ class ServingEndpointsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ExportMetricsRequest(name=name)
 
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{request.name}/metrics')
+        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics')
 
-    def get(self, name: str, **kwargs) -> ServingEndpointDetailed:
+    def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.
         
         Retrieves the details for a single serving endpoint.
@@ -616,11 +560,8 @@ class ServingEndpointsAPI:
         
         :returns: :class:`ServingEndpointDetailed`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetServingEndpointRequest(name=name)
 
-        json = self._api.do('GET', f'/api/2.0/serving-endpoints/{request.name}')
+        json = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}')
         return ServingEndpointDetailed.from_dict(json)
 
     def list(self) -> Iterator[ServingEndpoint]:
@@ -632,7 +573,7 @@ class ServingEndpointsAPI:
         json = self._api.do('GET', '/api/2.0/serving-endpoints')
         return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
 
-    def logs(self, name: str, served_model_name: str, **kwargs) -> ServerLogsResponse:
+    def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.
         
         Retrieves the service logs associated with the provided served model.
@@ -644,16 +585,12 @@ class ServingEndpointsAPI:
         
         :returns: :class:`ServerLogsResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = LogsRequest(name=name, served_model_name=served_model_name)
 
-        json = self._api.do(
-            'GET',
-            f'/api/2.0/serving-endpoints/{request.name}/served-models/{request.served_model_name}/logs')
+        json = self._api.do('GET',
+                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs')
         return ServerLogsResponse.from_dict(json)
 
-    def query(self, name: str, **kwargs) -> QueryEndpointResponse:
+    def query(self, name: str) -> QueryEndpointResponse:
         """Query a serving endpoint with provided model input.
         
         :param name: str
@@ -661,19 +598,15 @@ class ServingEndpointsAPI:
         
         :returns: :class:`QueryEndpointResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = QueryRequest(name=name)
 
-        json = self._api.do('POST', f'/serving-endpoints/{request.name}/invocations')
+        json = self._api.do('POST', f'/serving-endpoints/{name}/invocations')
         return QueryEndpointResponse.from_dict(json)
 
     def update_config(self,
                       served_models: List[ServedModelInput],
                       name: str,
                       *,
-                      traffic_config: Optional[TrafficConfig] = None,
-                      **kwargs) -> Wait[ServingEndpointDetailed]:
+                      traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
         
         Updates any combination of the serving endpoint's served models, the compute configuration of those
@@ -692,13 +625,10 @@ class ServingEndpointsAPI:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = EndpointCoreConfigInput(name=name,
-                                              served_models=served_models,
-                                              traffic_config=traffic_config)
-        body = request.as_dict()
-        op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{request.name}/config', body=body)
+        body = {}
+        if served_models is not None: body['served_models'] = [v.as_dict() for v in served_models]
+        if traffic_config is not None: body['traffic_config'] = traffic_config.as_dict()
+        op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{name}/config', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
                     name=op_response['name'])

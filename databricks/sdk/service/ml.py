@@ -459,13 +459,6 @@ class DatasetInput:
 
 
 @dataclass
-class DeleteCommentRequest:
-    """Delete a comment"""
-
-    id: str
-
-
-@dataclass
 class DeleteExperiment:
     experiment_id: str
 
@@ -477,38 +470,6 @@ class DeleteExperiment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DeleteExperiment':
         return cls(experiment_id=d.get('experiment_id', None))
-
-
-@dataclass
-class DeleteModelRequest:
-    """Delete a model"""
-
-    name: str
-
-
-@dataclass
-class DeleteModelTagRequest:
-    """Delete a model tag"""
-
-    name: str
-    key: str
-
-
-@dataclass
-class DeleteModelVersionRequest:
-    """Delete a model version."""
-
-    name: str
-    version: str
-
-
-@dataclass
-class DeleteModelVersionTagRequest:
-    """Delete a model version tag"""
-
-    name: str
-    version: str
-    key: str
 
 
 @dataclass
@@ -541,30 +502,12 @@ class DeleteTag:
         return cls(key=d.get('key', None), run_id=d.get('run_id', None))
 
 
-@dataclass
-class DeleteTransitionRequestRequest:
-    """Delete a transition request"""
-
-    name: str
-    version: str
-    stage: 'DeleteTransitionRequestStage'
-    creator: str
-    comment: Optional[str] = None
-
-
 class DeleteTransitionRequestStage(Enum):
 
     ARCHIVED = 'Archived'
     NONE = 'None'
     PRODUCTION = 'Production'
     STAGING = 'Staging'
-
-
-@dataclass
-class DeleteWebhookRequest:
-    """Delete a webhook"""
-
-    id: Optional[str] = None
 
 
 @dataclass
@@ -634,13 +577,6 @@ class FileInfo:
 
 
 @dataclass
-class GetByNameRequest:
-    """Get metadata"""
-
-    experiment_name: str
-
-
-@dataclass
 class GetExperimentByNameResponse:
     experiment: Optional['Experiment'] = None
 
@@ -652,24 +588,6 @@ class GetExperimentByNameResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentByNameResponse':
         return cls(experiment=_from_dict(d, 'experiment', Experiment))
-
-
-@dataclass
-class GetExperimentRequest:
-    """Get an experiment"""
-
-    experiment_id: str
-
-
-@dataclass
-class GetHistoryRequest:
-    """Get history of a given metric within a run"""
-
-    metric_key: str
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
-    run_id: Optional[str] = None
-    run_uuid: Optional[str] = None
 
 
 @dataclass
@@ -719,13 +637,6 @@ class GetMetricHistoryResponse:
 
 
 @dataclass
-class GetModelRequest:
-    """Get model"""
-
-    name: str
-
-
-@dataclass
 class GetModelResponse:
     registered_model_databricks: Optional['ModelDatabricks'] = None
 
@@ -738,14 +649,6 @@ class GetModelResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelResponse':
         return cls(registered_model_databricks=_from_dict(d, 'registered_model_databricks', ModelDatabricks))
-
-
-@dataclass
-class GetModelVersionDownloadUriRequest:
-    """Get a model version URI"""
-
-    name: str
-    version: str
 
 
 @dataclass
@@ -763,14 +666,6 @@ class GetModelVersionDownloadUriResponse:
 
 
 @dataclass
-class GetModelVersionRequest:
-    """Get a model version"""
-
-    name: str
-    version: str
-
-
-@dataclass
 class GetModelVersionResponse:
     model_version: Optional['ModelVersion'] = None
 
@@ -782,14 +677,6 @@ class GetModelVersionResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
-
-
-@dataclass
-class GetRunRequest:
-    """Get a run"""
-
-    run_id: str
-    run_uuid: Optional[str] = None
 
 
 @dataclass
@@ -900,16 +787,6 @@ class JobSpecWithoutSecret:
 
 
 @dataclass
-class ListArtifactsRequest:
-    """Get all artifacts"""
-
-    page_token: Optional[str] = None
-    path: Optional[str] = None
-    run_id: Optional[str] = None
-    run_uuid: Optional[str] = None
-
-
-@dataclass
 class ListArtifactsResponse:
     files: Optional['List[FileInfo]'] = None
     next_page_token: Optional[str] = None
@@ -930,15 +807,6 @@ class ListArtifactsResponse:
 
 
 @dataclass
-class ListExperimentsRequest:
-    """List experiments"""
-
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
-    view_type: Optional[str] = None
-
-
-@dataclass
 class ListExperimentsResponse:
     experiments: Optional['List[Experiment]'] = None
     next_page_token: Optional[str] = None
@@ -953,14 +821,6 @@ class ListExperimentsResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListExperimentsResponse':
         return cls(experiments=_repeated(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
-
-
-@dataclass
-class ListModelsRequest:
-    """List models"""
-
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
 
 
 @dataclass
@@ -998,14 +858,6 @@ class ListRegistryWebhooks:
 
 
 @dataclass
-class ListTransitionRequestsRequest:
-    """List transition requests"""
-
-    name: str
-    version: str
-
-
-@dataclass
 class ListTransitionRequestsResponse:
     requests: Optional['List[Activity]'] = None
 
@@ -1017,15 +869,6 @@ class ListTransitionRequestsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTransitionRequestsResponse':
         return cls(requests=_repeated(d, 'requests', Activity))
-
-
-@dataclass
-class ListWebhooksRequest:
-    """List registry webhooks"""
-
-    events: Optional['List[RegistryWebhookEvent]'] = None
-    model_name: Optional[str] = None
-    page_token: Optional[str] = None
 
 
 @dataclass
@@ -1731,16 +1574,6 @@ class SearchExperimentsViewType(Enum):
 
 
 @dataclass
-class SearchModelVersionsRequest:
-    """Searches model versions"""
-
-    filter: Optional[str] = None
-    max_results: Optional[int] = None
-    order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
-
-
-@dataclass
 class SearchModelVersionsResponse:
     model_versions: Optional['List[ModelVersion]'] = None
     next_page_token: Optional[str] = None
@@ -1755,16 +1588,6 @@ class SearchModelVersionsResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'SearchModelVersionsResponse':
         return cls(model_versions=_repeated(d, 'model_versions', ModelVersion),
                    next_page_token=d.get('next_page_token', None))
-
-
-@dataclass
-class SearchModelsRequest:
-    """Search models"""
-
-    filter: Optional[str] = None
-    max_results: Optional[int] = None
-    order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
 
 
 @dataclass
@@ -2228,8 +2051,7 @@ class ExperimentsAPI:
                           name: str,
                           *,
                           artifact_location: Optional[str] = None,
-                          tags: Optional[List[ExperimentTag]] = None,
-                          **kwargs) -> CreateExperimentResponse:
+                          tags: Optional[List[ExperimentTag]] = None) -> CreateExperimentResponse:
         """Create experiment.
         
         Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
@@ -2251,10 +2073,10 @@ class ExperimentsAPI:
         
         :returns: :class:`CreateExperimentResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateExperiment(artifact_location=artifact_location, name=name, tags=tags)
-        body = request.as_dict()
+        body = {}
+        if artifact_location is not None: body['artifact_location'] = artifact_location
+        if name is not None: body['name'] = name
+        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
 
         json = self._api.do('POST', '/api/2.0/mlflow/experiments/create', body=body)
         return CreateExperimentResponse.from_dict(json)
@@ -2264,8 +2086,7 @@ class ExperimentsAPI:
                    experiment_id: Optional[str] = None,
                    start_time: Optional[int] = None,
                    tags: Optional[List[RunTag]] = None,
-                   user_id: Optional[str] = None,
-                   **kwargs) -> CreateRunResponse:
+                   user_id: Optional[str] = None) -> CreateRunResponse:
         """Create a run.
         
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
@@ -2284,18 +2105,16 @@ class ExperimentsAPI:
         
         :returns: :class:`CreateRunResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRun(experiment_id=experiment_id,
-                                start_time=start_time,
-                                tags=tags,
-                                user_id=user_id)
-        body = request.as_dict()
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if start_time is not None: body['start_time'] = start_time
+        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
+        if user_id is not None: body['user_id'] = user_id
 
         json = self._api.do('POST', '/api/2.0/mlflow/runs/create', body=body)
         return CreateRunResponse.from_dict(json)
 
-    def delete_experiment(self, experiment_id: str, **kwargs):
+    def delete_experiment(self, experiment_id: str):
         """Delete an experiment.
         
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
@@ -2306,13 +2125,11 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteExperiment(experiment_id=experiment_id)
-        body = request.as_dict()
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
         self._api.do('POST', '/api/2.0/mlflow/experiments/delete', body=body)
 
-    def delete_run(self, run_id: str, **kwargs):
+    def delete_run(self, run_id: str):
         """Delete a run.
         
         Marks a run for deletion.
@@ -2322,13 +2139,11 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteRun(run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/delete', body=body)
 
-    def delete_tag(self, run_id: str, key: str, **kwargs):
+    def delete_tag(self, run_id: str, key: str):
         """Delete a tag.
         
         Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
@@ -2341,13 +2156,12 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTag(key=key, run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/delete-tag', body=body)
 
-    def get_by_name(self, experiment_name: str, **kwargs) -> GetExperimentByNameResponse:
+    def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
         """Get metadata.
         
         Gets metadata for an experiment.
@@ -2363,17 +2177,14 @@ class ExperimentsAPI:
         
         :returns: :class:`GetExperimentByNameResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetByNameRequest(experiment_name=experiment_name)
 
         query = {}
-        if experiment_name: query['experiment_name'] = request.experiment_name
+        if experiment_name is not None: query['experiment_name'] = experiment_name
 
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get-by-name', query=query)
         return GetExperimentByNameResponse.from_dict(json)
 
-    def get_experiment(self, experiment_id: str, **kwargs) -> Experiment:
+    def get_experiment(self, experiment_id: str) -> Experiment:
         """Get an experiment.
         
         Gets metadata for an experiment. This method works on deleted experiments.
@@ -2383,12 +2194,9 @@ class ExperimentsAPI:
         
         :returns: :class:`Experiment`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetExperimentRequest(experiment_id=experiment_id)
 
         query = {}
-        if experiment_id: query['experiment_id'] = request.experiment_id
+        if experiment_id is not None: query['experiment_id'] = experiment_id
 
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query)
         return Experiment.from_dict(json)
@@ -2399,8 +2207,7 @@ class ExperimentsAPI:
                     max_results: Optional[int] = None,
                     page_token: Optional[str] = None,
                     run_id: Optional[str] = None,
-                    run_uuid: Optional[str] = None,
-                    **kwargs) -> GetMetricHistoryResponse:
+                    run_uuid: Optional[str] = None) -> GetMetricHistoryResponse:
         """Get history of a given metric within a run.
         
         Gets a list of all values for the specified metric for a given run.
@@ -2420,25 +2227,18 @@ class ExperimentsAPI:
         
         :returns: :class:`GetMetricHistoryResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetHistoryRequest(max_results=max_results,
-                                        metric_key=metric_key,
-                                        page_token=page_token,
-                                        run_id=run_id,
-                                        run_uuid=run_uuid)
 
         query = {}
-        if max_results: query['max_results'] = request.max_results
-        if metric_key: query['metric_key'] = request.metric_key
-        if page_token: query['page_token'] = request.page_token
-        if run_id: query['run_id'] = request.run_id
-        if run_uuid: query['run_uuid'] = request.run_uuid
+        if max_results is not None: query['max_results'] = max_results
+        if metric_key is not None: query['metric_key'] = metric_key
+        if page_token is not None: query['page_token'] = page_token
+        if run_id is not None: query['run_id'] = run_id
+        if run_uuid is not None: query['run_uuid'] = run_uuid
 
         json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query)
         return GetMetricHistoryResponse.from_dict(json)
 
-    def get_run(self, run_id: str, *, run_uuid: Optional[str] = None, **kwargs) -> GetRunResponse:
+    def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
         """Get a run.
         
         Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
@@ -2454,13 +2254,10 @@ class ExperimentsAPI:
         
         :returns: :class:`GetRunResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetRunRequest(run_id=run_id, run_uuid=run_uuid)
 
         query = {}
-        if run_id: query['run_id'] = request.run_id
-        if run_uuid: query['run_uuid'] = request.run_uuid
+        if run_id is not None: query['run_id'] = run_id
+        if run_uuid is not None: query['run_uuid'] = run_uuid
 
         json = self._api.do('GET', '/api/2.0/mlflow/runs/get', query=query)
         return GetRunResponse.from_dict(json)
@@ -2470,8 +2267,7 @@ class ExperimentsAPI:
                        page_token: Optional[str] = None,
                        path: Optional[str] = None,
                        run_id: Optional[str] = None,
-                       run_uuid: Optional[str] = None,
-                       **kwargs) -> Iterator[FileInfo]:
+                       run_uuid: Optional[str] = None) -> Iterator[FileInfo]:
         """Get all artifacts.
         
         List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
@@ -2489,15 +2285,12 @@ class ExperimentsAPI:
         
         :returns: Iterator over :class:`FileInfo`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListArtifactsRequest(page_token=page_token, path=path, run_id=run_id, run_uuid=run_uuid)
 
         query = {}
-        if page_token: query['page_token'] = request.page_token
-        if path: query['path'] = request.path
-        if run_id: query['run_id'] = request.run_id
-        if run_uuid: query['run_uuid'] = request.run_uuid
+        if page_token is not None: query['page_token'] = page_token
+        if path is not None: query['path'] = path
+        if run_id is not None: query['run_id'] = run_id
+        if run_uuid is not None: query['run_uuid'] = run_uuid
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query)
@@ -2513,8 +2306,7 @@ class ExperimentsAPI:
                          *,
                          max_results: Optional[int] = None,
                          page_token: Optional[str] = None,
-                         view_type: Optional[str] = None,
-                         **kwargs) -> Iterator[Experiment]:
+                         view_type: Optional[str] = None) -> Iterator[Experiment]:
         """List experiments.
         
         Gets a list of all experiments.
@@ -2530,16 +2322,11 @@ class ExperimentsAPI:
         
         :returns: Iterator over :class:`Experiment`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListExperimentsRequest(max_results=max_results,
-                                             page_token=page_token,
-                                             view_type=view_type)
 
         query = {}
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
-        if view_type: query['view_type'] = request.view_type
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        if view_type is not None: query['view_type'] = view_type
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query)
@@ -2556,8 +2343,7 @@ class ExperimentsAPI:
                   metrics: Optional[List[Metric]] = None,
                   params: Optional[List[Param]] = None,
                   run_id: Optional[str] = None,
-                  tags: Optional[List[RunTag]] = None,
-                  **kwargs):
+                  tags: Optional[List[RunTag]] = None):
         """Log a batch.
         
         Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
@@ -2609,17 +2395,14 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = LogBatch(metrics=metrics, params=params, run_id=run_id, tags=tags)
-        body = request.as_dict()
+        body = {}
+        if metrics is not None: body['metrics'] = [v.as_dict() for v in metrics]
+        if params is not None: body['params'] = [v.as_dict() for v in params]
+        if run_id is not None: body['run_id'] = run_id
+        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         self._api.do('POST', '/api/2.0/mlflow/runs/log-batch', body=body)
 
-    def log_inputs(self,
-                   *,
-                   datasets: Optional[List[DatasetInput]] = None,
-                   run_id: Optional[str] = None,
-                   **kwargs):
+    def log_inputs(self, *, datasets: Optional[List[DatasetInput]] = None, run_id: Optional[str] = None):
         """Log inputs to a run.
         
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
@@ -2631,10 +2414,9 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = LogInputs(datasets=datasets, run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if datasets is not None: body['datasets'] = [v.as_dict() for v in datasets]
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/log-inputs', body=body)
 
     def log_metric(self,
@@ -2644,8 +2426,7 @@ class ExperimentsAPI:
                    *,
                    run_id: Optional[str] = None,
                    run_uuid: Optional[str] = None,
-                   step: Optional[int] = None,
-                   **kwargs):
+                   step: Optional[int] = None):
         """Log a metric.
         
         Logs a metric for a run. A metric is a key-value pair (string key, float value) with an associated
@@ -2668,18 +2449,16 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = LogMetric(key=key,
-                                run_id=run_id,
-                                run_uuid=run_uuid,
-                                step=step,
-                                timestamp=timestamp,
-                                value=value)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if run_id is not None: body['run_id'] = run_id
+        if run_uuid is not None: body['run_uuid'] = run_uuid
+        if step is not None: body['step'] = step
+        if timestamp is not None: body['timestamp'] = timestamp
+        if value is not None: body['value'] = value
         self._api.do('POST', '/api/2.0/mlflow/runs/log-metric', body=body)
 
-    def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None, **kwargs):
+    def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
         """Log a model.
         
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
@@ -2691,10 +2470,9 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = LogModel(model_json=model_json, run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if model_json is not None: body['model_json'] = model_json
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/log-model', body=body)
 
     def log_param(self,
@@ -2702,8 +2480,7 @@ class ExperimentsAPI:
                   value: str,
                   *,
                   run_id: Optional[str] = None,
-                  run_uuid: Optional[str] = None,
-                  **kwargs):
+                  run_uuid: Optional[str] = None):
         """Log a param.
         
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
@@ -2722,13 +2499,14 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = LogParam(key=key, run_id=run_id, run_uuid=run_uuid, value=value)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if run_id is not None: body['run_id'] = run_id
+        if run_uuid is not None: body['run_uuid'] = run_uuid
+        if value is not None: body['value'] = value
         self._api.do('POST', '/api/2.0/mlflow/runs/log-parameter', body=body)
 
-    def restore_experiment(self, experiment_id: str, **kwargs):
+    def restore_experiment(self, experiment_id: str):
         """Restores an experiment.
         
         Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
@@ -2742,13 +2520,11 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RestoreExperiment(experiment_id=experiment_id)
-        body = request.as_dict()
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
         self._api.do('POST', '/api/2.0/mlflow/experiments/restore', body=body)
 
-    def restore_run(self, run_id: str, **kwargs):
+    def restore_run(self, run_id: str):
         """Restore a run.
         
         Restores a deleted run.
@@ -2758,10 +2534,8 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RestoreRun(run_id=run_id)
-        body = request.as_dict()
+        body = {}
+        if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/restore', body=body)
 
     def search_experiments(self,
@@ -2770,8 +2544,7 @@ class ExperimentsAPI:
                            max_results: Optional[int] = None,
                            order_by: Optional[List[str]] = None,
                            page_token: Optional[str] = None,
-                           view_type: Optional[SearchExperimentsViewType] = None,
-                           **kwargs) -> Iterator[Experiment]:
+                           view_type: Optional[SearchExperimentsViewType] = None) -> Iterator[Experiment]:
         """Search experiments.
         
         Searches for experiments that satisfy specified search criteria.
@@ -2791,14 +2564,12 @@ class ExperimentsAPI:
         
         :returns: Iterator over :class:`Experiment`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SearchExperiments(filter=filter,
-                                        max_results=max_results,
-                                        order_by=order_by,
-                                        page_token=page_token,
-                                        view_type=view_type)
-        body = request.as_dict()
+        body = {}
+        if filter is not None: body['filter'] = filter
+        if max_results is not None: body['max_results'] = max_results
+        if order_by is not None: body['order_by'] = [v for v in order_by]
+        if page_token is not None: body['page_token'] = page_token
+        if view_type is not None: body['view_type'] = view_type.value
 
         while True:
             json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body)
@@ -2817,8 +2588,7 @@ class ExperimentsAPI:
                     max_results: Optional[int] = None,
                     order_by: Optional[List[str]] = None,
                     page_token: Optional[str] = None,
-                    run_view_type: Optional[SearchRunsRunViewType] = None,
-                    **kwargs) -> Iterator[Run]:
+                    run_view_type: Optional[SearchRunsRunViewType] = None) -> Iterator[Run]:
         """Search for runs.
         
         Searches for runs that satisfy expressions.
@@ -2853,15 +2623,13 @@ class ExperimentsAPI:
         
         :returns: Iterator over :class:`Run`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SearchRuns(experiment_ids=experiment_ids,
-                                 filter=filter,
-                                 max_results=max_results,
-                                 order_by=order_by,
-                                 page_token=page_token,
-                                 run_view_type=run_view_type)
-        body = request.as_dict()
+        body = {}
+        if experiment_ids is not None: body['experiment_ids'] = [v for v in experiment_ids]
+        if filter is not None: body['filter'] = filter
+        if max_results is not None: body['max_results'] = max_results
+        if order_by is not None: body['order_by'] = [v for v in order_by]
+        if page_token is not None: body['page_token'] = page_token
+        if run_view_type is not None: body['run_view_type'] = run_view_type.value
 
         while True:
             json = self._api.do('POST', '/api/2.0/mlflow/runs/search', body=body)
@@ -2873,7 +2641,7 @@ class ExperimentsAPI:
                 return
             body['page_token'] = json['next_page_token']
 
-    def set_experiment_tag(self, experiment_id: str, key: str, value: str, **kwargs):
+    def set_experiment_tag(self, experiment_id: str, key: str, value: str):
         """Set a tag.
         
         Sets a tag on an experiment. Experiment tags are metadata that can be updated.
@@ -2889,19 +2657,13 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetExperimentTag(experiment_id=experiment_id, key=key, value=value)
-        body = request.as_dict()
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if key is not None: body['key'] = key
+        if value is not None: body['value'] = value
         self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body)
 
-    def set_tag(self,
-                key: str,
-                value: str,
-                *,
-                run_id: Optional[str] = None,
-                run_uuid: Optional[str] = None,
-                **kwargs):
+    def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Set a tag.
         
         Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
@@ -2920,13 +2682,14 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetTag(key=key, run_id=run_id, run_uuid=run_uuid, value=value)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if run_id is not None: body['run_id'] = run_id
+        if run_uuid is not None: body['run_uuid'] = run_uuid
+        if value is not None: body['value'] = value
         self._api.do('POST', '/api/2.0/mlflow/runs/set-tag', body=body)
 
-    def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None, **kwargs):
+    def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
         """Update an experiment.
         
         Updates experiment metadata.
@@ -2938,10 +2701,9 @@ class ExperimentsAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateExperiment(experiment_id=experiment_id, new_name=new_name)
-        body = request.as_dict()
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if new_name is not None: body['new_name'] = new_name
         self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body)
 
     def update_run(self,
@@ -2949,8 +2711,7 @@ class ExperimentsAPI:
                    end_time: Optional[int] = None,
                    run_id: Optional[str] = None,
                    run_uuid: Optional[str] = None,
-                   status: Optional[UpdateRunStatus] = None,
-                   **kwargs) -> UpdateRunResponse:
+                   status: Optional[UpdateRunStatus] = None) -> UpdateRunResponse:
         """Update a run.
         
         Updates run metadata.
@@ -2967,10 +2728,11 @@ class ExperimentsAPI:
         
         :returns: :class:`UpdateRunResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateRun(end_time=end_time, run_id=run_id, run_uuid=run_uuid, status=status)
-        body = request.as_dict()
+        body = {}
+        if end_time is not None: body['end_time'] = end_time
+        if run_id is not None: body['run_id'] = run_id
+        if run_uuid is not None: body['run_uuid'] = run_uuid
+        if status is not None: body['status'] = status.value
 
         json = self._api.do('POST', '/api/2.0/mlflow/runs/update', body=body)
         return UpdateRunResponse.from_dict(json)
@@ -2989,8 +2751,7 @@ class ModelRegistryAPI:
                                    stage: Stage,
                                    archive_existing_versions: bool,
                                    *,
-                                   comment: Optional[str] = None,
-                                   **kwargs) -> ApproveTransitionRequestResponse:
+                                   comment: Optional[str] = None) -> ApproveTransitionRequestResponse:
         """Approve transition request.
         
         Approves a model version stage transition request.
@@ -3016,19 +2777,18 @@ class ModelRegistryAPI:
         
         :returns: :class:`ApproveTransitionRequestResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ApproveTransitionRequest(archive_existing_versions=archive_existing_versions,
-                                               comment=comment,
-                                               name=name,
-                                               stage=stage,
-                                               version=version)
-        body = request.as_dict()
+        body = {}
+        if archive_existing_versions is not None:
+            body['archive_existing_versions'] = archive_existing_versions
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if stage is not None: body['stage'] = stage.value
+        if version is not None: body['version'] = version
 
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/approve', body=body)
         return ApproveTransitionRequestResponse.from_dict(json)
 
-    def create_comment(self, name: str, version: str, comment: str, **kwargs) -> CreateCommentResponse:
+    def create_comment(self, name: str, version: str, comment: str) -> CreateCommentResponse:
         """Post a comment.
         
         Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
@@ -3043,10 +2803,10 @@ class ModelRegistryAPI:
         
         :returns: :class:`CreateCommentResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateComment(comment=comment, name=name, version=version)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if version is not None: body['version'] = version
 
         json = self._api.do('POST', '/api/2.0/mlflow/comments/create', body=body)
         return CreateCommentResponse.from_dict(json)
@@ -3055,8 +2815,7 @@ class ModelRegistryAPI:
                      name: str,
                      *,
                      description: Optional[str] = None,
-                     tags: Optional[List[ModelTag]] = None,
-                     **kwargs) -> CreateModelResponse:
+                     tags: Optional[List[ModelTag]] = None) -> CreateModelResponse:
         """Create a model.
         
         Creates a new registered model with the name specified in the request body.
@@ -3072,10 +2831,10 @@ class ModelRegistryAPI:
         
         :returns: :class:`CreateModelResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateModelRequest(description=description, name=name, tags=tags)
-        body = request.as_dict()
+        body = {}
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/create', body=body)
         return CreateModelResponse.from_dict(json)
@@ -3087,8 +2846,7 @@ class ModelRegistryAPI:
                              description: Optional[str] = None,
                              run_id: Optional[str] = None,
                              run_link: Optional[str] = None,
-                             tags: Optional[List[ModelVersionTag]] = None,
-                             **kwargs) -> CreateModelVersionResponse:
+                             tags: Optional[List[ModelVersionTag]] = None) -> CreateModelVersionResponse:
         """Create a model version.
         
         Creates a model version.
@@ -3110,15 +2868,13 @@ class ModelRegistryAPI:
         
         :returns: :class:`CreateModelVersionResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateModelVersionRequest(description=description,
-                                                name=name,
-                                                run_id=run_id,
-                                                run_link=run_link,
-                                                source=source,
-                                                tags=tags)
-        body = request.as_dict()
+        body = {}
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if run_id is not None: body['run_id'] = run_id
+        if run_link is not None: body['run_link'] = run_link
+        if source is not None: body['source'] = source
+        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
 
         json = self._api.do('POST', '/api/2.0/mlflow/model-versions/create', body=body)
         return CreateModelVersionResponse.from_dict(json)
@@ -3128,8 +2884,7 @@ class ModelRegistryAPI:
                                   version: str,
                                   stage: Stage,
                                   *,
-                                  comment: Optional[str] = None,
-                                  **kwargs) -> CreateTransitionRequestResponse:
+                                  comment: Optional[str] = None) -> CreateTransitionRequestResponse:
         """Make a transition request.
         
         Creates a model version stage transition request.
@@ -3153,10 +2908,11 @@ class ModelRegistryAPI:
         
         :returns: :class:`CreateTransitionRequestResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateTransitionRequest(comment=comment, name=name, stage=stage, version=version)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if stage is not None: body['stage'] = stage.value
+        if version is not None: body['version'] = version
 
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/create', body=body)
         return CreateTransitionRequestResponse.from_dict(json)
@@ -3168,8 +2924,7 @@ class ModelRegistryAPI:
                        http_url_spec: Optional[HttpUrlSpec] = None,
                        job_spec: Optional[JobSpec] = None,
                        model_name: Optional[str] = None,
-                       status: Optional[RegistryWebhookStatus] = None,
-                       **kwargs) -> CreateWebhookResponse:
+                       status: Optional[RegistryWebhookStatus] = None) -> CreateWebhookResponse:
         """Create a webhook.
         
         **NOTE**: This endpoint is in Public Preview.
@@ -3216,20 +2971,18 @@ class ModelRegistryAPI:
         
         :returns: :class:`CreateWebhookResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = CreateRegistryWebhook(description=description,
-                                            events=events,
-                                            http_url_spec=http_url_spec,
-                                            job_spec=job_spec,
-                                            model_name=model_name,
-                                            status=status)
-        body = request.as_dict()
+        body = {}
+        if description is not None: body['description'] = description
+        if events is not None: body['events'] = [v for v in events]
+        if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
+        if job_spec is not None: body['job_spec'] = job_spec.as_dict()
+        if model_name is not None: body['model_name'] = model_name
+        if status is not None: body['status'] = status.value
 
         json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/create', body=body)
         return CreateWebhookResponse.from_dict(json)
 
-    def delete_comment(self, id: str, **kwargs):
+    def delete_comment(self, id: str):
         """Delete a comment.
         
         Deletes a comment on a model version.
@@ -3238,16 +2991,12 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteCommentRequest(id=id)
 
         query = {}
-        if id: query['id'] = request.id
-
+        if id is not None: query['id'] = id
         self._api.do('DELETE', '/api/2.0/mlflow/comments/delete', query=query)
 
-    def delete_model(self, name: str, **kwargs):
+    def delete_model(self, name: str):
         """Delete a model.
         
         Deletes a registered model.
@@ -3257,16 +3006,12 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteModelRequest(name=name)
 
         query = {}
-        if name: query['name'] = request.name
-
+        if name is not None: query['name'] = name
         self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete', query=query)
 
-    def delete_model_tag(self, name: str, key: str, **kwargs):
+    def delete_model_tag(self, name: str, key: str):
         """Delete a model tag.
         
         Deletes the tag for a registered model.
@@ -3279,17 +3024,13 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteModelTagRequest(key=key, name=name)
 
         query = {}
-        if key: query['key'] = request.key
-        if name: query['name'] = request.name
-
+        if key is not None: query['key'] = key
+        if name is not None: query['name'] = name
         self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete-tag', query=query)
 
-    def delete_model_version(self, name: str, version: str, **kwargs):
+    def delete_model_version(self, name: str, version: str):
         """Delete a model version.
         
         Deletes a model version.
@@ -3301,17 +3042,13 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteModelVersionRequest(name=name, version=version)
 
         query = {}
-        if name: query['name'] = request.name
-        if version: query['version'] = request.version
-
+        if name is not None: query['name'] = name
+        if version is not None: query['version'] = version
         self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete', query=query)
 
-    def delete_model_version_tag(self, name: str, version: str, key: str, **kwargs):
+    def delete_model_version_tag(self, name: str, version: str, key: str):
         """Delete a model version tag.
         
         Deletes a model version tag.
@@ -3326,15 +3063,11 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteModelVersionTagRequest(key=key, name=name, version=version)
 
         query = {}
-        if key: query['key'] = request.key
-        if name: query['name'] = request.name
-        if version: query['version'] = request.version
-
+        if key is not None: query['key'] = key
+        if name is not None: query['name'] = name
+        if version is not None: query['version'] = version
         self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete-tag', query=query)
 
     def delete_transition_request(self,
@@ -3343,8 +3076,7 @@ class ModelRegistryAPI:
                                   stage: DeleteTransitionRequestStage,
                                   creator: str,
                                   *,
-                                  comment: Optional[str] = None,
-                                  **kwargs):
+                                  comment: Optional[str] = None):
         """Delete a transition request.
         
         Cancels a model version stage transition request.
@@ -3371,24 +3103,16 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteTransitionRequestRequest(comment=comment,
-                                                     creator=creator,
-                                                     name=name,
-                                                     stage=stage,
-                                                     version=version)
 
         query = {}
-        if comment: query['comment'] = request.comment
-        if creator: query['creator'] = request.creator
-        if name: query['name'] = request.name
-        if stage: query['stage'] = request.stage.value
-        if version: query['version'] = request.version
-
+        if comment is not None: query['comment'] = comment
+        if creator is not None: query['creator'] = creator
+        if name is not None: query['name'] = name
+        if stage is not None: query['stage'] = stage.value
+        if version is not None: query['version'] = version
         self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
 
-    def delete_webhook(self, *, id: Optional[str] = None, **kwargs):
+    def delete_webhook(self, *, id: Optional[str] = None):
         """Delete a webhook.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3400,20 +3124,12 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = DeleteWebhookRequest(id=id)
 
         query = {}
-        if id: query['id'] = request.id
-
+        if id is not None: query['id'] = id
         self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query)
 
-    def get_latest_versions(self,
-                            name: str,
-                            *,
-                            stages: Optional[List[str]] = None,
-                            **kwargs) -> Iterator[ModelVersion]:
+    def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
         """Get the latest version.
         
         Gets the latest version of a registered model.
@@ -3425,15 +3141,14 @@ class ModelRegistryAPI:
         
         :returns: Iterator over :class:`ModelVersion`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetLatestVersionsRequest(name=name, stages=stages)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if stages is not None: body['stages'] = [v for v in stages]
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/get-latest-versions', body=body)
         return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
 
-    def get_model(self, name: str, **kwargs) -> GetModelResponse:
+    def get_model(self, name: str) -> GetModelResponse:
         """Get model.
         
         Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
@@ -3447,17 +3162,14 @@ class ModelRegistryAPI:
         
         :returns: :class:`GetModelResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetModelRequest(name=name)
 
         query = {}
-        if name: query['name'] = request.name
+        if name is not None: query['name'] = name
 
         json = self._api.do('GET', '/api/2.0/mlflow/databricks/registered-models/get', query=query)
         return GetModelResponse.from_dict(json)
 
-    def get_model_version(self, name: str, version: str, **kwargs) -> GetModelVersionResponse:
+    def get_model_version(self, name: str, version: str) -> GetModelVersionResponse:
         """Get a model version.
         
         Get a model version.
@@ -3469,19 +3181,15 @@ class ModelRegistryAPI:
         
         :returns: :class:`GetModelVersionResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetModelVersionRequest(name=name, version=version)
 
         query = {}
-        if name: query['name'] = request.name
-        if version: query['version'] = request.version
+        if name is not None: query['name'] = name
+        if version is not None: query['version'] = version
 
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get', query=query)
         return GetModelVersionResponse.from_dict(json)
 
-    def get_model_version_download_uri(self, name: str, version: str,
-                                       **kwargs) -> GetModelVersionDownloadUriResponse:
+    def get_model_version_download_uri(self, name: str, version: str) -> GetModelVersionDownloadUriResponse:
         """Get a model version URI.
         
         Gets a URI to download the model version.
@@ -3493,13 +3201,10 @@ class ModelRegistryAPI:
         
         :returns: :class:`GetModelVersionDownloadUriResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = GetModelVersionDownloadUriRequest(name=name, version=version)
 
         query = {}
-        if name: query['name'] = request.name
-        if version: query['version'] = request.version
+        if name is not None: query['name'] = name
+        if version is not None: query['version'] = version
 
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get-download-uri', query=query)
         return GetModelVersionDownloadUriResponse.from_dict(json)
@@ -3507,8 +3212,7 @@ class ModelRegistryAPI:
     def list_models(self,
                     *,
                     max_results: Optional[int] = None,
-                    page_token: Optional[str] = None,
-                    **kwargs) -> Iterator[Model]:
+                    page_token: Optional[str] = None) -> Iterator[Model]:
         """List models.
         
         Lists all available registered models, up to the limit specified in __max_results__.
@@ -3520,13 +3224,10 @@ class ModelRegistryAPI:
         
         :returns: Iterator over :class:`Model`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListModelsRequest(max_results=max_results, page_token=page_token)
 
         query = {}
-        if max_results: query['max_results'] = request.max_results
-        if page_token: query['page_token'] = request.page_token
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
@@ -3538,7 +3239,7 @@ class ModelRegistryAPI:
                 return
             query['page_token'] = json['next_page_token']
 
-    def list_transition_requests(self, name: str, version: str, **kwargs) -> Iterator[Activity]:
+    def list_transition_requests(self, name: str, version: str) -> Iterator[Activity]:
         """List transition requests.
         
         Gets a list of all open stage transition requests for the model version.
@@ -3550,13 +3251,10 @@ class ModelRegistryAPI:
         
         :returns: Iterator over :class:`Activity`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListTransitionRequestsRequest(name=name, version=version)
 
         query = {}
-        if name: query['name'] = request.name
-        if version: query['version'] = request.version
+        if name is not None: query['name'] = name
+        if version is not None: query['version'] = version
 
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query)
         return [Activity.from_dict(v) for v in json.get('requests', [])]
@@ -3565,8 +3263,7 @@ class ModelRegistryAPI:
                       *,
                       events: Optional[List[RegistryWebhookEvent]] = None,
                       model_name: Optional[str] = None,
-                      page_token: Optional[str] = None,
-                      **kwargs) -> Iterator[RegistryWebhook]:
+                      page_token: Optional[str] = None) -> Iterator[RegistryWebhook]:
         """List registry webhooks.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3584,14 +3281,11 @@ class ModelRegistryAPI:
         
         :returns: Iterator over :class:`RegistryWebhook`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = ListWebhooksRequest(events=events, model_name=model_name, page_token=page_token)
 
         query = {}
-        if events: query['events'] = [v for v in request.events]
-        if model_name: query['model_name'] = request.model_name
-        if page_token: query['page_token'] = request.page_token
+        if events is not None: query['events'] = [v for v in events]
+        if model_name is not None: query['model_name'] = model_name
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
@@ -3608,8 +3302,7 @@ class ModelRegistryAPI:
                                   version: str,
                                   stage: Stage,
                                   *,
-                                  comment: Optional[str] = None,
-                                  **kwargs) -> RejectTransitionRequestResponse:
+                                  comment: Optional[str] = None) -> RejectTransitionRequestResponse:
         """Reject a transition request.
         
         Rejects a model version stage transition request.
@@ -3633,15 +3326,16 @@ class ModelRegistryAPI:
         
         :returns: :class:`RejectTransitionRequestResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RejectTransitionRequest(comment=comment, name=name, stage=stage, version=version)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if stage is not None: body['stage'] = stage.value
+        if version is not None: body['version'] = version
 
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/reject', body=body)
         return RejectTransitionRequestResponse.from_dict(json)
 
-    def rename_model(self, name: str, *, new_name: Optional[str] = None, **kwargs) -> RenameModelResponse:
+    def rename_model(self, name: str, *, new_name: Optional[str] = None) -> RenameModelResponse:
         """Rename a model.
         
         Renames a registered model.
@@ -3653,10 +3347,9 @@ class ModelRegistryAPI:
         
         :returns: :class:`RenameModelResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = RenameModelRequest(name=name, new_name=new_name)
-        body = request.as_dict()
+        body = {}
+        if name is not None: body['name'] = name
+        if new_name is not None: body['new_name'] = new_name
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/rename', body=body)
         return RenameModelResponse.from_dict(json)
@@ -3666,8 +3359,7 @@ class ModelRegistryAPI:
                               filter: Optional[str] = None,
                               max_results: Optional[int] = None,
                               order_by: Optional[List[str]] = None,
-                              page_token: Optional[str] = None,
-                              **kwargs) -> Iterator[ModelVersion]:
+                              page_token: Optional[str] = None) -> Iterator[ModelVersion]:
         """Searches model versions.
         
         Searches for specific model versions based on the supplied __filter__.
@@ -3686,18 +3378,12 @@ class ModelRegistryAPI:
         
         :returns: Iterator over :class:`ModelVersion`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SearchModelVersionsRequest(filter=filter,
-                                                 max_results=max_results,
-                                                 order_by=order_by,
-                                                 page_token=page_token)
 
         query = {}
-        if filter: query['filter'] = request.filter
-        if max_results: query['max_results'] = request.max_results
-        if order_by: query['order_by'] = [v for v in request.order_by]
-        if page_token: query['page_token'] = request.page_token
+        if filter is not None: query['filter'] = filter
+        if max_results is not None: query['max_results'] = max_results
+        if order_by is not None: query['order_by'] = [v for v in order_by]
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query)
@@ -3714,8 +3400,7 @@ class ModelRegistryAPI:
                       filter: Optional[str] = None,
                       max_results: Optional[int] = None,
                       order_by: Optional[List[str]] = None,
-                      page_token: Optional[str] = None,
-                      **kwargs) -> Iterator[Model]:
+                      page_token: Optional[str] = None) -> Iterator[Model]:
         """Search models.
         
         Search for registered models based on the specified __filter__.
@@ -3735,18 +3420,12 @@ class ModelRegistryAPI:
         
         :returns: Iterator over :class:`Model`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SearchModelsRequest(filter=filter,
-                                          max_results=max_results,
-                                          order_by=order_by,
-                                          page_token=page_token)
 
         query = {}
-        if filter: query['filter'] = request.filter
-        if max_results: query['max_results'] = request.max_results
-        if order_by: query['order_by'] = [v for v in request.order_by]
-        if page_token: query['page_token'] = request.page_token
+        if filter is not None: query['filter'] = filter
+        if max_results is not None: query['max_results'] = max_results
+        if order_by is not None: query['order_by'] = [v for v in order_by]
+        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/search', query=query)
@@ -3758,7 +3437,7 @@ class ModelRegistryAPI:
                 return
             query['page_token'] = json['next_page_token']
 
-    def set_model_tag(self, name: str, key: str, value: str, **kwargs):
+    def set_model_tag(self, name: str, key: str, value: str):
         """Set a tag.
         
         Sets a tag on a registered model.
@@ -3775,13 +3454,13 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetModelTagRequest(key=key, name=name, value=value)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if name is not None: body['name'] = name
+        if value is not None: body['value'] = value
         self._api.do('POST', '/api/2.0/mlflow/registered-models/set-tag', body=body)
 
-    def set_model_version_tag(self, name: str, version: str, key: str, value: str, **kwargs):
+    def set_model_version_tag(self, name: str, version: str, key: str, value: str):
         """Set a version tag.
         
         Sets a model version tag.
@@ -3800,17 +3479,17 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = SetModelVersionTagRequest(key=key, name=name, value=value, version=version)
-        body = request.as_dict()
+        body = {}
+        if key is not None: body['key'] = key
+        if name is not None: body['name'] = name
+        if value is not None: body['value'] = value
+        if version is not None: body['version'] = version
         self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body)
 
     def test_registry_webhook(self,
                               id: str,
                               *,
-                              event: Optional[RegistryWebhookEvent] = None,
-                              **kwargs) -> TestRegistryWebhookResponse:
+                              event: Optional[RegistryWebhookEvent] = None) -> TestRegistryWebhookResponse:
         """Test a webhook.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3825,10 +3504,9 @@ class ModelRegistryAPI:
         
         :returns: :class:`TestRegistryWebhookResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = TestRegistryWebhookRequest(event=event, id=id)
-        body = request.as_dict()
+        body = {}
+        if event is not None: body['event'] = event.value
+        if id is not None: body['id'] = id
 
         json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/test', body=body)
         return TestRegistryWebhookResponse.from_dict(json)
@@ -3839,8 +3517,7 @@ class ModelRegistryAPI:
                          stage: Stage,
                          archive_existing_versions: bool,
                          *,
-                         comment: Optional[str] = None,
-                         **kwargs) -> TransitionStageResponse:
+                         comment: Optional[str] = None) -> TransitionStageResponse:
         """Transition a stage.
         
         Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
@@ -3869,20 +3546,18 @@ class ModelRegistryAPI:
         
         :returns: :class:`TransitionStageResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = TransitionModelVersionStageDatabricks(
-                archive_existing_versions=archive_existing_versions,
-                comment=comment,
-                name=name,
-                stage=stage,
-                version=version)
-        body = request.as_dict()
+        body = {}
+        if archive_existing_versions is not None:
+            body['archive_existing_versions'] = archive_existing_versions
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if stage is not None: body['stage'] = stage.value
+        if version is not None: body['version'] = version
 
         json = self._api.do('POST', '/api/2.0/mlflow/databricks/model-versions/transition-stage', body=body)
         return TransitionStageResponse.from_dict(json)
 
-    def update_comment(self, id: str, comment: str, **kwargs) -> UpdateCommentResponse:
+    def update_comment(self, id: str, comment: str) -> UpdateCommentResponse:
         """Update a comment.
         
         Post an edit to a comment on a model version.
@@ -3894,15 +3569,14 @@ class ModelRegistryAPI:
         
         :returns: :class:`UpdateCommentResponse`
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateComment(comment=comment, id=id)
-        body = request.as_dict()
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if id is not None: body['id'] = id
 
         json = self._api.do('PATCH', '/api/2.0/mlflow/comments/update', body=body)
         return UpdateCommentResponse.from_dict(json)
 
-    def update_model(self, name: str, *, description: Optional[str] = None, **kwargs):
+    def update_model(self, name: str, *, description: Optional[str] = None):
         """Update model.
         
         Updates a registered model.
@@ -3914,13 +3588,12 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateModelRequest(description=description, name=name)
-        body = request.as_dict()
+        body = {}
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
         self._api.do('PATCH', '/api/2.0/mlflow/registered-models/update', body=body)
 
-    def update_model_version(self, name: str, version: str, *, description: Optional[str] = None, **kwargs):
+    def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
         """Update model version.
         
         Updates the model version.
@@ -3934,10 +3607,10 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateModelVersionRequest(description=description, name=name, version=version)
-        body = request.as_dict()
+        body = {}
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if version is not None: body['version'] = version
         self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body)
 
     def update_webhook(self,
@@ -3947,8 +3620,7 @@ class ModelRegistryAPI:
                        events: Optional[List[RegistryWebhookEvent]] = None,
                        http_url_spec: Optional[HttpUrlSpec] = None,
                        job_spec: Optional[JobSpec] = None,
-                       status: Optional[RegistryWebhookStatus] = None,
-                       **kwargs):
+                       status: Optional[RegistryWebhookStatus] = None):
         """Update a webhook.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3995,13 +3667,11 @@ class ModelRegistryAPI:
         
         
         """
-        request = kwargs.get('request', None)
-        if not request: # request is not given through keyed args
-            request = UpdateRegistryWebhook(description=description,
-                                            events=events,
-                                            http_url_spec=http_url_spec,
-                                            id=id,
-                                            job_spec=job_spec,
-                                            status=status)
-        body = request.as_dict()
+        body = {}
+        if description is not None: body['description'] = description
+        if events is not None: body['events'] = [v for v in events]
+        if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
+        if id is not None: body['id'] = id
+        if job_spec is not None: body['job_spec'] = job_spec.as_dict()
+        if status is not None: body['status'] = status.value
         self._api.do('PATCH', '/api/2.0/mlflow/registry-webhooks/update', body=body)
