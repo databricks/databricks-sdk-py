@@ -109,6 +109,24 @@ Users
         :returns: :class:`User`
         
 
+    .. py:method:: get_password_permission_levels()
+
+        Get password permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :returns: :class:`GetPasswordPermissionLevelsResponse`
+        
+
+    .. py:method:: get_password_permissions()
+
+        Get password permissions.
+        
+        Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
+        
+        :returns: :class:`PasswordPermissions`
+        
+
     .. py:method:: list( [, attributes, count, excluded_attributes, filter, sort_by, sort_order, start_index])
 
         Usage:
@@ -190,6 +208,17 @@ Users
         
         
 
+    .. py:method:: set_password_permissions( [, access_control_list])
+
+        Set password permissions.
+        
+        Sets permissions on all passwords. Passwords can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
+        
+        :returns: :class:`PasswordPermissions`
+        
+
     .. py:method:: update(id [, active, display_name, emails, entitlements, external_id, groups, name, roles, user_name])
 
         Replace a user.
@@ -213,4 +242,15 @@ Users
           Email address of the Databricks user.
         
         
+        
+
+    .. py:method:: update_password_permissions( [, access_control_list])
+
+        Update password permissions.
+        
+        Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
+        
+        :returns: :class:`PasswordPermissions`
         

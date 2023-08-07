@@ -248,6 +248,8 @@ class CreateWorkspaceRequest:
     cloud_resource_container: Optional['CloudResourceContainer'] = None
     credentials_id: Optional[str] = None
     deployment_name: Optional[str] = None
+    gcp_managed_network_config: Optional['GcpManagedNetworkConfig'] = None
+    gke_config: Optional['GkeConfig'] = None
     location: Optional[str] = None
     managed_services_customer_managed_key_id: Optional[str] = None
     network_id: Optional[str] = None
@@ -264,6 +266,9 @@ class CreateWorkspaceRequest:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
         if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.gcp_managed_network_config:
+            body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
+        if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
         if self.location is not None: body['location'] = self.location
         if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
@@ -285,6 +290,9 @@ class CreateWorkspaceRequest:
                    cloud_resource_container=_from_dict(d, 'cloud_resource_container', CloudResourceContainer),
                    credentials_id=d.get('credentials_id', None),
                    deployment_name=d.get('deployment_name', None),
+                   gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
+                                                         GcpManagedNetworkConfig),
+                   gke_config=_from_dict(d, 'gke_config', GkeConfig),
                    location=d.get('location', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
@@ -1877,6 +1885,8 @@ class WorkspacesAPI:
                cloud_resource_container: Optional[CloudResourceContainer] = None,
                credentials_id: Optional[str] = None,
                deployment_name: Optional[str] = None,
+               gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
+               gke_config: Optional[GkeConfig] = None,
                location: Optional[str] = None,
                managed_services_customer_managed_key_id: Optional[str] = None,
                network_id: Optional[str] = None,
@@ -1933,6 +1943,27 @@ class WorkspacesAPI:
           
           If a new workspace omits this property, the server generates a unique deployment name for you with
           the pattern `dbc-xxxxxxxx-xxxx`.
+        :param gcp_managed_network_config: :class:`GcpManagedNetworkConfig` (optional)
+          The network settings for the workspace. The configurations are only for Databricks-managed VPCs. It
+          is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP range
+          configurations must be mutually exclusive. An attempt to create a workspace fails if Databricks
+          detects an IP range overlap.
+          
+          Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and all IP
+          addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
+          `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
+          
+          The sizes of these IP ranges affect the maximum number of nodes for the workspace.
+          
+          **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
+          workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
+          your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
+          determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
+          Excel spreadsheet. See [calculate subnet sizes for a new workspace].
+          
+          [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+        :param gke_config: :class:`GkeConfig` (optional)
+          The configurations for the GKE cluster of a Databricks workspace.
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account. For example, `us-east4`.
         :param managed_services_customer_managed_key_id: str (optional)
@@ -1972,6 +2003,8 @@ class WorkspacesAPI:
                 cloud_resource_container=cloud_resource_container,
                 credentials_id=credentials_id,
                 deployment_name=deployment_name,
+                gcp_managed_network_config=gcp_managed_network_config,
+                gke_config=gke_config,
                 location=location,
                 managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
                 network_id=network_id,
@@ -1995,6 +2028,8 @@ class WorkspacesAPI:
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         credentials_id: Optional[str] = None,
         deployment_name: Optional[str] = None,
+        gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
+        gke_config: Optional[GkeConfig] = None,
         location: Optional[str] = None,
         managed_services_customer_managed_key_id: Optional[str] = None,
         network_id: Optional[str] = None,
@@ -2008,6 +2043,8 @@ class WorkspacesAPI:
                            cloud_resource_container=cloud_resource_container,
                            credentials_id=credentials_id,
                            deployment_name=deployment_name,
+                           gcp_managed_network_config=gcp_managed_network_config,
+                           gke_config=gke_config,
                            location=location,
                            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
                            network_id=network_id,

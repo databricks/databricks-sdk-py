@@ -328,6 +328,30 @@ Jobs
         :returns: :class:`Job`
         
 
+    .. py:method:: get_job_permission_levels(job_id)
+
+        Get job permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        
+        :returns: :class:`GetJobPermissionLevelsResponse`
+        
+
+    .. py:method:: get_job_permissions(job_id)
+
+        Get job permissions.
+        
+        Gets the permissions of a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        
+        :returns: :class:`JobPermissions`
+        
+
     .. py:method:: get_run(run_id [, include_history])
 
         Usage:
@@ -798,6 +822,19 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
+    .. py:method:: set_job_permissions(job_id [, access_control_list])
+
+        Set job permissions.
+        
+        Sets permissions on a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        
+        :returns: :class:`JobPermissions`
+        
+
     .. py:method:: submit( [, access_control_list, email_notifications, git_source, health, idempotency_token, notification_settings, run_name, tasks, timeout_seconds, webhook_notifications])
 
         Usage:
@@ -931,4 +968,17 @@ Jobs
           fields are applied to future runs only.
         
         
+        
+
+    .. py:method:: update_job_permissions(job_id [, access_control_list])
+
+        Update job permissions.
+        
+        Updates the permissions on a job. Jobs can inherit permissions from their root object.
+        
+        :param job_id: str
+          The job for which to get or manage permissions.
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        
+        :returns: :class:`JobPermissions`
         

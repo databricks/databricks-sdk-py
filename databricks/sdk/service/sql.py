@@ -212,7 +212,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -1080,6 +1079,34 @@ class GetStatementResultChunkNRequest:
 
 
 @dataclass
+class GetWarehousePermissionLevelsRequest:
+    """Get SQL warehouse permission levels"""
+
+    warehouse_id: str
+
+
+@dataclass
+class GetWarehousePermissionLevelsResponse:
+    permission_levels: Optional['List[WarehousePermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetWarehousePermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', WarehousePermissionsDescription))
+
+
+@dataclass
+class GetWarehousePermissionsRequest:
+    """Get SQL warehouse permissions"""
+
+    warehouse_id: str
+
+
+@dataclass
 class GetWarehouseRequest:
     """Get warehouse info"""
 
@@ -1555,6 +1582,7 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
+    can_subscribe_to_live_query: Optional[bool] = None
     channel_used: Optional['ChannelInfo'] = None
     duration: Optional[int] = None
     endpoint_id: Optional[str] = None
@@ -1580,6 +1608,8 @@ class QueryInfo:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.can_subscribe_to_live_query is not None:
+            body['canSubscribeToLiveQuery'] = self.can_subscribe_to_live_query
         if self.channel_used: body['channel_used'] = self.channel_used.as_dict()
         if self.duration is not None: body['duration'] = self.duration
         if self.endpoint_id is not None: body['endpoint_id'] = self.endpoint_id
@@ -1606,7 +1636,8 @@ class QueryInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryInfo':
-        return cls(channel_used=_from_dict(d, 'channel_used', ChannelInfo),
+        return cls(can_subscribe_to_live_query=d.get('canSubscribeToLiveQuery', None),
+                   channel_used=_from_dict(d, 'channel_used', ChannelInfo),
                    duration=d.get('duration', None),
                    endpoint_id=d.get('endpoint_id', None),
                    error_message=d.get('error_message', None),
@@ -1659,10 +1690,17 @@ class QueryMetrics:
 
     compilation_time_ms: Optional[int] = None
     execution_time_ms: Optional[int] = None
+    metadata_time_ms: Optional[int] = None
     network_sent_bytes: Optional[int] = None
+    overloading_queue_start_timestamp: Optional[int] = None
     photon_total_time_ms: Optional[int] = None
-    queued_overload_time_ms: Optional[int] = None
-    queued_provisioning_time_ms: Optional[int] = None
+    planning_phases: Optional['List[Any]'] = None
+    planning_time_ms: Optional[int] = None
+    provisioning_queue_start_timestamp: Optional[int] = None
+    pruned_bytes: Optional[int] = None
+    pruned_files_count: Optional[int] = None
+    query_compilation_start_timestamp: Optional[int] = None
+    query_execution_time_ms: Optional[int] = None
     read_bytes: Optional[int] = None
     read_cache_bytes: Optional[int] = None
     read_files_count: Optional[int] = None
@@ -1674,8 +1712,6 @@ class QueryMetrics:
     rows_read_count: Optional[int] = None
     spill_to_disk_bytes: Optional[int] = None
     task_total_time_ms: Optional[int] = None
-    total_files_count: Optional[int] = None
-    total_partitions_count: Optional[int] = None
     total_time_ms: Optional[int] = None
     write_remote_bytes: Optional[int] = None
 
@@ -1683,12 +1719,21 @@ class QueryMetrics:
         body = {}
         if self.compilation_time_ms is not None: body['compilation_time_ms'] = self.compilation_time_ms
         if self.execution_time_ms is not None: body['execution_time_ms'] = self.execution_time_ms
+        if self.metadata_time_ms is not None: body['metadata_time_ms'] = self.metadata_time_ms
         if self.network_sent_bytes is not None: body['network_sent_bytes'] = self.network_sent_bytes
+        if self.overloading_queue_start_timestamp is not None:
+            body['overloading_queue_start_timestamp'] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None: body['photon_total_time_ms'] = self.photon_total_time_ms
-        if self.queued_overload_time_ms is not None:
-            body['queued_overload_time_ms'] = self.queued_overload_time_ms
-        if self.queued_provisioning_time_ms is not None:
-            body['queued_provisioning_time_ms'] = self.queued_provisioning_time_ms
+        if self.planning_phases: body['planning_phases'] = [v for v in self.planning_phases]
+        if self.planning_time_ms is not None: body['planning_time_ms'] = self.planning_time_ms
+        if self.provisioning_queue_start_timestamp is not None:
+            body['provisioning_queue_start_timestamp'] = self.provisioning_queue_start_timestamp
+        if self.pruned_bytes is not None: body['pruned_bytes'] = self.pruned_bytes
+        if self.pruned_files_count is not None: body['pruned_files_count'] = self.pruned_files_count
+        if self.query_compilation_start_timestamp is not None:
+            body['query_compilation_start_timestamp'] = self.query_compilation_start_timestamp
+        if self.query_execution_time_ms is not None:
+            body['query_execution_time_ms'] = self.query_execution_time_ms
         if self.read_bytes is not None: body['read_bytes'] = self.read_bytes
         if self.read_cache_bytes is not None: body['read_cache_bytes'] = self.read_cache_bytes
         if self.read_files_count is not None: body['read_files_count'] = self.read_files_count
@@ -1700,9 +1745,6 @@ class QueryMetrics:
         if self.rows_read_count is not None: body['rows_read_count'] = self.rows_read_count
         if self.spill_to_disk_bytes is not None: body['spill_to_disk_bytes'] = self.spill_to_disk_bytes
         if self.task_total_time_ms is not None: body['task_total_time_ms'] = self.task_total_time_ms
-        if self.total_files_count is not None: body['total_files_count'] = self.total_files_count
-        if self.total_partitions_count is not None:
-            body['total_partitions_count'] = self.total_partitions_count
         if self.total_time_ms is not None: body['total_time_ms'] = self.total_time_ms
         if self.write_remote_bytes is not None: body['write_remote_bytes'] = self.write_remote_bytes
         return body
@@ -1711,10 +1753,17 @@ class QueryMetrics:
     def from_dict(cls, d: Dict[str, any]) -> 'QueryMetrics':
         return cls(compilation_time_ms=d.get('compilation_time_ms', None),
                    execution_time_ms=d.get('execution_time_ms', None),
+                   metadata_time_ms=d.get('metadata_time_ms', None),
                    network_sent_bytes=d.get('network_sent_bytes', None),
+                   overloading_queue_start_timestamp=d.get('overloading_queue_start_timestamp', None),
                    photon_total_time_ms=d.get('photon_total_time_ms', None),
-                   queued_overload_time_ms=d.get('queued_overload_time_ms', None),
-                   queued_provisioning_time_ms=d.get('queued_provisioning_time_ms', None),
+                   planning_phases=d.get('planning_phases', None),
+                   planning_time_ms=d.get('planning_time_ms', None),
+                   provisioning_queue_start_timestamp=d.get('provisioning_queue_start_timestamp', None),
+                   pruned_bytes=d.get('pruned_bytes', None),
+                   pruned_files_count=d.get('pruned_files_count', None),
+                   query_compilation_start_timestamp=d.get('query_compilation_start_timestamp', None),
+                   query_execution_time_ms=d.get('query_execution_time_ms', None),
                    read_bytes=d.get('read_bytes', None),
                    read_cache_bytes=d.get('read_cache_bytes', None),
                    read_files_count=d.get('read_files_count', None),
@@ -1726,8 +1775,6 @@ class QueryMetrics:
                    rows_read_count=d.get('rows_read_count', None),
                    spill_to_disk_bytes=d.get('spill_to_disk_bytes', None),
                    task_total_time_ms=d.get('task_total_time_ms', None),
-                   total_files_count=d.get('total_files_count', None),
-                   total_partitions_count=d.get('total_partitions_count', None),
                    total_time_ms=d.get('total_time_ms', None),
                    write_remote_bytes=d.get('write_remote_bytes', None))
 
@@ -2395,6 +2442,141 @@ class Visualization:
 
 
 @dataclass
+class WarehouseAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['WarehousePermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WarehouseAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', WarehousePermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class WarehouseAccessControlResponse:
+    all_permissions: Optional['List[WarehousePermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WarehouseAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', WarehousePermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class WarehousePermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['WarehousePermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WarehousePermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', WarehousePermissionLevel))
+
+
+class WarehousePermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_USE = 'CAN_USE'
+    IS_OWNER = 'IS_OWNER'
+
+
+@dataclass
+class WarehousePermissions:
+    access_control_list: Optional['List[WarehouseAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WarehousePermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', WarehouseAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class WarehousePermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['WarehousePermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WarehousePermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', WarehousePermissionLevel))
+
+
+@dataclass
+class WarehousePermissionsRequest:
+    access_control_list: Optional['List[WarehouseAccessControlRequest]'] = None
+    warehouse_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WarehousePermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', WarehouseAccessControlRequest),
+                   warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
 class WarehouseTypePair:
     enabled: Optional[bool] = None
     warehouse_type: Optional['WarehouseTypePairWarehouseType'] = None
@@ -2421,7 +2603,7 @@ class WarehouseTypePairWarehouseType(Enum):
 
 @dataclass
 class Widget:
-    id: Optional[int] = None
+    id: Optional[str] = None
     options: Optional['WidgetOptions'] = None
     visualization: Optional['Visualization'] = None
     width: Optional[int] = None
@@ -3829,6 +4011,42 @@ class WarehousesAPI:
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{request.id}')
         return GetWarehouseResponse.from_dict(json)
 
+    def get_warehouse_permission_levels(self, warehouse_id: str,
+                                        **kwargs) -> GetWarehousePermissionLevelsResponse:
+        """Get SQL warehouse permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        
+        :returns: :class:`GetWarehousePermissionLevelsResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetWarehousePermissionLevelsRequest(warehouse_id=warehouse_id)
+
+        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{request.warehouse_id}/permissionLevels')
+        return GetWarehousePermissionLevelsResponse.from_dict(json)
+
+    def get_warehouse_permissions(self, warehouse_id: str, **kwargs) -> WarehousePermissions:
+        """Get SQL warehouse permissions.
+        
+        Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
+        object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        
+        :returns: :class:`WarehousePermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetWarehousePermissionsRequest(warehouse_id=warehouse_id)
+
+        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{request.warehouse_id}')
+        return WarehousePermissions.from_dict(json)
+
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
         """Get the workspace configuration.
         
@@ -3860,6 +4078,30 @@ class WarehousesAPI:
 
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query)
         return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
+
+    def set_warehouse_permissions(self,
+                                  warehouse_id: str,
+                                  *,
+                                  access_control_list: Optional[List[WarehouseAccessControlRequest]] = None,
+                                  **kwargs) -> WarehousePermissions:
+        """Set SQL warehouse permissions.
+        
+        Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
+        
+        :returns: :class:`WarehousePermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = WarehousePermissionsRequest(access_control_list=access_control_list,
+                                                  warehouse_id=warehouse_id)
+        body = request.as_dict()
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/warehouses/{request.warehouse_id}', body=body)
+        return WarehousePermissions.from_dict(json)
 
     def set_workspace_warehouse_config(
             self,
@@ -3961,3 +4203,29 @@ class WarehousesAPI:
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
+
+    def update_warehouse_permissions(self,
+                                     warehouse_id: str,
+                                     *,
+                                     access_control_list: Optional[
+                                         List[WarehouseAccessControlRequest]] = None,
+                                     **kwargs) -> WarehousePermissions:
+        """Update SQL warehouse permissions.
+        
+        Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
+        object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
+        
+        :returns: :class:`WarehousePermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = WarehousePermissionsRequest(access_control_list=access_control_list,
+                                                  warehouse_id=warehouse_id)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/warehouses/{request.warehouse_id}', body=body)
+        return WarehousePermissions.from_dict(json)

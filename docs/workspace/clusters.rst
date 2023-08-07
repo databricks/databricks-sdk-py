@@ -523,6 +523,30 @@ Clusters
         :returns: :class:`ClusterDetails`
         
 
+    .. py:method:: get_cluster_permission_levels(cluster_id)
+
+        Get cluster permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        
+        :returns: :class:`GetClusterPermissionLevelsResponse`
+        
+
+    .. py:method:: get_cluster_permissions(cluster_id)
+
+        Get cluster permissions.
+        
+        Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        
+        :returns: :class:`ClusterPermissions`
+        
+
     .. py:method:: list( [, can_use_client])
 
         Usage:
@@ -791,6 +815,19 @@ Clusters
         :returns: `spark_version` compatible string
         
 
+    .. py:method:: set_cluster_permissions(cluster_id [, access_control_list])
+
+        Set cluster permissions.
+        
+        Sets permissions on a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPermissions`
+        
+
     .. py:method:: spark_versions()
 
         List available Spark versions.
@@ -883,4 +920,17 @@ Clusters
           <needs content added>
         
         
+        
+
+    .. py:method:: update_cluster_permissions(cluster_id [, access_control_list])
+
+        Update cluster permissions.
+        
+        Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
+        
+        :param cluster_id: str
+          The cluster for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPermissions`
         

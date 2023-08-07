@@ -416,6 +416,31 @@ Model Registry
         :returns: :class:`GetModelVersionDownloadUriResponse`
         
 
+    .. py:method:: get_registered_model_permission_levels(registered_model_id)
+
+        Get registered model permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        
+        :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
+        
+
+    .. py:method:: get_registered_model_permissions(registered_model_id)
+
+        Get registered model permissions.
+        
+        Gets the permissions of a registered model. Registered models can inherit permissions from their root
+        object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        
+        :returns: :class:`RegisteredModelPermissions`
+        
+
     .. py:method:: list_models( [, max_results, page_token])
 
         Usage:
@@ -609,6 +634,20 @@ Model Registry
         
         
 
+    .. py:method:: set_registered_model_permissions(registered_model_id [, access_control_list])
+
+        Set registered model permissions.
+        
+        Sets permissions on a registered model. Registered models can inherit permissions from their root
+        object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
+        
+        :returns: :class:`RegisteredModelPermissions`
+        
+
     .. py:method:: test_registry_webhook(id [, event])
 
         Test a webhook.
@@ -758,6 +797,20 @@ Model Registry
           If provided, updates the description for this `registered_model`.
         
         
+        
+
+    .. py:method:: update_registered_model_permissions(registered_model_id [, access_control_list])
+
+        Update registered model permissions.
+        
+        Updates the permissions on a registered model. Registered models can inherit permissions from their
+        root object.
+        
+        :param registered_model_id: str
+          The registered model for which to get or manage permissions.
+        :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
+        
+        :returns: :class:`RegisteredModelPermissions`
         
 
     .. py:method:: update_webhook(id [, description, events, http_url_spec, job_spec, status])

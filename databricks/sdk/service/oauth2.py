@@ -16,6 +16,7 @@ class CreateCustomAppIntegration:
     name: str
     redirect_urls: 'List[str]'
     confidential: Optional[bool] = None
+    scopes: Optional['List[str]'] = None
     token_access_policy: Optional['TokenAccessPolicy'] = None
 
     def as_dict(self) -> dict:
@@ -23,6 +24,7 @@ class CreateCustomAppIntegration:
         if self.confidential is not None: body['confidential'] = self.confidential
         if self.name is not None: body['name'] = self.name
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
+        if self.scopes: body['scopes'] = [v for v in self.scopes]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
@@ -31,6 +33,7 @@ class CreateCustomAppIntegration:
         return cls(confidential=d.get('confidential', None),
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
+                   scopes=d.get('scopes', None),
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
 
 
@@ -384,6 +387,7 @@ class CustomAppIntegrationAPI:
                redirect_urls: List[str],
                *,
                confidential: Optional[bool] = None,
+               scopes: Optional[List[str]] = None,
                token_access_policy: Optional[TokenAccessPolicy] = None,
                **kwargs) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
@@ -398,6 +402,9 @@ class CustomAppIntegrationAPI:
           List of oauth redirect urls
         :param confidential: bool (optional)
           indicates if an oauth client-secret should be generated
+        :param scopes: List[str] (optional)
+          OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid,
+          profile, email.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
         
@@ -408,6 +415,7 @@ class CustomAppIntegrationAPI:
             request = CreateCustomAppIntegration(confidential=confidential,
                                                  name=name,
                                                  redirect_urls=redirect_urls,
+                                                 scopes=scopes,
                                                  token_access_policy=token_access_policy)
         body = request.as_dict()
 

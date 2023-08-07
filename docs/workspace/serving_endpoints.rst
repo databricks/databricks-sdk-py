@@ -77,6 +77,31 @@ Serving endpoints
         :returns: :class:`ServingEndpointDetailed`
         
 
+    .. py:method:: get_serving_endpoint_permission_levels(serving_endpoint_id)
+
+        Get serving endpoint permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        
+        :returns: :class:`GetServingEndpointPermissionLevelsResponse`
+        
+
+    .. py:method:: get_serving_endpoint_permissions(serving_endpoint_id)
+
+        Get serving endpoint permissions.
+        
+        Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
+        object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        
+        :returns: :class:`ServingEndpointPermissions`
+        
+
     .. py:method:: list()
 
         Retrieve all serving endpoints.
@@ -108,6 +133,20 @@ Serving endpoints
         :returns: :class:`QueryEndpointResponse`
         
 
+    .. py:method:: set_serving_endpoint_permissions(serving_endpoint_id [, access_control_list])
+
+        Set serving endpoint permissions.
+        
+        Sets permissions on a serving endpoint. Serving endpoints can inherit permissions from their root
+        object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
+        
+        :returns: :class:`ServingEndpointPermissions`
+        
+
     .. py:method:: update_config(served_models, name [, traffic_config])
 
         Update a serving endpoint with a new config.
@@ -127,4 +166,18 @@ Serving endpoints
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
+        
+
+    .. py:method:: update_serving_endpoint_permissions(serving_endpoint_id [, access_control_list])
+
+        Update serving endpoint permissions.
+        
+        Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
+        root object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
+        
+        :returns: :class:`ServingEndpointPermissions`
         

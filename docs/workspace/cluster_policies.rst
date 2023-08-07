@@ -192,6 +192,31 @@ Cluster Policies
         :returns: :class:`Policy`
         
 
+    .. py:method:: get_cluster_policy_permission_levels(cluster_policy_id)
+
+        Get cluster policy permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        
+        :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
+        
+
+    .. py:method:: get_cluster_policy_permissions(cluster_policy_id)
+
+        Get cluster policy permissions.
+        
+        Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
+        object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        
+        :returns: :class:`ClusterPolicyPermissions`
+        
+
     .. py:method:: list( [, sort_column, sort_order])
 
         Usage:
@@ -217,4 +242,31 @@ Cluster Policies
           - Sort result list in ascending order.
         
         :returns: Iterator over :class:`Policy`
+        
+
+    .. py:method:: set_cluster_policy_permissions(cluster_policy_id [, access_control_list])
+
+        Set cluster policy permissions.
+        
+        Sets permissions on a cluster policy. Cluster policies can inherit permissions from their root object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPolicyPermissions`
+        
+
+    .. py:method:: update_cluster_policy_permissions(cluster_policy_id [, access_control_list])
+
+        Update cluster policy permissions.
+        
+        Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
+        object.
+        
+        :param cluster_policy_id: str
+          The cluster policy for which to get or manage permissions.
+        :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
+        
+        :returns: :class:`ClusterPolicyPermissions`
         

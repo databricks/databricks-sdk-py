@@ -184,6 +184,34 @@ class ExportMetricsRequest:
 
 
 @dataclass
+class GetServingEndpointPermissionLevelsRequest:
+    """Get serving endpoint permission levels"""
+
+    serving_endpoint_id: str
+
+
+@dataclass
+class GetServingEndpointPermissionLevelsResponse:
+    permission_levels: Optional['List[ServingEndpointPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetServingEndpointPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', ServingEndpointPermissionsDescription))
+
+
+@dataclass
+class GetServingEndpointPermissionsRequest:
+    """Get serving endpoint permissions"""
+
+    serving_endpoint_id: str
+
+
+@dataclass
 class GetServingEndpointRequest:
     """Get a single serving endpoint"""
 
@@ -257,11 +285,13 @@ class ServedModelInput:
     workload_size: str
     scale_to_zero_enabled: bool
     environment_vars: Optional['Dict[str,str]'] = None
+    instance_profile_arn: Optional[str] = None
     name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.environment_vars: body['environment_vars'] = self.environment_vars
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
@@ -272,6 +302,7 @@ class ServedModelInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServedModelInput':
         return cls(environment_vars=d.get('environment_vars', None),
+                   instance_profile_arn=d.get('instance_profile_arn', None),
                    model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
@@ -284,6 +315,7 @@ class ServedModelOutput:
     creation_timestamp: Optional[int] = None
     creator: Optional[str] = None
     environment_vars: Optional['Dict[str,str]'] = None
+    instance_profile_arn: Optional[str] = None
     model_name: Optional[str] = None
     model_version: Optional[str] = None
     name: Optional[str] = None
@@ -296,6 +328,7 @@ class ServedModelOutput:
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
         if self.environment_vars: body['environment_vars'] = self.environment_vars
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
@@ -309,6 +342,7 @@ class ServedModelOutput:
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
                    environment_vars=d.get('environment_vars', None),
+                   instance_profile_arn=d.get('instance_profile_arn', None),
                    model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
@@ -421,6 +455,57 @@ class ServingEndpoint:
 
 
 @dataclass
+class ServingEndpointAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['ServingEndpointPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class ServingEndpointAccessControlResponse:
+    all_permissions: Optional['List[ServingEndpointPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', ServingEndpointPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class ServingEndpointDetailed:
     config: Optional['EndpointCoreConfigOutput'] = None
     creation_timestamp: Optional[int] = None
@@ -465,6 +550,92 @@ class ServingEndpointDetailedPermissionLevel(Enum):
     CAN_MANAGE = 'CAN_MANAGE'
     CAN_QUERY = 'CAN_QUERY'
     CAN_VIEW = 'CAN_VIEW'
+
+
+@dataclass
+class ServingEndpointPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['ServingEndpointPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel))
+
+
+class ServingEndpointPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_QUERY = 'CAN_QUERY'
+    CAN_VIEW = 'CAN_VIEW'
+
+
+@dataclass
+class ServingEndpointPermissions:
+    access_control_list: Optional['List[ServingEndpointAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 ServingEndpointAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class ServingEndpointPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['ServingEndpointPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel))
+
+
+@dataclass
+class ServingEndpointPermissionsRequest:
+    access_control_list: Optional['List[ServingEndpointAccessControlRequest]'] = None
+    serving_endpoint_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.serving_endpoint_id is not None: body['serving_endpoint_id'] = self.serving_endpoint_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 ServingEndpointAccessControlRequest),
+                   serving_endpoint_id=d.get('serving_endpoint_id', None))
 
 
 @dataclass
@@ -623,6 +794,44 @@ class ServingEndpointsAPI:
         json = self._api.do('GET', f'/api/2.0/serving-endpoints/{request.name}')
         return ServingEndpointDetailed.from_dict(json)
 
+    def get_serving_endpoint_permission_levels(self, serving_endpoint_id: str,
+                                               **kwargs) -> GetServingEndpointPermissionLevelsResponse:
+        """Get serving endpoint permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        
+        :returns: :class:`GetServingEndpointPermissionLevelsResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetServingEndpointPermissionLevelsRequest(serving_endpoint_id=serving_endpoint_id)
+
+        json = self._api.do(
+            'GET', f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}/permissionLevels')
+        return GetServingEndpointPermissionLevelsResponse.from_dict(json)
+
+    def get_serving_endpoint_permissions(self, serving_endpoint_id: str,
+                                         **kwargs) -> ServingEndpointPermissions:
+        """Get serving endpoint permissions.
+        
+        Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
+        object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        
+        :returns: :class:`ServingEndpointPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetServingEndpointPermissionsRequest(serving_endpoint_id=serving_endpoint_id)
+
+        json = self._api.do('GET', f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}')
+        return ServingEndpointPermissions.from_dict(json)
+
     def list(self) -> Iterator[ServingEndpoint]:
         """Retrieve all serving endpoints.
         
@@ -668,6 +877,34 @@ class ServingEndpointsAPI:
         json = self._api.do('POST', f'/serving-endpoints/{request.name}/invocations')
         return QueryEndpointResponse.from_dict(json)
 
+    def set_serving_endpoint_permissions(self,
+                                         serving_endpoint_id: str,
+                                         *,
+                                         access_control_list: Optional[
+                                             List[ServingEndpointAccessControlRequest]] = None,
+                                         **kwargs) -> ServingEndpointPermissions:
+        """Set serving endpoint permissions.
+        
+        Sets permissions on a serving endpoint. Serving endpoints can inherit permissions from their root
+        object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
+        
+        :returns: :class:`ServingEndpointPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ServingEndpointPermissionsRequest(access_control_list=access_control_list,
+                                                        serving_endpoint_id=serving_endpoint_id)
+        body = request.as_dict()
+
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}',
+                            body=body)
+        return ServingEndpointPermissions.from_dict(json)
+
     def update_config(self,
                       served_models: List[ServedModelInput],
                       name: str,
@@ -712,3 +949,31 @@ class ServingEndpointsAPI:
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
         return self.update_config(name=name, served_models=served_models,
                                   traffic_config=traffic_config).result(timeout=timeout)
+
+    def update_serving_endpoint_permissions(self,
+                                            serving_endpoint_id: str,
+                                            *,
+                                            access_control_list: Optional[
+                                                List[ServingEndpointAccessControlRequest]] = None,
+                                            **kwargs) -> ServingEndpointPermissions:
+        """Update serving endpoint permissions.
+        
+        Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
+        root object.
+        
+        :param serving_endpoint_id: str
+          The serving endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
+        
+        :returns: :class:`ServingEndpointPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = ServingEndpointPermissionsRequest(access_control_list=access_control_list,
+                                                        serving_endpoint_id=serving_endpoint_id)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/serving-endpoints/{request.serving_endpoint_id}',
+                            body=body)
+        return ServingEndpointPermissions.from_dict(json)

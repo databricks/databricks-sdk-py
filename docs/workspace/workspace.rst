@@ -131,6 +131,35 @@ Workspace
         :returns: :class:`ObjectInfo`
         
 
+    .. py:method:: get_workspace_object_permission_levels(workspace_object_type, workspace_object_id)
+
+        Get workspace object permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        
+        :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
+        
+
+    .. py:method:: get_workspace_object_permissions(workspace_object_type, workspace_object_id)
+
+        Get workspace object permissions.
+        
+        Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
+        parent objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        
+        :returns: :class:`WorkspaceObjectPermissions`
+        
+
     .. py:method:: import_(path [, content, format, language, overwrite])
 
         Usage:
@@ -226,6 +255,38 @@ Workspace
           them. If the directory already exists, this command will do nothing and succeed.
         
         
+        
+
+    .. py:method:: set_workspace_object_permissions(workspace_object_type, workspace_object_id [, access_control_list])
+
+        Set workspace object permissions.
+        
+        Sets permissions on a workspace object. Workspace objects can inherit permissions from their parent
+        objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
+        
+        :returns: :class:`WorkspaceObjectPermissions`
+        
+
+    .. py:method:: update_workspace_object_permissions(workspace_object_type, workspace_object_id [, access_control_list])
+
+        Update workspace object permissions.
+        
+        Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
+        parent objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
+        
+        :returns: :class:`WorkspaceObjectPermissions`
         
 
     .. py:method:: upload(path, content [, format, language, overwrite])

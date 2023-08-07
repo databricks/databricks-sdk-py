@@ -216,6 +216,31 @@ Instance Pools
         :returns: :class:`GetInstancePool`
         
 
+    .. py:method:: get_instance_pool_permission_levels(instance_pool_id)
+
+        Get instance pool permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        
+        :returns: :class:`GetInstancePoolPermissionLevelsResponse`
+        
+
+    .. py:method:: get_instance_pool_permissions(instance_pool_id)
+
+        Get instance pool permissions.
+        
+        Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
+        object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        
+        :returns: :class:`InstancePoolPermissions`
+        
+
     .. py:method:: list()
 
         Usage:
@@ -233,4 +258,31 @@ Instance Pools
         Gets a list of instance pools with their statistics.
         
         :returns: Iterator over :class:`InstancePoolAndStats`
+        
+
+    .. py:method:: set_instance_pool_permissions(instance_pool_id [, access_control_list])
+
+        Set instance pool permissions.
+        
+        Sets permissions on an instance pool. Instance pools can inherit permissions from their root object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
+        
+        :returns: :class:`InstancePoolPermissions`
+        
+
+    .. py:method:: update_instance_pool_permissions(instance_pool_id [, access_control_list])
+
+        Update instance pool permissions.
+        
+        Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
+        object.
+        
+        :param instance_pool_id: str
+          The instance pool for which to get or manage permissions.
+        :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
+        
+        :returns: :class:`InstancePoolPermissions`
         

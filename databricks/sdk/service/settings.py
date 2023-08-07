@@ -264,6 +264,20 @@ class GetTokenManagementRequest:
 
 
 @dataclass
+class GetTokenPermissionLevelsResponse:
+    permission_levels: Optional['List[TokenPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetTokenPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', TokenPermissionsDescription))
+
+
+@dataclass
 class IpAccessListInfo:
     address_count: Optional[int] = None
     created_at: Optional[int] = None
@@ -459,6 +473,57 @@ class RevokeTokenRequest:
 
 
 @dataclass
+class TokenAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['TokenPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TokenAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', TokenPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class TokenAccessControlResponse:
+    all_permissions: Optional['List[TokenPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TokenAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', TokenPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class TokenInfo:
     comment: Optional[str] = None
     created_by_id: Optional[int] = None
@@ -488,6 +553,85 @@ class TokenInfo:
                    expiry_time=d.get('expiry_time', None),
                    owner_id=d.get('owner_id', None),
                    token_id=d.get('token_id', None))
+
+
+@dataclass
+class TokenPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['TokenPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TokenPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', TokenPermissionLevel))
+
+
+class TokenPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_USE = 'CAN_USE'
+
+
+@dataclass
+class TokenPermissions:
+    access_control_list: Optional['List[TokenAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TokenPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', TokenAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class TokenPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['TokenPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TokenPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', TokenPermissionLevel))
+
+
+@dataclass
+class TokenPermissionsRequest:
+    access_control_list: Optional['List[TokenAccessControlRequest]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TokenPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', TokenAccessControlRequest))
 
 
 @dataclass
@@ -1230,6 +1374,28 @@ class TokenManagementAPI:
         json = self._api.do('GET', f'/api/2.0/token-management/tokens/{request.token_id}')
         return TokenInfo.from_dict(json)
 
+    def get_token_permission_levels(self) -> GetTokenPermissionLevelsResponse:
+        """Get token permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :returns: :class:`GetTokenPermissionLevelsResponse`
+        """
+
+        json = self._api.do('GET', '/api/2.0/permissions/authorization/tokens/permissionLevels')
+        return GetTokenPermissionLevelsResponse.from_dict(json)
+
+    def get_token_permissions(self) -> TokenPermissions:
+        """Get token permissions.
+        
+        Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
+        
+        :returns: :class:`TokenPermissions`
+        """
+
+        json = self._api.do('GET', '/api/2.0/permissions/authorization/tokens')
+        return TokenPermissions.from_dict(json)
+
     def list(self,
              *,
              created_by_id: Optional[str] = None,
@@ -1257,6 +1423,46 @@ class TokenManagementAPI:
 
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
+
+    def set_token_permissions(self,
+                              *,
+                              access_control_list: Optional[List[TokenAccessControlRequest]] = None,
+                              **kwargs) -> TokenPermissions:
+        """Set token permissions.
+        
+        Sets permissions on all tokens. Tokens can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
+        
+        :returns: :class:`TokenPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = TokenPermissionsRequest(access_control_list=access_control_list)
+        body = request.as_dict()
+
+        json = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body)
+        return TokenPermissions.from_dict(json)
+
+    def update_token_permissions(self,
+                                 *,
+                                 access_control_list: Optional[List[TokenAccessControlRequest]] = None,
+                                 **kwargs) -> TokenPermissions:
+        """Update token permissions.
+        
+        Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
+        
+        :returns: :class:`TokenPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = TokenPermissionsRequest(access_control_list=access_control_list)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH', '/api/2.0/permissions/authorization/tokens', body=body)
+        return TokenPermissions.from_dict(json)
 
 
 class TokensAPI:

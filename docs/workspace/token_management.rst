@@ -91,6 +91,24 @@ Token management
         :returns: :class:`TokenInfo`
         
 
+    .. py:method:: get_token_permission_levels()
+
+        Get token permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :returns: :class:`GetTokenPermissionLevelsResponse`
+        
+
+    .. py:method:: get_token_permissions()
+
+        Get token permissions.
+        
+        Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
+        
+        :returns: :class:`TokenPermissions`
+        
+
     .. py:method:: list( [, created_by_id, created_by_username])
 
         Usage:
@@ -114,4 +132,26 @@ Token management
           Username of the user that created the token.
         
         :returns: Iterator over :class:`TokenInfo`
+        
+
+    .. py:method:: set_token_permissions( [, access_control_list])
+
+        Set token permissions.
+        
+        Sets permissions on all tokens. Tokens can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
+        
+        :returns: :class:`TokenPermissions`
+        
+
+    .. py:method:: update_token_permissions( [, access_control_list])
+
+        Update token permissions.
+        
+        Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
+        
+        :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
+        
+        :returns: :class:`TokenPermissions`
         

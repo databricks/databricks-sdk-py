@@ -296,6 +296,34 @@ class GetGitCredentialRequest:
 
 
 @dataclass
+class GetRepoPermissionLevelsRequest:
+    """Get repo permission levels"""
+
+    repo_id: str
+
+
+@dataclass
+class GetRepoPermissionLevelsResponse:
+    permission_levels: Optional['List[RepoPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetRepoPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', RepoPermissionsDescription))
+
+
+@dataclass
+class GetRepoPermissionsRequest:
+    """Get repo permissions"""
+
+    repo_id: str
+
+
+@dataclass
 class GetRepoRequest:
     """Get a repo"""
 
@@ -307,6 +335,36 @@ class GetStatusRequest:
     """Get status"""
 
     path: str
+
+
+@dataclass
+class GetWorkspaceObjectPermissionLevelsRequest:
+    """Get workspace object permission levels"""
+
+    workspace_object_type: str
+    workspace_object_id: str
+
+
+@dataclass
+class GetWorkspaceObjectPermissionLevelsResponse:
+    permission_levels: Optional['List[WorkspaceObjectPermissionsDescription]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceObjectPermissionLevelsResponse':
+        return cls(permission_levels=_repeated(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
+
+
+@dataclass
+class GetWorkspaceObjectPermissionsRequest:
+    """Get workspace object permissions"""
+
+    workspace_object_type: str
+    workspace_object_id: str
 
 
 @dataclass
@@ -569,6 +627,57 @@ class PutSecret:
 
 
 @dataclass
+class RepoAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['RepoPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RepoAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', RepoPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class RepoAccessControlResponse:
+    all_permissions: Optional['List[RepoPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RepoAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', RepoPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
 class RepoInfo:
     branch: Optional[str] = None
     head_commit_id: Optional[str] = None
@@ -598,6 +707,91 @@ class RepoInfo:
                    provider=d.get('provider', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
                    url=d.get('url', None))
+
+
+@dataclass
+class RepoPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['RepoPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', RepoPermissionLevel))
+
+
+class RepoPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_EDIT = 'CAN_EDIT'
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_READ = 'CAN_READ'
+    CAN_RUN = 'CAN_RUN'
+
+
+@dataclass
+class RepoPermissions:
+    access_control_list: Optional['List[RepoAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list', RepoAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class RepoPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['RepoPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', RepoPermissionLevel))
+
+
+@dataclass
+class RepoPermissionsRequest:
+    access_control_list: Optional['List[RepoAccessControlRequest]'] = None
+    repo_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.repo_id is not None: body['repo_id'] = self.repo_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list', RepoAccessControlRequest),
+                   repo_id=d.get('repo_id', None))
 
 
 class ScopeBackendType(Enum):
@@ -715,6 +909,147 @@ class UpdateRepo:
                    repo_id=d.get('repo_id', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckoutUpdate),
                    tag=d.get('tag', None))
+
+
+@dataclass
+class WorkspaceObjectAccessControlRequest:
+    group_name: Optional[str] = None
+    permission_level: Optional['WorkspaceObjectPermissionLevel'] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectAccessControlRequest':
+        return cls(group_name=d.get('group_name', None),
+                   permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class WorkspaceObjectAccessControlResponse:
+    all_permissions: Optional['List[WorkspaceObjectPermission]'] = None
+    display_name: Optional[str] = None
+    group_name: Optional[str] = None
+    service_principal_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectAccessControlResponse':
+        return cls(all_permissions=_repeated(d, 'all_permissions', WorkspaceObjectPermission),
+                   display_name=d.get('display_name', None),
+                   group_name=d.get('group_name', None),
+                   service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
+
+
+@dataclass
+class WorkspaceObjectPermission:
+    inherited: Optional[bool] = None
+    inherited_from_object: Optional['List[str]'] = None
+    permission_level: Optional['WorkspaceObjectPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermission':
+        return cls(inherited=d.get('inherited', None),
+                   inherited_from_object=d.get('inherited_from_object', None),
+                   permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel))
+
+
+class WorkspaceObjectPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_EDIT = 'CAN_EDIT'
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_READ = 'CAN_READ'
+    CAN_RUN = 'CAN_RUN'
+
+
+@dataclass
+class WorkspaceObjectPermissions:
+    access_control_list: Optional['List[WorkspaceObjectAccessControlResponse]'] = None
+    object_id: Optional[str] = None
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissions':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 WorkspaceObjectAccessControlResponse),
+                   object_id=d.get('object_id', None),
+                   object_type=d.get('object_type', None))
+
+
+@dataclass
+class WorkspaceObjectPermissionsDescription:
+    description: Optional[str] = None
+    permission_level: Optional['WorkspaceObjectPermissionLevel'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissionsDescription':
+        return cls(description=d.get('description', None),
+                   permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel))
+
+
+@dataclass
+class WorkspaceObjectPermissionsRequest:
+    access_control_list: Optional['List[WorkspaceObjectAccessControlRequest]'] = None
+    workspace_object_id: Optional[str] = None
+    workspace_object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.access_control_list:
+            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.workspace_object_id is not None: body['workspace_object_id'] = self.workspace_object_id
+        if self.workspace_object_type is not None: body['workspace_object_type'] = self.workspace_object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissionsRequest':
+        return cls(access_control_list=_repeated(d, 'access_control_list',
+                                                 WorkspaceObjectAccessControlRequest),
+                   workspace_object_id=d.get('workspace_object_id', None),
+                   workspace_object_type=d.get('workspace_object_type', None))
 
 
 class GitCredentialsAPI:
@@ -919,6 +1254,40 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/repos/{request.repo_id}')
         return RepoInfo.from_dict(json)
 
+    def get_repo_permission_levels(self, repo_id: str, **kwargs) -> GetRepoPermissionLevelsResponse:
+        """Get repo permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        
+        :returns: :class:`GetRepoPermissionLevelsResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetRepoPermissionLevelsRequest(repo_id=repo_id)
+
+        json = self._api.do('GET', f'/api/2.0/permissions/repos/{request.repo_id}/permissionLevels')
+        return GetRepoPermissionLevelsResponse.from_dict(json)
+
+    def get_repo_permissions(self, repo_id: str, **kwargs) -> RepoPermissions:
+        """Get repo permissions.
+        
+        Gets the permissions of a repo. Repos can inherit permissions from their root object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        
+        :returns: :class:`RepoPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetRepoPermissionsRequest(repo_id=repo_id)
+
+        json = self._api.do('GET', f'/api/2.0/permissions/repos/{request.repo_id}')
+        return RepoPermissions.from_dict(json)
+
     def list(self,
              *,
              next_page_token: Optional[str] = None,
@@ -955,6 +1324,29 @@ class ReposAPI:
                 return
             query['next_page_token'] = json['next_page_token']
 
+    def set_repo_permissions(self,
+                             repo_id: str,
+                             *,
+                             access_control_list: Optional[List[RepoAccessControlRequest]] = None,
+                             **kwargs) -> RepoPermissions:
+        """Set repo permissions.
+        
+        Sets permissions on a repo. Repos can inherit permissions from their root object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
+        
+        :returns: :class:`RepoPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = RepoPermissionsRequest(access_control_list=access_control_list, repo_id=repo_id)
+        body = request.as_dict()
+
+        json = self._api.do('PUT', f'/api/2.0/permissions/repos/{request.repo_id}', body=body)
+        return RepoPermissions.from_dict(json)
+
     def update(self,
                repo_id: int,
                *,
@@ -986,6 +1378,29 @@ class ReposAPI:
             request = UpdateRepo(branch=branch, repo_id=repo_id, sparse_checkout=sparse_checkout, tag=tag)
         body = request.as_dict()
         self._api.do('PATCH', f'/api/2.0/repos/{request.repo_id}', body=body)
+
+    def update_repo_permissions(self,
+                                repo_id: str,
+                                *,
+                                access_control_list: Optional[List[RepoAccessControlRequest]] = None,
+                                **kwargs) -> RepoPermissions:
+        """Update repo permissions.
+        
+        Updates the permissions on a repo. Repos can inherit permissions from their root object.
+        
+        :param repo_id: str
+          The repo for which to get or manage permissions.
+        :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
+        
+        :returns: :class:`RepoPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = RepoPermissionsRequest(access_control_list=access_control_list, repo_id=repo_id)
+        body = request.as_dict()
+
+        json = self._api.do('PATCH', f'/api/2.0/permissions/repos/{request.repo_id}', body=body)
+        return RepoPermissions.from_dict(json)
 
 
 class SecretsAPI:
@@ -1362,6 +1777,53 @@ class WorkspaceAPI:
         json = self._api.do('GET', '/api/2.0/workspace/get-status', query=query)
         return ObjectInfo.from_dict(json)
 
+    def get_workspace_object_permission_levels(self, workspace_object_type: str, workspace_object_id: str,
+                                               **kwargs) -> GetWorkspaceObjectPermissionLevelsResponse:
+        """Get workspace object permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        
+        :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetWorkspaceObjectPermissionLevelsRequest(workspace_object_id=workspace_object_id,
+                                                                workspace_object_type=workspace_object_type)
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}/permissionLevels'
+        )
+        return GetWorkspaceObjectPermissionLevelsResponse.from_dict(json)
+
+    def get_workspace_object_permissions(self, workspace_object_type: str, workspace_object_id: str,
+                                         **kwargs) -> WorkspaceObjectPermissions:
+        """Get workspace object permissions.
+        
+        Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
+        parent objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        
+        :returns: :class:`WorkspaceObjectPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = GetWorkspaceObjectPermissionsRequest(workspace_object_id=workspace_object_id,
+                                                           workspace_object_type=workspace_object_type)
+
+        json = self._api.do(
+            'GET', f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}')
+        return WorkspaceObjectPermissions.from_dict(json)
+
     def import_(self,
                 path: str,
                 *,
@@ -1462,3 +1924,69 @@ class WorkspaceAPI:
             request = Mkdirs(path=path)
         body = request.as_dict()
         self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body)
+
+    def set_workspace_object_permissions(self,
+                                         workspace_object_type: str,
+                                         workspace_object_id: str,
+                                         *,
+                                         access_control_list: Optional[
+                                             List[WorkspaceObjectAccessControlRequest]] = None,
+                                         **kwargs) -> WorkspaceObjectPermissions:
+        """Set workspace object permissions.
+        
+        Sets permissions on a workspace object. Workspace objects can inherit permissions from their parent
+        objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
+        
+        :returns: :class:`WorkspaceObjectPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = WorkspaceObjectPermissionsRequest(access_control_list=access_control_list,
+                                                        workspace_object_id=workspace_object_id,
+                                                        workspace_object_type=workspace_object_type)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'PUT',
+            f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}',
+            body=body)
+        return WorkspaceObjectPermissions.from_dict(json)
+
+    def update_workspace_object_permissions(self,
+                                            workspace_object_type: str,
+                                            workspace_object_id: str,
+                                            *,
+                                            access_control_list: Optional[
+                                                List[WorkspaceObjectAccessControlRequest]] = None,
+                                            **kwargs) -> WorkspaceObjectPermissions:
+        """Update workspace object permissions.
+        
+        Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
+        parent objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
+        
+        :returns: :class:`WorkspaceObjectPermissions`
+        """
+        request = kwargs.get('request', None)
+        if not request: # request is not given through keyed args
+            request = WorkspaceObjectPermissionsRequest(access_control_list=access_control_list,
+                                                        workspace_object_id=workspace_object_id,
+                                                        workspace_object_type=workspace_object_type)
+        body = request.as_dict()
+
+        json = self._api.do(
+            'PATCH',
+            f'/api/2.0/permissions/{request.workspace_object_type}/{request.workspace_object_id}',
+            body=body)
+        return WorkspaceObjectPermissions.from_dict(json)

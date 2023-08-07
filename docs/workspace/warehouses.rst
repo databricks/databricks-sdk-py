@@ -225,6 +225,31 @@ SQL Warehouses
         :returns: :class:`GetWarehouseResponse`
         
 
+    .. py:method:: get_warehouse_permission_levels(warehouse_id)
+
+        Get SQL warehouse permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        
+        :returns: :class:`GetWarehousePermissionLevelsResponse`
+        
+
+    .. py:method:: get_warehouse_permissions(warehouse_id)
+
+        Get SQL warehouse permissions.
+        
+        Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
+        object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        
+        :returns: :class:`WarehousePermissions`
+        
+
     .. py:method:: get_workspace_warehouse_config()
 
         Get the workspace configuration.
@@ -256,6 +281,19 @@ SQL Warehouses
           from the session header is used.
         
         :returns: Iterator over :class:`EndpointInfo`
+        
+
+    .. py:method:: set_warehouse_permissions(warehouse_id [, access_control_list])
+
+        Set SQL warehouse permissions.
+        
+        Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
+        
+        :returns: :class:`WarehousePermissions`
         
 
     .. py:method:: set_workspace_warehouse_config( [, channel, config_param, data_access_config, enabled_warehouse_types, global_param, google_service_account, instance_profile_arn, security_policy, sql_configuration_parameters])
@@ -316,4 +354,18 @@ SQL Warehouses
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_stopped for more details.
+        
+
+    .. py:method:: update_warehouse_permissions(warehouse_id [, access_control_list])
+
+        Update SQL warehouse permissions.
+        
+        Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
+        object.
+        
+        :param warehouse_id: str
+          The SQL warehouse for which to get or manage permissions.
+        :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
+        
+        :returns: :class:`WarehousePermissions`
         
