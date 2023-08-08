@@ -18,7 +18,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
-from requests.adapters import HTTPAdapter
+from requests.adapters import HTTPAdapter, DEFAULT_POOLSIZE
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
@@ -491,6 +491,7 @@ class Config:
     metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL',
                                            auth='metadata-service',
                                            sensitive=True)
+    connection_pool_size: int = ConfigAttribute()
 
     def __init__(self,
                  *,
@@ -893,7 +894,29 @@ class ApiClient:
 
         self._session = requests.Session()
         self._session.auth = self._authenticate
-        self._session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
+
+        # Number of urllib3 connection pools to cache before discarding the least
+        # recently used pool. Python requests default value is 10.
+        pool_connections = cfg.connection_pool_size
+        if pool_connections is None:
+            pool_connections = 20
+
+        # The maximum number of connections to save in the pool. Improves performance
+        # in multithreaded situations. For now, we're setting it to the same value
+        # as connection_pool_size.
+        pool_maxsize = pool_connections
+
+        # If pool_block is False, then more connections will are created,
+        # but not saved after the first use. Blocks when no free connections are available.
+        # urllib3 ensures that no more than pool_maxsize connections are used at a time.
+        # Prevents platform from flooding. By default, requests library doesn't block.
+        pool_block = True
+
+        http_adapter = HTTPAdapter(max_retries=retry_strategy,
+                                   pool_connections=pool_connections,
+                                   pool_maxsize=pool_maxsize,
+                                   pool_block=pool_block)
+        self._session.mount("https://", http_adapter)
 
     @property
     def account_id(self) -> str:
