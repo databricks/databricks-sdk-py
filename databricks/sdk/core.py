@@ -18,7 +18,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
-from requests.adapters import HTTPAdapter, DEFAULT_POOLSIZE
+from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
