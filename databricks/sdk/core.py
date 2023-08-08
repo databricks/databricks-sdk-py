@@ -640,7 +640,7 @@ class Config:
                 return None
             return OidcEndpoints(authorization_endpoint=real_auth_url,
                                  token_endpoint=real_auth_url.replace('/authorize', '/token'))
-        if self.account_id:
+        if self.is_account_client and self.account_id:
             prefix = f'{self.host}/oidc/accounts/{self.account_id}'
             return OidcEndpoints(authorization_endpoint=f'{prefix}/v1/authorize',
                                  token_endpoint=f'{prefix}/v1/token')
