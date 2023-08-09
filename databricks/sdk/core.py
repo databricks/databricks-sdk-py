@@ -492,6 +492,7 @@ class Config:
                                            auth='metadata-service',
                                            sensitive=True)
     connection_pool_size: int = ConfigAttribute()
+    connection_pool_max_size: int = ConfigAttribute()
 
     def __init__(self,
                  *,
@@ -904,7 +905,9 @@ class ApiClient:
         # The maximum number of connections to save in the pool. Improves performance
         # in multithreaded situations. For now, we're setting it to the same value
         # as connection_pool_size.
-        pool_maxsize = pool_connections
+        pool_maxsize = cfg.connection_pool_max_size
+        if cfg.connection_pool_max_size is None:
+            pool_maxsize = pool_connections
 
         # If pool_block is False, then more connections will are created,
         # but not saved after the first use. Blocks when no free connections are available.
