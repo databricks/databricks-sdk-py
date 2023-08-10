@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _repeated
+from ._internal import _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -18,8 +18,8 @@ class AddBlock:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.data is not None: body['data'] = self.data
-        if self.handle is not None: body['handle'] = self.handle
+        if self.data is not None: body['data'] = _validated('data', str, self.data)
+        if self.handle is not None: body['handle'] = _validated('handle', int, self.handle)
         return body
 
     @classmethod
@@ -33,7 +33,7 @@ class Close:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.handle is not None: body['handle'] = self.handle
+        if self.handle is not None: body['handle'] = _validated('handle', int, self.handle)
         return body
 
     @classmethod
@@ -48,8 +48,8 @@ class Create:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.overwrite is not None: body['overwrite'] = self.overwrite
-        if self.path is not None: body['path'] = self.path
+        if self.overwrite is not None: body['overwrite'] = _validated('overwrite', bool, self.overwrite)
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -63,7 +63,7 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.handle is not None: body['handle'] = self.handle
+        if self.handle is not None: body['handle'] = _validated('handle', int, self.handle)
         return body
 
     @classmethod
@@ -78,8 +78,8 @@ class Delete:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
-        if self.recursive is not None: body['recursive'] = self.recursive
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
+        if self.recursive is not None: body['recursive'] = _validated('recursive', bool, self.recursive)
         return body
 
     @classmethod
@@ -96,10 +96,11 @@ class FileInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.file_size is not None: body['file_size'] = self.file_size
-        if self.is_dir is not None: body['is_dir'] = self.is_dir
-        if self.modification_time is not None: body['modification_time'] = self.modification_time
-        if self.path is not None: body['path'] = self.path
+        if self.file_size is not None: body['file_size'] = _validated('file_size', int, self.file_size)
+        if self.is_dir is not None: body['is_dir'] = _validated('is_dir', bool, self.is_dir)
+        if self.modification_time is not None:
+            body['modification_time'] = _validated('modification_time', int, self.modification_time)
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -116,7 +117,7 @@ class ListStatusResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.files: body['files'] = [v.as_dict() for v in self.files]
+        if self.files: body['files'] = [_validated('files item', FileInfo, v) for v in self.files]
         return body
 
     @classmethod
@@ -130,7 +131,7 @@ class MkDirs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -145,8 +146,10 @@ class Move:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination_path is not None: body['destination_path'] = self.destination_path
-        if self.source_path is not None: body['source_path'] = self.source_path
+        if self.destination_path is not None:
+            body['destination_path'] = _validated('destination_path', str, self.destination_path)
+        if self.source_path is not None:
+            body['source_path'] = _validated('source_path', str, self.source_path)
         return body
 
     @classmethod
@@ -162,9 +165,9 @@ class Put:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.contents is not None: body['contents'] = self.contents
-        if self.overwrite is not None: body['overwrite'] = self.overwrite
-        if self.path is not None: body['path'] = self.path
+        if self.contents is not None: body['contents'] = _validated('contents', str, self.contents)
+        if self.overwrite is not None: body['overwrite'] = _validated('overwrite', bool, self.overwrite)
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -181,8 +184,8 @@ class ReadResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bytes_read is not None: body['bytes_read'] = self.bytes_read
-        if self.data is not None: body['data'] = self.data
+        if self.bytes_read is not None: body['bytes_read'] = _validated('bytes_read', int, self.bytes_read)
+        if self.data is not None: body['data'] = _validated('data', str, self.data)
         return body
 
     @classmethod
@@ -213,8 +216,8 @@ class DbfsAPI:
         
         """
         body = {}
-        if data is not None: body['data'] = data
-        if handle is not None: body['handle'] = handle
+        if data is not None: body['data'] = _validated('data', str, data)
+        if handle is not None: body['handle'] = _validated('handle', int, handle)
         self._api.do('POST', '/api/2.0/dbfs/add-block', body=body)
 
     def close(self, handle: int):
@@ -229,7 +232,7 @@ class DbfsAPI:
         
         """
         body = {}
-        if handle is not None: body['handle'] = handle
+        if handle is not None: body['handle'] = _validated('handle', int, handle)
         self._api.do('POST', '/api/2.0/dbfs/close', body=body)
 
     def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
@@ -252,8 +255,8 @@ class DbfsAPI:
         :returns: :class:`CreateResponse`
         """
         body = {}
-        if overwrite is not None: body['overwrite'] = overwrite
-        if path is not None: body['path'] = path
+        if overwrite is not None: body['overwrite'] = _validated('overwrite', bool, overwrite)
+        if path is not None: body['path'] = _validated('path', str, path)
 
         json = self._api.do('POST', '/api/2.0/dbfs/create', body=body)
         return CreateResponse.from_dict(json)
@@ -285,8 +288,8 @@ class DbfsAPI:
         
         """
         body = {}
-        if path is not None: body['path'] = path
-        if recursive is not None: body['recursive'] = recursive
+        if path is not None: body['path'] = _validated('path', str, path)
+        if recursive is not None: body['recursive'] = _validated('recursive', bool, recursive)
         self._api.do('POST', '/api/2.0/dbfs/delete', body=body)
 
     def get_status(self, path: str) -> FileInfo:
@@ -302,7 +305,7 @@ class DbfsAPI:
         """
 
         query = {}
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = _validated('path', str, path)
 
         json = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query)
         return FileInfo.from_dict(json)
@@ -327,7 +330,7 @@ class DbfsAPI:
         """
 
         query = {}
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = _validated('path', str, path)
 
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query)
         return [FileInfo.from_dict(v) for v in json.get('files', [])]
@@ -346,7 +349,7 @@ class DbfsAPI:
         
         """
         body = {}
-        if path is not None: body['path'] = path
+        if path is not None: body['path'] = _validated('path', str, path)
         self._api.do('POST', '/api/2.0/dbfs/mkdirs', body=body)
 
     def move(self, source_path: str, destination_path: str):
@@ -365,8 +368,9 @@ class DbfsAPI:
         
         """
         body = {}
-        if destination_path is not None: body['destination_path'] = destination_path
-        if source_path is not None: body['source_path'] = source_path
+        if destination_path is not None:
+            body['destination_path'] = _validated('destination_path', str, destination_path)
+        if source_path is not None: body['source_path'] = _validated('source_path', str, source_path)
         self._api.do('POST', '/api/2.0/dbfs/move', body=body)
 
     def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
@@ -393,9 +397,9 @@ class DbfsAPI:
         
         """
         body = {}
-        if contents is not None: body['contents'] = contents
-        if overwrite is not None: body['overwrite'] = overwrite
-        if path is not None: body['path'] = path
+        if contents is not None: body['contents'] = _validated('contents', str, contents)
+        if overwrite is not None: body['overwrite'] = _validated('overwrite', bool, overwrite)
+        if path is not None: body['path'] = _validated('path', str, path)
         self._api.do('POST', '/api/2.0/dbfs/put', body=body)
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
@@ -421,9 +425,9 @@ class DbfsAPI:
         """
 
         query = {}
-        if length is not None: query['length'] = length
-        if offset is not None: query['offset'] = offset
-        if path is not None: query['path'] = path
+        if length is not None: query['length'] = _validated('length', int, length)
+        if offset is not None: query['offset'] = _validated('offset', int, offset)
+        if path is not None: query['path'] = _validated('path', str, path)
 
         json = self._api.do('GET', '/api/2.0/dbfs/read', query=query)
         return ReadResponse.from_dict(json)

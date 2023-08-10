@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -28,16 +28,20 @@ class Activity:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activity_type is not None: body['activity_type'] = self.activity_type.value
-        if self.comment is not None: body['comment'] = self.comment
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.from_stage is not None: body['from_stage'] = self.from_stage.value
-        if self.id is not None: body['id'] = self.id
+        if self.activity_type is not None:
+            body['activity_type'] = _validated('activity_type', ActivityType, self.activity_type)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.from_stage is not None: body['from_stage'] = _validated('from_stage', Stage, self.from_stage)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.system_comment is not None: body['system_comment'] = self.system_comment
-        if self.to_stage is not None: body['to_stage'] = self.to_stage.value
-        if self.user_id is not None: body['user_id'] = self.user_id
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.system_comment is not None:
+            body['system_comment'] = _validated('system_comment', str, self.system_comment)
+        if self.to_stage is not None: body['to_stage'] = _validated('to_stage', Stage, self.to_stage)
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -84,11 +88,12 @@ class ApproveTransitionRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.archive_existing_versions is not None:
-            body['archive_existing_versions'] = self.archive_existing_versions
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.stage is not None: body['stage'] = self.stage.value
-        if self.version is not None: body['version'] = self.version
+            body['archive_existing_versions'] = _validated('archive_existing_versions', bool,
+                                                           self.archive_existing_versions)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.stage is not None: body['stage'] = _validated('stage', Stage, self.stage)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -106,7 +111,7 @@ class ApproveTransitionRequestResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activity: body['activity'] = self.activity.as_dict()
+        if self.activity: body['activity'] = _validated('activity', Activity, self.activity)
         return body
 
     @classmethod
@@ -134,13 +139,18 @@ class CommentObject:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.available_actions: body['available_actions'] = [v.value for v in self.available_actions]
-        if self.comment is not None: body['comment'] = self.comment
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.id is not None: body['id'] = self.id
+        if self.available_actions:
+            body['available_actions'] = [
+                _validated('available_actions item', CommentActivityAction, v) for v in self.available_actions
+            ]
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.user_id is not None: body['user_id'] = self.user_id
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -161,9 +171,9 @@ class CreateComment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.version is not None: body['version'] = self.version
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -177,7 +187,7 @@ class CreateCommentResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment.as_dict()
+        if self.comment: body['comment'] = _validated('comment', CommentObject, self.comment)
         return body
 
     @classmethod
@@ -193,9 +203,10 @@ class CreateExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
-        if self.name is not None: body['name'] = self.name
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.artifact_location is not None:
+            body['artifact_location'] = _validated('artifact_location', str, self.artifact_location)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.tags: body['tags'] = [_validated('tags item', ExperimentTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -211,7 +222,8 @@ class CreateExperimentResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
         return body
 
     @classmethod
@@ -227,9 +239,10 @@ class CreateModelRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.tags: body['tags'] = [_validated('tags item', ModelTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -245,7 +258,8 @@ class CreateModelResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        if self.registered_model:
+            body['registered_model'] = _validated('registered_model', Model, self.registered_model)
         return body
 
     @classmethod
@@ -264,12 +278,13 @@ class CreateModelVersionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_link is not None: body['run_link'] = self.run_link
-        if self.source is not None: body['source'] = self.source
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_link is not None: body['run_link'] = _validated('run_link', str, self.run_link)
+        if self.source is not None: body['source'] = _validated('source', str, self.source)
+        if self.tags: body['tags'] = [_validated('tags item', ModelVersionTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -288,7 +303,8 @@ class CreateModelVersionResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_version: body['model_version'] = self.model_version.as_dict()
+        if self.model_version:
+            body['model_version'] = _validated('model_version', ModelVersion, self.model_version)
         return body
 
     @classmethod
@@ -307,12 +323,15 @@ class CreateRegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.events: body['events'] = [v.value for v in self.events]
-        if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
-        if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
-        if self.model_name is not None: body['model_name'] = self.model_name
-        if self.status is not None: body['status'] = self.status.value
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.events:
+            body['events'] = [_validated('events item', RegistryWebhookEvent, v) for v in self.events]
+        if self.http_url_spec:
+            body['http_url_spec'] = _validated('http_url_spec', HttpUrlSpec, self.http_url_spec)
+        if self.job_spec: body['job_spec'] = _validated('job_spec', JobSpec, self.job_spec)
+        if self.model_name is not None: body['model_name'] = _validated('model_name', str, self.model_name)
+        if self.status is not None: body['status'] = _validated('status', RegistryWebhookStatus, self.status)
         return body
 
     @classmethod
@@ -334,10 +353,11 @@ class CreateRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
-        if self.start_time is not None: body['start_time'] = self.start_time
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
+        if self.tags: body['tags'] = [_validated('tags item', RunTag, v) for v in self.tags]
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -354,7 +374,7 @@ class CreateRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run: body['run'] = self.run.as_dict()
+        if self.run: body['run'] = _validated('run', Run, self.run)
         return body
 
     @classmethod
@@ -371,10 +391,10 @@ class CreateTransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.stage is not None: body['stage'] = self.stage.value
-        if self.version is not None: body['version'] = self.version
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.stage is not None: body['stage'] = _validated('stage', Stage, self.stage)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -391,7 +411,7 @@ class CreateTransitionRequestResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.request: body['request'] = self.request.as_dict()
+        if self.request: body['request'] = _validated('request', TransitionRequest, self.request)
         return body
 
     @classmethod
@@ -405,7 +425,7 @@ class CreateWebhookResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.webhook: body['webhook'] = self.webhook.as_dict()
+        if self.webhook: body['webhook'] = _validated('webhook', RegistryWebhook, self.webhook)
         return body
 
     @classmethod
@@ -424,12 +444,13 @@ class Dataset:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.digest is not None: body['digest'] = self.digest
-        if self.name is not None: body['name'] = self.name
-        if self.profile is not None: body['profile'] = self.profile
-        if self.schema is not None: body['schema'] = self.schema
-        if self.source is not None: body['source'] = self.source
-        if self.source_type is not None: body['source_type'] = self.source_type
+        if self.digest is not None: body['digest'] = _validated('digest', str, self.digest)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.profile is not None: body['profile'] = _validated('profile', str, self.profile)
+        if self.schema is not None: body['schema'] = _validated('schema', str, self.schema)
+        if self.source is not None: body['source'] = _validated('source', str, self.source)
+        if self.source_type is not None:
+            body['source_type'] = _validated('source_type', str, self.source_type)
         return body
 
     @classmethod
@@ -449,8 +470,8 @@ class DatasetInput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dataset: body['dataset'] = self.dataset.as_dict()
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.dataset: body['dataset'] = _validated('dataset', Dataset, self.dataset)
+        if self.tags: body['tags'] = [_validated('tags item', InputTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -464,7 +485,8 @@ class DeleteExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
         return body
 
     @classmethod
@@ -478,7 +500,7 @@ class DeleteRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
         return body
 
     @classmethod
@@ -493,8 +515,8 @@ class DeleteTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
         return body
 
     @classmethod
@@ -522,13 +544,18 @@ class Experiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
-        if self.last_update_time is not None: body['last_update_time'] = self.last_update_time
-        if self.lifecycle_stage is not None: body['lifecycle_stage'] = self.lifecycle_stage
-        if self.name is not None: body['name'] = self.name
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.artifact_location is not None:
+            body['artifact_location'] = _validated('artifact_location', str, self.artifact_location)
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
+        if self.last_update_time is not None:
+            body['last_update_time'] = _validated('last_update_time', int, self.last_update_time)
+        if self.lifecycle_stage is not None:
+            body['lifecycle_stage'] = _validated('lifecycle_stage', str, self.lifecycle_stage)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.tags: body['tags'] = [_validated('tags item', ExperimentTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -551,11 +578,14 @@ class ExperimentAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ExperimentPermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -576,12 +606,17 @@ class ExperimentAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', ExperimentPermission, v) for v in self.all_permissions
+            ]
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -601,9 +636,14 @@ class ExperimentPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ExperimentPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -630,9 +670,13 @@ class ExperimentPermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+            body['access_control_list'] = [
+                _validated('access_control_list item', ExperimentAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -649,8 +693,11 @@ class ExperimentPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', ExperimentPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -667,8 +714,12 @@ class ExperimentPermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+            body['access_control_list'] = [
+                _validated('access_control_list item', ExperimentAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
         return body
 
     @classmethod
@@ -684,8 +735,8 @@ class ExperimentTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -701,9 +752,9 @@ class FileInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.file_size is not None: body['file_size'] = self.file_size
-        if self.is_dir is not None: body['is_dir'] = self.is_dir
-        if self.path is not None: body['path'] = self.path
+        if self.file_size is not None: body['file_size'] = _validated('file_size', int, self.file_size)
+        if self.is_dir is not None: body['is_dir'] = _validated('is_dir', bool, self.is_dir)
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -717,7 +768,7 @@ class GetExperimentByNameResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment: body['experiment'] = self.experiment.as_dict()
+        if self.experiment: body['experiment'] = _validated('experiment', Experiment, self.experiment)
         return body
 
     @classmethod
@@ -731,7 +782,11 @@ class GetExperimentPermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', ExperimentPermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -746,8 +801,8 @@ class GetLatestVersionsRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.stages: body['stages'] = [v for v in self.stages]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.stages: body['stages'] = [_validated('stages item', str, v) for v in self.stages]
         return body
 
     @classmethod
@@ -761,7 +816,10 @@ class GetLatestVersionsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
+        if self.model_versions:
+            body['model_versions'] = [
+                _validated('model_versions item', ModelVersion, v) for v in self.model_versions
+            ]
         return body
 
     @classmethod
@@ -776,8 +834,9 @@ class GetMetricHistoryResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.metrics: body['metrics'] = [_validated('metrics item', Metric, v) for v in self.metrics]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         return body
 
     @classmethod
@@ -792,7 +851,8 @@ class GetModelResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.registered_model_databricks:
-            body['registered_model_databricks'] = self.registered_model_databricks.as_dict()
+            body['registered_model_databricks'] = _validated('registered_model_databricks', ModelDatabricks,
+                                                             self.registered_model_databricks)
         return body
 
     @classmethod
@@ -806,7 +866,8 @@ class GetModelVersionDownloadUriResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
+        if self.artifact_uri is not None:
+            body['artifact_uri'] = _validated('artifact_uri', str, self.artifact_uri)
         return body
 
     @classmethod
@@ -820,7 +881,8 @@ class GetModelVersionResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_version: body['model_version'] = self.model_version.as_dict()
+        if self.model_version:
+            body['model_version'] = _validated('model_version', ModelVersion, self.model_version)
         return body
 
     @classmethod
@@ -834,7 +896,11 @@ class GetRegisteredModelPermissionLevelsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        if self.permission_levels:
+            body['permission_levels'] = [
+                _validated('permission_levels item', RegisteredModelPermissionsDescription, v)
+                for v in self.permission_levels
+            ]
         return body
 
     @classmethod
@@ -848,7 +914,7 @@ class GetRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run: body['run'] = self.run.as_dict()
+        if self.run: body['run'] = _validated('run', Run, self.run)
         return body
 
     @classmethod
@@ -865,11 +931,13 @@ class HttpUrlSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authorization is not None: body['authorization'] = self.authorization
+        if self.authorization is not None:
+            body['authorization'] = _validated('authorization', str, self.authorization)
         if self.enable_ssl_verification is not None:
-            body['enable_ssl_verification'] = self.enable_ssl_verification
-        if self.secret is not None: body['secret'] = self.secret
-        if self.url is not None: body['url'] = self.url
+            body['enable_ssl_verification'] = _validated('enable_ssl_verification', bool,
+                                                         self.enable_ssl_verification)
+        if self.secret is not None: body['secret'] = _validated('secret', str, self.secret)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -888,8 +956,9 @@ class HttpUrlSpecWithoutSecret:
     def as_dict(self) -> dict:
         body = {}
         if self.enable_ssl_verification is not None:
-            body['enable_ssl_verification'] = self.enable_ssl_verification
-        if self.url is not None: body['url'] = self.url
+            body['enable_ssl_verification'] = _validated('enable_ssl_verification', bool,
+                                                         self.enable_ssl_verification)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -904,8 +973,8 @@ class InputTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -921,9 +990,11 @@ class JobSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_token is not None: body['access_token'] = self.access_token
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
+        if self.access_token is not None:
+            body['access_token'] = _validated('access_token', str, self.access_token)
+        if self.job_id is not None: body['job_id'] = _validated('job_id', str, self.job_id)
+        if self.workspace_url is not None:
+            body['workspace_url'] = _validated('workspace_url', str, self.workspace_url)
         return body
 
     @classmethod
@@ -940,13 +1011,23 @@ class JobSpecWithoutSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
+        if self.job_id is not None: body['job_id'] = _validated('job_id', str, self.job_id)
+        if self.workspace_url is not None:
+            body['workspace_url'] = _validated('workspace_url', str, self.workspace_url)
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobSpecWithoutSecret':
         return cls(job_id=d.get('job_id', None), workspace_url=d.get('workspace_url', None))
+
+
+@dataclass
+class ListArtifactsRequest:
+    """Get all artifacts"""
+
+    path: Optional[str] = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
 
 
 @dataclass
@@ -957,9 +1038,10 @@ class ListArtifactsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.files: body['files'] = [v.as_dict() for v in self.files]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.root_uri is not None: body['root_uri'] = self.root_uri
+        if self.files: body['files'] = [_validated('files item', FileInfo, v) for v in self.files]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.root_uri is not None: body['root_uri'] = _validated('root_uri', str, self.root_uri)
         return body
 
     @classmethod
@@ -970,14 +1052,24 @@ class ListArtifactsResponse:
 
 
 @dataclass
+class ListExperimentsRequest:
+    """List experiments"""
+
+    max_results: Optional[int] = None
+    view_type: Optional[str] = None
+
+
+@dataclass
 class ListExperimentsResponse:
     experiments: Optional['List[Experiment]'] = None
     next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.experiments:
+            body['experiments'] = [_validated('experiments item', Experiment, v) for v in self.experiments]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         return body
 
     @classmethod
@@ -987,14 +1079,25 @@ class ListExperimentsResponse:
 
 
 @dataclass
+class ListModelsRequest:
+    """List models"""
+
+    max_results: Optional[int] = None
+
+
+@dataclass
 class ListModelsResponse:
     next_page_token: Optional[str] = None
     registered_models: Optional['List[Model]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.registered_models:
+            body['registered_models'] = [
+                _validated('registered_models item', Model, v) for v in self.registered_models
+            ]
         return body
 
     @classmethod
@@ -1010,8 +1113,10 @@ class ListRegistryWebhooks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.webhooks: body['webhooks'] = [v.as_dict() for v in self.webhooks]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.webhooks:
+            body['webhooks'] = [_validated('webhooks item', RegistryWebhook, v) for v in self.webhooks]
         return body
 
     @classmethod
@@ -1026,12 +1131,20 @@ class ListTransitionRequestsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.requests: body['requests'] = [v.as_dict() for v in self.requests]
+        if self.requests: body['requests'] = [_validated('requests item', Activity, v) for v in self.requests]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTransitionRequestsResponse':
         return cls(requests=_repeated(d, 'requests', Activity))
+
+
+@dataclass
+class ListWebhooksRequest:
+    """List registry webhooks"""
+
+    events: Optional['List[RegistryWebhookEvent]'] = None
+    model_name: Optional[str] = None
 
 
 @dataclass
@@ -1043,10 +1156,10 @@ class LogBatch:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
-        if self.params: body['params'] = [v.as_dict() for v in self.params]
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.metrics: body['metrics'] = [_validated('metrics item', Metric, v) for v in self.metrics]
+        if self.params: body['params'] = [_validated('params item', Param, v) for v in self.params]
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.tags: body['tags'] = [_validated('tags item', RunTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -1064,8 +1177,9 @@ class LogInputs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.datasets: body['datasets'] = [v.as_dict() for v in self.datasets]
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.datasets:
+            body['datasets'] = [_validated('datasets item', DatasetInput, v) for v in self.datasets]
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
         return body
 
     @classmethod
@@ -1084,12 +1198,12 @@ class LogMetric:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
-        if self.step is not None: body['step'] = self.step
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, self.run_uuid)
+        if self.step is not None: body['step'] = _validated('step', int, self.step)
+        if self.timestamp is not None: body['timestamp'] = _validated('timestamp', int, self.timestamp)
+        if self.value is not None: body['value'] = _validated('value', float, self.value)
         return body
 
     @classmethod
@@ -1109,8 +1223,8 @@ class LogModel:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_json is not None: body['model_json'] = self.model_json
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.model_json is not None: body['model_json'] = _validated('model_json', str, self.model_json)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
         return body
 
     @classmethod
@@ -1127,10 +1241,10 @@ class LogParam:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, self.run_uuid)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -1150,10 +1264,10 @@ class Metric:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.step is not None: body['step'] = self.step
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.step is not None: body['step'] = _validated('step', int, self.step)
+        if self.timestamp is not None: body['timestamp'] = _validated('timestamp', int, self.timestamp)
+        if self.value is not None: body['value'] = _validated('value', float, self.value)
         return body
 
     @classmethod
@@ -1176,14 +1290,20 @@ class Model:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.description is not None: body['description'] = self.description
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
-        if self.name is not None: body['name'] = self.name
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id is not None: body['user_id'] = self.user_id
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.latest_versions:
+            body['latest_versions'] = [
+                _validated('latest_versions item', ModelVersion, v) for v in self.latest_versions
+            ]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.tags: body['tags'] = [_validated('tags item', ModelTag, v) for v in self.tags]
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -1211,16 +1331,23 @@ class ModelDatabricks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.description is not None: body['description'] = self.description
-        if self.id is not None: body['id'] = self.id
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
-        if self.name is not None: body['name'] = self.name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id is not None: body['user_id'] = self.user_id
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.latest_versions:
+            body['latest_versions'] = [
+                _validated('latest_versions item', ModelVersion, v) for v in self.latest_versions
+            ]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', PermissionLevel, self.permission_level)
+        if self.tags: body['tags'] = [_validated('tags item', ModelTag, v) for v in self.tags]
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -1243,8 +1370,8 @@ class ModelTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -1270,20 +1397,25 @@ class ModelVersion:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.current_stage is not None: body['current_stage'] = self.current_stage
-        if self.description is not None: body['description'] = self.description
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.current_stage is not None:
+            body['current_stage'] = _validated('current_stage', str, self.current_stage)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name is not None: body['name'] = self.name
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_link is not None: body['run_link'] = self.run_link
-        if self.source is not None: body['source'] = self.source
-        if self.status is not None: body['status'] = self.status.value
-        if self.status_message is not None: body['status_message'] = self.status_message
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id is not None: body['user_id'] = self.user_id
-        if self.version is not None: body['version'] = self.version
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_link is not None: body['run_link'] = _validated('run_link', str, self.run_link)
+        if self.source is not None: body['source'] = _validated('source', str, self.source)
+        if self.status is not None: body['status'] = _validated('status', ModelVersionStatus, self.status)
+        if self.status_message is not None:
+            body['status_message'] = _validated('status_message', str, self.status_message)
+        if self.tags: body['tags'] = [_validated('tags item', ModelVersionTag, v) for v in self.tags]
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -1322,21 +1454,27 @@ class ModelVersionDatabricks:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.current_stage is not None: body['current_stage'] = self.current_stage.value
-        if self.description is not None: body['description'] = self.description
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.current_stage is not None:
+            body['current_stage'] = _validated('current_stage', Stage, self.current_stage)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name is not None: body['name'] = self.name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_link is not None: body['run_link'] = self.run_link
-        if self.source is not None: body['source'] = self.source
-        if self.status is not None: body['status'] = self.status.value
-        if self.status_message is not None: body['status_message'] = self.status_message
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.user_id is not None: body['user_id'] = self.user_id
-        if self.version is not None: body['version'] = self.version
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', PermissionLevel, self.permission_level)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_link is not None: body['run_link'] = _validated('run_link', str, self.run_link)
+        if self.source is not None: body['source'] = _validated('source', str, self.source)
+        if self.status is not None: body['status'] = _validated('status', Status, self.status)
+        if self.status_message is not None:
+            body['status_message'] = _validated('status_message', str, self.status_message)
+        if self.tags: body['tags'] = [_validated('tags item', ModelVersionTag, v) for v in self.tags]
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -1372,8 +1510,8 @@ class ModelVersionTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -1388,8 +1526,8 @@ class Param:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -1417,11 +1555,14 @@ class RegisteredModelAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', RegisteredModelPermissionLevel,
+                                                  self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -1442,12 +1583,17 @@ class RegisteredModelAccessControlResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.all_permissions:
+            body['all_permissions'] = [
+                _validated('all_permissions item', RegisteredModelPermission, v) for v in self.all_permissions
+            ]
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -1467,9 +1613,14 @@ class RegisteredModelPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', RegisteredModelPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -1498,9 +1649,13 @@ class RegisteredModelPermissions:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+            body['access_control_list'] = [
+                _validated('access_control_list item', RegisteredModelAccessControlResponse, v)
+                for v in self.access_control_list
+            ]
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -1518,8 +1673,11 @@ class RegisteredModelPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.permission_level is not None:
+            body['permission_level'] = _validated('permission_level', RegisteredModelPermissionLevel,
+                                                  self.permission_level)
         return body
 
     @classmethod
@@ -1536,8 +1694,12 @@ class RegisteredModelPermissionsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.access_control_list:
-            body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.registered_model_id is not None: body['registered_model_id'] = self.registered_model_id
+            body['access_control_list'] = [
+                _validated('access_control_list item', RegisteredModelAccessControlRequest, v)
+                for v in self.access_control_list
+            ]
+        if self.registered_model_id is not None:
+            body['registered_model_id'] = _validated('registered_model_id', str, self.registered_model_id)
         return body
 
     @classmethod
@@ -1561,16 +1723,21 @@ class RegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.description is not None: body['description'] = self.description
-        if self.events: body['events'] = [v.value for v in self.events]
-        if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
-        if self.id is not None: body['id'] = self.id
-        if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.events:
+            body['events'] = [_validated('events item', RegistryWebhookEvent, v) for v in self.events]
+        if self.http_url_spec:
+            body['http_url_spec'] = _validated('http_url_spec', HttpUrlSpecWithoutSecret, self.http_url_spec)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.job_spec: body['job_spec'] = _validated('job_spec', JobSpecWithoutSecret, self.job_spec)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.model_name is not None: body['model_name'] = self.model_name
-        if self.status is not None: body['status'] = self.status.value
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.model_name is not None: body['model_name'] = _validated('model_name', str, self.model_name)
+        if self.status is not None: body['status'] = _validated('status', RegistryWebhookStatus, self.status)
         return body
 
     @classmethod
@@ -1619,10 +1786,10 @@ class RejectTransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.stage is not None: body['stage'] = self.stage.value
-        if self.version is not None: body['version'] = self.version
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.stage is not None: body['stage'] = _validated('stage', Stage, self.stage)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -1639,7 +1806,7 @@ class RejectTransitionRequestResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activity: body['activity'] = self.activity.as_dict()
+        if self.activity: body['activity'] = _validated('activity', Activity, self.activity)
         return body
 
     @classmethod
@@ -1654,8 +1821,8 @@ class RenameModelRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.new_name is not None: body['new_name'] = _validated('new_name', str, self.new_name)
         return body
 
     @classmethod
@@ -1669,7 +1836,8 @@ class RenameModelResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        if self.registered_model:
+            body['registered_model'] = _validated('registered_model', Model, self.registered_model)
         return body
 
     @classmethod
@@ -1683,7 +1851,8 @@ class RestoreExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
         return body
 
     @classmethod
@@ -1697,7 +1866,7 @@ class RestoreRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
         return body
 
     @classmethod
@@ -1713,9 +1882,9 @@ class Run:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.data: body['data'] = self.data.as_dict()
-        if self.info: body['info'] = self.info.as_dict()
-        if self.inputs: body['inputs'] = self.inputs.as_dict()
+        if self.data: body['data'] = _validated('data', RunData, self.data)
+        if self.info: body['info'] = _validated('info', RunInfo, self.info)
+        if self.inputs: body['inputs'] = _validated('inputs', RunInputs, self.inputs)
         return body
 
     @classmethod
@@ -1733,9 +1902,9 @@ class RunData:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
-        if self.params: body['params'] = [v.as_dict() for v in self.params]
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.metrics: body['metrics'] = [_validated('metrics item', Metric, v) for v in self.metrics]
+        if self.params: body['params'] = [_validated('params item', Param, v) for v in self.params]
+        if self.tags: body['tags'] = [_validated('tags item', RunTag, v) for v in self.tags]
         return body
 
     @classmethod
@@ -1759,15 +1928,18 @@ class RunInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
-        if self.end_time is not None: body['end_time'] = self.end_time
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
-        if self.lifecycle_stage is not None: body['lifecycle_stage'] = self.lifecycle_stage
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
-        if self.start_time is not None: body['start_time'] = self.start_time
-        if self.status is not None: body['status'] = self.status.value
-        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.artifact_uri is not None:
+            body['artifact_uri'] = _validated('artifact_uri', str, self.artifact_uri)
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
+        if self.lifecycle_stage is not None:
+            body['lifecycle_stage'] = _validated('lifecycle_stage', str, self.lifecycle_stage)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, self.run_uuid)
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
+        if self.status is not None: body['status'] = _validated('status', RunInfoStatus, self.status)
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -1799,7 +1971,10 @@ class RunInputs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dataset_inputs: body['dataset_inputs'] = [v.as_dict() for v in self.dataset_inputs]
+        if self.dataset_inputs:
+            body['dataset_inputs'] = [
+                _validated('dataset_inputs item', DatasetInput, v) for v in self.dataset_inputs
+            ]
         return body
 
     @classmethod
@@ -1814,8 +1989,8 @@ class RunTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -1828,16 +2003,16 @@ class SearchExperiments:
     filter: Optional[str] = None
     max_results: Optional[int] = None
     order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
     view_type: Optional['SearchExperimentsViewType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.filter is not None: body['filter'] = self.filter
-        if self.max_results is not None: body['max_results'] = self.max_results
-        if self.order_by: body['order_by'] = [v for v in self.order_by]
-        if self.page_token is not None: body['page_token'] = self.page_token
-        if self.view_type is not None: body['view_type'] = self.view_type.value
+        if self.filter is not None: body['filter'] = _validated('filter', str, self.filter)
+        if self.max_results is not None:
+            body['max_results'] = _validated('max_results', int, self.max_results)
+        if self.order_by: body['order_by'] = [_validated('order_by item', str, v) for v in self.order_by]
+        if self.view_type is not None:
+            body['view_type'] = _validated('view_type', SearchExperimentsViewType, self.view_type)
         return body
 
     @classmethod
@@ -1845,7 +2020,6 @@ class SearchExperiments:
         return cls(filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
-                   page_token=d.get('page_token', None),
                    view_type=_enum(d, 'view_type', SearchExperimentsViewType))
 
 
@@ -1856,8 +2030,10 @@ class SearchExperimentsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.experiments:
+            body['experiments'] = [_validated('experiments item', Experiment, v) for v in self.experiments]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         return body
 
     @classmethod
@@ -1876,14 +2052,27 @@ class SearchExperimentsViewType(Enum):
 
 
 @dataclass
+class SearchModelVersionsRequest:
+    """Searches model versions"""
+
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+
+
+@dataclass
 class SearchModelVersionsResponse:
     model_versions: Optional['List[ModelVersion]'] = None
     next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.model_versions:
+            body['model_versions'] = [
+                _validated('model_versions item', ModelVersion, v) for v in self.model_versions
+            ]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         return body
 
     @classmethod
@@ -1893,14 +2082,27 @@ class SearchModelVersionsResponse:
 
 
 @dataclass
+class SearchModelsRequest:
+    """Search models"""
+
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+
+
+@dataclass
 class SearchModelsResponse:
     next_page_token: Optional[str] = None
     registered_models: Optional['List[Model]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.registered_models:
+            body['registered_models'] = [
+                _validated('registered_models item', Model, v) for v in self.registered_models
+            ]
         return body
 
     @classmethod
@@ -1915,17 +2117,18 @@ class SearchRuns:
     filter: Optional[str] = None
     max_results: Optional[int] = None
     order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
     run_view_type: Optional['SearchRunsRunViewType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_ids: body['experiment_ids'] = [v for v in self.experiment_ids]
-        if self.filter is not None: body['filter'] = self.filter
-        if self.max_results is not None: body['max_results'] = self.max_results
-        if self.order_by: body['order_by'] = [v for v in self.order_by]
-        if self.page_token is not None: body['page_token'] = self.page_token
-        if self.run_view_type is not None: body['run_view_type'] = self.run_view_type.value
+        if self.experiment_ids:
+            body['experiment_ids'] = [_validated('experiment_ids item', str, v) for v in self.experiment_ids]
+        if self.filter is not None: body['filter'] = _validated('filter', str, self.filter)
+        if self.max_results is not None:
+            body['max_results'] = _validated('max_results', int, self.max_results)
+        if self.order_by: body['order_by'] = [_validated('order_by item', str, v) for v in self.order_by]
+        if self.run_view_type is not None:
+            body['run_view_type'] = _validated('run_view_type', SearchRunsRunViewType, self.run_view_type)
         return body
 
     @classmethod
@@ -1934,7 +2137,6 @@ class SearchRuns:
                    filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
-                   page_token=d.get('page_token', None),
                    run_view_type=_enum(d, 'run_view_type', SearchRunsRunViewType))
 
 
@@ -1945,8 +2147,9 @@ class SearchRunsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.runs: body['runs'] = [_validated('runs item', Run, v) for v in self.runs]
         return body
 
     @classmethod
@@ -1970,9 +2173,10 @@ class SetExperimentTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -1990,9 +2194,9 @@ class SetModelTagRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.name is not None: body['name'] = self.name
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -2009,10 +2213,10 @@ class SetModelVersionTagRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.name is not None: body['name'] = self.name
-        if self.value is not None: body['value'] = self.value
-        if self.version is not None: body['version'] = self.version
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -2032,10 +2236,10 @@ class SetTag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
-        if self.value is not None: body['value'] = self.value
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, self.run_uuid)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -2072,8 +2276,9 @@ class TestRegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.body is not None: body['body'] = self.body
-        if self.status_code is not None: body['status_code'] = self.status_code
+        if self.body is not None: body['body'] = _validated('body', str, self.body)
+        if self.status_code is not None:
+            body['status_code'] = _validated('status_code', int, self.status_code)
         return body
 
     @classmethod
@@ -2088,8 +2293,8 @@ class TestRegistryWebhookRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.event is not None: body['event'] = self.event.value
-        if self.id is not None: body['id'] = self.id
+        if self.event is not None: body['event'] = _validated('event', RegistryWebhookEvent, self.event)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         return body
 
     @classmethod
@@ -2103,7 +2308,7 @@ class TestRegistryWebhookResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.webhook: body['webhook'] = self.webhook.as_dict()
+        if self.webhook: body['webhook'] = _validated('webhook', TestRegistryWebhook, self.webhook)
         return body
 
     @classmethod
@@ -2122,11 +2327,12 @@ class TransitionModelVersionStageDatabricks:
     def as_dict(self) -> dict:
         body = {}
         if self.archive_existing_versions is not None:
-            body['archive_existing_versions'] = self.archive_existing_versions
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.stage is not None: body['stage'] = self.stage.value
-        if self.version is not None: body['version'] = self.version
+            body['archive_existing_versions'] = _validated('archive_existing_versions', bool,
+                                                           self.archive_existing_versions)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.stage is not None: body['stage'] = _validated('stage', Stage, self.stage)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -2150,11 +2356,15 @@ class TransitionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.available_actions: body['available_actions'] = [v.value for v in self.available_actions]
-        if self.comment is not None: body['comment'] = self.comment
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.to_stage is not None: body['to_stage'] = self.to_stage.value
-        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.available_actions:
+            body['available_actions'] = [
+                _validated('available_actions item', ActivityAction, v) for v in self.available_actions
+            ]
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.to_stage is not None: body['to_stage'] = _validated('to_stage', Stage, self.to_stage)
+        if self.user_id is not None: body['user_id'] = _validated('user_id', str, self.user_id)
         return body
 
     @classmethod
@@ -2172,7 +2382,8 @@ class TransitionStageResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_version: body['model_version'] = self.model_version.as_dict()
+        if self.model_version:
+            body['model_version'] = _validated('model_version', ModelVersionDatabricks, self.model_version)
         return body
 
     @classmethod
@@ -2187,8 +2398,8 @@ class UpdateComment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.id is not None: body['id'] = self.id
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         return body
 
     @classmethod
@@ -2202,7 +2413,7 @@ class UpdateCommentResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment: body['comment'] = self.comment.as_dict()
+        if self.comment: body['comment'] = _validated('comment', CommentObject, self.comment)
         return body
 
     @classmethod
@@ -2217,8 +2428,9 @@ class UpdateExperiment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
-        if self.new_name is not None: body['new_name'] = self.new_name
+        if self.experiment_id is not None:
+            body['experiment_id'] = _validated('experiment_id', str, self.experiment_id)
+        if self.new_name is not None: body['new_name'] = _validated('new_name', str, self.new_name)
         return body
 
     @classmethod
@@ -2233,8 +2445,9 @@ class UpdateModelRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -2250,9 +2463,10 @@ class UpdateModelVersionRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.version is not None: body['version'] = self.version
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.version is not None: body['version'] = _validated('version', str, self.version)
         return body
 
     @classmethod
@@ -2273,12 +2487,15 @@ class UpdateRegistryWebhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.events: body['events'] = [v.value for v in self.events]
-        if self.http_url_spec: body['http_url_spec'] = self.http_url_spec.as_dict()
-        if self.id is not None: body['id'] = self.id
-        if self.job_spec: body['job_spec'] = self.job_spec.as_dict()
-        if self.status is not None: body['status'] = self.status.value
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.events:
+            body['events'] = [_validated('events item', RegistryWebhookEvent, v) for v in self.events]
+        if self.http_url_spec:
+            body['http_url_spec'] = _validated('http_url_spec', HttpUrlSpec, self.http_url_spec)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.job_spec: body['job_spec'] = _validated('job_spec', JobSpec, self.job_spec)
+        if self.status is not None: body['status'] = _validated('status', RegistryWebhookStatus, self.status)
         return body
 
     @classmethod
@@ -2300,10 +2517,10 @@ class UpdateRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time is not None: body['end_time'] = self.end_time
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
-        if self.status is not None: body['status'] = self.status.value
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', str, self.run_id)
+        if self.run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, self.run_uuid)
+        if self.status is not None: body['status'] = _validated('status', UpdateRunStatus, self.status)
         return body
 
     @classmethod
@@ -2320,7 +2537,7 @@ class UpdateRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_info: body['run_info'] = self.run_info.as_dict()
+        if self.run_info: body['run_info'] = _validated('run_info', RunInfo, self.run_info)
         return body
 
     @classmethod
@@ -2376,9 +2593,10 @@ class ExperimentsAPI:
         :returns: :class:`CreateExperimentResponse`
         """
         body = {}
-        if artifact_location is not None: body['artifact_location'] = artifact_location
-        if name is not None: body['name'] = name
-        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
+        if artifact_location is not None:
+            body['artifact_location'] = _validated('artifact_location', str, artifact_location)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if tags is not None: body['tags'] = [_validated('tags item', ExperimentTag, v) for v in tags]
 
         json = self._api.do('POST', '/api/2.0/mlflow/experiments/create', body=body)
         return CreateExperimentResponse.from_dict(json)
@@ -2408,10 +2626,10 @@ class ExperimentsAPI:
         :returns: :class:`CreateRunResponse`
         """
         body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
-        if start_time is not None: body['start_time'] = start_time
-        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
-        if user_id is not None: body['user_id'] = user_id
+        if experiment_id is not None: body['experiment_id'] = _validated('experiment_id', str, experiment_id)
+        if start_time is not None: body['start_time'] = _validated('start_time', int, start_time)
+        if tags is not None: body['tags'] = [_validated('tags item', RunTag, v) for v in tags]
+        if user_id is not None: body['user_id'] = _validated('user_id', str, user_id)
 
         json = self._api.do('POST', '/api/2.0/mlflow/runs/create', body=body)
         return CreateRunResponse.from_dict(json)
@@ -2428,7 +2646,7 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if experiment_id is not None: body['experiment_id'] = _validated('experiment_id', str, experiment_id)
         self._api.do('POST', '/api/2.0/mlflow/experiments/delete', body=body)
 
     def delete_run(self, run_id: str):
@@ -2442,7 +2660,7 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if run_id is not None: body['run_id'] = run_id
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
         self._api.do('POST', '/api/2.0/mlflow/runs/delete', body=body)
 
     def delete_tag(self, run_id: str, key: str):
@@ -2459,8 +2677,8 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if run_id is not None: body['run_id'] = run_id
+        if key is not None: body['key'] = _validated('key', str, key)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
         self._api.do('POST', '/api/2.0/mlflow/runs/delete-tag', body=body)
 
     def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
@@ -2481,7 +2699,8 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if experiment_name is not None: query['experiment_name'] = experiment_name
+        if experiment_name is not None:
+            query['experiment_name'] = _validated('experiment_name', str, experiment_name)
 
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get-by-name', query=query)
         return GetExperimentByNameResponse.from_dict(json)
@@ -2498,7 +2717,7 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if experiment_id is not None: query['experiment_id'] = experiment_id
+        if experiment_id is not None: query['experiment_id'] = _validated('experiment_id', str, experiment_id)
 
         json = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query)
         return Experiment.from_dict(json)
@@ -2559,11 +2778,11 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if metric_key is not None: query['metric_key'] = metric_key
-        if page_token is not None: query['page_token'] = page_token
-        if run_id is not None: query['run_id'] = run_id
-        if run_uuid is not None: query['run_uuid'] = run_uuid
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if metric_key is not None: query['metric_key'] = _validated('metric_key', str, metric_key)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
+        if run_id is not None: query['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: query['run_uuid'] = _validated('run_uuid', str, run_uuid)
 
         json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query)
         return GetMetricHistoryResponse.from_dict(json)
@@ -2586,8 +2805,8 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if run_id is not None: query['run_id'] = run_id
-        if run_uuid is not None: query['run_uuid'] = run_uuid
+        if run_id is not None: query['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: query['run_uuid'] = _validated('run_uuid', str, run_uuid)
 
         json = self._api.do('GET', '/api/2.0/mlflow/runs/get', query=query)
         return GetRunResponse.from_dict(json)
@@ -2617,10 +2836,10 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if page_token is not None: query['page_token'] = page_token
-        if path is not None: query['path'] = path
-        if run_id is not None: query['run_id'] = run_id
-        if run_uuid is not None: query['run_uuid'] = run_uuid
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
+        if path is not None: query['path'] = _validated('path', str, path)
+        if run_id is not None: query['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: query['run_uuid'] = _validated('run_uuid', str, run_uuid)
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query)
@@ -2654,9 +2873,9 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        if view_type is not None: query['view_type'] = view_type
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
+        if view_type is not None: query['view_type'] = _validated('view_type', str, view_type)
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query)
@@ -2726,10 +2945,10 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if metrics is not None: body['metrics'] = [v.as_dict() for v in metrics]
-        if params is not None: body['params'] = [v.as_dict() for v in params]
-        if run_id is not None: body['run_id'] = run_id
-        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
+        if metrics is not None: body['metrics'] = [_validated('metrics item', Metric, v) for v in metrics]
+        if params is not None: body['params'] = [_validated('params item', Param, v) for v in params]
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
+        if tags is not None: body['tags'] = [_validated('tags item', RunTag, v) for v in tags]
         self._api.do('POST', '/api/2.0/mlflow/runs/log-batch', body=body)
 
     def log_inputs(self, *, datasets: Optional[List[DatasetInput]] = None, run_id: Optional[str] = None):
@@ -2745,8 +2964,9 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if datasets is not None: body['datasets'] = [v.as_dict() for v in datasets]
-        if run_id is not None: body['run_id'] = run_id
+        if datasets is not None:
+            body['datasets'] = [_validated('datasets item', DatasetInput, v) for v in datasets]
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
         self._api.do('POST', '/api/2.0/mlflow/runs/log-inputs', body=body)
 
     def log_metric(self,
@@ -2780,12 +3000,12 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if run_id is not None: body['run_id'] = run_id
-        if run_uuid is not None: body['run_uuid'] = run_uuid
-        if step is not None: body['step'] = step
-        if timestamp is not None: body['timestamp'] = timestamp
-        if value is not None: body['value'] = value
+        if key is not None: body['key'] = _validated('key', str, key)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, run_uuid)
+        if step is not None: body['step'] = _validated('step', int, step)
+        if timestamp is not None: body['timestamp'] = _validated('timestamp', int, timestamp)
+        if value is not None: body['value'] = _validated('value', float, value)
         self._api.do('POST', '/api/2.0/mlflow/runs/log-metric', body=body)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
@@ -2801,8 +3021,8 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if model_json is not None: body['model_json'] = model_json
-        if run_id is not None: body['run_id'] = run_id
+        if model_json is not None: body['model_json'] = _validated('model_json', str, model_json)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
         self._api.do('POST', '/api/2.0/mlflow/runs/log-model', body=body)
 
     def log_param(self,
@@ -2830,10 +3050,10 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if run_id is not None: body['run_id'] = run_id
-        if run_uuid is not None: body['run_uuid'] = run_uuid
-        if value is not None: body['value'] = value
+        if key is not None: body['key'] = _validated('key', str, key)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, run_uuid)
+        if value is not None: body['value'] = _validated('value', str, value)
         self._api.do('POST', '/api/2.0/mlflow/runs/log-parameter', body=body)
 
     def restore_experiment(self, experiment_id: str):
@@ -2851,7 +3071,7 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if experiment_id is not None: body['experiment_id'] = _validated('experiment_id', str, experiment_id)
         self._api.do('POST', '/api/2.0/mlflow/experiments/restore', body=body)
 
     def restore_run(self, run_id: str):
@@ -2865,7 +3085,7 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if run_id is not None: body['run_id'] = run_id
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
         self._api.do('POST', '/api/2.0/mlflow/runs/restore', body=body)
 
     def search_experiments(self,
@@ -2895,11 +3115,12 @@ class ExperimentsAPI:
         :returns: Iterator over :class:`Experiment`
         """
         body = {}
-        if filter is not None: body['filter'] = filter
-        if max_results is not None: body['max_results'] = max_results
-        if order_by is not None: body['order_by'] = [v for v in order_by]
-        if page_token is not None: body['page_token'] = page_token
-        if view_type is not None: body['view_type'] = view_type.value
+        if filter is not None: body['filter'] = _validated('filter', str, filter)
+        if max_results is not None: body['max_results'] = _validated('max_results', int, max_results)
+        if order_by is not None: body['order_by'] = [_validated('order_by item', str, v) for v in order_by]
+        if page_token is not None: body['page_token'] = _validated('page_token', str, page_token)
+        if view_type is not None:
+            body['view_type'] = _validated('view_type', SearchExperimentsViewType, view_type)
 
         while True:
             json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body)
@@ -2954,12 +3175,14 @@ class ExperimentsAPI:
         :returns: Iterator over :class:`Run`
         """
         body = {}
-        if experiment_ids is not None: body['experiment_ids'] = [v for v in experiment_ids]
-        if filter is not None: body['filter'] = filter
-        if max_results is not None: body['max_results'] = max_results
-        if order_by is not None: body['order_by'] = [v for v in order_by]
-        if page_token is not None: body['page_token'] = page_token
-        if run_view_type is not None: body['run_view_type'] = run_view_type.value
+        if experiment_ids is not None:
+            body['experiment_ids'] = [_validated('experiment_ids item', str, v) for v in experiment_ids]
+        if filter is not None: body['filter'] = _validated('filter', str, filter)
+        if max_results is not None: body['max_results'] = _validated('max_results', int, max_results)
+        if order_by is not None: body['order_by'] = [_validated('order_by item', str, v) for v in order_by]
+        if page_token is not None: body['page_token'] = _validated('page_token', str, page_token)
+        if run_view_type is not None:
+            body['run_view_type'] = _validated('run_view_type', SearchRunsRunViewType, run_view_type)
 
         while True:
             json = self._api.do('POST', '/api/2.0/mlflow/runs/search', body=body)
@@ -2989,7 +3212,10 @@ class ExperimentsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', ExperimentAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT', f'/api/2.0/permissions/experiments/{experiment_id}', body=body)
         return ExperimentPermissions.from_dict(json)
@@ -3011,9 +3237,9 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
-        if key is not None: body['key'] = key
-        if value is not None: body['value'] = value
+        if experiment_id is not None: body['experiment_id'] = _validated('experiment_id', str, experiment_id)
+        if key is not None: body['key'] = _validated('key', str, key)
+        if value is not None: body['value'] = _validated('value', str, value)
         self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
@@ -3036,10 +3262,10 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if run_id is not None: body['run_id'] = run_id
-        if run_uuid is not None: body['run_uuid'] = run_uuid
-        if value is not None: body['value'] = value
+        if key is not None: body['key'] = _validated('key', str, key)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, run_uuid)
+        if value is not None: body['value'] = _validated('value', str, value)
         self._api.do('POST', '/api/2.0/mlflow/runs/set-tag', body=body)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
@@ -3055,8 +3281,8 @@ class ExperimentsAPI:
         
         """
         body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
-        if new_name is not None: body['new_name'] = new_name
+        if experiment_id is not None: body['experiment_id'] = _validated('experiment_id', str, experiment_id)
+        if new_name is not None: body['new_name'] = _validated('new_name', str, new_name)
         self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body)
 
     def update_experiment_permissions(
@@ -3077,7 +3303,10 @@ class ExperimentsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', ExperimentAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH', f'/api/2.0/permissions/experiments/{experiment_id}', body=body)
         return ExperimentPermissions.from_dict(json)
@@ -3105,10 +3334,10 @@ class ExperimentsAPI:
         :returns: :class:`UpdateRunResponse`
         """
         body = {}
-        if end_time is not None: body['end_time'] = end_time
-        if run_id is not None: body['run_id'] = run_id
-        if run_uuid is not None: body['run_uuid'] = run_uuid
-        if status is not None: body['status'] = status.value
+        if end_time is not None: body['end_time'] = _validated('end_time', int, end_time)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
+        if run_uuid is not None: body['run_uuid'] = _validated('run_uuid', str, run_uuid)
+        if status is not None: body['status'] = _validated('status', UpdateRunStatus, status)
 
         json = self._api.do('POST', '/api/2.0/mlflow/runs/update', body=body)
         return UpdateRunResponse.from_dict(json)
@@ -3155,11 +3384,12 @@ class ModelRegistryAPI:
         """
         body = {}
         if archive_existing_versions is not None:
-            body['archive_existing_versions'] = archive_existing_versions
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if stage is not None: body['stage'] = stage.value
-        if version is not None: body['version'] = version
+            body['archive_existing_versions'] = _validated('archive_existing_versions', bool,
+                                                           archive_existing_versions)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if stage is not None: body['stage'] = _validated('stage', Stage, stage)
+        if version is not None: body['version'] = _validated('version', str, version)
 
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/approve', body=body)
         return ApproveTransitionRequestResponse.from_dict(json)
@@ -3180,9 +3410,9 @@ class ModelRegistryAPI:
         :returns: :class:`CreateCommentResponse`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if version is not None: body['version'] = version
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if version is not None: body['version'] = _validated('version', str, version)
 
         json = self._api.do('POST', '/api/2.0/mlflow/comments/create', body=body)
         return CreateCommentResponse.from_dict(json)
@@ -3208,9 +3438,9 @@ class ModelRegistryAPI:
         :returns: :class:`CreateModelResponse`
         """
         body = {}
-        if description is not None: body['description'] = description
-        if name is not None: body['name'] = name
-        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
+        if description is not None: body['description'] = _validated('description', str, description)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if tags is not None: body['tags'] = [_validated('tags item', ModelTag, v) for v in tags]
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/create', body=body)
         return CreateModelResponse.from_dict(json)
@@ -3245,12 +3475,12 @@ class ModelRegistryAPI:
         :returns: :class:`CreateModelVersionResponse`
         """
         body = {}
-        if description is not None: body['description'] = description
-        if name is not None: body['name'] = name
-        if run_id is not None: body['run_id'] = run_id
-        if run_link is not None: body['run_link'] = run_link
-        if source is not None: body['source'] = source
-        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
+        if description is not None: body['description'] = _validated('description', str, description)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if run_id is not None: body['run_id'] = _validated('run_id', str, run_id)
+        if run_link is not None: body['run_link'] = _validated('run_link', str, run_link)
+        if source is not None: body['source'] = _validated('source', str, source)
+        if tags is not None: body['tags'] = [_validated('tags item', ModelVersionTag, v) for v in tags]
 
         json = self._api.do('POST', '/api/2.0/mlflow/model-versions/create', body=body)
         return CreateModelVersionResponse.from_dict(json)
@@ -3285,10 +3515,10 @@ class ModelRegistryAPI:
         :returns: :class:`CreateTransitionRequestResponse`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if stage is not None: body['stage'] = stage.value
-        if version is not None: body['version'] = version
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if stage is not None: body['stage'] = _validated('stage', Stage, stage)
+        if version is not None: body['version'] = _validated('version', str, version)
 
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/create', body=body)
         return CreateTransitionRequestResponse.from_dict(json)
@@ -3348,12 +3578,14 @@ class ModelRegistryAPI:
         :returns: :class:`CreateWebhookResponse`
         """
         body = {}
-        if description is not None: body['description'] = description
-        if events is not None: body['events'] = [v.value for v in events]
-        if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
-        if job_spec is not None: body['job_spec'] = job_spec.as_dict()
-        if model_name is not None: body['model_name'] = model_name
-        if status is not None: body['status'] = status.value
+        if description is not None: body['description'] = _validated('description', str, description)
+        if events is not None:
+            body['events'] = [_validated('events item', RegistryWebhookEvent, v) for v in events]
+        if http_url_spec is not None:
+            body['http_url_spec'] = _validated('http_url_spec', HttpUrlSpec, http_url_spec)
+        if job_spec is not None: body['job_spec'] = _validated('job_spec', JobSpec, job_spec)
+        if model_name is not None: body['model_name'] = _validated('model_name', str, model_name)
+        if status is not None: body['status'] = _validated('status', RegistryWebhookStatus, status)
 
         json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/create', body=body)
         return CreateWebhookResponse.from_dict(json)
@@ -3369,7 +3601,7 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if id is not None: query['id'] = id
+        if id is not None: query['id'] = _validated('id', str, id)
         self._api.do('DELETE', '/api/2.0/mlflow/comments/delete', query=query)
 
     def delete_model(self, name: str):
@@ -3384,7 +3616,7 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if name is not None: query['name'] = name
+        if name is not None: query['name'] = _validated('name', str, name)
         self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete', query=query)
 
     def delete_model_tag(self, name: str, key: str):
@@ -3402,8 +3634,8 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if key is not None: query['key'] = key
-        if name is not None: query['name'] = name
+        if key is not None: query['key'] = _validated('key', str, key)
+        if name is not None: query['name'] = _validated('name', str, name)
         self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete-tag', query=query)
 
     def delete_model_version(self, name: str, version: str):
@@ -3420,8 +3652,8 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if name is not None: query['name'] = name
-        if version is not None: query['version'] = version
+        if name is not None: query['name'] = _validated('name', str, name)
+        if version is not None: query['version'] = _validated('version', str, version)
         self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete', query=query)
 
     def delete_model_version_tag(self, name: str, version: str, key: str):
@@ -3441,9 +3673,9 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if key is not None: query['key'] = key
-        if name is not None: query['name'] = name
-        if version is not None: query['version'] = version
+        if key is not None: query['key'] = _validated('key', str, key)
+        if name is not None: query['name'] = _validated('name', str, name)
+        if version is not None: query['version'] = _validated('version', str, version)
         self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete-tag', query=query)
 
     def delete_transition_request(self,
@@ -3481,11 +3713,11 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if comment is not None: query['comment'] = comment
-        if creator is not None: query['creator'] = creator
-        if name is not None: query['name'] = name
-        if stage is not None: query['stage'] = stage.value
-        if version is not None: query['version'] = version
+        if comment is not None: query['comment'] = _validated('comment', str, comment)
+        if creator is not None: query['creator'] = _validated('creator', str, creator)
+        if name is not None: query['name'] = _validated('name', str, name)
+        if stage is not None: query['stage'] = _validated('stage', DeleteTransitionRequestStage, stage)
+        if version is not None: query['version'] = _validated('version', str, version)
         self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query)
 
     def delete_webhook(self, *, id: Optional[str] = None):
@@ -3502,7 +3734,7 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if id is not None: query['id'] = id
+        if id is not None: query['id'] = _validated('id', str, id)
         self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query)
 
     def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
@@ -3518,8 +3750,8 @@ class ModelRegistryAPI:
         :returns: Iterator over :class:`ModelVersion`
         """
         body = {}
-        if name is not None: body['name'] = name
-        if stages is not None: body['stages'] = [v for v in stages]
+        if name is not None: body['name'] = _validated('name', str, name)
+        if stages is not None: body['stages'] = [_validated('stages item', str, v) for v in stages]
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/get-latest-versions', body=body)
         return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
@@ -3540,7 +3772,7 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if name is not None: query['name'] = name
+        if name is not None: query['name'] = _validated('name', str, name)
 
         json = self._api.do('GET', '/api/2.0/mlflow/databricks/registered-models/get', query=query)
         return GetModelResponse.from_dict(json)
@@ -3559,8 +3791,8 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if name is not None: query['name'] = name
-        if version is not None: query['version'] = version
+        if name is not None: query['name'] = _validated('name', str, name)
+        if version is not None: query['version'] = _validated('version', str, version)
 
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get', query=query)
         return GetModelVersionResponse.from_dict(json)
@@ -3579,8 +3811,8 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if name is not None: query['name'] = name
-        if version is not None: query['version'] = version
+        if name is not None: query['name'] = _validated('name', str, name)
+        if version is not None: query['version'] = _validated('version', str, version)
 
         json = self._api.do('GET', '/api/2.0/mlflow/model-versions/get-download-uri', query=query)
         return GetModelVersionDownloadUriResponse.from_dict(json)
@@ -3633,8 +3865,8 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
@@ -3660,8 +3892,8 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if name is not None: query['name'] = name
-        if version is not None: query['version'] = version
+        if name is not None: query['name'] = _validated('name', str, name)
+        if version is not None: query['version'] = _validated('version', str, version)
 
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query)
         return [Activity.from_dict(v) for v in json.get('requests', [])]
@@ -3690,9 +3922,10 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if events is not None: query['events'] = [v.value for v in events]
-        if model_name is not None: query['model_name'] = model_name
-        if page_token is not None: query['page_token'] = page_token
+        if events is not None:
+            query['events'] = [_validated('events item', RegistryWebhookEvent, v) for v in events]
+        if model_name is not None: query['model_name'] = _validated('model_name', str, model_name)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
@@ -3734,10 +3967,10 @@ class ModelRegistryAPI:
         :returns: :class:`RejectTransitionRequestResponse`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if stage is not None: body['stage'] = stage.value
-        if version is not None: body['version'] = version
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if stage is not None: body['stage'] = _validated('stage', Stage, stage)
+        if version is not None: body['version'] = _validated('version', str, version)
 
         json = self._api.do('POST', '/api/2.0/mlflow/transition-requests/reject', body=body)
         return RejectTransitionRequestResponse.from_dict(json)
@@ -3755,8 +3988,8 @@ class ModelRegistryAPI:
         :returns: :class:`RenameModelResponse`
         """
         body = {}
-        if name is not None: body['name'] = name
-        if new_name is not None: body['new_name'] = new_name
+        if name is not None: body['name'] = _validated('name', str, name)
+        if new_name is not None: body['new_name'] = _validated('new_name', str, new_name)
 
         json = self._api.do('POST', '/api/2.0/mlflow/registered-models/rename', body=body)
         return RenameModelResponse.from_dict(json)
@@ -3787,10 +4020,10 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if filter is not None: query['filter'] = filter
-        if max_results is not None: query['max_results'] = max_results
-        if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if order_by is not None: query['order_by'] = [_validated('order_by item', str, v) for v in order_by]
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query)
@@ -3829,10 +4062,10 @@ class ModelRegistryAPI:
         """
 
         query = {}
-        if filter is not None: query['filter'] = filter
-        if max_results is not None: query['max_results'] = max_results
-        if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if order_by is not None: query['order_by'] = [_validated('order_by item', str, v) for v in order_by]
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/search', query=query)
@@ -3862,9 +4095,9 @@ class ModelRegistryAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if name is not None: body['name'] = name
-        if value is not None: body['value'] = value
+        if key is not None: body['key'] = _validated('key', str, key)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if value is not None: body['value'] = _validated('value', str, value)
         self._api.do('POST', '/api/2.0/mlflow/registered-models/set-tag', body=body)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
@@ -3887,10 +4120,10 @@ class ModelRegistryAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if name is not None: body['name'] = name
-        if value is not None: body['value'] = value
-        if version is not None: body['version'] = version
+        if key is not None: body['key'] = _validated('key', str, key)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if value is not None: body['value'] = _validated('value', str, value)
+        if version is not None: body['version'] = _validated('version', str, version)
         self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body)
 
     def set_registered_model_permissions(
@@ -3912,7 +4145,10 @@ class ModelRegistryAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', RegisteredModelAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PUT', f'/api/2.0/permissions/registered-models/{registered_model_id}', body=body)
         return RegisteredModelPermissions.from_dict(json)
@@ -3936,8 +4172,8 @@ class ModelRegistryAPI:
         :returns: :class:`TestRegistryWebhookResponse`
         """
         body = {}
-        if event is not None: body['event'] = event.value
-        if id is not None: body['id'] = id
+        if event is not None: body['event'] = _validated('event', RegistryWebhookEvent, event)
+        if id is not None: body['id'] = _validated('id', str, id)
 
         json = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/test', body=body)
         return TestRegistryWebhookResponse.from_dict(json)
@@ -3979,11 +4215,12 @@ class ModelRegistryAPI:
         """
         body = {}
         if archive_existing_versions is not None:
-            body['archive_existing_versions'] = archive_existing_versions
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if stage is not None: body['stage'] = stage.value
-        if version is not None: body['version'] = version
+            body['archive_existing_versions'] = _validated('archive_existing_versions', bool,
+                                                           archive_existing_versions)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if stage is not None: body['stage'] = _validated('stage', Stage, stage)
+        if version is not None: body['version'] = _validated('version', str, version)
 
         json = self._api.do('POST', '/api/2.0/mlflow/databricks/model-versions/transition-stage', body=body)
         return TransitionStageResponse.from_dict(json)
@@ -4001,8 +4238,8 @@ class ModelRegistryAPI:
         :returns: :class:`UpdateCommentResponse`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if id is not None: body['id'] = id
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if id is not None: body['id'] = _validated('id', str, id)
 
         json = self._api.do('PATCH', '/api/2.0/mlflow/comments/update', body=body)
         return UpdateCommentResponse.from_dict(json)
@@ -4020,8 +4257,8 @@ class ModelRegistryAPI:
         
         """
         body = {}
-        if description is not None: body['description'] = description
-        if name is not None: body['name'] = name
+        if description is not None: body['description'] = _validated('description', str, description)
+        if name is not None: body['name'] = _validated('name', str, name)
         self._api.do('PATCH', '/api/2.0/mlflow/registered-models/update', body=body)
 
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
@@ -4039,9 +4276,9 @@ class ModelRegistryAPI:
         
         """
         body = {}
-        if description is not None: body['description'] = description
-        if name is not None: body['name'] = name
-        if version is not None: body['version'] = version
+        if description is not None: body['description'] = _validated('description', str, description)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if version is not None: body['version'] = _validated('version', str, version)
         self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body)
 
     def update_registered_model_permissions(
@@ -4063,7 +4300,10 @@ class ModelRegistryAPI:
         """
         body = {}
         if access_control_list is not None:
-            body['access_control_list'] = [v.as_dict() for v in access_control_list]
+            body['access_control_list'] = [
+                _validated('access_control_list item', RegisteredModelAccessControlRequest, v)
+                for v in access_control_list
+            ]
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/registered-models/{registered_model_id}',
@@ -4125,10 +4365,12 @@ class ModelRegistryAPI:
         
         """
         body = {}
-        if description is not None: body['description'] = description
-        if events is not None: body['events'] = [v.value for v in events]
-        if http_url_spec is not None: body['http_url_spec'] = http_url_spec.as_dict()
-        if id is not None: body['id'] = id
-        if job_spec is not None: body['job_spec'] = job_spec.as_dict()
-        if status is not None: body['status'] = status.value
+        if description is not None: body['description'] = _validated('description', str, description)
+        if events is not None:
+            body['events'] = [_validated('events item', RegistryWebhookEvent, v) for v in events]
+        if http_url_spec is not None:
+            body['http_url_spec'] = _validated('http_url_spec', HttpUrlSpec, http_url_spec)
+        if id is not None: body['id'] = _validated('id', str, id)
+        if job_spec is not None: body['job_spec'] = _validated('job_spec', JobSpec, job_spec)
+        if status is not None: body['status'] = _validated('status', RegistryWebhookStatus, status)
         self._api.do('PATCH', '/api/2.0/mlflow/registry-webhooks/update', body=body)

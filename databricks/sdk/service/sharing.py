@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -31,11 +31,19 @@ class CentralCleanRoomInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.clean_room_assets: body['clean_room_assets'] = [v.as_dict() for v in self.clean_room_assets]
-        if self.collaborators: body['collaborators'] = [v.as_dict() for v in self.collaborators]
-        if self.creator: body['creator'] = self.creator.as_dict()
-        if self.station_cloud is not None: body['station_cloud'] = self.station_cloud
-        if self.station_region is not None: body['station_region'] = self.station_region
+        if self.clean_room_assets:
+            body['clean_room_assets'] = [
+                _validated('clean_room_assets item', CleanRoomAssetInfo, v) for v in self.clean_room_assets
+            ]
+        if self.collaborators:
+            body['collaborators'] = [
+                _validated('collaborators item', CleanRoomCollaboratorInfo, v) for v in self.collaborators
+            ]
+        if self.creator: body['creator'] = _validated('creator', CleanRoomCollaboratorInfo, self.creator)
+        if self.station_cloud is not None:
+            body['station_cloud'] = _validated('station_cloud', str, self.station_cloud)
+        if self.station_region is not None:
+            body['station_region'] = _validated('station_region', str, self.station_region)
         return body
 
     @classmethod
@@ -57,11 +65,12 @@ class CleanRoomAssetInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.added_at is not None: body['added_at'] = self.added_at
-        if self.notebook_info: body['notebook_info'] = self.notebook_info.as_dict()
-        if self.owner: body['owner'] = self.owner.as_dict()
-        if self.table_info: body['table_info'] = self.table_info.as_dict()
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.added_at is not None: body['added_at'] = _validated('added_at', int, self.added_at)
+        if self.notebook_info:
+            body['notebook_info'] = _validated('notebook_info', CleanRoomNotebookInfo, self.notebook_info)
+        if self.owner: body['owner'] = _validated('owner', CleanRoomCollaboratorInfo, self.owner)
+        if self.table_info: body['table_info'] = _validated('table_info', CleanRoomTableInfo, self.table_info)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
         return body
 
     @classmethod
@@ -81,9 +90,13 @@ class CleanRoomCatalog:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.notebook_files: body['notebook_files'] = [v.as_dict() for v in self.notebook_files]
-        if self.tables: body['tables'] = [v.as_dict() for v in self.tables]
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.notebook_files:
+            body['notebook_files'] = [
+                _validated('notebook_files item', SharedDataObject, v) for v in self.notebook_files
+            ]
+        if self.tables: body['tables'] = [_validated('tables item', SharedDataObject, v) for v in self.tables]
         return body
 
     @classmethod
@@ -100,8 +113,9 @@ class CleanRoomCatalogUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.updates: body['updates'] = self.updates.as_dict()
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.updates: body['updates'] = _validated('updates', SharedDataObjectUpdate, self.updates)
         return body
 
     @classmethod
@@ -117,8 +131,10 @@ class CleanRoomCollaboratorInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
-        if self.organization_name is not None: body['organization_name'] = self.organization_name
+        if self.global_metastore_id is not None:
+            body['global_metastore_id'] = _validated('global_metastore_id', str, self.global_metastore_id)
+        if self.organization_name is not None:
+            body['organization_name'] = _validated('organization_name', str, self.organization_name)
         return body
 
     @classmethod
@@ -141,15 +157,20 @@ class CleanRoomInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.local_catalogs: body['local_catalogs'] = [v.as_dict() for v in self.local_catalogs]
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.remote_detailed_info: body['remote_detailed_info'] = self.remote_detailed_info.as_dict()
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
+        if self.local_catalogs:
+            body['local_catalogs'] = [
+                _validated('local_catalogs item', CleanRoomCatalog, v) for v in self.local_catalogs
+            ]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.remote_detailed_info:
+            body['remote_detailed_info'] = _validated('remote_detailed_info', CentralCleanRoomInfo,
+                                                      self.remote_detailed_info)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -172,8 +193,10 @@ class CleanRoomNotebookInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.notebook_content is not None: body['notebook_content'] = self.notebook_content
-        if self.notebook_name is not None: body['notebook_name'] = self.notebook_name
+        if self.notebook_content is not None:
+            body['notebook_content'] = _validated('notebook_content', str, self.notebook_content)
+        if self.notebook_name is not None:
+            body['notebook_name'] = _validated('notebook_name', str, self.notebook_name)
         return body
 
     @classmethod
@@ -192,11 +215,13 @@ class CleanRoomTableInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.name is not None: body['name'] = self.name
-        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.columns: body['columns'] = [_validated('columns item', ColumnInfo, v) for v in self.columns]
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.schema_name is not None:
+            body['schema_name'] = _validated('schema_name', str, self.schema_name)
         return body
 
     @classmethod
@@ -225,18 +250,22 @@ class ColumnInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.mask: body['mask'] = self.mask.as_dict()
-        if self.name is not None: body['name'] = self.name
-        if self.nullable is not None: body['nullable'] = self.nullable
-        if self.partition_index is not None: body['partition_index'] = self.partition_index
-        if self.position is not None: body['position'] = self.position
-        if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
-        if self.type_json is not None: body['type_json'] = self.type_json
-        if self.type_name is not None: body['type_name'] = self.type_name.value
-        if self.type_precision is not None: body['type_precision'] = self.type_precision
-        if self.type_scale is not None: body['type_scale'] = self.type_scale
-        if self.type_text is not None: body['type_text'] = self.type_text
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.mask: body['mask'] = _validated('mask', ColumnMask, self.mask)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.nullable is not None: body['nullable'] = _validated('nullable', bool, self.nullable)
+        if self.partition_index is not None:
+            body['partition_index'] = _validated('partition_index', int, self.partition_index)
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.type_interval_type is not None:
+            body['type_interval_type'] = _validated('type_interval_type', str, self.type_interval_type)
+        if self.type_json is not None: body['type_json'] = _validated('type_json', str, self.type_json)
+        if self.type_name is not None:
+            body['type_name'] = _validated('type_name', ColumnTypeName, self.type_name)
+        if self.type_precision is not None:
+            body['type_precision'] = _validated('type_precision', int, self.type_precision)
+        if self.type_scale is not None: body['type_scale'] = _validated('type_scale', int, self.type_scale)
+        if self.type_text is not None: body['type_text'] = _validated('type_text', str, self.type_text)
         return body
 
     @classmethod
@@ -262,8 +291,12 @@ class ColumnMask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.function_name is not None: body['function_name'] = self.function_name
-        if self.using_column_names: body['using_column_names'] = [v for v in self.using_column_names]
+        if self.function_name is not None:
+            body['function_name'] = _validated('function_name', str, self.function_name)
+        if self.using_column_names:
+            body['using_column_names'] = [
+                _validated('using_column_names item', str, v) for v in self.using_column_names
+            ]
         return body
 
     @classmethod
@@ -306,9 +339,11 @@ class CreateCleanRoom:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.remote_detailed_info: body['remote_detailed_info'] = self.remote_detailed_info.as_dict()
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.remote_detailed_info:
+            body['remote_detailed_info'] = _validated('remote_detailed_info', CentralCleanRoomInfo,
+                                                      self.remote_detailed_info)
         return body
 
     @classmethod
@@ -327,10 +362,14 @@ class CreateProvider:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.authentication_type is not None:
+            body['authentication_type'] = _validated('authentication_type', AuthenticationType,
+                                                     self.authentication_type)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.recipient_profile_str is not None:
+            body['recipient_profile_str'] = _validated('recipient_profile_str', str,
+                                                       self.recipient_profile_str)
         return body
 
     @classmethod
@@ -354,15 +393,22 @@ class CreateRecipient:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.comment is not None: body['comment'] = self.comment
+        if self.authentication_type is not None:
+            body['authentication_type'] = _validated('authentication_type', AuthenticationType,
+                                                     self.authentication_type)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.data_recipient_global_metastore_id:
-            body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
-        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
+            body['data_recipient_global_metastore_id'] = _validated('data_recipient_global_metastore_id', Any,
+                                                                    self.data_recipient_global_metastore_id)
+        if self.ip_access_list:
+            body['ip_access_list'] = _validated('ip_access_list', IpAccessList, self.ip_access_list)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties_kvpairs:
+            body['properties_kvpairs'] = _validated('properties_kvpairs', SecurablePropertiesKvPairs,
+                                                    self.properties_kvpairs)
+        if self.sharing_code is not None:
+            body['sharing_code'] = _validated('sharing_code', str, self.sharing_code)
         return body
 
     @classmethod
@@ -384,8 +430,8 @@ class CreateShare:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -399,7 +445,11 @@ class GetRecipientSharePermissionsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.permissions_out: body['permissions_out'] = [v.as_dict() for v in self.permissions_out]
+        if self.permissions_out:
+            body['permissions_out'] = [
+                _validated('permissions_out item', ShareToPrivilegeAssignment, v)
+                for v in self.permissions_out
+            ]
         return body
 
     @classmethod
@@ -413,7 +463,10 @@ class IpAccessList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allowed_ip_addresses: body['allowed_ip_addresses'] = [v for v in self.allowed_ip_addresses]
+        if self.allowed_ip_addresses:
+            body['allowed_ip_addresses'] = [
+                _validated('allowed_ip_addresses item', str, v) for v in self.allowed_ip_addresses
+            ]
         return body
 
     @classmethod
@@ -427,7 +480,8 @@ class ListCleanRoomsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.clean_rooms: body['clean_rooms'] = [v.as_dict() for v in self.clean_rooms]
+        if self.clean_rooms:
+            body['clean_rooms'] = [_validated('clean_rooms item', CleanRoomInfo, v) for v in self.clean_rooms]
         return body
 
     @classmethod
@@ -441,7 +495,7 @@ class ListProviderSharesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
+        if self.shares: body['shares'] = [_validated('shares item', ProviderShare, v) for v in self.shares]
         return body
 
     @classmethod
@@ -455,7 +509,8 @@ class ListProvidersResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.providers: body['providers'] = [v.as_dict() for v in self.providers]
+        if self.providers:
+            body['providers'] = [_validated('providers item', ProviderInfo, v) for v in self.providers]
         return body
 
     @classmethod
@@ -469,7 +524,8 @@ class ListRecipientsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.recipients: body['recipients'] = [v.as_dict() for v in self.recipients]
+        if self.recipients:
+            body['recipients'] = [_validated('recipients item', RecipientInfo, v) for v in self.recipients]
         return body
 
     @classmethod
@@ -483,7 +539,7 @@ class ListSharesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
+        if self.shares: body['shares'] = [_validated('shares item', ShareInfo, v) for v in self.shares]
         return body
 
     @classmethod
@@ -497,7 +553,7 @@ class Partition:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.values: body['values'] = [v.as_dict() for v in self.values]
+        if self.values: body['values'] = [_validated('values item', PartitionValue, v) for v in self.values]
         return body
 
     @classmethod
@@ -514,11 +570,12 @@ class PartitionValue:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.op is not None: body['op'] = self.op.value
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.op is not None: body['op'] = _validated('op', PartitionValueOp, self.op)
         if self.recipient_property_key is not None:
-            body['recipient_property_key'] = self.recipient_property_key
-        if self.value is not None: body['value'] = self.value
+            body['recipient_property_key'] = _validated('recipient_property_key', str,
+                                                        self.recipient_property_key)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -581,8 +638,9 @@ class PrivilegeAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal is not None: body['principal'] = self.principal
-        if self.privileges: body['privileges'] = [v.value for v in self.privileges]
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
+        if self.privileges:
+            body['privileges'] = [_validated('privileges item', Privilege, v) for v in self.privileges]
         return body
 
     @classmethod
@@ -609,21 +667,29 @@ class ProviderInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.authentication_type is not None:
+            body['authentication_type'] = _validated('authentication_type', AuthenticationType,
+                                                     self.authentication_type)
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.data_provider_global_metastore_id is not None:
-            body['data_provider_global_metastore_id'] = self.data_provider_global_metastore_id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.recipient_profile: body['recipient_profile'] = self.recipient_profile.as_dict()
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
-        if self.region is not None: body['region'] = self.region
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body['data_provider_global_metastore_id'] = _validated('data_provider_global_metastore_id', str,
+                                                                   self.data_provider_global_metastore_id)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.recipient_profile:
+            body['recipient_profile'] = _validated('recipient_profile', RecipientProfile,
+                                                   self.recipient_profile)
+        if self.recipient_profile_str is not None:
+            body['recipient_profile_str'] = _validated('recipient_profile_str', str,
+                                                       self.recipient_profile_str)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -650,7 +716,7 @@ class ProviderShare:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -681,25 +747,35 @@ class RecipientInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activated is not None: body['activated'] = self.activated
-        if self.activation_url is not None: body['activation_url'] = self.activation_url
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.activated is not None: body['activated'] = _validated('activated', bool, self.activated)
+        if self.activation_url is not None:
+            body['activation_url'] = _validated('activation_url', str, self.activation_url)
+        if self.authentication_type is not None:
+            body['authentication_type'] = _validated('authentication_type', AuthenticationType,
+                                                     self.authentication_type)
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.data_recipient_global_metastore_id:
-            body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
-        if self.region is not None: body['region'] = self.region
-        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
-        if self.tokens: body['tokens'] = [v.as_dict() for v in self.tokens]
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body['data_recipient_global_metastore_id'] = _validated('data_recipient_global_metastore_id', Any,
+                                                                    self.data_recipient_global_metastore_id)
+        if self.ip_access_list:
+            body['ip_access_list'] = _validated('ip_access_list', IpAccessList, self.ip_access_list)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties_kvpairs:
+            body['properties_kvpairs'] = _validated('properties_kvpairs', SecurablePropertiesKvPairs,
+                                                    self.properties_kvpairs)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.sharing_code is not None:
+            body['sharing_code'] = _validated('sharing_code', str, self.sharing_code)
+        if self.tokens:
+            body['tokens'] = [_validated('tokens item', RecipientTokenInfo, v) for v in self.tokens]
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -732,10 +808,12 @@ class RecipientProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearer_token is not None: body['bearer_token'] = self.bearer_token
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.bearer_token is not None:
+            body['bearer_token'] = _validated('bearer_token', str, self.bearer_token)
+        if self.endpoint is not None: body['endpoint'] = _validated('endpoint', str, self.endpoint)
         if self.share_credentials_version is not None:
-            body['share_credentials_version'] = self.share_credentials_version
+            body['share_credentials_version'] = _validated('share_credentials_version', int,
+                                                           self.share_credentials_version)
         return body
 
     @classmethod
@@ -757,13 +835,15 @@ class RecipientTokenInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.activation_url is not None: body['activation_url'] = self.activation_url
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.id is not None: body['id'] = self.id
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.activation_url is not None:
+            body['activation_url'] = _validated('activation_url', str, self.activation_url)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
+        if self.expiration_time is not None:
+            body['expiration_time'] = _validated('expiration_time', int, self.expiration_time)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -786,11 +866,14 @@ class RetrieveTokenResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bearer_token is not None: body['bearerToken'] = self.bearer_token
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
-        if self.expiration_time is not None: body['expirationTime'] = self.expiration_time
+        if self.bearer_token is not None:
+            body['bearerToken'] = _validated('bearer_token', str, self.bearer_token)
+        if self.endpoint is not None: body['endpoint'] = _validated('endpoint', str, self.endpoint)
+        if self.expiration_time is not None:
+            body['expirationTime'] = _validated('expiration_time', str, self.expiration_time)
         if self.share_credentials_version is not None:
-            body['shareCredentialsVersion'] = self.share_credentials_version
+            body['shareCredentialsVersion'] = _validated('share_credentials_version', int,
+                                                         self.share_credentials_version)
         return body
 
     @classmethod
@@ -809,8 +892,9 @@ class RotateRecipientToken:
     def as_dict(self) -> dict:
         body = {}
         if self.existing_token_expire_in_seconds is not None:
-            body['existing_token_expire_in_seconds'] = self.existing_token_expire_in_seconds
-        if self.name is not None: body['name'] = self.name
+            body['existing_token_expire_in_seconds'] = _validated('existing_token_expire_in_seconds', int,
+                                                                  self.existing_token_expire_in_seconds)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -827,7 +911,11 @@ class SecurablePropertiesKvPairs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.properties: body['properties'] = self.properties
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
         return body
 
     @classmethod
@@ -851,14 +939,15 @@ class ShareInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.name is not None: body['name'] = self.name
-        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
-        if self.owner is not None: body['owner'] = self.owner
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.objects:
+            body['objects'] = [_validated('objects item', SharedDataObject, v) for v in self.objects]
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -881,8 +970,11 @@ class ShareToPrivilegeAssignment:
     def as_dict(self) -> dict:
         body = {}
         if self.privilege_assignments:
-            body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
-        if self.share_name is not None: body['share_name'] = self.share_name
+            body['privilege_assignments'] = [
+                _validated('privilege_assignments item', PrivilegeAssignment, v)
+                for v in self.privilege_assignments
+            ]
+        if self.share_name is not None: body['share_name'] = _validated('share_name', str, self.share_name)
         return body
 
     @classmethod
@@ -907,18 +999,24 @@ class SharedDataObject:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.added_at is not None: body['added_at'] = self.added_at
-        if self.added_by is not None: body['added_by'] = self.added_by
-        if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
-        if self.comment is not None: body['comment'] = self.comment
-        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type
+        if self.added_at is not None: body['added_at'] = _validated('added_at', int, self.added_at)
+        if self.added_by is not None: body['added_by'] = _validated('added_by', str, self.added_by)
+        if self.cdf_enabled is not None:
+            body['cdf_enabled'] = _validated('cdf_enabled', bool, self.cdf_enabled)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.data_object_type is not None:
+            body['data_object_type'] = _validated('data_object_type', str, self.data_object_type)
         if self.history_data_sharing_status is not None:
-            body['history_data_sharing_status'] = self.history_data_sharing_status.value
-        if self.name is not None: body['name'] = self.name
-        if self.partitions: body['partitions'] = [v.as_dict() for v in self.partitions]
-        if self.shared_as is not None: body['shared_as'] = self.shared_as
-        if self.start_version is not None: body['start_version'] = self.start_version
-        if self.status is not None: body['status'] = self.status.value
+            body['history_data_sharing_status'] = _validated('history_data_sharing_status',
+                                                             SharedDataObjectHistoryDataSharingStatus,
+                                                             self.history_data_sharing_status)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.partitions:
+            body['partitions'] = [_validated('partitions item', Partition, v) for v in self.partitions]
+        if self.shared_as is not None: body['shared_as'] = _validated('shared_as', str, self.shared_as)
+        if self.start_version is not None:
+            body['start_version'] = _validated('start_version', int, self.start_version)
+        if self.status is not None: body['status'] = _validated('status', SharedDataObjectStatus, self.status)
         return body
 
     @classmethod
@@ -959,8 +1057,10 @@ class SharedDataObjectUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.action is not None: body['action'] = self.action.value
-        if self.data_object: body['data_object'] = self.data_object.as_dict()
+        if self.action is not None:
+            body['action'] = _validated('action', SharedDataObjectUpdateAction, self.action)
+        if self.data_object:
+            body['data_object'] = _validated('data_object', SharedDataObject, self.data_object)
         return body
 
     @classmethod
@@ -987,11 +1087,14 @@ class UpdateCleanRoom:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_updates: body['catalog_updates'] = [v.as_dict() for v in self.catalog_updates]
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.name_arg is not None: body['name_arg'] = self.name_arg
-        if self.owner is not None: body['owner'] = self.owner
+        if self.catalog_updates:
+            body['catalog_updates'] = [
+                _validated('catalog_updates item', CleanRoomCatalogUpdate, v) for v in self.catalog_updates
+            ]
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.name_arg is not None: body['name_arg'] = _validated('name_arg', str, self.name_arg)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         return body
 
     @classmethod
@@ -1012,10 +1115,12 @@ class UpdateProvider:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.recipient_profile_str is not None:
+            body['recipient_profile_str'] = _validated('recipient_profile_str', str,
+                                                       self.recipient_profile_str)
         return body
 
     @classmethod
@@ -1036,11 +1141,14 @@ class UpdateRecipient:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.ip_access_list:
+            body['ip_access_list'] = _validated('ip_access_list', IpAccessList, self.ip_access_list)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties_kvpairs:
+            body['properties_kvpairs'] = _validated('properties_kvpairs', SecurablePropertiesKvPairs,
+                                                    self.properties_kvpairs)
         return body
 
     @classmethod
@@ -1061,10 +1169,11 @@ class UpdateShare:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.updates:
+            body['updates'] = [_validated('updates item', SharedDataObjectUpdate, v) for v in self.updates]
         return body
 
     @classmethod
@@ -1082,8 +1191,9 @@ class UpdateSharePermissions:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
-        if self.name is not None: body['name'] = self.name
+        if self.changes:
+            body['changes'] = [_validated('changes item', catalog.PermissionsChange, v) for v in self.changes]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -1120,9 +1230,11 @@ class CleanRoomsAPI:
         :returns: :class:`CleanRoomInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if remote_detailed_info is not None: body['remote_detailed_info'] = remote_detailed_info.as_dict()
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if remote_detailed_info is not None:
+            body['remote_detailed_info'] = _validated('remote_detailed_info', CentralCleanRoomInfo,
+                                                      remote_detailed_info)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/clean-rooms', body=body)
         return CleanRoomInfo.from_dict(json)
@@ -1155,7 +1267,9 @@ class CleanRoomsAPI:
         """
 
         query = {}
-        if include_remote_details is not None: query['include_remote_details'] = include_remote_details
+        if include_remote_details is not None:
+            query['include_remote_details'] = _validated('include_remote_details', bool,
+                                                         include_remote_details)
 
         json = self._api.do('GET', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', query=query)
         return CleanRoomInfo.from_dict(json)
@@ -1210,10 +1324,13 @@ class CleanRoomsAPI:
         :returns: :class:`CleanRoomInfo`
         """
         body = {}
-        if catalog_updates is not None: body['catalog_updates'] = [v.as_dict() for v in catalog_updates]
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if owner is not None: body['owner'] = owner
+        if catalog_updates is not None:
+            body['catalog_updates'] = [
+                _validated('catalog_updates item', CleanRoomCatalogUpdate, v) for v in catalog_updates
+            ]
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', body=body)
         return CleanRoomInfo.from_dict(json)
@@ -1249,10 +1366,13 @@ class ProvidersAPI:
         :returns: :class:`ProviderInfo`
         """
         body = {}
-        if authentication_type is not None: body['authentication_type'] = authentication_type.value
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
+        if authentication_type is not None:
+            body['authentication_type'] = _validated('authentication_type', AuthenticationType,
+                                                     authentication_type)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if recipient_profile_str is not None:
+            body['recipient_profile_str'] = _validated('recipient_profile_str', str, recipient_profile_str)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/providers', body=body)
         return ProviderInfo.from_dict(json)
@@ -1302,7 +1422,8 @@ class ProvidersAPI:
 
         query = {}
         if data_provider_global_metastore_id is not None:
-            query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
+            query['data_provider_global_metastore_id'] = _validated('data_provider_global_metastore_id', str,
+                                                                    data_provider_global_metastore_id)
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
         return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
@@ -1347,9 +1468,10 @@ class ProvidersAPI:
         :returns: :class:`ProviderInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if owner is not None: body['owner'] = owner
-        if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if recipient_profile_str is not None:
+            body['recipient_profile_str'] = _validated('recipient_profile_str', str, recipient_profile_str)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/providers/{name}', body=body)
         return ProviderInfo.from_dict(json)
@@ -1451,15 +1573,21 @@ class RecipientsAPI:
         :returns: :class:`RecipientInfo`
         """
         body = {}
-        if authentication_type is not None: body['authentication_type'] = authentication_type.value
-        if comment is not None: body['comment'] = comment
+        if authentication_type is not None:
+            body['authentication_type'] = _validated('authentication_type', AuthenticationType,
+                                                     authentication_type)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
         if data_recipient_global_metastore_id is not None:
-            body['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
-        if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
-        if name is not None: body['name'] = name
-        if owner is not None: body['owner'] = owner
-        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
-        if sharing_code is not None: body['sharing_code'] = sharing_code
+            body['data_recipient_global_metastore_id'] = _validated('data_recipient_global_metastore_id', Any,
+                                                                    data_recipient_global_metastore_id)
+        if ip_access_list is not None:
+            body['ip_access_list'] = _validated('ip_access_list', IpAccessList, ip_access_list)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if properties_kvpairs is not None:
+            body['properties_kvpairs'] = _validated('properties_kvpairs', SecurablePropertiesKvPairs,
+                                                    properties_kvpairs)
+        if sharing_code is not None: body['sharing_code'] = _validated('sharing_code', str, sharing_code)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/recipients', body=body)
         return RecipientInfo.from_dict(json)
@@ -1510,7 +1638,8 @@ class RecipientsAPI:
 
         query = {}
         if data_recipient_global_metastore_id is not None:
-            query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
+            query['data_recipient_global_metastore_id'] = _validated('data_recipient_global_metastore_id',
+                                                                     str, data_recipient_global_metastore_id)
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query)
         return [RecipientInfo.from_dict(v) for v in json.get('recipients', [])]
@@ -1532,7 +1661,8 @@ class RecipientsAPI:
         """
         body = {}
         if existing_token_expire_in_seconds is not None:
-            body['existing_token_expire_in_seconds'] = existing_token_expire_in_seconds
+            body['existing_token_expire_in_seconds'] = _validated('existing_token_expire_in_seconds', int,
+                                                                  existing_token_expire_in_seconds)
 
         json = self._api.do('POST', f'/api/2.1/unity-catalog/recipients/{name}/rotate-token', body=body)
         return RecipientInfo.from_dict(json)
@@ -1581,10 +1711,13 @@ class RecipientsAPI:
         
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
-        if owner is not None: body['owner'] = owner
-        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if ip_access_list is not None:
+            body['ip_access_list'] = _validated('ip_access_list', IpAccessList, ip_access_list)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if properties_kvpairs is not None:
+            body['properties_kvpairs'] = _validated('properties_kvpairs', SecurablePropertiesKvPairs,
+                                                    properties_kvpairs)
         self._api.do('PATCH', f'/api/2.1/unity-catalog/recipients/{name}', body=body)
 
 
@@ -1611,8 +1744,8 @@ class SharesAPI:
         :returns: :class:`ShareInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/shares', body=body)
         return ShareInfo.from_dict(json)
@@ -1645,7 +1778,8 @@ class SharesAPI:
         """
 
         query = {}
-        if include_shared_data is not None: query['include_shared_data'] = include_shared_data
+        if include_shared_data is not None:
+            query['include_shared_data'] = _validated('include_shared_data', bool, include_shared_data)
 
         json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query)
         return ShareInfo.from_dict(json)
@@ -1711,9 +1845,10 @@ class SharesAPI:
         :returns: :class:`ShareInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if owner is not None: body['owner'] = owner
-        if updates is not None: body['updates'] = [v.as_dict() for v in updates]
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if updates is not None:
+            body['updates'] = [_validated('updates item', SharedDataObjectUpdate, v) for v in updates]
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}', body=body)
         return ShareInfo.from_dict(json)
@@ -1735,5 +1870,6 @@ class SharesAPI:
         
         """
         body = {}
-        if changes is not None: body['changes'] = [v for v in changes]
+        if changes is not None:
+            body['changes'] = [_validated('changes item', catalog.PermissionsChange, v) for v in changes]
         self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}/permissions', body=body)

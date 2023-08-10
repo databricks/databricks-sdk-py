@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _from_dict, _repeated
+from ._internal import _from_dict, _repeated, _validated
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -21,11 +21,15 @@ class CreateCustomAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.confidential is not None: body['confidential'] = self.confidential
-        if self.name is not None: body['name'] = self.name
-        if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
-        if self.scopes: body['scopes'] = [v for v in self.scopes]
-        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.confidential is not None:
+            body['confidential'] = _validated('confidential', bool, self.confidential)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.redirect_urls:
+            body['redirect_urls'] = [_validated('redirect_urls item', str, v) for v in self.redirect_urls]
+        if self.scopes: body['scopes'] = [_validated('scopes item', str, v) for v in self.scopes]
+        if self.token_access_policy:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     self.token_access_policy)
         return body
 
     @classmethod
@@ -45,9 +49,11 @@ class CreateCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.client_id is not None: body['client_id'] = self.client_id
-        if self.client_secret is not None: body['client_secret'] = self.client_secret
-        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.client_id is not None: body['client_id'] = _validated('client_id', str, self.client_id)
+        if self.client_secret is not None:
+            body['client_secret'] = _validated('client_secret', str, self.client_secret)
+        if self.integration_id is not None:
+            body['integration_id'] = _validated('integration_id', str, self.integration_id)
         return body
 
     @classmethod
@@ -64,7 +70,8 @@ class CreateOAuthEnrollment:
     def as_dict(self) -> dict:
         body = {}
         if self.enable_all_published_apps is not None:
-            body['enable_all_published_apps'] = self.enable_all_published_apps
+            body['enable_all_published_apps'] = _validated('enable_all_published_apps', bool,
+                                                           self.enable_all_published_apps)
         return body
 
     @classmethod
@@ -79,8 +86,10 @@ class CreatePublishedAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.app_id is not None: body['app_id'] = self.app_id
-        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.app_id is not None: body['app_id'] = _validated('app_id', str, self.app_id)
+        if self.token_access_policy:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     self.token_access_policy)
         return body
 
     @classmethod
@@ -95,7 +104,8 @@ class CreatePublishedAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.integration_id is not None:
+            body['integration_id'] = _validated('integration_id', str, self.integration_id)
         return body
 
     @classmethod
@@ -114,12 +124,15 @@ class CreateServicePrincipalSecretResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.create_time is not None: body['create_time'] = self.create_time
-        if self.id is not None: body['id'] = self.id
-        if self.secret is not None: body['secret'] = self.secret
-        if self.secret_hash is not None: body['secret_hash'] = self.secret_hash
-        if self.status is not None: body['status'] = self.status
-        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.create_time is not None:
+            body['create_time'] = _validated('create_time', str, self.create_time)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.secret is not None: body['secret'] = _validated('secret', str, self.secret)
+        if self.secret_hash is not None:
+            body['secret_hash'] = _validated('secret_hash', str, self.secret_hash)
+        if self.status is not None: body['status'] = _validated('status', str, self.status)
+        if self.update_time is not None:
+            body['update_time'] = _validated('update_time', str, self.update_time)
         return body
 
     @classmethod
@@ -143,12 +156,17 @@ class GetCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.client_id is not None: body['client_id'] = self.client_id
-        if self.confidential is not None: body['confidential'] = self.confidential
-        if self.integration_id is not None: body['integration_id'] = self.integration_id
-        if self.name is not None: body['name'] = self.name
-        if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
-        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.client_id is not None: body['client_id'] = _validated('client_id', str, self.client_id)
+        if self.confidential is not None:
+            body['confidential'] = _validated('confidential', bool, self.confidential)
+        if self.integration_id is not None:
+            body['integration_id'] = _validated('integration_id', str, self.integration_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.redirect_urls:
+            body['redirect_urls'] = [_validated('redirect_urls item', str, v) for v in self.redirect_urls]
+        if self.token_access_policy:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     self.token_access_policy)
         return body
 
     @classmethod
@@ -167,7 +185,8 @@ class GetCustomAppIntegrationsOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        if self.apps:
+            body['apps'] = [_validated('apps item', GetCustomAppIntegrationOutput, v) for v in self.apps]
         return body
 
     @classmethod
@@ -184,10 +203,13 @@ class GetPublishedAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.app_id is not None: body['app_id'] = self.app_id
-        if self.integration_id is not None: body['integration_id'] = self.integration_id
-        if self.name is not None: body['name'] = self.name
-        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.app_id is not None: body['app_id'] = _validated('app_id', str, self.app_id)
+        if self.integration_id is not None:
+            body['integration_id'] = _validated('integration_id', str, self.integration_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.token_access_policy:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     self.token_access_policy)
         return body
 
     @classmethod
@@ -204,7 +226,8 @@ class GetPublishedAppIntegrationsOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        if self.apps:
+            body['apps'] = [_validated('apps item', GetPublishedAppIntegrationOutput, v) for v in self.apps]
         return body
 
     @classmethod
@@ -218,7 +241,7 @@ class ListServicePrincipalSecretsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
+        if self.secrets: body['secrets'] = [_validated('secrets item', SecretInfo, v) for v in self.secrets]
         return body
 
     @classmethod
@@ -232,7 +255,7 @@ class OAuthEnrollmentStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
+        if self.is_enabled is not None: body['is_enabled'] = _validated('is_enabled', bool, self.is_enabled)
         return body
 
     @classmethod
@@ -250,11 +273,14 @@ class SecretInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.create_time is not None: body['create_time'] = self.create_time
-        if self.id is not None: body['id'] = self.id
-        if self.secret_hash is not None: body['secret_hash'] = self.secret_hash
-        if self.status is not None: body['status'] = self.status
-        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.create_time is not None:
+            body['create_time'] = _validated('create_time', str, self.create_time)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.secret_hash is not None:
+            body['secret_hash'] = _validated('secret_hash', str, self.secret_hash)
+        if self.status is not None: body['status'] = _validated('status', str, self.status)
+        if self.update_time is not None:
+            body['update_time'] = _validated('update_time', str, self.update_time)
         return body
 
     @classmethod
@@ -274,9 +300,11 @@ class TokenAccessPolicy:
     def as_dict(self) -> dict:
         body = {}
         if self.access_token_ttl_in_minutes is not None:
-            body['access_token_ttl_in_minutes'] = self.access_token_ttl_in_minutes
+            body['access_token_ttl_in_minutes'] = _validated('access_token_ttl_in_minutes', int,
+                                                             self.access_token_ttl_in_minutes)
         if self.refresh_token_ttl_in_minutes is not None:
-            body['refresh_token_ttl_in_minutes'] = self.refresh_token_ttl_in_minutes
+            body['refresh_token_ttl_in_minutes'] = _validated('refresh_token_ttl_in_minutes', int,
+                                                              self.refresh_token_ttl_in_minutes)
         return body
 
     @classmethod
@@ -293,9 +321,13 @@ class UpdateCustomAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.integration_id is not None: body['integration_id'] = self.integration_id
-        if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
-        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.integration_id is not None:
+            body['integration_id'] = _validated('integration_id', str, self.integration_id)
+        if self.redirect_urls:
+            body['redirect_urls'] = [_validated('redirect_urls item', str, v) for v in self.redirect_urls]
+        if self.token_access_policy:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     self.token_access_policy)
         return body
 
     @classmethod
@@ -312,8 +344,11 @@ class UpdatePublishedAppIntegration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.integration_id is not None: body['integration_id'] = self.integration_id
-        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.integration_id is not None:
+            body['integration_id'] = _validated('integration_id', str, self.integration_id)
+        if self.token_access_policy:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     self.token_access_policy)
         return body
 
     @classmethod
@@ -360,11 +395,14 @@ class CustomAppIntegrationAPI:
         :returns: :class:`CreateCustomAppIntegrationOutput`
         """
         body = {}
-        if confidential is not None: body['confidential'] = confidential
-        if name is not None: body['name'] = name
-        if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
-        if scopes is not None: body['scopes'] = [v for v in scopes]
-        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        if confidential is not None: body['confidential'] = _validated('confidential', bool, confidential)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if redirect_urls is not None:
+            body['redirect_urls'] = [_validated('redirect_urls item', str, v) for v in redirect_urls]
+        if scopes is not None: body['scopes'] = [_validated('scopes item', str, v) for v in scopes]
+        if token_access_policy is not None:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     token_access_policy)
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
@@ -434,8 +472,11 @@ class CustomAppIntegrationAPI:
         
         """
         body = {}
-        if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
-        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        if redirect_urls is not None:
+            body['redirect_urls'] = [_validated('redirect_urls item', str, v) for v in redirect_urls]
+        if token_access_policy is not None:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     token_access_policy)
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
@@ -470,7 +511,8 @@ class OAuthEnrollmentAPI:
         """
         body = {}
         if enable_all_published_apps is not None:
-            body['enable_all_published_apps'] = enable_all_published_apps
+            body['enable_all_published_apps'] = _validated('enable_all_published_apps', bool,
+                                                           enable_all_published_apps)
         self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment', body=body)
 
     def get(self) -> OAuthEnrollmentStatus:
@@ -517,8 +559,10 @@ class PublishedAppIntegrationAPI:
         :returns: :class:`CreatePublishedAppIntegrationOutput`
         """
         body = {}
-        if app_id is not None: body['app_id'] = app_id
-        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        if app_id is not None: body['app_id'] = _validated('app_id', str, app_id)
+        if token_access_policy is not None:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     token_access_policy)
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
@@ -583,7 +627,9 @@ class PublishedAppIntegrationAPI:
         
         """
         body = {}
-        if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        if token_access_policy is not None:
+            body['token_access_policy'] = _validated('token_access_policy', TokenAccessPolicy,
+                                                     token_access_policy)
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',

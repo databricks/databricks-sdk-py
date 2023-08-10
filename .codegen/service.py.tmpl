@@ -8,7 +8,7 @@ import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
-from ._internal import _enum, _from_dict, _repeated, Wait
+from ._internal import _enum, _from_dict, _repeated, _validated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -26,7 +26,12 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}
-        {{range .Fields | alphanumOnly}}if self.{{.SnakeName}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
+        {{range .Fields | alphanumOnly}}if self.{{.SnakeName -}}
+          {{- with .Entity.IsPrimitive}} is not None{{- end -}}: body['{{.Name}}'] = {{template "validated" (dict
+            "var" (concat "self." .SnakeName)
+            "name" .SnakeName
+            "entity" .Entity
+          )}}
         {{end -}}
         return body
 
@@ -42,6 +47,26 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{range .Enum }}
     {{.ConstantName}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
+
+{{- define "validated" -}}
+      {{- if not .entity }}None # ERROR: No Type
+      {{- else if .entity.MapValue }}{k:{{template "validated" (dict
+          "var" "v"
+          "name" (concat .name " item")
+          "entity" .entity.MapValue
+        )}} for (k,v) in {{.var}}.items()}
+      {{- else if .entity.ArrayValue }}[{{template "validated" (dict
+          "var" "v"
+          "name" (concat .name " item")
+          "entity" .entity.ArrayValue
+        )}} for v in {{.var}}]
+      {{- else if or .entity.IsObject .entity.IsExternal .entity.Enum -}}
+        _validated('{{.name}}', {{if .entity.IsExternal}}{{.entity.Package.Name}}.{{end}}{{.entity.PascalName}}, {{.var}})
+      {{- else -}}
+        _validated('{{.name}}', {{template "type-nq" .entity}}, {{.var}})
+      {{- end -}}
+{{- end -}}
+
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
@@ -53,14 +78,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{.Entity.PascalName}})
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
-{{- define "as_request_type" -}}
-	{{- if not .Entity }}None # ERROR: No Type
-	{{- /* This should be done recursively, but recursion in text templates is not supported. */ -}}
-	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{ else if .Entity.ArrayValue.Enum }}v.value{{else}}v{{end}} for v in self.{{.SnakeName}}]
-	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{.SnakeName}}.as_dict()
-	{{- else if .Entity.Enum }}self.{{.SnakeName}}.value
-	{{- else}}self.{{.SnakeName}}{{- end -}}
-{{- end -}}
+
 {{- define "type" -}}
 	{{- if not . }}any # ERROR: No Type
 	{{- else if .ArrayValue }}'List[{{template "type-nq" .ArrayValue}}]'
@@ -70,6 +88,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .Enum }}'{{.PascalName}}'
 	{{- else}}{{template "type-nq" .}}{{- end -}}
 {{- end -}}
+
 {{- define "type-nq" -}}
 	{{- if .IsString}}str
 	{{- else if .IsEmpty}}Any
@@ -198,20 +217,13 @@ class {{.Name}}API:{{if .Description}}
         {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
         query = {}{{end}}
         {{- range .Request.Fields}}{{if not .IsPath}}
-        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
+        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "validated" (dict
+          "var" .SnakeName
+          "name" .SnakeName
+          "entity" .Entity
+        )}}{{end}}{{end}}
         {{- end}}
 {{- end}}
-
-{{- define "method-param-bind" -}}
-      {{- if not .Entity }}None # ERROR: No Type
-      {{- else if .Entity.ArrayValue }}[
-        {{- if .Entity.ArrayValue.IsObject -}}v.as_dict()
-        {{- else if .Entity.ArrayValue.Enum -}}v.value
-        {{- else}}v{{end}} for v in {{.SnakeName}}]
-      {{- else if .Entity.IsObject }}{{.SnakeName}}.as_dict()
-      {{- else if .Entity.Enum }}{{.SnakeName}}.value
-      {{- else}}{{.SnakeName}}{{- end -}}
-{{- end -}}
 
 {{define "method-call" -}}
         {{if .Pagination -}}{{template "method-call-paginated" .}}
