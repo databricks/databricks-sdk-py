@@ -152,12 +152,11 @@ class {{.Name}}API:{{if .Description}}
     {{end}}
 
     {{range .Methods}}
-    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}
-      {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
-      {{if .Request.NonRequiredFields}}, *
-        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
-      {{- end}}
-    {{- end}}){{template "method-return-type" .}}:
+    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .ListingRequest -}}
+        {{template "arguments-serialize" .ListingRequest}}
+      {{- else if .Request -}}
+        {{template "arguments-serialize" .Request}}
+      {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}
         {{with .Request}}{{range .RequiredFields}}
         :param {{.SnakeName}}: {{template "type-doc" .Entity}}{{if .Description}}
@@ -179,8 +178,10 @@ class {{.Name}}API:{{if .Description}}
           {{template "type-doc" .Response}}
         {{- end}}{{end}}
         """{{end}}
-        {{if .Request -}}
-        {{template "method-serialize" .}}
+        {{if .ListingRequest -}}
+          {{template "method-serialize" .ListingRequest}}
+        {{- else if .Request -}}
+          {{template "method-serialize" .Request}}
         {{- end}}
         {{template "method-call" .}}
 
@@ -193,11 +194,18 @@ class {{.Name}}API:{{if .Description}}
     {{end -}}
 {{- end}}
 
+{{define "arguments-serialize" -}}
+  {{range .RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
+  {{if .NonRequiredFields}}, *
+    {{range .NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
+  {{- end}}
+{{- end}}
+
 {{define "method-serialize" -}}
-        {{if or .Request.HasJsonField .Request.HasQueryField -}}
-        {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
+        {{if or .HasJsonField .HasQueryField -}}
+        {{if .HasJsonField}}body = {}{{end}}{{if .HasQueryField}}
         query = {}{{end}}
-        {{- range .Request.Fields}}{{if not .IsPath}}
+        {{- range .Fields}}{{if not .IsPath}}
         if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{- end}}
 {{- end}}

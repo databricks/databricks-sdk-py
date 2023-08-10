@@ -1481,6 +1481,16 @@ class ListStorageCredentialsResponse:
 
 
 @dataclass
+class ListSummariesRequest:
+    """List table summaries"""
+
+    catalog_name: str
+    max_results: Optional[int] = None
+    schema_name_pattern: Optional[str] = None
+    table_name_pattern: Optional[str] = None
+
+
+@dataclass
 class ListSystemSchemasResponse:
     schemas: Optional['List[SystemSchemaInfo]'] = None
 
@@ -1509,6 +1519,16 @@ class ListTableSummariesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListTableSummariesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
                    tables=_repeated(d, 'tables', TableSummary))
+
+
+@dataclass
+class ListTablesRequest:
+    """List tables"""
+
+    catalog_name: str
+    schema_name: str
+    include_delta_metadata: Optional[bool] = None
+    max_results: Optional[int] = None
 
 
 @dataclass
@@ -4474,8 +4494,7 @@ class TablesAPI:
              schema_name: str,
              *,
              include_delta_metadata: Optional[bool] = None,
-             max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[TableInfo]:
+             max_results: Optional[int] = None) -> Iterator[TableInfo]:
         """List tables.
         
         Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
@@ -4506,7 +4525,6 @@ class TablesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
         if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
 
         while True:
@@ -4523,7 +4541,6 @@ class TablesAPI:
                        catalog_name: str,
                        *,
                        max_results: Optional[int] = None,
-                       page_token: Optional[str] = None,
                        schema_name_pattern: Optional[str] = None,
                        table_name_pattern: Optional[str] = None) -> Iterator[TableSummary]:
         """List table summaries.
@@ -4556,7 +4573,6 @@ class TablesAPI:
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
         if schema_name_pattern is not None: query['schema_name_pattern'] = schema_name_pattern
         if table_name_pattern is not None: query['table_name_pattern'] = table_name_pattern
 

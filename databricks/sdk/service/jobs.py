@@ -998,6 +998,15 @@ class JobsHealthRules:
 
 
 @dataclass
+class ListJobsRequest:
+    """List jobs"""
+
+    expand_tasks: Optional[bool] = None
+    name: Optional[str] = None
+    offset: Optional[int] = None
+
+
+@dataclass
 class ListJobsResponse:
     has_more: Optional[bool] = None
     jobs: Optional['List[BaseJob]'] = None
@@ -1018,6 +1027,20 @@ class ListJobsResponse:
                    jobs=_repeated(d, 'jobs', BaseJob),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
+
+
+@dataclass
+class ListRunsRequest:
+    """List job runs"""
+
+    active_only: Optional[bool] = None
+    completed_only: Optional[bool] = None
+    expand_tasks: Optional[bool] = None
+    job_id: Optional[int] = None
+    offset: Optional[int] = None
+    run_type: Optional['ListRunsRunType'] = None
+    start_time_from: Optional[int] = None
+    start_time_to: Optional[int] = None
 
 
 @dataclass
@@ -3028,10 +3051,8 @@ class JobsAPI:
     def list(self,
              *,
              expand_tasks: Optional[bool] = None,
-             limit: Optional[int] = None,
              name: Optional[str] = None,
-             offset: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[BaseJob]:
+             offset: Optional[int] = None) -> Iterator[BaseJob]:
         """List jobs.
         
         Retrieves a list of jobs.
@@ -3056,10 +3077,8 @@ class JobsAPI:
 
         query = {}
         if expand_tasks is not None: query['expand_tasks'] = expand_tasks
-        if limit is not None: query['limit'] = limit
         if name is not None: query['name'] = name
         if offset is not None: query['offset'] = offset
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
@@ -3077,9 +3096,7 @@ class JobsAPI:
                   completed_only: Optional[bool] = None,
                   expand_tasks: Optional[bool] = None,
                   job_id: Optional[int] = None,
-                  limit: Optional[int] = None,
                   offset: Optional[int] = None,
-                  page_token: Optional[str] = None,
                   run_type: Optional[ListRunsRunType] = None,
                   start_time_from: Optional[int] = None,
                   start_time_to: Optional[int] = None) -> Iterator[BaseRun]:
@@ -3125,9 +3142,7 @@ class JobsAPI:
         if completed_only is not None: query['completed_only'] = completed_only
         if expand_tasks is not None: query['expand_tasks'] = expand_tasks
         if job_id is not None: query['job_id'] = job_id
-        if limit is not None: query['limit'] = limit
         if offset is not None: query['offset'] = offset
-        if page_token is not None: query['page_token'] = page_token
         if run_type is not None: query['run_type'] = run_type.value
         if start_time_from is not None: query['start_time_from'] = start_time_from
         if start_time_to is not None: query['start_time_to'] = start_time_to

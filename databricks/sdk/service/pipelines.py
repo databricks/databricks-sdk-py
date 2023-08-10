@@ -337,6 +337,16 @@ class GetUpdateResponse:
 
 
 @dataclass
+class ListPipelineEventsRequest:
+    """List pipeline events"""
+
+    pipeline_id: str
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+
+
+@dataclass
 class ListPipelineEventsResponse:
     events: Optional['List[PipelineEvent]'] = None
     next_page_token: Optional[str] = None
@@ -354,6 +364,15 @@ class ListPipelineEventsResponse:
         return cls(events=_repeated(d, 'events', PipelineEvent),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
+
+
+@dataclass
+class ListPipelinesRequest:
+    """List pipelines"""
+
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
 
 
 @dataclass
@@ -1312,8 +1331,7 @@ class PipelinesAPI:
                              *,
                              filter: Optional[str] = None,
                              max_results: Optional[int] = None,
-                             order_by: Optional[List[str]] = None,
-                             page_token: Optional[str] = None) -> Iterator[PipelineEvent]:
+                             order_by: Optional[List[str]] = None) -> Iterator[PipelineEvent]:
         """List pipeline events.
         
         Retrieves events for a pipeline.
@@ -1345,7 +1363,6 @@ class PipelinesAPI:
         if filter is not None: query['filter'] = filter
         if max_results is not None: query['max_results'] = max_results
         if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/events', query=query)
@@ -1361,8 +1378,7 @@ class PipelinesAPI:
                        *,
                        filter: Optional[str] = None,
                        max_results: Optional[int] = None,
-                       order_by: Optional[List[str]] = None,
-                       page_token: Optional[str] = None) -> Iterator[PipelineStateInfo]:
+                       order_by: Optional[List[str]] = None) -> Iterator[PipelineStateInfo]:
         """List pipelines.
         
         Lists pipelines defined in the Delta Live Tables system.
@@ -1393,7 +1409,6 @@ class PipelinesAPI:
         if filter is not None: query['filter'] = filter
         if max_results is not None: query['max_results'] = max_results
         if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query)
