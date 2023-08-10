@@ -491,8 +491,8 @@ class Config:
     metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL',
                                            auth='metadata-service',
                                            sensitive=True)
-    connection_pool_size: int = ConfigAttribute()
-    connection_pool_max_size: int = ConfigAttribute()
+    max_connection_pools: int = ConfigAttribute()
+    max_connections_per_pool: int = ConfigAttribute()
 
     def __init__(self,
                  *,
@@ -898,15 +898,15 @@ class ApiClient:
 
         # Number of urllib3 connection pools to cache before discarding the least
         # recently used pool. Python requests default value is 10.
-        pool_connections = cfg.connection_pool_size
+        pool_connections = cfg.max_connection_pools
         if pool_connections is None:
             pool_connections = 20
 
         # The maximum number of connections to save in the pool. Improves performance
         # in multithreaded situations. For now, we're setting it to the same value
         # as connection_pool_size.
-        pool_maxsize = cfg.connection_pool_max_size
-        if cfg.connection_pool_max_size is None:
+        pool_maxsize = cfg.max_connections_per_pool
+        if cfg.max_connections_per_pool is None:
             pool_maxsize = pool_connections
 
         # If pool_block is False, then more connections will are created,
