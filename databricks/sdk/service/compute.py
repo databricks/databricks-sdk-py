@@ -25,11 +25,15 @@ class AddInstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
-        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.iam_role_arn is not None:
+            body['iam_role_arn'] = _validated('iam_role_arn', str, self.iam_role_arn)
+        if self.instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, self.instance_profile_arn)
         if self.is_meta_instance_profile is not None:
-            body['is_meta_instance_profile'] = self.is_meta_instance_profile
-        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
+            body['is_meta_instance_profile'] = _validated('is_meta_instance_profile', bool,
+                                                          self.is_meta_instance_profile)
+        if self.skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, self.skip_validation)
         return body
 
     @classmethod
@@ -47,8 +51,10 @@ class AutoScale:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.max_workers is not None: body['max_workers'] = self.max_workers
-        if self.min_workers is not None: body['min_workers'] = self.min_workers
+        if self.max_workers is not None:
+            body['max_workers'] = _validated('max_workers', int, self.max_workers)
+        if self.min_workers is not None:
+            body['min_workers'] = _validated('min_workers', int, self.min_workers)
         return body
 
     @classmethod
@@ -73,17 +79,25 @@ class AwsAttributes:
         body = {}
         if self.availability is not None:
             body['availability'] = _validated('availability', AwsAvailability, self.availability)
-        if self.ebs_volume_count is not None: body['ebs_volume_count'] = self.ebs_volume_count
-        if self.ebs_volume_iops is not None: body['ebs_volume_iops'] = self.ebs_volume_iops
-        if self.ebs_volume_size is not None: body['ebs_volume_size'] = self.ebs_volume_size
-        if self.ebs_volume_throughput is not None: body['ebs_volume_throughput'] = self.ebs_volume_throughput
+        if self.ebs_volume_count is not None:
+            body['ebs_volume_count'] = _validated('ebs_volume_count', int, self.ebs_volume_count)
+        if self.ebs_volume_iops is not None:
+            body['ebs_volume_iops'] = _validated('ebs_volume_iops', int, self.ebs_volume_iops)
+        if self.ebs_volume_size is not None:
+            body['ebs_volume_size'] = _validated('ebs_volume_size', int, self.ebs_volume_size)
+        if self.ebs_volume_throughput is not None:
+            body['ebs_volume_throughput'] = _validated('ebs_volume_throughput', int,
+                                                       self.ebs_volume_throughput)
         if self.ebs_volume_type is not None:
             body['ebs_volume_type'] = _validated('ebs_volume_type', EbsVolumeType, self.ebs_volume_type)
-        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
-        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.first_on_demand is not None:
+            body['first_on_demand'] = _validated('first_on_demand', int, self.first_on_demand)
+        if self.instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, self.instance_profile_arn)
         if self.spot_bid_price_percent is not None:
-            body['spot_bid_price_percent'] = self.spot_bid_price_percent
-        if self.zone_id is not None: body['zone_id'] = self.zone_id
+            body['spot_bid_price_percent'] = _validated('spot_bid_price_percent', int,
+                                                        self.spot_bid_price_percent)
+        if self.zone_id is not None: body['zone_id'] = _validated('zone_id', str, self.zone_id)
         return body
 
     @classmethod
@@ -121,11 +135,13 @@ class AzureAttributes:
         body = {}
         if self.availability is not None:
             body['availability'] = _validated('availability', AzureAvailability, self.availability)
-        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
+        if self.first_on_demand is not None:
+            body['first_on_demand'] = _validated('first_on_demand', int, self.first_on_demand)
         if self.log_analytics_info:
             body['log_analytics_info'] = _validated('log_analytics_info', LogAnalyticsInfo,
                                                     self.log_analytics_info)
-        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
+        if self.spot_bid_max_price is not None:
+            body['spot_bid_max_price'] = _validated('spot_bid_max_price', float, self.spot_bid_max_price)
         return body
 
     @classmethod
@@ -154,9 +170,9 @@ class CancelCommand:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
-        if self.command_id is not None: body['commandId'] = self.command_id
-        if self.context_id is not None: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, self.cluster_id)
+        if self.command_id is not None: body['commandId'] = _validated('command_id', str, self.command_id)
+        if self.context_id is not None: body['contextId'] = _validated('context_id', str, self.context_id)
         return body
 
     @classmethod
@@ -173,8 +189,9 @@ class ChangeClusterOwner:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.owner_username is not None: body['owner_username'] = self.owner_username
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.owner_username is not None:
+            body['owner_username'] = _validated('owner_username', str, self.owner_username)
         return body
 
     @classmethod
@@ -189,8 +206,8 @@ class ClientsTypes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.jobs is not None: body['jobs'] = self.jobs
-        if self.notebooks is not None: body['notebooks'] = self.notebooks
+        if self.jobs is not None: body['jobs'] = _validated('jobs', bool, self.jobs)
+        if self.notebooks is not None: body['notebooks'] = _validated('notebooks', bool, self.notebooks)
         return body
 
     @classmethod
@@ -228,13 +245,14 @@ class ClusterAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ClusterPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -259,11 +277,13 @@ class ClusterAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', ClusterPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -306,44 +326,69 @@ class ClusterAttributes:
     def as_dict(self) -> dict:
         body = {}
         if self.autotermination_minutes is not None:
-            body['autotermination_minutes'] = self.autotermination_minutes
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         self.autotermination_minutes)
         if self.aws_attributes:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, self.aws_attributes)
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, self.azure_attributes)
         if self.cluster_log_conf:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, self.cluster_log_conf)
-        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_name is not None:
+            body['cluster_name'] = _validated('cluster_name', str, self.cluster_name)
         if self.cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, self.cluster_source)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.data_security_mode is not None:
             body['data_security_mode'] = _validated('data_security_mode', DataSecurityMode,
                                                     self.data_security_mode)
         if self.docker_image:
             body['docker_image'] = _validated('docker_image', DockerImage, self.docker_image)
         if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         self.driver_instance_pool_id)
+        if self.driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, self.driver_node_type_id)
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              self.enable_local_disk_encryption)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', GcpAttributes, self.gcp_attributes)
         if self.init_scripts:
             body['init_scripts'] = [
                 _validated('init_scripts item', InitScriptInfo, v) for v in self.init_scripts
             ]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         if self.runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, self.runtime_engine)
-        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version is not None: body['spark_version'] = self.spark_version
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.single_user_name is not None:
+            body['single_user_name'] = _validated('single_user_name', str, self.single_user_name)
+        if self.spark_conf:
+            body['spark_conf'] = {
+                k: _validated('spark_conf item', str, v)
+                for (k, v) in self.spark_conf.items()
+            }
+        if self.spark_env_vars:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in self.spark_env_vars.items()
+            }
+        if self.spark_version is not None:
+            body['spark_version'] = _validated('spark_version', str, self.spark_version)
+        if self.ssh_public_keys:
+            body['ssh_public_keys'] = [
+                _validated('ssh_public_keys item', str, v) for v in self.ssh_public_keys
+            ]
         if self.workload_type:
             body['workload_type'] = _validated('workload_type', WorkloadType, self.workload_type)
         return body
@@ -428,37 +473,54 @@ class ClusterDetails:
         body = {}
         if self.autoscale: body['autoscale'] = _validated('autoscale', AutoScale, self.autoscale)
         if self.autotermination_minutes is not None:
-            body['autotermination_minutes'] = self.autotermination_minutes
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         self.autotermination_minutes)
         if self.aws_attributes:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, self.aws_attributes)
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, self.azure_attributes)
-        if self.cluster_cores is not None: body['cluster_cores'] = self.cluster_cores
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_cores is not None:
+            body['cluster_cores'] = _validated('cluster_cores', float, self.cluster_cores)
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.cluster_log_conf:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, self.cluster_log_conf)
         if self.cluster_log_status:
             body['cluster_log_status'] = _validated('cluster_log_status', LogSyncStatus,
                                                     self.cluster_log_status)
-        if self.cluster_memory_mb is not None: body['cluster_memory_mb'] = self.cluster_memory_mb
-        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_memory_mb is not None:
+            body['cluster_memory_mb'] = _validated('cluster_memory_mb', int, self.cluster_memory_mb)
+        if self.cluster_name is not None:
+            body['cluster_name'] = _validated('cluster_name', str, self.cluster_name)
         if self.cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, self.cluster_source)
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.data_security_mode is not None:
             body['data_security_mode'] = _validated('data_security_mode', DataSecurityMode,
                                                     self.data_security_mode)
-        if self.default_tags: body['default_tags'] = self.default_tags
+        if self.default_tags:
+            body['default_tags'] = {
+                k: _validated('default_tags item', str, v)
+                for (k, v) in self.default_tags.items()
+            }
         if self.docker_image:
             body['docker_image'] = _validated('docker_image', DockerImage, self.docker_image)
         if self.driver: body['driver'] = _validated('driver', SparkNode, self.driver)
         if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         self.driver_instance_pool_id)
+        if self.driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, self.driver_node_type_id)
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              self.enable_local_disk_encryption)
         if self.executors:
             body['executors'] = [_validated('executors item', SparkNode, v) for v in self.executors]
         if self.gcp_attributes:
@@ -467,25 +529,46 @@ class ClusterDetails:
             body['init_scripts'] = [
                 _validated('init_scripts item', InitScriptInfo, v) for v in self.init_scripts
             ]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
-        if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
-        if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.jdbc_port is not None: body['jdbc_port'] = _validated('jdbc_port', int, self.jdbc_port)
+        if self.last_restarted_time is not None:
+            body['last_restarted_time'] = _validated('last_restarted_time', int, self.last_restarted_time)
+        if self.last_state_loss_time is not None:
+            body['last_state_loss_time'] = _validated('last_state_loss_time', int, self.last_state_loss_time)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         if self.runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, self.runtime_engine)
-        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version is not None: body['spark_version'] = self.spark_version
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.single_user_name is not None:
+            body['single_user_name'] = _validated('single_user_name', str, self.single_user_name)
+        if self.spark_conf:
+            body['spark_conf'] = {
+                k: _validated('spark_conf item', str, v)
+                for (k, v) in self.spark_conf.items()
+            }
+        if self.spark_context_id is not None:
+            body['spark_context_id'] = _validated('spark_context_id', int, self.spark_context_id)
+        if self.spark_env_vars:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in self.spark_env_vars.items()
+            }
+        if self.spark_version is not None:
+            body['spark_version'] = _validated('spark_version', str, self.spark_version)
+        if self.ssh_public_keys:
+            body['ssh_public_keys'] = [
+                _validated('ssh_public_keys item', str, v) for v in self.ssh_public_keys
+            ]
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.state is not None: body['state'] = _validated('state', State, self.state)
-        if self.state_message is not None: body['state_message'] = self.state_message
-        if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
+        if self.state_message is not None:
+            body['state_message'] = _validated('state_message', str, self.state_message)
+        if self.terminated_time is not None:
+            body['terminated_time'] = _validated('terminated_time', int, self.terminated_time)
         if self.termination_reason:
             body['termination_reason'] = _validated('termination_reason', TerminationReason,
                                                     self.termination_reason)
@@ -551,12 +634,12 @@ class ClusterEvent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.data_plane_event_details:
             body['data_plane_event_details'] = _validated('data_plane_event_details', DataPlaneEventDetails,
                                                           self.data_plane_event_details)
         if self.details: body['details'] = _validated('details', EventDetails, self.details)
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.timestamp is not None: body['timestamp'] = _validated('timestamp', int, self.timestamp)
         if self.type is not None: body['type'] = _validated('type', EventType, self.type)
         return body
 
@@ -576,7 +659,7 @@ class ClusterLibraryStatuses:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.library_statuses:
             body['library_statuses'] = [
                 _validated('library_statuses item', LibraryFullStatus, v) for v in self.library_statuses
@@ -613,8 +696,11 @@ class ClusterPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ClusterPermissionLevel,
                                                   self.permission_level)
@@ -648,8 +734,9 @@ class ClusterPermissions:
                 _validated('access_control_list item', ClusterAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -666,7 +753,8 @@ class ClusterPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ClusterPermissionLevel,
                                                   self.permission_level)
@@ -690,7 +778,7 @@ class ClusterPermissionsRequest:
                 _validated('access_control_list item', ClusterAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -708,13 +796,14 @@ class ClusterPolicyAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ClusterPolicyPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -739,11 +828,13 @@ class ClusterPolicyAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', ClusterPolicyPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -763,8 +854,11 @@ class ClusterPolicyPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ClusterPolicyPermissionLevel,
                                                   self.permission_level)
@@ -796,8 +890,9 @@ class ClusterPolicyPermissions:
                 _validated('access_control_list item', ClusterPolicyAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -815,7 +910,8 @@ class ClusterPolicyPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ClusterPolicyPermissionLevel,
                                                   self.permission_level)
@@ -839,7 +935,8 @@ class ClusterPolicyPermissionsRequest:
                 _validated('access_control_list item', ClusterPolicyAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.cluster_policy_id is not None: body['cluster_policy_id'] = self.cluster_policy_id
+        if self.cluster_policy_id is not None:
+            body['cluster_policy_id'] = _validated('cluster_policy_id', str, self.cluster_policy_id)
         return body
 
     @classmethod
@@ -856,7 +953,8 @@ class ClusterSize:
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = _validated('autoscale', AutoScale, self.autoscale)
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
         return body
 
     @classmethod
@@ -911,45 +1009,71 @@ class ClusterSpec:
         body = {}
         if self.autoscale: body['autoscale'] = _validated('autoscale', AutoScale, self.autoscale)
         if self.autotermination_minutes is not None:
-            body['autotermination_minutes'] = self.autotermination_minutes
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         self.autotermination_minutes)
         if self.aws_attributes:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, self.aws_attributes)
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, self.azure_attributes)
         if self.cluster_log_conf:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, self.cluster_log_conf)
-        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_name is not None:
+            body['cluster_name'] = _validated('cluster_name', str, self.cluster_name)
         if self.cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, self.cluster_source)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.data_security_mode is not None:
             body['data_security_mode'] = _validated('data_security_mode', DataSecurityMode,
                                                     self.data_security_mode)
         if self.docker_image:
             body['docker_image'] = _validated('docker_image', DockerImage, self.docker_image)
         if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         self.driver_instance_pool_id)
+        if self.driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, self.driver_node_type_id)
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              self.enable_local_disk_encryption)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', GcpAttributes, self.gcp_attributes)
         if self.init_scripts:
             body['init_scripts'] = [
                 _validated('init_scripts item', InitScriptInfo, v) for v in self.init_scripts
             ]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         if self.runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, self.runtime_engine)
-        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version is not None: body['spark_version'] = self.spark_version
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.single_user_name is not None:
+            body['single_user_name'] = _validated('single_user_name', str, self.single_user_name)
+        if self.spark_conf:
+            body['spark_conf'] = {
+                k: _validated('spark_conf item', str, v)
+                for (k, v) in self.spark_conf.items()
+            }
+        if self.spark_env_vars:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in self.spark_env_vars.items()
+            }
+        if self.spark_version is not None:
+            body['spark_version'] = _validated('spark_version', str, self.spark_version)
+        if self.ssh_public_keys:
+            body['ssh_public_keys'] = [
+                _validated('ssh_public_keys item', str, v) for v in self.ssh_public_keys
+            ]
         if self.workload_type:
             body['workload_type'] = _validated('workload_type', WorkloadType, self.workload_type)
         return body
@@ -994,9 +1118,9 @@ class Command:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
-        if self.command is not None: body['command'] = self.command
-        if self.context_id is not None: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, self.cluster_id)
+        if self.command is not None: body['command'] = _validated('command', str, self.command)
+        if self.context_id is not None: body['contextId'] = _validated('context_id', str, self.context_id)
         if self.language is not None: body['language'] = _validated('language', Language, self.language)
         return body
 
@@ -1026,7 +1150,7 @@ class CommandStatusResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.results: body['results'] = _validated('results', Results, self.results)
         if self.status is not None: body['status'] = _validated('status', CommandStatus, self.status)
         return body
@@ -1072,7 +1196,7 @@ class ContextStatusResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.status is not None: body['status'] = _validated('status', ContextStatus, self.status)
         return body
 
@@ -1112,42 +1236,68 @@ class CreateCluster:
     def as_dict(self) -> dict:
         body = {}
         if self.apply_policy_default_values is not None:
-            body['apply_policy_default_values'] = self.apply_policy_default_values
+            body['apply_policy_default_values'] = _validated('apply_policy_default_values', bool,
+                                                             self.apply_policy_default_values)
         if self.autoscale: body['autoscale'] = _validated('autoscale', AutoScale, self.autoscale)
         if self.autotermination_minutes is not None:
-            body['autotermination_minutes'] = self.autotermination_minutes
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         self.autotermination_minutes)
         if self.aws_attributes:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, self.aws_attributes)
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, self.azure_attributes)
         if self.cluster_log_conf:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, self.cluster_log_conf)
-        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_name is not None:
+            body['cluster_name'] = _validated('cluster_name', str, self.cluster_name)
         if self.cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, self.cluster_source)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         self.driver_instance_pool_id)
+        if self.driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, self.driver_node_type_id)
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              self.enable_local_disk_encryption)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', GcpAttributes, self.gcp_attributes)
         if self.init_scripts:
             body['init_scripts'] = [
                 _validated('init_scripts item', InitScriptInfo, v) for v in self.init_scripts
             ]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         if self.runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, self.runtime_engine)
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version is not None: body['spark_version'] = self.spark_version
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.spark_conf:
+            body['spark_conf'] = {
+                k: _validated('spark_conf item', str, v)
+                for (k, v) in self.spark_conf.items()
+            }
+        if self.spark_env_vars:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in self.spark_env_vars.items()
+            }
+        if self.spark_version is not None:
+            body['spark_version'] = _validated('spark_version', str, self.spark_version)
+        if self.ssh_public_keys:
+            body['ssh_public_keys'] = [
+                _validated('ssh_public_keys item', str, v) for v in self.ssh_public_keys
+            ]
         if self.workload_type:
             body['workload_type'] = _validated('workload_type', WorkloadType, self.workload_type)
         return body
@@ -1187,7 +1337,7 @@ class CreateClusterResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -1202,7 +1352,7 @@ class CreateContext:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, self.cluster_id)
         if self.language is not None: body['language'] = _validated('language', Language, self.language)
         return body
 
@@ -1236,29 +1386,41 @@ class CreateInstancePool:
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', InstancePoolAzureAttributes,
                                                   self.azure_attributes)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.disk_spec: body['disk_spec'] = _validated('disk_spec', DiskSpec, self.disk_spec)
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', InstancePoolGcpAttributes,
                                                 self.gcp_attributes)
         if self.idle_instance_autotermination_minutes is not None:
-            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+            body['idle_instance_autotermination_minutes'] = _validated(
+                'idle_instance_autotermination_minutes', int, self.idle_instance_autotermination_minutes)
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = _validated('instance_pool_fleet_attributes',
                                                                 InstancePoolFleetAttributes,
                                                                 self.instance_pool_fleet_attributes)
-        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_name is not None:
+            body['instance_pool_name'] = _validated('instance_pool_name', str, self.instance_pool_name)
+        if self.max_capacity is not None:
+            body['max_capacity'] = _validated('max_capacity', int, self.max_capacity)
+        if self.min_idle_instances is not None:
+            body['min_idle_instances'] = _validated('min_idle_instances', int, self.min_idle_instances)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [
                 _validated('preloaded_docker_images item', DockerImage, v)
                 for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
+            body['preloaded_spark_versions'] = [
+                _validated('preloaded_spark_versions item', str, v) for v in self.preloaded_spark_versions
+            ]
         return body
 
     @classmethod
@@ -1286,7 +1448,8 @@ class CreateInstancePoolResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
         return body
 
     @classmethod
@@ -1305,13 +1468,18 @@ class CreatePolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition is not None: body['definition'] = self.definition
-        if self.description is not None: body['description'] = self.description
-        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name is not None: body['name'] = self.name
+        if self.definition is not None: body['definition'] = _validated('definition', str, self.definition)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.max_clusters_per_user is not None:
+            body['max_clusters_per_user'] = _validated('max_clusters_per_user', int,
+                                                       self.max_clusters_per_user)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.policy_family_definition_overrides is not None:
-            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+            body['policy_family_definition_overrides'] = _validated('policy_family_definition_overrides', str,
+                                                                    self.policy_family_definition_overrides)
+        if self.policy_family_id is not None:
+            body['policy_family_id'] = _validated('policy_family_id', str, self.policy_family_id)
         return body
 
     @classmethod
@@ -1330,7 +1498,7 @@ class CreatePolicyResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         return body
 
     @classmethod
@@ -1344,7 +1512,7 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.script_id is not None: body['script_id'] = _validated('script_id', str, self.script_id)
         return body
 
     @classmethod
@@ -1358,7 +1526,7 @@ class Created:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         return body
 
     @classmethod
@@ -1377,9 +1545,10 @@ class DataPlaneEventDetails:
         body = {}
         if self.event_type is not None:
             body['event_type'] = _validated('event_type', DataPlaneEventDetailsEventType, self.event_type)
-        if self.executor_failures is not None: body['executor_failures'] = self.executor_failures
-        if self.host_id is not None: body['host_id'] = self.host_id
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.executor_failures is not None:
+            body['executor_failures'] = _validated('executor_failures', int, self.executor_failures)
+        if self.host_id is not None: body['host_id'] = _validated('host_id', str, self.host_id)
+        if self.timestamp is not None: body['timestamp'] = _validated('timestamp', int, self.timestamp)
         return body
 
     @classmethod
@@ -1414,7 +1583,8 @@ class DbfsStorageInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination is not None: body['destination'] = self.destination
+        if self.destination is not None:
+            body['destination'] = _validated('destination', str, self.destination)
         return body
 
     @classmethod
@@ -1428,7 +1598,7 @@ class DeleteCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -1442,7 +1612,8 @@ class DeleteInstancePool:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
         return body
 
     @classmethod
@@ -1456,7 +1627,7 @@ class DeletePolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         return body
 
     @classmethod
@@ -1471,8 +1642,8 @@ class DestroyContext:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
-        if self.context_id is not None: body['contextId'] = self.context_id
+        if self.cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, self.cluster_id)
+        if self.context_id is not None: body['contextId'] = _validated('context_id', str, self.context_id)
         return body
 
     @classmethod
@@ -1490,10 +1661,11 @@ class DiskSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.disk_count is not None: body['disk_count'] = self.disk_count
-        if self.disk_iops is not None: body['disk_iops'] = self.disk_iops
-        if self.disk_size is not None: body['disk_size'] = self.disk_size
-        if self.disk_throughput is not None: body['disk_throughput'] = self.disk_throughput
+        if self.disk_count is not None: body['disk_count'] = _validated('disk_count', int, self.disk_count)
+        if self.disk_iops is not None: body['disk_iops'] = _validated('disk_iops', int, self.disk_iops)
+        if self.disk_size is not None: body['disk_size'] = _validated('disk_size', int, self.disk_size)
+        if self.disk_throughput is not None:
+            body['disk_throughput'] = _validated('disk_throughput', int, self.disk_throughput)
         if self.disk_type: body['disk_type'] = _validated('disk_type', DiskType, self.disk_type)
         return body
 
@@ -1546,8 +1718,8 @@ class DockerBasicAuth:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.password is not None: body['password'] = self.password
-        if self.username is not None: body['username'] = self.username
+        if self.password is not None: body['password'] = _validated('password', str, self.password)
+        if self.username is not None: body['username'] = _validated('username', str, self.username)
         return body
 
     @classmethod
@@ -1563,7 +1735,7 @@ class DockerImage:
     def as_dict(self) -> dict:
         body = {}
         if self.basic_auth: body['basic_auth'] = _validated('basic_auth', DockerBasicAuth, self.basic_auth)
-        if self.url is not None: body['url'] = self.url
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -1613,49 +1785,76 @@ class EditCluster:
     def as_dict(self) -> dict:
         body = {}
         if self.apply_policy_default_values is not None:
-            body['apply_policy_default_values'] = self.apply_policy_default_values
+            body['apply_policy_default_values'] = _validated('apply_policy_default_values', bool,
+                                                             self.apply_policy_default_values)
         if self.autoscale: body['autoscale'] = _validated('autoscale', AutoScale, self.autoscale)
         if self.autotermination_minutes is not None:
-            body['autotermination_minutes'] = self.autotermination_minutes
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         self.autotermination_minutes)
         if self.aws_attributes:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, self.aws_attributes)
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, self.azure_attributes)
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.cluster_log_conf:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, self.cluster_log_conf)
-        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_name is not None:
+            body['cluster_name'] = _validated('cluster_name', str, self.cluster_name)
         if self.cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, self.cluster_source)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.data_security_mode is not None:
             body['data_security_mode'] = _validated('data_security_mode', DataSecurityMode,
                                                     self.data_security_mode)
         if self.docker_image:
             body['docker_image'] = _validated('docker_image', DockerImage, self.docker_image)
         if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         self.driver_instance_pool_id)
+        if self.driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, self.driver_node_type_id)
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              self.enable_local_disk_encryption)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', GcpAttributes, self.gcp_attributes)
         if self.init_scripts:
             body['init_scripts'] = [
                 _validated('init_scripts item', InitScriptInfo, v) for v in self.init_scripts
             ]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         if self.runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, self.runtime_engine)
-        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.spark_version is not None: body['spark_version'] = self.spark_version
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.single_user_name is not None:
+            body['single_user_name'] = _validated('single_user_name', str, self.single_user_name)
+        if self.spark_conf:
+            body['spark_conf'] = {
+                k: _validated('spark_conf item', str, v)
+                for (k, v) in self.spark_conf.items()
+            }
+        if self.spark_env_vars:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in self.spark_env_vars.items()
+            }
+        if self.spark_version is not None:
+            body['spark_version'] = _validated('spark_version', str, self.spark_version)
+        if self.ssh_public_keys:
+            body['ssh_public_keys'] = [
+                _validated('ssh_public_keys item', str, v) for v in self.ssh_public_keys
+            ]
         if self.workload_type:
             body['workload_type'] = _validated('workload_type', WorkloadType, self.workload_type)
         return body
@@ -1719,30 +1918,43 @@ class EditInstancePool:
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', InstancePoolAzureAttributes,
                                                   self.azure_attributes)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.disk_spec: body['disk_spec'] = _validated('disk_spec', DiskSpec, self.disk_spec)
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', InstancePoolGcpAttributes,
                                                 self.gcp_attributes)
         if self.idle_instance_autotermination_minutes is not None:
-            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+            body['idle_instance_autotermination_minutes'] = _validated(
+                'idle_instance_autotermination_minutes', int, self.idle_instance_autotermination_minutes)
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = _validated('instance_pool_fleet_attributes',
                                                                 InstancePoolFleetAttributes,
                                                                 self.instance_pool_fleet_attributes)
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.instance_pool_name is not None:
+            body['instance_pool_name'] = _validated('instance_pool_name', str, self.instance_pool_name)
+        if self.max_capacity is not None:
+            body['max_capacity'] = _validated('max_capacity', int, self.max_capacity)
+        if self.min_idle_instances is not None:
+            body['min_idle_instances'] = _validated('min_idle_instances', int, self.min_idle_instances)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [
                 _validated('preloaded_docker_images item', DockerImage, v)
                 for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
+            body['preloaded_spark_versions'] = [
+                _validated('preloaded_spark_versions item', str, v) for v in self.preloaded_spark_versions
+            ]
         return body
 
     @classmethod
@@ -1777,14 +1989,19 @@ class EditPolicy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition is not None: body['definition'] = self.definition
-        if self.description is not None: body['description'] = self.description
-        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name is not None: body['name'] = self.name
+        if self.definition is not None: body['definition'] = _validated('definition', str, self.definition)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.max_clusters_per_user is not None:
+            body['max_clusters_per_user'] = _validated('max_clusters_per_user', int,
+                                                       self.max_clusters_per_user)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.policy_family_definition_overrides is not None:
-            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+            body['policy_family_definition_overrides'] = _validated('policy_family_definition_overrides', str,
+                                                                    self.policy_family_definition_overrides)
+        if self.policy_family_id is not None:
+            body['policy_family_id'] = _validated('policy_family_id', str, self.policy_family_id)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         return body
 
     @classmethod
@@ -1826,27 +2043,38 @@ class EventDetails:
         if self.cause is not None: body['cause'] = _validated('cause', EventDetailsCause, self.cause)
         if self.cluster_size:
             body['cluster_size'] = _validated('cluster_size', ClusterSize, self.cluster_size)
-        if self.current_num_vcpus is not None: body['current_num_vcpus'] = self.current_num_vcpus
-        if self.current_num_workers is not None: body['current_num_workers'] = self.current_num_workers
-        if self.did_not_expand_reason is not None: body['did_not_expand_reason'] = self.did_not_expand_reason
-        if self.disk_size is not None: body['disk_size'] = self.disk_size
-        if self.driver_state_message is not None: body['driver_state_message'] = self.driver_state_message
+        if self.current_num_vcpus is not None:
+            body['current_num_vcpus'] = _validated('current_num_vcpus', int, self.current_num_vcpus)
+        if self.current_num_workers is not None:
+            body['current_num_workers'] = _validated('current_num_workers', int, self.current_num_workers)
+        if self.did_not_expand_reason is not None:
+            body['did_not_expand_reason'] = _validated('did_not_expand_reason', str,
+                                                       self.did_not_expand_reason)
+        if self.disk_size is not None: body['disk_size'] = _validated('disk_size', int, self.disk_size)
+        if self.driver_state_message is not None:
+            body['driver_state_message'] = _validated('driver_state_message', str, self.driver_state_message)
         if self.enable_termination_for_node_blocklisted is not None:
-            body['enable_termination_for_node_blocklisted'] = self.enable_termination_for_node_blocklisted
-        if self.free_space is not None: body['free_space'] = self.free_space
-        if self.instance_id is not None: body['instance_id'] = self.instance_id
-        if self.job_run_name is not None: body['job_run_name'] = self.job_run_name
+            body['enable_termination_for_node_blocklisted'] = _validated(
+                'enable_termination_for_node_blocklisted', bool, self.enable_termination_for_node_blocklisted)
+        if self.free_space is not None: body['free_space'] = _validated('free_space', int, self.free_space)
+        if self.instance_id is not None:
+            body['instance_id'] = _validated('instance_id', str, self.instance_id)
+        if self.job_run_name is not None:
+            body['job_run_name'] = _validated('job_run_name', str, self.job_run_name)
         if self.previous_attributes:
             body['previous_attributes'] = _validated('previous_attributes', ClusterAttributes,
                                                      self.previous_attributes)
         if self.previous_cluster_size:
             body['previous_cluster_size'] = _validated('previous_cluster_size', ClusterSize,
                                                        self.previous_cluster_size)
-        if self.previous_disk_size is not None: body['previous_disk_size'] = self.previous_disk_size
+        if self.previous_disk_size is not None:
+            body['previous_disk_size'] = _validated('previous_disk_size', int, self.previous_disk_size)
         if self.reason: body['reason'] = _validated('reason', TerminationReason, self.reason)
-        if self.target_num_vcpus is not None: body['target_num_vcpus'] = self.target_num_vcpus
-        if self.target_num_workers is not None: body['target_num_workers'] = self.target_num_workers
-        if self.user is not None: body['user'] = self.user
+        if self.target_num_vcpus is not None:
+            body['target_num_vcpus'] = _validated('target_num_vcpus', int, self.target_num_vcpus)
+        if self.target_num_workers is not None:
+            body['target_num_workers'] = _validated('target_num_workers', int, self.target_num_workers)
+        if self.user is not None: body['user'] = _validated('user', str, self.user)
         return body
 
     @classmethod
@@ -1920,10 +2148,12 @@ class FleetLaunchTemplateOverride:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.availability_zone is not None: body['availability_zone'] = self.availability_zone
-        if self.instance_type is not None: body['instance_type'] = self.instance_type
-        if self.max_price is not None: body['max_price'] = self.max_price
-        if self.priority is not None: body['priority'] = self.priority
+        if self.availability_zone is not None:
+            body['availability_zone'] = _validated('availability_zone', str, self.availability_zone)
+        if self.instance_type is not None:
+            body['instance_type'] = _validated('instance_type', str, self.instance_type)
+        if self.max_price is not None: body['max_price'] = _validated('max_price', float, self.max_price)
+        if self.priority is not None: body['priority'] = _validated('priority', float, self.priority)
         return body
 
     @classmethod
@@ -1946,9 +2176,11 @@ class FleetOnDemandOption:
             body['allocation_strategy'] = _validated('allocation_strategy',
                                                      FleetOnDemandOptionAllocationStrategy,
                                                      self.allocation_strategy)
-        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
+        if self.max_total_price is not None:
+            body['max_total_price'] = _validated('max_total_price', float, self.max_total_price)
         if self.use_capacity_reservations_first is not None:
-            body['use_capacity_reservations_first'] = self.use_capacity_reservations_first
+            body['use_capacity_reservations_first'] = _validated('use_capacity_reservations_first', bool,
+                                                                 self.use_capacity_reservations_first)
         return body
 
     @classmethod
@@ -1979,8 +2211,10 @@ class FleetSpotOption:
             body['allocation_strategy'] = _validated('allocation_strategy', FleetSpotOptionAllocationStrategy,
                                                      self.allocation_strategy)
         if self.instance_pools_to_use_count is not None:
-            body['instance_pools_to_use_count'] = self.instance_pools_to_use_count
-        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
+            body['instance_pools_to_use_count'] = _validated('instance_pools_to_use_count', int,
+                                                             self.instance_pools_to_use_count)
+        if self.max_total_price is not None:
+            body['max_total_price'] = _validated('max_total_price', float, self.max_total_price)
         return body
 
     @classmethod
@@ -2010,10 +2244,13 @@ class GcpAttributes:
         body = {}
         if self.availability is not None:
             body['availability'] = _validated('availability', GcpAvailability, self.availability)
-        if self.boot_disk_size is not None: body['boot_disk_size'] = self.boot_disk_size
+        if self.boot_disk_size is not None:
+            body['boot_disk_size'] = _validated('boot_disk_size', int, self.boot_disk_size)
         if self.google_service_account is not None:
-            body['google_service_account'] = self.google_service_account
-        if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+            body['google_service_account'] = _validated('google_service_account', str,
+                                                        self.google_service_account)
+        if self.local_ssd_count is not None:
+            body['local_ssd_count'] = _validated('local_ssd_count', int, self.local_ssd_count)
         return body
 
     @classmethod
@@ -2081,14 +2318,14 @@ class GetEvents:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
         if self.event_types:
             body['event_types'] = [_validated('event_types item', EventType, v) for v in self.event_types]
-        if self.limit is not None: body['limit'] = self.limit
-        if self.offset is not None: body['offset'] = self.offset
+        if self.limit is not None: body['limit'] = _validated('limit', int, self.limit)
+        if self.offset is not None: body['offset'] = _validated('offset', int, self.offset)
         if self.order is not None: body['order'] = _validated('order', GetEventsOrder, self.order)
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         return body
 
     @classmethod
@@ -2119,7 +2356,8 @@ class GetEventsResponse:
         body = {}
         if self.events: body['events'] = [_validated('events item', ClusterEvent, v) for v in self.events]
         if self.next_page: body['next_page'] = _validated('next_page', GetEvents, self.next_page)
-        if self.total_count is not None: body['total_count'] = self.total_count
+        if self.total_count is not None:
+            body['total_count'] = _validated('total_count', int, self.total_count)
         return body
 
     @classmethod
@@ -2159,31 +2397,48 @@ class GetInstancePool:
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', InstancePoolAzureAttributes,
                                                   self.azure_attributes)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.default_tags: body['default_tags'] = self.default_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
+        if self.default_tags:
+            body['default_tags'] = {
+                k: _validated('default_tags item', str, v)
+                for (k, v) in self.default_tags.items()
+            }
         if self.disk_spec: body['disk_spec'] = _validated('disk_spec', DiskSpec, self.disk_spec)
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', InstancePoolGcpAttributes,
                                                 self.gcp_attributes)
         if self.idle_instance_autotermination_minutes is not None:
-            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+            body['idle_instance_autotermination_minutes'] = _validated(
+                'idle_instance_autotermination_minutes', int, self.idle_instance_autotermination_minutes)
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = _validated('instance_pool_fleet_attributes',
                                                                 InstancePoolFleetAttributes,
                                                                 self.instance_pool_fleet_attributes)
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.instance_pool_name is not None:
+            body['instance_pool_name'] = _validated('instance_pool_name', str, self.instance_pool_name)
+        if self.max_capacity is not None:
+            body['max_capacity'] = _validated('max_capacity', int, self.max_capacity)
+        if self.min_idle_instances is not None:
+            body['min_idle_instances'] = _validated('min_idle_instances', int, self.min_idle_instances)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [
                 _validated('preloaded_docker_images item', DockerImage, v)
                 for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
+            body['preloaded_spark_versions'] = [
+                _validated('preloaded_spark_versions item', str, v) for v in self.preloaded_spark_versions
+            ]
         if self.state is not None: body['state'] = _validated('state', InstancePoolState, self.state)
         if self.stats: body['stats'] = _validated('stats', InstancePoolStats, self.stats)
         if self.status: body['status'] = _validated('status', InstancePoolStatus, self.status)
@@ -2255,10 +2510,10 @@ class GlobalInitScriptCreateRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.name is not None: body['name'] = self.name
-        if self.position is not None: body['position'] = self.position
-        if self.script is not None: body['script'] = self.script
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.script is not None: body['script'] = _validated('script', str, self.script)
         return body
 
     @classmethod
@@ -2282,14 +2537,14 @@ class GlobalInitScriptDetails:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.name is not None: body['name'] = self.name
-        if self.position is not None: body['position'] = self.position
-        if self.script_id is not None: body['script_id'] = self.script_id
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.script_id is not None: body['script_id'] = _validated('script_id', str, self.script_id)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -2318,15 +2573,15 @@ class GlobalInitScriptDetailsWithContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.name is not None: body['name'] = self.name
-        if self.position is not None: body['position'] = self.position
-        if self.script is not None: body['script'] = self.script
-        if self.script_id is not None: body['script_id'] = self.script_id
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.script is not None: body['script'] = _validated('script', str, self.script)
+        if self.script_id is not None: body['script_id'] = _validated('script_id', str, self.script_id)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -2352,11 +2607,11 @@ class GlobalInitScriptUpdateRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.name is not None: body['name'] = self.name
-        if self.position is not None: body['position'] = self.position
-        if self.script is not None: body['script'] = self.script
-        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.script is not None: body['script'] = _validated('script', str, self.script)
+        if self.script_id is not None: body['script_id'] = _validated('script_id', str, self.script_id)
         return body
 
     @classmethod
@@ -2395,7 +2650,7 @@ class InstallLibraries:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', Library, v) for v in self.libraries]
         return body
@@ -2414,13 +2669,14 @@ class InstancePoolAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', InstancePoolPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -2445,11 +2701,13 @@ class InstancePoolAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', InstancePoolPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -2491,31 +2749,48 @@ class InstancePoolAndStats:
         if self.azure_attributes:
             body['azure_attributes'] = _validated('azure_attributes', InstancePoolAzureAttributes,
                                                   self.azure_attributes)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.default_tags: body['default_tags'] = self.default_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
+        if self.default_tags:
+            body['default_tags'] = {
+                k: _validated('default_tags item', str, v)
+                for (k, v) in self.default_tags.items()
+            }
         if self.disk_spec: body['disk_spec'] = _validated('disk_spec', DiskSpec, self.disk_spec)
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, self.enable_elastic_disk)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', InstancePoolGcpAttributes,
                                                 self.gcp_attributes)
         if self.idle_instance_autotermination_minutes is not None:
-            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+            body['idle_instance_autotermination_minutes'] = _validated(
+                'idle_instance_autotermination_minutes', int, self.idle_instance_autotermination_minutes)
         if self.instance_pool_fleet_attributes:
             body['instance_pool_fleet_attributes'] = _validated('instance_pool_fleet_attributes',
                                                                 InstancePoolFleetAttributes,
                                                                 self.instance_pool_fleet_attributes)
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
-        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
-        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.instance_pool_name is not None:
+            body['instance_pool_name'] = _validated('instance_pool_name', str, self.instance_pool_name)
+        if self.max_capacity is not None:
+            body['max_capacity'] = _validated('max_capacity', int, self.max_capacity)
+        if self.min_idle_instances is not None:
+            body['min_idle_instances'] = _validated('min_idle_instances', int, self.min_idle_instances)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
         if self.preloaded_docker_images:
             body['preloaded_docker_images'] = [
                 _validated('preloaded_docker_images item', DockerImage, v)
                 for v in self.preloaded_docker_images
             ]
         if self.preloaded_spark_versions:
-            body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
+            body['preloaded_spark_versions'] = [
+                _validated('preloaded_spark_versions item', str, v) for v in self.preloaded_spark_versions
+            ]
         if self.state is not None: body['state'] = _validated('state', InstancePoolState, self.state)
         if self.stats: body['stats'] = _validated('stats', InstancePoolStats, self.stats)
         if self.status: body['status'] = _validated('status', InstancePoolStatus, self.status)
@@ -2557,8 +2832,9 @@ class InstancePoolAwsAttributes:
             body['availability'] = _validated('availability', InstancePoolAwsAttributesAvailability,
                                               self.availability)
         if self.spot_bid_price_percent is not None:
-            body['spot_bid_price_percent'] = self.spot_bid_price_percent
-        if self.zone_id is not None: body['zone_id'] = self.zone_id
+            body['spot_bid_price_percent'] = _validated('spot_bid_price_percent', int,
+                                                        self.spot_bid_price_percent)
+        if self.zone_id is not None: body['zone_id'] = _validated('zone_id', str, self.zone_id)
         return body
 
     @classmethod
@@ -2588,7 +2864,8 @@ class InstancePoolAzureAttributes:
         if self.availability is not None:
             body['availability'] = _validated('availability', InstancePoolAzureAttributesAvailability,
                                               self.availability)
-        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
+        if self.spot_bid_max_price is not None:
+            body['spot_bid_max_price'] = _validated('spot_bid_max_price', float, self.spot_bid_max_price)
         return body
 
     @classmethod
@@ -2645,7 +2922,8 @@ class InstancePoolGcpAttributes:
         body = {}
         if self.gcp_availability is not None:
             body['gcp_availability'] = _validated('gcp_availability', GcpAvailability, self.gcp_availability)
-        if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+        if self.local_ssd_count is not None:
+            body['local_ssd_count'] = _validated('local_ssd_count', int, self.local_ssd_count)
         return body
 
     @classmethod
@@ -2662,8 +2940,11 @@ class InstancePoolPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', InstancePoolPermissionLevel,
                                                   self.permission_level)
@@ -2696,8 +2977,9 @@ class InstancePoolPermissions:
                 _validated('access_control_list item', InstancePoolAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -2714,7 +2996,8 @@ class InstancePoolPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', InstancePoolPermissionLevel,
                                                   self.permission_level)
@@ -2738,7 +3021,8 @@ class InstancePoolPermissionsRequest:
                 _validated('access_control_list item', InstancePoolAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
         return body
 
     @classmethod
@@ -2764,10 +3048,12 @@ class InstancePoolStats:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.idle_count is not None: body['idle_count'] = self.idle_count
-        if self.pending_idle_count is not None: body['pending_idle_count'] = self.pending_idle_count
-        if self.pending_used_count is not None: body['pending_used_count'] = self.pending_used_count
-        if self.used_count is not None: body['used_count'] = self.used_count
+        if self.idle_count is not None: body['idle_count'] = _validated('idle_count', int, self.idle_count)
+        if self.pending_idle_count is not None:
+            body['pending_idle_count'] = _validated('pending_idle_count', int, self.pending_idle_count)
+        if self.pending_used_count is not None:
+            body['pending_used_count'] = _validated('pending_used_count', int, self.pending_used_count)
+        if self.used_count is not None: body['used_count'] = _validated('used_count', int, self.used_count)
         return body
 
     @classmethod
@@ -2804,10 +3090,13 @@ class InstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
-        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.iam_role_arn is not None:
+            body['iam_role_arn'] = _validated('iam_role_arn', str, self.iam_role_arn)
+        if self.instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, self.instance_profile_arn)
         if self.is_meta_instance_profile is not None:
-            body['is_meta_instance_profile'] = self.is_meta_instance_profile
+            body['is_meta_instance_profile'] = _validated('is_meta_instance_profile', bool,
+                                                          self.is_meta_instance_profile)
         return body
 
     @classmethod
@@ -2836,11 +3125,11 @@ class Library:
     def as_dict(self) -> dict:
         body = {}
         if self.cran: body['cran'] = _validated('cran', RCranLibrary, self.cran)
-        if self.egg is not None: body['egg'] = self.egg
-        if self.jar is not None: body['jar'] = self.jar
+        if self.egg is not None: body['egg'] = _validated('egg', str, self.egg)
+        if self.jar is not None: body['jar'] = _validated('jar', str, self.jar)
         if self.maven: body['maven'] = _validated('maven', MavenLibrary, self.maven)
         if self.pypi: body['pypi'] = _validated('pypi', PythonPyPiLibrary, self.pypi)
-        if self.whl is not None: body['whl'] = self.whl
+        if self.whl is not None: body['whl'] = _validated('whl', str, self.whl)
         return body
 
     @classmethod
@@ -2863,9 +3152,10 @@ class LibraryFullStatus:
     def as_dict(self) -> dict:
         body = {}
         if self.is_library_for_all_clusters is not None:
-            body['is_library_for_all_clusters'] = self.is_library_for_all_clusters
+            body['is_library_for_all_clusters'] = _validated('is_library_for_all_clusters', bool,
+                                                             self.is_library_for_all_clusters)
         if self.library: body['library'] = _validated('library', Library, self.library)
-        if self.messages: body['messages'] = [v for v in self.messages]
+        if self.messages: body['messages'] = [_validated('messages item', str, v) for v in self.messages]
         if self.status is not None:
             body['status'] = _validated('status', LibraryFullStatusStatus, self.status)
         return body
@@ -2912,8 +3202,9 @@ class ListAvailableZonesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default_zone is not None: body['default_zone'] = self.default_zone
-        if self.zones: body['zones'] = [v for v in self.zones]
+        if self.default_zone is not None:
+            body['default_zone'] = _validated('default_zone', str, self.default_zone)
+        if self.zones: body['zones'] = [_validated('zones item', str, v) for v in self.zones]
         return body
 
     @classmethod
@@ -3028,7 +3319,8 @@ class ListPolicyFamiliesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         if self.policy_families:
             body['policy_families'] = [
                 _validated('policy_families item', PolicyFamily, v) for v in self.policy_families
@@ -3061,9 +3353,11 @@ class LogAnalyticsInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.log_analytics_primary_key is not None:
-            body['log_analytics_primary_key'] = self.log_analytics_primary_key
+            body['log_analytics_primary_key'] = _validated('log_analytics_primary_key', str,
+                                                           self.log_analytics_primary_key)
         if self.log_analytics_workspace_id is not None:
-            body['log_analytics_workspace_id'] = self.log_analytics_workspace_id
+            body['log_analytics_workspace_id'] = _validated('log_analytics_workspace_id', str,
+                                                            self.log_analytics_workspace_id)
         return body
 
     @classmethod
@@ -3079,8 +3373,10 @@ class LogSyncStatus:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.last_attempted is not None: body['last_attempted'] = self.last_attempted
-        if self.last_exception is not None: body['last_exception'] = self.last_exception
+        if self.last_attempted is not None:
+            body['last_attempted'] = _validated('last_attempted', int, self.last_attempted)
+        if self.last_exception is not None:
+            body['last_exception'] = _validated('last_exception', str, self.last_exception)
         return body
 
     @classmethod
@@ -3096,9 +3392,11 @@ class MavenLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.coordinates is not None: body['coordinates'] = self.coordinates
-        if self.exclusions: body['exclusions'] = [v for v in self.exclusions]
-        if self.repo is not None: body['repo'] = self.repo
+        if self.coordinates is not None:
+            body['coordinates'] = _validated('coordinates', str, self.coordinates)
+        if self.exclusions:
+            body['exclusions'] = [_validated('exclusions item', str, v) for v in self.exclusions]
+        if self.repo is not None: body['repo'] = _validated('repo', str, self.repo)
         return body
 
     @classmethod
@@ -3118,12 +3416,17 @@ class NodeInstanceType:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
-        if self.local_disk_size_gb is not None: body['local_disk_size_gb'] = self.local_disk_size_gb
-        if self.local_disks is not None: body['local_disks'] = self.local_disks
+        if self.instance_type_id is not None:
+            body['instance_type_id'] = _validated('instance_type_id', str, self.instance_type_id)
+        if self.local_disk_size_gb is not None:
+            body['local_disk_size_gb'] = _validated('local_disk_size_gb', int, self.local_disk_size_gb)
+        if self.local_disks is not None:
+            body['local_disks'] = _validated('local_disks', int, self.local_disks)
         if self.local_nvme_disk_size_gb is not None:
-            body['local_nvme_disk_size_gb'] = self.local_nvme_disk_size_gb
-        if self.local_nvme_disks is not None: body['local_nvme_disks'] = self.local_nvme_disks
+            body['local_nvme_disk_size_gb'] = _validated('local_nvme_disk_size_gb', int,
+                                                         self.local_nvme_disk_size_gb)
+        if self.local_nvme_disks is not None:
+            body['local_nvme_disks'] = _validated('local_nvme_disks', int, self.local_nvme_disks)
         return body
 
     @classmethod
@@ -3160,30 +3463,45 @@ class NodeType:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.category is not None: body['category'] = self.category
-        if self.description is not None: body['description'] = self.description
-        if self.display_order is not None: body['display_order'] = self.display_order
-        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
-        if self.is_deprecated is not None: body['is_deprecated'] = self.is_deprecated
+        if self.category is not None: body['category'] = _validated('category', str, self.category)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.display_order is not None:
+            body['display_order'] = _validated('display_order', int, self.display_order)
+        if self.instance_type_id is not None:
+            body['instance_type_id'] = _validated('instance_type_id', str, self.instance_type_id)
+        if self.is_deprecated is not None:
+            body['is_deprecated'] = _validated('is_deprecated', bool, self.is_deprecated)
         if self.is_encrypted_in_transit is not None:
-            body['is_encrypted_in_transit'] = self.is_encrypted_in_transit
-        if self.is_graviton is not None: body['is_graviton'] = self.is_graviton
-        if self.is_hidden is not None: body['is_hidden'] = self.is_hidden
-        if self.is_io_cache_enabled is not None: body['is_io_cache_enabled'] = self.is_io_cache_enabled
-        if self.memory_mb is not None: body['memory_mb'] = self.memory_mb
+            body['is_encrypted_in_transit'] = _validated('is_encrypted_in_transit', bool,
+                                                         self.is_encrypted_in_transit)
+        if self.is_graviton is not None:
+            body['is_graviton'] = _validated('is_graviton', bool, self.is_graviton)
+        if self.is_hidden is not None: body['is_hidden'] = _validated('is_hidden', bool, self.is_hidden)
+        if self.is_io_cache_enabled is not None:
+            body['is_io_cache_enabled'] = _validated('is_io_cache_enabled', bool, self.is_io_cache_enabled)
+        if self.memory_mb is not None: body['memory_mb'] = _validated('memory_mb', int, self.memory_mb)
         if self.node_info: body['node_info'] = _validated('node_info', CloudProviderNodeInfo, self.node_info)
         if self.node_instance_type:
             body['node_instance_type'] = _validated('node_instance_type', NodeInstanceType,
                                                     self.node_instance_type)
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_cores is not None: body['num_cores'] = self.num_cores
-        if self.num_gpus is not None: body['num_gpus'] = self.num_gpus
-        if self.photon_driver_capable is not None: body['photon_driver_capable'] = self.photon_driver_capable
-        if self.photon_worker_capable is not None: body['photon_worker_capable'] = self.photon_worker_capable
-        if self.support_cluster_tags is not None: body['support_cluster_tags'] = self.support_cluster_tags
-        if self.support_ebs_volumes is not None: body['support_ebs_volumes'] = self.support_ebs_volumes
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.num_cores is not None: body['num_cores'] = _validated('num_cores', float, self.num_cores)
+        if self.num_gpus is not None: body['num_gpus'] = _validated('num_gpus', int, self.num_gpus)
+        if self.photon_driver_capable is not None:
+            body['photon_driver_capable'] = _validated('photon_driver_capable', bool,
+                                                       self.photon_driver_capable)
+        if self.photon_worker_capable is not None:
+            body['photon_worker_capable'] = _validated('photon_worker_capable', bool,
+                                                       self.photon_worker_capable)
+        if self.support_cluster_tags is not None:
+            body['support_cluster_tags'] = _validated('support_cluster_tags', bool, self.support_cluster_tags)
+        if self.support_ebs_volumes is not None:
+            body['support_ebs_volumes'] = _validated('support_ebs_volumes', bool, self.support_ebs_volumes)
         if self.support_port_forwarding is not None:
-            body['support_port_forwarding'] = self.support_port_forwarding
+            body['support_port_forwarding'] = _validated('support_port_forwarding', bool,
+                                                         self.support_port_forwarding)
         return body
 
     @classmethod
@@ -3217,8 +3535,9 @@ class PendingInstanceError:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_id is not None: body['instance_id'] = self.instance_id
-        if self.message is not None: body['message'] = self.message
+        if self.instance_id is not None:
+            body['instance_id'] = _validated('instance_id', str, self.instance_id)
+        if self.message is not None: body['message'] = _validated('message', str, self.message)
         return body
 
     @classmethod
@@ -3232,7 +3551,7 @@ class PermanentDeleteCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -3246,7 +3565,7 @@ class PinCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -3269,17 +3588,24 @@ class Policy:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at_timestamp is not None: body['created_at_timestamp'] = self.created_at_timestamp
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.definition is not None: body['definition'] = self.definition
-        if self.description is not None: body['description'] = self.description
-        if self.is_default is not None: body['is_default'] = self.is_default
-        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
-        if self.name is not None: body['name'] = self.name
+        if self.created_at_timestamp is not None:
+            body['created_at_timestamp'] = _validated('created_at_timestamp', int, self.created_at_timestamp)
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
+        if self.definition is not None: body['definition'] = _validated('definition', str, self.definition)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.is_default is not None: body['is_default'] = _validated('is_default', bool, self.is_default)
+        if self.max_clusters_per_user is not None:
+            body['max_clusters_per_user'] = _validated('max_clusters_per_user', int,
+                                                       self.max_clusters_per_user)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.policy_family_definition_overrides is not None:
-            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
+            body['policy_family_definition_overrides'] = _validated('policy_family_definition_overrides', str,
+                                                                    self.policy_family_definition_overrides)
+        if self.policy_family_id is not None:
+            body['policy_family_id'] = _validated('policy_family_id', str, self.policy_family_id)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
         return body
 
     @classmethod
@@ -3305,10 +3631,12 @@ class PolicyFamily:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.definition is not None: body['definition'] = self.definition
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.definition is not None: body['definition'] = _validated('definition', str, self.definition)
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.policy_family_id is not None:
+            body['policy_family_id'] = _validated('policy_family_id', str, self.policy_family_id)
         return body
 
     @classmethod
@@ -3326,8 +3654,8 @@ class PythonPyPiLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.package is not None: body['package'] = self.package
-        if self.repo is not None: body['repo'] = self.repo
+        if self.package is not None: body['package'] = _validated('package', str, self.package)
+        if self.repo is not None: body['repo'] = _validated('repo', str, self.repo)
         return body
 
     @classmethod
@@ -3342,8 +3670,8 @@ class RCranLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.package is not None: body['package'] = self.package
-        if self.repo is not None: body['repo'] = self.repo
+        if self.package is not None: body['package'] = _validated('package', str, self.package)
+        if self.repo is not None: body['repo'] = _validated('repo', str, self.repo)
         return body
 
     @classmethod
@@ -3357,7 +3685,8 @@ class RemoveInstanceProfile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, self.instance_profile_arn)
         return body
 
     @classmethod
@@ -3374,8 +3703,9 @@ class ResizeCluster:
     def as_dict(self) -> dict:
         body = {}
         if self.autoscale: body['autoscale'] = _validated('autoscale', AutoScale, self.autoscale)
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
         return body
 
     @classmethod
@@ -3392,8 +3722,9 @@ class RestartCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.restart_user is not None: body['restart_user'] = self.restart_user
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.restart_user is not None:
+            body['restart_user'] = _validated('restart_user', str, self.restart_user)
         return body
 
     @classmethod
@@ -3425,17 +3756,23 @@ class Results:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause is not None: body['cause'] = self.cause
-        if self.data: body['data'] = self.data
-        if self.file_name is not None: body['fileName'] = self.file_name
-        if self.file_names: body['fileNames'] = [v for v in self.file_names]
-        if self.is_json_schema is not None: body['isJsonSchema'] = self.is_json_schema
-        if self.pos is not None: body['pos'] = self.pos
+        if self.cause is not None: body['cause'] = _validated('cause', str, self.cause)
+        if self.data: body['data'] = _validated('data', Any, self.data)
+        if self.file_name is not None: body['fileName'] = _validated('file_name', str, self.file_name)
+        if self.file_names:
+            body['fileNames'] = [_validated('file_names item', str, v) for v in self.file_names]
+        if self.is_json_schema is not None:
+            body['isJsonSchema'] = _validated('is_json_schema', bool, self.is_json_schema)
+        if self.pos is not None: body['pos'] = _validated('pos', int, self.pos)
         if self.result_type is not None:
             body['resultType'] = _validated('result_type', ResultType, self.result_type)
-        if self.schema: body['schema'] = [v for v in self.schema]
-        if self.summary is not None: body['summary'] = self.summary
-        if self.truncated is not None: body['truncated'] = self.truncated
+        if self.schema:
+            body['schema'] = [{
+                k: _validated('schema item item', Any, v)
+                for (k, v) in v.items()
+            } for v in self.schema]
+        if self.summary is not None: body['summary'] = _validated('summary', str, self.summary)
+        if self.truncated is not None: body['truncated'] = _validated('truncated', bool, self.truncated)
         return body
 
     @classmethod
@@ -3473,13 +3810,16 @@ class S3StorageInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.canned_acl is not None: body['canned_acl'] = self.canned_acl
-        if self.destination is not None: body['destination'] = self.destination
-        if self.enable_encryption is not None: body['enable_encryption'] = self.enable_encryption
-        if self.encryption_type is not None: body['encryption_type'] = self.encryption_type
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
-        if self.kms_key is not None: body['kms_key'] = self.kms_key
-        if self.region is not None: body['region'] = self.region
+        if self.canned_acl is not None: body['canned_acl'] = _validated('canned_acl', str, self.canned_acl)
+        if self.destination is not None:
+            body['destination'] = _validated('destination', str, self.destination)
+        if self.enable_encryption is not None:
+            body['enable_encryption'] = _validated('enable_encryption', bool, self.enable_encryption)
+        if self.encryption_type is not None:
+            body['encryption_type'] = _validated('encryption_type', str, self.encryption_type)
+        if self.endpoint is not None: body['endpoint'] = _validated('endpoint', str, self.endpoint)
+        if self.kms_key is not None: body['kms_key'] = _validated('kms_key', str, self.kms_key)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
         return body
 
     @classmethod
@@ -3505,15 +3845,18 @@ class SparkNode:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.host_private_ip is not None: body['host_private_ip'] = self.host_private_ip
-        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.host_private_ip is not None:
+            body['host_private_ip'] = _validated('host_private_ip', str, self.host_private_ip)
+        if self.instance_id is not None:
+            body['instance_id'] = _validated('instance_id', str, self.instance_id)
         if self.node_aws_attributes:
             body['node_aws_attributes'] = _validated('node_aws_attributes', SparkNodeAwsAttributes,
                                                      self.node_aws_attributes)
-        if self.node_id is not None: body['node_id'] = self.node_id
-        if self.private_ip is not None: body['private_ip'] = self.private_ip
-        if self.public_dns is not None: body['public_dns'] = self.public_dns
-        if self.start_timestamp is not None: body['start_timestamp'] = self.start_timestamp
+        if self.node_id is not None: body['node_id'] = _validated('node_id', str, self.node_id)
+        if self.private_ip is not None: body['private_ip'] = _validated('private_ip', str, self.private_ip)
+        if self.public_dns is not None: body['public_dns'] = _validated('public_dns', str, self.public_dns)
+        if self.start_timestamp is not None:
+            body['start_timestamp'] = _validated('start_timestamp', int, self.start_timestamp)
         return body
 
     @classmethod
@@ -3533,7 +3876,7 @@ class SparkNodeAwsAttributes:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_spot is not None: body['is_spot'] = self.is_spot
+        if self.is_spot is not None: body['is_spot'] = _validated('is_spot', bool, self.is_spot)
         return body
 
     @classmethod
@@ -3548,8 +3891,8 @@ class SparkVersion:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.name is not None: body['name'] = self.name
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -3563,7 +3906,7 @@ class StartCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -3593,7 +3936,11 @@ class TerminationReason:
     def as_dict(self) -> dict:
         body = {}
         if self.code is not None: body['code'] = _validated('code', TerminationReasonCode, self.code)
-        if self.parameters: body['parameters'] = self.parameters
+        if self.parameters:
+            body['parameters'] = {
+                k: _validated('parameters item', str, v)
+                for (k, v) in self.parameters.items()
+            }
         if self.type is not None: body['type'] = _validated('type', TerminationReasonType, self.type)
         return body
 
@@ -3704,7 +4051,7 @@ class UninstallLibraries:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', Library, v) for v in self.libraries]
         return body
@@ -3720,7 +4067,7 @@ class UnpinCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         return body
 
     @classmethod
@@ -3748,7 +4095,8 @@ class WorkspaceStorageInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination is not None: body['destination'] = self.destination
+        if self.destination is not None:
+            body['destination'] = _validated('destination', str, self.destination)
         return body
 
     @classmethod
@@ -3817,13 +4165,16 @@ class ClusterPoliciesAPI:
         :returns: :class:`CreatePolicyResponse`
         """
         body = {}
-        if definition is not None: body['definition'] = definition
-        if description is not None: body['description'] = description
-        if max_clusters_per_user is not None: body['max_clusters_per_user'] = max_clusters_per_user
-        if name is not None: body['name'] = name
+        if definition is not None: body['definition'] = _validated('definition', str, definition)
+        if description is not None: body['description'] = _validated('description', str, description)
+        if max_clusters_per_user is not None:
+            body['max_clusters_per_user'] = _validated('max_clusters_per_user', int, max_clusters_per_user)
+        if name is not None: body['name'] = _validated('name', str, name)
         if policy_family_definition_overrides is not None:
-            body['policy_family_definition_overrides'] = policy_family_definition_overrides
-        if policy_family_id is not None: body['policy_family_id'] = policy_family_id
+            body['policy_family_definition_overrides'] = _validated('policy_family_definition_overrides', str,
+                                                                    policy_family_definition_overrides)
+        if policy_family_id is not None:
+            body['policy_family_id'] = _validated('policy_family_id', str, policy_family_id)
 
         json = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body)
         return CreatePolicyResponse.from_dict(json)
@@ -3839,7 +4190,7 @@ class ClusterPoliciesAPI:
         
         """
         body = {}
-        if policy_id is not None: body['policy_id'] = policy_id
+        if policy_id is not None: body['policy_id'] = _validated('policy_id', str, policy_id)
         self._api.do('POST', '/api/2.0/policies/clusters/delete', body=body)
 
     def edit(self,
@@ -3884,14 +4235,17 @@ class ClusterPoliciesAPI:
         
         """
         body = {}
-        if definition is not None: body['definition'] = definition
-        if description is not None: body['description'] = description
-        if max_clusters_per_user is not None: body['max_clusters_per_user'] = max_clusters_per_user
-        if name is not None: body['name'] = name
+        if definition is not None: body['definition'] = _validated('definition', str, definition)
+        if description is not None: body['description'] = _validated('description', str, description)
+        if max_clusters_per_user is not None:
+            body['max_clusters_per_user'] = _validated('max_clusters_per_user', int, max_clusters_per_user)
+        if name is not None: body['name'] = _validated('name', str, name)
         if policy_family_definition_overrides is not None:
-            body['policy_family_definition_overrides'] = policy_family_definition_overrides
-        if policy_family_id is not None: body['policy_family_id'] = policy_family_id
-        if policy_id is not None: body['policy_id'] = policy_id
+            body['policy_family_definition_overrides'] = _validated('policy_family_definition_overrides', str,
+                                                                    policy_family_definition_overrides)
+        if policy_family_id is not None:
+            body['policy_family_id'] = _validated('policy_family_id', str, policy_family_id)
+        if policy_id is not None: body['policy_id'] = _validated('policy_id', str, policy_id)
         self._api.do('POST', '/api/2.0/policies/clusters/edit', body=body)
 
     def get(self, policy_id: str) -> Policy:
@@ -3906,7 +4260,7 @@ class ClusterPoliciesAPI:
         """
 
         query = {}
-        if policy_id is not None: query['policy_id'] = policy_id
+        if policy_id is not None: query['policy_id'] = _validated('policy_id', str, policy_id)
 
         json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
         return Policy.from_dict(json)
@@ -4123,8 +4477,9 @@ class ClustersAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
-        if owner_username is not None: body['owner_username'] = owner_username
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
+        if owner_username is not None:
+            body['owner_username'] = _validated('owner_username', str, owner_username)
         self._api.do('POST', '/api/2.0/clusters/change-owner', body=body)
 
     def create(self,
@@ -4268,38 +4623,57 @@ class ClustersAPI:
         """
         body = {}
         if apply_policy_default_values is not None:
-            body['apply_policy_default_values'] = apply_policy_default_values
+            body['apply_policy_default_values'] = _validated('apply_policy_default_values', bool,
+                                                             apply_policy_default_values)
         if autoscale is not None: body['autoscale'] = _validated('autoscale', AutoScale, autoscale)
-        if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
+        if autotermination_minutes is not None:
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         autotermination_minutes)
         if aws_attributes is not None:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, aws_attributes)
         if azure_attributes is not None:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, azure_attributes)
         if cluster_log_conf is not None:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, cluster_log_conf)
-        if cluster_name is not None: body['cluster_name'] = cluster_name
+        if cluster_name is not None: body['cluster_name'] = _validated('cluster_name', str, cluster_name)
         if cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, cluster_source)
-        if custom_tags is not None: body['custom_tags'] = custom_tags
-        if driver_instance_pool_id is not None: body['driver_instance_pool_id'] = driver_instance_pool_id
-        if driver_node_type_id is not None: body['driver_node_type_id'] = driver_node_type_id
-        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if custom_tags is not None:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in custom_tags.items()
+            }
+        if driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         driver_instance_pool_id)
+        if driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, driver_node_type_id)
+        if enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, enable_elastic_disk)
         if enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              enable_local_disk_encryption)
         if gcp_attributes is not None:
             body['gcp_attributes'] = _validated('gcp_attributes', GcpAttributes, gcp_attributes)
         if init_scripts is not None:
             body['init_scripts'] = [_validated('init_scripts item', InitScriptInfo, v) for v in init_scripts]
-        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
-        if node_type_id is not None: body['node_type_id'] = node_type_id
-        if num_workers is not None: body['num_workers'] = num_workers
-        if policy_id is not None: body['policy_id'] = policy_id
+        if instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, instance_pool_id)
+        if node_type_id is not None: body['node_type_id'] = _validated('node_type_id', str, node_type_id)
+        if num_workers is not None: body['num_workers'] = _validated('num_workers', int, num_workers)
+        if policy_id is not None: body['policy_id'] = _validated('policy_id', str, policy_id)
         if runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, runtime_engine)
-        if spark_conf is not None: body['spark_conf'] = spark_conf
-        if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
-        if spark_version is not None: body['spark_version'] = spark_version
-        if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if spark_conf is not None:
+            body['spark_conf'] = {k: _validated('spark_conf item', str, v) for (k, v) in spark_conf.items()}
+        if spark_env_vars is not None:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in spark_env_vars.items()
+            }
+        if spark_version is not None: body['spark_version'] = _validated('spark_version', str, spark_version)
+        if ssh_public_keys is not None:
+            body['ssh_public_keys'] = [_validated('ssh_public_keys item', str, v) for v in ssh_public_keys]
         if workload_type is not None:
             body['workload_type'] = _validated('workload_type', WorkloadType, workload_type)
         op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
@@ -4377,7 +4751,7 @@ class ClustersAPI:
           See :method:wait_get_cluster_terminated for more details.
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         self._api.do('POST', '/api/2.0/clusters/delete', body=body)
         return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
 
@@ -4541,45 +4915,65 @@ class ClustersAPI:
         """
         body = {}
         if apply_policy_default_values is not None:
-            body['apply_policy_default_values'] = apply_policy_default_values
+            body['apply_policy_default_values'] = _validated('apply_policy_default_values', bool,
+                                                             apply_policy_default_values)
         if autoscale is not None: body['autoscale'] = _validated('autoscale', AutoScale, autoscale)
-        if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
+        if autotermination_minutes is not None:
+            body['autotermination_minutes'] = _validated('autotermination_minutes', int,
+                                                         autotermination_minutes)
         if aws_attributes is not None:
             body['aws_attributes'] = _validated('aws_attributes', AwsAttributes, aws_attributes)
         if azure_attributes is not None:
             body['azure_attributes'] = _validated('azure_attributes', AzureAttributes, azure_attributes)
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         if cluster_log_conf is not None:
             body['cluster_log_conf'] = _validated('cluster_log_conf', ClusterLogConf, cluster_log_conf)
-        if cluster_name is not None: body['cluster_name'] = cluster_name
+        if cluster_name is not None: body['cluster_name'] = _validated('cluster_name', str, cluster_name)
         if cluster_source is not None:
             body['cluster_source'] = _validated('cluster_source', ClusterSource, cluster_source)
-        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if custom_tags is not None:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in custom_tags.items()
+            }
         if data_security_mode is not None:
             body['data_security_mode'] = _validated('data_security_mode', DataSecurityMode,
                                                     data_security_mode)
         if docker_image is not None:
             body['docker_image'] = _validated('docker_image', DockerImage, docker_image)
-        if driver_instance_pool_id is not None: body['driver_instance_pool_id'] = driver_instance_pool_id
-        if driver_node_type_id is not None: body['driver_node_type_id'] = driver_node_type_id
-        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         driver_instance_pool_id)
+        if driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, driver_node_type_id)
+        if enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, enable_elastic_disk)
         if enable_local_disk_encryption is not None:
-            body['enable_local_disk_encryption'] = enable_local_disk_encryption
+            body['enable_local_disk_encryption'] = _validated('enable_local_disk_encryption', bool,
+                                                              enable_local_disk_encryption)
         if gcp_attributes is not None:
             body['gcp_attributes'] = _validated('gcp_attributes', GcpAttributes, gcp_attributes)
         if init_scripts is not None:
             body['init_scripts'] = [_validated('init_scripts item', InitScriptInfo, v) for v in init_scripts]
-        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
-        if node_type_id is not None: body['node_type_id'] = node_type_id
-        if num_workers is not None: body['num_workers'] = num_workers
-        if policy_id is not None: body['policy_id'] = policy_id
+        if instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, instance_pool_id)
+        if node_type_id is not None: body['node_type_id'] = _validated('node_type_id', str, node_type_id)
+        if num_workers is not None: body['num_workers'] = _validated('num_workers', int, num_workers)
+        if policy_id is not None: body['policy_id'] = _validated('policy_id', str, policy_id)
         if runtime_engine is not None:
             body['runtime_engine'] = _validated('runtime_engine', RuntimeEngine, runtime_engine)
-        if single_user_name is not None: body['single_user_name'] = single_user_name
-        if spark_conf is not None: body['spark_conf'] = spark_conf
-        if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
-        if spark_version is not None: body['spark_version'] = spark_version
-        if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if single_user_name is not None:
+            body['single_user_name'] = _validated('single_user_name', str, single_user_name)
+        if spark_conf is not None:
+            body['spark_conf'] = {k: _validated('spark_conf item', str, v) for (k, v) in spark_conf.items()}
+        if spark_env_vars is not None:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in spark_env_vars.items()
+            }
+        if spark_version is not None: body['spark_version'] = _validated('spark_version', str, spark_version)
+        if ssh_public_keys is not None:
+            body['ssh_public_keys'] = [_validated('ssh_public_keys item', str, v) for v in ssh_public_keys]
         if workload_type is not None:
             body['workload_type'] = _validated('workload_type', WorkloadType, workload_type)
         self._api.do('POST', '/api/2.0/clusters/edit', body=body)
@@ -4683,14 +5077,14 @@ class ClustersAPI:
         :returns: Iterator over :class:`ClusterEvent`
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
-        if end_time is not None: body['end_time'] = end_time
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
+        if end_time is not None: body['end_time'] = _validated('end_time', int, end_time)
         if event_types is not None:
             body['event_types'] = [_validated('event_types item', EventType, v) for v in event_types]
-        if limit is not None: body['limit'] = limit
-        if offset is not None: body['offset'] = offset
+        if limit is not None: body['limit'] = _validated('limit', int, limit)
+        if offset is not None: body['offset'] = _validated('offset', int, offset)
         if order is not None: body['order'] = _validated('order', GetEventsOrder, order)
-        if start_time is not None: body['start_time'] = start_time
+        if start_time is not None: body['start_time'] = _validated('start_time', int, start_time)
 
         while True:
             json = self._api.do('POST', '/api/2.0/clusters/events', body=body)
@@ -4715,7 +5109,7 @@ class ClustersAPI:
         """
 
         query = {}
-        if cluster_id is not None: query['cluster_id'] = cluster_id
+        if cluster_id is not None: query['cluster_id'] = _validated('cluster_id', str, cluster_id)
 
         json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
         return ClusterDetails.from_dict(json)
@@ -4769,7 +5163,8 @@ class ClustersAPI:
         """
 
         query = {}
-        if can_use_client is not None: query['can_use_client'] = can_use_client
+        if can_use_client is not None:
+            query['can_use_client'] = _validated('can_use_client', str, can_use_client)
 
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query)
         return [ClusterDetails.from_dict(v) for v in json.get('clusters', [])]
@@ -4812,7 +5207,7 @@ class ClustersAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         self._api.do('POST', '/api/2.0/clusters/permanent-delete', body=body)
 
     def pin(self, cluster_id: str):
@@ -4827,7 +5222,7 @@ class ClustersAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         self._api.do('POST', '/api/2.0/clusters/pin', body=body)
 
     def resize(self,
@@ -4861,8 +5256,8 @@ class ClustersAPI:
         """
         body = {}
         if autoscale is not None: body['autoscale'] = _validated('autoscale', AutoScale, autoscale)
-        if cluster_id is not None: body['cluster_id'] = cluster_id
-        if num_workers is not None: body['num_workers'] = num_workers
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
+        if num_workers is not None: body['num_workers'] = _validated('num_workers', int, num_workers)
         self._api.do('POST', '/api/2.0/clusters/resize', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -4891,8 +5286,8 @@ class ClustersAPI:
           See :method:wait_get_cluster_running for more details.
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
-        if restart_user is not None: body['restart_user'] = restart_user
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
+        if restart_user is not None: body['restart_user'] = _validated('restart_user', str, restart_user)
         self._api.do('POST', '/api/2.0/clusters/restart', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -4957,7 +5352,7 @@ class ClustersAPI:
           See :method:wait_get_cluster_running for more details.
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         self._api.do('POST', '/api/2.0/clusters/start', body=body)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -4977,7 +5372,7 @@ class ClustersAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         self._api.do('POST', '/api/2.0/clusters/unpin', body=body)
 
     def update_cluster_permissions(
@@ -5132,9 +5527,9 @@ class CommandExecutionAPI:
           See :method:wait_command_status_command_execution_cancelled for more details.
         """
         body = {}
-        if cluster_id is not None: body['clusterId'] = cluster_id
-        if command_id is not None: body['commandId'] = command_id
-        if context_id is not None: body['contextId'] = context_id
+        if cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, cluster_id)
+        if command_id is not None: body['commandId'] = _validated('command_id', str, command_id)
+        if context_id is not None: body['contextId'] = _validated('context_id', str, context_id)
         self._api.do('POST', '/api/1.2/commands/cancel', body=body)
         return Wait(self.wait_command_status_command_execution_cancelled,
                     cluster_id=cluster_id,
@@ -5166,9 +5561,9 @@ class CommandExecutionAPI:
         """
 
         query = {}
-        if cluster_id is not None: query['clusterId'] = cluster_id
-        if command_id is not None: query['commandId'] = command_id
-        if context_id is not None: query['contextId'] = context_id
+        if cluster_id is not None: query['clusterId'] = _validated('cluster_id', str, cluster_id)
+        if command_id is not None: query['commandId'] = _validated('command_id', str, command_id)
+        if context_id is not None: query['contextId'] = _validated('context_id', str, context_id)
 
         json = self._api.do('GET', '/api/1.2/commands/status', query=query)
         return CommandStatusResponse.from_dict(json)
@@ -5185,8 +5580,8 @@ class CommandExecutionAPI:
         """
 
         query = {}
-        if cluster_id is not None: query['clusterId'] = cluster_id
-        if context_id is not None: query['contextId'] = context_id
+        if cluster_id is not None: query['clusterId'] = _validated('cluster_id', str, cluster_id)
+        if context_id is not None: query['contextId'] = _validated('context_id', str, context_id)
 
         json = self._api.do('GET', '/api/1.2/contexts/status', query=query)
         return ContextStatusResponse.from_dict(json)
@@ -5210,7 +5605,7 @@ class CommandExecutionAPI:
           See :method:wait_context_status_command_execution_running for more details.
         """
         body = {}
-        if cluster_id is not None: body['clusterId'] = cluster_id
+        if cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, cluster_id)
         if language is not None: body['language'] = _validated('language', Language, language)
         op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body)
         return Wait(self.wait_context_status_command_execution_running,
@@ -5237,8 +5632,8 @@ class CommandExecutionAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['clusterId'] = cluster_id
-        if context_id is not None: body['contextId'] = context_id
+        if cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, cluster_id)
+        if context_id is not None: body['contextId'] = _validated('context_id', str, context_id)
         self._api.do('POST', '/api/1.2/contexts/destroy', body=body)
 
     def execute(self,
@@ -5266,9 +5661,9 @@ class CommandExecutionAPI:
           See :method:wait_command_status_command_execution_finished_or_error for more details.
         """
         body = {}
-        if cluster_id is not None: body['clusterId'] = cluster_id
-        if command is not None: body['command'] = command
-        if context_id is not None: body['contextId'] = context_id
+        if cluster_id is not None: body['clusterId'] = _validated('cluster_id', str, cluster_id)
+        if command is not None: body['command'] = _validated('command', str, command)
+        if context_id is not None: body['contextId'] = _validated('context_id', str, context_id)
         if language is not None: body['language'] = _validated('language', Language, language)
         op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body)
         return Wait(self.wait_command_status_command_execution_finished_or_error,
@@ -5331,10 +5726,10 @@ class GlobalInitScriptsAPI:
         :returns: :class:`CreateResponse`
         """
         body = {}
-        if enabled is not None: body['enabled'] = enabled
-        if name is not None: body['name'] = name
-        if position is not None: body['position'] = position
-        if script is not None: body['script'] = script
+        if enabled is not None: body['enabled'] = _validated('enabled', bool, enabled)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if position is not None: body['position'] = _validated('position', int, position)
+        if script is not None: body['script'] = _validated('script', str, script)
 
         json = self._api.do('POST', '/api/2.0/global-init-scripts', body=body)
         return CreateResponse.from_dict(json)
@@ -5413,10 +5808,10 @@ class GlobalInitScriptsAPI:
         
         """
         body = {}
-        if enabled is not None: body['enabled'] = enabled
-        if name is not None: body['name'] = name
-        if position is not None: body['position'] = position
-        if script is not None: body['script'] = script
+        if enabled is not None: body['enabled'] = _validated('enabled', bool, enabled)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if position is not None: body['position'] = _validated('position', int, position)
+        if script is not None: body['script'] = _validated('script', str, script)
         self._api.do('PATCH', f'/api/2.0/global-init-scripts/{script_id}', body=body)
 
 
@@ -5516,27 +5911,37 @@ class InstancePoolsAPI:
         if azure_attributes is not None:
             body['azure_attributes'] = _validated('azure_attributes', InstancePoolAzureAttributes,
                                                   azure_attributes)
-        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if custom_tags is not None:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in custom_tags.items()
+            }
         if disk_spec is not None: body['disk_spec'] = _validated('disk_spec', DiskSpec, disk_spec)
-        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, enable_elastic_disk)
         if gcp_attributes is not None:
             body['gcp_attributes'] = _validated('gcp_attributes', InstancePoolGcpAttributes, gcp_attributes)
         if idle_instance_autotermination_minutes is not None:
-            body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
+            body['idle_instance_autotermination_minutes'] = _validated(
+                'idle_instance_autotermination_minutes', int, idle_instance_autotermination_minutes)
         if instance_pool_fleet_attributes is not None:
             body['instance_pool_fleet_attributes'] = _validated('instance_pool_fleet_attributes',
                                                                 InstancePoolFleetAttributes,
                                                                 instance_pool_fleet_attributes)
-        if instance_pool_name is not None: body['instance_pool_name'] = instance_pool_name
-        if max_capacity is not None: body['max_capacity'] = max_capacity
-        if min_idle_instances is not None: body['min_idle_instances'] = min_idle_instances
-        if node_type_id is not None: body['node_type_id'] = node_type_id
+        if instance_pool_name is not None:
+            body['instance_pool_name'] = _validated('instance_pool_name', str, instance_pool_name)
+        if max_capacity is not None: body['max_capacity'] = _validated('max_capacity', int, max_capacity)
+        if min_idle_instances is not None:
+            body['min_idle_instances'] = _validated('min_idle_instances', int, min_idle_instances)
+        if node_type_id is not None: body['node_type_id'] = _validated('node_type_id', str, node_type_id)
         if preloaded_docker_images is not None:
             body['preloaded_docker_images'] = [
                 _validated('preloaded_docker_images item', DockerImage, v) for v in preloaded_docker_images
             ]
         if preloaded_spark_versions is not None:
-            body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
+            body['preloaded_spark_versions'] = [
+                _validated('preloaded_spark_versions item', str, v) for v in preloaded_spark_versions
+            ]
 
         json = self._api.do('POST', '/api/2.0/instance-pools/create', body=body)
         return CreateInstancePoolResponse.from_dict(json)
@@ -5552,7 +5957,8 @@ class InstancePoolsAPI:
         
         """
         body = {}
-        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, instance_pool_id)
         self._api.do('POST', '/api/2.0/instance-pools/delete', body=body)
 
     def edit(self,
@@ -5635,28 +6041,39 @@ class InstancePoolsAPI:
         if azure_attributes is not None:
             body['azure_attributes'] = _validated('azure_attributes', InstancePoolAzureAttributes,
                                                   azure_attributes)
-        if custom_tags is not None: body['custom_tags'] = custom_tags
+        if custom_tags is not None:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in custom_tags.items()
+            }
         if disk_spec is not None: body['disk_spec'] = _validated('disk_spec', DiskSpec, disk_spec)
-        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
+        if enable_elastic_disk is not None:
+            body['enable_elastic_disk'] = _validated('enable_elastic_disk', bool, enable_elastic_disk)
         if gcp_attributes is not None:
             body['gcp_attributes'] = _validated('gcp_attributes', InstancePoolGcpAttributes, gcp_attributes)
         if idle_instance_autotermination_minutes is not None:
-            body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
+            body['idle_instance_autotermination_minutes'] = _validated(
+                'idle_instance_autotermination_minutes', int, idle_instance_autotermination_minutes)
         if instance_pool_fleet_attributes is not None:
             body['instance_pool_fleet_attributes'] = _validated('instance_pool_fleet_attributes',
                                                                 InstancePoolFleetAttributes,
                                                                 instance_pool_fleet_attributes)
-        if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
-        if instance_pool_name is not None: body['instance_pool_name'] = instance_pool_name
-        if max_capacity is not None: body['max_capacity'] = max_capacity
-        if min_idle_instances is not None: body['min_idle_instances'] = min_idle_instances
-        if node_type_id is not None: body['node_type_id'] = node_type_id
+        if instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, instance_pool_id)
+        if instance_pool_name is not None:
+            body['instance_pool_name'] = _validated('instance_pool_name', str, instance_pool_name)
+        if max_capacity is not None: body['max_capacity'] = _validated('max_capacity', int, max_capacity)
+        if min_idle_instances is not None:
+            body['min_idle_instances'] = _validated('min_idle_instances', int, min_idle_instances)
+        if node_type_id is not None: body['node_type_id'] = _validated('node_type_id', str, node_type_id)
         if preloaded_docker_images is not None:
             body['preloaded_docker_images'] = [
                 _validated('preloaded_docker_images item', DockerImage, v) for v in preloaded_docker_images
             ]
         if preloaded_spark_versions is not None:
-            body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
+            body['preloaded_spark_versions'] = [
+                _validated('preloaded_spark_versions item', str, v) for v in preloaded_spark_versions
+            ]
         self._api.do('POST', '/api/2.0/instance-pools/edit', body=body)
 
     def get(self, instance_pool_id: str) -> GetInstancePool:
@@ -5671,7 +6088,8 @@ class InstancePoolsAPI:
         """
 
         query = {}
-        if instance_pool_id is not None: query['instance_pool_id'] = instance_pool_id
+        if instance_pool_id is not None:
+            query['instance_pool_id'] = _validated('instance_pool_id', str, instance_pool_id)
 
         json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query)
         return GetInstancePool.from_dict(json)
@@ -5817,10 +6235,14 @@ class InstanceProfilesAPI:
         
         """
         body = {}
-        if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
-        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
-        if is_meta_instance_profile is not None: body['is_meta_instance_profile'] = is_meta_instance_profile
-        if skip_validation is not None: body['skip_validation'] = skip_validation
+        if iam_role_arn is not None: body['iam_role_arn'] = _validated('iam_role_arn', str, iam_role_arn)
+        if instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, instance_profile_arn)
+        if is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = _validated('is_meta_instance_profile', bool,
+                                                          is_meta_instance_profile)
+        if skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, skip_validation)
         self._api.do('POST', '/api/2.0/instance-profiles/add', body=body)
 
     def edit(self,
@@ -5862,9 +6284,12 @@ class InstanceProfilesAPI:
         
         """
         body = {}
-        if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
-        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
-        if is_meta_instance_profile is not None: body['is_meta_instance_profile'] = is_meta_instance_profile
+        if iam_role_arn is not None: body['iam_role_arn'] = _validated('iam_role_arn', str, iam_role_arn)
+        if instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, instance_profile_arn)
+        if is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = _validated('is_meta_instance_profile', bool,
+                                                          is_meta_instance_profile)
         self._api.do('POST', '/api/2.0/instance-profiles/edit', body=body)
 
     def list(self) -> Iterator[InstanceProfile]:
@@ -5894,7 +6319,8 @@ class InstanceProfilesAPI:
         
         """
         body = {}
-        if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
+        if instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, instance_profile_arn)
         self._api.do('POST', '/api/2.0/instance-profiles/remove', body=body)
 
 
@@ -5955,7 +6381,7 @@ class LibrariesAPI:
         """
 
         query = {}
-        if cluster_id is not None: query['cluster_id'] = cluster_id
+        if cluster_id is not None: query['cluster_id'] = _validated('cluster_id', str, cluster_id)
 
         json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query)
         return ClusterLibraryStatuses.from_dict(json)
@@ -5977,7 +6403,7 @@ class LibrariesAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         if libraries is not None:
             body['libraries'] = [_validated('libraries item', Library, v) for v in libraries]
         self._api.do('POST', '/api/2.0/libraries/install', body=body)
@@ -5997,7 +6423,7 @@ class LibrariesAPI:
         
         """
         body = {}
-        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, cluster_id)
         if libraries is not None:
             body['libraries'] = [_validated('libraries item', Library, v) for v in libraries]
         self._api.do('POST', '/api/2.0/libraries/uninstall', body=body)
@@ -6047,8 +6473,8 @@ class PolicyFamiliesAPI:
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.0/policy-families', query=query)

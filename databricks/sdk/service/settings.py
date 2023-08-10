@@ -19,7 +19,9 @@ class AccountNetworkPolicyMessage:
     def as_dict(self) -> dict:
         body = {}
         if self.serverless_internet_access_enabled is not None:
-            body['serverless_internet_access_enabled'] = self.serverless_internet_access_enabled
+            body['serverless_internet_access_enabled'] = _validated('serverless_internet_access_enabled',
+                                                                    bool,
+                                                                    self.serverless_internet_access_enabled)
         return body
 
     @classmethod
@@ -35,8 +37,9 @@ class CreateIpAccessList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label is not None: body['label'] = self.label
+        if self.ip_addresses:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in self.ip_addresses]
+        if self.label is not None: body['label'] = _validated('label', str, self.label)
         if self.list_type is not None: body['list_type'] = _validated('list_type', ListType, self.list_type)
         return body
 
@@ -70,9 +73,11 @@ class CreateOboTokenRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.application_id is not None: body['application_id'] = self.application_id
-        if self.comment is not None: body['comment'] = self.comment
-        if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
+        if self.application_id is not None:
+            body['application_id'] = _validated('application_id', str, self.application_id)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.lifetime_seconds is not None:
+            body['lifetime_seconds'] = _validated('lifetime_seconds', int, self.lifetime_seconds)
         return body
 
     @classmethod
@@ -90,7 +95,8 @@ class CreateOboTokenResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.token_info: body['token_info'] = _validated('token_info', TokenInfo, self.token_info)
-        if self.token_value is not None: body['token_value'] = self.token_value
+        if self.token_value is not None:
+            body['token_value'] = _validated('token_value', str, self.token_value)
         return body
 
     @classmethod
@@ -105,8 +111,9 @@ class CreateTokenRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.lifetime_seconds is not None:
+            body['lifetime_seconds'] = _validated('lifetime_seconds', int, self.lifetime_seconds)
         return body
 
     @classmethod
@@ -122,7 +129,8 @@ class CreateTokenResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.token_info: body['token_info'] = _validated('token_info', PublicTokenInfo, self.token_info)
-        if self.token_value is not None: body['token_value'] = self.token_value
+        if self.token_value is not None:
+            body['token_value'] = _validated('token_value', str, self.token_value)
         return body
 
     @classmethod
@@ -137,7 +145,7 @@ class DeleteAccountNetworkPolicyResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
+        if self.etag is not None: body['etag'] = _validated('etag', str, self.etag)
         return body
 
     @classmethod
@@ -151,7 +159,7 @@ class DeletePersonalComputeSettingResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
+        if self.etag is not None: body['etag'] = _validated('etag', str, self.etag)
         return body
 
     @classmethod
@@ -241,16 +249,18 @@ class IpAccessListInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.address_count is not None: body['address_count'] = self.address_count
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label is not None: body['label'] = self.label
-        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.address_count is not None:
+            body['address_count'] = _validated('address_count', int, self.address_count)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', int, self.created_by)
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.ip_addresses:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in self.ip_addresses]
+        if self.label is not None: body['label'] = _validated('label', str, self.label)
+        if self.list_id is not None: body['list_id'] = _validated('list_id', str, self.list_id)
         if self.list_type is not None: body['list_type'] = _validated('list_type', ListType, self.list_type)
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', int, self.updated_by)
         return body
 
     @classmethod
@@ -322,11 +332,12 @@ class PersonalComputeSetting:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
+        if self.etag is not None: body['etag'] = _validated('etag', str, self.etag)
         if self.personal_compute:
             body['personal_compute'] = _validated('personal_compute', PersonalComputeMessage,
                                                   self.personal_compute)
-        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        if self.setting_name is not None:
+            body['setting_name'] = _validated('setting_name', str, self.setting_name)
         return body
 
     @classmethod
@@ -345,10 +356,12 @@ class PublicTokenInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
-        if self.token_id is not None: body['token_id'] = self.token_id
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
+        if self.expiry_time is not None:
+            body['expiry_time'] = _validated('expiry_time', int, self.expiry_time)
+        if self.token_id is not None: body['token_id'] = _validated('token_id', str, self.token_id)
         return body
 
     @classmethod
@@ -370,11 +383,13 @@ class ReplaceIpAccessList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
-        if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label is not None: body['label'] = self.label
-        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.ip_access_list_id is not None:
+            body['ip_access_list_id'] = _validated('ip_access_list_id', str, self.ip_access_list_id)
+        if self.ip_addresses:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in self.ip_addresses]
+        if self.label is not None: body['label'] = _validated('label', str, self.label)
+        if self.list_id is not None: body['list_id'] = _validated('list_id', str, self.list_id)
         if self.list_type is not None: body['list_type'] = _validated('list_type', ListType, self.list_type)
         return body
 
@@ -394,7 +409,7 @@ class RevokeTokenRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.token_id is not None: body['token_id'] = self.token_id
+        if self.token_id is not None: body['token_id'] = _validated('token_id', str, self.token_id)
         return body
 
     @classmethod
@@ -411,13 +426,14 @@ class TokenAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', TokenPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -442,11 +458,13 @@ class TokenAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', TokenPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -470,13 +488,17 @@ class TokenInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_by_id is not None: body['created_by_id'] = self.created_by_id
-        if self.created_by_username is not None: body['created_by_username'] = self.created_by_username
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
-        if self.owner_id is not None: body['owner_id'] = self.owner_id
-        if self.token_id is not None: body['token_id'] = self.token_id
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_by_id is not None:
+            body['created_by_id'] = _validated('created_by_id', int, self.created_by_id)
+        if self.created_by_username is not None:
+            body['created_by_username'] = _validated('created_by_username', str, self.created_by_username)
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
+        if self.expiry_time is not None:
+            body['expiry_time'] = _validated('expiry_time', int, self.expiry_time)
+        if self.owner_id is not None: body['owner_id'] = _validated('owner_id', int, self.owner_id)
+        if self.token_id is not None: body['token_id'] = _validated('token_id', str, self.token_id)
         return body
 
     @classmethod
@@ -498,8 +520,11 @@ class TokenPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', TokenPermissionLevel,
                                                   self.permission_level)
@@ -531,8 +556,9 @@ class TokenPermissions:
                 _validated('access_control_list item', TokenAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -549,7 +575,8 @@ class TokenPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', TokenPermissionLevel,
                                                   self.permission_level)
@@ -590,11 +617,13 @@ class UpdateIpAccessList:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enabled is not None: body['enabled'] = self.enabled
-        if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
-        if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
-        if self.label is not None: body['label'] = self.label
-        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.enabled is not None: body['enabled'] = _validated('enabled', bool, self.enabled)
+        if self.ip_access_list_id is not None:
+            body['ip_access_list_id'] = _validated('ip_access_list_id', str, self.ip_access_list_id)
+        if self.ip_addresses:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in self.ip_addresses]
+        if self.label is not None: body['label'] = _validated('label', str, self.label)
+        if self.list_id is not None: body['list_id'] = _validated('list_id', str, self.list_id)
         if self.list_type is not None: body['list_type'] = _validated('list_type', ListType, self.list_type)
         return body
 
@@ -661,8 +690,9 @@ class AccountIpAccessListsAPI:
         :returns: :class:`CreateIpAccessListResponse`
         """
         body = {}
-        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
-        if label is not None: body['label'] = label
+        if ip_addresses is not None:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in ip_addresses]
+        if label is not None: body['label'] = _validated('label', str, label)
         if list_type is not None: body['list_type'] = _validated('list_type', ListType, list_type)
 
         json = self._api.do('POST',
@@ -746,10 +776,11 @@ class AccountIpAccessListsAPI:
         
         """
         body = {}
-        if enabled is not None: body['enabled'] = enabled
-        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
-        if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
+        if enabled is not None: body['enabled'] = _validated('enabled', bool, enabled)
+        if ip_addresses is not None:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in ip_addresses]
+        if label is not None: body['label'] = _validated('label', str, label)
+        if list_id is not None: body['list_id'] = _validated('list_id', str, list_id)
         if list_type is not None: body['list_type'] = _validated('list_type', ListType, list_type)
         self._api.do('PUT',
                      f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
@@ -795,10 +826,11 @@ class AccountIpAccessListsAPI:
         
         """
         body = {}
-        if enabled is not None: body['enabled'] = enabled
-        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
-        if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
+        if enabled is not None: body['enabled'] = _validated('enabled', bool, enabled)
+        if ip_addresses is not None:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in ip_addresses]
+        if label is not None: body['label'] = _validated('label', str, label)
+        if list_id is not None: body['list_id'] = _validated('list_id', str, list_id)
         if list_type is not None: body['list_type'] = _validated('list_type', ListType, list_type)
         self._api.do('PATCH',
                      f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
@@ -832,7 +864,7 @@ class AccountNetworkPolicyAPI:
         """
 
         query = {}
-        if etag is not None: query['etag'] = etag
+        if etag is not None: query['etag'] = _validated('etag', str, etag)
 
         json = self._api.do(
             'DELETE',
@@ -856,7 +888,7 @@ class AccountNetworkPolicyAPI:
         """
 
         query = {}
-        if etag is not None: query['etag'] = etag
+        if etag is not None: query['etag'] = _validated('etag', str, etag)
 
         json = self._api.do(
             'GET',
@@ -880,7 +912,7 @@ class AccountNetworkPolicyAPI:
         :returns: :class:`AccountNetworkPolicyMessage`
         """
         body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if allow_missing is not None: body['allow_missing'] = _validated('allow_missing', bool, allow_missing)
         if setting is not None: body['setting'] = _validated('setting', AccountNetworkPolicyMessage, setting)
 
         json = self._api.do(
@@ -918,7 +950,7 @@ class AccountSettingsAPI:
         """
 
         query = {}
-        if etag is not None: query['etag'] = etag
+        if etag is not None: query['etag'] = _validated('etag', str, etag)
 
         json = self._api.do(
             'DELETE',
@@ -942,7 +974,7 @@ class AccountSettingsAPI:
         """
 
         query = {}
-        if etag is not None: query['etag'] = etag
+        if etag is not None: query['etag'] = _validated('etag', str, etag)
 
         json = self._api.do(
             'GET',
@@ -966,7 +998,7 @@ class AccountSettingsAPI:
         :returns: :class:`PersonalComputeSetting`
         """
         body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if allow_missing is not None: body['allow_missing'] = _validated('allow_missing', bool, allow_missing)
         if setting is not None: body['setting'] = _validated('setting', PersonalComputeSetting, setting)
 
         json = self._api.do(
@@ -1026,8 +1058,9 @@ class IpAccessListsAPI:
         :returns: :class:`CreateIpAccessListResponse`
         """
         body = {}
-        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
-        if label is not None: body['label'] = label
+        if ip_addresses is not None:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in ip_addresses]
+        if label is not None: body['label'] = _validated('label', str, label)
         if list_type is not None: body['list_type'] = _validated('list_type', ListType, list_type)
 
         json = self._api.do('POST', '/api/2.0/ip-access-lists', body=body)
@@ -1108,10 +1141,11 @@ class IpAccessListsAPI:
         
         """
         body = {}
-        if enabled is not None: body['enabled'] = enabled
-        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
-        if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
+        if enabled is not None: body['enabled'] = _validated('enabled', bool, enabled)
+        if ip_addresses is not None:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in ip_addresses]
+        if label is not None: body['label'] = _validated('label', str, label)
+        if list_id is not None: body['list_id'] = _validated('list_id', str, list_id)
         if list_type is not None: body['list_type'] = _validated('list_type', ListType, list_type)
         self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body)
 
@@ -1156,10 +1190,11 @@ class IpAccessListsAPI:
         
         """
         body = {}
-        if enabled is not None: body['enabled'] = enabled
-        if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
-        if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
+        if enabled is not None: body['enabled'] = _validated('enabled', bool, enabled)
+        if ip_addresses is not None:
+            body['ip_addresses'] = [_validated('ip_addresses item', str, v) for v in ip_addresses]
+        if label is not None: body['label'] = _validated('label', str, label)
+        if list_id is not None: body['list_id'] = _validated('list_id', str, list_id)
         if list_type is not None: body['list_type'] = _validated('list_type', ListType, list_type)
         self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body)
 
@@ -1190,9 +1225,11 @@ class TokenManagementAPI:
         :returns: :class:`CreateOboTokenResponse`
         """
         body = {}
-        if application_id is not None: body['application_id'] = application_id
-        if comment is not None: body['comment'] = comment
-        if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
+        if application_id is not None:
+            body['application_id'] = _validated('application_id', str, application_id)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if lifetime_seconds is not None:
+            body['lifetime_seconds'] = _validated('lifetime_seconds', int, lifetime_seconds)
 
         json = self._api.do('POST', '/api/2.0/token-management/on-behalf-of/tokens', body=body)
         return CreateOboTokenResponse.from_dict(json)
@@ -1263,8 +1300,9 @@ class TokenManagementAPI:
         """
 
         query = {}
-        if created_by_id is not None: query['created_by_id'] = created_by_id
-        if created_by_username is not None: query['created_by_username'] = created_by_username
+        if created_by_id is not None: query['created_by_id'] = _validated('created_by_id', str, created_by_id)
+        if created_by_username is not None:
+            query['created_by_username'] = _validated('created_by_username', str, created_by_username)
 
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
@@ -1341,8 +1379,9 @@ class TokensAPI:
         :returns: :class:`CreateTokenResponse`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if lifetime_seconds is not None:
+            body['lifetime_seconds'] = _validated('lifetime_seconds', int, lifetime_seconds)
 
         json = self._api.do('POST', '/api/2.0/token/create', body=body)
         return CreateTokenResponse.from_dict(json)
@@ -1360,7 +1399,7 @@ class TokensAPI:
         
         """
         body = {}
-        if token_id is not None: body['token_id'] = token_id
+        if token_id is not None: body['token_id'] = _validated('token_id', str, token_id)
         self._api.do('POST', '/api/2.0/token/delete', body=body)
 
     def list(self) -> Iterator[TokenInfo]:
@@ -1392,7 +1431,7 @@ class WorkspaceConfAPI:
         """
 
         query = {}
-        if keys is not None: query['keys'] = keys
+        if keys is not None: query['keys'] = _validated('keys', str, keys)
 
         json = self._api.do('GET', '/api/2.0/workspace-conf', query=query)
         return WorkspaceConf.from_dict(json)

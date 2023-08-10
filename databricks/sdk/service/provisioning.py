@@ -39,11 +39,12 @@ class AwsKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key_alias is not None: body['key_alias'] = self.key_alias
-        if self.key_arn is not None: body['key_arn'] = self.key_arn
-        if self.key_region is not None: body['key_region'] = self.key_region
+        if self.key_alias is not None: body['key_alias'] = _validated('key_alias', str, self.key_alias)
+        if self.key_arn is not None: body['key_arn'] = _validated('key_arn', str, self.key_arn)
+        if self.key_region is not None: body['key_region'] = _validated('key_region', str, self.key_region)
         if self.reuse_key_for_cluster_volumes is not None:
-            body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
+            body['reuse_key_for_cluster_volumes'] = _validated('reuse_key_for_cluster_volumes', bool,
+                                                               self.reuse_key_for_cluster_volumes)
         return body
 
     @classmethod
@@ -78,10 +79,11 @@ class CreateAwsKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key_alias is not None: body['key_alias'] = self.key_alias
-        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.key_alias is not None: body['key_alias'] = _validated('key_alias', str, self.key_alias)
+        if self.key_arn is not None: body['key_arn'] = _validated('key_arn', str, self.key_arn)
         if self.reuse_key_for_cluster_volumes is not None:
-            body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
+            body['reuse_key_for_cluster_volumes'] = _validated('reuse_key_for_cluster_volumes', bool,
+                                                               self.reuse_key_for_cluster_volumes)
         return body
 
     @classmethod
@@ -115,7 +117,8 @@ class CreateCredentialRequest:
         if self.aws_credentials:
             body['aws_credentials'] = _validated('aws_credentials', CreateCredentialAwsCredentials,
                                                  self.aws_credentials)
-        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
+        if self.credentials_name is not None:
+            body['credentials_name'] = _validated('credentials_name', str, self.credentials_name)
         return body
 
     @classmethod
@@ -130,7 +133,7 @@ class CreateCredentialStsRole:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.role_arn is not None: body['role_arn'] = self.role_arn
+        if self.role_arn is not None: body['role_arn'] = _validated('role_arn', str, self.role_arn)
         return body
 
     @classmethod
@@ -167,7 +170,7 @@ class CreateGcpKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
+        if self.kms_key_id is not None: body['kms_key_id'] = _validated('kms_key_id', str, self.kms_key_id)
         return body
 
     @classmethod
@@ -188,12 +191,17 @@ class CreateNetworkRequest:
         body = {}
         if self.gcp_network_info:
             body['gcp_network_info'] = _validated('gcp_network_info', GcpNetworkInfo, self.gcp_network_info)
-        if self.network_name is not None: body['network_name'] = self.network_name
-        if self.security_group_ids: body['security_group_ids'] = [v for v in self.security_group_ids]
-        if self.subnet_ids: body['subnet_ids'] = [v for v in self.subnet_ids]
+        if self.network_name is not None:
+            body['network_name'] = _validated('network_name', str, self.network_name)
+        if self.security_group_ids:
+            body['security_group_ids'] = [
+                _validated('security_group_ids item', str, v) for v in self.security_group_ids
+            ]
+        if self.subnet_ids:
+            body['subnet_ids'] = [_validated('subnet_ids item', str, v) for v in self.subnet_ids]
         if self.vpc_endpoints:
             body['vpc_endpoints'] = _validated('vpc_endpoints', NetworkVpcEndpoints, self.vpc_endpoints)
-        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        if self.vpc_id is not None: body['vpc_id'] = _validated('vpc_id', str, self.vpc_id)
         return body
 
     @classmethod
@@ -216,7 +224,8 @@ class CreateStorageConfigurationRequest:
         if self.root_bucket_info:
             body['root_bucket_info'] = _validated('root_bucket_info', RootBucketInfo, self.root_bucket_info)
         if self.storage_configuration_name is not None:
-            body['storage_configuration_name'] = self.storage_configuration_name
+            body['storage_configuration_name'] = _validated('storage_configuration_name', str,
+                                                            self.storage_configuration_name)
         return body
 
     @classmethod
@@ -234,12 +243,14 @@ class CreateVpcEndpointRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.aws_vpc_endpoint_id is not None:
+            body['aws_vpc_endpoint_id'] = _validated('aws_vpc_endpoint_id', str, self.aws_vpc_endpoint_id)
         if self.gcp_vpc_endpoint_info:
             body['gcp_vpc_endpoint_info'] = _validated('gcp_vpc_endpoint_info', GcpVpcEndpointInfo,
                                                        self.gcp_vpc_endpoint_info)
-        if self.region is not None: body['region'] = self.region
-        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.vpc_endpoint_name is not None:
+            body['vpc_endpoint_name'] = _validated('vpc_endpoint_name', str, self.vpc_endpoint_name)
         return body
 
     @classmethod
@@ -270,31 +281,39 @@ class CreateWorkspaceRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_region is not None: body['aws_region'] = self.aws_region
-        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.aws_region is not None: body['aws_region'] = _validated('aws_region', str, self.aws_region)
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
         if self.cloud_resource_container:
             body['cloud_resource_container'] = _validated('cloud_resource_container', CloudResourceContainer,
                                                           self.cloud_resource_container)
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.credentials_id is not None:
+            body['credentials_id'] = _validated('credentials_id', str, self.credentials_id)
+        if self.deployment_name is not None:
+            body['deployment_name'] = _validated('deployment_name', str, self.deployment_name)
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = _validated('gcp_managed_network_config',
                                                             GcpManagedNetworkConfig,
                                                             self.gcp_managed_network_config)
         if self.gke_config: body['gke_config'] = _validated('gke_config', GkeConfig, self.gke_config)
-        if self.location is not None: body['location'] = self.location
+        if self.location is not None: body['location'] = _validated('location', str, self.location)
         if self.managed_services_customer_managed_key_id is not None:
-            body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id is not None: body['network_id'] = self.network_id
+            body['managed_services_customer_managed_key_id'] = _validated(
+                'managed_services_customer_managed_key_id', str,
+                self.managed_services_customer_managed_key_id)
+        if self.network_id is not None: body['network_id'] = _validated('network_id', str, self.network_id)
         if self.pricing_tier is not None:
             body['pricing_tier'] = _validated('pricing_tier', PricingTier, self.pricing_tier)
         if self.private_access_settings_id is not None:
-            body['private_access_settings_id'] = self.private_access_settings_id
+            body['private_access_settings_id'] = _validated('private_access_settings_id', str,
+                                                            self.private_access_settings_id)
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
+            body['storage_configuration_id'] = _validated('storage_configuration_id', str,
+                                                          self.storage_configuration_id)
         if self.storage_customer_managed_key_id is not None:
-            body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
+            body['storage_customer_managed_key_id'] = _validated('storage_customer_managed_key_id', str,
+                                                                 self.storage_customer_managed_key_id)
+        if self.workspace_name is not None:
+            body['workspace_name'] = _validated('workspace_name', str, self.workspace_name)
         return body
 
     @classmethod
@@ -328,12 +347,15 @@ class Credential:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
         if self.aws_credentials:
             body['aws_credentials'] = _validated('aws_credentials', AwsCredentials, self.aws_credentials)
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
+        if self.credentials_id is not None:
+            body['credentials_id'] = _validated('credentials_id', str, self.credentials_id)
+        if self.credentials_name is not None:
+            body['credentials_name'] = _validated('credentials_name', str, self.credentials_name)
         return body
 
     @classmethod
@@ -353,7 +375,7 @@ class CustomerFacingGcpCloudResourceContainer:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.project_id is not None: body['project_id'] = self.project_id
+        if self.project_id is not None: body['project_id'] = _validated('project_id', str, self.project_id)
         return body
 
     @classmethod
@@ -372,11 +394,13 @@ class CustomerManagedKey:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
         if self.aws_key_info: body['aws_key_info'] = _validated('aws_key_info', AwsKeyInfo, self.aws_key_info)
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
         if self.customer_managed_key_id is not None:
-            body['customer_managed_key_id'] = self.customer_managed_key_id
+            body['customer_managed_key_id'] = _validated('customer_managed_key_id', str,
+                                                         self.customer_managed_key_id)
         if self.gcp_key_info: body['gcp_key_info'] = _validated('gcp_key_info', GcpKeyInfo, self.gcp_key_info)
         if self.use_cases:
             body['use_cases'] = [_validated('use_cases item', KeyUseCase, v) for v in self.use_cases]
@@ -419,7 +443,7 @@ class GcpKeyInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
+        if self.kms_key_id is not None: body['kms_key_id'] = _validated('kms_key_id', str, self.kms_key_id)
         return body
 
     @classmethod
@@ -455,10 +479,13 @@ class GcpManagedNetworkConfig:
     def as_dict(self) -> dict:
         body = {}
         if self.gke_cluster_pod_ip_range is not None:
-            body['gke_cluster_pod_ip_range'] = self.gke_cluster_pod_ip_range
+            body['gke_cluster_pod_ip_range'] = _validated('gke_cluster_pod_ip_range', str,
+                                                          self.gke_cluster_pod_ip_range)
         if self.gke_cluster_service_ip_range is not None:
-            body['gke_cluster_service_ip_range'] = self.gke_cluster_service_ip_range
-        if self.subnet_cidr is not None: body['subnet_cidr'] = self.subnet_cidr
+            body['gke_cluster_service_ip_range'] = _validated('gke_cluster_service_ip_range', str,
+                                                              self.gke_cluster_service_ip_range)
+        if self.subnet_cidr is not None:
+            body['subnet_cidr'] = _validated('subnet_cidr', str, self.subnet_cidr)
         return body
 
     @classmethod
@@ -482,12 +509,17 @@ class GcpNetworkInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.network_project_id is not None: body['network_project_id'] = self.network_project_id
-        if self.pod_ip_range_name is not None: body['pod_ip_range_name'] = self.pod_ip_range_name
-        if self.service_ip_range_name is not None: body['service_ip_range_name'] = self.service_ip_range_name
-        if self.subnet_id is not None: body['subnet_id'] = self.subnet_id
-        if self.subnet_region is not None: body['subnet_region'] = self.subnet_region
-        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        if self.network_project_id is not None:
+            body['network_project_id'] = _validated('network_project_id', str, self.network_project_id)
+        if self.pod_ip_range_name is not None:
+            body['pod_ip_range_name'] = _validated('pod_ip_range_name', str, self.pod_ip_range_name)
+        if self.service_ip_range_name is not None:
+            body['service_ip_range_name'] = _validated('service_ip_range_name', str,
+                                                       self.service_ip_range_name)
+        if self.subnet_id is not None: body['subnet_id'] = _validated('subnet_id', str, self.subnet_id)
+        if self.subnet_region is not None:
+            body['subnet_region'] = _validated('subnet_region', str, self.subnet_region)
+        if self.vpc_id is not None: body['vpc_id'] = _validated('vpc_id', str, self.vpc_id)
         return body
 
     @classmethod
@@ -512,11 +544,16 @@ class GcpVpcEndpointInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.endpoint_region is not None: body['endpoint_region'] = self.endpoint_region
-        if self.project_id is not None: body['project_id'] = self.project_id
-        if self.psc_connection_id is not None: body['psc_connection_id'] = self.psc_connection_id
-        if self.psc_endpoint_name is not None: body['psc_endpoint_name'] = self.psc_endpoint_name
-        if self.service_attachment_id is not None: body['service_attachment_id'] = self.service_attachment_id
+        if self.endpoint_region is not None:
+            body['endpoint_region'] = _validated('endpoint_region', str, self.endpoint_region)
+        if self.project_id is not None: body['project_id'] = _validated('project_id', str, self.project_id)
+        if self.psc_connection_id is not None:
+            body['psc_connection_id'] = _validated('psc_connection_id', str, self.psc_connection_id)
+        if self.psc_endpoint_name is not None:
+            body['psc_endpoint_name'] = _validated('psc_endpoint_name', str, self.psc_endpoint_name)
+        if self.service_attachment_id is not None:
+            body['service_attachment_id'] = _validated('service_attachment_id', str,
+                                                       self.service_attachment_id)
         return body
 
     @classmethod
@@ -540,7 +577,8 @@ class GkeConfig:
         if self.connectivity_type is not None:
             body['connectivity_type'] = _validated('connectivity_type', GkeConfigConnectivityType,
                                                    self.connectivity_type)
-        if self.master_ip_range is not None: body['master_ip_range'] = self.master_ip_range
+        if self.master_ip_range is not None:
+            body['master_ip_range'] = _validated('master_ip_range', str, self.master_ip_range)
         return body
 
     @classmethod
@@ -587,28 +625,35 @@ class Network:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
         if self.error_messages:
             body['error_messages'] = [
                 _validated('error_messages item', NetworkHealth, v) for v in self.error_messages
             ]
         if self.gcp_network_info:
             body['gcp_network_info'] = _validated('gcp_network_info', GcpNetworkInfo, self.gcp_network_info)
-        if self.network_id is not None: body['network_id'] = self.network_id
-        if self.network_name is not None: body['network_name'] = self.network_name
-        if self.security_group_ids: body['security_group_ids'] = [v for v in self.security_group_ids]
-        if self.subnet_ids: body['subnet_ids'] = [v for v in self.subnet_ids]
+        if self.network_id is not None: body['network_id'] = _validated('network_id', str, self.network_id)
+        if self.network_name is not None:
+            body['network_name'] = _validated('network_name', str, self.network_name)
+        if self.security_group_ids:
+            body['security_group_ids'] = [
+                _validated('security_group_ids item', str, v) for v in self.security_group_ids
+            ]
+        if self.subnet_ids:
+            body['subnet_ids'] = [_validated('subnet_ids item', str, v) for v in self.subnet_ids]
         if self.vpc_endpoints:
             body['vpc_endpoints'] = _validated('vpc_endpoints', NetworkVpcEndpoints, self.vpc_endpoints)
-        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        if self.vpc_id is not None: body['vpc_id'] = _validated('vpc_id', str, self.vpc_id)
         if self.vpc_status is not None:
             body['vpc_status'] = _validated('vpc_status', VpcStatus, self.vpc_status)
         if self.warning_messages:
             body['warning_messages'] = [
                 _validated('warning_messages item', NetworkWarning, v) for v in self.warning_messages
             ]
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -635,7 +680,8 @@ class NetworkHealth:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.error_message is not None:
+            body['error_message'] = _validated('error_message', str, self.error_message)
         if self.error_type is not None:
             body['error_type'] = _validated('error_type', ErrorType, self.error_type)
         return body
@@ -657,8 +703,11 @@ class NetworkVpcEndpoints:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dataplane_relay: body['dataplane_relay'] = [v for v in self.dataplane_relay]
-        if self.rest_api: body['rest_api'] = [v for v in self.rest_api]
+        if self.dataplane_relay:
+            body['dataplane_relay'] = [
+                _validated('dataplane_relay item', str, v) for v in self.dataplane_relay
+            ]
+        if self.rest_api: body['rest_api'] = [_validated('rest_api item', str, v) for v in self.rest_api]
         return body
 
     @classmethod
@@ -673,7 +722,8 @@ class NetworkWarning:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.warning_message is not None: body['warning_message'] = self.warning_message
+        if self.warning_message is not None:
+            body['warning_message'] = _validated('warning_message', str, self.warning_message)
         if self.warning_type is not None:
             body['warning_type'] = _validated('warning_type', WarningType, self.warning_type)
         return body
@@ -720,18 +770,24 @@ class PrivateAccessSettings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
         if self.allowed_vpc_endpoint_ids:
-            body['allowed_vpc_endpoint_ids'] = [v for v in self.allowed_vpc_endpoint_ids]
+            body['allowed_vpc_endpoint_ids'] = [
+                _validated('allowed_vpc_endpoint_ids item', str, v) for v in self.allowed_vpc_endpoint_ids
+            ]
         if self.private_access_level is not None:
             body['private_access_level'] = _validated('private_access_level', PrivateAccessLevel,
                                                       self.private_access_level)
         if self.private_access_settings_id is not None:
-            body['private_access_settings_id'] = self.private_access_settings_id
+            body['private_access_settings_id'] = _validated('private_access_settings_id', str,
+                                                            self.private_access_settings_id)
         if self.private_access_settings_name is not None:
-            body['private_access_settings_name'] = self.private_access_settings_name
-        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
-        if self.region is not None: body['region'] = self.region
+            body['private_access_settings_name'] = _validated('private_access_settings_name', str,
+                                                              self.private_access_settings_name)
+        if self.public_access_enabled is not None:
+            body['public_access_enabled'] = _validated('public_access_enabled', bool,
+                                                       self.public_access_enabled)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
         return body
 
     @classmethod
@@ -753,7 +809,8 @@ class RootBucketInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
+        if self.bucket_name is not None:
+            body['bucket_name'] = _validated('bucket_name', str, self.bucket_name)
         return body
 
     @classmethod
@@ -771,14 +828,17 @@ class StorageConfiguration:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
         if self.root_bucket_info:
             body['root_bucket_info'] = _validated('root_bucket_info', RootBucketInfo, self.root_bucket_info)
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
+            body['storage_configuration_id'] = _validated('storage_configuration_id', str,
+                                                          self.storage_configuration_id)
         if self.storage_configuration_name is not None:
-            body['storage_configuration_name'] = self.storage_configuration_name
+            body['storage_configuration_name'] = _validated('storage_configuration_name', str,
+                                                            self.storage_configuration_name)
         return body
 
     @classmethod
@@ -797,8 +857,9 @@ class StsRole:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.external_id is not None: body['external_id'] = self.external_id
-        if self.role_arn is not None: body['role_arn'] = self.role_arn
+        if self.external_id is not None:
+            body['external_id'] = _validated('external_id', str, self.external_id)
+        if self.role_arn is not None: body['role_arn'] = _validated('role_arn', str, self.role_arn)
         return body
 
     @classmethod
@@ -818,16 +879,22 @@ class UpdateWorkspaceRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_region is not None: body['aws_region'] = self.aws_region
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.aws_region is not None: body['aws_region'] = _validated('aws_region', str, self.aws_region)
+        if self.credentials_id is not None:
+            body['credentials_id'] = _validated('credentials_id', str, self.credentials_id)
         if self.managed_services_customer_managed_key_id is not None:
-            body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id is not None: body['network_id'] = self.network_id
+            body['managed_services_customer_managed_key_id'] = _validated(
+                'managed_services_customer_managed_key_id', str,
+                self.managed_services_customer_managed_key_id)
+        if self.network_id is not None: body['network_id'] = _validated('network_id', str, self.network_id)
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
+            body['storage_configuration_id'] = _validated('storage_configuration_id', str,
+                                                          self.storage_configuration_id)
         if self.storage_customer_managed_key_id is not None:
-            body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+            body['storage_customer_managed_key_id'] = _validated('storage_customer_managed_key_id', str,
+                                                                 self.storage_customer_managed_key_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -854,16 +921,22 @@ class UpsertPrivateAccessSettingsRequest:
     def as_dict(self) -> dict:
         body = {}
         if self.allowed_vpc_endpoint_ids:
-            body['allowed_vpc_endpoint_ids'] = [v for v in self.allowed_vpc_endpoint_ids]
+            body['allowed_vpc_endpoint_ids'] = [
+                _validated('allowed_vpc_endpoint_ids item', str, v) for v in self.allowed_vpc_endpoint_ids
+            ]
         if self.private_access_level is not None:
             body['private_access_level'] = _validated('private_access_level', PrivateAccessLevel,
                                                       self.private_access_level)
         if self.private_access_settings_id is not None:
-            body['private_access_settings_id'] = self.private_access_settings_id
+            body['private_access_settings_id'] = _validated('private_access_settings_id', str,
+                                                            self.private_access_settings_id)
         if self.private_access_settings_name is not None:
-            body['private_access_settings_name'] = self.private_access_settings_name
-        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
-        if self.region is not None: body['region'] = self.region
+            body['private_access_settings_name'] = _validated('private_access_settings_name', str,
+                                                              self.private_access_settings_name)
+        if self.public_access_enabled is not None:
+            body['public_access_enabled'] = _validated('public_access_enabled', bool,
+                                                       self.public_access_enabled)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
         return body
 
     @classmethod
@@ -891,20 +964,25 @@ class VpcEndpoint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.aws_account_id is not None: body['aws_account_id'] = self.aws_account_id
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
+        if self.aws_account_id is not None:
+            body['aws_account_id'] = _validated('aws_account_id', str, self.aws_account_id)
         if self.aws_endpoint_service_id is not None:
-            body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
-        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+            body['aws_endpoint_service_id'] = _validated('aws_endpoint_service_id', str,
+                                                         self.aws_endpoint_service_id)
+        if self.aws_vpc_endpoint_id is not None:
+            body['aws_vpc_endpoint_id'] = _validated('aws_vpc_endpoint_id', str, self.aws_vpc_endpoint_id)
         if self.gcp_vpc_endpoint_info:
             body['gcp_vpc_endpoint_info'] = _validated('gcp_vpc_endpoint_info', GcpVpcEndpointInfo,
                                                        self.gcp_vpc_endpoint_info)
-        if self.region is not None: body['region'] = self.region
-        if self.state is not None: body['state'] = self.state
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.state is not None: body['state'] = _validated('state', str, self.state)
         if self.use_case is not None:
             body['use_case'] = _validated('use_case', EndpointUseCase, self.use_case)
-        if self.vpc_endpoint_id is not None: body['vpc_endpoint_id'] = self.vpc_endpoint_id
-        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        if self.vpc_endpoint_id is not None:
+            body['vpc_endpoint_id'] = _validated('vpc_endpoint_id', str, self.vpc_endpoint_id)
+        if self.vpc_endpoint_name is not None:
+            body['vpc_endpoint_name'] = _validated('vpc_endpoint_name', str, self.vpc_endpoint_name)
         return body
 
     @classmethod
@@ -962,38 +1040,49 @@ class Workspace:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.aws_region is not None: body['aws_region'] = self.aws_region
-        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.account_id is not None: body['account_id'] = _validated('account_id', str, self.account_id)
+        if self.aws_region is not None: body['aws_region'] = _validated('aws_region', str, self.aws_region)
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
         if self.cloud_resource_container:
             body['cloud_resource_container'] = _validated('cloud_resource_container', CloudResourceContainer,
                                                           self.cloud_resource_container)
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
+        if self.credentials_id is not None:
+            body['credentials_id'] = _validated('credentials_id', str, self.credentials_id)
+        if self.deployment_name is not None:
+            body['deployment_name'] = _validated('deployment_name', str, self.deployment_name)
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = _validated('gcp_managed_network_config',
                                                             GcpManagedNetworkConfig,
                                                             self.gcp_managed_network_config)
         if self.gke_config: body['gke_config'] = _validated('gke_config', GkeConfig, self.gke_config)
-        if self.location is not None: body['location'] = self.location
+        if self.location is not None: body['location'] = _validated('location', str, self.location)
         if self.managed_services_customer_managed_key_id is not None:
-            body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
-        if self.network_id is not None: body['network_id'] = self.network_id
+            body['managed_services_customer_managed_key_id'] = _validated(
+                'managed_services_customer_managed_key_id', str,
+                self.managed_services_customer_managed_key_id)
+        if self.network_id is not None: body['network_id'] = _validated('network_id', str, self.network_id)
         if self.pricing_tier is not None:
             body['pricing_tier'] = _validated('pricing_tier', PricingTier, self.pricing_tier)
         if self.private_access_settings_id is not None:
-            body['private_access_settings_id'] = self.private_access_settings_id
+            body['private_access_settings_id'] = _validated('private_access_settings_id', str,
+                                                            self.private_access_settings_id)
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
+            body['storage_configuration_id'] = _validated('storage_configuration_id', str,
+                                                          self.storage_configuration_id)
         if self.storage_customer_managed_key_id is not None:
-            body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
-        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
+            body['storage_customer_managed_key_id'] = _validated('storage_customer_managed_key_id', str,
+                                                                 self.storage_customer_managed_key_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
+        if self.workspace_name is not None:
+            body['workspace_name'] = _validated('workspace_name', str, self.workspace_name)
         if self.workspace_status is not None:
             body['workspace_status'] = _validated('workspace_status', WorkspaceStatus, self.workspace_status)
         if self.workspace_status_message is not None:
-            body['workspace_status_message'] = self.workspace_status_message
+            body['workspace_status_message'] = _validated('workspace_status_message', str,
+                                                          self.workspace_status_message)
         return body
 
     @classmethod
@@ -1069,7 +1158,8 @@ class CredentialsAPI:
         if aws_credentials is not None:
             body['aws_credentials'] = _validated('aws_credentials', CreateCredentialAwsCredentials,
                                                  aws_credentials)
-        if credentials_name is not None: body['credentials_name'] = credentials_name
+        if credentials_name is not None:
+            body['credentials_name'] = _validated('credentials_name', str, credentials_name)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/credentials', body=body)
         return Credential.from_dict(json)
@@ -1282,12 +1372,16 @@ class NetworksAPI:
         body = {}
         if gcp_network_info is not None:
             body['gcp_network_info'] = _validated('gcp_network_info', GcpNetworkInfo, gcp_network_info)
-        if network_name is not None: body['network_name'] = network_name
-        if security_group_ids is not None: body['security_group_ids'] = [v for v in security_group_ids]
-        if subnet_ids is not None: body['subnet_ids'] = [v for v in subnet_ids]
+        if network_name is not None: body['network_name'] = _validated('network_name', str, network_name)
+        if security_group_ids is not None:
+            body['security_group_ids'] = [
+                _validated('security_group_ids item', str, v) for v in security_group_ids
+            ]
+        if subnet_ids is not None:
+            body['subnet_ids'] = [_validated('subnet_ids item', str, v) for v in subnet_ids]
         if vpc_endpoints is not None:
             body['vpc_endpoints'] = _validated('vpc_endpoints', NetworkVpcEndpoints, vpc_endpoints)
-        if vpc_id is not None: body['vpc_id'] = vpc_id
+        if vpc_id is not None: body['vpc_id'] = _validated('vpc_id', str, vpc_id)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/networks', body=body)
         return Network.from_dict(json)
@@ -1396,14 +1490,18 @@ class PrivateAccessAPI:
         """
         body = {}
         if allowed_vpc_endpoint_ids is not None:
-            body['allowed_vpc_endpoint_ids'] = [v for v in allowed_vpc_endpoint_ids]
+            body['allowed_vpc_endpoint_ids'] = [
+                _validated('allowed_vpc_endpoint_ids item', str, v) for v in allowed_vpc_endpoint_ids
+            ]
         if private_access_level is not None:
             body['private_access_level'] = _validated('private_access_level', PrivateAccessLevel,
                                                       private_access_level)
         if private_access_settings_name is not None:
-            body['private_access_settings_name'] = private_access_settings_name
-        if public_access_enabled is not None: body['public_access_enabled'] = public_access_enabled
-        if region is not None: body['region'] = region
+            body['private_access_settings_name'] = _validated('private_access_settings_name', str,
+                                                              private_access_settings_name)
+        if public_access_enabled is not None:
+            body['public_access_enabled'] = _validated('public_access_enabled', bool, public_access_enabled)
+        if region is not None: body['region'] = _validated('region', str, region)
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/private-access-settings',
@@ -1526,14 +1624,18 @@ class PrivateAccessAPI:
         """
         body = {}
         if allowed_vpc_endpoint_ids is not None:
-            body['allowed_vpc_endpoint_ids'] = [v for v in allowed_vpc_endpoint_ids]
+            body['allowed_vpc_endpoint_ids'] = [
+                _validated('allowed_vpc_endpoint_ids item', str, v) for v in allowed_vpc_endpoint_ids
+            ]
         if private_access_level is not None:
             body['private_access_level'] = _validated('private_access_level', PrivateAccessLevel,
                                                       private_access_level)
         if private_access_settings_name is not None:
-            body['private_access_settings_name'] = private_access_settings_name
-        if public_access_enabled is not None: body['public_access_enabled'] = public_access_enabled
-        if region is not None: body['region'] = region
+            body['private_access_settings_name'] = _validated('private_access_settings_name', str,
+                                                              private_access_settings_name)
+        if public_access_enabled is not None:
+            body['public_access_enabled'] = _validated('public_access_enabled', bool, public_access_enabled)
+        if region is not None: body['region'] = _validated('region', str, region)
         self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}',
@@ -1574,7 +1676,8 @@ class StorageAPI:
         if root_bucket_info is not None:
             body['root_bucket_info'] = _validated('root_bucket_info', RootBucketInfo, root_bucket_info)
         if storage_configuration_name is not None:
-            body['storage_configuration_name'] = storage_configuration_name
+            body['storage_configuration_name'] = _validated('storage_configuration_name', str,
+                                                            storage_configuration_name)
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/storage-configurations',
@@ -1664,12 +1767,14 @@ class VpcEndpointsAPI:
         :returns: :class:`VpcEndpoint`
         """
         body = {}
-        if aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = aws_vpc_endpoint_id
+        if aws_vpc_endpoint_id is not None:
+            body['aws_vpc_endpoint_id'] = _validated('aws_vpc_endpoint_id', str, aws_vpc_endpoint_id)
         if gcp_vpc_endpoint_info is not None:
             body['gcp_vpc_endpoint_info'] = _validated('gcp_vpc_endpoint_info', GcpVpcEndpointInfo,
                                                        gcp_vpc_endpoint_info)
-        if region is not None: body['region'] = region
-        if vpc_endpoint_name is not None: body['vpc_endpoint_name'] = vpc_endpoint_name
+        if region is not None: body['region'] = _validated('region', str, region)
+        if vpc_endpoint_name is not None:
+            body['vpc_endpoint_name'] = _validated('vpc_endpoint_name', str, vpc_endpoint_name)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints', body=body)
         return VpcEndpoint.from_dict(json)
@@ -1888,30 +1993,38 @@ class WorkspacesAPI:
           See :method:wait_get_workspace_running for more details.
         """
         body = {}
-        if aws_region is not None: body['aws_region'] = aws_region
-        if cloud is not None: body['cloud'] = cloud
+        if aws_region is not None: body['aws_region'] = _validated('aws_region', str, aws_region)
+        if cloud is not None: body['cloud'] = _validated('cloud', str, cloud)
         if cloud_resource_container is not None:
             body['cloud_resource_container'] = _validated('cloud_resource_container', CloudResourceContainer,
                                                           cloud_resource_container)
-        if credentials_id is not None: body['credentials_id'] = credentials_id
-        if deployment_name is not None: body['deployment_name'] = deployment_name
+        if credentials_id is not None:
+            body['credentials_id'] = _validated('credentials_id', str, credentials_id)
+        if deployment_name is not None:
+            body['deployment_name'] = _validated('deployment_name', str, deployment_name)
         if gcp_managed_network_config is not None:
             body['gcp_managed_network_config'] = _validated('gcp_managed_network_config',
                                                             GcpManagedNetworkConfig,
                                                             gcp_managed_network_config)
         if gke_config is not None: body['gke_config'] = _validated('gke_config', GkeConfig, gke_config)
-        if location is not None: body['location'] = location
+        if location is not None: body['location'] = _validated('location', str, location)
         if managed_services_customer_managed_key_id is not None:
-            body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
-        if network_id is not None: body['network_id'] = network_id
+            body['managed_services_customer_managed_key_id'] = _validated(
+                'managed_services_customer_managed_key_id', str, managed_services_customer_managed_key_id)
+        if network_id is not None: body['network_id'] = _validated('network_id', str, network_id)
         if pricing_tier is not None:
             body['pricing_tier'] = _validated('pricing_tier', PricingTier, pricing_tier)
         if private_access_settings_id is not None:
-            body['private_access_settings_id'] = private_access_settings_id
-        if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
+            body['private_access_settings_id'] = _validated('private_access_settings_id', str,
+                                                            private_access_settings_id)
+        if storage_configuration_id is not None:
+            body['storage_configuration_id'] = _validated('storage_configuration_id', str,
+                                                          storage_configuration_id)
         if storage_customer_managed_key_id is not None:
-            body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
-        if workspace_name is not None: body['workspace_name'] = workspace_name
+            body['storage_customer_managed_key_id'] = _validated('storage_customer_managed_key_id', str,
+                                                                 storage_customer_managed_key_id)
+        if workspace_name is not None:
+            body['workspace_name'] = _validated('workspace_name', str, workspace_name)
         op_response = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
         return Wait(self.wait_get_workspace_running,
                     response=Workspace.from_dict(op_response),
@@ -2138,14 +2251,19 @@ class WorkspacesAPI:
           See :method:wait_get_workspace_running for more details.
         """
         body = {}
-        if aws_region is not None: body['aws_region'] = aws_region
-        if credentials_id is not None: body['credentials_id'] = credentials_id
+        if aws_region is not None: body['aws_region'] = _validated('aws_region', str, aws_region)
+        if credentials_id is not None:
+            body['credentials_id'] = _validated('credentials_id', str, credentials_id)
         if managed_services_customer_managed_key_id is not None:
-            body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
-        if network_id is not None: body['network_id'] = network_id
-        if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
+            body['managed_services_customer_managed_key_id'] = _validated(
+                'managed_services_customer_managed_key_id', str, managed_services_customer_managed_key_id)
+        if network_id is not None: body['network_id'] = _validated('network_id', str, network_id)
+        if storage_configuration_id is not None:
+            body['storage_configuration_id'] = _validated('storage_configuration_id', str,
+                                                          storage_configuration_id)
         if storage_customer_managed_key_id is not None:
-            body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
+            body['storage_customer_managed_key_id'] = _validated('storage_customer_managed_key_id', str,
+                                                                 storage_customer_managed_key_id)
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
                      body=body)

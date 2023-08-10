@@ -22,7 +22,7 @@ class BuildLogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.logs is not None: body['logs'] = self.logs
+        if self.logs is not None: body['logs'] = _validated('logs', str, self.logs)
         return body
 
     @classmethod
@@ -38,7 +38,7 @@ class CreateServingEndpoint:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = _validated('config', EndpointCoreConfigInput, self.config)
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -54,7 +54,7 @@ class EndpointCoreConfigInput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.served_models:
             body['served_models'] = [
                 _validated('served_models item', ServedModelInput, v) for v in self.served_models
@@ -78,7 +78,8 @@ class EndpointCoreConfigOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_version is not None: body['config_version'] = self.config_version
+        if self.config_version is not None:
+            body['config_version'] = _validated('config_version', int, self.config_version)
         if self.served_models:
             body['served_models'] = [
                 _validated('served_models item', ServedModelOutput, v) for v in self.served_models
@@ -120,12 +121,13 @@ class EndpointPendingConfig:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.config_version is not None: body['config_version'] = self.config_version
+        if self.config_version is not None:
+            body['config_version'] = _validated('config_version', int, self.config_version)
         if self.served_models:
             body['served_models'] = [
                 _validated('served_models item', ServedModelOutput, v) for v in self.served_models
             ]
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.traffic_config:
             body['traffic_config'] = _validated('traffic_config', TrafficConfig, self.traffic_config)
         return body
@@ -215,7 +217,8 @@ class QueryEndpointResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.predictions: body['predictions'] = [v for v in self.predictions]
+        if self.predictions:
+            body['predictions'] = [_validated('predictions item', Any, v) for v in self.predictions]
         return body
 
     @classmethod
@@ -230,8 +233,10 @@ class Route:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.served_model_name is not None: body['served_model_name'] = self.served_model_name
-        if self.traffic_percentage is not None: body['traffic_percentage'] = self.traffic_percentage
+        if self.served_model_name is not None:
+            body['served_model_name'] = _validated('served_model_name', str, self.served_model_name)
+        if self.traffic_percentage is not None:
+            body['traffic_percentage'] = _validated('traffic_percentage', int, self.traffic_percentage)
         return body
 
     @classmethod
@@ -252,13 +257,22 @@ class ServedModelInput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.environment_vars: body['environment_vars'] = self.environment_vars
-        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.model_name is not None: body['model_name'] = self.model_name
-        if self.model_version is not None: body['model_version'] = self.model_version
-        if self.name is not None: body['name'] = self.name
-        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
-        if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.environment_vars:
+            body['environment_vars'] = {
+                k: _validated('environment_vars item', str, v)
+                for (k, v) in self.environment_vars.items()
+            }
+        if self.instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, self.instance_profile_arn)
+        if self.model_name is not None: body['model_name'] = _validated('model_name', str, self.model_name)
+        if self.model_version is not None:
+            body['model_version'] = _validated('model_version', str, self.model_version)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.scale_to_zero_enabled is not None:
+            body['scale_to_zero_enabled'] = _validated('scale_to_zero_enabled', bool,
+                                                       self.scale_to_zero_enabled)
+        if self.workload_size is not None:
+            body['workload_size'] = _validated('workload_size', str, self.workload_size)
         return body
 
     @classmethod
@@ -287,16 +301,26 @@ class ServedModelOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator is not None: body['creator'] = self.creator
-        if self.environment_vars: body['environment_vars'] = self.environment_vars
-        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
-        if self.model_name is not None: body['model_name'] = self.model_name
-        if self.model_version is not None: body['model_version'] = self.model_version
-        if self.name is not None: body['name'] = self.name
-        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.creator is not None: body['creator'] = _validated('creator', str, self.creator)
+        if self.environment_vars:
+            body['environment_vars'] = {
+                k: _validated('environment_vars item', str, v)
+                for (k, v) in self.environment_vars.items()
+            }
+        if self.instance_profile_arn is not None:
+            body['instance_profile_arn'] = _validated('instance_profile_arn', str, self.instance_profile_arn)
+        if self.model_name is not None: body['model_name'] = _validated('model_name', str, self.model_name)
+        if self.model_version is not None:
+            body['model_version'] = _validated('model_version', str, self.model_version)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.scale_to_zero_enabled is not None:
+            body['scale_to_zero_enabled'] = _validated('scale_to_zero_enabled', bool,
+                                                       self.scale_to_zero_enabled)
         if self.state: body['state'] = _validated('state', ServedModelState, self.state)
-        if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_size is not None:
+            body['workload_size'] = _validated('workload_size', str, self.workload_size)
         return body
 
     @classmethod
@@ -321,9 +345,10 @@ class ServedModelSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.model_name is not None: body['model_name'] = self.model_name
-        if self.model_version is not None: body['model_version'] = self.model_version
-        if self.name is not None: body['name'] = self.name
+        if self.model_name is not None: body['model_name'] = _validated('model_name', str, self.model_name)
+        if self.model_version is not None:
+            body['model_version'] = _validated('model_version', str, self.model_version)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -343,7 +368,8 @@ class ServedModelState:
         if self.deployment is not None:
             body['deployment'] = _validated('deployment', ServedModelStateDeployment, self.deployment)
         if self.deployment_state_message is not None:
-            body['deployment_state_message'] = self.deployment_state_message
+            body['deployment_state_message'] = _validated('deployment_state_message', str,
+                                                          self.deployment_state_message)
         return body
 
     @classmethod
@@ -376,7 +402,7 @@ class ServerLogsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.logs is not None: body['logs'] = self.logs
+        if self.logs is not None: body['logs'] = _validated('logs', str, self.logs)
         return body
 
     @classmethod
@@ -397,12 +423,14 @@ class ServingEndpoint:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = _validated('config', EndpointCoreConfigSummary, self.config)
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator is not None: body['creator'] = self.creator
-        if self.id is not None: body['id'] = self.id
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.creator is not None: body['creator'] = _validated('creator', str, self.creator)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name is not None: body['name'] = self.name
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.state: body['state'] = _validated('state', EndpointState, self.state)
         return body
 
@@ -426,13 +454,14 @@ class ServingEndpointAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ServingEndpointPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -457,11 +486,13 @@ class ServingEndpointAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', ServingEndpointPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -488,12 +519,14 @@ class ServingEndpointDetailed:
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = _validated('config', EndpointCoreConfigOutput, self.config)
-        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
-        if self.creator is not None: body['creator'] = self.creator
-        if self.id is not None: body['id'] = self.id
+        if self.creation_timestamp is not None:
+            body['creation_timestamp'] = _validated('creation_timestamp', int, self.creation_timestamp)
+        if self.creator is not None: body['creator'] = _validated('creator', str, self.creator)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
-        if self.name is not None: body['name'] = self.name
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.pending_config:
             body['pending_config'] = _validated('pending_config', EndpointPendingConfig, self.pending_config)
         if self.permission_level is not None:
@@ -531,8 +564,11 @@ class ServingEndpointPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ServingEndpointPermissionLevel,
                                                   self.permission_level)
@@ -566,8 +602,9 @@ class ServingEndpointPermissions:
                 _validated('access_control_list item', ServingEndpointAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -585,7 +622,8 @@ class ServingEndpointPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', ServingEndpointPermissionLevel,
                                                   self.permission_level)
@@ -609,7 +647,8 @@ class ServingEndpointPermissionsRequest:
                 _validated('access_control_list item', ServingEndpointAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.serving_endpoint_id is not None: body['serving_endpoint_id'] = self.serving_endpoint_id
+        if self.serving_endpoint_id is not None:
+            body['serving_endpoint_id'] = _validated('serving_endpoint_id', str, self.serving_endpoint_id)
         return body
 
     @classmethod
@@ -711,7 +750,7 @@ class ServingEndpointsAPI:
         """
         body = {}
         if config is not None: body['config'] = _validated('config', EndpointCoreConfigInput, config)
-        if name is not None: body['name'] = name
+        if name is not None: body['name'] = _validated('name', str, name)
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),

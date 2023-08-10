@@ -41,25 +41,32 @@ class CreatePipeline:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
-        if self.catalog is not None: body['catalog'] = self.catalog
-        if self.channel is not None: body['channel'] = self.channel
+        if self.allow_duplicate_names is not None:
+            body['allow_duplicate_names'] = _validated('allow_duplicate_names', bool,
+                                                       self.allow_duplicate_names)
+        if self.catalog is not None: body['catalog'] = _validated('catalog', str, self.catalog)
+        if self.channel is not None: body['channel'] = _validated('channel', str, self.channel)
         if self.clusters:
             body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in self.clusters]
-        if self.configuration: body['configuration'] = self.configuration
-        if self.continuous is not None: body['continuous'] = self.continuous
-        if self.development is not None: body['development'] = self.development
-        if self.dry_run is not None: body['dry_run'] = self.dry_run
-        if self.edition is not None: body['edition'] = self.edition
+        if self.configuration:
+            body['configuration'] = {
+                k: _validated('configuration item', str, v)
+                for (k, v) in self.configuration.items()
+            }
+        if self.continuous is not None: body['continuous'] = _validated('continuous', bool, self.continuous)
+        if self.development is not None:
+            body['development'] = _validated('development', bool, self.development)
+        if self.dry_run is not None: body['dry_run'] = _validated('dry_run', bool, self.dry_run)
+        if self.edition is not None: body['edition'] = _validated('edition', str, self.edition)
         if self.filters: body['filters'] = _validated('filters', Filters, self.filters)
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in self.libraries]
-        if self.name is not None: body['name'] = self.name
-        if self.photon is not None: body['photon'] = self.photon
-        if self.serverless is not None: body['serverless'] = self.serverless
-        if self.storage is not None: body['storage'] = self.storage
-        if self.target is not None: body['target'] = self.target
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.photon is not None: body['photon'] = _validated('photon', bool, self.photon)
+        if self.serverless is not None: body['serverless'] = _validated('serverless', bool, self.serverless)
+        if self.storage is not None: body['storage'] = _validated('storage', str, self.storage)
+        if self.target is not None: body['target'] = _validated('target', str, self.target)
         if self.trigger: body['trigger'] = _validated('trigger', PipelineTrigger, self.trigger)
         return body
 
@@ -95,7 +102,8 @@ class CreatePipelineResponse:
         if self.effective_settings:
             body['effective_settings'] = _validated('effective_settings', PipelineSpec,
                                                     self.effective_settings)
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
         return body
 
     @classmethod
@@ -111,8 +119,10 @@ class CronTrigger:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.quartz_cron_schedule is not None: body['quartz_cron_schedule'] = self.quartz_cron_schedule
-        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
+        if self.quartz_cron_schedule is not None:
+            body['quartz_cron_schedule'] = _validated('quartz_cron_schedule', str, self.quartz_cron_schedule)
+        if self.timezone_id is not None:
+            body['timezone_id'] = _validated('timezone_id', str, self.timezone_id)
         return body
 
     @classmethod
@@ -128,8 +138,8 @@ class DataPlaneId:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.instance is not None: body['instance'] = self.instance
-        if self.seq_no: body['seq_no'] = self.seq_no
+        if self.instance is not None: body['instance'] = _validated('instance', str, self.instance)
+        if self.seq_no: body['seq_no'] = _validated('seq_no', Any, self.seq_no)
         return body
 
     @classmethod
@@ -161,27 +171,36 @@ class EditPipeline:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
-        if self.catalog is not None: body['catalog'] = self.catalog
-        if self.channel is not None: body['channel'] = self.channel
+        if self.allow_duplicate_names is not None:
+            body['allow_duplicate_names'] = _validated('allow_duplicate_names', bool,
+                                                       self.allow_duplicate_names)
+        if self.catalog is not None: body['catalog'] = _validated('catalog', str, self.catalog)
+        if self.channel is not None: body['channel'] = _validated('channel', str, self.channel)
         if self.clusters:
             body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in self.clusters]
-        if self.configuration: body['configuration'] = self.configuration
-        if self.continuous is not None: body['continuous'] = self.continuous
-        if self.development is not None: body['development'] = self.development
-        if self.edition is not None: body['edition'] = self.edition
+        if self.configuration:
+            body['configuration'] = {
+                k: _validated('configuration item', str, v)
+                for (k, v) in self.configuration.items()
+            }
+        if self.continuous is not None: body['continuous'] = _validated('continuous', bool, self.continuous)
+        if self.development is not None:
+            body['development'] = _validated('development', bool, self.development)
+        if self.edition is not None: body['edition'] = _validated('edition', str, self.edition)
         if self.expected_last_modified is not None:
-            body['expected_last_modified'] = self.expected_last_modified
+            body['expected_last_modified'] = _validated('expected_last_modified', int,
+                                                        self.expected_last_modified)
         if self.filters: body['filters'] = _validated('filters', Filters, self.filters)
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in self.libraries]
-        if self.name is not None: body['name'] = self.name
-        if self.photon is not None: body['photon'] = self.photon
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.serverless is not None: body['serverless'] = self.serverless
-        if self.storage is not None: body['storage'] = self.storage
-        if self.target is not None: body['target'] = self.target
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.photon is not None: body['photon'] = _validated('photon', bool, self.photon)
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
+        if self.serverless is not None: body['serverless'] = _validated('serverless', bool, self.serverless)
+        if self.storage is not None: body['storage'] = _validated('storage', str, self.storage)
+        if self.target is not None: body['target'] = _validated('target', str, self.target)
         if self.trigger: body['trigger'] = _validated('trigger', PipelineTrigger, self.trigger)
         return body
 
@@ -219,7 +238,7 @@ class ErrorDetail:
             body['exceptions'] = [
                 _validated('exceptions item', SerializedException, v) for v in self.exceptions
             ]
-        if self.fatal is not None: body['fatal'] = self.fatal
+        if self.fatal is not None: body['fatal'] = _validated('fatal', bool, self.fatal)
         return body
 
     @classmethod
@@ -242,7 +261,7 @@ class FileLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -257,8 +276,8 @@ class Filters:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.exclude: body['exclude'] = [v for v in self.exclude]
-        if self.include: body['include'] = [v for v in self.include]
+        if self.exclude: body['exclude'] = [_validated('exclude item', str, v) for v in self.exclude]
+        if self.include: body['include'] = [_validated('include item', str, v) for v in self.include]
         return body
 
     @classmethod
@@ -300,19 +319,23 @@ class GetPipelineResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cause is not None: body['cause'] = self.cause
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.cause is not None: body['cause'] = _validated('cause', str, self.cause)
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
         if self.health is not None:
             body['health'] = _validated('health', GetPipelineResponseHealth, self.health)
-        if self.last_modified is not None: body['last_modified'] = self.last_modified
+        if self.last_modified is not None:
+            body['last_modified'] = _validated('last_modified', int, self.last_modified)
         if self.latest_updates:
             body['latest_updates'] = [
                 _validated('latest_updates item', UpdateStateInfo, v) for v in self.latest_updates
             ]
-        if self.name is not None: body['name'] = self.name
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
+        if self.run_as_user_name is not None:
+            body['run_as_user_name'] = _validated('run_as_user_name', str, self.run_as_user_name)
         if self.spec: body['spec'] = _validated('spec', PipelineSpec, self.spec)
         if self.state is not None: body['state'] = _validated('state', PipelineState, self.state)
         return body
@@ -372,8 +395,10 @@ class ListPipelineEventsResponse:
     def as_dict(self) -> dict:
         body = {}
         if self.events: body['events'] = [_validated('events item', PipelineEvent, v) for v in self.events]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.prev_page_token is not None:
+            body['prev_page_token'] = _validated('prev_page_token', str, self.prev_page_token)
         return body
 
     @classmethod
@@ -399,7 +424,8 @@ class ListPipelinesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         if self.statuses:
             body['statuses'] = [_validated('statuses item', PipelineStateInfo, v) for v in self.statuses]
         return body
@@ -418,8 +444,10 @@ class ListUpdatesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.prev_page_token is not None:
+            body['prev_page_token'] = _validated('prev_page_token', str, self.prev_page_token)
         if self.updates: body['updates'] = [_validated('updates item', UpdateInfo, v) for v in self.updates]
         return body
 
@@ -444,7 +472,7 @@ class NotebookLibrary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -474,23 +502,29 @@ class Origin:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.batch_id is not None: body['batch_id'] = self.batch_id
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.dataset_name is not None: body['dataset_name'] = self.dataset_name
-        if self.flow_id is not None: body['flow_id'] = self.flow_id
-        if self.flow_name is not None: body['flow_name'] = self.flow_name
-        if self.host is not None: body['host'] = self.host
-        if self.maintenance_id is not None: body['maintenance_id'] = self.maintenance_id
-        if self.materialization_name is not None: body['materialization_name'] = self.materialization_name
-        if self.org_id is not None: body['org_id'] = self.org_id
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.pipeline_name is not None: body['pipeline_name'] = self.pipeline_name
-        if self.region is not None: body['region'] = self.region
-        if self.request_id is not None: body['request_id'] = self.request_id
-        if self.table_id is not None: body['table_id'] = self.table_id
-        if self.uc_resource_id is not None: body['uc_resource_id'] = self.uc_resource_id
-        if self.update_id is not None: body['update_id'] = self.update_id
+        if self.batch_id is not None: body['batch_id'] = _validated('batch_id', int, self.batch_id)
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.dataset_name is not None:
+            body['dataset_name'] = _validated('dataset_name', str, self.dataset_name)
+        if self.flow_id is not None: body['flow_id'] = _validated('flow_id', str, self.flow_id)
+        if self.flow_name is not None: body['flow_name'] = _validated('flow_name', str, self.flow_name)
+        if self.host is not None: body['host'] = _validated('host', str, self.host)
+        if self.maintenance_id is not None:
+            body['maintenance_id'] = _validated('maintenance_id', str, self.maintenance_id)
+        if self.materialization_name is not None:
+            body['materialization_name'] = _validated('materialization_name', str, self.materialization_name)
+        if self.org_id is not None: body['org_id'] = _validated('org_id', int, self.org_id)
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
+        if self.pipeline_name is not None:
+            body['pipeline_name'] = _validated('pipeline_name', str, self.pipeline_name)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.request_id is not None: body['request_id'] = _validated('request_id', str, self.request_id)
+        if self.table_id is not None: body['table_id'] = _validated('table_id', str, self.table_id)
+        if self.uc_resource_id is not None:
+            body['uc_resource_id'] = _validated('uc_resource_id', str, self.uc_resource_id)
+        if self.update_id is not None: body['update_id'] = _validated('update_id', str, self.update_id)
         return body
 
     @classmethod
@@ -523,13 +557,14 @@ class PipelineAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PipelinePermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -554,11 +589,13 @@ class PipelineAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', PipelinePermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -593,7 +630,8 @@ class PipelineCluster:
     def as_dict(self) -> dict:
         body = {}
         if self.apply_policy_default_values is not None:
-            body['apply_policy_default_values'] = self.apply_policy_default_values
+            body['apply_policy_default_values'] = _validated('apply_policy_default_values', bool,
+                                                             self.apply_policy_default_values)
         if self.autoscale: body['autoscale'] = _validated('autoscale', compute.AutoScale, self.autoscale)
         if self.aws_attributes:
             body['aws_attributes'] = _validated('aws_attributes', compute.AwsAttributes, self.aws_attributes)
@@ -603,20 +641,40 @@ class PipelineCluster:
         if self.cluster_log_conf:
             body['cluster_log_conf'] = _validated('cluster_log_conf', compute.ClusterLogConf,
                                                   self.cluster_log_conf)
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.custom_tags:
+            body['custom_tags'] = {
+                k: _validated('custom_tags item', str, v)
+                for (k, v) in self.custom_tags.items()
+            }
         if self.driver_instance_pool_id is not None:
-            body['driver_instance_pool_id'] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+            body['driver_instance_pool_id'] = _validated('driver_instance_pool_id', str,
+                                                         self.driver_instance_pool_id)
+        if self.driver_node_type_id is not None:
+            body['driver_node_type_id'] = _validated('driver_node_type_id', str, self.driver_node_type_id)
         if self.gcp_attributes:
             body['gcp_attributes'] = _validated('gcp_attributes', compute.GcpAttributes, self.gcp_attributes)
-        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
-        if self.label is not None: body['label'] = self.label
-        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.num_workers is not None: body['num_workers'] = self.num_workers
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
-        if self.spark_conf: body['spark_conf'] = self.spark_conf
-        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
-        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.instance_pool_id is not None:
+            body['instance_pool_id'] = _validated('instance_pool_id', str, self.instance_pool_id)
+        if self.label is not None: body['label'] = _validated('label', str, self.label)
+        if self.node_type_id is not None:
+            body['node_type_id'] = _validated('node_type_id', str, self.node_type_id)
+        if self.num_workers is not None:
+            body['num_workers'] = _validated('num_workers', int, self.num_workers)
+        if self.policy_id is not None: body['policy_id'] = _validated('policy_id', str, self.policy_id)
+        if self.spark_conf:
+            body['spark_conf'] = {
+                k: _validated('spark_conf item', str, v)
+                for (k, v) in self.spark_conf.items()
+            }
+        if self.spark_env_vars:
+            body['spark_env_vars'] = {
+                k: _validated('spark_env_vars item', str, v)
+                for (k, v) in self.spark_env_vars.items()
+            }
+        if self.ssh_public_keys:
+            body['ssh_public_keys'] = [
+                _validated('ssh_public_keys item', str, v) for v in self.ssh_public_keys
+            ]
         return body
 
     @classmethod
@@ -655,15 +713,15 @@ class PipelineEvent:
     def as_dict(self) -> dict:
         body = {}
         if self.error: body['error'] = _validated('error', ErrorDetail, self.error)
-        if self.event_type is not None: body['event_type'] = self.event_type
-        if self.id is not None: body['id'] = self.id
+        if self.event_type is not None: body['event_type'] = _validated('event_type', str, self.event_type)
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.level is not None: body['level'] = _validated('level', EventLevel, self.level)
         if self.maturity_level is not None:
             body['maturity_level'] = _validated('maturity_level', MaturityLevel, self.maturity_level)
-        if self.message is not None: body['message'] = self.message
+        if self.message is not None: body['message'] = _validated('message', str, self.message)
         if self.origin: body['origin'] = _validated('origin', Origin, self.origin)
         if self.sequence: body['sequence'] = _validated('sequence', Sequencing, self.sequence)
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.timestamp is not None: body['timestamp'] = _validated('timestamp', str, self.timestamp)
         return body
 
     @classmethod
@@ -689,7 +747,7 @@ class PipelineLibrary:
     def as_dict(self) -> dict:
         body = {}
         if self.file: body['file'] = _validated('file', FileLibrary, self.file)
-        if self.jar is not None: body['jar'] = self.jar
+        if self.jar is not None: body['jar'] = _validated('jar', str, self.jar)
         if self.maven: body['maven'] = _validated('maven', compute.MavenLibrary, self.maven)
         if self.notebook: body['notebook'] = _validated('notebook', NotebookLibrary, self.notebook)
         return body
@@ -710,8 +768,11 @@ class PipelinePermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PipelinePermissionLevel,
                                                   self.permission_level)
@@ -746,8 +807,9 @@ class PipelinePermissions:
                 _validated('access_control_list item', PipelineAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -764,7 +826,8 @@ class PipelinePermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PipelinePermissionLevel,
                                                   self.permission_level)
@@ -788,7 +851,8 @@ class PipelinePermissionsRequest:
                 _validated('access_control_list item', PipelineAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
         return body
 
     @classmethod
@@ -818,23 +882,28 @@ class PipelineSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog is not None: body['catalog'] = self.catalog
-        if self.channel is not None: body['channel'] = self.channel
+        if self.catalog is not None: body['catalog'] = _validated('catalog', str, self.catalog)
+        if self.channel is not None: body['channel'] = _validated('channel', str, self.channel)
         if self.clusters:
             body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in self.clusters]
-        if self.configuration: body['configuration'] = self.configuration
-        if self.continuous is not None: body['continuous'] = self.continuous
-        if self.development is not None: body['development'] = self.development
-        if self.edition is not None: body['edition'] = self.edition
+        if self.configuration:
+            body['configuration'] = {
+                k: _validated('configuration item', str, v)
+                for (k, v) in self.configuration.items()
+            }
+        if self.continuous is not None: body['continuous'] = _validated('continuous', bool, self.continuous)
+        if self.development is not None:
+            body['development'] = _validated('development', bool, self.development)
+        if self.edition is not None: body['edition'] = _validated('edition', str, self.edition)
         if self.filters: body['filters'] = _validated('filters', Filters, self.filters)
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in self.libraries]
-        if self.name is not None: body['name'] = self.name
-        if self.photon is not None: body['photon'] = self.photon
-        if self.serverless is not None: body['serverless'] = self.serverless
-        if self.storage is not None: body['storage'] = self.storage
-        if self.target is not None: body['target'] = self.target
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.photon is not None: body['photon'] = _validated('photon', bool, self.photon)
+        if self.serverless is not None: body['serverless'] = _validated('serverless', bool, self.serverless)
+        if self.storage is not None: body['storage'] = _validated('storage', str, self.storage)
+        if self.target is not None: body['target'] = _validated('target', str, self.target)
         if self.trigger: body['trigger'] = _validated('trigger', PipelineTrigger, self.trigger)
         return body
 
@@ -884,15 +953,18 @@ class PipelineStateInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
         if self.latest_updates:
             body['latest_updates'] = [
                 _validated('latest_updates item', UpdateStateInfo, v) for v in self.latest_updates
             ]
-        if self.name is not None: body['name'] = self.name
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
+        if self.run_as_user_name is not None:
+            body['run_as_user_name'] = _validated('run_as_user_name', str, self.run_as_user_name)
         if self.state is not None: body['state'] = _validated('state', PipelineState, self.state)
         return body
 
@@ -915,7 +987,7 @@ class PipelineTrigger:
     def as_dict(self) -> dict:
         body = {}
         if self.cron: body['cron'] = _validated('cron', CronTrigger, self.cron)
-        if self.manual: body['manual'] = self.manual
+        if self.manual: body['manual'] = _validated('manual', Any, self.manual)
         return body
 
     @classmethod
@@ -930,7 +1002,8 @@ class Sequencing:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.control_plane_seq_no is not None: body['control_plane_seq_no'] = self.control_plane_seq_no
+        if self.control_plane_seq_no is not None:
+            body['control_plane_seq_no'] = _validated('control_plane_seq_no', int, self.control_plane_seq_no)
         if self.data_plane_id:
             body['data_plane_id'] = _validated('data_plane_id', DataPlaneId, self.data_plane_id)
         return body
@@ -949,8 +1022,8 @@ class SerializedException:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.class_name is not None: body['class_name'] = self.class_name
-        if self.message is not None: body['message'] = self.message
+        if self.class_name is not None: body['class_name'] = _validated('class_name', str, self.class_name)
+        if self.message is not None: body['message'] = _validated('message', str, self.message)
         if self.stack: body['stack'] = [_validated('stack item', StackFrame, v) for v in self.stack]
         return body
 
@@ -970,10 +1043,13 @@ class StackFrame:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.declaring_class is not None: body['declaring_class'] = self.declaring_class
-        if self.file_name is not None: body['file_name'] = self.file_name
-        if self.line_number is not None: body['line_number'] = self.line_number
-        if self.method_name is not None: body['method_name'] = self.method_name
+        if self.declaring_class is not None:
+            body['declaring_class'] = _validated('declaring_class', str, self.declaring_class)
+        if self.file_name is not None: body['file_name'] = _validated('file_name', str, self.file_name)
+        if self.line_number is not None:
+            body['line_number'] = _validated('line_number', int, self.line_number)
+        if self.method_name is not None:
+            body['method_name'] = _validated('method_name', str, self.method_name)
         return body
 
     @classmethod
@@ -995,11 +1071,18 @@ class StartUpdate:
     def as_dict(self) -> dict:
         body = {}
         if self.cause is not None: body['cause'] = _validated('cause', StartUpdateCause, self.cause)
-        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
+        if self.full_refresh is not None:
+            body['full_refresh'] = _validated('full_refresh', bool, self.full_refresh)
         if self.full_refresh_selection:
-            body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
+            body['full_refresh_selection'] = [
+                _validated('full_refresh_selection item', str, v) for v in self.full_refresh_selection
+            ]
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
+        if self.refresh_selection:
+            body['refresh_selection'] = [
+                _validated('refresh_selection item', str, v) for v in self.refresh_selection
+            ]
         return body
 
     @classmethod
@@ -1027,7 +1110,7 @@ class StartUpdateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.update_id is not None: body['update_id'] = self.update_id
+        if self.update_id is not None: body['update_id'] = _validated('update_id', str, self.update_id)
         return body
 
     @classmethod
@@ -1051,16 +1134,24 @@ class UpdateInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.cause is not None: body['cause'] = _validated('cause', UpdateInfoCause, self.cause)
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
         if self.config: body['config'] = _validated('config', PipelineSpec, self.config)
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', int, self.creation_time)
+        if self.full_refresh is not None:
+            body['full_refresh'] = _validated('full_refresh', bool, self.full_refresh)
         if self.full_refresh_selection:
-            body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
+            body['full_refresh_selection'] = [
+                _validated('full_refresh_selection item', str, v) for v in self.full_refresh_selection
+            ]
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
+        if self.refresh_selection:
+            body['refresh_selection'] = [
+                _validated('refresh_selection item', str, v) for v in self.refresh_selection
+            ]
         if self.state is not None: body['state'] = _validated('state', UpdateInfoState, self.state)
-        if self.update_id is not None: body['update_id'] = self.update_id
+        if self.update_id is not None: body['update_id'] = _validated('update_id', str, self.update_id)
         return body
 
     @classmethod
@@ -1112,9 +1203,10 @@ class UpdateStateInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.creation_time is not None:
+            body['creation_time'] = _validated('creation_time', str, self.creation_time)
         if self.state is not None: body['state'] = _validated('state', UpdateStateInfoState, self.state)
-        if self.update_id is not None: body['update_id'] = self.update_id
+        if self.update_id is not None: body['update_id'] = _validated('update_id', str, self.update_id)
         return body
 
     @classmethod
@@ -1283,25 +1375,30 @@ class PipelinesAPI:
         :returns: :class:`CreatePipelineResponse`
         """
         body = {}
-        if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
-        if catalog is not None: body['catalog'] = catalog
-        if channel is not None: body['channel'] = channel
+        if allow_duplicate_names is not None:
+            body['allow_duplicate_names'] = _validated('allow_duplicate_names', bool, allow_duplicate_names)
+        if catalog is not None: body['catalog'] = _validated('catalog', str, catalog)
+        if channel is not None: body['channel'] = _validated('channel', str, channel)
         if clusters is not None:
             body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in clusters]
-        if configuration is not None: body['configuration'] = configuration
-        if continuous is not None: body['continuous'] = continuous
-        if development is not None: body['development'] = development
-        if dry_run is not None: body['dry_run'] = dry_run
-        if edition is not None: body['edition'] = edition
+        if configuration is not None:
+            body['configuration'] = {
+                k: _validated('configuration item', str, v)
+                for (k, v) in configuration.items()
+            }
+        if continuous is not None: body['continuous'] = _validated('continuous', bool, continuous)
+        if development is not None: body['development'] = _validated('development', bool, development)
+        if dry_run is not None: body['dry_run'] = _validated('dry_run', bool, dry_run)
+        if edition is not None: body['edition'] = _validated('edition', str, edition)
         if filters is not None: body['filters'] = _validated('filters', Filters, filters)
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if libraries is not None:
             body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in libraries]
-        if name is not None: body['name'] = name
-        if photon is not None: body['photon'] = photon
-        if serverless is not None: body['serverless'] = serverless
-        if storage is not None: body['storage'] = storage
-        if target is not None: body['target'] = target
+        if name is not None: body['name'] = _validated('name', str, name)
+        if photon is not None: body['photon'] = _validated('photon', bool, photon)
+        if serverless is not None: body['serverless'] = _validated('serverless', bool, serverless)
+        if storage is not None: body['storage'] = _validated('storage', str, storage)
+        if target is not None: body['target'] = _validated('target', str, target)
         if trigger is not None: body['trigger'] = _validated('trigger', PipelineTrigger, trigger)
 
         json = self._api.do('POST', '/api/2.0/pipelines', body=body)
@@ -1409,10 +1506,10 @@ class PipelinesAPI:
         """
 
         query = {}
-        if filter is not None: query['filter'] = filter
-        if max_results is not None: query['max_results'] = max_results
-        if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if order_by is not None: query['order_by'] = [_validated('order_by item', str, v) for v in order_by]
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/events', query=query)
@@ -1457,10 +1554,10 @@ class PipelinesAPI:
         """
 
         query = {}
-        if filter is not None: query['filter'] = filter
-        if max_results is not None: query['max_results'] = max_results
-        if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if order_by is not None: query['order_by'] = [_validated('order_by item', str, v) for v in order_by]
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query)
@@ -1495,9 +1592,10 @@ class PipelinesAPI:
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        if until_update_id is not None: query['until_update_id'] = until_update_id
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
+        if until_update_id is not None:
+            query['until_update_id'] = _validated('until_update_id', str, until_update_id)
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query)
         return ListUpdatesResponse.from_dict(json)
@@ -1573,10 +1671,15 @@ class PipelinesAPI:
         """
         body = {}
         if cause is not None: body['cause'] = _validated('cause', StartUpdateCause, cause)
-        if full_refresh is not None: body['full_refresh'] = full_refresh
+        if full_refresh is not None: body['full_refresh'] = _validated('full_refresh', bool, full_refresh)
         if full_refresh_selection is not None:
-            body['full_refresh_selection'] = [v for v in full_refresh_selection]
-        if refresh_selection is not None: body['refresh_selection'] = [v for v in refresh_selection]
+            body['full_refresh_selection'] = [
+                _validated('full_refresh_selection item', str, v) for v in full_refresh_selection
+            ]
+        if refresh_selection is not None:
+            body['refresh_selection'] = [
+                _validated('refresh_selection item', str, v) for v in refresh_selection
+            ]
 
         json = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body)
         return StartUpdateResponse.from_dict(json)
@@ -1670,25 +1773,31 @@ class PipelinesAPI:
         
         """
         body = {}
-        if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
-        if catalog is not None: body['catalog'] = catalog
-        if channel is not None: body['channel'] = channel
+        if allow_duplicate_names is not None:
+            body['allow_duplicate_names'] = _validated('allow_duplicate_names', bool, allow_duplicate_names)
+        if catalog is not None: body['catalog'] = _validated('catalog', str, catalog)
+        if channel is not None: body['channel'] = _validated('channel', str, channel)
         if clusters is not None:
             body['clusters'] = [_validated('clusters item', PipelineCluster, v) for v in clusters]
-        if configuration is not None: body['configuration'] = configuration
-        if continuous is not None: body['continuous'] = continuous
-        if development is not None: body['development'] = development
-        if edition is not None: body['edition'] = edition
-        if expected_last_modified is not None: body['expected_last_modified'] = expected_last_modified
+        if configuration is not None:
+            body['configuration'] = {
+                k: _validated('configuration item', str, v)
+                for (k, v) in configuration.items()
+            }
+        if continuous is not None: body['continuous'] = _validated('continuous', bool, continuous)
+        if development is not None: body['development'] = _validated('development', bool, development)
+        if edition is not None: body['edition'] = _validated('edition', str, edition)
+        if expected_last_modified is not None:
+            body['expected_last_modified'] = _validated('expected_last_modified', int, expected_last_modified)
         if filters is not None: body['filters'] = _validated('filters', Filters, filters)
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if libraries is not None:
             body['libraries'] = [_validated('libraries item', PipelineLibrary, v) for v in libraries]
-        if name is not None: body['name'] = name
-        if photon is not None: body['photon'] = photon
-        if serverless is not None: body['serverless'] = serverless
-        if storage is not None: body['storage'] = storage
-        if target is not None: body['target'] = target
+        if name is not None: body['name'] = _validated('name', str, name)
+        if photon is not None: body['photon'] = _validated('photon', bool, photon)
+        if serverless is not None: body['serverless'] = _validated('serverless', bool, serverless)
+        if storage is not None: body['storage'] = _validated('storage', str, storage)
+        if target is not None: body['target'] = _validated('target', str, target)
         if trigger is not None: body['trigger'] = _validated('trigger', PipelineTrigger, trigger)
         self._api.do('PUT', f'/api/2.0/pipelines/{pipeline_id}', body=body)
 

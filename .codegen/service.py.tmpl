@@ -50,13 +50,21 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 
 {{- define "validated" -}}
       {{- if not .entity }}None # ERROR: No Type
+      {{- else if .entity.MapValue }}{k:{{template "validated" (dict
+          "var" "v"
+          "name" (concat .name " item")
+          "entity" .entity.MapValue
+        )}} for (k,v) in {{.var}}.items()}
       {{- else if .entity.ArrayValue }}[{{template "validated" (dict
           "var" "v"
           "name" (concat .name " item")
           "entity" .entity.ArrayValue
         )}} for v in {{.var}}]
-      {{- else if or .entity.IsObject .entity.IsExternal .entity.Enum }}_validated('{{.name}}', {{if .entity.IsExternal}}{{.entity.Package.Name}}.{{end}}{{.entity.PascalName}}, {{.var}})
-      {{- else}}{{.var}}{{- end -}}
+      {{- else if or .entity.IsObject .entity.IsExternal .entity.Enum -}}
+        _validated('{{.name}}', {{if .entity.IsExternal}}{{.entity.Package.Name}}.{{end}}{{.entity.PascalName}}, {{.var}})
+      {{- else -}}
+        _validated('{{.name}}', {{template "type-nq" .entity}}, {{.var}})
+      {{- end -}}
 {{- end -}}
 
 {{- define "from_dict_type" -}}

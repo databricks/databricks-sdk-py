@@ -27,9 +27,11 @@ class BaseJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_time is not None: body['created_time'] = self.created_time
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.created_time is not None:
+            body['created_time'] = _validated('created_time', int, self.created_time)
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         if self.settings: body['settings'] = _validated('settings', JobSettings, self.settings)
         return body
 
@@ -73,38 +75,47 @@ class BaseRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
-        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
+        if self.attempt_number is not None:
+            body['attempt_number'] = _validated('attempt_number', int, self.attempt_number)
+        if self.cleanup_duration is not None:
+            body['cleanup_duration'] = _validated('cleanup_duration', int, self.cleanup_duration)
         if self.cluster_instance:
             body['cluster_instance'] = _validated('cluster_instance', ClusterInstance, self.cluster_instance)
         if self.cluster_spec:
             body['cluster_spec'] = _validated('cluster_spec', ClusterSpec, self.cluster_spec)
         if self.continuous: body['continuous'] = _validated('continuous', Continuous, self.continuous)
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.end_time is not None: body['end_time'] = self.end_time
-        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
+        if self.execution_duration is not None:
+            body['execution_duration'] = _validated('execution_duration', int, self.execution_duration)
         if self.git_source: body['git_source'] = _validated('git_source', GitSource, self.git_source)
         if self.job_clusters:
             body['job_clusters'] = [_validated('job_clusters item', JobCluster, v) for v in self.job_clusters]
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         if self.job_parameters:
             body['job_parameters'] = [
                 _validated('job_parameters item', JobParameter, v) for v in self.job_parameters
             ]
-        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.number_in_job is not None:
+            body['number_in_job'] = _validated('number_in_job', int, self.number_in_job)
         if self.original_attempt_run_id is not None:
-            body['original_attempt_run_id'] = self.original_attempt_run_id
+            body['original_attempt_run_id'] = _validated('original_attempt_run_id', int,
+                                                         self.original_attempt_run_id)
         if self.overriding_parameters:
             body['overriding_parameters'] = _validated('overriding_parameters', RunParameters,
                                                        self.overriding_parameters)
-        if self.run_duration is not None: body['run_duration'] = self.run_duration
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_name is not None: body['run_name'] = self.run_name
-        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.run_duration is not None:
+            body['run_duration'] = _validated('run_duration', int, self.run_duration)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
+        if self.run_name is not None: body['run_name'] = _validated('run_name', str, self.run_name)
+        if self.run_page_url is not None:
+            body['run_page_url'] = _validated('run_page_url', str, self.run_page_url)
         if self.run_type is not None: body['run_type'] = _validated('run_type', RunType, self.run_type)
         if self.schedule: body['schedule'] = _validated('schedule', CronSchedule, self.schedule)
-        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.setup_duration is not None:
+            body['setup_duration'] = _validated('setup_duration', int, self.setup_duration)
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.state: body['state'] = _validated('state', RunState, self.state)
         if self.tasks: body['tasks'] = [_validated('tasks item', RunTask, v) for v in self.tasks]
         if self.trigger is not None: body['trigger'] = _validated('trigger', TriggerType, self.trigger)
@@ -149,7 +160,7 @@ class CancelAllRuns:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         return body
 
     @classmethod
@@ -163,7 +174,7 @@ class CancelRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         return body
 
     @classmethod
@@ -178,8 +189,9 @@ class ClusterInstance:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
+        if self.cluster_id is not None: body['cluster_id'] = _validated('cluster_id', str, self.cluster_id)
+        if self.spark_context_id is not None:
+            body['spark_context_id'] = _validated('spark_context_id', str, self.spark_context_id)
         return body
 
     @classmethod
@@ -195,7 +207,8 @@ class ClusterSpec:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.existing_cluster_id is not None:
+            body['existing_cluster_id'] = _validated('existing_cluster_id', str, self.existing_cluster_id)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', compute.Library, v) for v in self.libraries]
         if self.new_cluster:
@@ -217,9 +230,9 @@ class ConditionTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.left is not None: body['left'] = self.left
+        if self.left is not None: body['left'] = _validated('left', str, self.left)
         if self.op is not None: body['op'] = _validated('op', ConditionTaskOp, self.op)
-        if self.right is not None: body['right'] = self.right
+        if self.right is not None: body['right'] = _validated('right', str, self.right)
         return body
 
     @classmethod
@@ -300,8 +313,9 @@ class CreateJob:
         if self.health: body['health'] = _validated('health', JobsHealthRules, self.health)
         if self.job_clusters:
             body['job_clusters'] = [_validated('job_clusters item', JobCluster, v) for v in self.job_clusters]
-        if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
-        if self.name is not None: body['name'] = self.name
+        if self.max_concurrent_runs is not None:
+            body['max_concurrent_runs'] = _validated('max_concurrent_runs', int, self.max_concurrent_runs)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.notification_settings:
             body['notification_settings'] = _validated('notification_settings', JobNotificationSettings,
                                                        self.notification_settings)
@@ -311,9 +325,10 @@ class CreateJob:
             ]
         if self.run_as: body['run_as'] = _validated('run_as', JobRunAs, self.run_as)
         if self.schedule: body['schedule'] = _validated('schedule', CronSchedule, self.schedule)
-        if self.tags: body['tags'] = self.tags
+        if self.tags: body['tags'] = {k: _validated('tags item', str, v) for (k, v) in self.tags.items()}
         if self.tasks: body['tasks'] = [_validated('tasks item', Task, v) for v in self.tasks]
-        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, self.timeout_seconds)
         if self.trigger: body['trigger'] = _validated('trigger', TriggerSettings, self.trigger)
         if self.webhook_notifications:
             body['webhook_notifications'] = _validated('webhook_notifications', WebhookNotifications,
@@ -349,7 +364,7 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         return body
 
     @classmethod
@@ -368,8 +383,10 @@ class CronSchedule:
         if self.pause_status is not None:
             body['pause_status'] = _validated('pause_status', PauseStatus, self.pause_status)
         if self.quartz_cron_expression is not None:
-            body['quartz_cron_expression'] = self.quartz_cron_expression
-        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
+            body['quartz_cron_expression'] = _validated('quartz_cron_expression', str,
+                                                        self.quartz_cron_expression)
+        if self.timezone_id is not None:
+            body['timezone_id'] = _validated('timezone_id', str, self.timezone_id)
         return body
 
     @classmethod
@@ -386,8 +403,13 @@ class DbtOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifacts_headers: body['artifacts_headers'] = self.artifacts_headers
-        if self.artifacts_link is not None: body['artifacts_link'] = self.artifacts_link
+        if self.artifacts_headers:
+            body['artifacts_headers'] = {
+                k: _validated('artifacts_headers item', str, v)
+                for (k, v) in self.artifacts_headers.items()
+            }
+        if self.artifacts_link is not None:
+            body['artifacts_link'] = _validated('artifacts_link', str, self.artifacts_link)
         return body
 
     @classmethod
@@ -407,12 +429,15 @@ class DbtTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog is not None: body['catalog'] = self.catalog
-        if self.commands: body['commands'] = [v for v in self.commands]
-        if self.profiles_directory is not None: body['profiles_directory'] = self.profiles_directory
-        if self.project_directory is not None: body['project_directory'] = self.project_directory
-        if self.schema is not None: body['schema'] = self.schema
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.catalog is not None: body['catalog'] = _validated('catalog', str, self.catalog)
+        if self.commands: body['commands'] = [_validated('commands item', str, v) for v in self.commands]
+        if self.profiles_directory is not None:
+            body['profiles_directory'] = _validated('profiles_directory', str, self.profiles_directory)
+        if self.project_directory is not None:
+            body['project_directory'] = _validated('project_directory', str, self.project_directory)
+        if self.schema is not None: body['schema'] = _validated('schema', str, self.schema)
+        if self.warehouse_id is not None:
+            body['warehouse_id'] = _validated('warehouse_id', str, self.warehouse_id)
         return body
 
     @classmethod
@@ -431,7 +456,7 @@ class DeleteJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         return body
 
     @classmethod
@@ -445,7 +470,7 @@ class DeleteRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         return body
 
     @classmethod
@@ -476,10 +501,12 @@ class FileArrivalTriggerConfiguration:
     def as_dict(self) -> dict:
         body = {}
         if self.min_time_between_triggers_seconds is not None:
-            body['min_time_between_triggers_seconds'] = self.min_time_between_triggers_seconds
-        if self.url is not None: body['url'] = self.url
+            body['min_time_between_triggers_seconds'] = _validated('min_time_between_triggers_seconds', int,
+                                                                   self.min_time_between_triggers_seconds)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         if self.wait_after_last_change_seconds is not None:
-            body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
+            body['wait_after_last_change_seconds'] = _validated('wait_after_last_change_seconds', int,
+                                                                self.wait_after_last_change_seconds)
         return body
 
     @classmethod
@@ -534,7 +561,8 @@ class GitSnapshot:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.used_commit is not None: body['used_commit'] = self.used_commit
+        if self.used_commit is not None:
+            body['used_commit'] = _validated('used_commit', str, self.used_commit)
         return body
 
     @classmethod
@@ -557,14 +585,14 @@ class GitSource:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.git_branch is not None: body['git_branch'] = self.git_branch
-        if self.git_commit is not None: body['git_commit'] = self.git_commit
+        if self.git_branch is not None: body['git_branch'] = _validated('git_branch', str, self.git_branch)
+        if self.git_commit is not None: body['git_commit'] = _validated('git_commit', str, self.git_commit)
         if self.git_provider is not None:
             body['git_provider'] = _validated('git_provider', GitProvider, self.git_provider)
         if self.git_snapshot:
             body['git_snapshot'] = _validated('git_snapshot', GitSnapshot, self.git_snapshot)
-        if self.git_tag is not None: body['git_tag'] = self.git_tag
-        if self.git_url is not None: body['git_url'] = self.git_url
+        if self.git_tag is not None: body['git_tag'] = _validated('git_tag', str, self.git_tag)
+        if self.git_url is not None: body['git_url'] = _validated('git_url', str, self.git_url)
         if self.job_source: body['job_source'] = _validated('job_source', JobSource, self.job_source)
         return body
 
@@ -590,10 +618,13 @@ class Job:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_time is not None: body['created_time'] = self.created_time
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
+        if self.created_time is not None:
+            body['created_time'] = _validated('created_time', int, self.created_time)
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
+        if self.run_as_user_name is not None:
+            body['run_as_user_name'] = _validated('run_as_user_name', str, self.run_as_user_name)
         if self.settings: body['settings'] = _validated('settings', JobSettings, self.settings)
         if self.trigger_history:
             body['trigger_history'] = _validated('trigger_history', TriggerHistory, self.trigger_history)
@@ -618,13 +649,14 @@ class JobAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', JobPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -649,11 +681,13 @@ class JobAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', JobPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -672,7 +706,8 @@ class JobCluster:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.job_cluster_key is not None:
+            body['job_cluster_key'] = _validated('job_cluster_key', str, self.job_cluster_key)
         if self.new_cluster:
             body['new_cluster'] = _validated('new_cluster', compute.ClusterSpec, self.new_cluster)
         return body
@@ -690,7 +725,8 @@ class JobCompute:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.compute_key is not None: body['compute_key'] = self.compute_key
+        if self.compute_key is not None:
+            body['compute_key'] = _validated('compute_key', str, self.compute_key)
         if self.spec: body['spec'] = _validated('spec', compute.ComputeSpec, self.spec)
         return body
 
@@ -710,14 +746,18 @@ class JobEmailNotifications:
     def as_dict(self) -> dict:
         body = {}
         if self.no_alert_for_skipped_runs is not None:
-            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+            body['no_alert_for_skipped_runs'] = _validated('no_alert_for_skipped_runs', bool,
+                                                           self.no_alert_for_skipped_runs)
         if self.on_duration_warning_threshold_exceeded:
             body['on_duration_warning_threshold_exceeded'] = [
-                v for v in self.on_duration_warning_threshold_exceeded
+                _validated('on_duration_warning_threshold_exceeded item', str, v)
+                for v in self.on_duration_warning_threshold_exceeded
             ]
-        if self.on_failure: body['on_failure'] = [v for v in self.on_failure]
-        if self.on_start: body['on_start'] = [v for v in self.on_start]
-        if self.on_success: body['on_success'] = [v for v in self.on_success]
+        if self.on_failure:
+            body['on_failure'] = [_validated('on_failure item', str, v) for v in self.on_failure]
+        if self.on_start: body['on_start'] = [_validated('on_start item', str, v) for v in self.on_start]
+        if self.on_success:
+            body['on_success'] = [_validated('on_success item', str, v) for v in self.on_success]
         return body
 
     @classmethod
@@ -738,9 +778,11 @@ class JobNotificationSettings:
     def as_dict(self) -> dict:
         body = {}
         if self.no_alert_for_canceled_runs is not None:
-            body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
+            body['no_alert_for_canceled_runs'] = _validated('no_alert_for_canceled_runs', bool,
+                                                            self.no_alert_for_canceled_runs)
         if self.no_alert_for_skipped_runs is not None:
-            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+            body['no_alert_for_skipped_runs'] = _validated('no_alert_for_skipped_runs', bool,
+                                                           self.no_alert_for_skipped_runs)
         return body
 
     @classmethod
@@ -757,9 +799,9 @@ class JobParameter:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default is not None: body['default'] = self.default
-        if self.name is not None: body['name'] = self.name
-        if self.value is not None: body['value'] = self.value
+        if self.default is not None: body['default'] = _validated('default', str, self.default)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -774,8 +816,8 @@ class JobParameterDefinition:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default is not None: body['default'] = self.default
-        if self.name is not None: body['name'] = self.name
+        if self.default is not None: body['default'] = _validated('default', str, self.default)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -791,8 +833,11 @@ class JobPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', JobPermissionLevel,
                                                   self.permission_level)
@@ -827,8 +872,9 @@ class JobPermissions:
                 _validated('access_control_list item', JobAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -845,7 +891,8 @@ class JobPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', JobPermissionLevel,
                                                   self.permission_level)
@@ -869,7 +916,7 @@ class JobPermissionsRequest:
                 _validated('access_control_list item', JobAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', str, self.job_id)
         return body
 
     @classmethod
@@ -893,8 +940,9 @@ class JobRunAs:
     def as_dict(self) -> dict:
         body = {}
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -936,8 +984,9 @@ class JobSettings:
         if self.health: body['health'] = _validated('health', JobsHealthRules, self.health)
         if self.job_clusters:
             body['job_clusters'] = [_validated('job_clusters item', JobCluster, v) for v in self.job_clusters]
-        if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
-        if self.name is not None: body['name'] = self.name
+        if self.max_concurrent_runs is not None:
+            body['max_concurrent_runs'] = _validated('max_concurrent_runs', int, self.max_concurrent_runs)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.notification_settings:
             body['notification_settings'] = _validated('notification_settings', JobNotificationSettings,
                                                        self.notification_settings)
@@ -947,9 +996,10 @@ class JobSettings:
             ]
         if self.run_as: body['run_as'] = _validated('run_as', JobRunAs, self.run_as)
         if self.schedule: body['schedule'] = _validated('schedule', CronSchedule, self.schedule)
-        if self.tags: body['tags'] = self.tags
+        if self.tags: body['tags'] = {k: _validated('tags item', str, v) for (k, v) in self.tags.items()}
         if self.tasks: body['tasks'] = [_validated('tasks item', Task, v) for v in self.tasks]
-        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, self.timeout_seconds)
         if self.trigger: body['trigger'] = _validated('trigger', TriggerSettings, self.trigger)
         if self.webhook_notifications:
             body['webhook_notifications'] = _validated('webhook_notifications', WebhookNotifications,
@@ -991,8 +1041,10 @@ class JobSource:
         if self.dirty_state is not None:
             body['dirty_state'] = _validated('dirty_state', JobSourceDirtyState, self.dirty_state)
         if self.import_from_git_branch is not None:
-            body['import_from_git_branch'] = self.import_from_git_branch
-        if self.job_config_path is not None: body['job_config_path'] = self.job_config_path
+            body['import_from_git_branch'] = _validated('import_from_git_branch', str,
+                                                        self.import_from_git_branch)
+        if self.job_config_path is not None:
+            body['job_config_path'] = _validated('job_config_path', str, self.job_config_path)
         return body
 
     @classmethod
@@ -1031,7 +1083,7 @@ class JobsHealthRule:
         body = {}
         if self.metric is not None: body['metric'] = _validated('metric', JobsHealthMetric, self.metric)
         if self.op is not None: body['op'] = _validated('op', JobsHealthOperator, self.op)
-        if self.value is not None: body['value'] = self.value
+        if self.value is not None: body['value'] = _validated('value', int, self.value)
         return body
 
     @classmethod
@@ -1075,10 +1127,12 @@ class ListJobsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.has_more is not None: body['has_more'] = self.has_more
+        if self.has_more is not None: body['has_more'] = _validated('has_more', bool, self.has_more)
         if self.jobs: body['jobs'] = [_validated('jobs item', BaseJob, v) for v in self.jobs]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.prev_page_token is not None:
+            body['prev_page_token'] = _validated('prev_page_token', str, self.prev_page_token)
         return body
 
     @classmethod
@@ -1112,9 +1166,11 @@ class ListRunsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.has_more is not None: body['has_more'] = self.has_more
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        if self.has_more is not None: body['has_more'] = _validated('has_more', bool, self.has_more)
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
+        if self.prev_page_token is not None:
+            body['prev_page_token'] = _validated('prev_page_token', str, self.prev_page_token)
         if self.runs: body['runs'] = [_validated('runs item', BaseRun, v) for v in self.runs]
         return body
 
@@ -1141,8 +1197,8 @@ class NotebookOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.result is not None: body['result'] = self.result
-        if self.truncated is not None: body['truncated'] = self.truncated
+        if self.result is not None: body['result'] = _validated('result', str, self.result)
+        if self.truncated is not None: body['truncated'] = _validated('truncated', bool, self.truncated)
         return body
 
     @classmethod
@@ -1158,8 +1214,13 @@ class NotebookTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.base_parameters: body['base_parameters'] = self.base_parameters
-        if self.notebook_path is not None: body['notebook_path'] = self.notebook_path
+        if self.base_parameters:
+            body['base_parameters'] = {
+                k: _validated('base_parameters item', str, v)
+                for (k, v) in self.base_parameters.items()
+            }
+        if self.notebook_path is not None:
+            body['notebook_path'] = _validated('notebook_path', str, self.notebook_path)
         if self.source is not None: body['source'] = _validated('source', Source, self.source)
         return body
 
@@ -1185,7 +1246,8 @@ class PipelineParams:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
+        if self.full_refresh is not None:
+            body['full_refresh'] = _validated('full_refresh', bool, self.full_refresh)
         return body
 
     @classmethod
@@ -1200,8 +1262,10 @@ class PipelineTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.full_refresh is not None:
+            body['full_refresh'] = _validated('full_refresh', bool, self.full_refresh)
+        if self.pipeline_id is not None:
+            body['pipeline_id'] = _validated('pipeline_id', str, self.pipeline_id)
         return body
 
     @classmethod
@@ -1218,10 +1282,17 @@ class PythonWheelTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.entry_point is not None: body['entry_point'] = self.entry_point
-        if self.named_parameters: body['named_parameters'] = self.named_parameters
-        if self.package_name is not None: body['package_name'] = self.package_name
-        if self.parameters: body['parameters'] = [v for v in self.parameters]
+        if self.entry_point is not None:
+            body['entry_point'] = _validated('entry_point', str, self.entry_point)
+        if self.named_parameters:
+            body['named_parameters'] = {
+                k: _validated('named_parameters item', str, v)
+                for (k, v) in self.named_parameters.items()
+            }
+        if self.package_name is not None:
+            body['package_name'] = _validated('package_name', str, self.package_name)
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', str, v) for v in self.parameters]
         return body
 
     @classmethod
@@ -1243,11 +1314,12 @@ class RepairHistoryItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time is not None: body['end_time'] = self.end_time
-        if self.id is not None: body['id'] = self.id
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
+        if self.id is not None: body['id'] = _validated('id', int, self.id)
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.state: body['state'] = _validated('state', RunState, self.state)
-        if self.task_run_ids: body['task_run_ids'] = [v for v in self.task_run_ids]
+        if self.task_run_ids:
+            body['task_run_ids'] = [_validated('task_run_ids item', int, v) for v in self.task_run_ids]
         if self.type is not None: body['type'] = _validated('type', RepairHistoryItemType, self.type)
         return body
 
@@ -1286,21 +1358,44 @@ class RepairRun:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
-        if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
-        if self.latest_repair_id is not None: body['latest_repair_id'] = self.latest_repair_id
-        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.dbt_commands:
+            body['dbt_commands'] = [_validated('dbt_commands item', str, v) for v in self.dbt_commands]
+        if self.jar_params:
+            body['jar_params'] = [_validated('jar_params item', str, v) for v in self.jar_params]
+        if self.latest_repair_id is not None:
+            body['latest_repair_id'] = _validated('latest_repair_id', int, self.latest_repair_id)
+        if self.notebook_params:
+            body['notebook_params'] = {
+                k: _validated('notebook_params item', str, v)
+                for (k, v) in self.notebook_params.items()
+            }
         if self.pipeline_params:
             body['pipeline_params'] = _validated('pipeline_params', PipelineParams, self.pipeline_params)
-        if self.python_named_params: body['python_named_params'] = self.python_named_params
-        if self.python_params: body['python_params'] = [v for v in self.python_params]
+        if self.python_named_params:
+            body['python_named_params'] = {
+                k: _validated('python_named_params item', str, v)
+                for (k, v) in self.python_named_params.items()
+            }
+        if self.python_params:
+            body['python_params'] = [_validated('python_params item', str, v) for v in self.python_params]
         if self.rerun_all_failed_tasks is not None:
-            body['rerun_all_failed_tasks'] = self.rerun_all_failed_tasks
-        if self.rerun_dependent_tasks is not None: body['rerun_dependent_tasks'] = self.rerun_dependent_tasks
-        if self.rerun_tasks: body['rerun_tasks'] = [v for v in self.rerun_tasks]
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
-        if self.sql_params: body['sql_params'] = self.sql_params
+            body['rerun_all_failed_tasks'] = _validated('rerun_all_failed_tasks', bool,
+                                                        self.rerun_all_failed_tasks)
+        if self.rerun_dependent_tasks is not None:
+            body['rerun_dependent_tasks'] = _validated('rerun_dependent_tasks', bool,
+                                                       self.rerun_dependent_tasks)
+        if self.rerun_tasks:
+            body['rerun_tasks'] = [_validated('rerun_tasks item', str, v) for v in self.rerun_tasks]
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
+        if self.spark_submit_params:
+            body['spark_submit_params'] = [
+                _validated('spark_submit_params item', str, v) for v in self.spark_submit_params
+            ]
+        if self.sql_params:
+            body['sql_params'] = {
+                k: _validated('sql_params item', str, v)
+                for (k, v) in self.sql_params.items()
+            }
         return body
 
     @classmethod
@@ -1326,7 +1421,7 @@ class RepairRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.repair_id is not None: body['repair_id'] = self.repair_id
+        if self.repair_id is not None: body['repair_id'] = _validated('repair_id', int, self.repair_id)
         return body
 
     @classmethod
@@ -1341,7 +1436,7 @@ class ResetJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         if self.new_settings:
             body['new_settings'] = _validated('new_settings', JobSettings, self.new_settings)
         return body
@@ -1358,8 +1453,8 @@ class ResolvedConditionTaskValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.left is not None: body['left'] = self.left
-        if self.right is not None: body['right'] = self.right
+        if self.left is not None: body['left'] = _validated('left', str, self.left)
+        if self.right is not None: body['right'] = _validated('right', str, self.right)
         return body
 
     @classmethod
@@ -1373,7 +1468,7 @@ class ResolvedDbtTaskValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.commands: body['commands'] = [v for v in self.commands]
+        if self.commands: body['commands'] = [_validated('commands item', str, v) for v in self.commands]
         return body
 
     @classmethod
@@ -1387,7 +1482,11 @@ class ResolvedNotebookTaskValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.base_parameters: body['base_parameters'] = self.base_parameters
+        if self.base_parameters:
+            body['base_parameters'] = {
+                k: _validated('base_parameters item', str, v)
+                for (k, v) in self.base_parameters.items()
+            }
         return body
 
     @classmethod
@@ -1401,7 +1500,11 @@ class ResolvedParamPairValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.parameters: body['parameters'] = self.parameters
+        if self.parameters:
+            body['parameters'] = {
+                k: _validated('parameters item', str, v)
+                for (k, v) in self.parameters.items()
+            }
         return body
 
     @classmethod
@@ -1416,8 +1519,13 @@ class ResolvedPythonWheelTaskValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.named_parameters: body['named_parameters'] = self.named_parameters
-        if self.parameters: body['parameters'] = [v for v in self.parameters]
+        if self.named_parameters:
+            body['named_parameters'] = {
+                k: _validated('named_parameters item', str, v)
+                for (k, v) in self.named_parameters.items()
+            }
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', str, v) for v in self.parameters]
         return body
 
     @classmethod
@@ -1432,8 +1540,16 @@ class ResolvedRunJobTaskValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.named_parameters: body['named_parameters'] = self.named_parameters
-        if self.parameters: body['parameters'] = self.parameters
+        if self.named_parameters:
+            body['named_parameters'] = {
+                k: _validated('named_parameters item', str, v)
+                for (k, v) in self.named_parameters.items()
+            }
+        if self.parameters:
+            body['parameters'] = {
+                k: _validated('parameters item', str, v)
+                for (k, v) in self.parameters.items()
+            }
         return body
 
     @classmethod
@@ -1447,7 +1563,8 @@ class ResolvedStringParamsValues:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.parameters: body['parameters'] = [v for v in self.parameters]
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', str, v) for v in self.parameters]
         return body
 
     @classmethod
@@ -1544,27 +1661,33 @@ class Run:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
-        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
+        if self.attempt_number is not None:
+            body['attempt_number'] = _validated('attempt_number', int, self.attempt_number)
+        if self.cleanup_duration is not None:
+            body['cleanup_duration'] = _validated('cleanup_duration', int, self.cleanup_duration)
         if self.cluster_instance:
             body['cluster_instance'] = _validated('cluster_instance', ClusterInstance, self.cluster_instance)
         if self.cluster_spec:
             body['cluster_spec'] = _validated('cluster_spec', ClusterSpec, self.cluster_spec)
         if self.continuous: body['continuous'] = _validated('continuous', Continuous, self.continuous)
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.end_time is not None: body['end_time'] = self.end_time
-        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
+        if self.creator_user_name is not None:
+            body['creator_user_name'] = _validated('creator_user_name', str, self.creator_user_name)
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
+        if self.execution_duration is not None:
+            body['execution_duration'] = _validated('execution_duration', int, self.execution_duration)
         if self.git_source: body['git_source'] = _validated('git_source', GitSource, self.git_source)
         if self.job_clusters:
             body['job_clusters'] = [_validated('job_clusters item', JobCluster, v) for v in self.job_clusters]
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         if self.job_parameters:
             body['job_parameters'] = [
                 _validated('job_parameters item', JobParameter, v) for v in self.job_parameters
             ]
-        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.number_in_job is not None:
+            body['number_in_job'] = _validated('number_in_job', int, self.number_in_job)
         if self.original_attempt_run_id is not None:
-            body['original_attempt_run_id'] = self.original_attempt_run_id
+            body['original_attempt_run_id'] = _validated('original_attempt_run_id', int,
+                                                         self.original_attempt_run_id)
         if self.overriding_parameters:
             body['overriding_parameters'] = _validated('overriding_parameters', RunParameters,
                                                        self.overriding_parameters)
@@ -1572,14 +1695,17 @@ class Run:
             body['repair_history'] = [
                 _validated('repair_history item', RepairHistoryItem, v) for v in self.repair_history
             ]
-        if self.run_duration is not None: body['run_duration'] = self.run_duration
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.run_name is not None: body['run_name'] = self.run_name
-        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.run_duration is not None:
+            body['run_duration'] = _validated('run_duration', int, self.run_duration)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
+        if self.run_name is not None: body['run_name'] = _validated('run_name', str, self.run_name)
+        if self.run_page_url is not None:
+            body['run_page_url'] = _validated('run_page_url', str, self.run_page_url)
         if self.run_type is not None: body['run_type'] = _validated('run_type', RunType, self.run_type)
         if self.schedule: body['schedule'] = _validated('schedule', CronSchedule, self.schedule)
-        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.setup_duration is not None:
+            body['setup_duration'] = _validated('setup_duration', int, self.setup_duration)
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.state: body['state'] = _validated('state', RunState, self.state)
         if self.tasks: body['tasks'] = [_validated('tasks item', RunTask, v) for v in self.tasks]
         if self.trigger is not None: body['trigger'] = _validated('trigger', TriggerType, self.trigger)
@@ -1628,10 +1754,10 @@ class RunConditionTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.left is not None: body['left'] = self.left
+        if self.left is not None: body['left'] = _validated('left', str, self.left)
         if self.op is not None: body['op'] = _validated('op', RunConditionTaskOp, self.op)
-        if self.outcome is not None: body['outcome'] = self.outcome
-        if self.right is not None: body['right'] = self.right
+        if self.outcome is not None: body['outcome'] = _validated('outcome', str, self.outcome)
+        if self.right is not None: body['right'] = _validated('right', str, self.right)
         return body
 
     @classmethod
@@ -1670,7 +1796,7 @@ class RunJobOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         return body
 
     @classmethod
@@ -1685,8 +1811,9 @@ class RunJobTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
+        if self.job_parameters:
+            body['job_parameters'] = _validated('job_parameters', Any, self.job_parameters)
         return body
 
     @classmethod
@@ -1723,18 +1850,41 @@ class RunNow:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
-        if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
-        if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_parameters: body['job_parameters'] = [v for v in self.job_parameters]
-        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.dbt_commands:
+            body['dbt_commands'] = [_validated('dbt_commands item', str, v) for v in self.dbt_commands]
+        if self.idempotency_token is not None:
+            body['idempotency_token'] = _validated('idempotency_token', str, self.idempotency_token)
+        if self.jar_params:
+            body['jar_params'] = [_validated('jar_params item', str, v) for v in self.jar_params]
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
+        if self.job_parameters:
+            body['job_parameters'] = [{
+                k: _validated('job_parameters item item', str, v)
+                for (k, v) in v.items()
+            } for v in self.job_parameters]
+        if self.notebook_params:
+            body['notebook_params'] = {
+                k: _validated('notebook_params item', str, v)
+                for (k, v) in self.notebook_params.items()
+            }
         if self.pipeline_params:
             body['pipeline_params'] = _validated('pipeline_params', PipelineParams, self.pipeline_params)
-        if self.python_named_params: body['python_named_params'] = self.python_named_params
-        if self.python_params: body['python_params'] = [v for v in self.python_params]
-        if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
-        if self.sql_params: body['sql_params'] = self.sql_params
+        if self.python_named_params:
+            body['python_named_params'] = {
+                k: _validated('python_named_params item', str, v)
+                for (k, v) in self.python_named_params.items()
+            }
+        if self.python_params:
+            body['python_params'] = [_validated('python_params item', str, v) for v in self.python_params]
+        if self.spark_submit_params:
+            body['spark_submit_params'] = [
+                _validated('spark_submit_params item', str, v) for v in self.spark_submit_params
+            ]
+        if self.sql_params:
+            body['sql_params'] = {
+                k: _validated('sql_params item', str, v)
+                for (k, v) in self.sql_params.items()
+            }
         return body
 
     @classmethod
@@ -1759,8 +1909,9 @@ class RunNowResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.number_in_job is not None:
+            body['number_in_job'] = _validated('number_in_job', int, self.number_in_job)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         return body
 
     @classmethod
@@ -1783,12 +1934,15 @@ class RunOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.condition_task: body['condition_task'] = self.condition_task
+        if self.condition_task:
+            body['condition_task'] = _validated('condition_task', Any, self.condition_task)
         if self.dbt_output: body['dbt_output'] = _validated('dbt_output', DbtOutput, self.dbt_output)
-        if self.error is not None: body['error'] = self.error
-        if self.error_trace is not None: body['error_trace'] = self.error_trace
-        if self.logs is not None: body['logs'] = self.logs
-        if self.logs_truncated is not None: body['logs_truncated'] = self.logs_truncated
+        if self.error is not None: body['error'] = _validated('error', str, self.error)
+        if self.error_trace is not None:
+            body['error_trace'] = _validated('error_trace', str, self.error_trace)
+        if self.logs is not None: body['logs'] = _validated('logs', str, self.logs)
+        if self.logs_truncated is not None:
+            body['logs_truncated'] = _validated('logs_truncated', bool, self.logs_truncated)
         if self.metadata: body['metadata'] = _validated('metadata', Run, self.metadata)
         if self.notebook_output:
             body['notebook_output'] = _validated('notebook_output', NotebookOutput, self.notebook_output)
@@ -1824,15 +1978,33 @@ class RunParameters:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
-        if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
-        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.dbt_commands:
+            body['dbt_commands'] = [_validated('dbt_commands item', str, v) for v in self.dbt_commands]
+        if self.jar_params:
+            body['jar_params'] = [_validated('jar_params item', str, v) for v in self.jar_params]
+        if self.notebook_params:
+            body['notebook_params'] = {
+                k: _validated('notebook_params item', str, v)
+                for (k, v) in self.notebook_params.items()
+            }
         if self.pipeline_params:
             body['pipeline_params'] = _validated('pipeline_params', PipelineParams, self.pipeline_params)
-        if self.python_named_params: body['python_named_params'] = self.python_named_params
-        if self.python_params: body['python_params'] = [v for v in self.python_params]
-        if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
-        if self.sql_params: body['sql_params'] = self.sql_params
+        if self.python_named_params:
+            body['python_named_params'] = {
+                k: _validated('python_named_params item', str, v)
+                for (k, v) in self.python_named_params.items()
+            }
+        if self.python_params:
+            body['python_params'] = [_validated('python_params item', str, v) for v in self.python_params]
+        if self.spark_submit_params:
+            body['spark_submit_params'] = [
+                _validated('spark_submit_params item', str, v) for v in self.spark_submit_params
+            ]
+        if self.sql_params:
+            body['sql_params'] = {
+                k: _validated('sql_params item', str, v)
+                for (k, v) in self.sql_params.items()
+            }
         return body
 
     @classmethod
@@ -1877,9 +2049,11 @@ class RunState:
                                                   self.life_cycle_state)
         if self.result_state is not None:
             body['result_state'] = _validated('result_state', RunResultState, self.result_state)
-        if self.state_message is not None: body['state_message'] = self.state_message
+        if self.state_message is not None:
+            body['state_message'] = _validated('state_message', str, self.state_message)
         if self.user_cancelled_or_timedout is not None:
-            body['user_cancelled_or_timedout'] = self.user_cancelled_or_timedout
+            body['user_cancelled_or_timedout'] = _validated('user_cancelled_or_timedout', bool,
+                                                            self.user_cancelled_or_timedout)
         return body
 
     @classmethod
@@ -1923,8 +2097,10 @@ class RunTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
-        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
+        if self.attempt_number is not None:
+            body['attempt_number'] = _validated('attempt_number', int, self.attempt_number)
+        if self.cleanup_duration is not None:
+            body['cleanup_duration'] = _validated('cleanup_duration', int, self.cleanup_duration)
         if self.cluster_instance:
             body['cluster_instance'] = _validated('cluster_instance', ClusterInstance, self.cluster_instance)
         if self.condition_task:
@@ -1932,10 +2108,13 @@ class RunTask:
         if self.dbt_task: body['dbt_task'] = _validated('dbt_task', DbtTask, self.dbt_task)
         if self.depends_on:
             body['depends_on'] = [_validated('depends_on item', TaskDependency, v) for v in self.depends_on]
-        if self.description is not None: body['description'] = self.description
-        if self.end_time is not None: body['end_time'] = self.end_time
-        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
-        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
+        if self.execution_duration is not None:
+            body['execution_duration'] = _validated('execution_duration', int, self.execution_duration)
+        if self.existing_cluster_id is not None:
+            body['existing_cluster_id'] = _validated('existing_cluster_id', str, self.existing_cluster_id)
         if self.git_source: body['git_source'] = _validated('git_source', GitSource, self.git_source)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', compute.Library, v) for v in self.libraries]
@@ -1950,10 +2129,11 @@ class RunTask:
                                                    self.python_wheel_task)
         if self.resolved_values:
             body['resolved_values'] = _validated('resolved_values', ResolvedValues, self.resolved_values)
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         if self.run_if is not None: body['run_if'] = _validated('run_if', RunIf, self.run_if)
         if self.run_job_task: body['run_job_task'] = _validated('run_job_task', RunJobTask, self.run_job_task)
-        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
+        if self.setup_duration is not None:
+            body['setup_duration'] = _validated('setup_duration', int, self.setup_duration)
         if self.spark_jar_task:
             body['spark_jar_task'] = _validated('spark_jar_task', SparkJarTask, self.spark_jar_task)
         if self.spark_python_task:
@@ -1963,9 +2143,9 @@ class RunTask:
             body['spark_submit_task'] = _validated('spark_submit_task', SparkSubmitTask,
                                                    self.spark_submit_task)
         if self.sql_task: body['sql_task'] = _validated('sql_task', SqlTask, self.sql_task)
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.state: body['state'] = _validated('state', RunState, self.state)
-        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.task_key is not None: body['task_key'] = _validated('task_key', str, self.task_key)
         return body
 
     @classmethod
@@ -2022,9 +2202,11 @@ class SparkJarTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.jar_uri is not None: body['jar_uri'] = self.jar_uri
-        if self.main_class_name is not None: body['main_class_name'] = self.main_class_name
-        if self.parameters: body['parameters'] = [v for v in self.parameters]
+        if self.jar_uri is not None: body['jar_uri'] = _validated('jar_uri', str, self.jar_uri)
+        if self.main_class_name is not None:
+            body['main_class_name'] = _validated('main_class_name', str, self.main_class_name)
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', str, v) for v in self.parameters]
         return body
 
     @classmethod
@@ -2042,8 +2224,10 @@ class SparkPythonTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.parameters: body['parameters'] = [v for v in self.parameters]
-        if self.python_file is not None: body['python_file'] = self.python_file
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', str, v) for v in self.parameters]
+        if self.python_file is not None:
+            body['python_file'] = _validated('python_file', str, self.python_file)
         if self.source is not None: body['source'] = _validated('source', Source, self.source)
         return body
 
@@ -2060,7 +2244,8 @@ class SparkSubmitTask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.parameters: body['parameters'] = [v for v in self.parameters]
+        if self.parameters:
+            body['parameters'] = [_validated('parameters item', str, v) for v in self.parameters]
         return body
 
     @classmethod
@@ -2080,13 +2265,15 @@ class SqlAlertOutput:
         body = {}
         if self.alert_state is not None:
             body['alert_state'] = _validated('alert_state', SqlAlertState, self.alert_state)
-        if self.output_link is not None: body['output_link'] = self.output_link
-        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.output_link is not None:
+            body['output_link'] = _validated('output_link', str, self.output_link)
+        if self.query_text is not None: body['query_text'] = _validated('query_text', str, self.query_text)
         if self.sql_statements:
             body['sql_statements'] = [
                 _validated('sql_statements item', SqlStatementOutput, v) for v in self.sql_statements
             ]
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None:
+            body['warehouse_id'] = _validated('warehouse_id', str, self.warehouse_id)
         return body
 
     @classmethod
@@ -2116,7 +2303,8 @@ class SqlDashboardOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None:
+            body['warehouse_id'] = _validated('warehouse_id', str, self.warehouse_id)
         if self.widgets:
             body['widgets'] = [_validated('widgets item', SqlDashboardWidgetOutput, v) for v in self.widgets]
         return body
@@ -2139,14 +2327,16 @@ class SqlDashboardWidgetOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.end_time is not None: body['end_time'] = _validated('end_time', int, self.end_time)
         if self.error: body['error'] = _validated('error', SqlOutputError, self.error)
-        if self.output_link is not None: body['output_link'] = self.output_link
-        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.output_link is not None:
+            body['output_link'] = _validated('output_link', str, self.output_link)
+        if self.start_time is not None: body['start_time'] = _validated('start_time', int, self.start_time)
         if self.status is not None:
             body['status'] = _validated('status', SqlDashboardWidgetOutputStatus, self.status)
-        if self.widget_id is not None: body['widget_id'] = self.widget_id
-        if self.widget_title is not None: body['widget_title'] = self.widget_title
+        if self.widget_id is not None: body['widget_id'] = _validated('widget_id', str, self.widget_id)
+        if self.widget_title is not None:
+            body['widget_title'] = _validated('widget_title', str, self.widget_title)
         return body
 
     @classmethod
@@ -2200,7 +2390,7 @@ class SqlOutputError:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.message is not None: body['message'] = self.message
+        if self.message is not None: body['message'] = _validated('message', str, self.message)
         return body
 
     @classmethod
@@ -2217,13 +2407,15 @@ class SqlQueryOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.output_link is not None: body['output_link'] = self.output_link
-        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.output_link is not None:
+            body['output_link'] = _validated('output_link', str, self.output_link)
+        if self.query_text is not None: body['query_text'] = _validated('query_text', str, self.query_text)
         if self.sql_statements:
             body['sql_statements'] = [
                 _validated('sql_statements item', SqlStatementOutput, v) for v in self.sql_statements
             ]
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None:
+            body['warehouse_id'] = _validated('warehouse_id', str, self.warehouse_id)
         return body
 
     @classmethod
@@ -2240,7 +2432,7 @@ class SqlStatementOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
+        if self.lookup_key is not None: body['lookup_key'] = _validated('lookup_key', str, self.lookup_key)
         return body
 
     @classmethod
@@ -2262,9 +2454,14 @@ class SqlTask:
         if self.alert: body['alert'] = _validated('alert', SqlTaskAlert, self.alert)
         if self.dashboard: body['dashboard'] = _validated('dashboard', SqlTaskDashboard, self.dashboard)
         if self.file: body['file'] = _validated('file', SqlTaskFile, self.file)
-        if self.parameters: body['parameters'] = self.parameters
+        if self.parameters:
+            body['parameters'] = {
+                k: _validated('parameters item', str, v)
+                for (k, v) in self.parameters.items()
+            }
         if self.query: body['query'] = _validated('query', SqlTaskQuery, self.query)
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.warehouse_id is not None:
+            body['warehouse_id'] = _validated('warehouse_id', str, self.warehouse_id)
         return body
 
     @classmethod
@@ -2285,8 +2482,9 @@ class SqlTaskAlert:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alert_id is not None: body['alert_id'] = self.alert_id
-        if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
+        if self.alert_id is not None: body['alert_id'] = _validated('alert_id', str, self.alert_id)
+        if self.pause_subscriptions is not None:
+            body['pause_subscriptions'] = _validated('pause_subscriptions', bool, self.pause_subscriptions)
         if self.subscriptions:
             body['subscriptions'] = [
                 _validated('subscriptions item', SqlTaskSubscription, v) for v in self.subscriptions
@@ -2309,9 +2507,12 @@ class SqlTaskDashboard:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
+        if self.custom_subject is not None:
+            body['custom_subject'] = _validated('custom_subject', str, self.custom_subject)
+        if self.dashboard_id is not None:
+            body['dashboard_id'] = _validated('dashboard_id', str, self.dashboard_id)
+        if self.pause_subscriptions is not None:
+            body['pause_subscriptions'] = _validated('pause_subscriptions', bool, self.pause_subscriptions)
         if self.subscriptions:
             body['subscriptions'] = [
                 _validated('subscriptions item', SqlTaskSubscription, v) for v in self.subscriptions
@@ -2332,7 +2533,7 @@ class SqlTaskFile:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -2346,7 +2547,7 @@ class SqlTaskQuery:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.query_id is not None: body['query_id'] = _validated('query_id', str, self.query_id)
         return body
 
     @classmethod
@@ -2361,8 +2562,9 @@ class SqlTaskSubscription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.destination_id is not None: body['destination_id'] = self.destination_id
-        if self.user_name is not None: body['user_name'] = self.user_name
+        if self.destination_id is not None:
+            body['destination_id'] = _validated('destination_id', str, self.destination_id)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -2395,13 +2597,15 @@ class SubmitRun:
                                                      self.email_notifications)
         if self.git_source: body['git_source'] = _validated('git_source', GitSource, self.git_source)
         if self.health: body['health'] = _validated('health', JobsHealthRules, self.health)
-        if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
+        if self.idempotency_token is not None:
+            body['idempotency_token'] = _validated('idempotency_token', str, self.idempotency_token)
         if self.notification_settings:
             body['notification_settings'] = _validated('notification_settings', JobNotificationSettings,
                                                        self.notification_settings)
-        if self.run_name is not None: body['run_name'] = self.run_name
+        if self.run_name is not None: body['run_name'] = _validated('run_name', str, self.run_name)
         if self.tasks: body['tasks'] = [_validated('tasks item', SubmitTask, v) for v in self.tasks]
-        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, self.timeout_seconds)
         if self.webhook_notifications:
             body['webhook_notifications'] = _validated('webhook_notifications', WebhookNotifications,
                                                        self.webhook_notifications)
@@ -2427,7 +2631,7 @@ class SubmitRunResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         return body
 
     @classmethod
@@ -2464,7 +2668,8 @@ class SubmitTask:
         if self.email_notifications:
             body['email_notifications'] = _validated('email_notifications', JobEmailNotifications,
                                                      self.email_notifications)
-        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.existing_cluster_id is not None:
+            body['existing_cluster_id'] = _validated('existing_cluster_id', str, self.existing_cluster_id)
         if self.health: body['health'] = _validated('health', JobsHealthRules, self.health)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', compute.Library, v) for v in self.libraries]
@@ -2489,8 +2694,9 @@ class SubmitTask:
             body['spark_submit_task'] = _validated('spark_submit_task', SparkSubmitTask,
                                                    self.spark_submit_task)
         if self.sql_task: body['sql_task'] = _validated('sql_task', SqlTask, self.sql_task)
-        if self.task_key is not None: body['task_key'] = self.task_key
-        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.task_key is not None: body['task_key'] = _validated('task_key', str, self.task_key)
+        if self.timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, self.timeout_seconds)
         return body
 
     @classmethod
@@ -2545,24 +2751,30 @@ class Task:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.compute_key is not None: body['compute_key'] = self.compute_key
+        if self.compute_key is not None:
+            body['compute_key'] = _validated('compute_key', str, self.compute_key)
         if self.condition_task:
             body['condition_task'] = _validated('condition_task', ConditionTask, self.condition_task)
         if self.dbt_task: body['dbt_task'] = _validated('dbt_task', DbtTask, self.dbt_task)
         if self.depends_on:
             body['depends_on'] = [_validated('depends_on item', TaskDependency, v) for v in self.depends_on]
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.email_notifications:
             body['email_notifications'] = _validated('email_notifications', TaskEmailNotifications,
                                                      self.email_notifications)
-        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.existing_cluster_id is not None:
+            body['existing_cluster_id'] = _validated('existing_cluster_id', str, self.existing_cluster_id)
         if self.health: body['health'] = _validated('health', JobsHealthRules, self.health)
-        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.job_cluster_key is not None:
+            body['job_cluster_key'] = _validated('job_cluster_key', str, self.job_cluster_key)
         if self.libraries:
             body['libraries'] = [_validated('libraries item', compute.Library, v) for v in self.libraries]
-        if self.max_retries is not None: body['max_retries'] = self.max_retries
+        if self.max_retries is not None:
+            body['max_retries'] = _validated('max_retries', int, self.max_retries)
         if self.min_retry_interval_millis is not None:
-            body['min_retry_interval_millis'] = self.min_retry_interval_millis
+            body['min_retry_interval_millis'] = _validated('min_retry_interval_millis', int,
+                                                           self.min_retry_interval_millis)
         if self.new_cluster:
             body['new_cluster'] = _validated('new_cluster', compute.ClusterSpec, self.new_cluster)
         if self.notebook_task:
@@ -2575,7 +2787,8 @@ class Task:
         if self.python_wheel_task:
             body['python_wheel_task'] = _validated('python_wheel_task', PythonWheelTask,
                                                    self.python_wheel_task)
-        if self.retry_on_timeout is not None: body['retry_on_timeout'] = self.retry_on_timeout
+        if self.retry_on_timeout is not None:
+            body['retry_on_timeout'] = _validated('retry_on_timeout', bool, self.retry_on_timeout)
         if self.run_if is not None: body['run_if'] = _validated('run_if', RunIf, self.run_if)
         if self.run_job_task: body['run_job_task'] = _validated('run_job_task', RunJobTask, self.run_job_task)
         if self.spark_jar_task:
@@ -2587,8 +2800,9 @@ class Task:
             body['spark_submit_task'] = _validated('spark_submit_task', SparkSubmitTask,
                                                    self.spark_submit_task)
         if self.sql_task: body['sql_task'] = _validated('sql_task', SqlTask, self.sql_task)
-        if self.task_key is not None: body['task_key'] = self.task_key
-        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.task_key is not None: body['task_key'] = _validated('task_key', str, self.task_key)
+        if self.timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, self.timeout_seconds)
         return body
 
     @classmethod
@@ -2628,8 +2842,8 @@ class TaskDependency:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.outcome is not None: body['outcome'] = self.outcome
-        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.outcome is not None: body['outcome'] = _validated('outcome', str, self.outcome)
+        if self.task_key is not None: body['task_key'] = _validated('task_key', str, self.task_key)
         return body
 
     @classmethod
@@ -2648,11 +2862,14 @@ class TaskEmailNotifications:
         body = {}
         if self.on_duration_warning_threshold_exceeded:
             body['on_duration_warning_threshold_exceeded'] = [
-                v for v in self.on_duration_warning_threshold_exceeded
+                _validated('on_duration_warning_threshold_exceeded item', str, v)
+                for v in self.on_duration_warning_threshold_exceeded
             ]
-        if self.on_failure: body['on_failure'] = [v for v in self.on_failure]
-        if self.on_start: body['on_start'] = [v for v in self.on_start]
-        if self.on_success: body['on_success'] = [v for v in self.on_success]
+        if self.on_failure:
+            body['on_failure'] = [_validated('on_failure item', str, v) for v in self.on_failure]
+        if self.on_start: body['on_start'] = [_validated('on_start item', str, v) for v in self.on_start]
+        if self.on_success:
+            body['on_success'] = [_validated('on_success item', str, v) for v in self.on_success]
         return body
 
     @classmethod
@@ -2672,11 +2889,15 @@ class TaskNotificationSettings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.alert_on_last_attempt is not None: body['alert_on_last_attempt'] = self.alert_on_last_attempt
+        if self.alert_on_last_attempt is not None:
+            body['alert_on_last_attempt'] = _validated('alert_on_last_attempt', bool,
+                                                       self.alert_on_last_attempt)
         if self.no_alert_for_canceled_runs is not None:
-            body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
+            body['no_alert_for_canceled_runs'] = _validated('no_alert_for_canceled_runs', bool,
+                                                            self.no_alert_for_canceled_runs)
         if self.no_alert_for_skipped_runs is not None:
-            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+            body['no_alert_for_skipped_runs'] = _validated('no_alert_for_skipped_runs', bool,
+                                                           self.no_alert_for_skipped_runs)
         return body
 
     @classmethod
@@ -2694,9 +2915,10 @@ class TriggerEvaluation:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
+        if self.timestamp is not None: body['timestamp'] = _validated('timestamp', int, self.timestamp)
         return body
 
     @classmethod
@@ -2736,7 +2958,7 @@ class TriggerInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_id is not None: body['run_id'] = _validated('run_id', int, self.run_id)
         return body
 
     @classmethod
@@ -2782,8 +3004,11 @@ class UpdateJob:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.fields_to_remove: body['fields_to_remove'] = [v for v in self.fields_to_remove]
-        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.fields_to_remove:
+            body['fields_to_remove'] = [
+                _validated('fields_to_remove item', str, v) for v in self.fields_to_remove
+            ]
+        if self.job_id is not None: body['job_id'] = _validated('job_id', int, self.job_id)
         if self.new_settings:
             body['new_settings'] = _validated('new_settings', JobSettings, self.new_settings)
         return body
@@ -2803,8 +3028,8 @@ class ViewItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content is not None: body['content'] = self.content
-        if self.name is not None: body['name'] = self.name
+        if self.content is not None: body['content'] = _validated('content', str, self.content)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.type is not None: body['type'] = _validated('type', ViewType, self.type)
         return body
 
@@ -2834,7 +3059,7 @@ class Webhook:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         return body
 
     @classmethod
@@ -2881,7 +3106,7 @@ class WebhookNotificationsOnDurationWarningThresholdExceededItem:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         return body
 
     @classmethod
@@ -2953,7 +3178,7 @@ class JobsAPI:
         
         """
         body = {}
-        if job_id is not None: body['job_id'] = job_id
+        if job_id is not None: body['job_id'] = _validated('job_id', int, job_id)
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
@@ -2970,7 +3195,7 @@ class JobsAPI:
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
         body = {}
-        if run_id is not None: body['run_id'] = run_id
+        if run_id is not None: body['run_id'] = _validated('run_id', int, run_id)
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
@@ -3088,8 +3313,9 @@ class JobsAPI:
         if health is not None: body['health'] = _validated('health', JobsHealthRules, health)
         if job_clusters is not None:
             body['job_clusters'] = [_validated('job_clusters item', JobCluster, v) for v in job_clusters]
-        if max_concurrent_runs is not None: body['max_concurrent_runs'] = max_concurrent_runs
-        if name is not None: body['name'] = name
+        if max_concurrent_runs is not None:
+            body['max_concurrent_runs'] = _validated('max_concurrent_runs', int, max_concurrent_runs)
+        if name is not None: body['name'] = _validated('name', str, name)
         if notification_settings is not None:
             body['notification_settings'] = _validated('notification_settings', JobNotificationSettings,
                                                        notification_settings)
@@ -3099,9 +3325,10 @@ class JobsAPI:
             ]
         if run_as is not None: body['run_as'] = _validated('run_as', JobRunAs, run_as)
         if schedule is not None: body['schedule'] = _validated('schedule', CronSchedule, schedule)
-        if tags is not None: body['tags'] = tags
+        if tags is not None: body['tags'] = {k: _validated('tags item', str, v) for (k, v) in tags.items()}
         if tasks is not None: body['tasks'] = [_validated('tasks item', Task, v) for v in tasks]
-        if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
+        if timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, timeout_seconds)
         if trigger is not None: body['trigger'] = _validated('trigger', TriggerSettings, trigger)
         if webhook_notifications is not None:
             body['webhook_notifications'] = _validated('webhook_notifications', WebhookNotifications,
@@ -3121,7 +3348,7 @@ class JobsAPI:
         
         """
         body = {}
-        if job_id is not None: body['job_id'] = job_id
+        if job_id is not None: body['job_id'] = _validated('job_id', int, job_id)
         self._api.do('POST', '/api/2.1/jobs/delete', body=body)
 
     def delete_run(self, run_id: int):
@@ -3135,7 +3362,7 @@ class JobsAPI:
         
         """
         body = {}
-        if run_id is not None: body['run_id'] = run_id
+        if run_id is not None: body['run_id'] = _validated('run_id', int, run_id)
         self._api.do('POST', '/api/2.1/jobs/runs/delete', body=body)
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
@@ -3152,7 +3379,7 @@ class JobsAPI:
         """
 
         query = {}
-        if run_id is not None: query['run_id'] = run_id
+        if run_id is not None: query['run_id'] = _validated('run_id', int, run_id)
         if views_to_export is not None:
             query['views_to_export'] = _validated('views_to_export', ViewsToExport, views_to_export)
 
@@ -3171,7 +3398,7 @@ class JobsAPI:
         """
 
         query = {}
-        if job_id is not None: query['job_id'] = job_id
+        if job_id is not None: query['job_id'] = _validated('job_id', int, job_id)
 
         json = self._api.do('GET', '/api/2.1/jobs/get', query=query)
         return Job.from_dict(json)
@@ -3218,8 +3445,9 @@ class JobsAPI:
         """
 
         query = {}
-        if include_history is not None: query['include_history'] = include_history
-        if run_id is not None: query['run_id'] = run_id
+        if include_history is not None:
+            query['include_history'] = _validated('include_history', bool, include_history)
+        if run_id is not None: query['run_id'] = _validated('run_id', int, run_id)
 
         json = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query)
         return Run.from_dict(json)
@@ -3243,7 +3471,7 @@ class JobsAPI:
         """
 
         query = {}
-        if run_id is not None: query['run_id'] = run_id
+        if run_id is not None: query['run_id'] = _validated('run_id', int, run_id)
 
         json = self._api.do('GET', '/api/2.1/jobs/runs/get-output', query=query)
         return RunOutput.from_dict(json)
@@ -3278,11 +3506,11 @@ class JobsAPI:
         """
 
         query = {}
-        if expand_tasks is not None: query['expand_tasks'] = expand_tasks
-        if limit is not None: query['limit'] = limit
-        if name is not None: query['name'] = name
-        if offset is not None: query['offset'] = offset
-        if page_token is not None: query['page_token'] = page_token
+        if expand_tasks is not None: query['expand_tasks'] = _validated('expand_tasks', bool, expand_tasks)
+        if limit is not None: query['limit'] = _validated('limit', int, limit)
+        if name is not None: query['name'] = _validated('name', str, name)
+        if offset is not None: query['offset'] = _validated('offset', int, offset)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query)
@@ -3344,16 +3572,18 @@ class JobsAPI:
         """
 
         query = {}
-        if active_only is not None: query['active_only'] = active_only
-        if completed_only is not None: query['completed_only'] = completed_only
-        if expand_tasks is not None: query['expand_tasks'] = expand_tasks
-        if job_id is not None: query['job_id'] = job_id
-        if limit is not None: query['limit'] = limit
-        if offset is not None: query['offset'] = offset
-        if page_token is not None: query['page_token'] = page_token
+        if active_only is not None: query['active_only'] = _validated('active_only', bool, active_only)
+        if completed_only is not None:
+            query['completed_only'] = _validated('completed_only', bool, completed_only)
+        if expand_tasks is not None: query['expand_tasks'] = _validated('expand_tasks', bool, expand_tasks)
+        if job_id is not None: query['job_id'] = _validated('job_id', int, job_id)
+        if limit is not None: query['limit'] = _validated('limit', int, limit)
+        if offset is not None: query['offset'] = _validated('offset', int, offset)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
         if run_type is not None: query['run_type'] = _validated('run_type', ListRunsRunType, run_type)
-        if start_time_from is not None: query['start_time_from'] = start_time_from
-        if start_time_to is not None: query['start_time_to'] = start_time_to
+        if start_time_from is not None:
+            query['start_time_from'] = _validated('start_time_from', int, start_time_from)
+        if start_time_to is not None: query['start_time_to'] = _validated('start_time_to', int, start_time_to)
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query)
@@ -3469,20 +3699,40 @@ class JobsAPI:
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
         body = {}
-        if dbt_commands is not None: body['dbt_commands'] = [v for v in dbt_commands]
-        if jar_params is not None: body['jar_params'] = [v for v in jar_params]
-        if latest_repair_id is not None: body['latest_repair_id'] = latest_repair_id
-        if notebook_params is not None: body['notebook_params'] = notebook_params
+        if dbt_commands is not None:
+            body['dbt_commands'] = [_validated('dbt_commands item', str, v) for v in dbt_commands]
+        if jar_params is not None:
+            body['jar_params'] = [_validated('jar_params item', str, v) for v in jar_params]
+        if latest_repair_id is not None:
+            body['latest_repair_id'] = _validated('latest_repair_id', int, latest_repair_id)
+        if notebook_params is not None:
+            body['notebook_params'] = {
+                k: _validated('notebook_params item', str, v)
+                for (k, v) in notebook_params.items()
+            }
         if pipeline_params is not None:
             body['pipeline_params'] = _validated('pipeline_params', PipelineParams, pipeline_params)
-        if python_named_params is not None: body['python_named_params'] = python_named_params
-        if python_params is not None: body['python_params'] = [v for v in python_params]
-        if rerun_all_failed_tasks is not None: body['rerun_all_failed_tasks'] = rerun_all_failed_tasks
-        if rerun_dependent_tasks is not None: body['rerun_dependent_tasks'] = rerun_dependent_tasks
-        if rerun_tasks is not None: body['rerun_tasks'] = [v for v in rerun_tasks]
-        if run_id is not None: body['run_id'] = run_id
-        if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
-        if sql_params is not None: body['sql_params'] = sql_params
+        if python_named_params is not None:
+            body['python_named_params'] = {
+                k: _validated('python_named_params item', str, v)
+                for (k, v) in python_named_params.items()
+            }
+        if python_params is not None:
+            body['python_params'] = [_validated('python_params item', str, v) for v in python_params]
+        if rerun_all_failed_tasks is not None:
+            body['rerun_all_failed_tasks'] = _validated('rerun_all_failed_tasks', bool,
+                                                        rerun_all_failed_tasks)
+        if rerun_dependent_tasks is not None:
+            body['rerun_dependent_tasks'] = _validated('rerun_dependent_tasks', bool, rerun_dependent_tasks)
+        if rerun_tasks is not None:
+            body['rerun_tasks'] = [_validated('rerun_tasks item', str, v) for v in rerun_tasks]
+        if run_id is not None: body['run_id'] = _validated('run_id', int, run_id)
+        if spark_submit_params is not None:
+            body['spark_submit_params'] = [
+                _validated('spark_submit_params item', str, v) for v in spark_submit_params
+            ]
+        if sql_params is not None:
+            body['sql_params'] = {k: _validated('sql_params item', str, v) for (k, v) in sql_params.items()}
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RepairRunResponse.from_dict(op_response),
@@ -3536,7 +3786,7 @@ class JobsAPI:
         
         """
         body = {}
-        if job_id is not None: body['job_id'] = job_id
+        if job_id is not None: body['job_id'] = _validated('job_id', int, job_id)
         if new_settings is not None:
             body['new_settings'] = _validated('new_settings', JobSettings, new_settings)
         self._api.do('POST', '/api/2.1/jobs/reset', body=body)
@@ -3647,18 +3897,38 @@ class JobsAPI:
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
         body = {}
-        if dbt_commands is not None: body['dbt_commands'] = [v for v in dbt_commands]
-        if idempotency_token is not None: body['idempotency_token'] = idempotency_token
-        if jar_params is not None: body['jar_params'] = [v for v in jar_params]
-        if job_id is not None: body['job_id'] = job_id
-        if job_parameters is not None: body['job_parameters'] = [v for v in job_parameters]
-        if notebook_params is not None: body['notebook_params'] = notebook_params
+        if dbt_commands is not None:
+            body['dbt_commands'] = [_validated('dbt_commands item', str, v) for v in dbt_commands]
+        if idempotency_token is not None:
+            body['idempotency_token'] = _validated('idempotency_token', str, idempotency_token)
+        if jar_params is not None:
+            body['jar_params'] = [_validated('jar_params item', str, v) for v in jar_params]
+        if job_id is not None: body['job_id'] = _validated('job_id', int, job_id)
+        if job_parameters is not None:
+            body['job_parameters'] = [{
+                k: _validated('job_parameters item item', str, v)
+                for (k, v) in v.items()
+            } for v in job_parameters]
+        if notebook_params is not None:
+            body['notebook_params'] = {
+                k: _validated('notebook_params item', str, v)
+                for (k, v) in notebook_params.items()
+            }
         if pipeline_params is not None:
             body['pipeline_params'] = _validated('pipeline_params', PipelineParams, pipeline_params)
-        if python_named_params is not None: body['python_named_params'] = python_named_params
-        if python_params is not None: body['python_params'] = [v for v in python_params]
-        if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
-        if sql_params is not None: body['sql_params'] = sql_params
+        if python_named_params is not None:
+            body['python_named_params'] = {
+                k: _validated('python_named_params item', str, v)
+                for (k, v) in python_named_params.items()
+            }
+        if python_params is not None:
+            body['python_params'] = [_validated('python_params item', str, v) for v in python_params]
+        if spark_submit_params is not None:
+            body['spark_submit_params'] = [
+                _validated('spark_submit_params item', str, v) for v in spark_submit_params
+            ]
+        if sql_params is not None:
+            body['sql_params'] = {k: _validated('sql_params item', str, v) for (k, v) in sql_params.items()}
         op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RunNowResponse.from_dict(op_response),
@@ -3783,13 +4053,15 @@ class JobsAPI:
                                                      email_notifications)
         if git_source is not None: body['git_source'] = _validated('git_source', GitSource, git_source)
         if health is not None: body['health'] = _validated('health', JobsHealthRules, health)
-        if idempotency_token is not None: body['idempotency_token'] = idempotency_token
+        if idempotency_token is not None:
+            body['idempotency_token'] = _validated('idempotency_token', str, idempotency_token)
         if notification_settings is not None:
             body['notification_settings'] = _validated('notification_settings', JobNotificationSettings,
                                                        notification_settings)
-        if run_name is not None: body['run_name'] = run_name
+        if run_name is not None: body['run_name'] = _validated('run_name', str, run_name)
         if tasks is not None: body['tasks'] = [_validated('tasks item', SubmitTask, v) for v in tasks]
-        if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
+        if timeout_seconds is not None:
+            body['timeout_seconds'] = _validated('timeout_seconds', int, timeout_seconds)
         if webhook_notifications is not None:
             body['webhook_notifications'] = _validated('webhook_notifications', WebhookNotifications,
                                                        webhook_notifications)
@@ -3853,8 +4125,9 @@ class JobsAPI:
         
         """
         body = {}
-        if fields_to_remove is not None: body['fields_to_remove'] = [v for v in fields_to_remove]
-        if job_id is not None: body['job_id'] = job_id
+        if fields_to_remove is not None:
+            body['fields_to_remove'] = [_validated('fields_to_remove item', str, v) for v in fields_to_remove]
+        if job_id is not None: body['job_id'] = _validated('job_id', int, job_id)
         if new_settings is not None:
             body['new_settings'] = _validated('new_settings', JobSettings, new_settings)
         self._api.do('POST', '/api/2.1/jobs/update', body=body)

@@ -38,8 +38,10 @@ class AccountsCreateMetastoreAssignment:
         if self.metastore_assignment:
             body['metastore_assignment'] = _validated('metastore_assignment', CreateMetastoreAssignment,
                                                       self.metastore_assignment)
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -59,7 +61,8 @@ class AccountsCreateStorageCredential:
         if self.credential_info:
             body['credential_info'] = _validated('credential_info', CreateStorageCredential,
                                                  self.credential_info)
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
         return body
 
     @classmethod
@@ -106,7 +109,8 @@ class AccountsUpdateMetastore:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
         if self.metastore_info:
             body['metastore_info'] = _validated('metastore_info', UpdateMetastore, self.metastore_info)
         return body
@@ -128,8 +132,10 @@ class AccountsUpdateMetastoreAssignment:
         if self.metastore_assignment:
             body['metastore_assignment'] = _validated('metastore_assignment', UpdateMetastoreAssignment,
                                                       self.metastore_assignment)
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -150,8 +156,9 @@ class AccountsUpdateStorageCredential:
         if self.credential_info:
             body['credential_info'] = _validated('credential_info', UpdateStorageCredential,
                                                  self.credential_info)
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -169,9 +176,12 @@ class AwsIamRole:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.external_id is not None: body['external_id'] = self.external_id
-        if self.role_arn is not None: body['role_arn'] = self.role_arn
-        if self.unity_catalog_iam_arn is not None: body['unity_catalog_iam_arn'] = self.unity_catalog_iam_arn
+        if self.external_id is not None:
+            body['external_id'] = _validated('external_id', str, self.external_id)
+        if self.role_arn is not None: body['role_arn'] = _validated('role_arn', str, self.role_arn)
+        if self.unity_catalog_iam_arn is not None:
+            body['unity_catalog_iam_arn'] = _validated('unity_catalog_iam_arn', str,
+                                                       self.unity_catalog_iam_arn)
         return body
 
     @classmethod
@@ -189,9 +199,12 @@ class AzureManagedIdentity:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_connector_id is not None: body['access_connector_id'] = self.access_connector_id
-        if self.credential_id is not None: body['credential_id'] = self.credential_id
-        if self.managed_identity_id is not None: body['managed_identity_id'] = self.managed_identity_id
+        if self.access_connector_id is not None:
+            body['access_connector_id'] = _validated('access_connector_id', str, self.access_connector_id)
+        if self.credential_id is not None:
+            body['credential_id'] = _validated('credential_id', str, self.credential_id)
+        if self.managed_identity_id is not None:
+            body['managed_identity_id'] = _validated('managed_identity_id', str, self.managed_identity_id)
         return body
 
     @classmethod
@@ -209,9 +222,12 @@ class AzureServicePrincipal:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.application_id is not None: body['application_id'] = self.application_id
-        if self.client_secret is not None: body['client_secret'] = self.client_secret
-        if self.directory_id is not None: body['directory_id'] = self.directory_id
+        if self.application_id is not None:
+            body['application_id'] = _validated('application_id', str, self.application_id)
+        if self.client_secret is not None:
+            body['client_secret'] = _validated('client_secret', str, self.client_secret)
+        if self.directory_id is not None:
+            body['directory_id'] = _validated('directory_id', str, self.directory_id)
         return body
 
     @classmethod
@@ -247,10 +263,11 @@ class CatalogInfo:
         body = {}
         if self.catalog_type is not None:
             body['catalog_type'] = _validated('catalog_type', CatalogType, self.catalog_type)
-        if self.comment is not None: body['comment'] = self.comment
-        if self.connection_name is not None: body['connection_name'] = self.connection_name
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.connection_name is not None:
+            body['connection_name'] = _validated('connection_name', str, self.connection_name)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.effective_auto_maintenance_flag:
             body['effective_auto_maintenance_flag'] = _validated('effective_auto_maintenance_flag',
                                                                  EffectiveAutoMaintenanceFlag,
@@ -260,17 +277,26 @@ class CatalogInfo:
                                                          self.enable_auto_maintenance)
         if self.isolation_mode is not None:
             body['isolation_mode'] = _validated('isolation_mode', IsolationMode, self.isolation_mode)
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties: body['properties'] = self.properties
-        if self.provider_name is not None: body['provider_name'] = self.provider_name
-        if self.share_name is not None: body['share_name'] = self.share_name
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.options:
+            body['options'] = {k: _validated('options item', str, v) for (k, v) in self.options.items()}
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
+        if self.provider_name is not None:
+            body['provider_name'] = _validated('provider_name', str, self.provider_name)
+        if self.share_name is not None: body['share_name'] = _validated('share_name', str, self.share_name)
+        if self.storage_location is not None:
+            body['storage_location'] = _validated('storage_location', str, self.storage_location)
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -322,19 +348,22 @@ class ColumnInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.mask: body['mask'] = _validated('mask', ColumnMask, self.mask)
-        if self.name is not None: body['name'] = self.name
-        if self.nullable is not None: body['nullable'] = self.nullable
-        if self.partition_index is not None: body['partition_index'] = self.partition_index
-        if self.position is not None: body['position'] = self.position
-        if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
-        if self.type_json is not None: body['type_json'] = self.type_json
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.nullable is not None: body['nullable'] = _validated('nullable', bool, self.nullable)
+        if self.partition_index is not None:
+            body['partition_index'] = _validated('partition_index', int, self.partition_index)
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.type_interval_type is not None:
+            body['type_interval_type'] = _validated('type_interval_type', str, self.type_interval_type)
+        if self.type_json is not None: body['type_json'] = _validated('type_json', str, self.type_json)
         if self.type_name is not None:
             body['type_name'] = _validated('type_name', ColumnTypeName, self.type_name)
-        if self.type_precision is not None: body['type_precision'] = self.type_precision
-        if self.type_scale is not None: body['type_scale'] = self.type_scale
-        if self.type_text is not None: body['type_text'] = self.type_text
+        if self.type_precision is not None:
+            body['type_precision'] = _validated('type_precision', int, self.type_precision)
+        if self.type_scale is not None: body['type_scale'] = _validated('type_scale', int, self.type_scale)
+        if self.type_text is not None: body['type_text'] = _validated('type_text', str, self.type_text)
         return body
 
     @classmethod
@@ -360,8 +389,12 @@ class ColumnMask:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.function_name is not None: body['function_name'] = self.function_name
-        if self.using_column_names: body['using_column_names'] = [v for v in self.using_column_names]
+        if self.function_name is not None:
+            body['function_name'] = _validated('function_name', str, self.function_name)
+        if self.using_column_names:
+            body['using_column_names'] = [
+                _validated('using_column_names item', str, v) for v in self.using_column_names
+            ]
         return body
 
     @classmethod
@@ -417,24 +450,34 @@ class ConnectionInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.connection_id is not None: body['connection_id'] = self.connection_id
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.connection_id is not None:
+            body['connection_id'] = _validated('connection_id', str, self.connection_id)
         if self.connection_type is not None:
             body['connection_type'] = _validated('connection_type', ConnectionType, self.connection_type)
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.credential_type is not None:
             body['credential_type'] = _validated('credential_type', CredentialType, self.credential_type)
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
-        if self.url is not None: body['url'] = self.url
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.options_kvpairs:
+            body['options_kvpairs'] = {
+                k: _validated('options_kvpairs item', str, v)
+                for (k, v) in self.options_kvpairs.items()
+            }
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties_kvpairs:
+            body['properties_kvpairs'] = {
+                k: _validated('properties_kvpairs item', str, v)
+                for (k, v) in self.properties_kvpairs.items()
+            }
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -481,13 +524,20 @@ class CreateCatalog:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.connection_name is not None: body['connection_name'] = self.connection_name
-        if self.name is not None: body['name'] = self.name
-        if self.properties: body['properties'] = self.properties
-        if self.provider_name is not None: body['provider_name'] = self.provider_name
-        if self.share_name is not None: body['share_name'] = self.share_name
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.connection_name is not None:
+            body['connection_name'] = _validated('connection_name', str, self.connection_name)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
+        if self.provider_name is not None:
+            body['provider_name'] = _validated('provider_name', str, self.provider_name)
+        if self.share_name is not None: body['share_name'] = _validated('share_name', str, self.share_name)
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
         return body
 
     @classmethod
@@ -513,14 +563,22 @@ class CreateConnection:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.connection_type is not None:
             body['connection_type'] = _validated('connection_type', ConnectionType, self.connection_type)
-        if self.name is not None: body['name'] = self.name
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
-        if self.read_only is not None: body['read_only'] = self.read_only
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.options_kvpairs:
+            body['options_kvpairs'] = {
+                k: _validated('options_kvpairs item', str, v)
+                for (k, v) in self.options_kvpairs.items()
+            }
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties_kvpairs:
+            body['properties_kvpairs'] = {
+                k: _validated('properties_kvpairs item', str, v)
+                for (k, v) in self.properties_kvpairs.items()
+            }
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
         return body
 
     @classmethod
@@ -547,16 +605,19 @@ class CreateExternalLocation:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_point is not None: body['access_point'] = self.access_point
-        if self.comment is not None: body['comment'] = self.comment
-        if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.access_point is not None:
+            body['access_point'] = _validated('access_point', str, self.access_point)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.credential_name is not None:
+            body['credential_name'] = _validated('credential_name', str, self.credential_name)
         if self.encryption_details:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     self.encryption_details)
-        if self.name is not None: body['name'] = self.name
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
-        if self.url is not None: body['url'] = self.url
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, self.skip_validation)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -597,44 +658,57 @@ class CreateFunction:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.comment is not None: body['comment'] = self.comment
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.data_type is not None:
             body['data_type'] = _validated('data_type', ColumnTypeName, self.data_type)
-        if self.external_language is not None: body['external_language'] = self.external_language
-        if self.external_name is not None: body['external_name'] = self.external_name
-        if self.full_data_type is not None: body['full_data_type'] = self.full_data_type
+        if self.external_language is not None:
+            body['external_language'] = _validated('external_language', str, self.external_language)
+        if self.external_name is not None:
+            body['external_name'] = _validated('external_name', str, self.external_name)
+        if self.full_data_type is not None:
+            body['full_data_type'] = _validated('full_data_type', str, self.full_data_type)
         if self.input_params:
             body['input_params'] = [
                 _validated('input_params item', FunctionParameterInfo, v) for v in self.input_params
             ]
-        if self.is_deterministic is not None: body['is_deterministic'] = self.is_deterministic
-        if self.is_null_call is not None: body['is_null_call'] = self.is_null_call
-        if self.name is not None: body['name'] = self.name
+        if self.is_deterministic is not None:
+            body['is_deterministic'] = _validated('is_deterministic', bool, self.is_deterministic)
+        if self.is_null_call is not None:
+            body['is_null_call'] = _validated('is_null_call', bool, self.is_null_call)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.parameter_style is not None:
             body['parameter_style'] = _validated('parameter_style', CreateFunctionParameterStyle,
                                                  self.parameter_style)
-        if self.properties: body['properties'] = self.properties
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
         if self.return_params:
             body['return_params'] = [
                 _validated('return_params item', FunctionParameterInfo, v) for v in self.return_params
             ]
         if self.routine_body is not None:
             body['routine_body'] = _validated('routine_body', CreateFunctionRoutineBody, self.routine_body)
-        if self.routine_definition is not None: body['routine_definition'] = self.routine_definition
+        if self.routine_definition is not None:
+            body['routine_definition'] = _validated('routine_definition', str, self.routine_definition)
         if self.routine_dependencies:
             body['routine_dependencies'] = [
                 _validated('routine_dependencies item', Dependency, v) for v in self.routine_dependencies
             ]
-        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.schema_name is not None:
+            body['schema_name'] = _validated('schema_name', str, self.schema_name)
         if self.security_type is not None:
             body['security_type'] = _validated('security_type', CreateFunctionSecurityType,
                                                self.security_type)
-        if self.specific_name is not None: body['specific_name'] = self.specific_name
+        if self.specific_name is not None:
+            body['specific_name'] = _validated('specific_name', str, self.specific_name)
         if self.sql_data_access is not None:
             body['sql_data_access'] = _validated('sql_data_access', CreateFunctionSqlDataAccess,
                                                  self.sql_data_access)
-        if self.sql_path is not None: body['sql_path'] = self.sql_path
+        if self.sql_path is not None: body['sql_path'] = _validated('sql_path', str, self.sql_path)
         return body
 
     @classmethod
@@ -700,9 +774,10 @@ class CreateMetastore:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.region is not None: body['region'] = self.region
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
         return body
 
     @classmethod
@@ -720,9 +795,12 @@ class CreateMetastoreAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default_catalog_name is not None: body['default_catalog_name'] = self.default_catalog_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.default_catalog_name is not None:
+            body['default_catalog_name'] = _validated('default_catalog_name', str, self.default_catalog_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -742,11 +820,17 @@ class CreateSchema:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.properties: body['properties'] = self.properties
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
         return body
 
     @classmethod
@@ -778,12 +862,14 @@ class CreateStorageCredential:
         if self.azure_service_principal:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          self.azure_service_principal)
-        if self.comment is not None: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
-        if self.name is not None: body['name'] = self.name
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account', Any,
+                                                                self.databricks_gcp_service_account)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, self.skip_validation)
         return body
 
     @classmethod
@@ -806,7 +892,8 @@ class CreateTableConstraint:
     def as_dict(self) -> dict:
         body = {}
         if self.constraint: body['constraint'] = _validated('constraint', TableConstraint, self.constraint)
-        if self.full_name_arg is not None: body['full_name_arg'] = self.full_name_arg
+        if self.full_name_arg is not None:
+            body['full_name_arg'] = _validated('full_name_arg', str, self.full_name_arg)
         return body
 
     @classmethod
@@ -826,11 +913,14 @@ class CreateVolumeRequestContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.schema_name is not None: body['schema_name'] = self.schema_name
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.schema_name is not None:
+            body['schema_name'] = _validated('schema_name', str, self.schema_name)
+        if self.storage_location is not None:
+            body['storage_location'] = _validated('storage_location', str, self.storage_location)
         if self.volume_type is not None:
             body['volume_type'] = _validated('volume_type', VolumeType, self.volume_type)
         return body
@@ -859,7 +949,8 @@ class CurrentWorkspaceBindings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.workspaces: body['workspaces'] = [v for v in self.workspaces]
+        if self.workspaces:
+            body['workspaces'] = [_validated('workspaces item', int, v) for v in self.workspaces]
         return body
 
     @classmethod
@@ -888,8 +979,9 @@ class DatabricksGcpServiceAccountResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id is not None: body['credential_id'] = self.credential_id
-        if self.email is not None: body['email'] = self.email
+        if self.credential_id is not None:
+            body['credential_id'] = _validated('credential_id', str, self.credential_id)
+        if self.email is not None: body['email'] = _validated('email', str, self.email)
         return body
 
     @classmethod
@@ -906,7 +998,11 @@ class DeltaRuntimePropertiesKvPairs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.delta_runtime_properties: body['delta_runtime_properties'] = self.delta_runtime_properties
+        if self.delta_runtime_properties:
+            body['delta_runtime_properties'] = {
+                k: _validated('delta_runtime_properties item', str, v)
+                for (k, v) in self.delta_runtime_properties.items()
+            }
         return body
 
     @classmethod
@@ -950,7 +1046,8 @@ class EffectiveAutoMaintenanceFlag:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited_from_name is not None: body['inherited_from_name'] = self.inherited_from_name
+        if self.inherited_from_name is not None:
+            body['inherited_from_name'] = _validated('inherited_from_name', str, self.inherited_from_name)
         if self.inherited_from_type is not None:
             body['inherited_from_type'] = _validated('inherited_from_type',
                                                      EffectiveAutoMaintenanceFlagInheritedFromType,
@@ -1000,7 +1097,8 @@ class EffectivePrivilege:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited_from_name is not None: body['inherited_from_name'] = self.inherited_from_name
+        if self.inherited_from_name is not None:
+            body['inherited_from_name'] = _validated('inherited_from_name', str, self.inherited_from_name)
         if self.inherited_from_type is not None:
             body['inherited_from_type'] = _validated('inherited_from_type', SecurableType,
                                                      self.inherited_from_type)
@@ -1021,7 +1119,7 @@ class EffectivePrivilegeAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal is not None: body['principal'] = self.principal
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
         if self.privileges:
             body['privileges'] = [
                 _validated('privileges item', EffectivePrivilege, v) for v in self.privileges
@@ -1087,22 +1185,26 @@ class ExternalLocationInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_point is not None: body['access_point'] = self.access_point
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.credential_id is not None: body['credential_id'] = self.credential_id
-        if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.access_point is not None:
+            body['access_point'] = _validated('access_point', str, self.access_point)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
+        if self.credential_id is not None:
+            body['credential_id'] = _validated('credential_id', str, self.credential_id)
+        if self.credential_name is not None:
+            body['credential_name'] = _validated('credential_name', str, self.credential_name)
         if self.encryption_details:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     self.encryption_details)
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
-        if self.url is not None: body['url'] = self.url
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -1132,10 +1234,13 @@ class ForeignKeyConstraint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.child_columns: body['child_columns'] = [v for v in self.child_columns]
-        if self.name is not None: body['name'] = self.name
-        if self.parent_columns: body['parent_columns'] = [v for v in self.parent_columns]
-        if self.parent_table is not None: body['parent_table'] = self.parent_table
+        if self.child_columns:
+            body['child_columns'] = [_validated('child_columns item', str, v) for v in self.child_columns]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.parent_columns:
+            body['parent_columns'] = [_validated('parent_columns item', str, v) for v in self.parent_columns]
+        if self.parent_table is not None:
+            body['parent_table'] = _validated('parent_table', str, self.parent_table)
         return body
 
     @classmethod
@@ -1154,7 +1259,8 @@ class FunctionDependency:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.function_full_name is not None: body['function_full_name'] = self.function_full_name
+        if self.function_full_name is not None:
+            body['function_full_name'] = _validated('function_full_name', str, self.function_full_name)
         return body
 
     @classmethod
@@ -1196,51 +1302,66 @@ class FunctionInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.data_type is not None:
             body['data_type'] = _validated('data_type', ColumnTypeName, self.data_type)
-        if self.external_language is not None: body['external_language'] = self.external_language
-        if self.external_name is not None: body['external_name'] = self.external_name
-        if self.full_data_type is not None: body['full_data_type'] = self.full_data_type
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.function_id is not None: body['function_id'] = self.function_id
+        if self.external_language is not None:
+            body['external_language'] = _validated('external_language', str, self.external_language)
+        if self.external_name is not None:
+            body['external_name'] = _validated('external_name', str, self.external_name)
+        if self.full_data_type is not None:
+            body['full_data_type'] = _validated('full_data_type', str, self.full_data_type)
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.function_id is not None:
+            body['function_id'] = _validated('function_id', str, self.function_id)
         if self.input_params:
             body['input_params'] = [
                 _validated('input_params item', FunctionParameterInfo, v) for v in self.input_params
             ]
-        if self.is_deterministic is not None: body['is_deterministic'] = self.is_deterministic
-        if self.is_null_call is not None: body['is_null_call'] = self.is_null_call
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
+        if self.is_deterministic is not None:
+            body['is_deterministic'] = _validated('is_deterministic', bool, self.is_deterministic)
+        if self.is_null_call is not None:
+            body['is_null_call'] = _validated('is_null_call', bool, self.is_null_call)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         if self.parameter_style is not None:
             body['parameter_style'] = _validated('parameter_style', FunctionInfoParameterStyle,
                                                  self.parameter_style)
-        if self.properties: body['properties'] = self.properties
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
         if self.return_params:
             body['return_params'] = [
                 _validated('return_params item', FunctionParameterInfo, v) for v in self.return_params
             ]
         if self.routine_body is not None:
             body['routine_body'] = _validated('routine_body', FunctionInfoRoutineBody, self.routine_body)
-        if self.routine_definition is not None: body['routine_definition'] = self.routine_definition
+        if self.routine_definition is not None:
+            body['routine_definition'] = _validated('routine_definition', str, self.routine_definition)
         if self.routine_dependencies:
             body['routine_dependencies'] = [
                 _validated('routine_dependencies item', Dependency, v) for v in self.routine_dependencies
             ]
-        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.schema_name is not None:
+            body['schema_name'] = _validated('schema_name', str, self.schema_name)
         if self.security_type is not None:
             body['security_type'] = _validated('security_type', FunctionInfoSecurityType, self.security_type)
-        if self.specific_name is not None: body['specific_name'] = self.specific_name
+        if self.specific_name is not None:
+            body['specific_name'] = _validated('specific_name', str, self.specific_name)
         if self.sql_data_access is not None:
             body['sql_data_access'] = _validated('sql_data_access', FunctionInfoSqlDataAccess,
                                                  self.sql_data_access)
-        if self.sql_path is not None: body['sql_path'] = self.sql_path
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.sql_path is not None: body['sql_path'] = _validated('sql_path', str, self.sql_path)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -1323,21 +1444,24 @@ class FunctionParameterInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.parameter_default is not None: body['parameter_default'] = self.parameter_default
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.parameter_default is not None:
+            body['parameter_default'] = _validated('parameter_default', str, self.parameter_default)
         if self.parameter_mode is not None:
             body['parameter_mode'] = _validated('parameter_mode', FunctionParameterMode, self.parameter_mode)
         if self.parameter_type is not None:
             body['parameter_type'] = _validated('parameter_type', FunctionParameterType, self.parameter_type)
-        if self.position is not None: body['position'] = self.position
-        if self.type_interval_type is not None: body['type_interval_type'] = self.type_interval_type
-        if self.type_json is not None: body['type_json'] = self.type_json
+        if self.position is not None: body['position'] = _validated('position', int, self.position)
+        if self.type_interval_type is not None:
+            body['type_interval_type'] = _validated('type_interval_type', str, self.type_interval_type)
+        if self.type_json is not None: body['type_json'] = _validated('type_json', str, self.type_json)
         if self.type_name is not None:
             body['type_name'] = _validated('type_name', ColumnTypeName, self.type_name)
-        if self.type_precision is not None: body['type_precision'] = self.type_precision
-        if self.type_scale is not None: body['type_scale'] = self.type_scale
-        if self.type_text is not None: body['type_text'] = self.type_text
+        if self.type_precision is not None:
+            body['type_precision'] = _validated('type_precision', int, self.type_precision)
+        if self.type_scale is not None: body['type_scale'] = _validated('type_scale', int, self.type_scale)
+        if self.type_text is not None: body['type_text'] = _validated('type_text', str, self.type_text)
         return body
 
     @classmethod
@@ -1392,34 +1516,43 @@ class GetMetastoreSummaryResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.default_data_access_config_id is not None:
-            body['default_data_access_config_id'] = self.default_data_access_config_id
+            body['default_data_access_config_id'] = _validated('default_data_access_config_id', str,
+                                                               self.default_data_access_config_id)
         if self.delta_sharing_organization_name is not None:
-            body['delta_sharing_organization_name'] = self.delta_sharing_organization_name
+            body['delta_sharing_organization_name'] = _validated('delta_sharing_organization_name', str,
+                                                                 self.delta_sharing_organization_name)
         if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
-            body[
-                'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
+            body['delta_sharing_recipient_token_lifetime_in_seconds'] = _validated(
+                'delta_sharing_recipient_token_lifetime_in_seconds', int,
+                self.delta_sharing_recipient_token_lifetime_in_seconds)
         if self.delta_sharing_scope is not None:
             body['delta_sharing_scope'] = _validated('delta_sharing_scope',
                                                      GetMetastoreSummaryResponseDeltaSharingScope,
                                                      self.delta_sharing_scope)
-        if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
+        if self.global_metastore_id is not None:
+            body['global_metastore_id'] = _validated('global_metastore_id', str, self.global_metastore_id)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         if self.privilege_model_version is not None:
-            body['privilege_model_version'] = self.privilege_model_version
-        if self.region is not None: body['region'] = self.region
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+            body['privilege_model_version'] = _validated('privilege_model_version', str,
+                                                         self.privilege_model_version)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
         if self.storage_root_credential_id is not None:
-            body['storage_root_credential_id'] = self.storage_root_credential_id
+            body['storage_root_credential_id'] = _validated('storage_root_credential_id', str,
+                                                            self.storage_root_credential_id)
         if self.storage_root_credential_name is not None:
-            body['storage_root_credential_name'] = self.storage_root_credential_name
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body['storage_root_credential_name'] = _validated('storage_root_credential_name', str,
+                                                              self.storage_root_credential_name)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -1604,7 +1737,8 @@ class ListTableSummariesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         if self.tables: body['tables'] = [_validated('tables item', TableSummary, v) for v in self.tables]
         return body
 
@@ -1631,7 +1765,8 @@ class ListTablesResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         if self.tables: body['tables'] = [_validated('tables item', TableInfo, v) for v in self.tables]
         return body
 
@@ -1662,9 +1797,12 @@ class MetastoreAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default_catalog_name is not None: body['default_catalog_name'] = self.default_catalog_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.default_catalog_name is not None:
+            body['default_catalog_name'] = _validated('default_catalog_name', str, self.default_catalog_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -1697,33 +1835,42 @@ class MetastoreInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.cloud is not None: body['cloud'] = _validated('cloud', str, self.cloud)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.default_data_access_config_id is not None:
-            body['default_data_access_config_id'] = self.default_data_access_config_id
+            body['default_data_access_config_id'] = _validated('default_data_access_config_id', str,
+                                                               self.default_data_access_config_id)
         if self.delta_sharing_organization_name is not None:
-            body['delta_sharing_organization_name'] = self.delta_sharing_organization_name
+            body['delta_sharing_organization_name'] = _validated('delta_sharing_organization_name', str,
+                                                                 self.delta_sharing_organization_name)
         if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
-            body[
-                'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
+            body['delta_sharing_recipient_token_lifetime_in_seconds'] = _validated(
+                'delta_sharing_recipient_token_lifetime_in_seconds', int,
+                self.delta_sharing_recipient_token_lifetime_in_seconds)
         if self.delta_sharing_scope is not None:
             body['delta_sharing_scope'] = _validated('delta_sharing_scope', MetastoreInfoDeltaSharingScope,
                                                      self.delta_sharing_scope)
-        if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
+        if self.global_metastore_id is not None:
+            body['global_metastore_id'] = _validated('global_metastore_id', str, self.global_metastore_id)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         if self.privilege_model_version is not None:
-            body['privilege_model_version'] = self.privilege_model_version
-        if self.region is not None: body['region'] = self.region
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+            body['privilege_model_version'] = _validated('privilege_model_version', str,
+                                                         self.privilege_model_version)
+        if self.region is not None: body['region'] = _validated('region', str, self.region)
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
         if self.storage_root_credential_id is not None:
-            body['storage_root_credential_id'] = self.storage_root_credential_id
+            body['storage_root_credential_id'] = _validated('storage_root_credential_id', str,
+                                                            self.storage_root_credential_id)
         if self.storage_root_credential_name is not None:
-            body['storage_root_credential_name'] = self.storage_root_credential_name
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body['storage_root_credential_name'] = _validated('storage_root_credential_name', str,
+                                                              self.storage_root_credential_name)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -1762,7 +1909,7 @@ class NamedTableConstraint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -1779,7 +1926,7 @@ class PermissionsChange:
     def as_dict(self) -> dict:
         body = {}
         if self.add: body['add'] = [_validated('add item', Privilege, v) for v in self.add]
-        if self.principal is not None: body['principal'] = self.principal
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
         if self.remove: body['remove'] = [_validated('remove item', Privilege, v) for v in self.remove]
         return body
 
@@ -1813,8 +1960,9 @@ class PrimaryKeyConstraint:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.child_columns: body['child_columns'] = [v for v in self.child_columns]
-        if self.name is not None: body['name'] = self.name
+        if self.child_columns:
+            body['child_columns'] = [_validated('child_columns item', str, v) for v in self.child_columns]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -1867,7 +2015,7 @@ class PrivilegeAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal is not None: body['principal'] = self.principal
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
         if self.privileges:
             body['privileges'] = [_validated('privileges item', Privilege, v) for v in self.privileges]
         return body
@@ -1901,11 +2049,13 @@ class SchemaInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.catalog_type is not None: body['catalog_type'] = self.catalog_type
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.catalog_type is not None:
+            body['catalog_type'] = _validated('catalog_type', str, self.catalog_type)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.effective_auto_maintenance_flag:
             body['effective_auto_maintenance_flag'] = _validated('effective_auto_maintenance_flag',
                                                                  EffectiveAutoMaintenanceFlag,
@@ -1913,15 +2063,22 @@ class SchemaInfo:
         if self.enable_auto_maintenance is not None:
             body['enable_auto_maintenance'] = _validated('enable_auto_maintenance', EnableAutoMaintenance,
                                                          self.enable_auto_maintenance)
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties: body['properties'] = self.properties
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
+        if self.storage_location is not None:
+            body['storage_location'] = _validated('storage_location', str, self.storage_location)
+        if self.storage_root is not None:
+            body['storage_root'] = _validated('storage_root', str, self.storage_root)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         return body
 
     @classmethod
@@ -1978,7 +2135,8 @@ class SseEncryptionDetails:
         body = {}
         if self.algorithm is not None:
             body['algorithm'] = _validated('algorithm', SseEncryptionDetailsAlgorithm, self.algorithm)
-        if self.aws_kms_key_arn is not None: body['aws_kms_key_arn'] = self.aws_kms_key_arn
+        if self.aws_kms_key_arn is not None:
+            body['aws_kms_key_arn'] = _validated('aws_kms_key_arn', str, self.aws_kms_key_arn)
         return body
 
     @classmethod
@@ -2021,22 +2179,24 @@ class StorageCredentialInfo:
         if self.azure_service_principal:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          self.azure_service_principal)
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account',
                                                                 DatabricksGcpServiceAccountResponse,
                                                                 self.databricks_gcp_service_account)
-        if self.id is not None: body['id'] = self.id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
         if self.used_for_managed_storage is not None:
-            body['used_for_managed_storage'] = self.used_for_managed_storage
+            body['used_for_managed_storage'] = _validated('used_for_managed_storage', bool,
+                                                          self.used_for_managed_storage)
         return body
 
     @classmethod
@@ -2066,7 +2226,7 @@ class SystemSchemaInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.schema is not None: body['schema'] = self.schema
+        if self.schema is not None: body['schema'] = _validated('schema', str, self.schema)
         if self.state is not None: body['state'] = _validated('state', SystemSchemaInfoState, self.state)
         return body
 
@@ -2140,7 +2300,8 @@ class TableDependency:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.table_full_name is not None: body['table_full_name'] = self.table_full_name
+        if self.table_full_name is not None:
+            body['table_full_name'] = _validated('table_full_name', str, self.table_full_name)
         return body
 
     @classmethod
@@ -2183,18 +2344,21 @@ class TableInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_point is not None: body['access_point'] = self.access_point
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.access_point is not None:
+            body['access_point'] = _validated('access_point', str, self.access_point)
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
         if self.columns: body['columns'] = [_validated('columns item', ColumnInfo, v) for v in self.columns]
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.data_access_configuration_id is not None:
-            body['data_access_configuration_id'] = self.data_access_configuration_id
+            body['data_access_configuration_id'] = _validated('data_access_configuration_id', str,
+                                                              self.data_access_configuration_id)
         if self.data_source_format is not None:
             body['data_source_format'] = _validated('data_source_format', DataSourceFormat,
                                                     self.data_source_format)
-        if self.deleted_at is not None: body['deleted_at'] = self.deleted_at
+        if self.deleted_at is not None: body['deleted_at'] = _validated('deleted_at', int, self.deleted_at)
         if self.delta_runtime_properties_kvpairs:
             body['delta_runtime_properties_kvpairs'] = _validated('delta_runtime_properties_kvpairs',
                                                                   DeltaRuntimePropertiesKvPairs,
@@ -2209,26 +2373,35 @@ class TableInfo:
         if self.encryption_details:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     self.encryption_details)
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties: body['properties'] = self.properties
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
         if self.row_filter: body['row_filter'] = _validated('row_filter', TableRowFilter, self.row_filter)
-        if self.schema_name is not None: body['schema_name'] = self.schema_name
-        if self.sql_path is not None: body['sql_path'] = self.sql_path
+        if self.schema_name is not None:
+            body['schema_name'] = _validated('schema_name', str, self.schema_name)
+        if self.sql_path is not None: body['sql_path'] = _validated('sql_path', str, self.sql_path)
         if self.storage_credential_name is not None:
-            body['storage_credential_name'] = self.storage_credential_name
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
+            body['storage_credential_name'] = _validated('storage_credential_name', str,
+                                                         self.storage_credential_name)
+        if self.storage_location is not None:
+            body['storage_location'] = _validated('storage_location', str, self.storage_location)
         if self.table_constraints:
             body['table_constraints'] = _validated('table_constraints', TableConstraintList,
                                                    self.table_constraints)
-        if self.table_id is not None: body['table_id'] = self.table_id
+        if self.table_id is not None: body['table_id'] = _validated('table_id', str, self.table_id)
         if self.table_type is not None:
             body['table_type'] = _validated('table_type', TableType, self.table_type)
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
-        if self.view_definition is not None: body['view_definition'] = self.view_definition
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
+        if self.view_definition is not None:
+            body['view_definition'] = _validated('view_definition', str, self.view_definition)
         if self.view_dependencies:
             body['view_dependencies'] = [
                 _validated('view_dependencies item', Dependency, v) for v in self.view_dependencies
@@ -2278,8 +2451,11 @@ class TableRowFilter:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.input_column_names: body['input_column_names'] = [v for v in self.input_column_names]
-        if self.name is not None: body['name'] = self.name
+        if self.input_column_names:
+            body['input_column_names'] = [
+                _validated('input_column_names item', str, v) for v in self.input_column_names
+            ]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -2294,7 +2470,7 @@ class TableSummary:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
         if self.table_type is not None:
             body['table_type'] = _validated('table_type', TableType, self.table_type)
         return body
@@ -2323,12 +2499,16 @@ class UpdateCatalog:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.isolation_mode is not None:
             body['isolation_mode'] = _validated('isolation_mode', IsolationMode, self.isolation_mode)
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties: body['properties'] = self.properties
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
         return body
 
     @classmethod
@@ -2348,9 +2528,13 @@ class UpdateConnection:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.name_arg is not None: body['name_arg'] = self.name_arg
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.name_arg is not None: body['name_arg'] = _validated('name_arg', str, self.name_arg)
+        if self.options_kvpairs:
+            body['options_kvpairs'] = {
+                k: _validated('options_kvpairs item', str, v)
+                for (k, v) in self.options_kvpairs.items()
+            }
         return body
 
     @classmethod
@@ -2374,17 +2558,19 @@ class UpdateExternalLocation:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_point is not None: body['access_point'] = self.access_point
-        if self.comment is not None: body['comment'] = self.comment
-        if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.access_point is not None:
+            body['access_point'] = _validated('access_point', str, self.access_point)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.credential_name is not None:
+            body['credential_name'] = _validated('credential_name', str, self.credential_name)
         if self.encryption_details:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     self.encryption_details)
-        if self.force is not None: body['force'] = self.force
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.url is not None: body['url'] = self.url
+        if self.force is not None: body['force'] = _validated('force', bool, self.force)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -2407,8 +2593,8 @@ class UpdateFunction:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         return body
 
     @classmethod
@@ -2430,20 +2616,24 @@ class UpdateMetastore:
     def as_dict(self) -> dict:
         body = {}
         if self.delta_sharing_organization_name is not None:
-            body['delta_sharing_organization_name'] = self.delta_sharing_organization_name
+            body['delta_sharing_organization_name'] = _validated('delta_sharing_organization_name', str,
+                                                                 self.delta_sharing_organization_name)
         if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
-            body[
-                'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
+            body['delta_sharing_recipient_token_lifetime_in_seconds'] = _validated(
+                'delta_sharing_recipient_token_lifetime_in_seconds', int,
+                self.delta_sharing_recipient_token_lifetime_in_seconds)
         if self.delta_sharing_scope is not None:
             body['delta_sharing_scope'] = _validated('delta_sharing_scope', UpdateMetastoreDeltaSharingScope,
                                                      self.delta_sharing_scope)
-        if self.id is not None: body['id'] = self.id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         if self.privilege_model_version is not None:
-            body['privilege_model_version'] = self.privilege_model_version
+            body['privilege_model_version'] = _validated('privilege_model_version', str,
+                                                         self.privilege_model_version)
         if self.storage_root_credential_id is not None:
-            body['storage_root_credential_id'] = self.storage_root_credential_id
+            body['storage_root_credential_id'] = _validated('storage_root_credential_id', str,
+                                                            self.storage_root_credential_id)
         return body
 
     @classmethod
@@ -2467,9 +2657,12 @@ class UpdateMetastoreAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.default_catalog_name is not None: body['default_catalog_name'] = self.default_catalog_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.default_catalog_name is not None:
+            body['default_catalog_name'] = _validated('default_catalog_name', str, self.default_catalog_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -2496,7 +2689,7 @@ class UpdatePermissions:
         body = {}
         if self.changes:
             body['changes'] = [_validated('changes item', PermissionsChange, v) for v in self.changes]
-        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
         if self.securable_type is not None:
             body['securable_type'] = _validated('securable_type', SecurableType, self.securable_type)
         return body
@@ -2515,8 +2708,9 @@ class UpdatePredictiveOptimization:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.enable is not None: body['enable'] = self.enable
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.enable is not None: body['enable'] = _validated('enable', bool, self.enable)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
         return body
 
     @classmethod
@@ -2532,9 +2726,9 @@ class UpdatePredictiveOptimizationResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.state is not None: body['state'] = self.state
-        if self.user_id is not None: body['user_id'] = self.user_id
-        if self.username is not None: body['username'] = self.username
+        if self.state is not None: body['state'] = _validated('state', bool, self.state)
+        if self.user_id is not None: body['user_id'] = _validated('user_id', int, self.user_id)
+        if self.username is not None: body['username'] = _validated('username', str, self.username)
         return body
 
     @classmethod
@@ -2554,11 +2748,15 @@ class UpdateSchema:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties: body['properties'] = self.properties
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.properties:
+            body['properties'] = {
+                k: _validated('properties item', str, v)
+                for (k, v) in self.properties.items()
+            }
         return body
 
     @classmethod
@@ -2592,14 +2790,16 @@ class UpdateStorageCredential:
         if self.azure_service_principal:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          self.azure_service_principal)
-        if self.comment is not None: body['comment'] = self.comment
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
-        if self.force is not None: body['force'] = self.force
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account', Any,
+                                                                self.databricks_gcp_service_account)
+        if self.force is not None: body['force'] = _validated('force', bool, self.force)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, self.skip_validation)
         return body
 
     @classmethod
@@ -2625,10 +2825,11 @@ class UpdateVolumeRequestContent:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.full_name_arg is not None: body['full_name_arg'] = self.full_name_arg
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.full_name_arg is not None:
+            body['full_name_arg'] = _validated('full_name_arg', str, self.full_name_arg)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
         return body
 
     @classmethod
@@ -2647,9 +2848,15 @@ class UpdateWorkspaceBindings:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.assign_workspaces: body['assign_workspaces'] = [v for v in self.assign_workspaces]
-        if self.name is not None: body['name'] = self.name
-        if self.unassign_workspaces: body['unassign_workspaces'] = [v for v in self.unassign_workspaces]
+        if self.assign_workspaces:
+            body['assign_workspaces'] = [
+                _validated('assign_workspaces item', int, v) for v in self.assign_workspaces
+            ]
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.unassign_workspaces:
+            body['unassign_workspaces'] = [
+                _validated('unassign_workspaces item', int, v) for v in self.unassign_workspaces
+            ]
         return body
 
     @classmethod
@@ -2680,12 +2887,16 @@ class ValidateStorageCredential:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          self.azure_service_principal)
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account', Any,
+                                                                self.databricks_gcp_service_account)
         if self.external_location_name is not None:
-            body['external_location_name'] = self.external_location_name
-        if self.read_only is not None: body['read_only'] = self.read_only
-        if self.storage_credential_name: body['storage_credential_name'] = self.storage_credential_name
-        if self.url is not None: body['url'] = self.url
+            body['external_location_name'] = _validated('external_location_name', str,
+                                                        self.external_location_name)
+        if self.read_only is not None: body['read_only'] = _validated('read_only', bool, self.read_only)
+        if self.storage_credential_name:
+            body['storage_credential_name'] = _validated('storage_credential_name', Any,
+                                                         self.storage_credential_name)
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -2707,7 +2918,7 @@ class ValidateStorageCredentialResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.is_dir is not None: body['isDir'] = self.is_dir
+        if self.is_dir is not None: body['isDir'] = _validated('is_dir', bool, self.is_dir)
         if self.results:
             body['results'] = [_validated('results item', ValidationResult, v) for v in self.results]
         return body
@@ -2725,7 +2936,7 @@ class ValidationResult:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.message is not None: body['message'] = self.message
+        if self.message is not None: body['message'] = _validated('message', str, self.message)
         if self.operation is not None:
             body['operation'] = _validated('operation', ValidationResultOperation, self.operation)
         if self.result is not None: body['result'] = _validated('result', ValidationResultResult, self.result)
@@ -2776,23 +2987,28 @@ class VolumeInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.access_point is not None: body['access_point'] = self.access_point
-        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.access_point is not None:
+            body['access_point'] = _validated('access_point', str, self.access_point)
+        if self.catalog_name is not None:
+            body['catalog_name'] = _validated('catalog_name', str, self.catalog_name)
+        if self.comment is not None: body['comment'] = _validated('comment', str, self.comment)
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
+        if self.created_by is not None: body['created_by'] = _validated('created_by', str, self.created_by)
         if self.encryption_details:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     self.encryption_details)
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.schema_name is not None: body['schema_name'] = self.schema_name
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
-        if self.volume_id is not None: body['volume_id'] = self.volume_id
+        if self.full_name is not None: body['full_name'] = _validated('full_name', str, self.full_name)
+        if self.metastore_id is not None:
+            body['metastore_id'] = _validated('metastore_id', str, self.metastore_id)
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
+        if self.owner is not None: body['owner'] = _validated('owner', str, self.owner)
+        if self.schema_name is not None:
+            body['schema_name'] = _validated('schema_name', str, self.schema_name)
+        if self.storage_location is not None:
+            body['storage_location'] = _validated('storage_location', str, self.storage_location)
+        if self.updated_at is not None: body['updated_at'] = _validated('updated_at', int, self.updated_at)
+        if self.updated_by is not None: body['updated_by'] = _validated('updated_by', str, self.updated_by)
+        if self.volume_id is not None: body['volume_id'] = _validated('volume_id', str, self.volume_id)
         if self.volume_type is not None:
             body['volume_type'] = _validated('volume_type', VolumeType, self.volume_type)
         return body
@@ -2969,7 +3185,7 @@ class AccountMetastoresAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do('DELETE',
                      f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                      query=query)
@@ -3076,7 +3292,7 @@ class AccountStorageCredentialsAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
@@ -3189,13 +3405,15 @@ class CatalogsAPI:
         :returns: :class:`CatalogInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if connection_name is not None: body['connection_name'] = connection_name
-        if name is not None: body['name'] = name
-        if properties is not None: body['properties'] = properties
-        if provider_name is not None: body['provider_name'] = provider_name
-        if share_name is not None: body['share_name'] = share_name
-        if storage_root is not None: body['storage_root'] = storage_root
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if connection_name is not None:
+            body['connection_name'] = _validated('connection_name', str, connection_name)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if properties is not None:
+            body['properties'] = {k: _validated('properties item', str, v) for (k, v) in properties.items()}
+        if provider_name is not None: body['provider_name'] = _validated('provider_name', str, provider_name)
+        if share_name is not None: body['share_name'] = _validated('share_name', str, share_name)
+        if storage_root is not None: body['storage_root'] = _validated('storage_root', str, storage_root)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body)
         return CatalogInfo.from_dict(json)
@@ -3215,7 +3433,7 @@ class CatalogsAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/catalogs/{name}', query=query)
 
     def get(self, name: str) -> CatalogInfo:
@@ -3273,11 +3491,12 @@ class CatalogsAPI:
         :returns: :class:`CatalogInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
         if isolation_mode is not None:
             body['isolation_mode'] = _validated('isolation_mode', IsolationMode, isolation_mode)
-        if owner is not None: body['owner'] = owner
-        if properties is not None: body['properties'] = properties
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if properties is not None:
+            body['properties'] = {k: _validated('properties item', str, v) for (k, v) in properties.items()}
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{name}', body=body)
         return CatalogInfo.from_dict(json)
@@ -3330,14 +3549,22 @@ class ConnectionsAPI:
         :returns: :class:`ConnectionInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
         if connection_type is not None:
             body['connection_type'] = _validated('connection_type', ConnectionType, connection_type)
-        if name is not None: body['name'] = name
-        if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
-        if owner is not None: body['owner'] = owner
-        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs
-        if read_only is not None: body['read_only'] = read_only
+        if name is not None: body['name'] = _validated('name', str, name)
+        if options_kvpairs is not None:
+            body['options_kvpairs'] = {
+                k: _validated('options_kvpairs item', str, v)
+                for (k, v) in options_kvpairs.items()
+            }
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if properties_kvpairs is not None:
+            body['properties_kvpairs'] = {
+                k: _validated('properties_kvpairs item', str, v)
+                for (k, v) in properties_kvpairs.items()
+            }
+        if read_only is not None: body['read_only'] = _validated('read_only', bool, read_only)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body)
         return ConnectionInfo.from_dict(json)
@@ -3395,8 +3622,12 @@ class ConnectionsAPI:
         :returns: :class:`ConnectionInfo`
         """
         body = {}
-        if name is not None: body['name'] = name
-        if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
+        if name is not None: body['name'] = _validated('name', str, name)
+        if options_kvpairs is not None:
+            body['options_kvpairs'] = {
+                k: _validated('options_kvpairs item', str, v)
+                for (k, v) in options_kvpairs.items()
+            }
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{name_arg}', body=body)
         return ConnectionInfo.from_dict(json)
@@ -3453,16 +3684,18 @@ class ExternalLocationsAPI:
         :returns: :class:`ExternalLocationInfo`
         """
         body = {}
-        if access_point is not None: body['access_point'] = access_point
-        if comment is not None: body['comment'] = comment
-        if credential_name is not None: body['credential_name'] = credential_name
+        if access_point is not None: body['access_point'] = _validated('access_point', str, access_point)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if credential_name is not None:
+            body['credential_name'] = _validated('credential_name', str, credential_name)
         if encryption_details is not None:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     encryption_details)
-        if name is not None: body['name'] = name
-        if read_only is not None: body['read_only'] = read_only
-        if skip_validation is not None: body['skip_validation'] = skip_validation
-        if url is not None: body['url'] = url
+        if name is not None: body['name'] = _validated('name', str, name)
+        if read_only is not None: body['read_only'] = _validated('read_only', bool, read_only)
+        if skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, skip_validation)
+        if url is not None: body['url'] = _validated('url', str, url)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body)
         return ExternalLocationInfo.from_dict(json)
@@ -3482,7 +3715,7 @@ class ExternalLocationsAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/external-locations/{name}', query=query)
 
     def get(self, name: str) -> ExternalLocationInfo:
@@ -3552,16 +3785,17 @@ class ExternalLocationsAPI:
         :returns: :class:`ExternalLocationInfo`
         """
         body = {}
-        if access_point is not None: body['access_point'] = access_point
-        if comment is not None: body['comment'] = comment
-        if credential_name is not None: body['credential_name'] = credential_name
+        if access_point is not None: body['access_point'] = _validated('access_point', str, access_point)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if credential_name is not None:
+            body['credential_name'] = _validated('credential_name', str, credential_name)
         if encryption_details is not None:
             body['encryption_details'] = _validated('encryption_details', EncryptionDetails,
                                                     encryption_details)
-        if force is not None: body['force'] = force
-        if owner is not None: body['owner'] = owner
-        if read_only is not None: body['read_only'] = read_only
-        if url is not None: body['url'] = url
+        if force is not None: body['force'] = _validated('force', bool, force)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if read_only is not None: body['read_only'] = _validated('read_only', bool, read_only)
+        if url is not None: body['url'] = _validated('url', str, url)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/external-locations/{name}', body=body)
         return ExternalLocationInfo.from_dict(json)
@@ -3657,42 +3891,47 @@ class FunctionsAPI:
         :returns: :class:`FunctionInfo`
         """
         body = {}
-        if catalog_name is not None: body['catalog_name'] = catalog_name
-        if comment is not None: body['comment'] = comment
+        if catalog_name is not None: body['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
         if data_type is not None: body['data_type'] = _validated('data_type', ColumnTypeName, data_type)
-        if external_language is not None: body['external_language'] = external_language
-        if external_name is not None: body['external_name'] = external_name
-        if full_data_type is not None: body['full_data_type'] = full_data_type
+        if external_language is not None:
+            body['external_language'] = _validated('external_language', str, external_language)
+        if external_name is not None: body['external_name'] = _validated('external_name', str, external_name)
+        if full_data_type is not None:
+            body['full_data_type'] = _validated('full_data_type', str, full_data_type)
         if input_params is not None:
             body['input_params'] = [
                 _validated('input_params item', FunctionParameterInfo, v) for v in input_params
             ]
-        if is_deterministic is not None: body['is_deterministic'] = is_deterministic
-        if is_null_call is not None: body['is_null_call'] = is_null_call
-        if name is not None: body['name'] = name
+        if is_deterministic is not None:
+            body['is_deterministic'] = _validated('is_deterministic', bool, is_deterministic)
+        if is_null_call is not None: body['is_null_call'] = _validated('is_null_call', bool, is_null_call)
+        if name is not None: body['name'] = _validated('name', str, name)
         if parameter_style is not None:
             body['parameter_style'] = _validated('parameter_style', CreateFunctionParameterStyle,
                                                  parameter_style)
-        if properties is not None: body['properties'] = properties
+        if properties is not None:
+            body['properties'] = {k: _validated('properties item', str, v) for (k, v) in properties.items()}
         if return_params is not None:
             body['return_params'] = [
                 _validated('return_params item', FunctionParameterInfo, v) for v in return_params
             ]
         if routine_body is not None:
             body['routine_body'] = _validated('routine_body', CreateFunctionRoutineBody, routine_body)
-        if routine_definition is not None: body['routine_definition'] = routine_definition
+        if routine_definition is not None:
+            body['routine_definition'] = _validated('routine_definition', str, routine_definition)
         if routine_dependencies is not None:
             body['routine_dependencies'] = [
                 _validated('routine_dependencies item', Dependency, v) for v in routine_dependencies
             ]
-        if schema_name is not None: body['schema_name'] = schema_name
+        if schema_name is not None: body['schema_name'] = _validated('schema_name', str, schema_name)
         if security_type is not None:
             body['security_type'] = _validated('security_type', CreateFunctionSecurityType, security_type)
-        if specific_name is not None: body['specific_name'] = specific_name
+        if specific_name is not None: body['specific_name'] = _validated('specific_name', str, specific_name)
         if sql_data_access is not None:
             body['sql_data_access'] = _validated('sql_data_access', CreateFunctionSqlDataAccess,
                                                  sql_data_access)
-        if sql_path is not None: body['sql_path'] = sql_path
+        if sql_path is not None: body['sql_path'] = _validated('sql_path', str, sql_path)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body)
         return FunctionInfo.from_dict(json)
@@ -3716,7 +3955,7 @@ class FunctionsAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/functions/{name}', query=query)
 
     def get(self, name: str) -> FunctionInfo:
@@ -3757,8 +3996,8 @@ class FunctionsAPI:
         """
 
         query = {}
-        if catalog_name is not None: query['catalog_name'] = catalog_name
-        if schema_name is not None: query['schema_name'] = schema_name
+        if catalog_name is not None: query['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if schema_name is not None: query['schema_name'] = _validated('schema_name', str, schema_name)
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query)
         return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
@@ -3782,7 +4021,7 @@ class FunctionsAPI:
         :returns: :class:`FunctionInfo`
         """
         body = {}
-        if owner is not None: body['owner'] = owner
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{name}', body=body)
         return FunctionInfo.from_dict(json)
@@ -3822,7 +4061,7 @@ class GrantsAPI:
         """
 
         query = {}
-        if principal is not None: query['principal'] = principal
+        if principal is not None: query['principal'] = _validated('principal', str, principal)
 
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
@@ -3850,7 +4089,7 @@ class GrantsAPI:
         """
 
         query = {}
-        if principal is not None: query['principal'] = principal
+        if principal is not None: query['principal'] = _validated('principal', str, principal)
 
         json = self._api.do(
             'GET',
@@ -3919,8 +4158,9 @@ class MetastoresAPI:
         
         """
         body = {}
-        if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
-        if metastore_id is not None: body['metastore_id'] = metastore_id
+        if default_catalog_name is not None:
+            body['default_catalog_name'] = _validated('default_catalog_name', str, default_catalog_name)
+        if metastore_id is not None: body['metastore_id'] = _validated('metastore_id', str, metastore_id)
         self._api.do('PUT', f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore', body=body)
 
     def create(self, name: str, storage_root: str, *, region: Optional[str] = None) -> MetastoreInfo:
@@ -3939,9 +4179,9 @@ class MetastoresAPI:
         :returns: :class:`MetastoreInfo`
         """
         body = {}
-        if name is not None: body['name'] = name
-        if region is not None: body['region'] = region
-        if storage_root is not None: body['storage_root'] = storage_root
+        if name is not None: body['name'] = _validated('name', str, name)
+        if region is not None: body['region'] = _validated('region', str, region)
+        if storage_root is not None: body['storage_root'] = _validated('storage_root', str, storage_root)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/metastores', body=body)
         return MetastoreInfo.from_dict(json)
@@ -3971,7 +4211,7 @@ class MetastoresAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/metastores/{id}', query=query)
 
     def enable_optimization(self, metastore_id: str, enable: bool) -> UpdatePredictiveOptimizationResponse:
@@ -3987,8 +4227,8 @@ class MetastoresAPI:
         :returns: :class:`UpdatePredictiveOptimizationResponse`
         """
         body = {}
-        if enable is not None: body['enable'] = enable
-        if metastore_id is not None: body['metastore_id'] = metastore_id
+        if enable is not None: body['enable'] = _validated('enable', bool, enable)
+        if metastore_id is not None: body['metastore_id'] = _validated('metastore_id', str, metastore_id)
 
         json = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body)
         return UpdatePredictiveOptimizationResponse.from_dict(json)
@@ -4046,7 +4286,7 @@ class MetastoresAPI:
         """
 
         query = {}
-        if metastore_id is not None: query['metastore_id'] = metastore_id
+        if metastore_id is not None: query['metastore_id'] = _validated('metastore_id', str, metastore_id)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore', query=query)
 
     def update(self,
@@ -4085,18 +4325,23 @@ class MetastoresAPI:
         """
         body = {}
         if delta_sharing_organization_name is not None:
-            body['delta_sharing_organization_name'] = delta_sharing_organization_name
+            body['delta_sharing_organization_name'] = _validated('delta_sharing_organization_name', str,
+                                                                 delta_sharing_organization_name)
         if delta_sharing_recipient_token_lifetime_in_seconds is not None:
-            body[
-                'delta_sharing_recipient_token_lifetime_in_seconds'] = delta_sharing_recipient_token_lifetime_in_seconds
+            body['delta_sharing_recipient_token_lifetime_in_seconds'] = _validated(
+                'delta_sharing_recipient_token_lifetime_in_seconds', int,
+                delta_sharing_recipient_token_lifetime_in_seconds)
         if delta_sharing_scope is not None:
             body['delta_sharing_scope'] = _validated('delta_sharing_scope', UpdateMetastoreDeltaSharingScope,
                                                      delta_sharing_scope)
-        if name is not None: body['name'] = name
-        if owner is not None: body['owner'] = owner
-        if privilege_model_version is not None: body['privilege_model_version'] = privilege_model_version
+        if name is not None: body['name'] = _validated('name', str, name)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if privilege_model_version is not None:
+            body['privilege_model_version'] = _validated('privilege_model_version', str,
+                                                         privilege_model_version)
         if storage_root_credential_id is not None:
-            body['storage_root_credential_id'] = storage_root_credential_id
+            body['storage_root_credential_id'] = _validated('storage_root_credential_id', str,
+                                                            storage_root_credential_id)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{id}', body=body)
         return MetastoreInfo.from_dict(json)
@@ -4123,8 +4368,9 @@ class MetastoresAPI:
         
         """
         body = {}
-        if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
-        if metastore_id is not None: body['metastore_id'] = metastore_id
+        if default_catalog_name is not None:
+            body['default_catalog_name'] = _validated('default_catalog_name', str, default_catalog_name)
+        if metastore_id is not None: body['metastore_id'] = _validated('metastore_id', str, metastore_id)
         self._api.do('PATCH', f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore', body=body)
 
 
@@ -4163,11 +4409,12 @@ class SchemasAPI:
         :returns: :class:`SchemaInfo`
         """
         body = {}
-        if catalog_name is not None: body['catalog_name'] = catalog_name
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if properties is not None: body['properties'] = properties
-        if storage_root is not None: body['storage_root'] = storage_root
+        if catalog_name is not None: body['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if properties is not None:
+            body['properties'] = {k: _validated('properties item', str, v) for (k, v) in properties.items()}
+        if storage_root is not None: body['storage_root'] = _validated('storage_root', str, storage_root)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body)
         return SchemaInfo.from_dict(json)
@@ -4216,7 +4463,7 @@ class SchemasAPI:
         """
 
         query = {}
-        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if catalog_name is not None: query['catalog_name'] = _validated('catalog_name', str, catalog_name)
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query)
         return [SchemaInfo.from_dict(v) for v in json.get('schemas', [])]
@@ -4249,10 +4496,11 @@ class SchemasAPI:
         :returns: :class:`SchemaInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if owner is not None: body['owner'] = owner
-        if properties is not None: body['properties'] = properties
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if properties is not None:
+            body['properties'] = {k: _validated('properties item', str, v) for (k, v) in properties.items()}
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/schemas/{full_name}', body=body)
         return SchemaInfo.from_dict(json)
@@ -4322,12 +4570,14 @@ class StorageCredentialsAPI:
         if azure_service_principal is not None:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          azure_service_principal)
-        if comment is not None: body['comment'] = comment
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
-        if name is not None: body['name'] = name
-        if read_only is not None: body['read_only'] = read_only
-        if skip_validation is not None: body['skip_validation'] = skip_validation
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account', Any,
+                                                                databricks_gcp_service_account)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if read_only is not None: body['read_only'] = _validated('read_only', bool, read_only)
+        if skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, skip_validation)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body)
         return StorageCredentialInfo.from_dict(json)
@@ -4347,7 +4597,7 @@ class StorageCredentialsAPI:
         """
 
         query = {}
-        if force is not None: query['force'] = force
+        if force is not None: query['force'] = _validated('force', bool, force)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/storage-credentials/{name}', query=query)
 
     def get(self, name: str) -> StorageCredentialInfo:
@@ -4429,13 +4679,15 @@ class StorageCredentialsAPI:
         if azure_service_principal is not None:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          azure_service_principal)
-        if comment is not None: body['comment'] = comment
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
-        if force is not None: body['force'] = force
-        if owner is not None: body['owner'] = owner
-        if read_only is not None: body['read_only'] = read_only
-        if skip_validation is not None: body['skip_validation'] = skip_validation
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account', Any,
+                                                                databricks_gcp_service_account)
+        if force is not None: body['force'] = _validated('force', bool, force)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
+        if read_only is not None: body['read_only'] = _validated('read_only', bool, read_only)
+        if skip_validation is not None:
+            body['skip_validation'] = _validated('skip_validation', bool, skip_validation)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/storage-credentials/{name}', body=body)
         return StorageCredentialInfo.from_dict(json)
@@ -4491,11 +4743,15 @@ class StorageCredentialsAPI:
             body['azure_service_principal'] = _validated('azure_service_principal', AzureServicePrincipal,
                                                          azure_service_principal)
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
-        if external_location_name is not None: body['external_location_name'] = external_location_name
-        if read_only is not None: body['read_only'] = read_only
-        if storage_credential_name is not None: body['storage_credential_name'] = storage_credential_name
-        if url is not None: body['url'] = url
+            body['databricks_gcp_service_account'] = _validated('databricks_gcp_service_account', Any,
+                                                                databricks_gcp_service_account)
+        if external_location_name is not None:
+            body['external_location_name'] = _validated('external_location_name', str, external_location_name)
+        if read_only is not None: body['read_only'] = _validated('read_only', bool, read_only)
+        if storage_credential_name is not None:
+            body['storage_credential_name'] = _validated('storage_credential_name', Any,
+                                                         storage_credential_name)
+        if url is not None: body['url'] = _validated('url', str, url)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/validate-storage-credentials', body=body)
         return ValidateStorageCredentialResponse.from_dict(json)
@@ -4595,7 +4851,7 @@ class TableConstraintsAPI:
         """
         body = {}
         if constraint is not None: body['constraint'] = _validated('constraint', TableConstraint, constraint)
-        if full_name_arg is not None: body['full_name_arg'] = full_name_arg
+        if full_name_arg is not None: body['full_name_arg'] = _validated('full_name_arg', str, full_name_arg)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body)
         return TableConstraint.from_dict(json)
@@ -4624,8 +4880,9 @@ class TableConstraintsAPI:
         """
 
         query = {}
-        if cascade is not None: query['cascade'] = cascade
-        if constraint_name is not None: query['constraint_name'] = constraint_name
+        if cascade is not None: query['cascade'] = _validated('cascade', bool, cascade)
+        if constraint_name is not None:
+            query['constraint_name'] = _validated('constraint_name', str, constraint_name)
         self._api.do('DELETE', f'/api/2.1/unity-catalog/constraints/{full_name}', query=query)
 
 
@@ -4675,7 +4932,9 @@ class TablesAPI:
         """
 
         query = {}
-        if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_delta_metadata is not None:
+            query['include_delta_metadata'] = _validated('include_delta_metadata', bool,
+                                                         include_delta_metadata)
 
         json = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query)
         return TableInfo.from_dict(json)
@@ -4714,11 +4973,13 @@ class TablesAPI:
         """
 
         query = {}
-        if catalog_name is not None: query['catalog_name'] = catalog_name
-        if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        if schema_name is not None: query['schema_name'] = schema_name
+        if catalog_name is not None: query['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if include_delta_metadata is not None:
+            query['include_delta_metadata'] = _validated('include_delta_metadata', bool,
+                                                         include_delta_metadata)
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
+        if schema_name is not None: query['schema_name'] = _validated('schema_name', str, schema_name)
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query)
@@ -4765,11 +5026,13 @@ class TablesAPI:
         """
 
         query = {}
-        if catalog_name is not None: query['catalog_name'] = catalog_name
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        if schema_name_pattern is not None: query['schema_name_pattern'] = schema_name_pattern
-        if table_name_pattern is not None: query['table_name_pattern'] = table_name_pattern
+        if catalog_name is not None: query['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if max_results is not None: query['max_results'] = _validated('max_results', int, max_results)
+        if page_token is not None: query['page_token'] = _validated('page_token', str, page_token)
+        if schema_name_pattern is not None:
+            query['schema_name_pattern'] = _validated('schema_name_pattern', str, schema_name_pattern)
+        if table_name_pattern is not None:
+            query['table_name_pattern'] = _validated('table_name_pattern', str, table_name_pattern)
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query)
@@ -4796,7 +5059,7 @@ class TablesAPI:
         
         """
         body = {}
-        if owner is not None: body['owner'] = owner
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
         self._api.do('PATCH', f'/api/2.1/unity-catalog/tables/{full_name}', body=body)
 
 
@@ -4852,11 +5115,12 @@ class VolumesAPI:
         :returns: :class:`VolumeInfo`
         """
         body = {}
-        if catalog_name is not None: body['catalog_name'] = catalog_name
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if schema_name is not None: body['schema_name'] = schema_name
-        if storage_location is not None: body['storage_location'] = storage_location
+        if catalog_name is not None: body['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if schema_name is not None: body['schema_name'] = _validated('schema_name', str, schema_name)
+        if storage_location is not None:
+            body['storage_location'] = _validated('storage_location', str, storage_location)
         if volume_type is not None: body['volume_type'] = _validated('volume_type', VolumeType, volume_type)
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body)
@@ -4901,8 +5165,8 @@ class VolumesAPI:
         """
 
         query = {}
-        if catalog_name is not None: query['catalog_name'] = catalog_name
-        if schema_name is not None: query['schema_name'] = schema_name
+        if catalog_name is not None: query['catalog_name'] = _validated('catalog_name', str, catalog_name)
+        if schema_name is not None: query['schema_name'] = _validated('schema_name', str, schema_name)
 
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query)
         return [VolumeInfo.from_dict(v) for v in json.get('volumes', [])]
@@ -4953,9 +5217,9 @@ class VolumesAPI:
         :returns: :class:`VolumeInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if owner is not None: body['owner'] = owner
+        if comment is not None: body['comment'] = _validated('comment', str, comment)
+        if name is not None: body['name'] = _validated('name', str, name)
+        if owner is not None: body['owner'] = _validated('owner', str, owner)
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', body=body)
         return VolumeInfo.from_dict(json)
@@ -5005,8 +5269,14 @@ class WorkspaceBindingsAPI:
         :returns: :class:`CurrentWorkspaceBindings`
         """
         body = {}
-        if assign_workspaces is not None: body['assign_workspaces'] = [v for v in assign_workspaces]
-        if unassign_workspaces is not None: body['unassign_workspaces'] = [v for v in unassign_workspaces]
+        if assign_workspaces is not None:
+            body['assign_workspaces'] = [
+                _validated('assign_workspaces item', int, v) for v in assign_workspaces
+            ]
+        if unassign_workspaces is not None:
+            body['unassign_workspaces'] = [
+                _validated('unassign_workspaces item', int, v) for v in unassign_workspaces
+            ]
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}', body=body)
         return CurrentWorkspaceBindings.from_dict(json)

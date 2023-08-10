@@ -23,6 +23,8 @@ def _enum(d: Dict[str, any], field: str, cls: Type) -> any:
 
 
 def _fqcn(x: any) -> str:
+    if x.__module__ == 'builtins':
+        return x.__name__
     return f'{x.__module__}.{x.__name__}'
 
 

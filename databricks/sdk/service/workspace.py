@@ -21,7 +21,7 @@ class AclItem:
         body = {}
         if self.permission is not None:
             body['permission'] = _validated('permission', AclPermission, self.permission)
-        if self.principal is not None: body['principal'] = self.principal
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
         return body
 
     @classmethod
@@ -43,8 +43,9 @@ class AzureKeyVaultSecretScopeMetadata:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.dns_name is not None: body['dns_name'] = self.dns_name
-        if self.resource_id is not None: body['resource_id'] = self.resource_id
+        if self.dns_name is not None: body['dns_name'] = _validated('dns_name', str, self.dns_name)
+        if self.resource_id is not None:
+            body['resource_id'] = _validated('resource_id', str, self.resource_id)
         return body
 
     @classmethod
@@ -60,9 +61,13 @@ class CreateCredentials:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.git_provider is not None: body['git_provider'] = self.git_provider
-        if self.git_username is not None: body['git_username'] = self.git_username
-        if self.personal_access_token is not None: body['personal_access_token'] = self.personal_access_token
+        if self.git_provider is not None:
+            body['git_provider'] = _validated('git_provider', str, self.git_provider)
+        if self.git_username is not None:
+            body['git_username'] = _validated('git_username', str, self.git_username)
+        if self.personal_access_token is not None:
+            body['personal_access_token'] = _validated('personal_access_token', str,
+                                                       self.personal_access_token)
         return body
 
     @classmethod
@@ -80,9 +85,12 @@ class CreateCredentialsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id is not None: body['credential_id'] = self.credential_id
-        if self.git_provider is not None: body['git_provider'] = self.git_provider
-        if self.git_username is not None: body['git_username'] = self.git_username
+        if self.credential_id is not None:
+            body['credential_id'] = _validated('credential_id', int, self.credential_id)
+        if self.git_provider is not None:
+            body['git_provider'] = _validated('git_provider', str, self.git_provider)
+        if self.git_username is not None:
+            body['git_username'] = _validated('git_username', str, self.git_username)
         return body
 
     @classmethod
@@ -101,11 +109,11 @@ class CreateRepo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
-        if self.provider is not None: body['provider'] = self.provider
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
+        if self.provider is not None: body['provider'] = _validated('provider', str, self.provider)
         if self.sparse_checkout:
             body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckout, self.sparse_checkout)
-        if self.url is not None: body['url'] = self.url
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -130,8 +138,9 @@ class CreateScope:
                                                         AzureKeyVaultSecretScopeMetadata,
                                                         self.backend_azure_keyvault)
         if self.initial_manage_principal is not None:
-            body['initial_manage_principal'] = self.initial_manage_principal
-        if self.scope is not None: body['scope'] = self.scope
+            body['initial_manage_principal'] = _validated('initial_manage_principal', str,
+                                                          self.initial_manage_principal)
+        if self.scope is not None: body['scope'] = _validated('scope', str, self.scope)
         if self.scope_backend_type is not None:
             body['scope_backend_type'] = _validated('scope_backend_type', ScopeBackendType,
                                                     self.scope_backend_type)
@@ -154,9 +163,12 @@ class CredentialInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id is not None: body['credential_id'] = self.credential_id
-        if self.git_provider is not None: body['git_provider'] = self.git_provider
-        if self.git_username is not None: body['git_username'] = self.git_username
+        if self.credential_id is not None:
+            body['credential_id'] = _validated('credential_id', int, self.credential_id)
+        if self.git_provider is not None:
+            body['git_provider'] = _validated('git_provider', str, self.git_provider)
+        if self.git_username is not None:
+            body['git_username'] = _validated('git_username', str, self.git_username)
         return body
 
     @classmethod
@@ -173,8 +185,8 @@ class Delete:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
-        if self.recursive is not None: body['recursive'] = self.recursive
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
+        if self.recursive is not None: body['recursive'] = _validated('recursive', bool, self.recursive)
         return body
 
     @classmethod
@@ -189,8 +201,8 @@ class DeleteAcl:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principal is not None: body['principal'] = self.principal
-        if self.scope is not None: body['scope'] = self.scope
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
+        if self.scope is not None: body['scope'] = _validated('scope', str, self.scope)
         return body
 
     @classmethod
@@ -204,7 +216,7 @@ class DeleteScope:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.scope is not None: body['scope'] = self.scope
+        if self.scope is not None: body['scope'] = _validated('scope', str, self.scope)
         return body
 
     @classmethod
@@ -219,8 +231,8 @@ class DeleteSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.scope is not None: body['scope'] = self.scope
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.scope is not None: body['scope'] = _validated('scope', str, self.scope)
         return body
 
     @classmethod
@@ -243,7 +255,7 @@ class ExportResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content is not None: body['content'] = self.content
+        if self.content is not None: body['content'] = _validated('content', str, self.content)
         return body
 
     @classmethod
@@ -314,11 +326,11 @@ class Import:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.content is not None: body['content'] = self.content
+        if self.content is not None: body['content'] = _validated('content', str, self.content)
         if self.format is not None: body['format'] = _validated('format', ImportFormat, self.format)
         if self.language is not None: body['language'] = _validated('language', Language, self.language)
-        if self.overwrite is not None: body['overwrite'] = self.overwrite
-        if self.path is not None: body['path'] = self.path
+        if self.overwrite is not None: body['overwrite'] = _validated('overwrite', bool, self.overwrite)
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -387,7 +399,8 @@ class ListReposResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.next_page_token is not None:
+            body['next_page_token'] = _validated('next_page_token', str, self.next_page_token)
         if self.repos: body['repos'] = [_validated('repos item', RepoInfo, v) for v in self.repos]
         return body
 
@@ -445,7 +458,7 @@ class Mkdirs:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.path is not None: body['path'] = self.path
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
         return body
 
     @classmethod
@@ -465,14 +478,15 @@ class ObjectInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_at is not None: body['created_at'] = _validated('created_at', int, self.created_at)
         if self.language is not None: body['language'] = _validated('language', Language, self.language)
-        if self.modified_at is not None: body['modified_at'] = self.modified_at
-        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.modified_at is not None:
+            body['modified_at'] = _validated('modified_at', int, self.modified_at)
+        if self.object_id is not None: body['object_id'] = _validated('object_id', int, self.object_id)
         if self.object_type is not None:
             body['object_type'] = _validated('object_type', ObjectType, self.object_type)
-        if self.path is not None: body['path'] = self.path
-        if self.size is not None: body['size'] = self.size
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
+        if self.size is not None: body['size'] = _validated('size', int, self.size)
         return body
 
     @classmethod
@@ -509,8 +523,8 @@ class PutAcl:
         body = {}
         if self.permission is not None:
             body['permission'] = _validated('permission', AclPermission, self.permission)
-        if self.principal is not None: body['principal'] = self.principal
-        if self.scope is not None: body['scope'] = self.scope
+        if self.principal is not None: body['principal'] = _validated('principal', str, self.principal)
+        if self.scope is not None: body['scope'] = _validated('scope', str, self.scope)
         return body
 
     @classmethod
@@ -529,10 +543,12 @@ class PutSecret:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.bytes_value is not None: body['bytes_value'] = self.bytes_value
-        if self.key is not None: body['key'] = self.key
-        if self.scope is not None: body['scope'] = self.scope
-        if self.string_value is not None: body['string_value'] = self.string_value
+        if self.bytes_value is not None:
+            body['bytes_value'] = _validated('bytes_value', str, self.bytes_value)
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
+        if self.scope is not None: body['scope'] = _validated('scope', str, self.scope)
+        if self.string_value is not None:
+            body['string_value'] = _validated('string_value', str, self.string_value)
         return body
 
     @classmethod
@@ -552,13 +568,14 @@ class RepoAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', RepoPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -583,11 +600,13 @@ class RepoAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', RepoPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -611,14 +630,15 @@ class RepoInfo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.branch is not None: body['branch'] = self.branch
-        if self.head_commit_id is not None: body['head_commit_id'] = self.head_commit_id
-        if self.id is not None: body['id'] = self.id
-        if self.path is not None: body['path'] = self.path
-        if self.provider is not None: body['provider'] = self.provider
+        if self.branch is not None: body['branch'] = _validated('branch', str, self.branch)
+        if self.head_commit_id is not None:
+            body['head_commit_id'] = _validated('head_commit_id', str, self.head_commit_id)
+        if self.id is not None: body['id'] = _validated('id', int, self.id)
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
+        if self.provider is not None: body['provider'] = _validated('provider', str, self.provider)
         if self.sparse_checkout:
             body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckout, self.sparse_checkout)
-        if self.url is not None: body['url'] = self.url
+        if self.url is not None: body['url'] = _validated('url', str, self.url)
         return body
 
     @classmethod
@@ -640,8 +660,11 @@ class RepoPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', RepoPermissionLevel,
                                                   self.permission_level)
@@ -676,8 +699,9 @@ class RepoPermissions:
                 _validated('access_control_list item', RepoAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -694,7 +718,8 @@ class RepoPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', RepoPermissionLevel,
                                                   self.permission_level)
@@ -718,7 +743,7 @@ class RepoPermissionsRequest:
                 _validated('access_control_list item', RepoAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.repo_id is not None: body['repo_id'] = self.repo_id
+        if self.repo_id is not None: body['repo_id'] = _validated('repo_id', str, self.repo_id)
         return body
 
     @classmethod
@@ -740,9 +765,10 @@ class SecretMetadata:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.key is not None: body['key'] = self.key
+        if self.key is not None: body['key'] = _validated('key', str, self.key)
         if self.last_updated_timestamp is not None:
-            body['last_updated_timestamp'] = self.last_updated_timestamp
+            body['last_updated_timestamp'] = _validated('last_updated_timestamp', int,
+                                                        self.last_updated_timestamp)
         return body
 
     @classmethod
@@ -763,7 +789,7 @@ class SecretScope:
         if self.keyvault_metadata:
             body['keyvault_metadata'] = _validated('keyvault_metadata', AzureKeyVaultSecretScopeMetadata,
                                                    self.keyvault_metadata)
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -779,7 +805,7 @@ class SparseCheckout:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.patterns: body['patterns'] = [v for v in self.patterns]
+        if self.patterns: body['patterns'] = [_validated('patterns item', str, v) for v in self.patterns]
         return body
 
     @classmethod
@@ -793,7 +819,7 @@ class SparseCheckoutUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.patterns: body['patterns'] = [v for v in self.patterns]
+        if self.patterns: body['patterns'] = [_validated('patterns item', str, v) for v in self.patterns]
         return body
 
     @classmethod
@@ -810,10 +836,15 @@ class UpdateCredentials:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.credential_id is not None: body['credential_id'] = self.credential_id
-        if self.git_provider is not None: body['git_provider'] = self.git_provider
-        if self.git_username is not None: body['git_username'] = self.git_username
-        if self.personal_access_token is not None: body['personal_access_token'] = self.personal_access_token
+        if self.credential_id is not None:
+            body['credential_id'] = _validated('credential_id', int, self.credential_id)
+        if self.git_provider is not None:
+            body['git_provider'] = _validated('git_provider', str, self.git_provider)
+        if self.git_username is not None:
+            body['git_username'] = _validated('git_username', str, self.git_username)
+        if self.personal_access_token is not None:
+            body['personal_access_token'] = _validated('personal_access_token', str,
+                                                       self.personal_access_token)
         return body
 
     @classmethod
@@ -833,12 +864,12 @@ class UpdateRepo:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.branch is not None: body['branch'] = self.branch
-        if self.repo_id is not None: body['repo_id'] = self.repo_id
+        if self.branch is not None: body['branch'] = _validated('branch', str, self.branch)
+        if self.repo_id is not None: body['repo_id'] = _validated('repo_id', int, self.repo_id)
         if self.sparse_checkout:
             body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckoutUpdate,
                                                  self.sparse_checkout)
-        if self.tag is not None: body['tag'] = self.tag
+        if self.tag is not None: body['tag'] = _validated('tag', str, self.tag)
         return body
 
     @classmethod
@@ -858,13 +889,14 @@ class WorkspaceObjectAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', WorkspaceObjectPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -889,11 +921,13 @@ class WorkspaceObjectAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', WorkspaceObjectPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -913,8 +947,11 @@ class WorkspaceObjectPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', WorkspaceObjectPermissionLevel,
                                                   self.permission_level)
@@ -949,8 +986,9 @@ class WorkspaceObjectPermissions:
                 _validated('access_control_list item', WorkspaceObjectAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -968,7 +1006,8 @@ class WorkspaceObjectPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', WorkspaceObjectPermissionLevel,
                                                   self.permission_level)
@@ -993,8 +1032,11 @@ class WorkspaceObjectPermissionsRequest:
                 _validated('access_control_list item', WorkspaceObjectAccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.workspace_object_id is not None: body['workspace_object_id'] = self.workspace_object_id
-        if self.workspace_object_type is not None: body['workspace_object_type'] = self.workspace_object_type
+        if self.workspace_object_id is not None:
+            body['workspace_object_id'] = _validated('workspace_object_id', str, self.workspace_object_id)
+        if self.workspace_object_type is not None:
+            body['workspace_object_type'] = _validated('workspace_object_type', str,
+                                                       self.workspace_object_type)
         return body
 
     @classmethod
@@ -1038,9 +1080,10 @@ class GitCredentialsAPI:
         :returns: :class:`CreateCredentialsResponse`
         """
         body = {}
-        if git_provider is not None: body['git_provider'] = git_provider
-        if git_username is not None: body['git_username'] = git_username
-        if personal_access_token is not None: body['personal_access_token'] = personal_access_token
+        if git_provider is not None: body['git_provider'] = _validated('git_provider', str, git_provider)
+        if git_username is not None: body['git_username'] = _validated('git_username', str, git_username)
+        if personal_access_token is not None:
+            body['personal_access_token'] = _validated('personal_access_token', str, personal_access_token)
 
         json = self._api.do('POST', '/api/2.0/git-credentials', body=body)
         return CreateCredentialsResponse.from_dict(json)
@@ -1107,9 +1150,10 @@ class GitCredentialsAPI:
         
         """
         body = {}
-        if git_provider is not None: body['git_provider'] = git_provider
-        if git_username is not None: body['git_username'] = git_username
-        if personal_access_token is not None: body['personal_access_token'] = personal_access_token
+        if git_provider is not None: body['git_provider'] = _validated('git_provider', str, git_provider)
+        if git_username is not None: body['git_username'] = _validated('git_username', str, git_username)
+        if personal_access_token is not None:
+            body['personal_access_token'] = _validated('personal_access_token', str, personal_access_token)
         self._api.do('PATCH', f'/api/2.0/git-credentials/{credential_id}', body=body)
 
 
@@ -1153,11 +1197,11 @@ class ReposAPI:
         :returns: :class:`RepoInfo`
         """
         body = {}
-        if path is not None: body['path'] = path
-        if provider is not None: body['provider'] = provider
+        if path is not None: body['path'] = _validated('path', str, path)
+        if provider is not None: body['provider'] = _validated('provider', str, provider)
         if sparse_checkout is not None:
             body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckout, sparse_checkout)
-        if url is not None: body['url'] = url
+        if url is not None: body['url'] = _validated('url', str, url)
 
         json = self._api.do('POST', '/api/2.0/repos', body=body)
         return RepoInfo.from_dict(json)
@@ -1236,8 +1280,9 @@ class ReposAPI:
         """
 
         query = {}
-        if next_page_token is not None: query['next_page_token'] = next_page_token
-        if path_prefix is not None: query['path_prefix'] = path_prefix
+        if next_page_token is not None:
+            query['next_page_token'] = _validated('next_page_token', str, next_page_token)
+        if path_prefix is not None: query['path_prefix'] = _validated('path_prefix', str, path_prefix)
 
         while True:
             json = self._api.do('GET', '/api/2.0/repos', query=query)
@@ -1300,10 +1345,10 @@ class ReposAPI:
         
         """
         body = {}
-        if branch is not None: body['branch'] = branch
+        if branch is not None: body['branch'] = _validated('branch', str, branch)
         if sparse_checkout is not None:
             body['sparse_checkout'] = _validated('sparse_checkout', SparseCheckoutUpdate, sparse_checkout)
-        if tag is not None: body['tag'] = tag
+        if tag is not None: body['tag'] = _validated('tag', str, tag)
         self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body)
 
     def update_repo_permissions(
@@ -1373,8 +1418,10 @@ class SecretsAPI:
             body['backend_azure_keyvault'] = _validated('backend_azure_keyvault',
                                                         AzureKeyVaultSecretScopeMetadata,
                                                         backend_azure_keyvault)
-        if initial_manage_principal is not None: body['initial_manage_principal'] = initial_manage_principal
-        if scope is not None: body['scope'] = scope
+        if initial_manage_principal is not None:
+            body['initial_manage_principal'] = _validated('initial_manage_principal', str,
+                                                          initial_manage_principal)
+        if scope is not None: body['scope'] = _validated('scope', str, scope)
         if scope_backend_type is not None:
             body['scope_backend_type'] = _validated('scope_backend_type', ScopeBackendType,
                                                     scope_backend_type)
@@ -1397,8 +1444,8 @@ class SecretsAPI:
         
         """
         body = {}
-        if principal is not None: body['principal'] = principal
-        if scope is not None: body['scope'] = scope
+        if principal is not None: body['principal'] = _validated('principal', str, principal)
+        if scope is not None: body['scope'] = _validated('scope', str, scope)
         self._api.do('POST', '/api/2.0/secrets/acls/delete', body=body)
 
     def delete_scope(self, scope: str):
@@ -1415,7 +1462,7 @@ class SecretsAPI:
         
         """
         body = {}
-        if scope is not None: body['scope'] = scope
+        if scope is not None: body['scope'] = _validated('scope', str, scope)
         self._api.do('POST', '/api/2.0/secrets/scopes/delete', body=body)
 
     def delete_secret(self, scope: str, key: str):
@@ -1435,8 +1482,8 @@ class SecretsAPI:
         
         """
         body = {}
-        if key is not None: body['key'] = key
-        if scope is not None: body['scope'] = scope
+        if key is not None: body['key'] = _validated('key', str, key)
+        if scope is not None: body['scope'] = _validated('scope', str, scope)
         self._api.do('POST', '/api/2.0/secrets/delete', body=body)
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
@@ -1457,8 +1504,8 @@ class SecretsAPI:
         """
 
         query = {}
-        if principal is not None: query['principal'] = principal
-        if scope is not None: query['scope'] = scope
+        if principal is not None: query['principal'] = _validated('principal', str, principal)
+        if scope is not None: query['scope'] = _validated('scope', str, scope)
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/get', query=query)
         return AclItem.from_dict(json)
@@ -1478,7 +1525,7 @@ class SecretsAPI:
         """
 
         query = {}
-        if scope is not None: query['scope'] = scope
+        if scope is not None: query['scope'] = _validated('scope', str, scope)
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query)
         return [AclItem.from_dict(v) for v in json.get('items', [])]
@@ -1513,7 +1560,7 @@ class SecretsAPI:
         """
 
         query = {}
-        if scope is not None: query['scope'] = scope
+        if scope is not None: query['scope'] = _validated('scope', str, scope)
 
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query)
         return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
@@ -1557,8 +1604,8 @@ class SecretsAPI:
         """
         body = {}
         if permission is not None: body['permission'] = _validated('permission', AclPermission, permission)
-        if principal is not None: body['principal'] = principal
-        if scope is not None: body['scope'] = scope
+        if principal is not None: body['principal'] = _validated('principal', str, principal)
+        if scope is not None: body['scope'] = _validated('scope', str, scope)
         self._api.do('POST', '/api/2.0/secrets/acls/put', body=body)
 
     def put_secret(self,
@@ -1597,10 +1644,10 @@ class SecretsAPI:
         
         """
         body = {}
-        if bytes_value is not None: body['bytes_value'] = bytes_value
-        if key is not None: body['key'] = key
-        if scope is not None: body['scope'] = scope
-        if string_value is not None: body['string_value'] = string_value
+        if bytes_value is not None: body['bytes_value'] = _validated('bytes_value', str, bytes_value)
+        if key is not None: body['key'] = _validated('key', str, key)
+        if scope is not None: body['scope'] = _validated('scope', str, scope)
+        if string_value is not None: body['string_value'] = _validated('string_value', str, string_value)
         self._api.do('POST', '/api/2.0/secrets/put', body=body)
 
 
@@ -1633,8 +1680,8 @@ class WorkspaceAPI:
         
         """
         body = {}
-        if path is not None: body['path'] = path
-        if recursive is not None: body['recursive'] = recursive
+        if path is not None: body['path'] = _validated('path', str, path)
+        if recursive is not None: body['recursive'] = _validated('recursive', bool, recursive)
         self._api.do('POST', '/api/2.0/workspace/delete', body=body)
 
     def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
@@ -1665,7 +1712,7 @@ class WorkspaceAPI:
 
         query = {}
         if format is not None: query['format'] = _validated('format', ExportFormat, format)
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = _validated('path', str, path)
 
         json = self._api.do('GET', '/api/2.0/workspace/export', query=query)
         return ExportResponse.from_dict(json)
@@ -1683,7 +1730,7 @@ class WorkspaceAPI:
         """
 
         query = {}
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = _validated('path', str, path)
 
         json = self._api.do('GET', '/api/2.0/workspace/get-status', query=query)
         return ObjectInfo.from_dict(json)
@@ -1766,11 +1813,11 @@ class WorkspaceAPI:
         
         """
         body = {}
-        if content is not None: body['content'] = content
+        if content is not None: body['content'] = _validated('content', str, content)
         if format is not None: body['format'] = _validated('format', ImportFormat, format)
         if language is not None: body['language'] = _validated('language', Language, language)
-        if overwrite is not None: body['overwrite'] = overwrite
-        if path is not None: body['path'] = path
+        if overwrite is not None: body['overwrite'] = _validated('overwrite', bool, overwrite)
+        if path is not None: body['path'] = _validated('path', str, path)
         self._api.do('POST', '/api/2.0/workspace/import', body=body)
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
@@ -1788,8 +1835,10 @@ class WorkspaceAPI:
         """
 
         query = {}
-        if notebooks_modified_after is not None: query['notebooks_modified_after'] = notebooks_modified_after
-        if path is not None: query['path'] = path
+        if notebooks_modified_after is not None:
+            query['notebooks_modified_after'] = _validated('notebooks_modified_after', int,
+                                                           notebooks_modified_after)
+        if path is not None: query['path'] = _validated('path', str, path)
 
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query)
         return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
@@ -1811,7 +1860,7 @@ class WorkspaceAPI:
         
         """
         body = {}
-        if path is not None: body['path'] = path
+        if path is not None: body['path'] = _validated('path', str, path)
         self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body)
 
     def set_workspace_object_permissions(

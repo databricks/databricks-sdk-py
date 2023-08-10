@@ -21,12 +21,13 @@ class AccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PermissionLevel, self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -51,11 +52,13 @@ class AccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', Permission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -76,10 +79,10 @@ class ComplexValue:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.display is not None: body['display'] = self.display
-        if self.primary is not None: body['primary'] = self.primary
-        if self.type is not None: body['type'] = self.type
-        if self.value is not None: body['value'] = self.value
+        if self.display is not None: body['display'] = _validated('display', str, self.display)
+        if self.primary is not None: body['primary'] = _validated('primary', bool, self.primary)
+        if self.type is not None: body['type'] = _validated('type', str, self.type)
+        if self.value is not None: body['value'] = _validated('value', str, self.value)
         return body
 
     @classmethod
@@ -147,8 +150,9 @@ class GrantRule:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.principals: body['principals'] = [v for v in self.principals]
-        if self.role is not None: body['role'] = self.role
+        if self.principals:
+            body['principals'] = [_validated('principals item', str, v) for v in self.principals]
+        if self.role is not None: body['role'] = _validated('role', str, self.role)
         return body
 
     @classmethod
@@ -169,14 +173,15 @@ class Group:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.display_name is not None: body['displayName'] = self.display_name
+        if self.display_name is not None:
+            body['displayName'] = _validated('display_name', str, self.display_name)
         if self.entitlements:
             body['entitlements'] = [
                 _validated('entitlements item', ComplexValue, v) for v in self.entitlements
             ]
-        if self.external_id is not None: body['externalId'] = self.external_id
+        if self.external_id is not None: body['externalId'] = _validated('external_id', str, self.external_id)
         if self.groups: body['groups'] = [_validated('groups item', ComplexValue, v) for v in self.groups]
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.members: body['members'] = [_validated('members item', ComplexValue, v) for v in self.members]
         if self.meta: body['meta'] = _validated('meta', ResourceMeta, self.meta)
         if self.roles: body['roles'] = [_validated('roles item', ComplexValue, v) for v in self.roles]
@@ -203,11 +208,13 @@ class ListGroupsResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
+        if self.items_per_page is not None:
+            body['itemsPerPage'] = _validated('items_per_page', int, self.items_per_page)
         if self.resources:
             body['Resources'] = [_validated('resources item', Group, v) for v in self.resources]
-        if self.start_index is not None: body['startIndex'] = self.start_index
-        if self.total_results is not None: body['totalResults'] = self.total_results
+        if self.start_index is not None: body['startIndex'] = _validated('start_index', int, self.start_index)
+        if self.total_results is not None:
+            body['totalResults'] = _validated('total_results', int, self.total_results)
         return body
 
     @classmethod
@@ -227,11 +234,13 @@ class ListServicePrincipalResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
+        if self.items_per_page is not None:
+            body['itemsPerPage'] = _validated('items_per_page', int, self.items_per_page)
         if self.resources:
             body['Resources'] = [_validated('resources item', ServicePrincipal, v) for v in self.resources]
-        if self.start_index is not None: body['startIndex'] = self.start_index
-        if self.total_results is not None: body['totalResults'] = self.total_results
+        if self.start_index is not None: body['startIndex'] = _validated('start_index', int, self.start_index)
+        if self.total_results is not None:
+            body['totalResults'] = _validated('total_results', int, self.total_results)
         return body
 
     @classmethod
@@ -257,10 +266,12 @@ class ListUsersResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
+        if self.items_per_page is not None:
+            body['itemsPerPage'] = _validated('items_per_page', int, self.items_per_page)
         if self.resources: body['Resources'] = [_validated('resources item', User, v) for v in self.resources]
-        if self.start_index is not None: body['startIndex'] = self.start_index
-        if self.total_results is not None: body['totalResults'] = self.total_results
+        if self.start_index is not None: body['startIndex'] = _validated('start_index', int, self.start_index)
+        if self.total_results is not None:
+            body['totalResults'] = _validated('total_results', int, self.total_results)
         return body
 
     @classmethod
@@ -278,8 +289,8 @@ class Name:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.family_name is not None: body['familyName'] = self.family_name
-        if self.given_name is not None: body['givenName'] = self.given_name
+        if self.family_name is not None: body['familyName'] = _validated('family_name', str, self.family_name)
+        if self.given_name is not None: body['givenName'] = _validated('given_name', str, self.given_name)
         return body
 
     @classmethod
@@ -300,8 +311,9 @@ class ObjectPermissions:
                 _validated('access_control_list item', AccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -319,7 +331,7 @@ class PartialUpdate:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.operations:
             body['Operations'] = [_validated('operations item', Patch, v) for v in self.operations]
         if self.schema: body['schema'] = [_validated('schema item', PatchSchema, v) for v in self.schema]
@@ -341,13 +353,14 @@ class PasswordAccessControlRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PasswordPermissionLevel,
                                                   self.permission_level)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -372,11 +385,13 @@ class PasswordAccessControlResponse:
             body['all_permissions'] = [
                 _validated('all_permissions item', PasswordPermission, v) for v in self.all_permissions
             ]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -396,8 +411,11 @@ class PasswordPermission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PasswordPermissionLevel,
                                                   self.permission_level)
@@ -429,8 +447,9 @@ class PasswordPermissions:
                 _validated('access_control_list item', PasswordAccessControlResponse, v)
                 for v in self.access_control_list
             ]
-        if self.object_id is not None: body['object_id'] = self.object_id
-        if self.object_type is not None: body['object_type'] = self.object_type
+        if self.object_id is not None: body['object_id'] = _validated('object_id', str, self.object_id)
+        if self.object_type is not None:
+            body['object_type'] = _validated('object_type', str, self.object_type)
         return body
 
     @classmethod
@@ -447,7 +466,8 @@ class PasswordPermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PasswordPermissionLevel,
                                                   self.permission_level)
@@ -486,8 +506,8 @@ class Patch:
     def as_dict(self) -> dict:
         body = {}
         if self.op is not None: body['op'] = _validated('op', PatchOp, self.op)
-        if self.path is not None: body['path'] = self.path
-        if self.value: body['value'] = self.value
+        if self.path is not None: body['path'] = _validated('path', str, self.path)
+        if self.value: body['value'] = _validated('value', Any, self.value)
         return body
 
     @classmethod
@@ -516,8 +536,11 @@ class Permission:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.inherited is not None: body['inherited'] = self.inherited
-        if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
+        if self.inherited is not None: body['inherited'] = _validated('inherited', bool, self.inherited)
+        if self.inherited_from_object:
+            body['inherited_from_object'] = [
+                _validated('inherited_from_object item', str, v) for v in self.inherited_from_object
+            ]
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PermissionLevel, self.permission_level)
         return body
@@ -537,7 +560,7 @@ class PermissionAssignment:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.error is not None: body['error'] = self.error
+        if self.error is not None: body['error'] = _validated('error', str, self.error)
         if self.permissions:
             body['permissions'] = [
                 _validated('permissions item', WorkspacePermission, v) for v in self.permissions
@@ -597,7 +620,8 @@ class PermissionOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', WorkspacePermission,
                                                   self.permission_level)
@@ -616,7 +640,8 @@ class PermissionsDescription:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.description is not None: body['description'] = self.description
+        if self.description is not None:
+            body['description'] = _validated('description', str, self.description)
         if self.permission_level is not None:
             body['permission_level'] = _validated('permission_level', PermissionLevel, self.permission_level)
         return body
@@ -640,8 +665,10 @@ class PermissionsRequest:
                 _validated('access_control_list item', AccessControlRequest, v)
                 for v in self.access_control_list
             ]
-        if self.request_object_id is not None: body['request_object_id'] = self.request_object_id
-        if self.request_object_type is not None: body['request_object_type'] = self.request_object_type
+        if self.request_object_id is not None:
+            body['request_object_id'] = _validated('request_object_id', str, self.request_object_id)
+        if self.request_object_type is not None:
+            body['request_object_type'] = _validated('request_object_type', str, self.request_object_type)
         return body
 
     @classmethod
@@ -661,12 +688,15 @@ class PrincipalOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.group_name is not None: body['group_name'] = self.group_name
-        if self.principal_id is not None: body['principal_id'] = self.principal_id
+        if self.display_name is not None:
+            body['display_name'] = _validated('display_name', str, self.display_name)
+        if self.group_name is not None: body['group_name'] = _validated('group_name', str, self.group_name)
+        if self.principal_id is not None:
+            body['principal_id'] = _validated('principal_id', int, self.principal_id)
         if self.service_principal_name is not None:
-            body['service_principal_name'] = self.service_principal_name
-        if self.user_name is not None: body['user_name'] = self.user_name
+            body['service_principal_name'] = _validated('service_principal_name', str,
+                                                        self.service_principal_name)
+        if self.user_name is not None: body['user_name'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -684,7 +714,8 @@ class ResourceMeta:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.resource_type is not None: body['resourceType'] = self.resource_type
+        if self.resource_type is not None:
+            body['resourceType'] = _validated('resource_type', str, self.resource_type)
         return body
 
     @classmethod
@@ -698,7 +729,7 @@ class Role:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -714,10 +745,10 @@ class RuleSetResponse:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
+        if self.etag is not None: body['etag'] = _validated('etag', str, self.etag)
         if self.grant_rules:
             body['grant_rules'] = [_validated('grant_rules item', GrantRule, v) for v in self.grant_rules]
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -735,10 +766,10 @@ class RuleSetUpdateRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.etag is not None: body['etag'] = self.etag
+        if self.etag is not None: body['etag'] = _validated('etag', str, self.etag)
         if self.grant_rules:
             body['grant_rules'] = [_validated('grant_rules item', GrantRule, v) for v in self.grant_rules]
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         return body
 
     @classmethod
@@ -761,16 +792,18 @@ class ServicePrincipal:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.active is not None: body['active'] = self.active
-        if self.application_id is not None: body['applicationId'] = self.application_id
-        if self.display_name is not None: body['displayName'] = self.display_name
+        if self.active is not None: body['active'] = _validated('active', bool, self.active)
+        if self.application_id is not None:
+            body['applicationId'] = _validated('application_id', str, self.application_id)
+        if self.display_name is not None:
+            body['displayName'] = _validated('display_name', str, self.display_name)
         if self.entitlements:
             body['entitlements'] = [
                 _validated('entitlements item', ComplexValue, v) for v in self.entitlements
             ]
-        if self.external_id is not None: body['externalId'] = self.external_id
+        if self.external_id is not None: body['externalId'] = _validated('external_id', str, self.external_id)
         if self.groups: body['groups'] = [_validated('groups item', ComplexValue, v) for v in self.groups]
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.roles: body['roles'] = [_validated('roles item', ComplexValue, v) for v in self.roles]
         return body
 
@@ -793,7 +826,7 @@ class UpdateRuleSetRequest:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None: body['name'] = _validated('name', str, self.name)
         if self.rule_set: body['rule_set'] = _validated('rule_set', RuleSetUpdateRequest, self.rule_set)
         return body
 
@@ -814,8 +847,10 @@ class UpdateWorkspaceAssignments:
             body['permissions'] = [
                 _validated('permissions item', WorkspacePermission, v) for v in self.permissions
             ]
-        if self.principal_id is not None: body['principal_id'] = self.principal_id
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.principal_id is not None:
+            body['principal_id'] = _validated('principal_id', int, self.principal_id)
+        if self.workspace_id is not None:
+            body['workspace_id'] = _validated('workspace_id', int, self.workspace_id)
         return body
 
     @classmethod
@@ -840,19 +875,20 @@ class User:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.active is not None: body['active'] = self.active
-        if self.display_name is not None: body['displayName'] = self.display_name
+        if self.active is not None: body['active'] = _validated('active', bool, self.active)
+        if self.display_name is not None:
+            body['displayName'] = _validated('display_name', str, self.display_name)
         if self.emails: body['emails'] = [_validated('emails item', ComplexValue, v) for v in self.emails]
         if self.entitlements:
             body['entitlements'] = [
                 _validated('entitlements item', ComplexValue, v) for v in self.entitlements
             ]
-        if self.external_id is not None: body['externalId'] = self.external_id
+        if self.external_id is not None: body['externalId'] = _validated('external_id', str, self.external_id)
         if self.groups: body['groups'] = [_validated('groups item', ComplexValue, v) for v in self.groups]
-        if self.id is not None: body['id'] = self.id
+        if self.id is not None: body['id'] = _validated('id', str, self.id)
         if self.name: body['name'] = _validated('name', Name, self.name)
         if self.roles: body['roles'] = [_validated('roles item', ComplexValue, v) for v in self.roles]
-        if self.user_name is not None: body['userName'] = self.user_name
+        if self.user_name is not None: body['userName'] = _validated('user_name', str, self.user_name)
         return body
 
     @classmethod
@@ -914,7 +950,7 @@ class AccountAccessControlAPI:
         """
 
         query = {}
-        if resource is not None: query['resource'] = resource
+        if resource is not None: query['resource'] = _validated('resource', str, resource)
 
         json = self._api.do(
             'GET',
@@ -942,8 +978,8 @@ class AccountAccessControlAPI:
         """
 
         query = {}
-        if etag is not None: query['etag'] = etag
-        if name is not None: query['name'] = name
+        if etag is not None: query['etag'] = _validated('etag', str, etag)
+        if name is not None: query['name'] = _validated('name', str, name)
 
         json = self._api.do('GET',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
@@ -963,7 +999,7 @@ class AccountAccessControlAPI:
         :returns: :class:`RuleSetResponse`
         """
         body = {}
-        if name is not None: body['name'] = name
+        if name is not None: body['name'] = _validated('name', str, name)
         if rule_set is not None: body['rule_set'] = _validated('rule_set', RuleSetUpdateRequest, rule_set)
 
         json = self._api.do('PUT',
@@ -993,7 +1029,7 @@ class AccountAccessControlProxyAPI:
         """
 
         query = {}
-        if resource is not None: query['resource'] = resource
+        if resource is not None: query['resource'] = _validated('resource', str, resource)
 
         json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/assignable-roles', query=query)
         return GetAssignableRolesForResourceResponse.from_dict(json)
@@ -1018,8 +1054,8 @@ class AccountAccessControlProxyAPI:
         """
 
         query = {}
-        if etag is not None: query['etag'] = etag
-        if name is not None: query['name'] = name
+        if etag is not None: query['etag'] = _validated('etag', str, etag)
+        if name is not None: query['name'] = _validated('name', str, name)
 
         json = self._api.do('GET', '/api/2.0/preview/accounts/access-control/rule-sets', query=query)
         return RuleSetResponse.from_dict(json)
@@ -1037,7 +1073,7 @@ class AccountAccessControlProxyAPI:
         :returns: :class:`RuleSetResponse`
         """
         body = {}
-        if name is not None: body['name'] = name
+        if name is not None: body['name'] = _validated('name', str, name)
         if rule_set is not None: body['rule_set'] = _validated('rule_set', RuleSetUpdateRequest, rule_set)
 
         json = self._api.do('PUT', '/api/2.0/preview/accounts/access-control/rule-sets', body=body)
@@ -1084,12 +1120,12 @@ class AccountGroupsAPI:
         :returns: :class:`Group`
         """
         body = {}
-        if display_name is not None: body['displayName'] = display_name
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if members is not None:
             body['members'] = [_validated('members item', ComplexValue, v) for v in members]
         if meta is not None: body['meta'] = _validated('meta', ResourceMeta, meta)
@@ -1162,13 +1198,14 @@ class AccountGroupsAPI:
         """
 
         query = {}
-        if attributes is not None: query['attributes'] = attributes
-        if count is not None: query['count'] = count
-        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
-        if filter is not None: query['filter'] = filter
-        if sort_by is not None: query['sortBy'] = sort_by
+        if attributes is not None: query['attributes'] = _validated('attributes', str, attributes)
+        if count is not None: query['count'] = _validated('count', int, count)
+        if excluded_attributes is not None:
+            query['excludedAttributes'] = _validated('excluded_attributes', str, excluded_attributes)
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if sort_by is not None: query['sortBy'] = _validated('sort_by', str, sort_by)
         if sort_order is not None: query['sortOrder'] = _validated('sort_order', ListSortOrder, sort_order)
-        if start_index is not None: query['startIndex'] = start_index
+        if start_index is not None: query['startIndex'] = _validated('start_index', int, start_index)
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
@@ -1225,10 +1262,10 @@ class AccountGroupsAPI:
         
         """
         body = {}
-        if display_name is not None: body['displayName'] = display_name
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
         if members is not None:
             body['members'] = [_validated('members item', ComplexValue, v) for v in members]
@@ -1277,14 +1314,15 @@ class AccountServicePrincipalsAPI:
         :returns: :class:`ServicePrincipal`
         """
         body = {}
-        if active is not None: body['active'] = active
-        if application_id is not None: body['applicationId'] = application_id
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if application_id is not None:
+            body['applicationId'] = _validated('application_id', str, application_id)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
 
         json = self._api.do('POST',
@@ -1356,13 +1394,14 @@ class AccountServicePrincipalsAPI:
         """
 
         query = {}
-        if attributes is not None: query['attributes'] = attributes
-        if count is not None: query['count'] = count
-        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
-        if filter is not None: query['filter'] = filter
-        if sort_by is not None: query['sortBy'] = sort_by
+        if attributes is not None: query['attributes'] = _validated('attributes', str, attributes)
+        if count is not None: query['count'] = _validated('count', int, count)
+        if excluded_attributes is not None:
+            query['excludedAttributes'] = _validated('excluded_attributes', str, excluded_attributes)
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if sort_by is not None: query['sortBy'] = _validated('sort_by', str, sort_by)
         if sort_order is not None: query['sortOrder'] = _validated('sort_order', ListSortOrder, sort_order)
-        if start_index is not None: query['startIndex'] = start_index
+        if start_index is not None: query['startIndex'] = _validated('start_index', int, start_index)
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
@@ -1426,12 +1465,13 @@ class AccountServicePrincipalsAPI:
         
         """
         body = {}
-        if active is not None: body['active'] = active
-        if application_id is not None: body['applicationId'] = application_id
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if application_id is not None:
+            body['applicationId'] = _validated('application_id', str, application_id)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
         self._api.do('PUT',
@@ -1489,17 +1529,17 @@ class AccountUsersAPI:
         :returns: :class:`User`
         """
         body = {}
-        if active is not None: body['active'] = active
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if emails is not None: body['emails'] = [_validated('emails item', ComplexValue, v) for v in emails]
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if name is not None: body['name'] = _validated('name', Name, name)
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
-        if user_name is not None: body['userName'] = user_name
+        if user_name is not None: body['userName'] = _validated('user_name', str, user_name)
 
         json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', body=body)
         return User.from_dict(json)
@@ -1570,13 +1610,14 @@ class AccountUsersAPI:
         """
 
         query = {}
-        if attributes is not None: query['attributes'] = attributes
-        if count is not None: query['count'] = count
-        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
-        if filter is not None: query['filter'] = filter
-        if sort_by is not None: query['sortBy'] = sort_by
+        if attributes is not None: query['attributes'] = _validated('attributes', str, attributes)
+        if count is not None: query['count'] = _validated('count', int, count)
+        if excluded_attributes is not None:
+            query['excludedAttributes'] = _validated('excluded_attributes', str, excluded_attributes)
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if sort_by is not None: query['sortBy'] = _validated('sort_by', str, sort_by)
         if sort_order is not None: query['sortOrder'] = _validated('sort_order', ListSortOrder, sort_order)
-        if start_index is not None: query['startIndex'] = start_index
+        if start_index is not None: query['startIndex'] = _validated('start_index', int, start_index)
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
@@ -1639,16 +1680,16 @@ class AccountUsersAPI:
         
         """
         body = {}
-        if active is not None: body['active'] = active
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if emails is not None: body['emails'] = [_validated('emails item', ComplexValue, v) for v in emails]
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
         if name is not None: body['name'] = _validated('name', Name, name)
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
-        if user_name is not None: body['userName'] = user_name
+        if user_name is not None: body['userName'] = _validated('user_name', str, user_name)
         self._api.do('PUT', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}', body=body)
 
 
@@ -1710,12 +1751,12 @@ class GroupsAPI:
         :returns: :class:`Group`
         """
         body = {}
-        if display_name is not None: body['displayName'] = display_name
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if members is not None:
             body['members'] = [_validated('members item', ComplexValue, v) for v in members]
         if meta is not None: body['meta'] = _validated('meta', ResourceMeta, meta)
@@ -1788,13 +1829,14 @@ class GroupsAPI:
         """
 
         query = {}
-        if attributes is not None: query['attributes'] = attributes
-        if count is not None: query['count'] = count
-        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
-        if filter is not None: query['filter'] = filter
-        if sort_by is not None: query['sortBy'] = sort_by
+        if attributes is not None: query['attributes'] = _validated('attributes', str, attributes)
+        if count is not None: query['count'] = _validated('count', int, count)
+        if excluded_attributes is not None:
+            query['excludedAttributes'] = _validated('excluded_attributes', str, excluded_attributes)
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if sort_by is not None: query['sortBy'] = _validated('sort_by', str, sort_by)
         if sort_order is not None: query['sortOrder'] = _validated('sort_order', ListSortOrder, sort_order)
-        if start_index is not None: query['startIndex'] = start_index
+        if start_index is not None: query['startIndex'] = _validated('start_index', int, start_index)
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
@@ -1851,10 +1893,10 @@ class GroupsAPI:
         
         """
         body = {}
-        if display_name is not None: body['displayName'] = display_name
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
         if members is not None:
             body['members'] = [_validated('members item', ComplexValue, v) for v in members]
@@ -2043,14 +2085,15 @@ class ServicePrincipalsAPI:
         :returns: :class:`ServicePrincipal`
         """
         body = {}
-        if active is not None: body['active'] = active
-        if application_id is not None: body['applicationId'] = application_id
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if application_id is not None:
+            body['applicationId'] = _validated('application_id', str, application_id)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
 
         json = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body)
@@ -2120,13 +2163,14 @@ class ServicePrincipalsAPI:
         """
 
         query = {}
-        if attributes is not None: query['attributes'] = attributes
-        if count is not None: query['count'] = count
-        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
-        if filter is not None: query['filter'] = filter
-        if sort_by is not None: query['sortBy'] = sort_by
+        if attributes is not None: query['attributes'] = _validated('attributes', str, attributes)
+        if count is not None: query['count'] = _validated('count', int, count)
+        if excluded_attributes is not None:
+            query['excludedAttributes'] = _validated('excluded_attributes', str, excluded_attributes)
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if sort_by is not None: query['sortBy'] = _validated('sort_by', str, sort_by)
         if sort_order is not None: query['sortOrder'] = _validated('sort_order', ListSortOrder, sort_order)
-        if start_index is not None: query['startIndex'] = start_index
+        if start_index is not None: query['startIndex'] = _validated('start_index', int, start_index)
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
@@ -2186,12 +2230,13 @@ class ServicePrincipalsAPI:
         
         """
         body = {}
-        if active is not None: body['active'] = active
-        if application_id is not None: body['applicationId'] = application_id
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if application_id is not None:
+            body['applicationId'] = _validated('application_id', str, application_id)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body)
@@ -2247,17 +2292,17 @@ class UsersAPI:
         :returns: :class:`User`
         """
         body = {}
-        if active is not None: body['active'] = active
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if emails is not None: body['emails'] = [_validated('emails item', ComplexValue, v) for v in emails]
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
-        if id is not None: body['id'] = id
+        if id is not None: body['id'] = _validated('id', str, id)
         if name is not None: body['name'] = _validated('name', Name, name)
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
-        if user_name is not None: body['userName'] = user_name
+        if user_name is not None: body['userName'] = _validated('user_name', str, user_name)
 
         json = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body)
         return User.from_dict(json)
@@ -2350,13 +2395,14 @@ class UsersAPI:
         """
 
         query = {}
-        if attributes is not None: query['attributes'] = attributes
-        if count is not None: query['count'] = count
-        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
-        if filter is not None: query['filter'] = filter
-        if sort_by is not None: query['sortBy'] = sort_by
+        if attributes is not None: query['attributes'] = _validated('attributes', str, attributes)
+        if count is not None: query['count'] = _validated('count', int, count)
+        if excluded_attributes is not None:
+            query['excludedAttributes'] = _validated('excluded_attributes', str, excluded_attributes)
+        if filter is not None: query['filter'] = _validated('filter', str, filter)
+        if sort_by is not None: query['sortBy'] = _validated('sort_by', str, sort_by)
         if sort_order is not None: query['sortOrder'] = _validated('sort_order', ListSortOrder, sort_order)
-        if start_index is not None: query['startIndex'] = start_index
+        if start_index is not None: query['startIndex'] = _validated('start_index', int, start_index)
 
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query)
         return [User.from_dict(v) for v in json.get('Resources', [])]
@@ -2441,16 +2487,16 @@ class UsersAPI:
         
         """
         body = {}
-        if active is not None: body['active'] = active
-        if display_name is not None: body['displayName'] = display_name
+        if active is not None: body['active'] = _validated('active', bool, active)
+        if display_name is not None: body['displayName'] = _validated('display_name', str, display_name)
         if emails is not None: body['emails'] = [_validated('emails item', ComplexValue, v) for v in emails]
         if entitlements is not None:
             body['entitlements'] = [_validated('entitlements item', ComplexValue, v) for v in entitlements]
-        if external_id is not None: body['externalId'] = external_id
+        if external_id is not None: body['externalId'] = _validated('external_id', str, external_id)
         if groups is not None: body['groups'] = [_validated('groups item', ComplexValue, v) for v in groups]
         if name is not None: body['name'] = _validated('name', Name, name)
         if roles is not None: body['roles'] = [_validated('roles item', ComplexValue, v) for v in roles]
-        if user_name is not None: body['userName'] = user_name
+        if user_name is not None: body['userName'] = _validated('user_name', str, user_name)
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
 
     def update_password_permissions(
