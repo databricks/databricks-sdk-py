@@ -29,6 +29,10 @@ def _fqcn(x: any) -> str:
 
 
 def _validated(name: str, cls: Type, inst: any) -> any:
+    if cls == str:
+        # otherwise we have errors like this one:
+        # `path is expected to be str, but got pathlib.PosixPath`
+        return str(inst)
     if not isinstance(inst, cls):
         raise ValueError(f'{name} is expected to be {_fqcn(cls)}, but got {_fqcn(inst.__class__)}')
     if issubclass(cls, Enum):
