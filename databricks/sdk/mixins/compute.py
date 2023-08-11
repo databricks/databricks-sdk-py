@@ -5,6 +5,7 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 
+from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import OperationFailed
 from databricks.sdk.service import compute
 
@@ -231,6 +232,11 @@ class ClustersExt(compute.ClustersAPI):
                     return
                 elif info.state in (state.ERROR, state.UNKNOWN):
                     raise RuntimeError(f'Cluster {info.cluster_name} is {info.state}: {info.state_message}')
+            except DatabricksError as e:
+                if e.error_code == 'INVALID_STATE':
+                    _LOG.debug(f'Cluster was started by other process: {e} Retrying.')
+                    continue
+                raise e
             except OperationFailed as e:
                 _LOG.debug('Operation failed, retrying', exc_info=e)
         raise TimeoutError(f'timed out after {timeout}')
