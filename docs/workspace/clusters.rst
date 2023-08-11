@@ -67,7 +67,7 @@ Clusters
         
         
 
-    .. py:method:: create(spark_version [, apply_policy_default_values, autoscale, autotermination_minutes, aws_attributes, azure_attributes, cluster_log_conf, cluster_name, cluster_source, custom_tags, driver_instance_pool_id, driver_node_type_id, enable_elastic_disk, enable_local_disk_encryption, gcp_attributes, init_scripts, instance_pool_id, node_type_id, num_workers, policy_id, runtime_engine, spark_conf, spark_env_vars, ssh_public_keys, workload_type])
+    .. py:method:: create(spark_version [, apply_policy_default_values, autoscale, autotermination_minutes, aws_attributes, azure_attributes, cluster_log_conf, cluster_name, cluster_source, custom_tags, data_security_mode, docker_image, driver_instance_pool_id, driver_node_type_id, enable_elastic_disk, enable_local_disk_encryption, gcp_attributes, init_scripts, instance_pool_id, node_type_id, num_workers, policy_id, runtime_engine, single_user_name, spark_conf, spark_env_vars, ssh_public_keys, workload_type])
 
         Usage:
 
@@ -139,6 +139,9 @@ Clusters
           - Currently, Databricks allows at most 45 custom tags
           
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        :param data_security_mode: :class:`DataSecurityMode` (optional)
+          This describes an enum
+        :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
@@ -179,6 +182,8 @@ Clusters
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
           is inferred from spark_version.
+        :param single_user_name: str (optional)
+          Single user name if data_security_mode is `SINGLE_USER`
         :param spark_conf: Dict[str,str] (optional)
           An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
           can also pass in a string of extra JVM options to the driver and the executors via

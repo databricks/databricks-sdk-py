@@ -39,7 +39,7 @@ Account Storage Credentials
           Unity Catalog metastore ID
         :param credential_info: :class:`CreateStorageCredential` (optional)
         
-        :returns: :class:`StorageCredentialInfo`
+        :returns: :class:`AccountsStorageCredentialInfo`
         
 
     .. py:method:: delete(metastore_id, name [, force])
@@ -92,7 +92,7 @@ Account Storage Credentials
         :param name: str
           Name of the storage credential.
         
-        :returns: :class:`StorageCredentialInfo`
+        :returns: :class:`AccountsStorageCredentialInfo`
         
 
     .. py:method:: list(metastore_id)
@@ -154,5 +154,5 @@ Account Storage Credentials
           Name of the storage credential.
         :param credential_info: :class:`UpdateStorageCredential` (optional)
         
-        :returns: :class:`StorageCredentialInfo`
+        :returns: :class:`AccountsStorageCredentialInfo`
         

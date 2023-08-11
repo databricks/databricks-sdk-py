@@ -1,5 +1,11 @@
 # Version changelog
 
+## 0.5.0
+
+* Fixed OAuth M2M corner case in `WorkspaceClient` where `DATABRICKS_ACCOUNT_ID` is present in the environment ([#273](https://github.com/databricks/databricks-sdk-py/pull/273)).
+* Added `connection_pool_size` configuration property (preview) ([#276](https://github.com/databricks/databricks-sdk-py/pull/276)).
+
+
 ## 0.4.0
 
 To simplify documentation and management of object permissions, this release features a major reorganization of how permissions APIs are structured in the SDK. Rather than using a single permissions.get() API for all services, each service supporting permissions has its own permissions APIs. Follow these steps to migrate to the current SDK:

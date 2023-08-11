@@ -295,20 +295,20 @@ class ObjectPermissions:
 class PartialUpdate:
     id: Optional[str] = None
     operations: Optional['List[Patch]'] = None
-    schema: Optional['List[PatchSchema]'] = None
+    schemas: Optional['List[PatchSchema]'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.id is not None: body['id'] = self.id
         if self.operations: body['Operations'] = [v.as_dict() for v in self.operations]
-        if self.schema: body['schema'] = [v.value for v in self.schema]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PartialUpdate':
         return cls(id=d.get('id', None),
                    operations=_repeated(d, 'Operations', Patch),
-                   schema=d.get('schema', None))
+                   schemas=d.get('schemas', None))
 
 
 @dataclass
@@ -1112,7 +1112,7 @@ class AccountGroupsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None):
+              schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
         
         Partially updates the details of a group.
@@ -1120,14 +1120,14 @@ class AccountGroupsAPI:
         :param id: str
           Unique ID for a group in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v.value for v in schema]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}', body=body)
 
     def update(self,
@@ -1304,7 +1304,7 @@ class AccountServicePrincipalsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None):
+              schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks account.
@@ -1312,14 +1312,14 @@ class AccountServicePrincipalsAPI:
         :param id: str
           Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v.value for v in schema]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
                      body=body)
@@ -1513,7 +1513,7 @@ class AccountUsersAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None):
+              schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -1521,14 +1521,14 @@ class AccountUsersAPI:
         :param id: str
           Unique ID for a user in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v.value for v in schema]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         self._api.do('PATCH', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}', body=body)
 
     def update(self,
@@ -1727,7 +1727,7 @@ class GroupsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None):
+              schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
         
         Partially updates the details of a group.
@@ -1735,14 +1735,14 @@ class GroupsAPI:
         :param id: str
           Unique ID for a group in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v.value for v in schema]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body)
 
     def update(self,
@@ -2051,7 +2051,7 @@ class ServicePrincipalsAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None):
+              schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
         
         Partially updates the details of a single service principal in the Databricks workspace.
@@ -2059,14 +2059,14 @@ class ServicePrincipalsAPI:
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v.value for v in schema]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body)
 
     def update(self,
@@ -2278,7 +2278,7 @@ class UsersAPI:
               id: str,
               *,
               operations: Optional[List[Patch]] = None,
-              schema: Optional[List[PatchSchema]] = None):
+              schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
         
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -2286,14 +2286,14 @@ class UsersAPI:
         :param id: str
           Unique ID for a user in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
-        if schema is not None: body['schema'] = [v.value for v in schema]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{id}', body=body)
 
     def set_password_permissions(

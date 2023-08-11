@@ -11,7 +11,7 @@ Connections
     objects based on cloud storage. Users may create different types of connections with each connection
     having a unique set of configuration options to support credential management and other settings.
 
-    .. py:method:: create(name, connection_type, options_kvpairs [, comment, owner, properties_kvpairs, read_only])
+    .. py:method:: create(name, connection_type, options [, comment, owner, properties, read_only])
 
         Create a connection.
         
@@ -24,13 +24,13 @@ Connections
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
           The type of connection.
-        :param options_kvpairs: Dict[str,str]
+        :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
         :param owner: str (optional)
           Username of current owner of the connection.
-        :param properties_kvpairs: Dict[str,str] (optional)
+        :param properties: Dict[str,str] (optional)
           An object containing map of key-value properties attached to the connection.
         :param read_only: bool (optional)
           If the connection is read only.
@@ -71,7 +71,7 @@ Connections
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name, options_kvpairs, name_arg)
+    .. py:method:: update(name, options, name_arg)
 
         Update a connection.
         
@@ -79,7 +79,7 @@ Connections
         
         :param name: str
           Name of the connection.
-        :param options_kvpairs: Dict[str,str]
+        :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param name_arg: str
           Name of the connection.

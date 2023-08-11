@@ -152,7 +152,7 @@ Account Users
         :returns: Iterator over :class:`User`
         
 
-    .. py:method:: patch(id [, operations, schema])
+    .. py:method:: patch(id [, operations, schemas])
 
         Usage:
 
@@ -184,7 +184,7 @@ Account Users
         :param id: str
           Unique ID for a user in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
-        :param schema: List[:class:`PatchSchema`] (optional)
+        :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
         
