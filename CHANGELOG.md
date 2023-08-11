@@ -1,5 +1,42 @@
 # Version changelog
 
+## 0.5.0
+
+* Added `connection_pool_size` configuration property (preview) ([#276](https://github.com/databricks/databricks-sdk-py/pull/276)).
+* Fixed OAuth M2M corner case in `WorkspaceClient` where `DATABRICKS_ACCOUNT_ID` is present in the environment ([#273](https://github.com/databricks/databricks-sdk-py/pull/273)).
+
+API Changes:
+
+ * Changed `create()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service to return `databricks.sdk.service.catalog.AccountsStorageCredentialInfo` dataclass.
+ * Changed `get()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service to return `databricks.sdk.service.catalog.AccountsStorageCredentialInfo` dataclass.
+ * Changed `update()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service to return `databricks.sdk.service.catalog.AccountsStorageCredentialInfo` dataclass.
+ * Changed `create()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Removed `options_kvpairs` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Removed `properties_kvpairs` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Added `options` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Added `properties` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Added `provisioning_state` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Added `securable_kind` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Added `securable_type` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Removed `options_kvpairs` field for `databricks.sdk.service.catalog.CreateConnection`.
+ * Removed `properties_kvpairs` field for `databricks.sdk.service.catalog.CreateConnection`.
+ * Added `options` field for `databricks.sdk.service.catalog.CreateConnection`.
+ * Added `properties` field for `databricks.sdk.service.catalog.CreateConnection`.
+ * Changed `algorithm` field for `databricks.sdk.service.catalog.SseEncryptionDetails` to no longer be required.
+ * Removed `options_kvpairs` field for `databricks.sdk.service.catalog.UpdateConnection`.
+ * Added `options` field for `databricks.sdk.service.catalog.UpdateConnection`.
+ * Added `databricks.sdk.service.catalog.AccountsStorageCredentialInfo` dataclass.
+ * Added `databricks.sdk.service.catalog.ConnectionInfoSecurableKind` dataclass.
+ * Added `databricks.sdk.service.catalog.ProvisioningState` dataclass.
+ * Added `data_security_mode` field for `databricks.sdk.service.compute.CreateCluster`.
+ * Added `docker_image` field for `databricks.sdk.service.compute.CreateCluster`.
+ * Added `single_user_name` field for `databricks.sdk.service.compute.CreateCluster`.
+ * Removed `schema` field for `databricks.sdk.service.iam.PartialUpdate`.
+ * Added `schemas` field for `databricks.sdk.service.iam.PartialUpdate`.
+
+OpenAPI SHA: 1e3533f94335f0e6c5d9262bc1fea95b3ddcb0e1, Date: 2023-08-11
+
 ## 0.4.0
 
 To simplify documentation and management of object permissions, this release features a major reorganization of how permissions APIs are structured in the SDK. Rather than using a single permissions.get() API for all services, each service supporting permissions has its own permissions APIs. Follow these steps to migrate to the current SDK:

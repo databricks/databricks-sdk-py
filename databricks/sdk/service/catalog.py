@@ -92,6 +92,20 @@ class AccountsMetastoreInfo:
 
 
 @dataclass
+class AccountsStorageCredentialInfo:
+    credential_info: Optional['StorageCredentialInfo'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.credential_info: body['credential_info'] = self.credential_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AccountsStorageCredentialInfo':
+        return cls(credential_info=_from_dict(d, 'credential_info', StorageCredentialInfo))
+
+
+@dataclass
 class AccountsUpdateMetastore:
     metastore_id: Optional[str] = None
     metastore_info: Optional['UpdateMetastore'] = None
@@ -388,10 +402,13 @@ class ConnectionInfo:
     full_name: Optional[str] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
-    options_kvpairs: Optional['Dict[str,str]'] = None
+    options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
-    properties_kvpairs: Optional['Dict[str,str]'] = None
+    properties: Optional['Dict[str,str]'] = None
+    provisioning_state: Optional['ProvisioningState'] = None
     read_only: Optional[bool] = None
+    securable_kind: Optional['ConnectionInfoSecurableKind'] = None
+    securable_type: Optional[str] = None
     updated_at: Optional[int] = None
     updated_by: Optional[str] = None
     url: Optional[str] = None
@@ -407,10 +424,13 @@ class ConnectionInfo:
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.properties: body['properties'] = self.properties
+        if self.provisioning_state is not None: body['provisioning_state'] = self.provisioning_state.value
         if self.read_only is not None: body['read_only'] = self.read_only
+        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
+        if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         if self.url is not None: body['url'] = self.url
@@ -427,13 +447,30 @@ class ConnectionInfo:
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
-                   options_kvpairs=d.get('options_kvpairs', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   properties=d.get('properties', None),
+                   provisioning_state=_enum(d, 'provisioning_state', ProvisioningState),
                    read_only=d.get('read_only', None),
+                   securable_kind=_enum(d, 'securable_kind', ConnectionInfoSecurableKind),
+                   securable_type=d.get('securable_type', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None),
                    url=d.get('url', None))
+
+
+class ConnectionInfoSecurableKind(Enum):
+    """Kind of connection securable."""
+
+    CONNECTION_BIGQUERY = 'CONNECTION_BIGQUERY'
+    CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
+    CONNECTION_MYSQL = 'CONNECTION_MYSQL'
+    CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
+    CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
+    CONNECTION_REDSHIFT = 'CONNECTION_REDSHIFT'
+    CONNECTION_SNOWFLAKE = 'CONNECTION_SNOWFLAKE'
+    CONNECTION_SQLDW = 'CONNECTION_SQLDW'
+    CONNECTION_SQLSERVER = 'CONNECTION_SQLSERVER'
 
 
 class ConnectionType(Enum):
@@ -484,10 +521,10 @@ class CreateCatalog:
 class CreateConnection:
     name: str
     connection_type: 'ConnectionType'
-    options_kvpairs: 'Dict[str,str]'
+    options: 'Dict[str,str]'
     comment: Optional[str] = None
     owner: Optional[str] = None
-    properties_kvpairs: Optional['Dict[str,str]'] = None
+    properties: Optional['Dict[str,str]'] = None
     read_only: Optional[bool] = None
 
     def as_dict(self) -> dict:
@@ -495,9 +532,9 @@ class CreateConnection:
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_type is not None: body['connection_type'] = self.connection_type.value
         if self.name is not None: body['name'] = self.name
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.properties: body['properties'] = self.properties
         if self.read_only is not None: body['read_only'] = self.read_only
         return body
 
@@ -506,9 +543,9 @@ class CreateConnection:
         return cls(comment=d.get('comment', None),
                    connection_type=_enum(d, 'connection_type', ConnectionType),
                    name=d.get('name', None),
-                   options_kvpairs=d.get('options_kvpairs', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
-                   properties_kvpairs=d.get('properties_kvpairs', None),
+                   properties=d.get('properties', None),
                    read_only=d.get('read_only', None))
 
 
@@ -1761,6 +1798,16 @@ class PrivilegeAssignment:
 PropertiesKvPairs = Dict[str, str]
 
 
+class ProvisioningState(Enum):
+    """Status of an asynchronously provisioned resource."""
+
+    ACTIVE = 'ACTIVE'
+    DELETING = 'DELETING'
+    FAILED = 'FAILED'
+    PROVISIONING = 'PROVISIONING'
+    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+
+
 @dataclass
 class SchemaInfo:
     catalog_name: Optional[str] = None
@@ -1849,7 +1896,7 @@ class SecurableType(Enum):
 class SseEncryptionDetails:
     """Server-Side Encryption properties for clients communicating with AWS s3."""
 
-    algorithm: 'SseEncryptionDetailsAlgorithm'
+    algorithm: Optional['SseEncryptionDetailsAlgorithm'] = None
     aws_kms_key_arn: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -2189,21 +2236,19 @@ class UpdateCatalog:
 @dataclass
 class UpdateConnection:
     name: str
-    options_kvpairs: 'Dict[str,str]'
+    options: 'Dict[str,str]'
     name_arg: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.name_arg is not None: body['name_arg'] = self.name_arg
-        if self.options_kvpairs: body['options_kvpairs'] = self.options_kvpairs
+        if self.options: body['options'] = self.options
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateConnection':
-        return cls(name=d.get('name', None),
-                   name_arg=d.get('name_arg', None),
-                   options_kvpairs=d.get('options_kvpairs', None))
+        return cls(name=d.get('name', None), name_arg=d.get('name_arg', None), options=d.get('options', None))
 
 
 @dataclass
@@ -2855,7 +2900,7 @@ class AccountStorageCredentialsAPI:
     def create(self,
                metastore_id: str,
                *,
-               credential_info: Optional[CreateStorageCredential] = None) -> StorageCredentialInfo:
+               credential_info: Optional[CreateStorageCredential] = None) -> AccountsStorageCredentialInfo:
         """Create a storage credential.
         
         Creates a new storage credential. The request object is specific to the cloud:
@@ -2870,7 +2915,7 @@ class AccountStorageCredentialsAPI:
           Unity Catalog metastore ID
         :param credential_info: :class:`CreateStorageCredential` (optional)
         
-        :returns: :class:`StorageCredentialInfo`
+        :returns: :class:`AccountsStorageCredentialInfo`
         """
         body = {}
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
@@ -2879,7 +2924,7 @@ class AccountStorageCredentialsAPI:
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             body=body)
-        return StorageCredentialInfo.from_dict(json)
+        return AccountsStorageCredentialInfo.from_dict(json)
 
     def delete(self, metastore_id: str, name: str, *, force: Optional[bool] = None):
         """Delete a storage credential.
@@ -2904,7 +2949,7 @@ class AccountStorageCredentialsAPI:
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             query=query)
 
-    def get(self, metastore_id: str, name: str) -> StorageCredentialInfo:
+    def get(self, metastore_id: str, name: str) -> AccountsStorageCredentialInfo:
         """Gets the named storage credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
@@ -2915,12 +2960,12 @@ class AccountStorageCredentialsAPI:
         :param name: str
           Name of the storage credential.
         
-        :returns: :class:`StorageCredentialInfo`
+        :returns: :class:`AccountsStorageCredentialInfo`
         """
 
         json = self._api.do(
             'GET', f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/')
-        return StorageCredentialInfo.from_dict(json)
+        return AccountsStorageCredentialInfo.from_dict(json)
 
     def list(self, metastore_id: str) -> ListStorageCredentialsResponse:
         """Get all storage credentials assigned to a metastore.
@@ -2941,7 +2986,7 @@ class AccountStorageCredentialsAPI:
                metastore_id: str,
                name: str,
                *,
-               credential_info: Optional[UpdateStorageCredential] = None) -> StorageCredentialInfo:
+               credential_info: Optional[UpdateStorageCredential] = None) -> AccountsStorageCredentialInfo:
         """Updates a storage credential.
         
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
@@ -2953,7 +2998,7 @@ class AccountStorageCredentialsAPI:
           Name of the storage credential.
         :param credential_info: :class:`UpdateStorageCredential` (optional)
         
-        :returns: :class:`StorageCredentialInfo`
+        :returns: :class:`AccountsStorageCredentialInfo`
         """
         body = {}
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
@@ -2962,7 +3007,7 @@ class AccountStorageCredentialsAPI:
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             body=body)
-        return StorageCredentialInfo.from_dict(json)
+        return AccountsStorageCredentialInfo.from_dict(json)
 
 
 class CatalogsAPI:
@@ -3119,11 +3164,11 @@ class ConnectionsAPI:
     def create(self,
                name: str,
                connection_type: ConnectionType,
-               options_kvpairs: Dict[str, str],
+               options: Dict[str, str],
                *,
                comment: Optional[str] = None,
                owner: Optional[str] = None,
-               properties_kvpairs: Optional[Dict[str, str]] = None,
+               properties: Optional[Dict[str, str]] = None,
                read_only: Optional[bool] = None) -> ConnectionInfo:
         """Create a connection.
         
@@ -3136,13 +3181,13 @@ class ConnectionsAPI:
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
           The type of connection.
-        :param options_kvpairs: Dict[str,str]
+        :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
         :param owner: str (optional)
           Username of current owner of the connection.
-        :param properties_kvpairs: Dict[str,str] (optional)
+        :param properties: Dict[str,str] (optional)
           An object containing map of key-value properties attached to the connection.
         :param read_only: bool (optional)
           If the connection is read only.
@@ -3153,9 +3198,9 @@ class ConnectionsAPI:
         if comment is not None: body['comment'] = comment
         if connection_type is not None: body['connection_type'] = connection_type.value
         if name is not None: body['name'] = name
-        if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
+        if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
-        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs
+        if properties is not None: body['properties'] = properties
         if read_only is not None: body['read_only'] = read_only
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body)
@@ -3199,14 +3244,14 @@ class ConnectionsAPI:
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections')
         return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
 
-    def update(self, name: str, options_kvpairs: Dict[str, str], name_arg: str) -> ConnectionInfo:
+    def update(self, name: str, options: Dict[str, str], name_arg: str) -> ConnectionInfo:
         """Update a connection.
         
         Updates the connection that matches the supplied name.
         
         :param name: str
           Name of the connection.
-        :param options_kvpairs: Dict[str,str]
+        :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
         :param name_arg: str
           Name of the connection.
@@ -3215,7 +3260,7 @@ class ConnectionsAPI:
         """
         body = {}
         if name is not None: body['name'] = name
-        if options_kvpairs is not None: body['options_kvpairs'] = options_kvpairs
+        if options is not None: body['options'] = options
 
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{name_arg}', body=body)
         return ConnectionInfo.from_dict(json)

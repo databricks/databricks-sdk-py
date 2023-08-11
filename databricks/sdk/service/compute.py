@@ -1009,6 +1009,8 @@ class CreateCluster:
     cluster_name: Optional[str] = None
     cluster_source: Optional['ClusterSource'] = None
     custom_tags: Optional['Dict[str,str]'] = None
+    data_security_mode: Optional['DataSecurityMode'] = None
+    docker_image: Optional['DockerImage'] = None
     driver_instance_pool_id: Optional[str] = None
     driver_node_type_id: Optional[str] = None
     enable_elastic_disk: Optional[bool] = None
@@ -1020,6 +1022,7 @@ class CreateCluster:
     num_workers: Optional[int] = None
     policy_id: Optional[str] = None
     runtime_engine: Optional['RuntimeEngine'] = None
+    single_user_name: Optional[str] = None
     spark_conf: Optional['Dict[str,str]'] = None
     spark_env_vars: Optional['Dict[str,str]'] = None
     ssh_public_keys: Optional['List[str]'] = None
@@ -1038,6 +1041,8 @@ class CreateCluster:
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
         if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
@@ -1051,6 +1056,7 @@ class CreateCluster:
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
         if self.spark_conf: body['spark_conf'] = self.spark_conf
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
@@ -1069,6 +1075,8 @@ class CreateCluster:
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
@@ -1080,6 +1088,7 @@ class CreateCluster:
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
@@ -3894,6 +3903,8 @@ class ClustersAPI:
                cluster_name: Optional[str] = None,
                cluster_source: Optional[ClusterSource] = None,
                custom_tags: Optional[Dict[str, str]] = None,
+               data_security_mode: Optional[DataSecurityMode] = None,
+               docker_image: Optional[DockerImage] = None,
                driver_instance_pool_id: Optional[str] = None,
                driver_node_type_id: Optional[str] = None,
                enable_elastic_disk: Optional[bool] = None,
@@ -3905,6 +3916,7 @@ class ClustersAPI:
                num_workers: Optional[int] = None,
                policy_id: Optional[str] = None,
                runtime_engine: Optional[RuntimeEngine] = None,
+               single_user_name: Optional[str] = None,
                spark_conf: Optional[Dict[str, str]] = None,
                spark_env_vars: Optional[Dict[str, str]] = None,
                ssh_public_keys: Optional[List[str]] = None,
@@ -3955,6 +3967,9 @@ class ClustersAPI:
           - Currently, Databricks allows at most 45 custom tags
           
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        :param data_security_mode: :class:`DataSecurityMode` (optional)
+          This describes an enum
+        :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
@@ -3995,6 +4010,8 @@ class ClustersAPI:
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
           is inferred from spark_version.
+        :param single_user_name: str (optional)
+          Single user name if data_security_mode is `SINGLE_USER`
         :param spark_conf: Dict[str,str] (optional)
           An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
           can also pass in a string of extra JVM options to the driver and the executors via
@@ -4032,6 +4049,8 @@ class ClustersAPI:
         if cluster_name is not None: body['cluster_name'] = cluster_name
         if cluster_source is not None: body['cluster_source'] = cluster_source.value
         if custom_tags is not None: body['custom_tags'] = custom_tags
+        if data_security_mode is not None: body['data_security_mode'] = data_security_mode.value
+        if docker_image is not None: body['docker_image'] = docker_image.as_dict()
         if driver_instance_pool_id is not None: body['driver_instance_pool_id'] = driver_instance_pool_id
         if driver_node_type_id is not None: body['driver_node_type_id'] = driver_node_type_id
         if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
@@ -4044,6 +4063,7 @@ class ClustersAPI:
         if num_workers is not None: body['num_workers'] = num_workers
         if policy_id is not None: body['policy_id'] = policy_id
         if runtime_engine is not None: body['runtime_engine'] = runtime_engine.value
+        if single_user_name is not None: body['single_user_name'] = single_user_name
         if spark_conf is not None: body['spark_conf'] = spark_conf
         if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
         if spark_version is not None: body['spark_version'] = spark_version
@@ -4067,6 +4087,8 @@ class ClustersAPI:
         cluster_name: Optional[str] = None,
         cluster_source: Optional[ClusterSource] = None,
         custom_tags: Optional[Dict[str, str]] = None,
+        data_security_mode: Optional[DataSecurityMode] = None,
+        docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
@@ -4078,6 +4100,7 @@ class ClustersAPI:
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
+        single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
@@ -4092,6 +4115,8 @@ class ClustersAPI:
                            cluster_name=cluster_name,
                            cluster_source=cluster_source,
                            custom_tags=custom_tags,
+                           data_security_mode=data_security_mode,
+                           docker_image=docker_image,
                            driver_instance_pool_id=driver_instance_pool_id,
                            driver_node_type_id=driver_node_type_id,
                            enable_elastic_disk=enable_elastic_disk,
@@ -4103,6 +4128,7 @@ class ClustersAPI:
                            num_workers=num_workers,
                            policy_id=policy_id,
                            runtime_engine=runtime_engine,
+                           single_user_name=single_user_name,
                            spark_conf=spark_conf,
                            spark_env_vars=spark_env_vars,
                            spark_version=spark_version,
@@ -5233,9 +5259,9 @@ class InstancePoolsAPI:
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
-          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
-          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
-          using the :method:clusters/sparkVersions API call.
+          A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
+          started with the preloaded Spark version will start faster. A list of available Spark versions can
+          be retrieved by using the :method:clusters/sparkVersions API call.
         
         :returns: :class:`CreateInstancePoolResponse`
         """
@@ -5344,9 +5370,9 @@ class InstancePoolsAPI:
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
-          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
-          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
-          using the :method:clusters/sparkVersions API call.
+          A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
+          started with the preloaded Spark version will start faster. A list of available Spark versions can
+          be retrieved by using the :method:clusters/sparkVersions API call.
         
         
         """

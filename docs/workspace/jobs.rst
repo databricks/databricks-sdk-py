@@ -159,8 +159,14 @@ Jobs
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
         :param git_source: :class:`GitSource` (optional)
-          An optional specification for a remote repository containing the notebooks used by this job's
-          notebook tasks.
+          An optional specification for a remote Git repository containing the source code used by tasks.
+          Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+          
+          If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+          However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+          
+          Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
+          used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
           An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
@@ -876,8 +882,14 @@ Jobs
           An optional set of email addresses notified when the run begins or completes. The default behavior
           is to not send any emails.
         :param git_source: :class:`GitSource` (optional)
-          An optional specification for a remote repository containing the notebooks used by this job's
-          notebook tasks.
+          An optional specification for a remote Git repository containing the source code used by tasks.
+          Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+          
+          If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+          However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+          
+          Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
+          used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
           An optional set of health rules that can be defined for this job.
         :param idempotency_token: str (optional)

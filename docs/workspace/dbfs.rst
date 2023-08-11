@@ -1,4 +1,4 @@
-Dbfs
+DBFS
 ====
 .. py:class:: DbfsExt
 
