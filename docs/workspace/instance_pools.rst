@@ -85,9 +85,9 @@ Instance Pools
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
-          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
-          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
-          using the :method:clusters/sparkVersions API call.
+          A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
+          started with the preloaded Spark version will start faster. A list of available Spark versions can
+          be retrieved by using the :method:clusters/sparkVersions API call.
         
         :returns: :class:`CreateInstancePoolResponse`
         
@@ -178,9 +178,9 @@ Instance Pools
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
-          A list of preloaded Spark image versions for the pool. Pool-backed clusters started with the
-          preloaded Spark version will start faster. A list of available Spark versions can be retrieved by
-          using the :method:clusters/sparkVersions API call.
+          A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
+          started with the preloaded Spark version will start faster. A list of available Spark versions can
+          be retrieved by using the :method:clusters/sparkVersions API call.
         
         
         
