@@ -1,4 +1,6 @@
+import logging
 from typing import BinaryIO, Iterator, Optional
+from queue import Queue
 
 from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, ImportFormat, Language,
@@ -7,6 +9,54 @@ from ..service.workspace import (ExportFormat, ImportFormat, Language,
 
 def _fqcn(x: any) -> str:
     return f'{x.__module__}.{x.__name__}'
+
+_LOG = logging.getLogger('databricks.sdk')
+
+class _ParallelRecursiveListing:
+    def __init__(self, path, listing, threads, notebooks_modified_after):
+        self.path = path
+        self.listing = listing
+        self.threads = threads
+        self.notebooks_modified_after = notebooks_modified_after
+        self.directories = Queue()
+        self.results = Queue()
+        self.directories.put_nowait(path)
+        self._start()
+
+    def _worker(self):
+        while True:
+            path = self.directories.get()
+            if path is None:
+                _LOG.debug('stopping thread')
+                break # poison pill
+            for object_info in self.listing(
+                    path, notebooks_modified_after=self.notebooks_modified_after):
+                if object_info.object_type == ObjectType.DIRECTORY:
+                    self.directories.put(object_info.path)
+                    continue
+                _LOG.debug(f'found: {object_info.path}')
+                self.results.put_nowait(object_info)
+            self.directories.task_done()
+            if path == self.path:
+                _LOG.debug('done iterating')
+                for _ in range(self.threads-1):
+                    self.directories.put(None)
+
+    def _start(self):
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.threads) as pool:
+            tasks = []
+            for _ in range(self.threads):
+                tasks.append(pool.submit(self._worker))
+            concurrent.futures.wait(tasks)
+
+    def __iter__(self) -> Iterator[ObjectInfo]:
+
+        while self.results.not_empty:
+            yield self.__next__()
+
+    def __next__(self) -> bytes:
+        yield self.results.get()
 
 
 class WorkspaceExt(WorkspaceAPI):
@@ -17,6 +67,7 @@ class WorkspaceExt(WorkspaceAPI):
              *,
              notebooks_modified_after: Optional[int] = None,
              recursive: Optional[bool] = False,
+             threads: Optional[int] = None,
              **kwargs) -> Iterator[ObjectInfo]:
         """List workspace objects
 
@@ -26,6 +77,8 @@ class WorkspaceExt(WorkspaceAPI):
         :returns: Iterator of workspaceObjectInfo
         """
         parent_list = super().list
+        if threads is not None:
+            return _ParallelRecursiveListing(path, parent_list,threads, notebooks_modified_after)
         queue = [path]
         while queue:
             path, queue = queue[0], queue[1:]

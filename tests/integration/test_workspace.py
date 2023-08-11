@@ -1,7 +1,22 @@
 import io
+import logging
 
 from databricks.sdk.service.workspace import ImportFormat, Language
 
+_LOG = logging.getLogger('databricks.sdk')
+
+def test_workspace_recursive_list_parallel_xx():
+    from databricks.sdk import WorkspaceClient
+    w = WorkspaceClient(profile='demo')
+    for i in w.workspace.list(f'/Users/serge.smertin@databricks.com', threads=20, recursive=True):
+        _LOG.info(f'FOUND: {i}')
+    _LOG.info('DONE')
+
+
+def test_workspace_recursive_list_parallel(w):
+    for i in w.workspace._parallel_recursive_listing(f'/Users', threads=20):
+        print(f'FOUND: {i}')
+    print('DONE')
 
 def test_workspace_recursive_list(w, random):
     names = []
