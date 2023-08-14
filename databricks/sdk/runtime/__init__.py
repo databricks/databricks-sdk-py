@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from typing import Union
+import logging
+from typing import Dict, Union
 
+logger = logging.getLogger('databricks.sdk')
 is_local_implementation = True
 
 # All objects that are injected into the Notebook's user namespace should also be made
@@ -16,11 +18,57 @@ try:
     # We don't want to expose additional entity to user namespace, so
     # a workaround here for exposing required information in notebook environment
     from dbruntime.sdk_credential_provider import init_runtime_native_auth
+    logger.debug('runtime SDK credential provider available')
     dbruntime_objects.append("init_runtime_native_auth")
 except ImportError:
     init_runtime_native_auth = None
 
 globals()["init_runtime_native_auth"] = init_runtime_native_auth
+
+
+def init_runtime_repl_auth():
+    try:
+        from dbruntime.databricks_repl_context import get_context
+        ctx = get_context()
+        if ctx is None:
+            logger.debug('Empty REPL context returned, skipping runtime auth')
+            return None, None
+        host = f'https://{ctx.workspaceUrl}'
+
+        def inner() -> Dict[str, str]:
+            ctx = get_context()
+            return {'Authorization': f'Bearer {ctx.apiToken}'}
+
+        return host, inner
+    except ImportError:
+        return None, None
+
+
+def init_runtime_legacy_auth():
+    try:
+        import IPython
+        ip_shell = IPython.get_ipython()
+        if ip_shell is None:
+            return None, None
+        global_ns = ip_shell.ns_table["user_global"]
+        if 'dbutils' not in global_ns:
+            return None, None
+        dbutils = global_ns["dbutils"].notebook.entry_point.getDbutils()
+        if dbutils is None:
+            return None, None
+        ctx = dbutils.notebook().getContext()
+        if ctx is None:
+            return None, None
+        host = getattr(ctx, 'apiUrl')().get()
+
+        def inner() -> Dict[str, str]:
+            ctx = dbutils.notebook().getContext()
+            return {'Authorization': f'Bearer {getattr(ctx, "apiToken")().get()}'}
+
+        return host, inner
+    except ImportError:
+        return None, None
+
 
 try:
     # Internal implementation
