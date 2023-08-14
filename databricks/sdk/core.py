@@ -94,6 +94,8 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     from databricks.sdk.runtime import (init_runtime_legacy_auth,
                                         init_runtime_native_auth,
                                         init_runtime_repl_auth)
+    if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
+        return None
     for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
         if init is None:
             continue
