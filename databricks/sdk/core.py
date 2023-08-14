@@ -91,12 +91,11 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
-    from databricks.sdk.runtime import (init_runtime_native_auth,
-                                        init_runtime_repl_auth,
-                                        init_runtime_legacy_auth)
+    from databricks.sdk.runtime import (init_runtime_legacy_auth,
+                                        init_runtime_native_auth,
+                                        init_runtime_repl_auth)
     for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
         if init is None:
-            logger.debug(f'[{init.__name__}] not applicable')
             continue
         host, inner = init()
         if host is None:
