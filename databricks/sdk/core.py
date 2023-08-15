@@ -614,6 +614,10 @@ class Config:
             ua.append(' '.join(self._user_agent_other_info))
         if len(self._upstream_user_agent) > 0:
             ua.append(self._upstream_user_agent)
+        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
+            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
+            if runtime_version != '':
+                ua.append(f'runtime/{runtime_version}')
 
         return ' '.join(ua)
 
