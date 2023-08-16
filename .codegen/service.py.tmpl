@@ -3,8 +3,9 @@
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Type, Callable, Optional
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
 import time
+import io
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
@@ -78,6 +79,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
+	{{- else if .IsByteStream}}BinaryIO
 	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
     {{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
@@ -95,6 +97,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
+	{{- else if .IsByteStream}}BinaryIO
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
   {{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
 	{{- else if .IsExternal }}:class:`{{.PascalName}}`
@@ -195,11 +198,13 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-serialize" -}}
-        {{if or .Request.HasJsonField .Request.HasQueryField -}}
-        {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
-        query = {}{{end}}
-        {{- range .Request.Fields}}{{if not .IsPath}}
-        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
+        {{if .Request.HasJsonField -}}
+        body = {}{{ end }}{{if .Request.HasQueryField}}
+        query = {}{{ end }}{{ range .Request.Fields }}{{ if not .IsPath -}}
+        {{ if .IsJson }}
+        if {{.SnakeName}} is not None: body['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{ if .IsQuery }}
+        if {{.SnakeName}} is not None: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
+        {{- end}}
         {{- end}}
 {{- end}}
 
@@ -225,6 +230,7 @@ headers = {
 {{define "method-call" -}}
         {{if .Pagination -}}{{template "method-call-paginated" .}}
         {{- else if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}{{template "method-call-retried" .}}
+        {{- else if .IsResponseByteStream }}{{template "method-call-response-stream" . }}
         {{- else}}{{template "method-call-default" .}}{{end}}
 {{- end}}
 
@@ -274,6 +280,10 @@ headers = {
         {{end}}
 {{- end}}
 
+{{define "method-call-response-stream" -}}
+        return {{template "method-do" .}}
+{{- end}}
+
 {{define "method-call-default" -}}
         {{if .Response}}
         json = {{end}}{{template "method-do" .}}
@@ -295,7 +305,9 @@ self._api.do('{{.Verb}}',
       {{- if .Request.HasQueryField}}, query=query{{end}}
       {{- if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
-  {{- if .HasRequestHeaders }}, headers=headers{{end}})
+  {{- if .HasRequestHeaders }}, headers=headers{{end}}
+  {{- if and .IsRequestByteStream .RequestBodyField }}, data={{.RequestBodyField.SnakeName}}{{ end }}
+  {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}
 
 {{define "method-return-type" -}}
@@ -307,6 +319,8 @@ self._api.do('{{.Verb}}',
   {{- else -}}
     {{- if .Response.IsExternal -}}
       {{.Response.Package.Name}}.{{.Response.PascalName}}
+    {{- else if .IsResponseByteStream -}}
+      BinaryIO
     {{- else -}}
       {{.Response.PascalName}}
     {{- end -}}

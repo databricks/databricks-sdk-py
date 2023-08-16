@@ -18,7 +18,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import requests
 import requests.auth
-from requests.adapters import HTTPAdapter
+from requests.adapters import HTTPAdapter, Response
 from urllib3.util.retry import Retry
 
 from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
@@ -971,7 +971,7 @@ class ApiClient:
            body: dict = None,
            raw: bool = False,
            files=None,
-           data=None) -> dict:
+           data=None) -> dict | Response:
         headers |= {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
@@ -980,7 +980,7 @@ class ApiClient:
                                          headers=headers,
                                          files=files,
                                          data=data,
-                                         stream=True if raw else False)
+                                         stream=raw)
         try:
             self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok:
@@ -989,7 +989,7 @@ class ApiClient:
                 payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
             if raw:
-                return response.raw
+                return response
             if not len(response.content):
                 return {}
             return response.json()

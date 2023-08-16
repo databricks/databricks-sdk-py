@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterator, List, Optional
+from typing import BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _repeated
 
@@ -437,3 +437,74 @@ class DbfsAPI:
 
         json = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
         return ReadResponse.from_dict(json)
+
+
+class FilesAPI:
+    """The Files API allows you to read, write, and delete files and directories in Unity Catalog volumes."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete_file(self, file_path: str):
+        """Delete a file or directory.
+        
+        Deletes a file or directory.
+        
+        :param file_path: str
+          The absolute path of the file or directory in DBFS.
+        
+        
+        """
+
+        self._api.do('DELETE', f'/api/2.0/fs/files/{file_path}')
+
+    def download_file(self, file_path: str) -> BinaryIO:
+        """Download a file.
+        
+        Downloads a file of up to 2 GiB.
+        
+        :param file_path: str
+          The absolute path of the file or directory in DBFS.
+        
+        :returns: BinaryIO
+        """
+
+        headers = {'Accept': 'application/octet-stream', }
+        return self._api.do('GET', f'/api/2.0/fs/files/{file_path}', headers=headers, raw=True)
+
+    def get_status(self, path: str) -> FileInfo:
+        """Get the status of a file or directory.
+        
+        Returns the status of a file or directory.
+        
+        :param path: str
+          The absolute path of the file or directory in the Files API.
+        
+        :returns: :class:`FileInfo`
+        """
+
+        query = {}
+        if path is not None: query['path'] = path
+        headers = {'Accept': 'application/json', }
+
+        json = self._api.do('GET', '/api/2.0/fs/get-status', query=query, headers=headers)
+        return FileInfo.from_dict(json)
+
+    def upload_file(self, contents: BinaryIO, file_path: str, *, overwrite: Optional[bool] = None):
+        """Upload a file.
+        
+        Uploads a file of up to 2 GiB.
+        
+        :param contents: BinaryIO
+        :param file_path: str
+          The absolute path of the file or directory in DBFS.
+        :param overwrite: bool (optional)
+          The flag that specifies whether to overwrite existing file/files.
+        
+        
+        """
+
+        query = {}
+        if overwrite is not None: query['overwrite'] = overwrite
+        headers = {'Content-Type': 'application/octet-stream', }
+        self._api.do('PUT', f'/api/2.0/fs/files/{file_path}', query=query, headers=headers, data=contents)

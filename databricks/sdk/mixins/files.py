@@ -397,18 +397,3 @@ class DbfsExt(files.DbfsAPI):
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         source.delete(recursive=recursive)
-
-
-class FilesMixin:
-
-    def __init__(self, api_client: ApiClient):
-        self._api = api_client
-
-    def upload(self, path: str, src: BinaryIO):
-        self._api.do('PUT', f'/api/2.0/fs/files{path}', data=src)
-
-    def download(self, path: str) -> BinaryIO:
-        return self._api.do('GET', f'/api/2.0/fs/files{path}', raw=True)
-
-    def delete(self, path: str):
-        self._api.do('DELETE', f'/api/2.0/fs/files{path}')
