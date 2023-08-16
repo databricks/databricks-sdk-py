@@ -1028,8 +1028,12 @@ class CredentialsAPI:
         body = {}
         if aws_credentials is not None: body['aws_credentials'] = aws_credentials.as_dict()
         if credentials_name is not None: body['credentials_name'] = credentials_name
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
-        json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/credentials', body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/accounts/{self._api.account_id}/credentials',
+                            body=body,
+                            headers=headers)
         return Credential.from_dict(json)
 
     def delete(self, credentials_id: str):
@@ -1044,7 +1048,10 @@ class CredentialsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}')
+        headers = {"Accept": "application/json", }
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}',
+                     headers=headers)
 
     def get(self, credentials_id: str) -> Credential:
         """Get credential configuration.
@@ -1057,7 +1064,11 @@ class CredentialsAPI:
         :returns: :class:`Credential`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}',
+                            headers=headers)
         return Credential.from_dict(json)
 
     def list(self) -> Iterator[Credential]:
@@ -1068,7 +1079,9 @@ class CredentialsAPI:
         :returns: Iterator over :class:`Credential`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/credentials', headers=headers)
         return [Credential.from_dict(v) for v in json]
 
 
@@ -1122,10 +1135,12 @@ class EncryptionKeysAPI:
         if aws_key_info is not None: body['aws_key_info'] = aws_key_info.as_dict()
         if gcp_key_info is not None: body['gcp_key_info'] = gcp_key_info.as_dict()
         if use_cases is not None: body['use_cases'] = [v.value for v in use_cases]
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys',
-                            body=body)
+                            body=body,
+                            headers=headers)
         return CustomerManagedKey.from_dict(json)
 
     def delete(self, customer_managed_key_id: str):
@@ -1140,9 +1155,11 @@ class EncryptionKeysAPI:
         
         """
 
+        headers = {"Accept": "application/json", }
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{customer_managed_key_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{customer_managed_key_id}',
+            headers=headers)
 
     def get(self, customer_managed_key_id: str) -> CustomerManagedKey:
         """Get encryption key configuration.
@@ -1166,9 +1183,12 @@ class EncryptionKeysAPI:
         :returns: :class:`CustomerManagedKey`
         """
 
+        headers = {"Accept": "application/json", }
+
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{customer_managed_key_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys/{customer_managed_key_id}',
+            headers=headers)
         return CustomerManagedKey.from_dict(json)
 
     def list(self) -> Iterator[CustomerManagedKey]:
@@ -1188,7 +1208,11 @@ class EncryptionKeysAPI:
         :returns: Iterator over :class:`CustomerManagedKey`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/customer-managed-keys',
+                            headers=headers)
         return [CustomerManagedKey.from_dict(v) for v in json]
 
 
@@ -1241,8 +1265,12 @@ class NetworksAPI:
         if subnet_ids is not None: body['subnet_ids'] = [v for v in subnet_ids]
         if vpc_endpoints is not None: body['vpc_endpoints'] = vpc_endpoints.as_dict()
         if vpc_id is not None: body['vpc_id'] = vpc_id
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
-        json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/networks', body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/accounts/{self._api.account_id}/networks',
+                            body=body,
+                            headers=headers)
         return Network.from_dict(json)
 
     def delete(self, network_id: str):
@@ -1259,7 +1287,10 @@ class NetworksAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/networks/{network_id}')
+        headers = {"Accept": "application/json", }
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/networks/{network_id}',
+                     headers=headers)
 
     def get(self, network_id: str) -> Network:
         """Get a network configuration.
@@ -1272,7 +1303,11 @@ class NetworksAPI:
         :returns: :class:`Network`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks/{network_id}')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/networks/{network_id}',
+                            headers=headers)
         return Network.from_dict(json)
 
     def list(self) -> Iterator[Network]:
@@ -1285,7 +1320,9 @@ class NetworksAPI:
         :returns: Iterator over :class:`Network`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/networks', headers=headers)
         return [Network.from_dict(v) for v in json]
 
 
@@ -1355,10 +1392,12 @@ class PrivateAccessAPI:
             body['private_access_settings_name'] = private_access_settings_name
         if public_access_enabled is not None: body['public_access_enabled'] = public_access_enabled
         if region is not None: body['region'] = region
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/private-access-settings',
-                            body=body)
+                            body=body,
+                            headers=headers)
         return PrivateAccessSettings.from_dict(json)
 
     def delete(self, private_access_settings_id: str):
@@ -1378,9 +1417,11 @@ class PrivateAccessAPI:
         
         """
 
+        headers = {"Accept": "application/json", }
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}',
+            headers=headers)
 
     def get(self, private_access_settings_id: str) -> PrivateAccessSettings:
         """Get a private access settings object.
@@ -1399,9 +1440,12 @@ class PrivateAccessAPI:
         :returns: :class:`PrivateAccessSettings`
         """
 
+        headers = {"Accept": "application/json", }
+
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}',
+            headers=headers)
         return PrivateAccessSettings.from_dict(json)
 
     def list(self) -> Iterator[PrivateAccessSettings]:
@@ -1412,7 +1456,11 @@ class PrivateAccessAPI:
         :returns: Iterator over :class:`PrivateAccessSettings`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/private-access-settings')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/private-access-settings',
+                            headers=headers)
         return [PrivateAccessSettings.from_dict(v) for v in json]
 
     def replace(self,
@@ -1483,10 +1531,12 @@ class PrivateAccessAPI:
             body['private_access_settings_name'] = private_access_settings_name
         if public_access_enabled is not None: body['public_access_enabled'] = public_access_enabled
         if region is not None: body['region'] = region
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
         self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/private-access-settings/{private_access_settings_id}',
-            body=body)
+            body=body,
+            headers=headers)
 
 
 class StorageAPI:
@@ -1523,10 +1573,12 @@ class StorageAPI:
         if root_bucket_info is not None: body['root_bucket_info'] = root_bucket_info.as_dict()
         if storage_configuration_name is not None:
             body['storage_configuration_name'] = storage_configuration_name
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/storage-configurations',
-                            body=body)
+                            body=body,
+                            headers=headers)
         return StorageConfiguration.from_dict(json)
 
     def delete(self, storage_configuration_id: str):
@@ -1541,9 +1593,11 @@ class StorageAPI:
         
         """
 
+        headers = {"Accept": "application/json", }
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{storage_configuration_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{storage_configuration_id}',
+            headers=headers)
 
     def get(self, storage_configuration_id: str) -> StorageConfiguration:
         """Get storage configuration.
@@ -1556,9 +1610,12 @@ class StorageAPI:
         :returns: :class:`StorageConfiguration`
         """
 
+        headers = {"Accept": "application/json", }
+
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{storage_configuration_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations/{storage_configuration_id}',
+            headers=headers)
         return StorageConfiguration.from_dict(json)
 
     def list(self) -> Iterator[StorageConfiguration]:
@@ -1569,7 +1626,11 @@ class StorageAPI:
         :returns: Iterator over :class:`StorageConfiguration`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/storage-configurations')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/storage-configurations',
+                            headers=headers)
         return [StorageConfiguration.from_dict(v) for v in json]
 
 
@@ -1616,8 +1677,12 @@ class VpcEndpointsAPI:
         if gcp_vpc_endpoint_info is not None: body['gcp_vpc_endpoint_info'] = gcp_vpc_endpoint_info.as_dict()
         if region is not None: body['region'] = region
         if vpc_endpoint_name is not None: body['vpc_endpoint_name'] = vpc_endpoint_name
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
-        json = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints', body=body)
+        json = self._api.do('POST',
+                            f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints',
+                            body=body,
+                            headers=headers)
         return VpcEndpoint.from_dict(json)
 
     def delete(self, vpc_endpoint_id: str):
@@ -1638,7 +1703,10 @@ class VpcEndpointsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}')
+        headers = {"Accept": "application/json", }
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}',
+                     headers=headers)
 
     def get(self, vpc_endpoint_id: str) -> VpcEndpoint:
         """Get a VPC endpoint configuration.
@@ -1655,8 +1723,11 @@ class VpcEndpointsAPI:
         :returns: :class:`VpcEndpoint`
         """
 
+        headers = {"Accept": "application/json", }
+
         json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}')
+                            f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}',
+                            headers=headers)
         return VpcEndpoint.from_dict(json)
 
     def list(self) -> Iterator[VpcEndpoint]:
@@ -1671,7 +1742,9 @@ class VpcEndpointsAPI:
         :returns: Iterator over :class:`VpcEndpoint`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/vpc-endpoints', headers=headers)
         return [VpcEndpoint.from_dict(v) for v in json]
 
 
@@ -1854,7 +1927,11 @@ class WorkspacesAPI:
         if storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
         if workspace_name is not None: body['workspace_name'] = workspace_name
-        op_response = self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/workspaces', body=body)
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        op_response = self._api.do('POST',
+                                   f'/api/2.0/accounts/{self._api.account_id}/workspaces',
+                                   body=body,
+                                   headers=headers)
         return Wait(self.wait_get_workspace_running,
                     response=Workspace.from_dict(op_response),
                     workspace_id=op_response['workspace_id'])
@@ -1910,7 +1987,10 @@ class WorkspacesAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}')
+        headers = {"Accept": "application/json", }
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
+                     headers=headers)
 
     def get(self, workspace_id: int) -> Workspace:
         """Get a workspace.
@@ -1934,7 +2014,11 @@ class WorkspacesAPI:
         :returns: :class:`Workspace`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
+                            headers=headers)
         return Workspace.from_dict(json)
 
     def list(self) -> Iterator[Workspace]:
@@ -1948,7 +2032,9 @@ class WorkspacesAPI:
         :returns: Iterator over :class:`Workspace`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/workspaces', headers=headers)
         return [Workspace.from_dict(v) for v in json]
 
     def update(self,
@@ -2088,9 +2174,11 @@ class WorkspacesAPI:
         if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
         if storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
-                     body=body)
+                     body=body,
+                     headers=headers)
         return Wait(self.wait_get_workspace_running, workspace_id=workspace_id)
 
     def update_and_wait(

@@ -652,8 +652,11 @@ class ServingEndpointsAPI:
         :returns: :class:`BuildLogsResponse`
         """
 
-        json = self._api.do(
-            'GET', f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
+                            headers=headers)
         return BuildLogsResponse.from_dict(json)
 
     def create(self, name: str, config: EndpointCoreConfigInput) -> Wait[ServingEndpointDetailed]:
@@ -672,7 +675,8 @@ class ServingEndpointsAPI:
         body = {}
         if config is not None: body['config'] = config.as_dict()
         if name is not None: body['name'] = name
-        op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body)
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body, headers=headers)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
                     name=op_response['name'])
@@ -691,7 +695,8 @@ class ServingEndpointsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}')
+        headers = {"Accept": "application/json", }
+        self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
     def export_metrics(self, name: str):
         """Retrieve the metrics associated with a serving endpoint.
@@ -705,7 +710,8 @@ class ServingEndpointsAPI:
         
         """
 
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics')
+        headers = {}
+        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
 
     def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.
@@ -718,7 +724,9 @@ class ServingEndpointsAPI:
         :returns: :class:`ServingEndpointDetailed`
         """
 
-        json = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(json)
 
     def get_serving_endpoint_permission_levels(
@@ -733,8 +741,11 @@ class ServingEndpointsAPI:
         :returns: :class:`GetServingEndpointPermissionLevelsResponse`
         """
 
+        headers = {"Accept": "application/json", }
+
         json = self._api.do('GET',
-                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels')
+                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
+                            headers=headers)
         return GetServingEndpointPermissionLevelsResponse.from_dict(json)
 
     def get_serving_endpoint_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
@@ -749,7 +760,11 @@ class ServingEndpointsAPI:
         :returns: :class:`ServingEndpointPermissions`
         """
 
-        json = self._api.do('GET', f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
+                            headers=headers)
         return ServingEndpointPermissions.from_dict(json)
 
     def list(self) -> Iterator[ServingEndpoint]:
@@ -758,7 +773,9 @@ class ServingEndpointsAPI:
         :returns: Iterator over :class:`ServingEndpoint`
         """
 
-        json = self._api.do('GET', '/api/2.0/serving-endpoints')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
         return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
@@ -774,8 +791,11 @@ class ServingEndpointsAPI:
         :returns: :class:`ServerLogsResponse`
         """
 
+        headers = {"Accept": "application/json", }
+
         json = self._api.do('GET',
-                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs')
+                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
+                            headers=headers)
         return ServerLogsResponse.from_dict(json)
 
     def query(self, name: str) -> QueryEndpointResponse:
@@ -787,7 +807,9 @@ class ServingEndpointsAPI:
         :returns: :class:`QueryEndpointResponse`
         """
 
-        json = self._api.do('POST', f'/serving-endpoints/{name}/invocations')
+        headers = {"Accept": "application/json", }
+
+        json = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
         return QueryEndpointResponse.from_dict(json)
 
     def set_serving_endpoint_permissions(
@@ -810,8 +832,12 @@ class ServingEndpointsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
-        json = self._api.do('PUT', f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}', body=body)
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
+                            body=body,
+                            headers=headers)
         return ServingEndpointPermissions.from_dict(json)
 
     def update_config(self,
@@ -840,7 +866,11 @@ class ServingEndpointsAPI:
         body = {}
         if served_models is not None: body['served_models'] = [v.as_dict() for v in served_models]
         if traffic_config is not None: body['traffic_config'] = traffic_config.as_dict()
-        op_response = self._api.do('PUT', f'/api/2.0/serving-endpoints/{name}/config', body=body)
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        op_response = self._api.do('PUT',
+                                   f'/api/2.0/serving-endpoints/{name}/config',
+                                   body=body,
+                                   headers=headers)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
                     name=op_response['name'])
@@ -875,8 +905,10 @@ class ServingEndpointsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        headers = {"Accept": "application/json", "Content-Type": "application/json", }
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
-                            body=body)
+                            body=body,
+                            headers=headers)
         return ServingEndpointPermissions.from_dict(json)

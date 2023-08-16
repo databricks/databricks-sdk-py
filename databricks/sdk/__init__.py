@@ -8,7 +8,8 @@ from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
-                                            CatalogsAPI, ConnectionsAPI,
+                                            ArtifactAllowlistsAPI, CatalogsAPI,
+                                            ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             SchemasAPI, StorageCredentialsAPI,
@@ -130,6 +131,7 @@ class WorkspaceClient:
         self.files = FilesMixin(self.api_client)
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
+        self.artifact_allowlists = ArtifactAllowlistsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
         self.clean_rooms = CleanRoomsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)

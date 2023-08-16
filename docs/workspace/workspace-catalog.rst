@@ -7,6 +7,7 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
 .. toctree::
   :maxdepth: 1
 
+  artifact_allowlists
   catalogs
   connections
   external_locations

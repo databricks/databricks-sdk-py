@@ -73,13 +73,13 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "type-nq" -}}
 	{{- if .IsString}}str
 	{{- else if .IsEmpty}}Any
-  {{- else if .IsAny}}Any
+    {{- else if .IsAny}}Any
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
-  {{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
+    {{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
 	{{- else if .Enum }}{{.PascalName}}
@@ -182,6 +182,7 @@ class {{.Name}}API:{{if .Description}}
         {{if .Request -}}
         {{template "method-serialize" .}}
         {{- end}}
+        {{template "method-headers" .}}
         {{template "method-call" .}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
@@ -201,6 +202,19 @@ class {{.Name}}API:{{if .Description}}
         if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{- end}}
 {{- end}}
+
+{{ define "method-headers" -}}
+  {{ if or .Accept .ContentType -}}
+    headers = {
+      {{ if .Accept }}"Accept": "{{.Accept}}",
+      {{ end -}}
+      {{ if .ContentType }}"Content-Type": "{{.ContentType}}",
+      {{ end -}}
+    }
+  {{- else -}}
+    headers = {}
+  {{- end }}
+{{- end }}
 
 {{- define "method-param-bind" -}}
       {{- if not .Entity }}None # ERROR: No Type
@@ -280,7 +294,7 @@ class {{.Name}}API:{{if .Description}}
 {{define "method-do" -}}
 self._api.do('{{.Verb}}', {{if .PathParts -}}
   f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
-{{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}})
+{{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}}, headers=headers)
 {{- end}}
 
 {{define "method-return-type" -}}
