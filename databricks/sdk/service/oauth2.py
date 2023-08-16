@@ -365,7 +365,7 @@ class CustomAppIntegrationAPI:
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
@@ -385,7 +385,7 @@ class CustomAppIntegrationAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
@@ -402,7 +402,7 @@ class CustomAppIntegrationAPI:
         :returns: :class:`GetCustomAppIntegrationOutput`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',
@@ -418,7 +418,7 @@ class CustomAppIntegrationAPI:
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
@@ -447,7 +447,7 @@ class CustomAppIntegrationAPI:
         body = {}
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
@@ -484,7 +484,7 @@ class OAuthEnrollmentAPI:
         body = {}
         if enable_all_published_apps is not None:
             body['enable_all_published_apps'] = enable_all_published_apps
-        headers = {"Content-Type": "application/json", }
+        headers = {'Content-Type': 'application/json', }
         self._api.do('POST',
                      f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
                      body=body,
@@ -501,7 +501,7 @@ class OAuthEnrollmentAPI:
         :returns: :class:`OAuthEnrollmentStatus`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
@@ -540,7 +540,7 @@ class PublishedAppIntegrationAPI:
         body = {}
         if app_id is not None: body['app_id'] = app_id
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
@@ -560,7 +560,7 @@ class PublishedAppIntegrationAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
@@ -577,7 +577,7 @@ class PublishedAppIntegrationAPI:
         :returns: :class:`GetPublishedAppIntegrationOutput`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',
@@ -593,7 +593,7 @@ class PublishedAppIntegrationAPI:
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
@@ -615,7 +615,7 @@ class PublishedAppIntegrationAPI:
         """
         body = {}
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
@@ -650,7 +650,7 @@ class ServicePrincipalSecretsAPI:
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'POST',
@@ -671,11 +671,10 @@ class ServicePrincipalSecretsAPI:
         
         """
 
-        headers = {}
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},',
-            headers=headers)
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},'
+        )
 
     def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
         """List service principal secrets.
@@ -689,7 +688,7 @@ class ServicePrincipalSecretsAPI:
         :returns: Iterator over :class:`SecretInfo`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',

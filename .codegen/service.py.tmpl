@@ -204,15 +204,10 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{ define "method-headers" -}}
-  {{ if or .Accept .ContentType -}}
-    headers = {
-      {{ if .Accept }}"Accept": "{{.Accept}}",
-      {{ end -}}
-      {{ if .ContentType }}"Content-Type": "{{.ContentType}}",
-      {{ end -}}
+  {{ if .HasRequestHeaders -}}
+headers = {
+      {{- range $k, $v := .FixedRequestHeaders}}'{{ $k }}': '{{ $v }}',{{ end -}}
     }
-  {{- else -}}
-    headers = {}
   {{- end }}
 {{- end }}
 
@@ -292,9 +287,15 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-do" -}}
-self._api.do('{{.Verb}}', {{if .PathParts -}}
-  f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
-{{- else}}'{{.Path}}'{{end}}{{if .Request}}{{if .Request.HasQueryField}}, query=query{{end}}{{if .Request.HasJsonField}}, body=body{{end}}{{end}}, headers=headers)
+self._api.do('{{.Verb}}',
+  {{if .PathParts -}}
+      f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
+  {{- else}}'{{.Path}}'{{end}}
+  {{if .Request}}
+      {{- if .Request.HasQueryField}}, query=query{{end}}
+      {{- if .Request.HasJsonField}}, body=body{{end}}
+  {{end}}
+  {{- if .HasRequestHeaders }}, headers=headers{{end}})
 {{- end}}
 
 {{define "method-return-type" -}}

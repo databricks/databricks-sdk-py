@@ -444,11 +444,8 @@ class BillableUsageAPI:
         if end_month is not None: query['end_month'] = end_month
         if personal_data is not None: query['personal_data'] = personal_data
         if start_month is not None: query['start_month'] = start_month
-        headers = {}
-        self._api.do('GET',
-                     f'/api/2.0/accounts/{self._api.account_id}/usage/download',
-                     query=query,
-                     headers=headers)
+
+        self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/usage/download', query=query)
 
 
 class BudgetsAPI:
@@ -470,7 +467,7 @@ class BudgetsAPI:
         """
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/budget',
@@ -489,7 +486,7 @@ class BudgetsAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE',
                      f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
                      headers=headers)
@@ -506,7 +503,7 @@ class BudgetsAPI:
         :returns: :class:`WrappedBudgetWithStatus`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
@@ -522,7 +519,7 @@ class BudgetsAPI:
         :returns: Iterator over :class:`BudgetWithStatus`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget', headers=headers)
         return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
@@ -541,7 +538,7 @@ class BudgetsAPI:
         """
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
                      body=body,
@@ -634,7 +631,7 @@ class LogDeliveryAPI:
         body = {}
         if log_delivery_configuration is not None:
             body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
@@ -653,7 +650,7 @@ class LogDeliveryAPI:
         :returns: :class:`WrappedLogDeliveryConfiguration`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',
@@ -684,7 +681,7 @@ class LogDeliveryAPI:
         if credentials_id is not None: query['credentials_id'] = credentials_id
         if status is not None: query['status'] = status.value
         if storage_configuration_id is not None: query['storage_configuration_id'] = storage_configuration_id
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
@@ -712,7 +709,7 @@ class LogDeliveryAPI:
         """
         body = {}
         if status is not None: body['status'] = status.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
                      body=body,

@@ -205,7 +205,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2463,7 +2462,7 @@ class AlertsAPI:
         if parent is not None: body['parent'] = parent
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
         return Alert.from_dict(json)
@@ -2479,7 +2478,7 @@ class AlertsAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
 
     def get(self, alert_id: str) -> Alert:
@@ -2492,7 +2491,7 @@ class AlertsAPI:
         :returns: :class:`Alert`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
         return Alert.from_dict(json)
@@ -2505,7 +2504,7 @@ class AlertsAPI:
         :returns: Iterator over :class:`Alert`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
         return [Alert.from_dict(v) for v in json]
@@ -2539,7 +2538,7 @@ class AlertsAPI:
         if options is not None: body['options'] = options.as_dict()
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/sql/alerts/{alert_id}', body=body, headers=headers)
 
 
@@ -2577,7 +2576,7 @@ class DashboardsAPI:
         if name is not None: body['name'] = name
         if parent is not None: body['parent'] = parent
         if tags is not None: body['tags'] = [v for v in tags]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
         return Dashboard.from_dict(json)
@@ -2593,7 +2592,7 @@ class DashboardsAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
 
     def get(self, dashboard_id: str) -> Dashboard:
@@ -2606,7 +2605,7 @@ class DashboardsAPI:
         :returns: :class:`Dashboard`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
         return Dashboard.from_dict(json)
@@ -2638,7 +2637,7 @@ class DashboardsAPI:
         if page is not None: query['page'] = page
         if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -2665,7 +2664,7 @@ class DashboardsAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/preview/sql/dashboards/trash/{dashboard_id}', headers=headers)
 
 
@@ -2691,7 +2690,7 @@ class DataSourcesAPI:
         :returns: Iterator over :class:`DataSource`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/preview/sql/data_sources', headers=headers)
         return [DataSource.from_dict(v) for v in json]
@@ -2726,7 +2725,7 @@ class DbsqlPermissionsAPI:
         :returns: :class:`GetResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
@@ -2754,7 +2753,7 @@ class DbsqlPermissionsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
@@ -2782,7 +2781,7 @@ class DbsqlPermissionsAPI:
         """
         body = {}
         if new_owner is not None: body['new_owner'] = new_owner
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
@@ -2842,7 +2841,7 @@ class QueriesAPI:
         if options is not None: body['options'] = options
         if parent is not None: body['parent'] = parent
         if query is not None: body['query'] = query
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
         return Query.from_dict(json)
@@ -2858,7 +2857,7 @@ class QueriesAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
 
     def get(self, query_id: str) -> Query:
@@ -2872,7 +2871,7 @@ class QueriesAPI:
         :returns: :class:`Query`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
         return Query.from_dict(json)
@@ -2916,7 +2915,7 @@ class QueriesAPI:
         if page is not None: query['page'] = page
         if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -2944,7 +2943,7 @@ class QueriesAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/preview/sql/queries/trash/{query_id}', headers=headers)
 
     def update(self,
@@ -2983,7 +2982,7 @@ class QueriesAPI:
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
         if query is not None: body['query'] = query
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
         return Query.from_dict(json)
@@ -3024,7 +3023,7 @@ class QueryHistoryAPI:
         if include_metrics is not None: query['include_metrics'] = include_metrics
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         while True:
             json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query, headers=headers)
@@ -3208,8 +3207,7 @@ class StatementExecutionAPI:
         
         """
 
-        headers = {}
-        self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel', headers=headers)
+        self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel')
 
     def execute_statement(self,
                           *,
@@ -3324,7 +3322,7 @@ class StatementExecutionAPI:
         if statement is not None: body['statement'] = statement
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
         return ExecuteStatementResponse.from_dict(json)
@@ -3345,7 +3343,7 @@ class StatementExecutionAPI:
         :returns: :class:`GetStatementResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
         return GetStatementResponse.from_dict(json)
@@ -3365,7 +3363,7 @@ class StatementExecutionAPI:
         :returns: :class:`ResultData`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}',
@@ -3537,7 +3535,7 @@ class WarehousesAPI:
         if spot_instance_policy is not None: body['spot_instance_policy'] = spot_instance_policy.value
         if tags is not None: body['tags'] = tags.as_dict()
         if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body, headers=headers)
         return Wait(self.wait_get_warehouse_running,
                     response=CreateWarehouseResponse.from_dict(op_response),
@@ -3586,7 +3584,7 @@ class WarehousesAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/sql/warehouses/{id}', headers=headers)
 
     def edit(
@@ -3686,7 +3684,7 @@ class WarehousesAPI:
         if spot_instance_policy is not None: body['spot_instance_policy'] = spot_instance_policy.value
         if tags is not None: body['tags'] = tags.as_dict()
         if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body, headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
 
@@ -3735,7 +3733,7 @@ class WarehousesAPI:
         :returns: :class:`GetWarehouseResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
         return GetWarehouseResponse.from_dict(json)
@@ -3751,7 +3749,7 @@ class WarehousesAPI:
         :returns: :class:`GetWarehousePermissionLevelsResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels',
@@ -3770,7 +3768,7 @@ class WarehousesAPI:
         :returns: :class:`WarehousePermissions`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}', headers=headers)
         return WarehousePermissions.from_dict(json)
@@ -3783,7 +3781,7 @@ class WarehousesAPI:
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(json)
@@ -3802,7 +3800,7 @@ class WarehousesAPI:
 
         query = {}
         if run_as_user_id is not None: query['run_as_user_id'] = run_as_user_id
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
         return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
@@ -3825,7 +3823,7 @@ class WarehousesAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PUT',
                             f'/api/2.0/permissions/warehouses/{warehouse_id}',
@@ -3887,7 +3885,7 @@ class WarehousesAPI:
         if security_policy is not None: body['security_policy'] = security_policy.value
         if sql_configuration_parameters is not None:
             body['sql_configuration_parameters'] = sql_configuration_parameters.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body, headers=headers)
 
     def start(self, id: str) -> Wait[GetWarehouseResponse]:
@@ -3903,7 +3901,7 @@ class WarehousesAPI:
           See :method:wait_get_warehouse_running for more details.
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start', headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
 
@@ -3923,7 +3921,7 @@ class WarehousesAPI:
           See :method:wait_get_warehouse_stopped for more details.
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop', headers=headers)
         return Wait(self.wait_get_warehouse_stopped, id=id)
 
@@ -3949,7 +3947,7 @@ class WarehousesAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/warehouses/{warehouse_id}',

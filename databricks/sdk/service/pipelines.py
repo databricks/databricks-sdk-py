@@ -1236,7 +1236,7 @@ class PipelinesAPI:
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target
         if trigger is not None: body['trigger'] = trigger.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/pipelines', body=body, headers=headers)
         return CreatePipelineResponse.from_dict(json)
@@ -1251,7 +1251,7 @@ class PipelinesAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/pipelines/{pipeline_id}', headers=headers)
 
     def get(self, pipeline_id: str) -> GetPipelineResponse:
@@ -1262,7 +1262,7 @@ class PipelinesAPI:
         :returns: :class:`GetPipelineResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}', headers=headers)
         return GetPipelineResponse.from_dict(json)
@@ -1278,7 +1278,7 @@ class PipelinesAPI:
         :returns: :class:`GetPipelinePermissionLevelsResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels',
@@ -1296,7 +1296,7 @@ class PipelinesAPI:
         :returns: :class:`PipelinePermissions`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/permissions/pipelines/{pipeline_id}', headers=headers)
         return PipelinePermissions.from_dict(json)
@@ -1314,7 +1314,7 @@ class PipelinesAPI:
         :returns: :class:`GetUpdateResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates/{update_id}', headers=headers)
         return GetUpdateResponse.from_dict(json)
@@ -1358,7 +1358,7 @@ class PipelinesAPI:
         if max_results is not None: query['max_results'] = max_results
         if order_by is not None: query['order_by'] = [v for v in order_by]
         if page_token is not None: query['page_token'] = page_token
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         while True:
             json = self._api.do('GET',
@@ -1410,7 +1410,7 @@ class PipelinesAPI:
         if max_results is not None: query['max_results'] = max_results
         if order_by is not None: query['order_by'] = [v for v in order_by]
         if page_token is not None: query['page_token'] = page_token
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query, headers=headers)
@@ -1448,7 +1448,7 @@ class PipelinesAPI:
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         if until_update_id is not None: query['until_update_id'] = until_update_id
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query, headers=headers)
         return ListUpdatesResponse.from_dict(json)
@@ -1465,7 +1465,7 @@ class PipelinesAPI:
           See :method:wait_get_pipeline_running for more details.
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/reset', headers=headers)
         return Wait(self.wait_get_pipeline_running, pipeline_id=pipeline_id)
 
@@ -1490,7 +1490,7 @@ class PipelinesAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PUT',
                             f'/api/2.0/permissions/pipelines/{pipeline_id}',
@@ -1530,7 +1530,7 @@ class PipelinesAPI:
         if full_refresh_selection is not None:
             body['full_refresh_selection'] = [v for v in full_refresh_selection]
         if refresh_selection is not None: body['refresh_selection'] = [v for v in refresh_selection]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body, headers=headers)
         return StartUpdateResponse.from_dict(json)
@@ -1547,7 +1547,7 @@ class PipelinesAPI:
           See :method:wait_get_pipeline_idle for more details.
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/stop', headers=headers)
         return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
 
@@ -1643,7 +1643,7 @@ class PipelinesAPI:
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target
         if trigger is not None: body['trigger'] = trigger.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/pipelines/{pipeline_id}', body=body, headers=headers)
 
     def update_pipeline_permissions(
@@ -1664,7 +1664,7 @@ class PipelinesAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/pipelines/{pipeline_id}',

@@ -634,7 +634,7 @@ class AccountIpAccessListsAPI:
         if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
@@ -653,10 +653,8 @@ class AccountIpAccessListsAPI:
         
         """
 
-        headers = {}
         self._api.do('DELETE',
-                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
-                     headers=headers)
+                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}')
 
     def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
         """Get IP access list.
@@ -669,7 +667,7 @@ class AccountIpAccessListsAPI:
         :returns: :class:`GetIpAccessListResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',
@@ -685,7 +683,7 @@ class AccountIpAccessListsAPI:
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
@@ -733,7 +731,7 @@ class AccountIpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
                      f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
@@ -784,7 +782,7 @@ class AccountIpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH',
                      f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
@@ -819,7 +817,7 @@ class AccountNetworkPolicyAPI:
 
         query = {}
         if etag is not None: query['etag'] = etag
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'DELETE',
@@ -845,7 +843,7 @@ class AccountNetworkPolicyAPI:
 
         query = {}
         if etag is not None: query['etag'] = etag
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',
@@ -872,7 +870,7 @@ class AccountNetworkPolicyAPI:
         body = {}
         if allow_missing is not None: body['allow_missing'] = allow_missing
         if setting is not None: body['setting'] = setting.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do(
             'PATCH',
@@ -911,7 +909,7 @@ class AccountSettingsAPI:
 
         query = {}
         if etag is not None: query['etag'] = etag
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'DELETE',
@@ -937,7 +935,7 @@ class AccountSettingsAPI:
 
         query = {}
         if etag is not None: query['etag'] = etag
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do(
             'GET',
@@ -964,7 +962,7 @@ class AccountSettingsAPI:
         body = {}
         if allow_missing is not None: body['allow_missing'] = allow_missing
         if setting is not None: body['setting'] = setting.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do(
             'PATCH',
@@ -1027,7 +1025,7 @@ class IpAccessListsAPI:
         if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/ip-access-lists', body=body, headers=headers)
         return CreateIpAccessListResponse.from_dict(json)
@@ -1043,8 +1041,7 @@ class IpAccessListsAPI:
         
         """
 
-        headers = {}
-        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
+        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}')
 
     def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
         """Get access list.
@@ -1057,7 +1054,7 @@ class IpAccessListsAPI:
         :returns: :class:`FetchIpAccessListResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
         return FetchIpAccessListResponse.from_dict(json)
@@ -1070,7 +1067,7 @@ class IpAccessListsAPI:
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/ip-access-lists', headers=headers)
         return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
@@ -1117,7 +1114,7 @@ class IpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
 
     def update(self,
@@ -1166,7 +1163,7 @@ class IpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
 
 
@@ -1199,7 +1196,7 @@ class TokenManagementAPI:
         if application_id is not None: body['application_id'] = application_id
         if comment is not None: body['comment'] = comment
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST',
                             '/api/2.0/token-management/on-behalf-of/tokens',
@@ -1218,8 +1215,7 @@ class TokenManagementAPI:
         
         """
 
-        headers = {}
-        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
+        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}')
 
     def get(self, token_id: str) -> TokenInfo:
         """Get token info.
@@ -1232,7 +1228,7 @@ class TokenManagementAPI:
         :returns: :class:`TokenInfo`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
         return TokenInfo.from_dict(json)
@@ -1245,7 +1241,7 @@ class TokenManagementAPI:
         :returns: :class:`GetTokenPermissionLevelsResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             '/api/2.0/permissions/authorization/tokens/permissionLevels',
@@ -1260,7 +1256,7 @@ class TokenManagementAPI:
         :returns: :class:`TokenPermissions`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/permissions/authorization/tokens', headers=headers)
         return TokenPermissions.from_dict(json)
@@ -1284,7 +1280,7 @@ class TokenManagementAPI:
         query = {}
         if created_by_id is not None: query['created_by_id'] = created_by_id
         if created_by_username is not None: query['created_by_username'] = created_by_username
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query, headers=headers)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
@@ -1304,7 +1300,7 @@ class TokenManagementAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
         return TokenPermissions.from_dict(json)
@@ -1324,7 +1320,7 @@ class TokenManagementAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PATCH', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
         return TokenPermissions.from_dict(json)
@@ -1359,7 +1355,7 @@ class TokensAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('POST', '/api/2.0/token/create', body=body, headers=headers)
         return CreateTokenResponse.from_dict(json)
@@ -1378,7 +1374,7 @@ class TokensAPI:
         """
         body = {}
         if token_id is not None: body['token_id'] = token_id
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/token/delete', body=body, headers=headers)
 
     def list(self) -> Iterator[TokenInfo]:
@@ -1389,7 +1385,7 @@ class TokensAPI:
         :returns: Iterator over :class:`TokenInfo`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
@@ -1413,7 +1409,7 @@ class WorkspaceConfAPI:
 
         query = {}
         if keys is not None: query['keys'] = keys
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/workspace-conf', query=query, headers=headers)
         return WorkspaceConf.from_dict(json)
@@ -1427,5 +1423,5 @@ class WorkspaceConfAPI:
         
         """
 
-        headers = {"Content-Type": "application/json", }
+        headers = {'Content-Type': 'application/json', }
         self._api.do('PATCH', '/api/2.0/workspace-conf', headers=headers)

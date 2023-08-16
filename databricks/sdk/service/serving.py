@@ -652,7 +652,7 @@ class ServingEndpointsAPI:
         :returns: :class:`BuildLogsResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
@@ -675,7 +675,7 @@ class ServingEndpointsAPI:
         body = {}
         if config is not None: body['config'] = config.as_dict()
         if name is not None: body['name'] = name
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body, headers=headers)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
@@ -695,7 +695,7 @@ class ServingEndpointsAPI:
         
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
     def export_metrics(self, name: str):
@@ -710,8 +710,7 @@ class ServingEndpointsAPI:
         
         """
 
-        headers = {}
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
+        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics')
 
     def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.
@@ -724,7 +723,7 @@ class ServingEndpointsAPI:
         :returns: :class:`ServingEndpointDetailed`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(json)
@@ -741,7 +740,7 @@ class ServingEndpointsAPI:
         :returns: :class:`GetServingEndpointPermissionLevelsResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
@@ -760,7 +759,7 @@ class ServingEndpointsAPI:
         :returns: :class:`ServingEndpointPermissions`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
@@ -773,7 +772,7 @@ class ServingEndpointsAPI:
         :returns: Iterator over :class:`ServingEndpoint`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
         return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
@@ -791,7 +790,7 @@ class ServingEndpointsAPI:
         :returns: :class:`ServerLogsResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET',
                             f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
@@ -807,7 +806,7 @@ class ServingEndpointsAPI:
         :returns: :class:`QueryEndpointResponse`
         """
 
-        headers = {"Accept": "application/json", }
+        headers = {'Accept': 'application/json', }
 
         json = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
         return QueryEndpointResponse.from_dict(json)
@@ -832,7 +831,7 @@ class ServingEndpointsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PUT',
                             f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
@@ -866,7 +865,7 @@ class ServingEndpointsAPI:
         body = {}
         if served_models is not None: body['served_models'] = [v.as_dict() for v in served_models]
         if traffic_config is not None: body['traffic_config'] = traffic_config.as_dict()
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         op_response = self._api.do('PUT',
                                    f'/api/2.0/serving-endpoints/{name}/config',
                                    body=body,
@@ -905,7 +904,7 @@ class ServingEndpointsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        headers = {"Accept": "application/json", "Content-Type": "application/json", }
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         json = self._api.do('PATCH',
                             f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
