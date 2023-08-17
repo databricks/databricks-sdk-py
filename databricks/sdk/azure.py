@@ -35,3 +35,9 @@ def add_workspace_id_header(cfg: 'Config', headers: dict[str, str]) -> dict[str,
     if cfg.azure_workspace_resource_id:
         headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
     return headers
+
+
+def add_sp_management_token(token_source: 'Refreshable', headers: dict[str, str]) -> dict[str, str]:
+    mgmt_token = token_source.token()
+    headers['X-Databricks-Azure-SP-Management-Token'] = mgmt_token.access_token
+    return headers
