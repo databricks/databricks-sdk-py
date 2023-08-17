@@ -3,6 +3,7 @@ import databricks.sdk.dbutils as dbutils
 
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.compute import ClustersExt
+from databricks.sdk.mixins.sql import StatementExecutionExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 {{- range .Services}}
 from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
@@ -12,7 +13,12 @@ from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
   "azure_client_id" "azure_tenant_id" "azure_environment" "auth_type" "cluster_id"}}
 
 {{- define "api" -}}
-  {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" -}}
+  {{- $mixins := dict
+    "ClustersAPI" "ClustersExt"
+    "DbfsAPI" "DbfsExt"
+    "StatementExecutionAPI" "StatementExecutionExt"
+    "WorkspaceAPI" "WorkspaceExt"
+  -}}
   {{- $genApi := concat .PascalName "API" -}}
   {{- getOrDefault $mixins $genApi $genApi -}}
 {{- end -}}
