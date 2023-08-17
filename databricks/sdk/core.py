@@ -760,7 +760,7 @@ class Config:
             value = os.environ.get(attr.env)
             if not value:
                 continue
-            self._inner[attr.name] = value
+            self._inner[attr.name] = attr.transform(value)
             found = True
         if found:
             logger.debug('Loaded from environment')
