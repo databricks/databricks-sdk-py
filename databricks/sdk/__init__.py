@@ -8,11 +8,13 @@ from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
-                                            CatalogsAPI, ConnectionsAPI,
+                                            ArtifactAllowlistsAPI, CatalogsAPI,
+                                            ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
-                                            SchemasAPI, StorageCredentialsAPI,
-                                            SystemSchemasAPI,
+                                            SchemasAPI, SecurableTagsAPI,
+                                            StorageCredentialsAPI,
+                                            SubentityTagsAPI, SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
@@ -130,6 +132,7 @@ class WorkspaceClient:
         self.files = FilesMixin(self.api_client)
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
+        self.artifact_allowlists = ArtifactAllowlistsAPI(self.api_client)
         self.catalogs = CatalogsAPI(self.api_client)
         self.clean_rooms = CleanRoomsAPI(self.api_client)
         self.cluster_policies = ClusterPoliciesAPI(self.api_client)
@@ -166,11 +169,13 @@ class WorkspaceClient:
         self.repos = ReposAPI(self.api_client)
         self.schemas = SchemasAPI(self.api_client)
         self.secrets = SecretsAPI(self.api_client)
+        self.securable_tags = SecurableTagsAPI(self.api_client)
         self.service_principals = ServicePrincipalsAPI(self.api_client)
         self.serving_endpoints = ServingEndpointsAPI(self.api_client)
         self.shares = SharesAPI(self.api_client)
         self.statement_execution = StatementExecutionAPI(self.api_client)
         self.storage_credentials = StorageCredentialsAPI(self.api_client)
+        self.subentity_tags = SubentityTagsAPI(self.api_client)
         self.system_schemas = SystemSchemasAPI(self.api_client)
         self.table_constraints = TableConstraintsAPI(self.api_client)
         self.tables = TablesAPI(self.api_client)

@@ -273,6 +273,22 @@ class GetRepoPermissionLevelsResponse:
 
 
 @dataclass
+class GetSecretResponse:
+    key: Optional[str] = None
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetSecretResponse':
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
 class GetWorkspaceObjectPermissionLevelsResponse:
     permission_levels: Optional['List[WorkspaceObjectPermissionsDescription]'] = None
 
@@ -1386,6 +1402,34 @@ class SecretsAPI:
 
         json = self._api.do('GET', '/api/2.0/secrets/acls/get', query=query)
         return AclItem.from_dict(json)
+
+    def get_secret(self, scope: str, key: str) -> GetSecretResponse:
+        """Get a secret.
+        
+        Gets the bytes representation of a secret value for the specified scope and key.
+        
+        Users need the READ permission to make this call.
+        
+        Note that the secret value returned is in bytes. The interpretation of the bytes is determined by the
+        caller in DBUtils and the type the data is decoded into.
+        
+        Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
+        ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists.
+        
+        :param scope: str
+          The name of the scope to fetch secret information from.
+        :param key: str
+          The key to fetch secret for.
+        
+        :returns: :class:`GetSecretResponse`
+        """
+
+        query = {}
+        if key is not None: query['key'] = key
+        if scope is not None: query['scope'] = scope
+
+        json = self._api.do('GET', '/api/2.0/secrets/get', query=query)
+        return GetSecretResponse.from_dict(json)
 
     def list_acls(self, scope: str) -> Iterator[AclItem]:
         """Lists ACLs.

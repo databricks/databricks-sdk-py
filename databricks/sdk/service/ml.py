@@ -487,6 +487,40 @@ class DeleteRun:
 
 
 @dataclass
+class DeleteRuns:
+    experiment_id: str
+    max_timestamp_millis: int
+    max_runs: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.max_runs is not None: body['max_runs'] = self.max_runs
+        if self.max_timestamp_millis is not None: body['max_timestamp_millis'] = self.max_timestamp_millis
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeleteRuns':
+        return cls(experiment_id=d.get('experiment_id', None),
+                   max_runs=d.get('max_runs', None),
+                   max_timestamp_millis=d.get('max_timestamp_millis', None))
+
+
+@dataclass
+class DeleteRunsResponse:
+    runs_deleted: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.runs_deleted is not None: body['runs_deleted'] = self.runs_deleted
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeleteRunsResponse':
+        return cls(runs_deleted=d.get('runs_deleted', None))
+
+
+@dataclass
 class DeleteTag:
     run_id: str
     key: str
@@ -1706,6 +1740,40 @@ class RestoreRun:
 
 
 @dataclass
+class RestoreRuns:
+    experiment_id: str
+    min_timestamp_millis: int
+    max_runs: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.max_runs is not None: body['max_runs'] = self.max_runs
+        if self.min_timestamp_millis is not None: body['min_timestamp_millis'] = self.min_timestamp_millis
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RestoreRuns':
+        return cls(experiment_id=d.get('experiment_id', None),
+                   max_runs=d.get('max_runs', None),
+                   min_timestamp_millis=d.get('min_timestamp_millis', None))
+
+
+@dataclass
+class RestoreRunsResponse:
+    runs_restored: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.runs_restored is not None: body['runs_restored'] = self.runs_restored
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RestoreRunsResponse':
+        return cls(runs_restored=d.get('runs_restored', None))
+
+
+@dataclass
 class Run:
     data: Optional['RunData'] = None
     info: Optional['RunInfo'] = None
@@ -2445,6 +2513,35 @@ class ExperimentsAPI:
         if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/delete', body=body)
 
+    def delete_runs(self,
+                    experiment_id: str,
+                    max_timestamp_millis: int,
+                    *,
+                    max_runs: Optional[int] = None) -> DeleteRunsResponse:
+        """Delete runs by creation time.
+        
+        Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
+        most max_runs per request.
+        
+        :param experiment_id: str
+          The ID of the experiment containing the runs to delete.
+        :param max_timestamp_millis: int
+          The maximum creation timestamp in milliseconds since the UNIX epoch for deleting runs. Only runs
+          created prior to or at this timestamp are deleted.
+        :param max_runs: int (optional)
+          An optional positive integer indicating the maximum number of runs to delete. The maximum allowed
+          value for max_runs is 10000.
+        
+        :returns: :class:`DeleteRunsResponse`
+        """
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if max_runs is not None: body['max_runs'] = max_runs
+        if max_timestamp_millis is not None: body['max_timestamp_millis'] = max_timestamp_millis
+
+        json = self._api.do('POST', '/api/2.0/mlflow/databricks/runs/delete-runs', body=body)
+        return DeleteRunsResponse.from_dict(json)
+
     def delete_tag(self, run_id: str, key: str):
         """Delete a tag.
         
@@ -2867,6 +2964,35 @@ class ExperimentsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         self._api.do('POST', '/api/2.0/mlflow/runs/restore', body=body)
+
+    def restore_runs(self,
+                     experiment_id: str,
+                     min_timestamp_millis: int,
+                     *,
+                     max_runs: Optional[int] = None) -> RestoreRunsResponse:
+        """Restore runs by deletion time.
+        
+        Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
+        at most max_runs per request.
+        
+        :param experiment_id: str
+          The ID of the experiment containing the runs to restore.
+        :param min_timestamp_millis: int
+          The minimum deletion timestamp in milliseconds since the UNIX epoch for restoring runs. Only runs
+          deleted no earlier than this timestamp are restored.
+        :param max_runs: int (optional)
+          An optional positive integer indicating the maximum number of runs to restore. The maximum allowed
+          value for max_runs is 10000.
+        
+        :returns: :class:`RestoreRunsResponse`
+        """
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if max_runs is not None: body['max_runs'] = max_runs
+        if min_timestamp_millis is not None: body['min_timestamp_millis'] = min_timestamp_millis
+
+        json = self._api.do('POST', '/api/2.0/mlflow/databricks/runs/restore-runs', body=body)
+        return RestoreRunsResponse.from_dict(json)
 
     def search_experiments(self,
                            *,

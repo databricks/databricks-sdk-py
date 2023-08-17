@@ -163,6 +163,53 @@ class AccountsUpdateStorageCredential:
 
 
 @dataclass
+class ArtifactAllowlistInfo:
+    artifact_matchers: Optional['ArtifactMatcher'] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    metastore_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.artifact_matchers: body['artifact_matchers'] = self.artifact_matchers.as_dict()
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ArtifactAllowlistInfo':
+        return cls(artifact_matchers=_from_dict(d, 'artifact_matchers', ArtifactMatcher),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   metastore_id=d.get('metastore_id', None))
+
+
+@dataclass
+class ArtifactMatcher:
+    artifact: str
+    match_type: 'MatchType'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.artifact is not None: body['artifact'] = self.artifact
+        if self.match_type is not None: body['match_type'] = self.match_type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ArtifactMatcher':
+        return cls(artifact=d.get('artifact', None), match_type=_enum(d, 'match_type', MatchType))
+
+
+class ArtifactType(Enum):
+    """The artifact type"""
+
+    INIT_SCRIPT = 'INIT_SCRIPT'
+    LIBRARY_JAR = 'LIBRARY_JAR'
+    LIBRARY_MAVEN = 'LIBRARY_MAVEN'
+
+
+@dataclass
 class AwsIamRole:
     role_arn: str
     external_id: Optional[str] = None
@@ -229,8 +276,8 @@ class CatalogInfo:
     connection_name: Optional[str] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
-    effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
-    enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    effective_predictive_optimization_flag: Optional['EffectivePredictiveOptimizationFlag'] = None
+    enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
     isolation_mode: Optional['IsolationMode'] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -251,10 +298,12 @@ class CatalogInfo:
         if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
-        if self.effective_auto_maintenance_flag:
-            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
-        if self.enable_auto_maintenance is not None:
-            body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
+        if self.effective_predictive_optimization_flag:
+            body[
+                'effective_predictive_optimization_flag'] = self.effective_predictive_optimization_flag.as_dict(
+                )
+        if self.enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -276,9 +325,10 @@ class CatalogInfo:
                    connection_name=d.get('connection_name', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
-                                                              EffectiveAutoMaintenanceFlag),
-                   enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
+                   effective_predictive_optimization_flag=_from_dict(
+                       d, 'effective_predictive_optimization_flag', EffectivePredictiveOptimizationFlag),
+                   enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
+                                                        EnablePredictiveOptimization),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -936,35 +986,6 @@ class DisableSchemaName(Enum):
 
 
 @dataclass
-class EffectiveAutoMaintenanceFlag:
-    value: 'EnableAutoMaintenance'
-    inherited_from_name: Optional[str] = None
-    inherited_from_type: Optional['EffectiveAutoMaintenanceFlagInheritedFromType'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.inherited_from_name is not None: body['inherited_from_name'] = self.inherited_from_name
-        if self.inherited_from_type is not None: body['inherited_from_type'] = self.inherited_from_type.value
-        if self.value is not None: body['value'] = self.value.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EffectiveAutoMaintenanceFlag':
-        return cls(inherited_from_name=d.get('inherited_from_name', None),
-                   inherited_from_type=_enum(d, 'inherited_from_type',
-                                             EffectiveAutoMaintenanceFlagInheritedFromType),
-                   value=_enum(d, 'value', EnableAutoMaintenance))
-
-
-class EffectiveAutoMaintenanceFlagInheritedFromType(Enum):
-    """The type of the object from which the flag was inherited. If there was no inheritance, this
-    field is left blank."""
-
-    CATALOG = 'CATALOG'
-    SCHEMA = 'SCHEMA'
-
-
-@dataclass
 class EffectivePermissionsList:
     privilege_assignments: Optional['List[EffectivePrivilegeAssignment]'] = None
 
@@ -977,6 +998,35 @@ class EffectivePermissionsList:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePermissionsList':
         return cls(privilege_assignments=_repeated(d, 'privilege_assignments', EffectivePrivilegeAssignment))
+
+
+@dataclass
+class EffectivePredictiveOptimizationFlag:
+    value: 'EnablePredictiveOptimization'
+    inherited_from_name: Optional[str] = None
+    inherited_from_type: Optional['EffectivePredictiveOptimizationFlagInheritedFromType'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.inherited_from_name is not None: body['inherited_from_name'] = self.inherited_from_name
+        if self.inherited_from_type is not None: body['inherited_from_type'] = self.inherited_from_type.value
+        if self.value is not None: body['value'] = self.value.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'EffectivePredictiveOptimizationFlag':
+        return cls(inherited_from_name=d.get('inherited_from_name', None),
+                   inherited_from_type=_enum(d, 'inherited_from_type',
+                                             EffectivePredictiveOptimizationFlagInheritedFromType),
+                   value=_enum(d, 'value', EnablePredictiveOptimization))
+
+
+class EffectivePredictiveOptimizationFlagInheritedFromType(Enum):
+    """The type of the object from which the flag was inherited. If there was no inheritance, this
+    field is left blank."""
+
+    CATALOG = 'CATALOG'
+    SCHEMA = 'SCHEMA'
 
 
 @dataclass
@@ -1016,8 +1066,8 @@ class EffectivePrivilegeAssignment:
                    privileges=_repeated(d, 'privileges', EffectivePrivilege))
 
 
-class EnableAutoMaintenance(Enum):
-    """Whether auto maintenance should be enabled for this object and objects under it."""
+class EnablePredictiveOptimization(Enum):
+    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     DISABLE = 'DISABLE'
     ENABLE = 'ENABLE'
@@ -1502,6 +1552,13 @@ class ListSchemasResponse:
         return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
 
 
+class ListSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    SCHEMA = 'schema'
+    TABLE = 'table'
+
+
 @dataclass
 class ListStorageCredentialsResponse:
     storage_credentials: Optional['List[StorageCredentialInfo]'] = None
@@ -1576,6 +1633,12 @@ class ListVolumesResponseContent:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListVolumesResponseContent':
         return cls(volumes=_repeated(d, 'volumes', VolumeInfo))
+
+
+class MatchType(Enum):
+    """The artifact pattern matching type"""
+
+    PREFIX_MATCH = 'PREFIX_MATCH'
 
 
 @dataclass
@@ -1744,6 +1807,7 @@ class PrimaryKeyConstraint:
 class Privilege(Enum):
 
     ALL_PRIVILEGES = 'ALL_PRIVILEGES'
+    APPLY_TAG = 'APPLY_TAG'
     CREATE = 'CREATE'
     CREATE_CATALOG = 'CREATE_CATALOG'
     CREATE_CONNECTION = 'CREATE_CONNECTION'
@@ -1815,8 +1879,8 @@ class SchemaInfo:
     comment: Optional[str] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
-    effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
-    enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    effective_predictive_optimization_flag: Optional['EffectivePredictiveOptimizationFlag'] = None
+    enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
     full_name: Optional[str] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -1834,10 +1898,12 @@ class SchemaInfo:
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
-        if self.effective_auto_maintenance_flag:
-            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
-        if self.enable_auto_maintenance is not None:
-            body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
+        if self.effective_predictive_optimization_flag:
+            body[
+                'effective_predictive_optimization_flag'] = self.effective_predictive_optimization_flag.as_dict(
+                )
+        if self.enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -1856,9 +1922,10 @@ class SchemaInfo:
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
-                                                              EffectiveAutoMaintenanceFlag),
-                   enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
+                   effective_predictive_optimization_flag=_from_dict(
+                       d, 'effective_predictive_optimization_flag', EffectivePredictiveOptimizationFlag),
+                   enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
+                                                        EnablePredictiveOptimization),
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -1890,6 +1957,23 @@ class SecurableType(Enum):
     SHARE = 'share'
     STORAGE_CREDENTIAL = 'storage_credential'
     TABLE = 'table'
+
+
+@dataclass
+class SetArtifactAllowlist:
+    artifact_matchers: 'ArtifactMatcher'
+    artifact_type: Optional['ArtifactType'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.artifact_matchers: body['artifact_matchers'] = self.artifact_matchers.as_dict()
+        if self.artifact_type is not None: body['artifact_type'] = self.artifact_type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SetArtifactAllowlist':
+        return cls(artifact_matchers=_from_dict(d, 'artifact_matchers', ArtifactMatcher),
+                   artifact_type=_enum(d, 'artifact_type', ArtifactType))
 
 
 @dataclass
@@ -2070,8 +2154,8 @@ class TableInfo:
     data_source_format: Optional['DataSourceFormat'] = None
     deleted_at: Optional[int] = None
     delta_runtime_properties_kvpairs: Optional['DeltaRuntimePropertiesKvPairs'] = None
-    effective_auto_maintenance_flag: Optional['EffectiveAutoMaintenanceFlag'] = None
-    enable_auto_maintenance: Optional['EnableAutoMaintenance'] = None
+    effective_predictive_optimization_flag: Optional['EffectivePredictiveOptimizationFlag'] = None
+    enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
     encryption_details: Optional['EncryptionDetails'] = None
     full_name: Optional[str] = None
     metastore_id: Optional[str] = None
@@ -2105,10 +2189,12 @@ class TableInfo:
         if self.deleted_at is not None: body['deleted_at'] = self.deleted_at
         if self.delta_runtime_properties_kvpairs:
             body['delta_runtime_properties_kvpairs'] = self.delta_runtime_properties_kvpairs.as_dict()
-        if self.effective_auto_maintenance_flag:
-            body['effective_auto_maintenance_flag'] = self.effective_auto_maintenance_flag.as_dict()
-        if self.enable_auto_maintenance is not None:
-            body['enable_auto_maintenance'] = self.enable_auto_maintenance.value
+        if self.effective_predictive_optimization_flag:
+            body[
+                'effective_predictive_optimization_flag'] = self.effective_predictive_optimization_flag.as_dict(
+                )
+        if self.enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
@@ -2143,9 +2229,10 @@ class TableInfo:
                    deleted_at=d.get('deleted_at', None),
                    delta_runtime_properties_kvpairs=_from_dict(d, 'delta_runtime_properties_kvpairs',
                                                                DeltaRuntimePropertiesKvPairs),
-                   effective_auto_maintenance_flag=_from_dict(d, 'effective_auto_maintenance_flag',
-                                                              EffectiveAutoMaintenanceFlag),
-                   enable_auto_maintenance=_enum(d, 'enable_auto_maintenance', EnableAutoMaintenance),
+                   effective_predictive_optimization_flag=_from_dict(
+                       d, 'effective_predictive_optimization_flag', EffectivePredictiveOptimizationFlag),
+                   enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
+                                                        EnablePredictiveOptimization),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    full_name=d.get('full_name', None),
                    metastore_id=d.get('metastore_id', None),
@@ -2205,6 +2292,141 @@ class TableType(Enum):
     MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
     STREAMING_TABLE = 'STREAMING_TABLE'
     VIEW = 'VIEW'
+
+
+@dataclass
+class TagChanges:
+    add_tags: Optional['List[TagKeyValuePair]'] = None
+    remove: Optional['List[str]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.add_tags: body['add_tags'] = [v.as_dict() for v in self.add_tags]
+        if self.remove: body['remove'] = [v for v in self.remove]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagChanges':
+        return cls(add_tags=_repeated(d, 'add_tags', TagKeyValuePair), remove=d.get('remove', None))
+
+
+@dataclass
+class TagKeyValuePair:
+    key: str
+    value: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagKeyValuePair':
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
+class TagSecurable:
+    type: str
+    full_name: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurable':
+        return cls(full_name=d.get('full_name', None), type=d.get('type', None))
+
+
+@dataclass
+class TagSecurableAssignment:
+    securable: 'TagSecurable'
+    tag_key_value_pairs: 'List[TagKeyValuePair]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.securable: body['securable'] = self.securable.as_dict()
+        if self.tag_key_value_pairs:
+            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignment':
+        return cls(securable=_from_dict(d, 'securable', TagSecurable),
+                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
+
+
+@dataclass
+class TagSecurableAssignmentsList:
+    tag_assignments: 'List[TagSecurableAssignment]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignmentsList':
+        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagSecurableAssignment))
+
+
+@dataclass
+class TagSubentity:
+    type: str
+    full_name: str
+    subentity: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.subentity is not None: body['subentity'] = self.subentity
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentity':
+        return cls(full_name=d.get('full_name', None),
+                   subentity=d.get('subentity', None),
+                   type=d.get('type', None))
+
+
+@dataclass
+class TagSubentityAssignmentsList:
+    tag_assignments: 'List[TagsSubentityAssignment]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentityAssignmentsList':
+        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagsSubentityAssignment))
+
+
+@dataclass
+class TagsSubentityAssignment:
+    securable: 'TagSubentity'
+    subentity: str
+    tag_key_value_pairs: 'List[TagKeyValuePair]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.securable: body['securable'] = self.securable.as_dict()
+        if self.subentity is not None: body['subentity'] = self.subentity
+        if self.tag_key_value_pairs:
+            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagsSubentityAssignment':
+        return cls(securable=_from_dict(d, 'securable', TagSubentity),
+                   subentity=d.get('subentity', None),
+                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
 
 
 @dataclass
@@ -2455,6 +2677,13 @@ class UpdateSchema:
                    properties=d.get('properties', None))
 
 
+class UpdateSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    SCHEMA = 'schema'
+    TABLE = 'table'
+
+
 @dataclass
 class UpdateStorageCredential:
     aws_iam_role: Optional['AwsIamRole'] = None
@@ -2496,6 +2725,29 @@ class UpdateStorageCredential:
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
+
+
+@dataclass
+class UpdateTags:
+    changes: 'TagChanges'
+    full_name: Optional[str] = None
+    securable_type: Optional['UpdateSecurableType'] = None
+    subentity_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.changes: body['changes'] = self.changes.as_dict()
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
+        if self.subentity_name is not None: body['subentity_name'] = self.subentity_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateTags':
+        return cls(changes=_from_dict(d, 'changes', TagChanges),
+                   full_name=d.get('full_name', None),
+                   securable_type=_enum(d, 'securable_type', UpdateSecurableType),
+                   subentity_name=d.get('subentity_name', None))
 
 
 @dataclass
@@ -3008,6 +3260,49 @@ class AccountStorageCredentialsAPI:
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             body=body)
         return AccountsStorageCredentialInfo.from_dict(json)
+
+
+class ArtifactAllowlistsAPI:
+    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so
+    that users can leverage these artifacts on compute configured with shared access mode."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
+        """Get an artifact allowlist.
+        
+        Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin.
+        
+        :param artifact_type: :class:`ArtifactType`
+          The artifact type of the allowlist.
+        
+        :returns: :class:`ArtifactAllowlistInfo`
+        """
+
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}')
+        return ArtifactAllowlistInfo.from_dict(json)
+
+    def update(self, artifact_matchers: ArtifactMatcher,
+               artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
+        """Set an artifact allowlist.
+        
+        Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
+        the new allowlist. The caller must be a metastore admin.
+        
+        :param artifact_matchers: :class:`ArtifactMatcher`
+        :param artifact_type: :class:`ArtifactType`
+          The artifact type of the allowlist.
+        
+        :returns: :class:`ArtifactAllowlistInfo`
+        """
+        body = {}
+        if artifact_matchers is not None: body['artifact_matchers'] = artifact_matchers.as_dict()
+
+        json = self._api.do('PUT',
+                            f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
+                            body=body)
+        return ArtifactAllowlistInfo.from_dict(json)
 
 
 class CatalogsAPI:
@@ -4101,6 +4396,57 @@ class SchemasAPI:
         return SchemaInfo.from_dict(json)
 
 
+class SecurableTagsAPI:
+    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
+    Tags are useful for organizing and categorizing different entities within a metastore. SecurableTags are
+    attached to Unity Catalog securable entities."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def list(self, securable_type: ListSecurableType, full_name: str) -> Iterator[TagSecurableAssignment]:
+        """Get tags for a securable.
+        
+        Gets tag assignments for an entity. The caller must be either the owner of the securable, or a
+        metastore admin, or have at least USE / SELECT privilege on the associated securable.
+        
+        :param securable_type: :class:`ListSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        
+        :returns: Iterator over :class:`TagSecurableAssignment`
+        """
+
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}')
+        return [TagSecurableAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
+
+    def update(self, changes: TagChanges, securable_type: UpdateSecurableType,
+               full_name: str) -> TagSecurableAssignmentsList:
+        """Update tags for a securable.
+        
+        Update tag assignments for an entity The caller must be either the owner of the securable, or a
+        metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on the associated securable.
+        
+        :param changes: :class:`TagChanges`
+          Desired changes to be made to the tag assignments on the entity
+        :param securable_type: :class:`UpdateSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        
+        :returns: :class:`TagSecurableAssignmentsList`
+        """
+        body = {}
+        if changes is not None: body['changes'] = changes.as_dict()
+
+        json = self._api.do('PATCH',
+                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
+                            body=body)
+        return TagSecurableAssignmentsList.from_dict(json)
+
+
 class StorageCredentialsAPI:
     """A storage credential represents an authentication and authorization mechanism for accessing data stored on
     your cloud tenant. Each storage credential is subject to Unity Catalog access-control policies that
@@ -4333,6 +4679,66 @@ class StorageCredentialsAPI:
 
         json = self._api.do('POST', '/api/2.1/unity-catalog/validate-storage-credentials', body=body)
         return ValidateStorageCredentialResponse.from_dict(json)
+
+
+class SubentityTagsAPI:
+    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
+    Tags are useful for organizing and categorizing different entities within a metastore. SubentityTags are
+    attached to Unity Catalog subentities."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def list(self, securable_type: ListSecurableType, full_name: str,
+             subentity_name: str) -> Iterator[TagsSubentityAssignment]:
+        """Get tags for a subentity.
+        
+        Gets tag assignments for a subentity associated with a securable entity. Eg. column of a table The
+        caller must be either the owner of the securable, or a metastore admin, or have at least USE / SELECT
+        privilege on the associated securable.
+        
+        :param securable_type: :class:`ListSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        :param subentity_name: str
+          The name of subentity associated with the securable entity
+        
+        :returns: Iterator over :class:`TagsSubentityAssignment`
+        """
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}')
+        return [TagsSubentityAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
+
+    def update(self, changes: TagChanges, securable_type: UpdateSecurableType, full_name: str,
+               subentity_name: str) -> TagSubentityAssignmentsList:
+        """Update tags for a subentity.
+        
+        Update tag assignments for a subentity associated with a securable entity. The caller must be either
+        the owner of the securable, or a metastore admin, or have at least USE / SELECT and APPLY_TAG
+        privilege on the associated securable.
+        
+        :param changes: :class:`TagChanges`
+          Desired changes to be made to the tag assignments on the entity
+        :param securable_type: :class:`UpdateSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        :param subentity_name: str
+          The name of subentity associated with the securable entity
+        
+        :returns: :class:`TagSubentityAssignmentsList`
+        """
+        body = {}
+        if changes is not None: body['changes'] = changes.as_dict()
+
+        json = self._api.do(
+            'PATCH',
+            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
+            body=body)
+        return TagSubentityAssignmentsList.from_dict(json)
 
 
 class SystemSchemasAPI:

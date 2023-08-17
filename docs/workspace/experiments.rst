@@ -114,6 +114,25 @@ Experiments
         
         
 
+    .. py:method:: delete_runs(experiment_id, max_timestamp_millis [, max_runs])
+
+        Delete runs by creation time.
+        
+        Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
+        most max_runs per request.
+        
+        :param experiment_id: str
+          The ID of the experiment containing the runs to delete.
+        :param max_timestamp_millis: int
+          The maximum creation timestamp in milliseconds since the UNIX epoch for deleting runs. Only runs
+          created prior to or at this timestamp are deleted.
+        :param max_runs: int (optional)
+          An optional positive integer indicating the maximum number of runs to delete. The maximum allowed
+          value for max_runs is 10000.
+        
+        :returns: :class:`DeleteRunsResponse`
+        
+
     .. py:method:: delete_tag(run_id, key)
 
         Delete a tag.
@@ -443,6 +462,25 @@ Experiments
           ID of the run to restore.
         
         
+        
+
+    .. py:method:: restore_runs(experiment_id, min_timestamp_millis [, max_runs])
+
+        Restore runs by deletion time.
+        
+        Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
+        at most max_runs per request.
+        
+        :param experiment_id: str
+          The ID of the experiment containing the runs to restore.
+        :param min_timestamp_millis: int
+          The minimum deletion timestamp in milliseconds since the UNIX epoch for restoring runs. Only runs
+          deleted no earlier than this timestamp are restored.
+        :param max_runs: int (optional)
+          An optional positive integer indicating the maximum number of runs to restore. The maximum allowed
+          value for max_runs is 10000.
+        
+        :returns: :class:`RestoreRunsResponse`
         
 
     .. py:method:: search_experiments( [, filter, max_results, order_by, page_token, view_type])
