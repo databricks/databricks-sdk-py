@@ -1,17 +1,20 @@
 import base64
+import io
 import json
+import re
 import shutil
 import subprocess
 import sys
 import urllib.parse
+from functools import partial
 from pathlib import Path
 
-import io
 import pytest
 
-from databricks.sdk.service.compute import ClusterSpec, Library
-from databricks.sdk.service.workspace import Language
-from databricks.sdk.service.jobs import Task, NotebookTask, ViewType
+from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
+                                            Library, ResultType)
+from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
+from databricks.sdk.service.workspace import ImportFormat
 
 
 @pytest.fixture
@@ -21,10 +24,9 @@ def fresh_wheel_file(tmp_path) -> Path:
     build_root = tmp_path / 'databricks-sdk-py'
     shutil.copytree(project_root, build_root)
     try:
-        completed_process = subprocess.run(
-            [sys.executable, 'setup.py', 'bdist_wheel'],
-            capture_output=True,
-            cwd=build_root)
+        completed_process = subprocess.run([sys.executable, 'setup.py', 'bdist_wheel'],
+                                           capture_output=True,
+                                           cwd=build_root)
         if completed_process.returncode != 0:
             raise RuntimeError(completed_process.stderr)
 
@@ -37,27 +39,73 @@ def fresh_wheel_file(tmp_path) -> Path:
         raise RuntimeError(e.stderr)
 
 
-def test_runtime_auth(w, fresh_wheel_file, env_or_skip, random):
+@pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
+def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
+    instance_pool_id = env_or_skip('TEST_INSTANCE_POOL_ID')
+    latest = ucws.clusters.select_spark_version(latest=True, beta=True)
+
+    my_user = ucws.current_user.me().user_name
+
+    workspace_location = f'/Users/{my_user}/wheels/{random(10)}'
+    ucws.workspace.mkdirs(workspace_location)
+
+    wsfs_wheel = f'{workspace_location}/{fresh_wheel_file.name}'
+    with fresh_wheel_file.open('rb') as f:
+        ucws.workspace.upload(wsfs_wheel, f, format=ImportFormat.AUTO)
+
+    from databricks.sdk.service.compute import Language
+    interactive_cluster = ucws.clusters.create(cluster_name=f'native-auth-on-{mode.name}',
+                                               spark_version=latest,
+                                               instance_pool_id=instance_pool_id,
+                                               autotermination_minutes=10,
+                                               num_workers=1,
+                                               data_security_mode=mode).result()
+    ctx = ucws.command_execution.create(cluster_id=interactive_cluster.cluster_id,
+                                        language=Language.PYTHON).result()
+    run = partial(ucws.command_execution.execute,
+                  cluster_id=interactive_cluster.cluster_id,
+                  context_id=ctx.id,
+                  language=Language.PYTHON)
+    try:
+        res = run(command=f"%pip install /Workspace{wsfs_wheel}\ndbutils.library.restartPython()").result()
+        results = res.results
+        if results.result_type != ResultType.TEXT:
+            msg = f'({mode}) unexpected result type: {results.result_type}: {results.summary}\n{results.cause}'
+            raise RuntimeError(msg)
+
+        res = run(command="\n".join([
+            'from databricks.sdk import WorkspaceClient', 'w = WorkspaceClient()', 'me = w.current_user.me()',
+            'print(me.user_name)'
+        ])).result()
+        assert res.results.result_type == ResultType.TEXT, f'unexpected result type: {res.results.result_type}'
+
+        assert my_user == res.results.data, f'unexpected user: {res.results.data}'
+    finally:
+        ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
+
+
+def test_runtime_auth_from_jobs(w, fresh_wheel_file, env_or_skip, random):
     instance_pool_id = env_or_skip('TEST_INSTANCE_POOL_ID')
 
     v = w.clusters.spark_versions()
-    lts_runtimes = [x for x in v.versions if 'LTS' in x.name
-                    and '-ml' not in x.key
-                    and '-photon' not in x.key]
+    lts_runtimes = [
+        x for x in v.versions if 'LTS' in x.name and '-ml' not in x.key and '-photon' not in x.key
+    ]
 
     dbfs_wheel = f'/tmp/wheels/{random(10)}/{fresh_wheel_file.name}'
     with fresh_wheel_file.open('rb') as f:
         w.dbfs.upload(dbfs_wheel, f)
 
-    notebook_path = f'/Users/{w.current_user.me().user_name}/notebook-native-auth'
+    my_name = w.current_user.me().user_name
+    notebook_path = f'/Users/{my_name}/notebook-native-auth'
     notebook_content = io.BytesIO(b'''
 from databricks.sdk import WorkspaceClient
 w = WorkspaceClient()
 me = w.current_user.me()
 print(me.user_name)''')
-    w.workspace.upload(notebook_path, notebook_content,
-                       language=Language.PYTHON,
-                       overwrite=True)
+
+    from databricks.sdk.service.workspace import Language
+    w.workspace.upload(notebook_path, notebook_content, language=Language.PYTHON, overwrite=True)
 
     tasks = []
     for v in lts_runtimes:
@@ -68,25 +116,32 @@ print(me.user_name)''')
                                          instance_pool_id=instance_pool_id),
                  libraries=[Library(whl=f'dbfs:{dbfs_wheel}')])
         tasks.append(t)
-    w.jobs.create(tasks=tasks, name=f'Runtime Native Auth {random(10)}')
 
-    print(v)
+    run = w.jobs.submit(run_name=f'Runtime Native Auth {random(10)}', tasks=tasks).result()
+    for task_key, output in _task_outputs(w, run).items():
+        assert my_name in output, f'{task_key} does not work with notebook native auth'
 
-def test_job_output(w):
-    # workflow_runs = w.jobs.list_runs(job_id=133270013770420)
-    this_run = w.jobs.get_run(20504473)
 
-    import re
-    notebook_model = re.compile(r"var __DATABRICKS_NOTEBOOK_MODEL = '(.*)';", re.MULTILINE)
+def _task_outputs(w, run):
+    notebook_model_re = re.compile(r"var __DATABRICKS_NOTEBOOK_MODEL = '(.*)';", re.MULTILINE)
 
-    for task_run in this_run.tasks:
-        print(task_run.task_key)
+    task_outputs = {}
+    for task_run in run.tasks:
+        output = ''
         run_output = w.jobs.export_run(task_run.run_id)
         for view in run_output.views:
             if view.type != ViewType.NOTEBOOK:
                 continue
-            for b64 in notebook_model.findall(view.content):
+            for b64 in notebook_model_re.findall(view.content):
                 url_encoded: bytes = base64.b64decode(b64)
-                json_encoded = urllib.parse.unquote(str(url_encoded))
-                x = json.loads(json_encoded)
-                print(x)
+                json_encoded = urllib.parse.unquote(url_encoded.decode('utf-8'))
+                notebook_model = json.loads(json_encoded)
+                for command in notebook_model['commands']:
+                    results_data = command['results']['data']
+                    if isinstance(results_data, str):
+                        output += results_data
+                    else:
+                        for data in results_data:
+                            output += data['data']
+        task_outputs[task_run.task_key] = output
+    return task_outputs
