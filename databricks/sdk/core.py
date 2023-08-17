@@ -21,7 +21,8 @@ import requests.auth
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
+from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
+                    add_sp_management_token, add_workspace_id_header)
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenCache, TokenSource)
 from .version import __version__
@@ -206,12 +207,9 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
     def refreshed_headers() -> Dict[str, str]:
-        headers = {
-            'Authorization': f"Bearer {inner.token().access_token}",
-            'X-Databricks-Azure-SP-Management-Token': cloud.token().access_token,
-        }
-        if cfg.azure_workspace_resource_id:
-            headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
+        headers = {'Authorization': f"Bearer {inner.token().access_token}", }
+        add_workspace_id_header(cfg, headers)
+        add_sp_management_token(cloud, headers)
         return headers
 
     return refreshed_headers
@@ -269,19 +267,29 @@ class AzureCliTokenSource(CliTokenSource):
 def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
+    mgmt_token_source = AzureCliTokenSource(cfg.arm_environment.service_management_endpoint)
     try:
         token_source.token()
     except FileNotFoundError:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
         logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
         return None
+    try:
+        mgmt_token_source.token()
+    except Exception as e:
+        logger.debug(f'Not including service management token in headers', exc_info=e)
+        mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        headers = {'Authorization': f'{token.token_type} {token.access_token}'}
+        add_workspace_id_header(cfg, headers)
+        if mgmt_token_source:
+            add_sp_management_token(mgmt_token_source, headers)
+        return headers
 
     return inner
 
