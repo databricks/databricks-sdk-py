@@ -622,8 +622,19 @@ class Config:
             ua.append(' '.join(self._user_agent_other_info))
         if len(self._upstream_user_agent) > 0:
             ua.append(self._upstream_user_agent)
+        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
+            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
+            if runtime_version != '':
+                runtime_version = self._sanitize_header_value(runtime_version)
+                ua.append(f'runtime/{runtime_version}')
 
         return ' '.join(ua)
+
+    @staticmethod
+    def _sanitize_header_value(value: str) -> str:
+        value = value.replace(' ', '-')
+        value = value.replace('/', '-')
+        return value
 
     @property
     def _upstream_user_agent(self) -> str:

@@ -140,6 +140,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     monkeypatch.setattr(platform, 'uname', MockUname)
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
+    monkeypatch.setenv('DATABRICKS_RUNTIME_VERSION', "13.1 anything/else")
 
     config = Config(host='http://localhost', username="something", password="something", product='test',
                     product_version='0.0.0') \
@@ -148,7 +149,8 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
     assert config.user_agent == (
         f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
-        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1")
+        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1"
+        " runtime/13.1-anything-else")
 
 
 def test_config_copy_shallow_copies_credential_provider():
