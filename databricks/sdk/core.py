@@ -751,7 +751,7 @@ class Config:
 
     def _load_from_env(self):
         found = False
-        for attr in Config.attributes():
+        for attr in self.attributes():
             if not attr.env:
                 continue
             if attr.name in self._inner:
