@@ -120,6 +120,28 @@ Secret
         :returns: :class:`AclItem`
         
 
+    .. py:method:: get_secret(scope, key)
+
+        Get a secret.
+        
+        Gets the bytes representation of a secret value for the specified scope and key.
+        
+        Users need the READ permission to make this call.
+        
+        Note that the secret value returned is in bytes. The interpretation of the bytes is determined by the
+        caller in DBUtils and the type the data is decoded into.
+        
+        Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
+        ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists.
+        
+        :param scope: str
+          The name of the scope to fetch secret information from.
+        :param key: str
+          The key to fetch secret for.
+        
+        :returns: :class:`GetSecretResponse`
+        
+
     .. py:method:: list_acls(scope)
 
         Usage:
