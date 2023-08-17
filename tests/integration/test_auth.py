@@ -90,7 +90,7 @@ def test_runtime_auth_from_jobs(w, fresh_wheel_file, env_or_skip, random):
     v = w.clusters.spark_versions()
     lts_runtimes = [
         x for x in v.versions
-        if 'LTS' in x.name and '-ml' not in x.key and '-photon' and '-aarch64' not in x.key
+        if 'LTS' in x.name and '-ml' not in x.key and '-photon' not in x.key and '-aarch64' not in x.key
     ]
 
     dbfs_wheel = f'/tmp/wheels/{random(10)}/{fresh_wheel_file.name}'
