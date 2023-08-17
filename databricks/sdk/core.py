@@ -276,9 +276,8 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
         return None
     try:
         mgmt_token_source.token()
-    except Exception:
-        logger.debug(
-            f'User does not have access to {cfg.arm_environment.service_management_endpoint}, continuing')
+    except Exception as e:
+        logger.debug(f'Not including service management token in headers', exc_info=e)
         mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))

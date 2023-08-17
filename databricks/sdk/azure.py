@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from .oauth import Refreshable
+from .oauth import TokenSource
 
 
 @dataclass
@@ -34,13 +34,11 @@ ENVIRONMENTS = dict(
 )
 
 
-def add_workspace_id_header(cfg: 'Config', headers: Dict[str, str]) -> Dict[str, str]:
+def add_workspace_id_header(cfg: 'Config', headers: Dict[str, str]):
     if cfg.azure_workspace_resource_id:
         headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
-    return headers
 
 
-def add_sp_management_token(token_source: 'Refreshable', headers: Dict[str, str]) -> Dict[str, str]:
+def add_sp_management_token(token_source: 'TokenSource', headers: Dict[str, str]):
     mgmt_token = token_source.token()
     headers['X-Databricks-Azure-SP-Management-Token'] = mgmt_token.access_token
-    return headers
