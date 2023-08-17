@@ -11,6 +11,8 @@ from databricks.sdk.core import (Config, CredentialsProvider,
                                  databricks_cli)
 from databricks.sdk.version import __version__
 
+from .conftest import noop_credentials
+
 
 def test_parse_dsn():
     cfg = Config.parse_dsn('databricks://user:pass@foo.databricks.com?retry_timeout_seconds=600')
@@ -220,3 +222,9 @@ def test_config_can_be_subclassed():
 
     with pytest.raises(ValueError): # As opposed to `KeyError`.
         DatabricksConfig()
+
+
+def test_config_parsing_non_string_env_vars(monkeypatch):
+    monkeypatch.setenv('DATABRICKS_DEBUG_TRUNCATE_BYTES', '100')
+    c = Config(host='http://localhost', credentials_provider=noop_credentials)
+    assert c.debug_truncate_bytes == 100

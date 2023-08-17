@@ -754,12 +754,11 @@ class Config:
                 continue
             if keyword_args.get(attr.name, None) is None:
                 continue
-            # make sure that args are of correct type
-            self._inner[attr.name] = attr.transform(keyword_args[attr.name])
+            self.__setattr__(attr.name, keyword_args[attr.name])
 
     def _load_from_env(self):
         found = False
-        for attr in Config.attributes():
+        for attr in self.attributes():
             if not attr.env:
                 continue
             if attr.name in self._inner:
@@ -767,7 +766,7 @@ class Config:
             value = os.environ.get(attr.env)
             if not value:
                 continue
-            self._inner[attr.name] = value
+            self.__setattr__(attr.name, value)
             found = True
         if found:
             logger.debug('Loaded from environment')
