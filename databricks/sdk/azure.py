@@ -29,3 +29,9 @@ ENVIRONMENTS = dict(
                            resource_manager_endpoint="https://management.chinacloudapi.cn/",
                            active_directory_endpoint="https://login.chinacloudapi.cn/"),
 )
+
+
+def add_workspace_id_header(cfg: 'Config', headers: dict[str, str]) -> dict[str, str]:
+    if cfg.azure_workspace_resource_id:
+        headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
+    return headers

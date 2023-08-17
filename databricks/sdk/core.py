@@ -21,7 +21,7 @@ import requests.auth
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
+from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenCache, TokenSource)
 from .version import __version__
@@ -210,9 +210,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
             'Authorization': f"Bearer {inner.token().access_token}",
             'X-Databricks-Azure-SP-Management-Token': cloud.token().access_token,
         }
-        if cfg.azure_workspace_resource_id:
-            headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
-        return headers
+        return add_workspace_id_header(cfg, headers)
 
     return refreshed_headers
 
@@ -281,7 +279,8 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        headers = {'Authorization': f'{token.token_type} {token.access_token}'}
+        return add_workspace_id_header(cfg, headers)
 
     return inner
 
