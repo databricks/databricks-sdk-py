@@ -771,7 +771,12 @@ class Config:
             logger.debug("%s does not exist", config_path)
             return
         ini_file = configparser.ConfigParser()
-        ini_file.read(config_path)
+        try:
+            ini_file.read(config_path)
+        except configparser.MissingSectionHeaderError:
+            # Ignore config profile loading on corrupted configs
+            # See https://github.com/databricks/databricks-sdk-py/issues/174
+            return
         profile = self.profile
         has_explicit_profile = self.profile is not None
         # In Go SDK, we skip merging the profile with DEFAULT section, though Python's ConfigParser.items()
