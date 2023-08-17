@@ -21,7 +21,8 @@ import requests.auth
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment, add_workspace_id_header, add_sp_management_token
+from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
+                    add_sp_management_token, add_workspace_id_header)
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenCache, TokenSource)
 from .version import __version__
@@ -206,9 +207,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
     def refreshed_headers() -> Dict[str, str]:
-        headers = {
-            'Authorization': f"Bearer {inner.token().access_token}",
-        }
+        headers = {'Authorization': f"Bearer {inner.token().access_token}", }
         add_workspace_id_header(cfg, headers)
         add_sp_management_token(cloud, headers)
         return headers
@@ -278,7 +277,8 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     try:
         mgmt_token_source.token()
     except Exception:
-        logger.debug(f'User does not have access to {cfg.arm_environment.service_management_endpoint}, continuing')
+        logger.debug(
+            f'User does not have access to {cfg.arm_environment.service_management_endpoint}, continuing')
         mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))

@@ -27,4 +27,3 @@ def test_azure_cli_user_no_management_access(monkeypatch):
     resource_id = '/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123'
     cfg = Config(auth_type='azure-cli', host='x', azure_workspace_resource_id=resource_id)
     assert 'X-Databricks-Azure-SP-Management-Token' not in cfg.authenticate()
-
