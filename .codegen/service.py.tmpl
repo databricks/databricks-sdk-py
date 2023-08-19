@@ -284,9 +284,11 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-call-default" -}}
         {{if .Response}}
-        json = {{end}}{{template "method-do" .}}
+        res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
-          {{if .Response.ArrayValue -}}
+          {{- if .IsResponseByteStream -}}
+            return {{.Response.PascalName}}(contents=res)
+          {{- else if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in json]
           {{- else -}}
             return {{.Response.PascalName}}.from_dict(json)
@@ -317,8 +319,6 @@ self._api.do('{{.Verb}}',
   {{- else -}}
     {{- if .Response.IsExternal -}}
       {{.Response.Package.Name}}.{{.Response.PascalName}}
-    {{- else if .IsResponseByteStream -}}
-      BinaryIO
     {{- else -}}
       {{.Response.PascalName}}
     {{- end -}}
