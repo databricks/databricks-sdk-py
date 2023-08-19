@@ -671,10 +671,11 @@ class ServicePrincipalSecretsAPI:
         
         """
 
+        headers = {}
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},',
+            headers=headers)
 
     def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
         """List service principal secrets.

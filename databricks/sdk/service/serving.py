@@ -710,7 +710,8 @@ class ServingEndpointsAPI:
         
         """
 
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics')
+        headers = {}
+        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
 
     def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.

@@ -653,8 +653,10 @@ class AccountIpAccessListsAPI:
         
         """
 
+        headers = {}
         self._api.do('DELETE',
-                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}')
+                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                     headers=headers)
 
     def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
         """Get IP access list.
@@ -1041,7 +1043,8 @@ class IpAccessListsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
 
     def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
         """Get access list.
@@ -1215,7 +1218,8 @@ class TokenManagementAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
 
     def get(self, token_id: str) -> TokenInfo:
         """Get token info.

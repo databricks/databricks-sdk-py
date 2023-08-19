@@ -1009,7 +1009,8 @@ class GitCredentialsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/git-credentials/{credential_id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/git-credentials/{credential_id}', headers=headers)
 
     def get(self, credential_id: int) -> CredentialInfo:
         """Get a credential entry.
@@ -1131,7 +1132,8 @@ class ReposAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/repos/{repo_id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/repos/{repo_id}', headers=headers)
 
     def get(self, repo_id: int) -> RepoInfo:
         """Get a repo.

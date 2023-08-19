@@ -204,11 +204,9 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{ define "method-headers" -}}
-  {{ if .HasRequestHeaders -}}
-headers = {
+    headers = {
       {{- range $k, $v := .FixedRequestHeaders}}'{{ $k }}': '{{ $v }}',{{ end -}}
     }
-  {{- end }}
 {{- end }}
 
 {{- define "method-param-bind" -}}
@@ -295,7 +293,7 @@ self._api.do('{{.Verb}}',
       {{- if .Request.HasQueryField}}, query=query{{end}}
       {{- if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
-  {{- if .HasRequestHeaders }}, headers=headers{{end}})
+  , headers=headers)
 {{- end}}
 
 {{define "method-return-type" -}}
