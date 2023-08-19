@@ -15,11 +15,12 @@ import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, Callable, Dict, Iterable, List, Optional, Union, BinaryIO, Type, Iterator, AnyStr
+from typing import (Any, AnyStr, BinaryIO, Callable, Dict, Iterable, Iterator,
+                    List, Optional, Type, Union)
 
 import requests
 import requests.auth
-from requests.adapters import HTTPAdapter, Response
+from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
