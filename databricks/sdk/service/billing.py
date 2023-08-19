@@ -444,8 +444,11 @@ class BillableUsageAPI:
         if end_month is not None: query['end_month'] = end_month
         if personal_data is not None: query['personal_data'] = personal_data
         if start_month is not None: query['start_month'] = start_month
-
-        self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/usage/download', query=query)
+        headers = {}
+        self._api.do('GET',
+                     f'/api/2.0/accounts/{self._api.account_id}/usage/download',
+                     query=query,
+                     headers=headers)
 
 
 class BudgetsAPI:

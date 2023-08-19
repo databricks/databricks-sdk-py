@@ -3208,7 +3208,8 @@ class StatementExecutionAPI:
         
         """
 
-        self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel')
+        headers = {}
+        self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel', headers=headers)
 
     def execute_statement(self,
                           *,

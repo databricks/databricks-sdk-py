@@ -15,7 +15,9 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
   grants
   metastores
   schemas
+  securable_tags
   storage_credentials
+  subentity_tags
   system_schemas
   table_constraints
   tables

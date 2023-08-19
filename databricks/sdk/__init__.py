@@ -12,8 +12,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
-                                            SchemasAPI, StorageCredentialsAPI,
-                                            SystemSchemasAPI,
+                                            SchemasAPI, SecurableTagsAPI,
+                                            StorageCredentialsAPI,
+                                            SubentityTagsAPI, SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
@@ -168,11 +169,13 @@ class WorkspaceClient:
         self.repos = ReposAPI(self.api_client)
         self.schemas = SchemasAPI(self.api_client)
         self.secrets = SecretsAPI(self.api_client)
+        self.securable_tags = SecurableTagsAPI(self.api_client)
         self.service_principals = ServicePrincipalsAPI(self.api_client)
         self.serving_endpoints = ServingEndpointsAPI(self.api_client)
         self.shares = SharesAPI(self.api_client)
         self.statement_execution = StatementExecutionAPI(self.api_client)
         self.storage_credentials = StorageCredentialsAPI(self.api_client)
+        self.subentity_tags = SubentityTagsAPI(self.api_client)
         self.system_schemas = SystemSchemasAPI(self.api_client)
         self.table_constraints = TableConstraintsAPI(self.api_client)
         self.tables = TablesAPI(self.api_client)

@@ -21,7 +21,8 @@ import requests.auth
 from requests.adapters import HTTPAdapter, Response
 from urllib3.util.retry import Retry
 
-from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
+from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
+                    add_sp_management_token, add_workspace_id_header)
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenCache, TokenSource)
 from .version import __version__
@@ -91,26 +92,22 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
-    from databricks.sdk.runtime import init_runtime_native_auth
-    if init_runtime_native_auth is not None:
-        host, inner = init_runtime_native_auth()
-        cfg.host = host
-        return inner
-    try:
-        from dbruntime.databricks_repl_context import get_context
-        ctx = get_context()
-        if ctx is None:
-            logger.debug('Empty REPL context returned, skipping runtime auth')
-            return None
-        cfg.host = f'https://{ctx.workspaceUrl}'
-
-        def inner() -> Dict[str, str]:
-            ctx = get_context()
-            return {'Authorization': f'Bearer {ctx.apiToken}'}
-
-        return inner
-    except ImportError:
+    from databricks.sdk.runtime import (init_runtime_legacy_auth,
+                                        init_runtime_native_auth,
+                                        init_runtime_repl_auth)
+    if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
         return None
+    for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
+        if init is None:
+            continue
+        host, inner = init()
+        if host is None:
+            logger.debug(f'[{init.__name__}] no host detected')
+            continue
+        cfg.host = host
+        logger.debug(f'[{init.__name__}] runtime native auth configured')
+        return inner
+    return None
 
 
 @credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
@@ -206,12 +203,9 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
     def refreshed_headers() -> Dict[str, str]:
-        headers = {
-            'Authorization': f"Bearer {inner.token().access_token}",
-            'X-Databricks-Azure-SP-Management-Token': cloud.token().access_token,
-        }
-        if cfg.azure_workspace_resource_id:
-            headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
+        headers = {'Authorization': f"Bearer {inner.token().access_token}", }
+        add_workspace_id_header(cfg, headers)
+        add_sp_management_token(cloud, headers)
         return headers
 
     return refreshed_headers
@@ -269,19 +263,29 @@ class AzureCliTokenSource(CliTokenSource):
 def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
     token_source = AzureCliTokenSource(cfg.effective_azure_login_app_id)
+    mgmt_token_source = AzureCliTokenSource(cfg.arm_environment.service_management_endpoint)
     try:
         token_source.token()
     except FileNotFoundError:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
         logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
         return None
+    try:
+        mgmt_token_source.token()
+    except Exception as e:
+        logger.debug(f'Not including service management token in headers', exc_info=e)
+        mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource(resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        headers = {'Authorization': f'{token.token_type} {token.access_token}'}
+        add_workspace_id_header(cfg, headers)
+        if mgmt_token_source:
+            add_sp_management_token(mgmt_token_source, headers)
+        return headers
 
     return inner
 
@@ -614,8 +618,19 @@ class Config:
             ua.append(' '.join(self._user_agent_other_info))
         if len(self._upstream_user_agent) > 0:
             ua.append(self._upstream_user_agent)
+        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
+            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
+            if runtime_version != '':
+                runtime_version = self._sanitize_header_value(runtime_version)
+                ua.append(f'runtime/{runtime_version}')
 
         return ' '.join(ua)
+
+    @staticmethod
+    def _sanitize_header_value(value: str) -> str:
+        value = value.replace(' ', '-')
+        value = value.replace('/', '-')
+        return value
 
     @property
     def _upstream_user_agent(self) -> str:
@@ -739,12 +754,11 @@ class Config:
                 continue
             if keyword_args.get(attr.name, None) is None:
                 continue
-            # make sure that args are of correct type
-            self._inner[attr.name] = attr.transform(keyword_args[attr.name])
+            self.__setattr__(attr.name, keyword_args[attr.name])
 
     def _load_from_env(self):
         found = False
-        for attr in Config.attributes():
+        for attr in self.attributes():
             if not attr.env:
                 continue
             if attr.name in self._inner:
@@ -752,7 +766,7 @@ class Config:
             value = os.environ.get(attr.env)
             if not value:
                 continue
-            self._inner[attr.name] = value
+            self.__setattr__(attr.name, value)
             found = True
         if found:
             logger.debug('Loaded from environment')
@@ -972,7 +986,7 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None) -> dict | Response:
-        headers |= {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
+        headers |= {'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),

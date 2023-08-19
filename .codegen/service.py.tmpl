@@ -92,14 +92,14 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "type-doc" -}}
 	{{- if .IsString}}str
 	{{- else if .IsEmpty}}Any
-  {{- else if .IsAny}}Any
+    {{- else if .IsAny}}Any
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .IsByteStream}}BinaryIO
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
-  {{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
+    {{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
 	{{- else if .IsExternal }}:class:`{{.PascalName}}`
 	{{- else if .IsObject }}:class:`{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}`
 	{{- else if .Enum }}:class:`{{.PascalName}}`
@@ -209,11 +209,9 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{ define "method-headers" -}}
-  {{ if .HasRequestHeaders -}}
-headers = {
+    headers = {
       {{- range $k, $v := .FixedRequestHeaders}}'{{ $k }}': '{{ $v }}',{{ end -}}
     }
-  {{- end }}
 {{- end }}
 
 {{- define "method-param-bind" -}}
@@ -305,7 +303,7 @@ self._api.do('{{.Verb}}',
       {{- if .Request.HasQueryField}}, query=query{{end}}
       {{- if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
-  {{- if .HasRequestHeaders }}, headers=headers{{end}}
+  , headers=headers
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{.RequestBodyField.SnakeName}}{{ end }}
   {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}

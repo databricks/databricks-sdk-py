@@ -1,5 +1,78 @@
 # Version changelog
 
+## 0.6.0
+
+* Added collection of Databricks Runtime versions used together with Python SDK ([#287](https://github.com/databricks/databricks-sdk-py/pull/287)).
+* Applied attribute transformer when reading in attributes from the environment ([#293](https://github.com/databricks/databricks-sdk-py/pull/293)).
+* Made notebook-native auth work with more configurations of the Databricks Runtime ([#285](https://github.com/databricks/databricks-sdk-py/pull/285)).
+* Added retry in `w.clusters.ensure_cluster_is_running(id)` when cluster is simultaneously started by two different processes. ([#283](https://github.com/databricks/databricks-sdk-py/pull/283)).
+* Set necessary headers when authenticating via Azure CLI ([#290](https://github.com/databricks/databricks-sdk-py/pull/290)).
+* Updated classifier to `Development Status :: 4 - Beta` ([#291](https://github.com/databricks/databricks-sdk-py/pull/291)).
+* Introduced Artifact Allowlist, Securable Tags, and Subentity Tags services.
+* Introduced DeleteRuns and RestoreRuns methods in the Experiments API.
+* Introduced the GetSecret method in the Secrets API.
+* Renamed Auto Maintenance to Predictive Optimization.
+
+New Services:
+
+ * Added [w.artifact_allowlists](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/artifact_allowlists.html) workspace-level service.
+ * Added [w.securable_tags](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/securable_tags.html) workspace-level service.
+ * Added [w.subentity_tags](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/subentity_tags.html) workspace-level service.
+ * Added `databricks.sdk.service.catalog.ArtifactAllowlistInfo` dataclass.
+ * Added `databricks.sdk.service.catalog.ArtifactMatcher` dataclass.
+ * Added `databricks.sdk.service.catalog.ArtifactType` dataclass.
+ * Added `databricks.sdk.service.catalog.GetArtifactAllowlistRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListSecurableTagsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListSecurableType` dataclass.
+ * Added `databricks.sdk.service.catalog.ListSubentityTagsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.MatchType` dataclass.
+ * Added `databricks.sdk.service.catalog.SetArtifactAllowlist` dataclass.
+ * Added `databricks.sdk.service.catalog.TagChanges` dataclass.
+ * Added `databricks.sdk.service.catalog.TagKeyValuePair` dataclass.
+ * Added `databricks.sdk.service.catalog.TagSecurable` dataclass.
+ * Added `databricks.sdk.service.catalog.TagSecurableAssignment` dataclass.
+ * Added `databricks.sdk.service.catalog.TagSecurableAssignmentsList` dataclass.
+ * Added `databricks.sdk.service.catalog.TagSubentity` dataclass.
+ * Added `databricks.sdk.service.catalog.TagSubentityAssignmentsList` dataclass.
+ * Added `databricks.sdk.service.catalog.TagsSubentityAssignment` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdateSecurableType` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdateTags` dataclass.
+
+New APIs:
+
+ * Added `delete_runs()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service.
+ * Added `restore_runs()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service.
+ * Added `databricks.sdk.service.ml.DeleteRuns` dataclass.
+ * Added `databricks.sdk.service.ml.DeleteRunsResponse` dataclass.
+ * Added `databricks.sdk.service.ml.RestoreRuns` dataclass.
+ * Added `databricks.sdk.service.ml.RestoreRunsResponse` dataclass.
+ * Added `get_secret()` method for [w.secrets](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/secrets.html) workspace-level service.
+ * Added `databricks.sdk.service.workspace.GetSecretRequest` dataclass.
+ * Added `databricks.sdk.service.workspace.GetSecretResponse` dataclass.
+
+Service Renames:
+
+ * Removed `effective_auto_maintenance_flag` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Removed `enable_auto_maintenance` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `effective_predictive_optimization_flag` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `enable_predictive_optimization` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Removed `databricks.sdk.service.catalog.EffectiveAutoMaintenanceFlag` dataclass.
+ * Removed `databricks.sdk.service.catalog.EffectiveAutoMaintenanceFlagInheritedFromType` dataclass.
+ * Removed `databricks.sdk.service.catalog.EnableAutoMaintenance` dataclass.
+ * Removed `effective_auto_maintenance_flag` field for `databricks.sdk.service.catalog.SchemaInfo`.
+ * Removed `enable_auto_maintenance` field for `databricks.sdk.service.catalog.SchemaInfo`.
+ * Added `effective_predictive_optimization_flag` field for `databricks.sdk.service.catalog.SchemaInfo`.
+ * Added `enable_predictive_optimization` field for `databricks.sdk.service.catalog.SchemaInfo`.
+ * Removed `effective_auto_maintenance_flag` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Removed `enable_auto_maintenance` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `effective_predictive_optimization_flag` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `enable_predictive_optimization` field for `databricks.sdk.service.catalog.TableInfo`.
+ * Added `databricks.sdk.service.catalog.EffectivePredictiveOptimizationFlag` dataclass.
+ * Added `databricks.sdk.service.catalog.EffectivePredictiveOptimizationFlagInheritedFromType` dataclass.
+ * Added `databricks.sdk.service.catalog.EnablePredictiveOptimization` dataclass.
+
+OpenAPI SHA: beff621d7b3e1d59244e2e34fc53a496f310e130, Date: 2023-08-17
+
 ## 0.5.0
 
 * Added `connection_pool_size` configuration property (preview) ([#276](https://github.com/databricks/databricks-sdk-py/pull/276)).

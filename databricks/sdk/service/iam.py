@@ -1066,7 +1066,10 @@ class AccountGroupsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}')
+        headers = {}
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}',
+                     headers=headers)
 
     def get(self, id: str) -> Group:
         """Get group details.
@@ -1274,7 +1277,10 @@ class AccountServicePrincipalsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}')
+        headers = {}
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
+                     headers=headers)
 
     def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
@@ -1498,7 +1504,10 @@ class AccountUsersAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}')
+        headers = {}
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
+                     headers=headers)
 
     def get(self, id: str) -> User:
         """Get user details.
@@ -1732,7 +1741,8 @@ class GroupsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Groups/{id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Groups/{id}', headers=headers)
 
     def get(self, id: str) -> Group:
         """Get group details.
@@ -2074,7 +2084,8 @@ class ServicePrincipalsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', headers=headers)
 
     def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
@@ -2284,7 +2295,8 @@ class UsersAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Users/{id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
 
     def get(self, id: str) -> User:
         """Get user details.

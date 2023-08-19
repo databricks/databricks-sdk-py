@@ -15,6 +15,13 @@ if [ "corrupt" == "$FAIL" ]; then
     exit
 fi
 
+for arg in "$@"; do
+    if [[ "$arg" == "$FAIL_IF" ]]; then
+        echo "Failed"
+        exit 1
+    fi
+done
+
 # Macos
 EXP="$(/bin/date -v+${EXPIRE:=10S} +'%F %T' 2>/dev/null)"
 if [ -z "${EXP}" ]; then

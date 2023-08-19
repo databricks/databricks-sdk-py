@@ -1552,6 +1552,13 @@ class ListSchemasResponse:
         return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
 
 
+class ListSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    SCHEMA = 'schema'
+    TABLE = 'table'
+
+
 @dataclass
 class ListStorageCredentialsResponse:
     storage_credentials: Optional['List[StorageCredentialInfo]'] = None
@@ -1800,6 +1807,7 @@ class PrimaryKeyConstraint:
 class Privilege(Enum):
 
     ALL_PRIVILEGES = 'ALL_PRIVILEGES'
+    APPLY_TAG = 'APPLY_TAG'
     CREATE = 'CREATE'
     CREATE_CATALOG = 'CREATE_CATALOG'
     CREATE_CONNECTION = 'CREATE_CONNECTION'
@@ -2287,6 +2295,141 @@ class TableType(Enum):
 
 
 @dataclass
+class TagChanges:
+    add_tags: Optional['List[TagKeyValuePair]'] = None
+    remove: Optional['List[str]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.add_tags: body['add_tags'] = [v.as_dict() for v in self.add_tags]
+        if self.remove: body['remove'] = [v for v in self.remove]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagChanges':
+        return cls(add_tags=_repeated(d, 'add_tags', TagKeyValuePair), remove=d.get('remove', None))
+
+
+@dataclass
+class TagKeyValuePair:
+    key: str
+    value: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagKeyValuePair':
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
+class TagSecurable:
+    type: str
+    full_name: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurable':
+        return cls(full_name=d.get('full_name', None), type=d.get('type', None))
+
+
+@dataclass
+class TagSecurableAssignment:
+    securable: 'TagSecurable'
+    tag_key_value_pairs: 'List[TagKeyValuePair]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.securable: body['securable'] = self.securable.as_dict()
+        if self.tag_key_value_pairs:
+            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignment':
+        return cls(securable=_from_dict(d, 'securable', TagSecurable),
+                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
+
+
+@dataclass
+class TagSecurableAssignmentsList:
+    tag_assignments: 'List[TagSecurableAssignment]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignmentsList':
+        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagSecurableAssignment))
+
+
+@dataclass
+class TagSubentity:
+    type: str
+    full_name: str
+    subentity: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.subentity is not None: body['subentity'] = self.subentity
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentity':
+        return cls(full_name=d.get('full_name', None),
+                   subentity=d.get('subentity', None),
+                   type=d.get('type', None))
+
+
+@dataclass
+class TagSubentityAssignmentsList:
+    tag_assignments: 'List[TagsSubentityAssignment]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentityAssignmentsList':
+        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagsSubentityAssignment))
+
+
+@dataclass
+class TagsSubentityAssignment:
+    securable: 'TagSubentity'
+    subentity: str
+    tag_key_value_pairs: 'List[TagKeyValuePair]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.securable: body['securable'] = self.securable.as_dict()
+        if self.subentity is not None: body['subentity'] = self.subentity
+        if self.tag_key_value_pairs:
+            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'TagsSubentityAssignment':
+        return cls(securable=_from_dict(d, 'securable', TagSubentity),
+                   subentity=d.get('subentity', None),
+                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
+
+
+@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
@@ -2534,6 +2677,13 @@ class UpdateSchema:
                    properties=d.get('properties', None))
 
 
+class UpdateSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    SCHEMA = 'schema'
+    TABLE = 'table'
+
+
 @dataclass
 class UpdateStorageCredential:
     aws_iam_role: Optional['AwsIamRole'] = None
@@ -2575,6 +2725,29 @@ class UpdateStorageCredential:
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
+
+
+@dataclass
+class UpdateTags:
+    changes: 'TagChanges'
+    full_name: Optional[str] = None
+    securable_type: Optional['UpdateSecurableType'] = None
+    subentity_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.changes: body['changes'] = self.changes.as_dict()
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
+        if self.subentity_name is not None: body['subentity_name'] = self.subentity_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateTags':
+        return cls(changes=_from_dict(d, 'changes', TagChanges),
+                   full_name=d.get('full_name', None),
+                   securable_type=_enum(d, 'securable_type', UpdateSecurableType),
+                   subentity_name=d.get('subentity_name', None))
 
 
 @dataclass
@@ -4344,6 +4517,62 @@ class SchemasAPI:
         return SchemaInfo.from_dict(json)
 
 
+class SecurableTagsAPI:
+    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
+    Tags are useful for organizing and categorizing different entities within a metastore. SecurableTags are
+    attached to Unity Catalog securable entities."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def list(self, securable_type: ListSecurableType, full_name: str) -> Iterator[TagSecurableAssignment]:
+        """Get tags for a securable.
+        
+        Gets tag assignments for an entity. The caller must be either the owner of the securable, or a
+        metastore admin, or have at least USE / SELECT privilege on the associated securable.
+        
+        :param securable_type: :class:`ListSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        
+        :returns: Iterator over :class:`TagSecurableAssignment`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
+                            headers=headers)
+        return [TagSecurableAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
+
+    def update(self, changes: TagChanges, securable_type: UpdateSecurableType,
+               full_name: str) -> TagSecurableAssignmentsList:
+        """Update tags for a securable.
+        
+        Update tag assignments for an entity The caller must be either the owner of the securable, or a
+        metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on the associated securable.
+        
+        :param changes: :class:`TagChanges`
+          Desired changes to be made to the tag assignments on the entity
+        :param securable_type: :class:`UpdateSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        
+        :returns: :class:`TagSecurableAssignmentsList`
+        """
+        body = {}
+        if changes is not None: body['changes'] = changes.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        json = self._api.do('PATCH',
+                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
+                            body=body,
+                            headers=headers)
+        return TagSecurableAssignmentsList.from_dict(json)
+
+
 class StorageCredentialsAPI:
     """A storage credential represents an authentication and authorization mechanism for accessing data stored on
     your cloud tenant. Each storage credential is subject to Unity Catalog access-control policies that
@@ -4593,6 +4822,71 @@ class StorageCredentialsAPI:
                             body=body,
                             headers=headers)
         return ValidateStorageCredentialResponse.from_dict(json)
+
+
+class SubentityTagsAPI:
+    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
+    Tags are useful for organizing and categorizing different entities within a metastore. SubentityTags are
+    attached to Unity Catalog subentities."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def list(self, securable_type: ListSecurableType, full_name: str,
+             subentity_name: str) -> Iterator[TagsSubentityAssignment]:
+        """Get tags for a subentity.
+        
+        Gets tag assignments for a subentity associated with a securable entity. Eg. column of a table The
+        caller must be either the owner of the securable, or a metastore admin, or have at least USE / SELECT
+        privilege on the associated securable.
+        
+        :param securable_type: :class:`ListSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        :param subentity_name: str
+          The name of subentity associated with the securable entity
+        
+        :returns: Iterator over :class:`TagsSubentityAssignment`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        json = self._api.do(
+            'GET',
+            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
+            headers=headers)
+        return [TagsSubentityAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
+
+    def update(self, changes: TagChanges, securable_type: UpdateSecurableType, full_name: str,
+               subentity_name: str) -> TagSubentityAssignmentsList:
+        """Update tags for a subentity.
+        
+        Update tag assignments for a subentity associated with a securable entity. The caller must be either
+        the owner of the securable, or a metastore admin, or have at least USE / SELECT and APPLY_TAG
+        privilege on the associated securable.
+        
+        :param changes: :class:`TagChanges`
+          Desired changes to be made to the tag assignments on the entity
+        :param securable_type: :class:`UpdateSecurableType`
+          The type of the unity catalog securable entity.
+        :param full_name: str
+          The fully qualified name of the unity catalog securable entity.
+        :param subentity_name: str
+          The name of subentity associated with the securable entity
+        
+        :returns: :class:`TagSubentityAssignmentsList`
+        """
+        body = {}
+        if changes is not None: body['changes'] = changes.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        json = self._api.do(
+            'PATCH',
+            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
+            body=body,
+            headers=headers)
+        return TagSubentityAssignmentsList.from_dict(json)
 
 
 class SystemSchemasAPI:
@@ -4990,7 +5284,8 @@ class VolumesAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{full_name_arg}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
 
     def list(self, catalog_name: str, schema_name: str) -> Iterator[VolumeInfo]:
         """List Volumes.

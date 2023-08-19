@@ -11,6 +11,8 @@ from databricks.sdk.core import (Config, CredentialsProvider,
                                  databricks_cli)
 from databricks.sdk.version import __version__
 
+from .conftest import noop_credentials
+
 
 def test_parse_dsn():
     cfg = Config.parse_dsn('databricks://user:pass@foo.databricks.com?retry_timeout_seconds=600')
@@ -140,6 +142,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     monkeypatch.setattr(platform, 'uname', MockUname)
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
+    monkeypatch.setenv('DATABRICKS_RUNTIME_VERSION', "13.1 anything/else")
 
     config = Config(host='http://localhost', username="something", password="something", product='test',
                     product_version='0.0.0') \
@@ -148,7 +151,8 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
     assert config.user_agent == (
         f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
-        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1")
+        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1"
+        " runtime/13.1-anything-else")
 
 
 def test_config_copy_shallow_copies_credential_provider():
@@ -218,3 +222,9 @@ def test_config_can_be_subclassed():
 
     with pytest.raises(ValueError): # As opposed to `KeyError`.
         DatabricksConfig()
+
+
+def test_config_parsing_non_string_env_vars(monkeypatch):
+    monkeypatch.setenv('DATABRICKS_DEBUG_TRUNCATE_BYTES', '100')
+    c = Config(host='http://localhost', credentials_provider=noop_credentials)
+    assert c.debug_truncate_bytes == 100

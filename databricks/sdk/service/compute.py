@@ -5162,7 +5162,8 @@ class GlobalInitScriptsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/global-init-scripts/{script_id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
 
     def get(self, script_id: str) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.

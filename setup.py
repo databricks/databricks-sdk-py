@@ -25,7 +25,7 @@ setup(name="databricks-sdk",
       url="https://databricks-sdk-py.readthedocs.io",
       keywords="databricks sdk",
       classifiers=[
-          "Development Status :: 3 - Alpha",
+          "Development Status :: 4 - Beta",
           "Intended Audience :: Developers",
           "Intended Audience :: Science/Research",
           "Intended Audience :: System Administrators",
