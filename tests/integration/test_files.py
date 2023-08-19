@@ -1,10 +1,11 @@
 import io
 import pathlib
-from typing import List
+from typing import List, Callable
 
 import pytest
 
 from databricks.sdk.core import DatabricksError
+from databricks.sdk.service.catalog import VolumeType
 
 
 def test_local_io(random):
@@ -183,13 +184,39 @@ def test_dbfs_upload_download(w, random, junk, tmp_path):
         assert f.read() == b"some text data"
 
 
-def test_files_api_upload_download(w, random):
-    pytest.skip()
-    f = io.BytesIO(b"some text data")
-    target_file = f'/Volumes/bogdanghita/default/v3_shared/sdk-testing/{random(10)}.txt'
-    w.files.upload(target_file, f)
+class ResourceWithCleanup:
+    cleanup: Callable[[], None]
+    def __init__(self, cleanup):
+        self.cleanup = cleanup
 
-    with w.files.download(target_file) as f:
-        assert f.read() == b"some text data"
+    def __enter__(self):
+        return self
 
-    w.files.delete(target_file)
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.cleanup()
+
+    @staticmethod
+    def create_schema(w, catalog, schema):
+        res = w.schemas.create(catalog_name=catalog, name=schema)
+        return ResourceWithCleanup(lambda: w.schemas.delete(res.full_name))
+
+    @staticmethod
+    def create_volume(w, catalog, schema, volume):
+        res = w.volumes.create(catalog_name=catalog, schema_name=schema, name=volume, volume_type=VolumeType.MANAGED)
+        return ResourceWithCleanup(lambda: w.volumes.delete(res.full_name))
+
+
+def test_files_api_upload_download(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            f = io.BytesIO(b"some text data")
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            w.files.upload_file(target_file, f)
+
+            with w.files.download_file(target_file).contents as f:
+                assert f.read() == b"some text data"
+
+            w.files.delete_file(target_file)
