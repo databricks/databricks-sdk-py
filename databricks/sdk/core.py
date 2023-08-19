@@ -987,7 +987,7 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None) -> dict | BinaryIO:
-        headers |= {'User-Agent': self._user_agent_base}
+        headers.update({'User-Agent': self._user_agent_base})
         # Replace multiple / in a row with a single / in path (for Files API where users specify filenames beginning
         # with /)
         path = re.sub(r'/{2,}', '/', path)
