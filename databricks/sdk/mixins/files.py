@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from types import TracebackType
 from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
 
-from databricks.sdk.core import ApiClient, DatabricksError
+from databricks.sdk.core import DatabricksError
 
 from ..service import files
 
@@ -397,4 +397,3 @@ class DbfsExt(files.DbfsAPI):
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         source.delete(recursive=recursive)
-

@@ -1,6 +1,6 @@
 import io
 import pathlib
-from typing import List, Callable
+from typing import Callable, List
 
 import pytest
 
@@ -186,6 +186,7 @@ def test_dbfs_upload_download(w, random, junk, tmp_path):
 
 class ResourceWithCleanup:
     cleanup: Callable[[], None]
+
     def __init__(self, cleanup):
         self.cleanup = cleanup
 
@@ -202,7 +203,10 @@ class ResourceWithCleanup:
 
     @staticmethod
     def create_volume(w, catalog, schema, volume):
-        res = w.volumes.create(catalog_name=catalog, schema_name=schema, name=volume, volume_type=VolumeType.MANAGED)
+        res = w.volumes.create(catalog_name=catalog,
+                               schema_name=schema,
+                               name=volume,
+                               volume_type=VolumeType.MANAGED)
         return ResourceWithCleanup(lambda: w.volumes.delete(res.full_name))
 
 
