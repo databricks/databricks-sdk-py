@@ -14,7 +14,7 @@ import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Any, Callable, Dict, Iterable, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union, Generator
 
 import requests
 import requests.auth
@@ -984,7 +984,7 @@ class ApiClient:
            body: dict = None,
            raw: bool = False,
            files=None,
-           data=None) -> dict:
+           data=None) -> dict | Generator[bytes, None, None]:
         headers = {'Accept': 'application/json', 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
@@ -1002,7 +1002,7 @@ class ApiClient:
                 payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
             if raw:
-                return response.raw
+                return response.raw.stream(None)
             if not len(response.content):
                 return {}
             return response.json()

@@ -6,7 +6,7 @@ import shutil
 import sys
 from abc import ABC, abstractmethod
 from types import TracebackType
-from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
+from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type, Generator
 
 from databricks.sdk.core import ApiClient, DatabricksError
 
@@ -407,7 +407,7 @@ class FilesMixin:
     def upload(self, path: str, src: BinaryIO):
         self._api.do('PUT', f'/api/2.0/fs/files{path}', data=src)
 
-    def download(self, path: str) -> BinaryIO:
+    def download(self, path: str) -> Generator[bytes, None, None]:
         return self._api.do('GET', f'/api/2.0/fs/files{path}', raw=True)
 
     def delete(self, path: str):
