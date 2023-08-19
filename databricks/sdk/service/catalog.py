@@ -780,6 +780,32 @@ class CreateMetastoreAssignment:
 
 
 @dataclass
+class CreateRegisteredModelRequest:
+    catalog_name: str
+    schema_name: str
+    name: str
+    comment: Optional[str] = None
+    storage_location: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelRequest':
+        return cls(catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   name=d.get('name', None),
+                   schema_name=d.get('schema_name', None),
+                   storage_location=d.get('storage_location', None))
+
+
+@dataclass
 class CreateSchema:
     name: str
     catalog_name: str
@@ -1539,6 +1565,40 @@ class ListMetastoresResponse:
 
 
 @dataclass
+class ListModelVersionsResponse:
+    model_versions: Optional['List[ModelVersionInfo]'] = None
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListModelVersionsResponse':
+        return cls(model_versions=_repeated(d, 'model_versions', ModelVersionInfo),
+                   next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListRegisteredModelsResponse:
+    next_page_token: Optional[str] = None
+    registered_models: Optional['List[RegisteredModelInfo]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
+        return cls(next_page_token=d.get('next_page_token', None),
+                   registered_models=_repeated(d, 'registered_models', RegisteredModelInfo))
+
+
+@dataclass
 class ListSchemasResponse:
     schemas: Optional['List[SchemaInfo]'] = None
 
@@ -1742,6 +1802,79 @@ class MetastoreInfoDeltaSharingScope(Enum):
 
 
 @dataclass
+class ModelVersionInfo:
+    catalog_name: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    model_name: Optional[str] = None
+    model_version_dependencies: Optional['List[Dependency]'] = None
+    run_id: Optional[str] = None
+    run_workspace_id: Optional[int] = None
+    schema_name: Optional[str] = None
+    source: Optional[str] = None
+    status: Optional['ModelVersionInfoStatus'] = None
+    storage_location: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    version: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.id is not None: body['id'] = self.id
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version_dependencies:
+            body['model_version_dependencies'] = [v.as_dict() for v in self.model_version_dependencies]
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_workspace_id is not None: body['run_workspace_id'] = self.run_workspace_id
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.source is not None: body['source'] = self.source
+        if self.status is not None: body['status'] = self.status.value
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ModelVersionInfo':
+        return cls(catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   id=d.get('id', None),
+                   metastore_id=d.get('metastore_id', None),
+                   model_name=d.get('model_name', None),
+                   model_version_dependencies=_repeated(d, 'model_version_dependencies', Dependency),
+                   run_id=d.get('run_id', None),
+                   run_workspace_id=d.get('run_workspace_id', None),
+                   schema_name=d.get('schema_name', None),
+                   source=d.get('source', None),
+                   status=_enum(d, 'status', ModelVersionInfoStatus),
+                   storage_location=d.get('storage_location', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None),
+                   version=d.get('version', None))
+
+
+class ModelVersionInfoStatus(Enum):
+    """Current status of the model version. Newly created model versions start in PENDING_REGISTRATION
+    status, then move to READY status once the model version files are uploaded and the model
+    version is finalized. Only model versions in READY status can be loaded for inference or served."""
+
+    FAILED_REGISTRATION = 'FAILED_REGISTRATION'
+    PENDING_REGISTRATION = 'PENDING_REGISTRATION'
+    READY = 'READY'
+
+
+@dataclass
 class NamedTableConstraint:
     name: str
 
@@ -1817,6 +1950,7 @@ class Privilege(Enum):
     CREATE_FUNCTION = 'CREATE_FUNCTION'
     CREATE_MANAGED_STORAGE = 'CREATE_MANAGED_STORAGE'
     CREATE_MATERIALIZED_VIEW = 'CREATE_MATERIALIZED_VIEW'
+    CREATE_MODEL = 'CREATE_MODEL'
     CREATE_PROVIDER = 'CREATE_PROVIDER'
     CREATE_RECIPIENT = 'CREATE_RECIPIENT'
     CREATE_SCHEMA = 'CREATE_SCHEMA'
@@ -1870,6 +2004,74 @@ class ProvisioningState(Enum):
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+
+
+@dataclass
+class RegisteredModelAlias:
+    """Registered model alias."""
+
+    alias_name: Optional[str] = None
+    version_num: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.alias_name is not None: body['alias_name'] = self.alias_name
+        if self.version_num is not None: body['version_num'] = self.version_num
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAlias':
+        return cls(alias_name=d.get('alias_name', None), version_num=d.get('version_num', None))
+
+
+@dataclass
+class RegisteredModelInfo:
+    aliases: Optional['List[RegisteredModelAlias]'] = None
+    catalog_name: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    full_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    schema_name: Optional[str] = None
+    storage_location: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.aliases: body['aliases'] = [v.as_dict() for v in self.aliases]
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelInfo':
+        return cls(aliases=_repeated(d, 'aliases', RegisteredModelAlias),
+                   catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   full_name=d.get('full_name', None),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   schema_name=d.get('schema_name', None),
+                   storage_location=d.get('storage_location', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None))
 
 
 @dataclass
@@ -2596,6 +2798,26 @@ class UpdateMetastoreDeltaSharingScope(Enum):
 
 
 @dataclass
+class UpdateModelVersionRequest:
+    comment: Optional[str] = None
+    full_name: Optional[str] = None
+    version: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateModelVersionRequest':
+        return cls(comment=d.get('comment', None),
+                   full_name=d.get('full_name', None),
+                   version=d.get('version', None))
+
+
+@dataclass
 class UpdatePermissions:
     changes: Optional['List[PermissionsChange]'] = None
     full_name: Optional[str] = None
@@ -2649,6 +2871,29 @@ class UpdatePredictiveOptimizationResponse:
         return cls(state=d.get('state', None),
                    user_id=d.get('user_id', None),
                    username=d.get('username', None))
+
+
+@dataclass
+class UpdateRegisteredModelRequest:
+    comment: Optional[str] = None
+    full_name: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegisteredModelRequest':
+        return cls(comment=d.get('comment', None),
+                   full_name=d.get('full_name', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None))
 
 
 @dataclass
@@ -4375,6 +4620,340 @@ class MetastoresAPI:
                      f'/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore',
                      body=body,
                      headers=headers)
+
+
+class ModelVersionsAPI:
+    """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
+    provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
+    workspaces.
+    
+    This API reference documents the REST endpoints for managing model versions in Unity Catalog. For more
+    details, see the [registered models API docs](/api/workspace/registeredmodels)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, full_name: str, version: int):
+        """Delete a Model Version.
+        
+        Deletes a model version from the specified registered model. Any aliases assigned to the model version
+        will also be deleted.
+        
+        The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
+        the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the model version
+        :param version: int
+          The integer version number of the model version
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE',
+                     f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
+                     headers=headers)
+
+    def get(self, full_name: str, version: int) -> RegisteredModelInfo:
+        """Get a Model Version.
+        
+        Get a model version.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the parent
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the model version
+        :param version: int
+          The integer version number of the model version
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
+                           headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+    def list(self,
+             full_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ModelVersionInfo]:
+        """List Model Versions.
+        
+        List model versions. You can list model versions under a particular schema, or list all model versions
+        in the current metastore.
+        
+        The returned models are filtered based on the privileges of the calling user. For example, the
+        metastore admin is able to list all the model versions. A regular user needs to be the owner or have
+        the **EXECUTE** privilege on the parent registered model to recieve the model versions in the
+        response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
+        on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        There is no guarantee of a specific ordering of the elements in the response.
+        
+        :param full_name: str
+          The full three-level name of the registered model under which to list model versions
+        :param max_results: int (optional)
+          Max number of model versions to return
+        :param page_token: str (optional)
+          Opaque token to send for the next page of results (pagination).
+        
+        :returns: Iterator over :class:`ModelVersionInfo`
+        """
+
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/models/{full_name}/versions',
+                                query=query,
+                                headers=headers)
+            if 'model_versions' not in json or not json['model_versions']:
+                return
+            for v in json['model_versions']:
+                yield ModelVersionInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self, full_name: str, version: int, *, comment: Optional[str] = None) -> ModelVersionInfo:
+        """Update a Model Version.
+        
+        Updates the specified model version.
+        
+        The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
+        the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        Currently only the comment of the model version can be updated.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the model version
+        :param version: int
+          The integer version number of the model version
+        :param comment: str (optional)
+          The comment attached to the model version
+        
+        :returns: :class:`ModelVersionInfo`
+        """
+        body = {}
+        if comment is not None: body['comment'] = comment
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
+                           body=body,
+                           headers=headers)
+        return ModelVersionInfo.from_dict(res)
+
+
+class RegisteredModelsAPI:
+    """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
+    provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
+    workspaces.
+    
+    An MLflow registered model resides in the third layer of Unity Catalog’s three-level namespace.
+    Registered models contain model versions, which correspond to actual ML models (MLflow models). Creating
+    new model versions currently requires use of the MLflow Python client. Once model versions are created,
+    you can load them for batch inference using MLflow Python client APIs, or deploy them for real-time
+    serving using Databricks Model Serving.
+    
+    All operations on registered models and model versions require USE_CATALOG permissions on the enclosing
+    catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
+    privileges are required for various operations:
+    
+    * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
+    schema. * To view registered model or model version metadata, model version data files, or invoke a model
+    version, users must additionally have the EXECUTE permission on the registered model * To update
+    registered model or model version tags, users must additionally have APPLY TAG permissions on the
+    registered model * To update other registered model or model version metadata (comments, aliases) create a
+    new model version, or update permissions on the registered model, users must be owners of the registered
+    model.
+    
+    Note: The securable type for models is "FUNCTION". When using REST APIs (e.g. tagging, grants) that
+    specify a securable type, use "FUNCTION" as the securable type."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               catalog_name: str,
+               schema_name: str,
+               name: str,
+               *,
+               comment: Optional[str] = None,
+               storage_location: Optional[str] = None) -> RegisteredModelInfo:
+        """Create a Registered Model.
+        
+        Creates a new registered model in Unity Catalog.
+        
+        File storage for model versions in the registered model will be located in the default location which
+        is specified by the parent schema, or the parent catalog, or the Metastore.
+        
+        For registered model creation to succeed, the user must satisfy the following conditions: - The caller
+        must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
+        
+        :param catalog_name: str
+          The name of the catalog where the schema and the registered model reside
+        :param schema_name: str
+          The name of the schema where the registered model resides
+        :param name: str
+          The name of the registered model
+        :param comment: str (optional)
+          The comment attached to the registered model
+        :param storage_location: str (optional)
+          The storage location on the cloud under which model version data files are stored
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+        body = {}
+        if catalog_name is not None: body['catalog_name'] = catalog_name
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if schema_name is not None: body['schema_name'] = schema_name
+        if storage_location is not None: body['storage_location'] = storage_location
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.1/unity-catalog/models', body=body, headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+    def delete(self, full_name: str):
+        """Delete a Registered Model.
+        
+        Deletes a registered model and all its model versions from the specified parent catalog and schema.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}', headers=headers)
+
+    def get(self, full_name: str) -> RegisteredModelInfo:
+        """Get a Registered Model.
+        
+        Get a registered model.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/models/{full_name}', headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+    def list(self,
+             *,
+             catalog_name: Optional[str] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
+             schema_name: Optional[str] = None) -> Iterator[RegisteredModelInfo]:
+        """List Registered Models.
+        
+        List registered models. You can list registered models under a particular schema, or list all
+        registered models in the current metastore.
+        
+        The returned models are filtered based on the privileges of the calling user. For example, the
+        metastore admin is able to list all the registered models. A regular user needs to be the owner or
+        have the **EXECUTE** privilege on the registered model to recieve the registered models in the
+        response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
+        on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        There is no guarantee of a specific ordering of the elements in the response.
+        
+        :param catalog_name: str (optional)
+          The identifier of the catalog under which to list registered models. If specified, schema_name must
+          be specified.
+        :param max_results: int (optional)
+          Max number of registered models to return. If catalog and schema are unspecified, max_results must
+          be specified. If max_results is unspecified, we return all results, starting from the page specified
+          by page_token.
+        :param page_token: str (optional)
+          Opaque token to send for the next page of results (pagination).
+        :param schema_name: str (optional)
+          The identifier of the schema under which to list registered models. If specified, catalog_name must
+          be specified.
+        
+        :returns: Iterator over :class:`RegisteredModelInfo`
+        """
+
+        query = {}
+        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        if schema_name is not None: query['schema_name'] = schema_name
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/models', query=query, headers=headers)
+            if 'registered_models' not in json or not json['registered_models']:
+                return
+            for v in json['registered_models']:
+                yield RegisteredModelInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self,
+               full_name: str,
+               *,
+               comment: Optional[str] = None,
+               name: Optional[str] = None,
+               owner: Optional[str] = None) -> RegisteredModelInfo:
+        """Update a Registered Model.
+        
+        Updates the specified registered model.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        Currently only the name, the owner or the comment of the registered model can be updated.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param comment: str (optional)
+          The comment attached to the registered model
+        :param name: str (optional)
+          The name of the registered model
+        :param owner: str (optional)
+          The identifier of the user who owns the registered model
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/models/{full_name}', body=body, headers=headers)
+        return RegisteredModelInfo.from_dict(res)
 
 
 class SchemasAPI:

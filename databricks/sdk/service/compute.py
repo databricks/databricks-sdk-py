@@ -1137,7 +1137,6 @@ class CreateInstancePool:
     enable_elastic_disk: Optional[bool] = None
     gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
     idle_instance_autotermination_minutes: Optional[int] = None
-    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
     max_capacity: Optional[int] = None
     min_idle_instances: Optional[int] = None
     preloaded_docker_images: Optional['List[DockerImage]'] = None
@@ -1153,8 +1152,6 @@ class CreateInstancePool:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_fleet_attributes:
-            body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
         if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
         if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
@@ -1174,8 +1171,6 @@ class CreateInstancePool:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
-                                                             InstancePoolFleetAttributes),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
@@ -1592,7 +1587,6 @@ class EditInstancePool:
     enable_elastic_disk: Optional[bool] = None
     gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
     idle_instance_autotermination_minutes: Optional[int] = None
-    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
     max_capacity: Optional[int] = None
     min_idle_instances: Optional[int] = None
     preloaded_docker_images: Optional['List[DockerImage]'] = None
@@ -1608,8 +1602,6 @@ class EditInstancePool:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_fleet_attributes:
-            body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
         if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
@@ -1630,8 +1622,6 @@ class EditInstancePool:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
-                                                             InstancePoolFleetAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
@@ -1783,89 +1773,6 @@ class EventType(Enum):
 
 
 @dataclass
-class FleetLaunchTemplateOverride:
-    availability_zone: str
-    instance_type: str
-    max_price: Optional[float] = None
-    priority: Optional[float] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.availability_zone is not None: body['availability_zone'] = self.availability_zone
-        if self.instance_type is not None: body['instance_type'] = self.instance_type
-        if self.max_price is not None: body['max_price'] = self.max_price
-        if self.priority is not None: body['priority'] = self.priority
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FleetLaunchTemplateOverride':
-        return cls(availability_zone=d.get('availability_zone', None),
-                   instance_type=d.get('instance_type', None),
-                   max_price=d.get('max_price', None),
-                   priority=d.get('priority', None))
-
-
-@dataclass
-class FleetOnDemandOption:
-    allocation_strategy: Optional['FleetOnDemandOptionAllocationStrategy'] = None
-    max_total_price: Optional[float] = None
-    use_capacity_reservations_first: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.allocation_strategy is not None: body['allocation_strategy'] = self.allocation_strategy.value
-        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
-        if self.use_capacity_reservations_first is not None:
-            body['use_capacity_reservations_first'] = self.use_capacity_reservations_first
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FleetOnDemandOption':
-        return cls(allocation_strategy=_enum(d, 'allocation_strategy', FleetOnDemandOptionAllocationStrategy),
-                   max_total_price=d.get('max_total_price', None),
-                   use_capacity_reservations_first=d.get('use_capacity_reservations_first', None))
-
-
-class FleetOnDemandOptionAllocationStrategy(Enum):
-    """Only lowest-price and prioritized are allowed"""
-
-    CAPACITY_OPTIMIZED = 'CAPACITY_OPTIMIZED'
-    DIVERSIFIED = 'DIVERSIFIED'
-    LOWEST_PRICE = 'LOWEST_PRICE'
-    PRIORITIZED = 'PRIORITIZED'
-
-
-@dataclass
-class FleetSpotOption:
-    allocation_strategy: Optional['FleetSpotOptionAllocationStrategy'] = None
-    instance_pools_to_use_count: Optional[int] = None
-    max_total_price: Optional[float] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.allocation_strategy is not None: body['allocation_strategy'] = self.allocation_strategy.value
-        if self.instance_pools_to_use_count is not None:
-            body['instance_pools_to_use_count'] = self.instance_pools_to_use_count
-        if self.max_total_price is not None: body['max_total_price'] = self.max_total_price
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FleetSpotOption':
-        return cls(allocation_strategy=_enum(d, 'allocation_strategy', FleetSpotOptionAllocationStrategy),
-                   instance_pools_to_use_count=d.get('instance_pools_to_use_count', None),
-                   max_total_price=d.get('max_total_price', None))
-
-
-class FleetSpotOptionAllocationStrategy(Enum):
-    """lowest-price | diversified | capacity-optimized"""
-
-    CAPACITY_OPTIMIZED = 'CAPACITY_OPTIMIZED'
-    DIVERSIFIED = 'DIVERSIFIED'
-    LOWEST_PRICE = 'LOWEST_PRICE'
-    PRIORITIZED = 'PRIORITIZED'
-
-
-@dataclass
 class GcpAttributes:
     availability: Optional['GcpAvailability'] = None
     boot_disk_size: Optional[int] = None
@@ -1996,7 +1903,6 @@ class GetInstancePool:
     enable_elastic_disk: Optional[bool] = None
     gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
     idle_instance_autotermination_minutes: Optional[int] = None
-    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
     instance_pool_name: Optional[str] = None
     max_capacity: Optional[int] = None
     min_idle_instances: Optional[int] = None
@@ -2018,8 +1924,6 @@ class GetInstancePool:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_fleet_attributes:
-            body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
         if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
@@ -2044,8 +1948,6 @@ class GetInstancePool:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
-                                                             InstancePoolFleetAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
@@ -2305,7 +2207,6 @@ class InstancePoolAndStats:
     enable_elastic_disk: Optional[bool] = None
     gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
     idle_instance_autotermination_minutes: Optional[int] = None
-    instance_pool_fleet_attributes: Optional['InstancePoolFleetAttributes'] = None
     instance_pool_id: Optional[str] = None
     instance_pool_name: Optional[str] = None
     max_capacity: Optional[int] = None
@@ -2328,8 +2229,6 @@ class InstancePoolAndStats:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_fleet_attributes:
-            body['instance_pool_fleet_attributes'] = self.instance_pool_fleet_attributes.as_dict()
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
         if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
@@ -2354,8 +2253,6 @@ class InstancePoolAndStats:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
-                   instance_pool_fleet_attributes=_from_dict(d, 'instance_pool_fleet_attributes',
-                                                             InstancePoolFleetAttributes),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
@@ -2424,28 +2321,6 @@ class InstancePoolAzureAttributesAvailability(Enum):
     ON_DEMAND_AZURE = 'ON_DEMAND_AZURE'
     SPOT_AZURE = 'SPOT_AZURE'
     SPOT_WITH_FALLBACK_AZURE = 'SPOT_WITH_FALLBACK_AZURE'
-
-
-@dataclass
-class InstancePoolFleetAttributes:
-    fleet_on_demand_option: Optional['FleetOnDemandOption'] = None
-    fleet_spot_option: Optional['FleetSpotOption'] = None
-    launch_template_overrides: Optional['List[FleetLaunchTemplateOverride]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.fleet_on_demand_option: body['fleet_on_demand_option'] = self.fleet_on_demand_option.as_dict()
-        if self.fleet_spot_option: body['fleet_spot_option'] = self.fleet_spot_option.as_dict()
-        if self.launch_template_overrides:
-            body['launch_template_overrides'] = [v.as_dict() for v in self.launch_template_overrides]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolFleetAttributes':
-        return cls(fleet_on_demand_option=_from_dict(d, 'fleet_on_demand_option', FleetOnDemandOption),
-                   fleet_spot_option=_from_dict(d, 'fleet_spot_option', FleetSpotOption),
-                   launch_template_overrides=_repeated(d, 'launch_template_overrides',
-                                                       FleetLaunchTemplateOverride))
 
 
 @dataclass
@@ -5265,7 +5140,6 @@ class InstancePoolsAPI:
                enable_elastic_disk: Optional[bool] = None,
                gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
                idle_instance_autotermination_minutes: Optional[int] = None,
-               instance_pool_fleet_attributes: Optional[InstancePoolFleetAttributes] = None,
                max_capacity: Optional[int] = None,
                min_idle_instances: Optional[int] = None,
                preloaded_docker_images: Optional[List[DockerImage]] = None,
@@ -5308,8 +5182,6 @@ class InstancePoolsAPI:
           will be automatically terminated after a default timeout. If specified, the threshold must be
           between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
           from the cache if min cache size could still hold.
-        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
-          The fleet related setting to power the instance pool.
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
@@ -5334,8 +5206,6 @@ class InstancePoolsAPI:
         if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
-        if instance_pool_fleet_attributes is not None:
-            body['instance_pool_fleet_attributes'] = instance_pool_fleet_attributes.as_dict()
         if instance_pool_name is not None: body['instance_pool_name'] = instance_pool_name
         if max_capacity is not None: body['max_capacity'] = max_capacity
         if min_idle_instances is not None: body['min_idle_instances'] = min_idle_instances
@@ -5376,7 +5246,6 @@ class InstancePoolsAPI:
              enable_elastic_disk: Optional[bool] = None,
              gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
              idle_instance_autotermination_minutes: Optional[int] = None,
-             instance_pool_fleet_attributes: Optional[InstancePoolFleetAttributes] = None,
              max_capacity: Optional[int] = None,
              min_idle_instances: Optional[int] = None,
              preloaded_docker_images: Optional[List[DockerImage]] = None,
@@ -5421,8 +5290,6 @@ class InstancePoolsAPI:
           will be automatically terminated after a default timeout. If specified, the threshold must be
           between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
           from the cache if min cache size could still hold.
-        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
-          The fleet related setting to power the instance pool.
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
@@ -5447,8 +5314,6 @@ class InstancePoolsAPI:
         if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
-        if instance_pool_fleet_attributes is not None:
-            body['instance_pool_fleet_attributes'] = instance_pool_fleet_attributes.as_dict()
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
         if instance_pool_name is not None: body['instance_pool_name'] = instance_pool_name
         if max_capacity is not None: body['max_capacity'] = max_capacity

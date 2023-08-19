@@ -17,7 +17,7 @@ Instance Pools
     Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
     apply. See pricing.
 
-    .. py:method:: create(instance_pool_name, node_type_id [, aws_attributes, azure_attributes, custom_tags, disk_spec, enable_elastic_disk, gcp_attributes, idle_instance_autotermination_minutes, instance_pool_fleet_attributes, max_capacity, min_idle_instances, preloaded_docker_images, preloaded_spark_versions])
+    .. py:method:: create(instance_pool_name, node_type_id [, aws_attributes, azure_attributes, custom_tags, disk_spec, enable_elastic_disk, gcp_attributes, idle_instance_autotermination_minutes, max_capacity, min_idle_instances, preloaded_docker_images, preloaded_spark_versions])
 
         Usage:
 
@@ -74,8 +74,6 @@ Instance Pools
           will be automatically terminated after a default timeout. If specified, the threshold must be
           between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
           from the cache if min cache size could still hold.
-        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
-          The fleet related setting to power the instance pool.
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during
@@ -104,7 +102,7 @@ Instance Pools
         
         
 
-    .. py:method:: edit(instance_pool_id, instance_pool_name, node_type_id [, aws_attributes, azure_attributes, custom_tags, disk_spec, enable_elastic_disk, gcp_attributes, idle_instance_autotermination_minutes, instance_pool_fleet_attributes, max_capacity, min_idle_instances, preloaded_docker_images, preloaded_spark_versions])
+    .. py:method:: edit(instance_pool_id, instance_pool_name, node_type_id [, aws_attributes, azure_attributes, custom_tags, disk_spec, enable_elastic_disk, gcp_attributes, idle_instance_autotermination_minutes, max_capacity, min_idle_instances, preloaded_docker_images, preloaded_spark_versions])
 
         Usage:
 
@@ -167,8 +165,6 @@ Instance Pools
           will be automatically terminated after a default timeout. If specified, the threshold must be
           between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle instances
           from the cache if min cache size could still hold.
-        :param instance_pool_fleet_attributes: :class:`InstancePoolFleetAttributes` (optional)
-          The fleet related setting to power the instance pool.
         :param max_capacity: int (optional)
           Maximum number of outstanding instances to keep in the pool, including both instances used by
           clusters and idle instances. Clusters that require further instance provisioning will fail during

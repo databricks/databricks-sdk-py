@@ -1,7 +1,7 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
-from databricks.sdk.mixins.files import DbfsExt, FilesMixin
+from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
                                             LogDeliveryAPI)
@@ -12,7 +12,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
-                                            SchemasAPI, SecurableTagsAPI,
+                                            ModelVersionsAPI,
+                                            RegisteredModelsAPI, SchemasAPI,
+                                            SecurableTagsAPI,
                                             StorageCredentialsAPI,
                                             SubentityTagsAPI, SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
@@ -23,7 +25,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             InstancePoolsAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
                                             PolicyFamiliesAPI)
-from databricks.sdk.service.files import DbfsAPI
+from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
                                         AccountGroupsAPI,
@@ -129,7 +131,6 @@ class WorkspaceClient:
         self.config = config.copy()
         self.dbutils = _make_dbutils(self.config)
         self.api_client = client.ApiClient(self.config)
-        self.files = FilesMixin(self.api_client)
         self.account_access_control_proxy = AccountAccessControlProxyAPI(self.api_client)
         self.alerts = AlertsAPI(self.api_client)
         self.artifact_allowlists = ArtifactAllowlistsAPI(self.api_client)
@@ -146,6 +147,7 @@ class WorkspaceClient:
         self.dbsql_permissions = DbsqlPermissionsAPI(self.api_client)
         self.experiments = ExperimentsAPI(self.api_client)
         self.external_locations = ExternalLocationsAPI(self.api_client)
+        self.files = FilesAPI(self.api_client)
         self.functions = FunctionsAPI(self.api_client)
         self.git_credentials = GitCredentialsAPI(self.api_client)
         self.global_init_scripts = GlobalInitScriptsAPI(self.api_client)
@@ -158,6 +160,7 @@ class WorkspaceClient:
         self.libraries = LibrariesAPI(self.api_client)
         self.metastores = MetastoresAPI(self.api_client)
         self.model_registry = ModelRegistryAPI(self.api_client)
+        self.model_versions = ModelVersionsAPI(self.api_client)
         self.permissions = PermissionsAPI(self.api_client)
         self.pipelines = PipelinesAPI(self.api_client)
         self.policy_families = PolicyFamiliesAPI(self.api_client)
@@ -166,6 +169,7 @@ class WorkspaceClient:
         self.query_history = QueryHistoryAPI(self.api_client)
         self.recipient_activation = RecipientActivationAPI(self.api_client)
         self.recipients = RecipientsAPI(self.api_client)
+        self.registered_models = RegisteredModelsAPI(self.api_client)
         self.repos = ReposAPI(self.api_client)
         self.schemas = SchemasAPI(self.api_client)
         self.secrets = SecretsAPI(self.api_client)
