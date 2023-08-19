@@ -1197,8 +1197,8 @@ class StreamingResponse(BinaryIO):
     def __iter__(self) -> Iterator[AnyStr]:
         return self._content
 
-    def __exit__(self, t: Type[BaseException] | None, value: BaseException | None,
-                 traceback: TracebackType | None) -> None:
+    def __exit__(self, t: Union[Type[BaseException], None], value: Union[BaseException, None],
+                 traceback: Union[TracebackType, None]) -> None:
         self._content = None
         self._buffer = b''
         self.close()
