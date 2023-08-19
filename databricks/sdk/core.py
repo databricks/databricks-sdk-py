@@ -985,7 +985,7 @@ class ApiClient:
            body: dict = None,
            raw: bool = False,
            files=None,
-           data=None) -> dict | Response:
+           data=None) -> dict:
         headers |= {'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
@@ -1003,7 +1003,7 @@ class ApiClient:
                 payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
             if raw:
-                return response
+                return response.raw
             if not len(response.content):
                 return {}
             return response.json()
