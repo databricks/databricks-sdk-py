@@ -1179,7 +1179,7 @@ class StreamingResponse(BinaryIO):
     def tell(self) -> int:
         pass
 
-    def truncate(self, __size: int | None = ...) -> int:
+    def truncate(self, __size: Union[int, None] = ...) -> int:
         raise NotImplementedError()
 
     def writable(self) -> bool:
