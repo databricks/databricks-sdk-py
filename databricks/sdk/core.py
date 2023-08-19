@@ -1167,7 +1167,7 @@ class StreamingResponse(BinaryIO):
     def readline(self, __limit: int = ...) -> AnyStr:
         raise NotImplementedError()
 
-    def readlines(self, __hint: int = ...) -> list[AnyStr]:
+    def readlines(self, __hint: int = ...) -> List[AnyStr]:
         raise NotImplementedError()
 
     def seek(self, __offset: int, __whence: int = ...) -> int:
