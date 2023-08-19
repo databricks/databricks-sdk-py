@@ -14,7 +14,8 @@ import sys
 import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Any, Callable, Dict, Iterable, List, Optional, Union
+from types import TracebackType
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union, BinaryIO, Type, Iterator, AnyStr
 
 import requests
 import requests.auth
@@ -985,7 +986,7 @@ class ApiClient:
            body: dict = None,
            raw: bool = False,
            files=None,
-           data=None) -> dict:
+           data=None) -> dict | BinaryIO:
         headers |= {'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
@@ -1003,7 +1004,7 @@ class ApiClient:
                 payload = response.json()
                 raise self._make_nicer_error(status_code=response.status_code, **payload) from None
             if raw:
-                return response.raw
+                return StreamingResponse(response)
             if not len(response.content):
                 return {}
             return response.json()
@@ -1119,3 +1120,77 @@ class ApiClient:
             return "\n".join([f'{prefix}{line}' for line in json.dumps(raw, indent=2).split("\n")])
         except JSONDecodeError:
             return f'{prefix}[non-JSON document of {len(body)} bytes]'
+
+
+class StreamingResponse(BinaryIO):
+    _response: requests.Response
+    _buffer: bytes
+
+    def __init__(self, response: requests.Response):
+        self._response = response
+        self._buffer = b''
+
+    def __enter__(self) -> BinaryIO:
+        self._content = self._response.iter_content()
+        return self
+
+    def close(self) -> None:
+        self._response.close()
+
+    def isatty(self) -> bool:
+        return False
+
+    def read(self, n: int = ...) -> AnyStr:
+        remaining_bytes = n
+        res = b''
+        while remaining_bytes > 0:
+            if len(self._buffer) == 0:
+                try:
+                    self._buffer = next(self._content)
+                except StopIteration:
+                    break
+            to_read = min(remaining_bytes, len(self._buffer))
+            res += self._buffer[:to_read]
+            self._buffer = self._buffer[to_read:]
+            remaining_bytes -= to_read
+        return res
+
+    def readable(self) -> bool:
+        return self._content is not None
+
+    def readline(self, __limit: int = ...) -> AnyStr:
+        raise NotImplementedError()
+
+    def readlines(self, __hint: int = ...) -> list[AnyStr]:
+        raise NotImplementedError()
+
+    def seek(self, __offset: int, __whence: int = ...) -> int:
+        raise NotImplementedError()
+
+    def seekable(self) -> bool:
+        return False
+
+    def tell(self) -> int:
+        pass
+
+    def truncate(self, __size: int | None = ...) -> int:
+        raise NotImplementedError()
+
+    def writable(self) -> bool:
+        return False
+
+    def write(self, s: AnyStr) -> int:
+        raise NotImplementedError()
+
+    def writelines(self, lines: Iterable[AnyStr]) -> None:
+        raise NotImplementedError()
+
+    def __next__(self) -> AnyStr:
+        pass
+
+    def __iter__(self) -> Iterator[AnyStr]:
+        return self._content
+
+    def __exit__(self, t: Type[BaseException] | None, value: BaseException | None,
+                 traceback: TracebackType | None) -> None:
+        self.close()
