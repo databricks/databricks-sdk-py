@@ -228,7 +228,6 @@ class {{.Name}}API:{{if .Description}}
 {{define "method-call" -}}
         {{if .Pagination -}}{{template "method-call-paginated" .}}
         {{- else if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}{{template "method-call-retried" .}}
-        {{- else if .IsResponseByteStream }}{{template "method-call-response-stream" . }}
         {{- else}}{{template "method-call-default" .}}{{end}}
 {{- end}}
 
@@ -278,10 +277,6 @@ class {{.Name}}API:{{if .Description}}
         {{end}}
 {{- end}}
 
-{{define "method-call-response-stream" -}}
-        return {{template "method-do" .}}
-{{- end}}
-
 {{define "method-call-default" -}}
         {{if .Response}}
         res = {{end}}{{template "method-do" .}}
@@ -289,9 +284,9 @@ class {{.Name}}API:{{if .Description}}
           {{- if .IsResponseByteStream -}}
             return {{.Response.PascalName}}(contents=res)
           {{- else if .Response.ArrayValue -}}
-            return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in json]
+            return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else -}}
-            return {{.Response.PascalName}}.from_dict(json)
+            return {{.Response.PascalName}}.from_dict(res)
           {{- end}}
         {{- end}}
 {{- end}}

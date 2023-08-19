@@ -367,11 +367,11 @@ class CustomAppIntegrationAPI:
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
-                            body=body,
-                            headers=headers)
-        return CreateCustomAppIntegrationOutput.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
+                           body=body,
+                           headers=headers)
+        return CreateCustomAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
         """Delete Custom OAuth App Integration.
@@ -404,11 +404,11 @@ class CustomAppIntegrationAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
             headers=headers)
-        return GetCustomAppIntegrationOutput.from_dict(json)
+        return GetCustomAppIntegrationOutput.from_dict(res)
 
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
         """Get custom oauth app integrations.
@@ -503,10 +503,10 @@ class OAuthEnrollmentAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
-                            headers=headers)
-        return OAuthEnrollmentStatus.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
+                           headers=headers)
+        return OAuthEnrollmentStatus.from_dict(res)
 
 
 class PublishedAppIntegrationAPI:
@@ -542,11 +542,11 @@ class PublishedAppIntegrationAPI:
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
-                            body=body,
-                            headers=headers)
-        return CreatePublishedAppIntegrationOutput.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
+                           body=body,
+                           headers=headers)
+        return CreatePublishedAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
         """Delete Published OAuth App Integration.
@@ -579,11 +579,11 @@ class PublishedAppIntegrationAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
             headers=headers)
-        return GetPublishedAppIntegrationOutput.from_dict(json)
+        return GetPublishedAppIntegrationOutput.from_dict(res)
 
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
         """Get published oauth app integrations.
@@ -652,11 +652,11 @@ class ServicePrincipalSecretsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
             headers=headers)
-        return CreateServicePrincipalSecretResponse.from_dict(json)
+        return CreateServicePrincipalSecretResponse.from_dict(res)
 
     def delete(self, service_principal_id: int, secret_id: str):
         """Delete service principal secret.

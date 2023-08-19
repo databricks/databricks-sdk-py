@@ -3597,8 +3597,8 @@ class ClusterPoliciesAPI:
         if policy_family_id is not None: body['policy_family_id'] = policy_family_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body, headers=headers)
-        return CreatePolicyResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body, headers=headers)
+        return CreatePolicyResponse.from_dict(res)
 
     def delete(self, policy_id: str):
         """Delete a cluster policy.
@@ -3683,8 +3683,8 @@ class ClusterPoliciesAPI:
         if policy_id is not None: query['policy_id'] = policy_id
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query, headers=headers)
-        return Policy.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query, headers=headers)
+        return Policy.from_dict(res)
 
     def get_cluster_policy_permission_levels(
             self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
@@ -3700,10 +3700,10 @@ class ClusterPoliciesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels',
-                            headers=headers)
-        return GetClusterPolicyPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels',
+                           headers=headers)
+        return GetClusterPolicyPermissionLevelsResponse.from_dict(res)
 
     def get_cluster_policy_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
         """Get cluster policy permissions.
@@ -3719,10 +3719,10 @@ class ClusterPoliciesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
-                            headers=headers)
-        return ClusterPolicyPermissions.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
+                           headers=headers)
+        return ClusterPolicyPermissions.from_dict(res)
 
     def list(self,
              *,
@@ -3771,11 +3771,11 @@ class ClusterPoliciesAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
-                            body=body,
-                            headers=headers)
-        return ClusterPolicyPermissions.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
+                           body=body,
+                           headers=headers)
+        return ClusterPolicyPermissions.from_dict(res)
 
     def update_cluster_policy_permissions(
         self,
@@ -3799,11 +3799,11 @@ class ClusterPoliciesAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
-                            body=body,
-                            headers=headers)
-        return ClusterPolicyPermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
+                           body=body,
+                           headers=headers)
+        return ClusterPolicyPermissions.from_dict(res)
 
 
 class ClustersAPI:
@@ -4504,8 +4504,8 @@ class ClustersAPI:
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
-        return ClusterDetails.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
+        return ClusterDetails.from_dict(res)
 
     def get_cluster_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
         """Get cluster permission levels.
@@ -4520,10 +4520,10 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels',
-                            headers=headers)
-        return GetClusterPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels',
+                           headers=headers)
+        return GetClusterPermissionLevelsResponse.from_dict(res)
 
     def get_cluster_permissions(self, cluster_id: str) -> ClusterPermissions:
         """Get cluster permissions.
@@ -4538,8 +4538,8 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
-        return ClusterPermissions.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
+        return ClusterPermissions.from_dict(res)
 
     def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
         """List all clusters.
@@ -4578,8 +4578,8 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/clusters/list-node-types', headers=headers)
-        return ListNodeTypesResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/clusters/list-node-types', headers=headers)
+        return ListNodeTypesResponse.from_dict(res)
 
     def list_zones(self) -> ListAvailableZonesResponse:
         """List availability zones.
@@ -4592,8 +4592,8 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/clusters/list-zones', headers=headers)
-        return ListAvailableZonesResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/clusters/list-zones', headers=headers)
+        return ListAvailableZonesResponse.from_dict(res)
 
     def permanent_delete(self, cluster_id: str):
         """Permanently delete cluster.
@@ -4725,8 +4725,8 @@ class ClustersAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body, headers=headers)
-        return ClusterPermissions.from_dict(json)
+        res = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body, headers=headers)
+        return ClusterPermissions.from_dict(res)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
         """List available Spark versions.
@@ -4738,8 +4738,8 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/clusters/spark-versions', headers=headers)
-        return GetSparkVersionsResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/clusters/spark-versions', headers=headers)
+        return GetSparkVersionsResponse.from_dict(res)
 
     def start(self, cluster_id: str) -> Wait[ClusterDetails]:
         """Start terminated cluster.
@@ -4804,11 +4804,8 @@ class ClustersAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/clusters/{cluster_id}',
-                            body=body,
-                            headers=headers)
-        return ClusterPermissions.from_dict(json)
+        res = self._api.do('PATCH', f'/api/2.0/permissions/clusters/{cluster_id}', body=body, headers=headers)
+        return ClusterPermissions.from_dict(res)
 
 
 class CommandExecutionAPI:
@@ -4977,8 +4974,8 @@ class CommandExecutionAPI:
         if context_id is not None: query['contextId'] = context_id
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/1.2/commands/status', query=query, headers=headers)
-        return CommandStatusResponse.from_dict(json)
+        res = self._api.do('GET', '/api/1.2/commands/status', query=query, headers=headers)
+        return CommandStatusResponse.from_dict(res)
 
     def context_status(self, cluster_id: str, context_id: str) -> ContextStatusResponse:
         """Get status.
@@ -4996,8 +4993,8 @@ class CommandExecutionAPI:
         if context_id is not None: query['contextId'] = context_id
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/1.2/contexts/status', query=query, headers=headers)
-        return ContextStatusResponse.from_dict(json)
+        res = self._api.do('GET', '/api/1.2/contexts/status', query=query, headers=headers)
+        return ContextStatusResponse.from_dict(res)
 
     def create(self,
                *,
@@ -5148,8 +5145,8 @@ class GlobalInitScriptsAPI:
         if script is not None: body['script'] = script
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/global-init-scripts', body=body, headers=headers)
-        return CreateResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/global-init-scripts', body=body, headers=headers)
+        return CreateResponse.from_dict(res)
 
     def delete(self, script_id: str):
         """Delete init script.
@@ -5178,8 +5175,8 @@ class GlobalInitScriptsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
-        return GlobalInitScriptDetailsWithContent.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
+        return GlobalInitScriptDetailsWithContent.from_dict(res)
 
     def list(self) -> Iterator[GlobalInitScriptDetails]:
         """Get init scripts.
@@ -5349,8 +5346,8 @@ class InstancePoolsAPI:
             body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/instance-pools/create', body=body, headers=headers)
-        return CreateInstancePoolResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/instance-pools/create', body=body, headers=headers)
+        return CreateInstancePoolResponse.from_dict(res)
 
     def delete(self, instance_pool_id: str):
         """Delete an instance pool.
@@ -5479,8 +5476,8 @@ class InstancePoolsAPI:
         if instance_pool_id is not None: query['instance_pool_id'] = instance_pool_id
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query, headers=headers)
-        return GetInstancePool.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/instance-pools/get', query=query, headers=headers)
+        return GetInstancePool.from_dict(res)
 
     def get_instance_pool_permission_levels(self,
                                             instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
@@ -5496,10 +5493,10 @@ class InstancePoolsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels',
-                            headers=headers)
-        return GetInstancePoolPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels',
+                           headers=headers)
+        return GetInstancePoolPermissionLevelsResponse.from_dict(res)
 
     def get_instance_pool_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
         """Get instance pool permissions.
@@ -5515,8 +5512,8 @@ class InstancePoolsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', headers=headers)
-        return InstancePoolPermissions.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', headers=headers)
+        return InstancePoolPermissions.from_dict(res)
 
     def list(self) -> Iterator[InstancePoolAndStats]:
         """List instance pool info.
@@ -5552,11 +5549,11 @@ class InstancePoolsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
-                            body=body,
-                            headers=headers)
-        return InstancePoolPermissions.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
+                           body=body,
+                           headers=headers)
+        return InstancePoolPermissions.from_dict(res)
 
     def update_instance_pool_permissions(
         self,
@@ -5580,11 +5577,11 @@ class InstancePoolsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
-                            body=body,
-                            headers=headers)
-        return InstancePoolPermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
+                           body=body,
+                           headers=headers)
+        return InstancePoolPermissions.from_dict(res)
 
 
 class InstanceProfilesAPI:
@@ -5752,8 +5749,8 @@ class LibrariesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
-        return ListAllClusterLibraryStatusesResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
+        return ListAllClusterLibraryStatusesResponse.from_dict(res)
 
     def cluster_status(self, cluster_id: str) -> ClusterLibraryStatuses:
         """Get status.
@@ -5781,8 +5778,8 @@ class LibrariesAPI:
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
-        return ClusterLibraryStatuses.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
+        return ClusterLibraryStatuses.from_dict(res)
 
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add a library.
@@ -5853,8 +5850,8 @@ class PolicyFamiliesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}', headers=headers)
-        return PolicyFamily.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}', headers=headers)
+        return PolicyFamily.from_dict(res)
 
     def list(self,
              *,

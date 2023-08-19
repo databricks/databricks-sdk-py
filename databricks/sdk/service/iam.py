@@ -854,12 +854,12 @@ class AccountAccessControlAPI:
         if resource is not None: query['resource'] = resource
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
             query=query,
             headers=headers)
-        return GetAssignableRolesForResourceResponse.from_dict(json)
+        return GetAssignableRolesForResourceResponse.from_dict(res)
 
     def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
         """Get a rule set.
@@ -885,11 +885,11 @@ class AccountAccessControlAPI:
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
-                            query=query,
-                            headers=headers)
-        return RuleSetResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                           query=query,
+                           headers=headers)
+        return RuleSetResponse.from_dict(res)
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
         """Update a rule set.
@@ -908,11 +908,11 @@ class AccountAccessControlAPI:
         if rule_set is not None: body['rule_set'] = rule_set.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
-                            body=body,
-                            headers=headers)
-        return RuleSetResponse.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
+                           body=body,
+                           headers=headers)
+        return RuleSetResponse.from_dict(res)
 
 
 class AccountAccessControlProxyAPI:
@@ -939,11 +939,11 @@ class AccountAccessControlProxyAPI:
         if resource is not None: query['resource'] = resource
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            '/api/2.0/preview/accounts/access-control/assignable-roles',
-                            query=query,
-                            headers=headers)
-        return GetAssignableRolesForResourceResponse.from_dict(json)
+        res = self._api.do('GET',
+                           '/api/2.0/preview/accounts/access-control/assignable-roles',
+                           query=query,
+                           headers=headers)
+        return GetAssignableRolesForResourceResponse.from_dict(res)
 
     def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
         """Get a rule set.
@@ -969,11 +969,11 @@ class AccountAccessControlProxyAPI:
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            '/api/2.0/preview/accounts/access-control/rule-sets',
-                            query=query,
-                            headers=headers)
-        return RuleSetResponse.from_dict(json)
+        res = self._api.do('GET',
+                           '/api/2.0/preview/accounts/access-control/rule-sets',
+                           query=query,
+                           headers=headers)
+        return RuleSetResponse.from_dict(res)
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
         """Update a rule set.
@@ -992,11 +992,11 @@ class AccountAccessControlProxyAPI:
         if rule_set is not None: body['rule_set'] = rule_set.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            '/api/2.0/preview/accounts/access-control/rule-sets',
-                            body=body,
-                            headers=headers)
-        return RuleSetResponse.from_dict(json)
+        res = self._api.do('PUT',
+                           '/api/2.0/preview/accounts/access-control/rule-sets',
+                           body=body,
+                           headers=headers)
+        return RuleSetResponse.from_dict(res)
 
 
 class AccountGroupsAPI:
@@ -1049,11 +1049,11 @@ class AccountGroupsAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
-                            body=body,
-                            headers=headers)
-        return Group.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
+                           body=body,
+                           headers=headers)
+        return Group.from_dict(res)
 
     def delete(self, id: str):
         """Delete a group.
@@ -1084,10 +1084,10 @@ class AccountGroupsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}',
-                            headers=headers)
-        return Group.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}',
+                           headers=headers)
+        return Group.from_dict(res)
 
     def list(self,
              *,
@@ -1260,11 +1260,11 @@ class AccountServicePrincipalsAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
-                            body=body,
-                            headers=headers)
-        return ServicePrincipal.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
+                           body=body,
+                           headers=headers)
+        return ServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
         """Delete a service principal.
@@ -1295,10 +1295,10 @@ class AccountServicePrincipalsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
-                            headers=headers)
-        return ServicePrincipal.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
+                           headers=headers)
+        return ServicePrincipal.from_dict(res)
 
     def list(self,
              *,
@@ -1486,11 +1486,11 @@ class AccountUsersAPI:
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
-                            body=body,
-                            headers=headers)
-        return User.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
+                           body=body,
+                           headers=headers)
+        return User.from_dict(res)
 
     def delete(self, id: str):
         """Delete a user.
@@ -1522,10 +1522,10 @@ class AccountUsersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
-                            headers=headers)
-        return User.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
+                           headers=headers)
+        return User.from_dict(res)
 
     def list(self,
              *,
@@ -1673,8 +1673,8 @@ class CurrentUserAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/Me', headers=headers)
-        return User.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/preview/scim/v2/Me', headers=headers)
+        return User.from_dict(res)
 
 
 class GroupsAPI:
@@ -1727,8 +1727,8 @@ class GroupsAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/preview/scim/v2/Groups', body=body, headers=headers)
-        return Group.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/preview/scim/v2/Groups', body=body, headers=headers)
+        return Group.from_dict(res)
 
     def delete(self, id: str):
         """Delete a group.
@@ -1757,8 +1757,8 @@ class GroupsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Groups/{id}', headers=headers)
-        return Group.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Groups/{id}', headers=headers)
+        return Group.from_dict(res)
 
     def list(self,
              *,
@@ -1936,10 +1936,10 @@ class PermissionsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
-                            headers=headers)
-        return ObjectPermissions.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                           headers=headers)
+        return ObjectPermissions.from_dict(res)
 
     def get_permission_levels(self, request_object_type: str,
                               request_object_id: str) -> GetPermissionLevelsResponse:
@@ -1957,11 +1957,10 @@ class PermissionsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
-            'GET',
-            f'/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels',
-            headers=headers)
-        return GetPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels',
+                           headers=headers)
+        return GetPermissionLevelsResponse.from_dict(res)
 
     def set(self,
             request_object_type: str,
@@ -1985,11 +1984,11 @@ class PermissionsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
-                            body=body,
-                            headers=headers)
-        return ObjectPermissions.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                           body=body,
+                           headers=headers)
+        return ObjectPermissions.from_dict(res)
 
     def update(self,
                request_object_type: str,
@@ -2013,11 +2012,11 @@ class PermissionsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
-                            body=body,
-                            headers=headers)
-        return ObjectPermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
+                           body=body,
+                           headers=headers)
+        return ObjectPermissions.from_dict(res)
 
 
 class ServicePrincipalsAPI:
@@ -2070,8 +2069,8 @@ class ServicePrincipalsAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body, headers=headers)
-        return ServicePrincipal.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body, headers=headers)
+        return ServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
         """Delete a service principal.
@@ -2100,8 +2099,8 @@ class ServicePrincipalsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', headers=headers)
-        return ServicePrincipal.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', headers=headers)
+        return ServicePrincipal.from_dict(res)
 
     def list(self,
              *,
@@ -2280,8 +2279,8 @@ class UsersAPI:
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body, headers=headers)
-        return User.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body, headers=headers)
+        return User.from_dict(res)
 
     def delete(self, id: str):
         """Delete a user.
@@ -2311,8 +2310,8 @@ class UsersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
-        return User.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
+        return User.from_dict(res)
 
     def get_password_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
         """Get password permission levels.
@@ -2324,10 +2323,10 @@ class UsersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            '/api/2.0/permissions/authorization/passwords/permissionLevels',
-                            headers=headers)
-        return GetPasswordPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           '/api/2.0/permissions/authorization/passwords/permissionLevels',
+                           headers=headers)
+        return GetPasswordPermissionLevelsResponse.from_dict(res)
 
     def get_password_permissions(self) -> PasswordPermissions:
         """Get password permissions.
@@ -2339,8 +2338,8 @@ class UsersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/permissions/authorization/passwords', headers=headers)
-        return PasswordPermissions.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/permissions/authorization/passwords', headers=headers)
+        return PasswordPermissions.from_dict(res)
 
     def list(self,
              *,
@@ -2432,8 +2431,8 @@ class UsersAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT', '/api/2.0/permissions/authorization/passwords', body=body, headers=headers)
-        return PasswordPermissions.from_dict(json)
+        res = self._api.do('PUT', '/api/2.0/permissions/authorization/passwords', body=body, headers=headers)
+        return PasswordPermissions.from_dict(res)
 
     def update(self,
                id: str,
@@ -2499,11 +2498,11 @@ class UsersAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            '/api/2.0/permissions/authorization/passwords',
-                            body=body,
-                            headers=headers)
-        return PasswordPermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           '/api/2.0/permissions/authorization/passwords',
+                           body=body,
+                           headers=headers)
+        return PasswordPermissions.from_dict(res)
 
 
 class WorkspaceAssignmentAPI:
@@ -2546,11 +2545,11 @@ class WorkspaceAssignmentAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/permissions',
             headers=headers)
-        return WorkspacePermissions.from_dict(json)
+        return WorkspacePermissions.from_dict(res)
 
     def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
         """Get permission assignments.

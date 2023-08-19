@@ -654,10 +654,10 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
-                            headers=headers)
-        return BuildLogsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
+                           headers=headers)
+        return BuildLogsResponse.from_dict(res)
 
     def create(self, name: str, config: EndpointCoreConfigInput) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
@@ -726,8 +726,8 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
-        return ServingEndpointDetailed.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
+        return ServingEndpointDetailed.from_dict(res)
 
     def get_serving_endpoint_permission_levels(
             self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
@@ -743,10 +743,10 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
-                            headers=headers)
-        return GetServingEndpointPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
+                           headers=headers)
+        return GetServingEndpointPermissionLevelsResponse.from_dict(res)
 
     def get_serving_endpoint_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
         """Get serving endpoint permissions.
@@ -762,10 +762,10 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
-                            headers=headers)
-        return ServingEndpointPermissions.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
+                           headers=headers)
+        return ServingEndpointPermissions.from_dict(res)
 
     def list(self) -> Iterator[ServingEndpoint]:
         """Retrieve all serving endpoints.
@@ -793,10 +793,10 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
-                            headers=headers)
-        return ServerLogsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
+                           headers=headers)
+        return ServerLogsResponse.from_dict(res)
 
     def query(self, name: str) -> QueryEndpointResponse:
         """Query a serving endpoint with provided model input.
@@ -809,8 +809,8 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
-        return QueryEndpointResponse.from_dict(json)
+        res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
+        return QueryEndpointResponse.from_dict(res)
 
     def set_serving_endpoint_permissions(
         self,
@@ -834,11 +834,11 @@ class ServingEndpointsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
-                            body=body,
-                            headers=headers)
-        return ServingEndpointPermissions.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
+                           body=body,
+                           headers=headers)
+        return ServingEndpointPermissions.from_dict(res)
 
     def update_config(self,
                       served_models: List[ServedModelInput],
@@ -907,8 +907,8 @@ class ServingEndpointsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
-                            body=body,
-                            headers=headers)
-        return ServingEndpointPermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
+                           body=body,
+                           headers=headers)
+        return ServingEndpointPermissions.from_dict(res)

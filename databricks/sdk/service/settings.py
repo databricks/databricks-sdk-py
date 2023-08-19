@@ -636,11 +636,11 @@ class AccountIpAccessListsAPI:
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
-                            body=body,
-                            headers=headers)
-        return CreateIpAccessListResponse.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
+                           body=body,
+                           headers=headers)
+        return CreateIpAccessListResponse.from_dict(res)
 
     def delete(self, ip_access_list_id: str):
         """Delete access list.
@@ -671,11 +671,11 @@ class AccountIpAccessListsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
             headers=headers)
-        return GetIpAccessListResponse.from_dict(json)
+        return GetIpAccessListResponse.from_dict(res)
 
     def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
@@ -821,12 +821,12 @@ class AccountNetworkPolicyAPI:
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
             query=query,
             headers=headers)
-        return DeleteAccountNetworkPolicyResponse.from_dict(json)
+        return DeleteAccountNetworkPolicyResponse.from_dict(res)
 
     def read_account_network_policy(self, etag: str) -> AccountNetworkPolicyMessage:
         """Get Account Network Policy.
@@ -847,12 +847,12 @@ class AccountNetworkPolicyAPI:
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
             query=query,
             headers=headers)
-        return AccountNetworkPolicyMessage.from_dict(json)
+        return AccountNetworkPolicyMessage.from_dict(res)
 
     def update_account_network_policy(
             self,
@@ -874,12 +874,12 @@ class AccountNetworkPolicyAPI:
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
             body=body,
             headers=headers)
-        return AccountNetworkPolicyMessage.from_dict(json)
+        return AccountNetworkPolicyMessage.from_dict(res)
 
 
 class AccountSettingsAPI:
@@ -913,12 +913,12 @@ class AccountSettingsAPI:
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             query=query,
             headers=headers)
-        return DeletePersonalComputeSettingResponse.from_dict(json)
+        return DeletePersonalComputeSettingResponse.from_dict(res)
 
     def read_personal_compute_setting(self, etag: str) -> PersonalComputeSetting:
         """Get Personal Compute setting.
@@ -939,12 +939,12 @@ class AccountSettingsAPI:
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             query=query,
             headers=headers)
-        return PersonalComputeSetting.from_dict(json)
+        return PersonalComputeSetting.from_dict(res)
 
     def update_personal_compute_setting(
             self,
@@ -966,12 +966,12 @@ class AccountSettingsAPI:
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             body=body,
             headers=headers)
-        return PersonalComputeSetting.from_dict(json)
+        return PersonalComputeSetting.from_dict(res)
 
 
 class IpAccessListsAPI:
@@ -1029,8 +1029,8 @@ class IpAccessListsAPI:
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/ip-access-lists', body=body, headers=headers)
-        return CreateIpAccessListResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/ip-access-lists', body=body, headers=headers)
+        return CreateIpAccessListResponse.from_dict(res)
 
     def delete(self, ip_access_list_id: str):
         """Delete access list.
@@ -1059,8 +1059,8 @@ class IpAccessListsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
-        return FetchIpAccessListResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
+        return FetchIpAccessListResponse.from_dict(res)
 
     def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
@@ -1201,11 +1201,11 @@ class TokenManagementAPI:
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            '/api/2.0/token-management/on-behalf-of/tokens',
-                            body=body,
-                            headers=headers)
-        return CreateOboTokenResponse.from_dict(json)
+        res = self._api.do('POST',
+                           '/api/2.0/token-management/on-behalf-of/tokens',
+                           body=body,
+                           headers=headers)
+        return CreateOboTokenResponse.from_dict(res)
 
     def delete(self, token_id: str):
         """Delete a token.
@@ -1234,8 +1234,8 @@ class TokenManagementAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
-        return TokenInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
+        return TokenInfo.from_dict(res)
 
     def get_token_permission_levels(self) -> GetTokenPermissionLevelsResponse:
         """Get token permission levels.
@@ -1247,10 +1247,10 @@ class TokenManagementAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            '/api/2.0/permissions/authorization/tokens/permissionLevels',
-                            headers=headers)
-        return GetTokenPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           '/api/2.0/permissions/authorization/tokens/permissionLevels',
+                           headers=headers)
+        return GetTokenPermissionLevelsResponse.from_dict(res)
 
     def get_token_permissions(self) -> TokenPermissions:
         """Get token permissions.
@@ -1262,8 +1262,8 @@ class TokenManagementAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/permissions/authorization/tokens', headers=headers)
-        return TokenPermissions.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/permissions/authorization/tokens', headers=headers)
+        return TokenPermissions.from_dict(res)
 
     def list(self,
              *,
@@ -1306,8 +1306,8 @@ class TokenManagementAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
-        return TokenPermissions.from_dict(json)
+        res = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
+        return TokenPermissions.from_dict(res)
 
     def update_token_permissions(
             self,
@@ -1326,8 +1326,8 @@ class TokenManagementAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
-        return TokenPermissions.from_dict(json)
+        res = self._api.do('PATCH', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
+        return TokenPermissions.from_dict(res)
 
 
 class TokensAPI:
@@ -1361,8 +1361,8 @@ class TokensAPI:
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/token/create', body=body, headers=headers)
-        return CreateTokenResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/token/create', body=body, headers=headers)
+        return CreateTokenResponse.from_dict(res)
 
     def delete(self, token_id: str):
         """Revoke token.
@@ -1415,8 +1415,8 @@ class WorkspaceConfAPI:
         if keys is not None: query['keys'] = keys
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/workspace-conf', query=query, headers=headers)
-        return WorkspaceConf.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/workspace-conf', query=query, headers=headers)
+        return WorkspaceConf.from_dict(res)
 
     def set_status(self):
         """Enable/disable features.

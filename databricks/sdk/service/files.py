@@ -258,8 +258,8 @@ class DbfsAPI:
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.0/dbfs/create', body=body, headers=headers)
-        return CreateResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/dbfs/create', body=body, headers=headers)
+        return CreateResponse.from_dict(res)
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
         """Delete a file/directory.
@@ -309,8 +309,8 @@ class DbfsAPI:
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
-        return FileInfo.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
+        return FileInfo.from_dict(res)
 
     def list(self, path: str) -> Iterator[FileInfo]:
         """List directory contents or file details.
@@ -435,5 +435,5 @@ class DbfsAPI:
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
-        return ReadResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
+        return ReadResponse.from_dict(res)

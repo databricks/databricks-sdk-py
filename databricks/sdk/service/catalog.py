@@ -3015,10 +3015,10 @@ class AccountMetastoreAssignmentsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore',
-                            headers=headers)
-        return AccountsMetastoreAssignment.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore',
+                           headers=headers)
+        return AccountsMetastoreAssignment.from_dict(res)
 
     def list(self, metastore_id: str) -> Iterator[MetastoreAssignment]:
         """Get all workspaces assigned to a metastore.
@@ -3033,10 +3033,10 @@ class AccountMetastoreAssignmentsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
-                            headers=headers)
-        return [MetastoreAssignment.from_dict(v) for v in json]
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
+                           headers=headers)
+        return [MetastoreAssignment.from_dict(v) for v in res]
 
     def update(self,
                workspace_id: int,
@@ -3086,11 +3086,11 @@ class AccountMetastoresAPI:
         if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/metastores',
-                            body=body,
-                            headers=headers)
-        return AccountsMetastoreInfo.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/metastores',
+                           body=body,
+                           headers=headers)
+        return AccountsMetastoreInfo.from_dict(res)
 
     def delete(self, metastore_id: str, *, force: Optional[bool] = None):
         """Delete a metastore.
@@ -3126,10 +3126,10 @@ class AccountMetastoresAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
-                            headers=headers)
-        return AccountsMetastoreInfo.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
+                           headers=headers)
+        return AccountsMetastoreInfo.from_dict(res)
 
     def list(self) -> ListMetastoresResponse:
         """Get all metastores associated with an account.
@@ -3141,8 +3141,8 @@ class AccountMetastoresAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
-        return ListMetastoresResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
+        return ListMetastoresResponse.from_dict(res)
 
     def update(self,
                metastore_id: str,
@@ -3162,11 +3162,11 @@ class AccountMetastoresAPI:
         if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
-                            body=body,
-                            headers=headers)
-        return AccountsMetastoreInfo.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
+                           body=body,
+                           headers=headers)
+        return AccountsMetastoreInfo.from_dict(res)
 
 
 class AccountStorageCredentialsAPI:
@@ -3199,12 +3199,12 @@ class AccountStorageCredentialsAPI:
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             body=body,
             headers=headers)
-        return AccountsStorageCredentialInfo.from_dict(json)
+        return AccountsStorageCredentialInfo.from_dict(res)
 
     def delete(self, metastore_id: str, name: str, *, force: Optional[bool] = None):
         """Delete a storage credential.
@@ -3247,11 +3247,11 @@ class AccountStorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             headers=headers)
-        return AccountsStorageCredentialInfo.from_dict(json)
+        return AccountsStorageCredentialInfo.from_dict(res)
 
     def list(self, metastore_id: str) -> ListStorageCredentialsResponse:
         """Get all storage credentials assigned to a metastore.
@@ -3266,11 +3266,11 @@ class AccountStorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             headers=headers)
-        return ListStorageCredentialsResponse.from_dict(json)
+        return ListStorageCredentialsResponse.from_dict(res)
 
     def update(self,
                metastore_id: str,
@@ -3294,12 +3294,12 @@ class AccountStorageCredentialsAPI:
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             body=body,
             headers=headers)
-        return AccountsStorageCredentialInfo.from_dict(json)
+        return AccountsStorageCredentialInfo.from_dict(res)
 
 
 class ArtifactAllowlistsAPI:
@@ -3322,10 +3322,10 @@ class ArtifactAllowlistsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
-                            headers=headers)
-        return ArtifactAllowlistInfo.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
+                           headers=headers)
+        return ArtifactAllowlistInfo.from_dict(res)
 
     def update(self, artifact_matchers: ArtifactMatcher,
                artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
@@ -3344,11 +3344,11 @@ class ArtifactAllowlistsAPI:
         if artifact_matchers is not None: body['artifact_matchers'] = artifact_matchers.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PUT',
-                            f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
-                            body=body,
-                            headers=headers)
-        return ArtifactAllowlistInfo.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
+                           body=body,
+                           headers=headers)
+        return ArtifactAllowlistInfo.from_dict(res)
 
 
 class CatalogsAPI:
@@ -3405,8 +3405,8 @@ class CatalogsAPI:
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body, headers=headers)
-        return CatalogInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body, headers=headers)
+        return CatalogInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a catalog.
@@ -3441,8 +3441,8 @@ class CatalogsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}', headers=headers)
-        return CatalogInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}', headers=headers)
+        return CatalogInfo.from_dict(res)
 
     def list(self) -> Iterator[CatalogInfo]:
         """List catalogs.
@@ -3492,8 +3492,8 @@ class CatalogsAPI:
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{name}', body=body, headers=headers)
-        return CatalogInfo.from_dict(json)
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{name}', body=body, headers=headers)
+        return CatalogInfo.from_dict(res)
 
 
 class ConnectionsAPI:
@@ -3552,8 +3552,8 @@ class ConnectionsAPI:
         if read_only is not None: body['read_only'] = read_only
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body, headers=headers)
-        return ConnectionInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body, headers=headers)
+        return ConnectionInfo.from_dict(res)
 
     def delete(self, name_arg: str):
         """Delete a connection.
@@ -3582,8 +3582,8 @@ class ConnectionsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
-        return ConnectionInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
+        return ConnectionInfo.from_dict(res)
 
     def list(self) -> Iterator[ConnectionInfo]:
         """List connections.
@@ -3617,11 +3617,11 @@ class ConnectionsAPI:
         if options is not None: body['options'] = options
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/connections/{name_arg}',
-                            body=body,
-                            headers=headers)
-        return ConnectionInfo.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/connections/{name_arg}',
+                           body=body,
+                           headers=headers)
+        return ConnectionInfo.from_dict(res)
 
 
 class ExternalLocationsAPI:
@@ -3685,8 +3685,8 @@ class ExternalLocationsAPI:
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body, headers=headers)
-        return ExternalLocationInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body, headers=headers)
+        return ExternalLocationInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete an external location.
@@ -3724,8 +3724,8 @@ class ExternalLocationsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
-        return ExternalLocationInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
+        return ExternalLocationInfo.from_dict(res)
 
     def list(self) -> Iterator[ExternalLocationInfo]:
         """List external locations.
@@ -3791,11 +3791,11 @@ class ExternalLocationsAPI:
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/external-locations/{name}',
-                            body=body,
-                            headers=headers)
-        return ExternalLocationInfo.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/external-locations/{name}',
+                           body=body,
+                           headers=headers)
+        return ExternalLocationInfo.from_dict(res)
 
 
 class FunctionsAPI:
@@ -3912,8 +3912,8 @@ class FunctionsAPI:
         if sql_path is not None: body['sql_path'] = sql_path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body, headers=headers)
-        return FunctionInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body, headers=headers)
+        return FunctionInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a function.
@@ -3957,8 +3957,8 @@ class FunctionsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
-        return FunctionInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
+        return FunctionInfo.from_dict(res)
 
     def list(self, catalog_name: str, schema_name: str) -> Iterator[FunctionInfo]:
         """List functions.
@@ -4007,8 +4007,8 @@ class FunctionsAPI:
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{name}', body=body, headers=headers)
-        return FunctionInfo.from_dict(json)
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{name}', body=body, headers=headers)
+        return FunctionInfo.from_dict(res)
 
 
 class GrantsAPI:
@@ -4048,11 +4048,11 @@ class GrantsAPI:
         if principal is not None: query['principal'] = principal
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
-                            query=query,
-                            headers=headers)
-        return PermissionsList.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
+                           query=query,
+                           headers=headers)
+        return PermissionsList.from_dict(res)
 
     def get_effective(self,
                       securable_type: SecurableType,
@@ -4078,12 +4078,11 @@ class GrantsAPI:
         if principal is not None: query['principal'] = principal
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
-            'GET',
-            f'/api/2.1/unity-catalog/effective-permissions/{securable_type.value}/{full_name}',
-            query=query,
-            headers=headers)
-        return EffectivePermissionsList.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/effective-permissions/{securable_type.value}/{full_name}',
+                           query=query,
+                           headers=headers)
+        return EffectivePermissionsList.from_dict(res)
 
     def update(self,
                securable_type: SecurableType,
@@ -4107,11 +4106,11 @@ class GrantsAPI:
         if changes is not None: body['changes'] = [v.as_dict() for v in changes]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
-                            body=body,
-                            headers=headers)
-        return PermissionsList.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
+                           body=body,
+                           headers=headers)
+        return PermissionsList.from_dict(res)
 
 
 class MetastoresAPI:
@@ -4176,8 +4175,8 @@ class MetastoresAPI:
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/metastores', body=body, headers=headers)
-        return MetastoreInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/metastores', body=body, headers=headers)
+        return MetastoreInfo.from_dict(res)
 
     def current(self) -> MetastoreAssignment:
         """Get metastore assignment for workspace.
@@ -4189,8 +4188,8 @@ class MetastoresAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment', headers=headers)
-        return MetastoreAssignment.from_dict(json)
+        res = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment', headers=headers)
+        return MetastoreAssignment.from_dict(res)
 
     def delete(self, id: str, *, force: Optional[bool] = None):
         """Delete a metastore.
@@ -4227,8 +4226,8 @@ class MetastoresAPI:
         if metastore_id is not None: body['metastore_id'] = metastore_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body, headers=headers)
-        return UpdatePredictiveOptimizationResponse.from_dict(json)
+        res = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body, headers=headers)
+        return UpdatePredictiveOptimizationResponse.from_dict(res)
 
     def get(self, id: str) -> MetastoreInfo:
         """Get a metastore.
@@ -4244,8 +4243,8 @@ class MetastoresAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{id}', headers=headers)
-        return MetastoreInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{id}', headers=headers)
+        return MetastoreInfo.from_dict(res)
 
     def list(self) -> Iterator[MetastoreInfo]:
         """List metastores.
@@ -4272,8 +4271,8 @@ class MetastoresAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/metastore_summary', headers=headers)
-        return GetMetastoreSummaryResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.1/unity-catalog/metastore_summary', headers=headers)
+        return GetMetastoreSummaryResponse.from_dict(res)
 
     def unassign(self, workspace_id: int, metastore_id: str):
         """Delete an assignment.
@@ -4344,8 +4343,8 @@ class MetastoresAPI:
             body['storage_root_credential_id'] = storage_root_credential_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{id}', body=body, headers=headers)
-        return MetastoreInfo.from_dict(json)
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{id}', body=body, headers=headers)
+        return MetastoreInfo.from_dict(res)
 
     def update_assignment(self,
                           workspace_id: int,
@@ -4420,8 +4419,8 @@ class SchemasAPI:
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body, headers=headers)
-        return SchemaInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body, headers=headers)
+        return SchemaInfo.from_dict(res)
 
     def delete(self, full_name: str):
         """Delete a schema.
@@ -4452,8 +4451,8 @@ class SchemasAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
-        return SchemaInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
+        return SchemaInfo.from_dict(res)
 
     def list(self, catalog_name: str) -> Iterator[SchemaInfo]:
         """List schemas.
@@ -4510,11 +4509,8 @@ class SchemasAPI:
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/schemas/{full_name}',
-                            body=body,
-                            headers=headers)
-        return SchemaInfo.from_dict(json)
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/schemas/{full_name}', body=body, headers=headers)
+        return SchemaInfo.from_dict(res)
 
 
 class SecurableTagsAPI:
@@ -4566,11 +4562,11 @@ class SecurableTagsAPI:
         if changes is not None: body['changes'] = changes.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
-                            body=body,
-                            headers=headers)
-        return TagSecurableAssignmentsList.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
+                           body=body,
+                           headers=headers)
+        return TagSecurableAssignmentsList.from_dict(res)
 
 
 class StorageCredentialsAPI:
@@ -4642,8 +4638,8 @@ class StorageCredentialsAPI:
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body, headers=headers)
-        return StorageCredentialInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body, headers=headers)
+        return StorageCredentialInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a credential.
@@ -4681,8 +4677,8 @@ class StorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
-        return StorageCredentialInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
+        return StorageCredentialInfo.from_dict(res)
 
     def list(self) -> Iterator[StorageCredentialInfo]:
         """List credentials.
@@ -4756,11 +4752,11 @@ class StorageCredentialsAPI:
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/storage-credentials/{name}',
-                            body=body,
-                            headers=headers)
-        return StorageCredentialInfo.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/storage-credentials/{name}',
+                           body=body,
+                           headers=headers)
+        return StorageCredentialInfo.from_dict(res)
 
     def validate(self,
                  *,
@@ -4817,11 +4813,11 @@ class StorageCredentialsAPI:
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST',
-                            '/api/2.1/unity-catalog/validate-storage-credentials',
-                            body=body,
-                            headers=headers)
-        return ValidateStorageCredentialResponse.from_dict(json)
+        res = self._api.do('POST',
+                           '/api/2.1/unity-catalog/validate-storage-credentials',
+                           body=body,
+                           headers=headers)
+        return ValidateStorageCredentialResponse.from_dict(res)
 
 
 class SubentityTagsAPI:
@@ -4881,12 +4877,12 @@ class SubentityTagsAPI:
         if changes is not None: body['changes'] = changes.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do(
+        res = self._api.do(
             'PATCH',
             f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
             body=body,
             headers=headers)
-        return TagSubentityAssignmentsList.from_dict(json)
+        return TagSubentityAssignmentsList.from_dict(res)
 
 
 class SystemSchemasAPI:
@@ -4994,8 +4990,8 @@ class TableConstraintsAPI:
         if full_name_arg is not None: body['full_name_arg'] = full_name_arg
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body, headers=headers)
-        return TableConstraint.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body, headers=headers)
+        return TableConstraint.from_dict(res)
 
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
         """Delete a table constraint.
@@ -5080,8 +5076,8 @@ class TablesAPI:
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
-        return TableInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
+        return TableInfo.from_dict(res)
 
     def list(self,
              catalog_name: str,
@@ -5266,8 +5262,8 @@ class VolumesAPI:
         if volume_type is not None: body['volume_type'] = volume_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body, headers=headers)
-        return VolumeInfo.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body, headers=headers)
+        return VolumeInfo.from_dict(res)
 
     def delete(self, full_name_arg: str):
         """Delete a Volume.
@@ -5333,8 +5329,8 @@ class VolumesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
-        return VolumeInfo.from_dict(json)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
+        return VolumeInfo.from_dict(res)
 
     def update(self,
                full_name_arg: str,
@@ -5369,11 +5365,11 @@ class VolumesAPI:
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/volumes/{full_name_arg}',
-                            body=body,
-                            headers=headers)
-        return VolumeInfo.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/volumes/{full_name_arg}',
+                           body=body,
+                           headers=headers)
+        return VolumeInfo.from_dict(res)
 
 
 class WorkspaceBindingsAPI:
@@ -5399,10 +5395,10 @@ class WorkspaceBindingsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
-                            headers=headers)
-        return CurrentWorkspaceBindings.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
+                           headers=headers)
+        return CurrentWorkspaceBindings.from_dict(res)
 
     def update(self,
                name: str,
@@ -5428,8 +5424,8 @@ class WorkspaceBindingsAPI:
         if unassign_workspaces is not None: body['unassign_workspaces'] = [v for v in unassign_workspaces]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        json = self._api.do('PATCH',
-                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
-                            body=body,
-                            headers=headers)
-        return CurrentWorkspaceBindings.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
+                           body=body,
+                           headers=headers)
+        return CurrentWorkspaceBindings.from_dict(res)
