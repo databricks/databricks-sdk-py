@@ -988,6 +988,9 @@ class ApiClient:
            files=None,
            data=None) -> dict | BinaryIO:
         headers |= {'User-Agent': self._user_agent_base}
+        # Replace multiple / in a row with a single / in path (for Files API where users specify filenames beginning
+        # with /)
+        path = re.sub(r'/{2,}', '/', path)
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),
@@ -1140,16 +1143,18 @@ class StreamingResponse(BinaryIO):
     def isatty(self) -> bool:
         return False
 
-    def read(self, n: int = ...) -> AnyStr:
+    def read(self, n: int = -1) -> AnyStr:
+        read_everything = n < 0
         remaining_bytes = n
         res = b''
-        while remaining_bytes > 0:
+        while remaining_bytes > 0 or read_everything:
             if len(self._buffer) == 0:
                 try:
                     self._buffer = next(self._content)
                 except StopIteration:
                     break
-            to_read = min(remaining_bytes, len(self._buffer))
+            bytes_available = len(self._buffer)
+            to_read = bytes_available if read_everything else min(remaining_bytes, bytes_available)
             res += self._buffer[:to_read]
             self._buffer = self._buffer[to_read:]
             remaining_bytes -= to_read
@@ -1193,4 +1198,6 @@ class StreamingResponse(BinaryIO):
 
     def __exit__(self, t: Type[BaseException] | None, value: BaseException | None,
                  traceback: TracebackType | None) -> None:
+        self._content = None
+        self._buffer = b''
         self.close()
