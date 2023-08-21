@@ -21,6 +21,22 @@ def test_workspace_upload_download_notebooks(w, random):
     w.workspace.delete(notebook)
 
 
+def test_workspace_unzip_notebooks(w, random):
+    notebook = f'/Users/{w.current_user.me().user_name}/notebook-{random(12)}.py'
+
+    # Big notebooks can be gzipped during transfer by the API (out of our control)
+    # Creating some large content to trigger this behaviour
+    notebook_content = ('print(1)\n' * 1000).strip('\n')
+
+    w.workspace.upload(notebook, io.BytesIO(bytes(notebook_content, 'utf-8')))
+    with w.workspace.download(notebook) as f:
+        content = f.read()
+        expected_content = bytes(f'# Databricks notebook source\n{notebook_content}', 'utf-8')
+        assert content == expected_content
+
+    w.workspace.delete(notebook)
+
+
 def test_workspace_upload_download_files(w, random):
     py_file = f'/Users/{w.current_user.me().user_name}/file-{random(12)}.py'
 
