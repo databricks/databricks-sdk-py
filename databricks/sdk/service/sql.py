@@ -205,6 +205,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -1122,10 +1123,26 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
     PASSTHROUGH = 'PASSTHROUGH'
 
 
+@dataclass
+class ListDashboardsRequest:
+    """Get dashboard objects"""
+
+    order: Optional['ListOrder'] = None
+    q: Optional[str] = None
+
+
 class ListOrder(Enum):
 
     CREATED_AT = 'created_at'
     NAME = 'name'
+
+
+@dataclass
+class ListQueriesRequest:
+    """Get a list of queries"""
+
+    order: Optional[str] = None
+    q: Optional[str] = None
 
 
 @dataclass
@@ -1146,6 +1163,15 @@ class ListQueriesResponse:
         return cls(has_next_page=d.get('has_next_page', None),
                    next_page_token=d.get('next_page_token', None),
                    res=_repeated(d, 'res', QueryInfo))
+
+
+@dataclass
+class ListQueryHistoryRequest:
+    """List Queries"""
+
+    filter_by: Optional['QueryFilter'] = None
+    include_metrics: Optional[bool] = None
+    max_results: Optional[int] = None
 
 
 @dataclass
@@ -2599,12 +2625,7 @@ class DashboardsAPI:
         json = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}')
         return Dashboard.from_dict(json)
 
-    def list(self,
-             *,
-             order: Optional[ListOrder] = None,
-             page: Optional[int] = None,
-             page_size: Optional[int] = None,
-             q: Optional[str] = None) -> Iterator[Dashboard]:
+    def list(self, *, order: Optional[ListOrder] = None, q: Optional[str] = None) -> Iterator[Dashboard]:
         """Get dashboard objects.
         
         Fetch a paginated list of dashboard objects.
@@ -2623,8 +2644,6 @@ class DashboardsAPI:
 
         query = {}
         if order is not None: query['order'] = order.value
-        if page is not None: query['page'] = page
-        if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
 
         # deduplicate items that may have been added during iteration
@@ -2849,12 +2868,7 @@ class QueriesAPI:
         json = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}')
         return Query.from_dict(json)
 
-    def list(self,
-             *,
-             order: Optional[str] = None,
-             page: Optional[int] = None,
-             page_size: Optional[int] = None,
-             q: Optional[str] = None) -> Iterator[Query]:
+    def list(self, *, order: Optional[str] = None, q: Optional[str] = None) -> Iterator[Query]:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
@@ -2885,8 +2899,6 @@ class QueriesAPI:
 
         query = {}
         if order is not None: query['order'] = order
-        if page is not None: query['page'] = page
-        if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
 
         # deduplicate items that may have been added during iteration
@@ -2968,8 +2980,7 @@ class QueryHistoryAPI:
              *,
              filter_by: Optional[QueryFilter] = None,
              include_metrics: Optional[bool] = None,
-             max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[QueryInfo]:
+             max_results: Optional[int] = None) -> Iterator[QueryInfo]:
         """List Queries.
         
         List the history of queries through SQL warehouses.
@@ -2992,7 +3003,6 @@ class QueryHistoryAPI:
         if filter_by is not None: query['filter_by'] = filter_by.as_dict()
         if include_metrics is not None: query['include_metrics'] = include_metrics
         if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query)

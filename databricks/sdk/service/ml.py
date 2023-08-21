@@ -984,6 +984,15 @@ class JobSpecWithoutSecret:
 
 
 @dataclass
+class ListArtifactsRequest:
+    """Get all artifacts"""
+
+    path: Optional[str] = None
+    run_id: Optional[str] = None
+    run_uuid: Optional[str] = None
+
+
+@dataclass
 class ListArtifactsResponse:
     files: Optional['List[FileInfo]'] = None
     next_page_token: Optional[str] = None
@@ -1004,6 +1013,14 @@ class ListArtifactsResponse:
 
 
 @dataclass
+class ListExperimentsRequest:
+    """List experiments"""
+
+    max_results: Optional[int] = None
+    view_type: Optional[str] = None
+
+
+@dataclass
 class ListExperimentsResponse:
     experiments: Optional['List[Experiment]'] = None
     next_page_token: Optional[str] = None
@@ -1018,6 +1035,13 @@ class ListExperimentsResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListExperimentsResponse':
         return cls(experiments=_repeated(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListModelsRequest:
+    """List models"""
+
+    max_results: Optional[int] = None
 
 
 @dataclass
@@ -1066,6 +1090,14 @@ class ListTransitionRequestsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTransitionRequestsResponse':
         return cls(requests=_repeated(d, 'requests', Activity))
+
+
+@dataclass
+class ListWebhooksRequest:
+    """List registry webhooks"""
+
+    events: Optional['List[RegistryWebhookEvent]'] = None
+    model_name: Optional[str] = None
 
 
 @dataclass
@@ -1896,7 +1928,6 @@ class SearchExperiments:
     filter: Optional[str] = None
     max_results: Optional[int] = None
     order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
     view_type: Optional['SearchExperimentsViewType'] = None
 
     def as_dict(self) -> dict:
@@ -1904,7 +1935,6 @@ class SearchExperiments:
         if self.filter is not None: body['filter'] = self.filter
         if self.max_results is not None: body['max_results'] = self.max_results
         if self.order_by: body['order_by'] = [v for v in self.order_by]
-        if self.page_token is not None: body['page_token'] = self.page_token
         if self.view_type is not None: body['view_type'] = self.view_type.value
         return body
 
@@ -1913,7 +1943,6 @@ class SearchExperiments:
         return cls(filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
-                   page_token=d.get('page_token', None),
                    view_type=_enum(d, 'view_type', SearchExperimentsViewType))
 
 
@@ -1944,6 +1973,15 @@ class SearchExperimentsViewType(Enum):
 
 
 @dataclass
+class SearchModelVersionsRequest:
+    """Searches model versions"""
+
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
+
+
+@dataclass
 class SearchModelVersionsResponse:
     model_versions: Optional['List[ModelVersion]'] = None
     next_page_token: Optional[str] = None
@@ -1958,6 +1996,15 @@ class SearchModelVersionsResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'SearchModelVersionsResponse':
         return cls(model_versions=_repeated(d, 'model_versions', ModelVersion),
                    next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class SearchModelsRequest:
+    """Search models"""
+
+    filter: Optional[str] = None
+    max_results: Optional[int] = None
+    order_by: Optional['List[str]'] = None
 
 
 @dataclass
@@ -1983,7 +2030,6 @@ class SearchRuns:
     filter: Optional[str] = None
     max_results: Optional[int] = None
     order_by: Optional['List[str]'] = None
-    page_token: Optional[str] = None
     run_view_type: Optional['SearchRunsRunViewType'] = None
 
     def as_dict(self) -> dict:
@@ -1992,7 +2038,6 @@ class SearchRuns:
         if self.filter is not None: body['filter'] = self.filter
         if self.max_results is not None: body['max_results'] = self.max_results
         if self.order_by: body['order_by'] = [v for v in self.order_by]
-        if self.page_token is not None: body['page_token'] = self.page_token
         if self.run_view_type is not None: body['run_view_type'] = self.run_view_type.value
         return body
 
@@ -2002,7 +2047,6 @@ class SearchRuns:
                    filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
-                   page_token=d.get('page_token', None),
                    run_view_type=_enum(d, 'run_view_type', SearchRunsRunViewType))
 
 
@@ -2691,7 +2735,6 @@ class ExperimentsAPI:
 
     def list_artifacts(self,
                        *,
-                       page_token: Optional[str] = None,
                        path: Optional[str] = None,
                        run_id: Optional[str] = None,
                        run_uuid: Optional[str] = None) -> Iterator[FileInfo]:
@@ -2714,7 +2757,6 @@ class ExperimentsAPI:
         """
 
         query = {}
-        if page_token is not None: query['page_token'] = page_token
         if path is not None: query['path'] = path
         if run_id is not None: query['run_id'] = run_id
         if run_uuid is not None: query['run_uuid'] = run_uuid
@@ -2732,7 +2774,6 @@ class ExperimentsAPI:
     def list_experiments(self,
                          *,
                          max_results: Optional[int] = None,
-                         page_token: Optional[str] = None,
                          view_type: Optional[str] = None) -> Iterator[Experiment]:
         """List experiments.
         
@@ -2752,7 +2793,6 @@ class ExperimentsAPI:
 
         query = {}
         if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
         if view_type is not None: query['view_type'] = view_type
 
         while True:
@@ -2999,7 +3039,6 @@ class ExperimentsAPI:
                            filter: Optional[str] = None,
                            max_results: Optional[int] = None,
                            order_by: Optional[List[str]] = None,
-                           page_token: Optional[str] = None,
                            view_type: Optional[SearchExperimentsViewType] = None) -> Iterator[Experiment]:
         """Search experiments.
         
@@ -3024,7 +3063,6 @@ class ExperimentsAPI:
         if filter is not None: body['filter'] = filter
         if max_results is not None: body['max_results'] = max_results
         if order_by is not None: body['order_by'] = [v for v in order_by]
-        if page_token is not None: body['page_token'] = page_token
         if view_type is not None: body['view_type'] = view_type.value
 
         while True:
@@ -3043,7 +3081,6 @@ class ExperimentsAPI:
                     filter: Optional[str] = None,
                     max_results: Optional[int] = None,
                     order_by: Optional[List[str]] = None,
-                    page_token: Optional[str] = None,
                     run_view_type: Optional[SearchRunsRunViewType] = None) -> Iterator[Run]:
         """Search for runs.
         
@@ -3084,7 +3121,6 @@ class ExperimentsAPI:
         if filter is not None: body['filter'] = filter
         if max_results is not None: body['max_results'] = max_results
         if order_by is not None: body['order_by'] = [v for v in order_by]
-        if page_token is not None: body['page_token'] = page_token
         if run_view_type is not None: body['run_view_type'] = run_view_type.value
 
         while True:
@@ -3742,10 +3778,7 @@ class ModelRegistryAPI:
         json = self._api.do('GET', f'/api/2.0/permissions/registered-models/{registered_model_id}')
         return RegisteredModelPermissions.from_dict(json)
 
-    def list_models(self,
-                    *,
-                    max_results: Optional[int] = None,
-                    page_token: Optional[str] = None) -> Iterator[Model]:
+    def list_models(self, *, max_results: Optional[int] = None) -> Iterator[Model]:
         """List models.
         
         Lists all available registered models, up to the limit specified in __max_results__.
@@ -3760,7 +3793,6 @@ class ModelRegistryAPI:
 
         query = {}
         if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query)
@@ -3795,8 +3827,7 @@ class ModelRegistryAPI:
     def list_webhooks(self,
                       *,
                       events: Optional[List[RegistryWebhookEvent]] = None,
-                      model_name: Optional[str] = None,
-                      page_token: Optional[str] = None) -> Iterator[RegistryWebhook]:
+                      model_name: Optional[str] = None) -> Iterator[RegistryWebhook]:
         """List registry webhooks.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3818,7 +3849,6 @@ class ModelRegistryAPI:
         query = {}
         if events is not None: query['events'] = [v.value for v in events]
         if model_name is not None: query['model_name'] = model_name
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query)
@@ -3891,8 +3921,7 @@ class ModelRegistryAPI:
                               *,
                               filter: Optional[str] = None,
                               max_results: Optional[int] = None,
-                              order_by: Optional[List[str]] = None,
-                              page_token: Optional[str] = None) -> Iterator[ModelVersion]:
+                              order_by: Optional[List[str]] = None) -> Iterator[ModelVersion]:
         """Searches model versions.
         
         Searches for specific model versions based on the supplied __filter__.
@@ -3916,7 +3945,6 @@ class ModelRegistryAPI:
         if filter is not None: query['filter'] = filter
         if max_results is not None: query['max_results'] = max_results
         if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query)
@@ -3932,8 +3960,7 @@ class ModelRegistryAPI:
                       *,
                       filter: Optional[str] = None,
                       max_results: Optional[int] = None,
-                      order_by: Optional[List[str]] = None,
-                      page_token: Optional[str] = None) -> Iterator[Model]:
+                      order_by: Optional[List[str]] = None) -> Iterator[Model]:
         """Search models.
         
         Search for registered models based on the specified __filter__.
@@ -3958,7 +3985,6 @@ class ModelRegistryAPI:
         if filter is not None: query['filter'] = filter
         if max_results is not None: query['max_results'] = max_results
         if order_by is not None: query['order_by'] = [v for v in order_by]
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/search', query=query)

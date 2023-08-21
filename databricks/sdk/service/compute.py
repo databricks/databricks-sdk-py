@@ -2802,6 +2802,13 @@ class ListPoliciesResponse:
 
 
 @dataclass
+class ListPolicyFamiliesRequest:
+    """List policy families"""
+
+    max_results: Optional[int] = None
+
+
+@dataclass
 class ListPolicyFamiliesResponse:
     policy_families: 'List[PolicyFamily]'
     next_page_token: Optional[str] = None
@@ -5761,10 +5768,7 @@ class PolicyFamiliesAPI:
         json = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}')
         return PolicyFamily.from_dict(json)
 
-    def list(self,
-             *,
-             max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
+    def list(self, *, max_results: Optional[int] = None) -> Iterator[PolicyFamily]:
         """List policy families.
         
         Retrieve a list of policy families. This API is paginated.
@@ -5779,7 +5783,6 @@ class PolicyFamiliesAPI:
 
         query = {}
         if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
 
         while True:
             json = self._api.do('GET', '/api/2.0/policy-families', query=query)

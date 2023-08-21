@@ -372,6 +372,13 @@ class ListAclsResponse:
 
 
 @dataclass
+class ListReposRequest:
+    """Get repos"""
+
+    path_prefix: Optional[str] = None
+
+
+@dataclass
 class ListReposResponse:
     next_page_token: Optional[str] = None
     repos: Optional['List[RepoInfo]'] = None
@@ -1168,10 +1175,7 @@ class ReposAPI:
         json = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}')
         return RepoPermissions.from_dict(json)
 
-    def list(self,
-             *,
-             next_page_token: Optional[str] = None,
-             path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
+    def list(self, *, path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
@@ -1187,7 +1191,6 @@ class ReposAPI:
         """
 
         query = {}
-        if next_page_token is not None: query['next_page_token'] = next_page_token
         if path_prefix is not None: query['path_prefix'] = path_prefix
 
         while True:
