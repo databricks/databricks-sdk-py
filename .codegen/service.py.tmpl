@@ -73,13 +73,13 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "type-nq" -}}
 	{{- if .IsString}}str
 	{{- else if .IsEmpty}}Any
-    {{- else if .IsAny}}Any
+	{{- else if .IsAny}}Any
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
-    {{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
+	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
 	{{- else if .Enum }}{{.PascalName}}
@@ -90,13 +90,13 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "type-doc" -}}
 	{{- if .IsString}}str
 	{{- else if .IsEmpty}}Any
-    {{- else if .IsAny}}Any
+	{{- else if .IsAny}}Any
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
-    {{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
+	{{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
 	{{- else if .IsExternal }}:class:`{{.PascalName}}`
 	{{- else if .IsObject }}:class:`{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}`
 	{{- else if .Enum }}:class:`{{.PascalName}}`

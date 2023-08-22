@@ -986,7 +986,9 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None) -> dict:
-        headers |= {'User-Agent': self._user_agent_base}
+        if headers is None:
+            headers = {}
+        headers = {**headers, 'User-Agent': self._user_agent_base}
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),
