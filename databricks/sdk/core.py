@@ -15,7 +15,7 @@ import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
 from types import TracebackType
-from typing import (Any, AnyStr, BinaryIO, Callable, Dict, Iterable, Iterator,
+from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator,
                     List, Optional, Type, Union)
 
 import requests
@@ -1164,10 +1164,10 @@ class StreamingResponse(BinaryIO):
     def readable(self) -> bool:
         return self._content is not None
 
-    def readline(self, __limit: int = ...) -> AnyStr:
+    def readline(self, __limit: int = ...) -> bytes:
         raise NotImplementedError()
 
-    def readlines(self, __hint: int = ...) -> List[AnyStr]:
+    def readlines(self, __hint: int = ...) -> List[bytes]:
         raise NotImplementedError()
 
     def seek(self, __offset: int, __whence: int = ...) -> int:
@@ -1185,16 +1185,16 @@ class StreamingResponse(BinaryIO):
     def writable(self) -> bool:
         return False
 
-    def write(self, s: AnyStr) -> int:
+    def write(self, s: bytes) -> int:
         raise NotImplementedError()
 
-    def writelines(self, lines: Iterable[AnyStr]) -> None:
+    def writelines(self, lines: Iterable[bytes]) -> None:
         raise NotImplementedError()
 
-    def __next__(self) -> AnyStr:
+    def __next__(self) -> bytes:
         return self.read(1)
 
-    def __iter__(self) -> Iterator[AnyStr]:
+    def __iter__(self) -> Iterator[bytes]:
         return self._content
 
     def __exit__(self, t: Union[Type[BaseException], None], value: Union[BaseException, None],
