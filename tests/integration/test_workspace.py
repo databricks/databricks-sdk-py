@@ -37,6 +37,19 @@ def test_workspace_unzip_notebooks(w, random):
     w.workspace.delete(notebook)
 
 
+def test_workspace_download_connection_closed(w, random):
+    notebook = f'/Users/{w.current_user.me().user_name}/notebook-{random(12)}.py'
+
+    w.workspace.upload(notebook, io.BytesIO(b'print(1)'))
+
+    for n in range(30):
+        with w.workspace.download(notebook) as f:
+            content = f.read()
+            assert content == b'# Databricks notebook source\nprint(1)'
+
+    w.workspace.delete(notebook)
+
+
 def test_workspace_upload_download_files(w, random):
     py_file = f'/Users/{w.current_user.me().user_name}/file-{random(12)}.py'
 

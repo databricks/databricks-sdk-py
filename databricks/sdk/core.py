@@ -1125,11 +1125,12 @@ class ApiClient:
 class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
-    _content: Iterator[any]
+    _content: Iterator[bytes]
 
     def __init__(self, response: requests.Response):
         self._response = response
         self._buffer = b''
+        self._content = None
 
     def __enter__(self) -> BinaryIO:
         self._content = self._response.iter_content()
@@ -1141,7 +1142,9 @@ class StreamingResponse(BinaryIO):
     def isatty(self) -> bool:
         return False
 
-    def read(self, n: int = -1) -> AnyStr:
+    def read(self, n: int = -1) -> bytes:
+        if self._content is None:
+            self._content = self._response.iter_content()
         read_everything = n < 0
         remaining_bytes = n
         res = b''
@@ -1189,7 +1192,7 @@ class StreamingResponse(BinaryIO):
         raise NotImplementedError()
 
     def __next__(self) -> AnyStr:
-        pass
+        return self.read(1)
 
     def __iter__(self) -> Iterator[AnyStr]:
         return self._content
