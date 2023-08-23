@@ -1124,8 +1124,8 @@ class CleanRoomsAPI:
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
         if remote_detailed_info is not None: body['remote_detailed_info'] = remote_detailed_info.as_dict()
-
-        json = self._api.do('POST', '/api/2.1/unity-catalog/clean-rooms', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.1/unity-catalog/clean-rooms', body=body, headers=headers)
         return CleanRoomInfo.from_dict(json)
 
     def delete(self, name_arg: str):
@@ -1139,7 +1139,8 @@ class CleanRoomsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}')
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', headers=headers)
 
     def get(self, name_arg: str, *, include_remote_details: Optional[bool] = None) -> CleanRoomInfo:
         """Get a clean room.
@@ -1157,8 +1158,11 @@ class CleanRoomsAPI:
 
         query = {}
         if include_remote_details is not None: query['include_remote_details'] = include_remote_details
-
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/clean-rooms/{name_arg}',
+                            query=query,
+                            headers=headers)
         return CleanRoomInfo.from_dict(json)
 
     def list(self) -> Iterator[CleanRoomInfo]:
@@ -1171,7 +1175,8 @@ class CleanRoomsAPI:
         :returns: Iterator over :class:`CleanRoomInfo`
         """
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/clean-rooms')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.1/unity-catalog/clean-rooms', headers=headers)
         return [CleanRoomInfo.from_dict(v) for v in json.get('clean_rooms', [])]
 
     def update(self,
@@ -1215,8 +1220,11 @@ class CleanRoomsAPI:
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
-
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/clean-rooms/{name_arg}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PATCH',
+                            f'/api/2.1/unity-catalog/clean-rooms/{name_arg}',
+                            body=body,
+                            headers=headers)
         return CleanRoomInfo.from_dict(json)
 
 
@@ -1254,8 +1262,8 @@ class ProvidersAPI:
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
         if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
-
-        json = self._api.do('POST', '/api/2.1/unity-catalog/providers', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.1/unity-catalog/providers', body=body, headers=headers)
         return ProviderInfo.from_dict(json)
 
     def delete(self, name: str):
@@ -1270,7 +1278,8 @@ class ProvidersAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/providers/{name}')
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
 
     def get(self, name: str) -> ProviderInfo:
         """Get a provider.
@@ -1284,7 +1293,8 @@ class ProvidersAPI:
         :returns: :class:`ProviderInfo`
         """
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
         return ProviderInfo.from_dict(json)
 
     def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator[ProviderInfo]:
@@ -1304,8 +1314,8 @@ class ProvidersAPI:
         query = {}
         if data_provider_global_metastore_id is not None:
             query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
-
-        json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
         return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
 
     def list_shares(self, name: str) -> Iterator[ProviderShare]:
@@ -1321,7 +1331,8 @@ class ProvidersAPI:
         :returns: Iterator over :class:`ProviderShare`
         """
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares', headers=headers)
         return [ProviderShare.from_dict(v) for v in json.get('shares', [])]
 
     def update(self,
@@ -1351,8 +1362,8 @@ class ProvidersAPI:
         if comment is not None: body['comment'] = comment
         if owner is not None: body['owner'] = owner
         if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
-
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/providers/{name}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/providers/{name}', body=body, headers=headers)
         return ProviderInfo.from_dict(json)
 
 
@@ -1379,7 +1390,10 @@ class RecipientActivationAPI:
         
         """
 
-        self._api.do('GET', f'/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}')
+        headers = {'Accept': 'application/json', }
+        self._api.do('GET',
+                     f'/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}',
+                     headers=headers)
 
     def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
         """Get an access token.
@@ -1392,7 +1406,10 @@ class RecipientActivationAPI:
         :returns: :class:`RetrieveTokenResponse`
         """
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}',
+                            headers=headers)
         return RetrieveTokenResponse.from_dict(json)
 
 
@@ -1461,8 +1478,8 @@ class RecipientsAPI:
         if owner is not None: body['owner'] = owner
         if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
         if sharing_code is not None: body['sharing_code'] = sharing_code
-
-        json = self._api.do('POST', '/api/2.1/unity-catalog/recipients', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.1/unity-catalog/recipients', body=body, headers=headers)
         return RecipientInfo.from_dict(json)
 
     def delete(self, name: str):
@@ -1476,7 +1493,8 @@ class RecipientsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/recipients/{name}')
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
         """Get a share recipient.
@@ -1491,7 +1509,8 @@ class RecipientsAPI:
         :returns: :class:`RecipientInfo`
         """
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
         return RecipientInfo.from_dict(json)
 
     def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator[RecipientInfo]:
@@ -1512,8 +1531,8 @@ class RecipientsAPI:
         query = {}
         if data_recipient_global_metastore_id is not None:
             query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
-
-        json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
         return [RecipientInfo.from_dict(v) for v in json.get('recipients', [])]
 
     def rotate_token(self, existing_token_expire_in_seconds: int, name: str) -> RecipientInfo:
@@ -1534,8 +1553,11 @@ class RecipientsAPI:
         body = {}
         if existing_token_expire_in_seconds is not None:
             body['existing_token_expire_in_seconds'] = existing_token_expire_in_seconds
-
-        json = self._api.do('POST', f'/api/2.1/unity-catalog/recipients/{name}/rotate-token', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST',
+                            f'/api/2.1/unity-catalog/recipients/{name}/rotate-token',
+                            body=body,
+                            headers=headers)
         return RecipientInfo.from_dict(json)
 
     def share_permissions(self, name: str) -> GetRecipientSharePermissionsResponse:
@@ -1550,7 +1572,10 @@ class RecipientsAPI:
         :returns: :class:`GetRecipientSharePermissionsResponse`
         """
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}/share-permissions')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/recipients/{name}/share-permissions',
+                            headers=headers)
         return GetRecipientSharePermissionsResponse.from_dict(json)
 
     def update(self,
@@ -1586,7 +1611,8 @@ class RecipientsAPI:
         if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
         if owner is not None: body['owner'] = owner
         if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
-        self._api.do('PATCH', f'/api/2.1/unity-catalog/recipients/{name}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/recipients/{name}', body=body, headers=headers)
 
 
 class SharesAPI:
@@ -1614,8 +1640,8 @@ class SharesAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
-
-        json = self._api.do('POST', '/api/2.1/unity-catalog/shares', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.1/unity-catalog/shares', body=body, headers=headers)
         return ShareInfo.from_dict(json)
 
     def delete(self, name: str):
@@ -1629,7 +1655,8 @@ class SharesAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{name}')
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{name}', headers=headers)
 
     def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
         """Get a share.
@@ -1647,8 +1674,8 @@ class SharesAPI:
 
         query = {}
         if include_shared_data is not None: query['include_shared_data'] = include_shared_data
-
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query, headers=headers)
         return ShareInfo.from_dict(json)
 
     def list(self) -> Iterator[ShareInfo]:
@@ -1660,7 +1687,8 @@ class SharesAPI:
         :returns: Iterator over :class:`ShareInfo`
         """
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/shares')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.1/unity-catalog/shares', headers=headers)
         return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
 
     def share_permissions(self, name: str) -> catalog.PermissionsList:
@@ -1675,7 +1703,8 @@ class SharesAPI:
         :returns: :class:`PermissionsList`
         """
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}/permissions')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}/permissions', headers=headers)
         return PermissionsList.from_dict(json)
 
     def update(self,
@@ -1715,8 +1744,8 @@ class SharesAPI:
         if comment is not None: body['comment'] = comment
         if owner is not None: body['owner'] = owner
         if updates is not None: body['updates'] = [v.as_dict() for v in updates]
-
-        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}', body=body, headers=headers)
         return ShareInfo.from_dict(json)
 
     def update_permissions(self, name: str, *, changes: Optional[List[catalog.PermissionsChange]] = None):
@@ -1737,4 +1766,5 @@ class SharesAPI:
         """
         body = {}
         if changes is not None: body['changes'] = [v for v in changes]
-        self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}/permissions', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}/permissions', body=body, headers=headers)

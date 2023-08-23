@@ -3595,8 +3595,8 @@ class ClusterPoliciesAPI:
         if policy_family_definition_overrides is not None:
             body['policy_family_definition_overrides'] = policy_family_definition_overrides
         if policy_family_id is not None: body['policy_family_id'] = policy_family_id
-
-        json = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body, headers=headers)
         return CreatePolicyResponse.from_dict(json)
 
     def delete(self, policy_id: str):
@@ -3611,7 +3611,8 @@ class ClusterPoliciesAPI:
         """
         body = {}
         if policy_id is not None: body['policy_id'] = policy_id
-        self._api.do('POST', '/api/2.0/policies/clusters/delete', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/policies/clusters/delete', body=body, headers=headers)
 
     def edit(self,
              policy_id: str,
@@ -3663,7 +3664,8 @@ class ClusterPoliciesAPI:
             body['policy_family_definition_overrides'] = policy_family_definition_overrides
         if policy_family_id is not None: body['policy_family_id'] = policy_family_id
         if policy_id is not None: body['policy_id'] = policy_id
-        self._api.do('POST', '/api/2.0/policies/clusters/edit', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/policies/clusters/edit', body=body, headers=headers)
 
     def get(self, policy_id: str) -> Policy:
         """Get entity.
@@ -3678,8 +3680,8 @@ class ClusterPoliciesAPI:
 
         query = {}
         if policy_id is not None: query['policy_id'] = policy_id
-
-        json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query, headers=headers)
         return Policy.from_dict(json)
 
     def get_cluster_policy_permission_levels(
@@ -3694,8 +3696,10 @@ class ClusterPoliciesAPI:
         :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
         """
 
+        headers = {'Accept': 'application/json', }
         json = self._api.do('GET',
-                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels')
+                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels',
+                            headers=headers)
         return GetClusterPolicyPermissionLevelsResponse.from_dict(json)
 
     def get_cluster_policy_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
@@ -3710,7 +3714,10 @@ class ClusterPoliciesAPI:
         :returns: :class:`ClusterPolicyPermissions`
         """
 
-        json = self._api.do('GET', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
+                            headers=headers)
         return ClusterPolicyPermissions.from_dict(json)
 
     def list(self,
@@ -3734,8 +3741,8 @@ class ClusterPoliciesAPI:
         query = {}
         if sort_column is not None: query['sort_column'] = sort_column.value
         if sort_order is not None: query['sort_order'] = sort_order.value
-
-        json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query, headers=headers)
         return [Policy.from_dict(v) for v in json.get('policies', [])]
 
     def set_cluster_policy_permissions(
@@ -3757,8 +3764,11 @@ class ClusterPoliciesAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-
-        json = self._api.do('PUT', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
+                            body=body,
+                            headers=headers)
         return ClusterPolicyPermissions.from_dict(json)
 
     def update_cluster_policy_permissions(
@@ -3781,8 +3791,11 @@ class ClusterPoliciesAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-
-        json = self._api.do('PATCH', f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
+                            body=body,
+                            headers=headers)
         return ClusterPolicyPermissions.from_dict(json)
 
 
@@ -3889,7 +3902,8 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if owner_username is not None: body['owner_username'] = owner_username
-        self._api.do('POST', '/api/2.0/clusters/change-owner', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/change-owner', body=body, headers=headers)
 
     def create(self,
                spark_version: str,
@@ -4069,7 +4083,8 @@ class ClustersAPI:
         if spark_version is not None: body['spark_version'] = spark_version
         if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
-        op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=CreateClusterResponse.from_dict(op_response),
                     cluster_id=op_response['cluster_id'])
@@ -4151,7 +4166,8 @@ class ClustersAPI:
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
-        self._api.do('POST', '/api/2.0/clusters/delete', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
         return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
 
     def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
@@ -4344,7 +4360,8 @@ class ClustersAPI:
         if spark_version is not None: body['spark_version'] = spark_version
         if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
-        self._api.do('POST', '/api/2.0/clusters/edit', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def edit_and_wait(
@@ -4452,9 +4469,10 @@ class ClustersAPI:
         if offset is not None: body['offset'] = offset
         if order is not None: body['order'] = order.value
         if start_time is not None: body['start_time'] = start_time
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         while True:
-            json = self._api.do('POST', '/api/2.0/clusters/events', body=body)
+            json = self._api.do('POST', '/api/2.0/clusters/events', body=body, headers=headers)
             if 'events' not in json or not json['events']:
                 return
             for v in json['events']:
@@ -4477,8 +4495,8 @@ class ClustersAPI:
 
         query = {}
         if cluster_id is not None: query['cluster_id'] = cluster_id
-
-        json = self._api.do('GET', '/api/2.0/clusters/get', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
         return ClusterDetails.from_dict(json)
 
     def get_cluster_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
@@ -4492,7 +4510,10 @@ class ClustersAPI:
         :returns: :class:`GetClusterPermissionLevelsResponse`
         """
 
-        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels',
+                            headers=headers)
         return GetClusterPermissionLevelsResponse.from_dict(json)
 
     def get_cluster_permissions(self, cluster_id: str) -> ClusterPermissions:
@@ -4506,7 +4527,8 @@ class ClustersAPI:
         :returns: :class:`ClusterPermissions`
         """
 
-        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
         return ClusterPermissions.from_dict(json)
 
     def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
@@ -4531,8 +4553,8 @@ class ClustersAPI:
 
         query = {}
         if can_use_client is not None: query['can_use_client'] = can_use_client
-
-        json = self._api.do('GET', '/api/2.0/clusters/list', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/clusters/list', query=query, headers=headers)
         return [ClusterDetails.from_dict(v) for v in json.get('clusters', [])]
 
     def list_node_types(self) -> ListNodeTypesResponse:
@@ -4543,7 +4565,8 @@ class ClustersAPI:
         :returns: :class:`ListNodeTypesResponse`
         """
 
-        json = self._api.do('GET', '/api/2.0/clusters/list-node-types')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/clusters/list-node-types', headers=headers)
         return ListNodeTypesResponse.from_dict(json)
 
     def list_zones(self) -> ListAvailableZonesResponse:
@@ -4555,7 +4578,8 @@ class ClustersAPI:
         :returns: :class:`ListAvailableZonesResponse`
         """
 
-        json = self._api.do('GET', '/api/2.0/clusters/list-zones')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/clusters/list-zones', headers=headers)
         return ListAvailableZonesResponse.from_dict(json)
 
     def permanent_delete(self, cluster_id: str):
@@ -4574,7 +4598,8 @@ class ClustersAPI:
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
-        self._api.do('POST', '/api/2.0/clusters/permanent-delete', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/permanent-delete', body=body, headers=headers)
 
     def pin(self, cluster_id: str):
         """Pin cluster.
@@ -4589,7 +4614,8 @@ class ClustersAPI:
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
-        self._api.do('POST', '/api/2.0/clusters/pin', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/pin', body=body, headers=headers)
 
     def resize(self,
                cluster_id: str,
@@ -4624,7 +4650,8 @@ class ClustersAPI:
         if autoscale is not None: body['autoscale'] = autoscale.as_dict()
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if num_workers is not None: body['num_workers'] = num_workers
-        self._api.do('POST', '/api/2.0/clusters/resize', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def resize_and_wait(self,
@@ -4654,7 +4681,8 @@ class ClustersAPI:
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if restart_user is not None: body['restart_user'] = restart_user
-        self._api.do('POST', '/api/2.0/clusters/restart', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def restart_and_wait(self,
@@ -4682,8 +4710,8 @@ class ClustersAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-
-        json = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body, headers=headers)
         return ClusterPermissions.from_dict(json)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -4694,7 +4722,8 @@ class ClustersAPI:
         :returns: :class:`GetSparkVersionsResponse`
         """
 
-        json = self._api.do('GET', '/api/2.0/clusters/spark-versions')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/clusters/spark-versions', headers=headers)
         return GetSparkVersionsResponse.from_dict(json)
 
     def start(self, cluster_id: str) -> Wait[ClusterDetails]:
@@ -4716,7 +4745,8 @@ class ClustersAPI:
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
-        self._api.do('POST', '/api/2.0/clusters/start', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
@@ -4736,7 +4766,8 @@ class ClustersAPI:
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
-        self._api.do('POST', '/api/2.0/clusters/unpin', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/clusters/unpin', body=body, headers=headers)
 
     def update_cluster_permissions(
             self,
@@ -4756,8 +4787,11 @@ class ClustersAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-
-        json = self._api.do('PATCH', f'/api/2.0/permissions/clusters/{cluster_id}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/clusters/{cluster_id}',
+                            body=body,
+                            headers=headers)
         return ClusterPermissions.from_dict(json)
 
 
@@ -4890,7 +4924,8 @@ class CommandExecutionAPI:
         if cluster_id is not None: body['clusterId'] = cluster_id
         if command_id is not None: body['commandId'] = command_id
         if context_id is not None: body['contextId'] = context_id
-        self._api.do('POST', '/api/1.2/commands/cancel', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/1.2/commands/cancel', body=body, headers=headers)
         return Wait(self.wait_command_status_command_execution_cancelled,
                     cluster_id=cluster_id,
                     command_id=command_id,
@@ -4924,8 +4959,8 @@ class CommandExecutionAPI:
         if cluster_id is not None: query['clusterId'] = cluster_id
         if command_id is not None: query['commandId'] = command_id
         if context_id is not None: query['contextId'] = context_id
-
-        json = self._api.do('GET', '/api/1.2/commands/status', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/1.2/commands/status', query=query, headers=headers)
         return CommandStatusResponse.from_dict(json)
 
     def context_status(self, cluster_id: str, context_id: str) -> ContextStatusResponse:
@@ -4942,8 +4977,8 @@ class CommandExecutionAPI:
         query = {}
         if cluster_id is not None: query['clusterId'] = cluster_id
         if context_id is not None: query['contextId'] = context_id
-
-        json = self._api.do('GET', '/api/1.2/contexts/status', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/1.2/contexts/status', query=query, headers=headers)
         return ContextStatusResponse.from_dict(json)
 
     def create(self,
@@ -4967,7 +5002,8 @@ class CommandExecutionAPI:
         body = {}
         if cluster_id is not None: body['clusterId'] = cluster_id
         if language is not None: body['language'] = language.value
-        op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        op_response = self._api.do('POST', '/api/1.2/contexts/create', body=body, headers=headers)
         return Wait(self.wait_context_status_command_execution_running,
                     response=Created.from_dict(op_response),
                     cluster_id=cluster_id,
@@ -4994,7 +5030,8 @@ class CommandExecutionAPI:
         body = {}
         if cluster_id is not None: body['clusterId'] = cluster_id
         if context_id is not None: body['contextId'] = context_id
-        self._api.do('POST', '/api/1.2/contexts/destroy', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/1.2/contexts/destroy', body=body, headers=headers)
 
     def execute(self,
                 *,
@@ -5025,7 +5062,8 @@ class CommandExecutionAPI:
         if command is not None: body['command'] = command
         if context_id is not None: body['contextId'] = context_id
         if language is not None: body['language'] = language.value
-        op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        op_response = self._api.do('POST', '/api/1.2/commands/execute', body=body, headers=headers)
         return Wait(self.wait_command_status_command_execution_finished_or_error,
                     response=Created.from_dict(op_response),
                     cluster_id=cluster_id,
@@ -5090,8 +5128,8 @@ class GlobalInitScriptsAPI:
         if name is not None: body['name'] = name
         if position is not None: body['position'] = position
         if script is not None: body['script'] = script
-
-        json = self._api.do('POST', '/api/2.0/global-init-scripts', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.0/global-init-scripts', body=body, headers=headers)
         return CreateResponse.from_dict(json)
 
     def delete(self, script_id: str):
@@ -5105,7 +5143,8 @@ class GlobalInitScriptsAPI:
         
         """
 
-        self._api.do('DELETE', f'/api/2.0/global-init-scripts/{script_id}')
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
 
     def get(self, script_id: str) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
@@ -5118,7 +5157,8 @@ class GlobalInitScriptsAPI:
         :returns: :class:`GlobalInitScriptDetailsWithContent`
         """
 
-        json = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
         return GlobalInitScriptDetailsWithContent.from_dict(json)
 
     def list(self) -> Iterator[GlobalInitScriptDetails]:
@@ -5131,7 +5171,8 @@ class GlobalInitScriptsAPI:
         :returns: Iterator over :class:`GlobalInitScriptDetails`
         """
 
-        json = self._api.do('GET', '/api/2.0/global-init-scripts')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/global-init-scripts', headers=headers)
         return [GlobalInitScriptDetails.from_dict(v) for v in json.get('scripts', [])]
 
     def update(self,
@@ -5172,7 +5213,8 @@ class GlobalInitScriptsAPI:
         if name is not None: body['name'] = name
         if position is not None: body['position'] = position
         if script is not None: body['script'] = script
-        self._api.do('PATCH', f'/api/2.0/global-init-scripts/{script_id}', body=body)
+        headers = {'Content-Type': 'application/json', }
+        self._api.do('PATCH', f'/api/2.0/global-init-scripts/{script_id}', body=body, headers=headers)
 
 
 class InstancePoolsAPI:
@@ -5284,8 +5326,8 @@ class InstancePoolsAPI:
             body['preloaded_docker_images'] = [v.as_dict() for v in preloaded_docker_images]
         if preloaded_spark_versions is not None:
             body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
-
-        json = self._api.do('POST', '/api/2.0/instance-pools/create', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('POST', '/api/2.0/instance-pools/create', body=body, headers=headers)
         return CreateInstancePoolResponse.from_dict(json)
 
     def delete(self, instance_pool_id: str):
@@ -5300,7 +5342,8 @@ class InstancePoolsAPI:
         """
         body = {}
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
-        self._api.do('POST', '/api/2.0/instance-pools/delete', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/instance-pools/delete', body=body, headers=headers)
 
     def edit(self,
              instance_pool_id: str,
@@ -5396,7 +5439,8 @@ class InstancePoolsAPI:
             body['preloaded_docker_images'] = [v.as_dict() for v in preloaded_docker_images]
         if preloaded_spark_versions is not None:
             body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
-        self._api.do('POST', '/api/2.0/instance-pools/edit', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/instance-pools/edit', body=body, headers=headers)
 
     def get(self, instance_pool_id: str) -> GetInstancePool:
         """Get instance pool information.
@@ -5411,8 +5455,8 @@ class InstancePoolsAPI:
 
         query = {}
         if instance_pool_id is not None: query['instance_pool_id'] = instance_pool_id
-
-        json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/instance-pools/get', query=query, headers=headers)
         return GetInstancePool.from_dict(json)
 
     def get_instance_pool_permission_levels(self,
@@ -5427,7 +5471,10 @@ class InstancePoolsAPI:
         :returns: :class:`GetInstancePoolPermissionLevelsResponse`
         """
 
-        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels',
+                            headers=headers)
         return GetInstancePoolPermissionLevelsResponse.from_dict(json)
 
     def get_instance_pool_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
@@ -5442,7 +5489,8 @@ class InstancePoolsAPI:
         :returns: :class:`InstancePoolPermissions`
         """
 
-        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', headers=headers)
         return InstancePoolPermissions.from_dict(json)
 
     def list(self) -> Iterator[InstancePoolAndStats]:
@@ -5453,7 +5501,8 @@ class InstancePoolsAPI:
         :returns: Iterator over :class:`InstancePoolAndStats`
         """
 
-        json = self._api.do('GET', '/api/2.0/instance-pools/list')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/instance-pools/list', headers=headers)
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
 
     def set_instance_pool_permissions(
@@ -5475,8 +5524,11 @@ class InstancePoolsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-
-        json = self._api.do('PUT', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PUT',
+                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
+                            body=body,
+                            headers=headers)
         return InstancePoolPermissions.from_dict(json)
 
     def update_instance_pool_permissions(
@@ -5499,8 +5551,11 @@ class InstancePoolsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-
-        json = self._api.do('PATCH', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        json = self._api.do('PATCH',
+                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
+                            body=body,
+                            headers=headers)
         return InstancePoolPermissions.from_dict(json)
 
 
@@ -5554,7 +5609,8 @@ class InstanceProfilesAPI:
         if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
         if is_meta_instance_profile is not None: body['is_meta_instance_profile'] = is_meta_instance_profile
         if skip_validation is not None: body['skip_validation'] = skip_validation
-        self._api.do('POST', '/api/2.0/instance-profiles/add', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/instance-profiles/add', body=body, headers=headers)
 
     def edit(self,
              instance_profile_arn: str,
@@ -5598,7 +5654,8 @@ class InstanceProfilesAPI:
         if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
         if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
         if is_meta_instance_profile is not None: body['is_meta_instance_profile'] = is_meta_instance_profile
-        self._api.do('POST', '/api/2.0/instance-profiles/edit', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/instance-profiles/edit', body=body, headers=headers)
 
     def list(self) -> Iterator[InstanceProfile]:
         """List available instance profiles.
@@ -5610,7 +5667,8 @@ class InstanceProfilesAPI:
         :returns: Iterator over :class:`InstanceProfile`
         """
 
-        json = self._api.do('GET', '/api/2.0/instance-profiles/list')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/instance-profiles/list', headers=headers)
         return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
 
     def remove(self, instance_profile_arn: str):
@@ -5628,7 +5686,8 @@ class InstanceProfilesAPI:
         """
         body = {}
         if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
-        self._api.do('POST', '/api/2.0/instance-profiles/remove', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/instance-profiles/remove', body=body, headers=headers)
 
 
 class LibrariesAPI:
@@ -5662,7 +5721,8 @@ class LibrariesAPI:
         :returns: :class:`ListAllClusterLibraryStatusesResponse`
         """
 
-        json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
         return ListAllClusterLibraryStatusesResponse.from_dict(json)
 
     def cluster_status(self, cluster_id: str) -> ClusterLibraryStatuses:
@@ -5689,8 +5749,8 @@ class LibrariesAPI:
 
         query = {}
         if cluster_id is not None: query['cluster_id'] = cluster_id
-
-        json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query)
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
         return ClusterLibraryStatuses.from_dict(json)
 
     def install(self, cluster_id: str, libraries: List[Library]):
@@ -5712,7 +5772,8 @@ class LibrariesAPI:
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
-        self._api.do('POST', '/api/2.0/libraries/install', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/libraries/install', body=body, headers=headers)
 
     def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Uninstall libraries.
@@ -5731,7 +5792,8 @@ class LibrariesAPI:
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
-        self._api.do('POST', '/api/2.0/libraries/uninstall', body=body)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/libraries/uninstall', body=body, headers=headers)
 
 
 class PolicyFamiliesAPI:
@@ -5758,7 +5820,8 @@ class PolicyFamiliesAPI:
         :returns: :class:`PolicyFamily`
         """
 
-        json = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}', headers=headers)
         return PolicyFamily.from_dict(json)
 
     def list(self,
@@ -5780,9 +5843,10 @@ class PolicyFamiliesAPI:
         query = {}
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
 
         while True:
-            json = self._api.do('GET', '/api/2.0/policy-families', query=query)
+            json = self._api.do('GET', '/api/2.0/policy-families', query=query, headers=headers)
             if 'policy_families' not in json or not json['policy_families']:
                 return
             for v in json['policy_families']:

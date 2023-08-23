@@ -365,10 +365,11 @@ class CustomAppIntegrationAPI:
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
-
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
-                            body=body)
+                            body=body,
+                            headers=headers)
         return CreateCustomAppIntegrationOutput.from_dict(json)
 
     def delete(self, integration_id: str):
@@ -383,9 +384,11 @@ class CustomAppIntegrationAPI:
         
         """
 
+        headers = {'Accept': 'application/json', }
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
+            headers=headers)
 
     def get(self, integration_id: str) -> GetCustomAppIntegrationOutput:
         """Get OAuth Custom App Integration.
@@ -398,9 +401,11 @@ class CustomAppIntegrationAPI:
         :returns: :class:`GetCustomAppIntegrationOutput`
         """
 
+        headers = {'Accept': 'application/json', }
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
+            headers=headers)
         return GetCustomAppIntegrationOutput.from_dict(json)
 
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
@@ -411,7 +416,10 @@ class CustomAppIntegrationAPI:
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
+                            headers=headers)
         return [GetCustomAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
 
     def update(self,
@@ -436,10 +444,12 @@ class CustomAppIntegrationAPI:
         body = {}
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
-            body=body)
+            body=body,
+            headers=headers)
 
 
 class OAuthEnrollmentAPI:
@@ -471,7 +481,11 @@ class OAuthEnrollmentAPI:
         body = {}
         if enable_all_published_apps is not None:
             body['enable_all_published_apps'] = enable_all_published_apps
-        self._api.do('POST', f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment', body=body)
+        headers = {'Content-Type': 'application/json', }
+        self._api.do('POST',
+                     f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
+                     body=body,
+                     headers=headers)
 
     def get(self) -> OAuthEnrollmentStatus:
         """Get OAuth enrollment status.
@@ -484,7 +498,10 @@ class OAuthEnrollmentAPI:
         :returns: :class:`OAuthEnrollmentStatus`
         """
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment')
+        headers = {'Accept': 'application/json', }
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
+                            headers=headers)
         return OAuthEnrollmentStatus.from_dict(json)
 
 
@@ -519,10 +536,11 @@ class PublishedAppIntegrationAPI:
         body = {}
         if app_id is not None: body['app_id'] = app_id
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
-
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
-                            body=body)
+                            body=body,
+                            headers=headers)
         return CreatePublishedAppIntegrationOutput.from_dict(json)
 
     def delete(self, integration_id: str):
@@ -537,9 +555,11 @@ class PublishedAppIntegrationAPI:
         
         """
 
+        headers = {'Accept': 'application/json', }
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
+            headers=headers)
 
     def get(self, integration_id: str) -> GetPublishedAppIntegrationOutput:
         """Get OAuth Published App Integration.
@@ -552,9 +572,11 @@ class PublishedAppIntegrationAPI:
         :returns: :class:`GetPublishedAppIntegrationOutput`
         """
 
+        headers = {'Accept': 'application/json', }
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}')
+            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
+            headers=headers)
         return GetPublishedAppIntegrationOutput.from_dict(json)
 
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
@@ -565,8 +587,10 @@ class PublishedAppIntegrationAPI:
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
         """
 
+        headers = {'Accept': 'application/json', }
         json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations')
+                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
+                            headers=headers)
         return [GetPublishedAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
@@ -584,10 +608,12 @@ class PublishedAppIntegrationAPI:
         """
         body = {}
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
-            body=body)
+            body=body,
+            headers=headers)
 
 
 class ServicePrincipalSecretsAPI:
@@ -617,10 +643,11 @@ class ServicePrincipalSecretsAPI:
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
 
+        headers = {'Accept': 'application/json', }
         json = self._api.do(
             'POST',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
+            headers=headers)
         return CreateServicePrincipalSecretResponse.from_dict(json)
 
     def delete(self, service_principal_id: int, secret_id: str):
@@ -636,10 +663,11 @@ class ServicePrincipalSecretsAPI:
         
         """
 
+        headers = {}
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},',
+            headers=headers)
 
     def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
         """List service principal secrets.
@@ -653,8 +681,9 @@ class ServicePrincipalSecretsAPI:
         :returns: Iterator over :class:`SecretInfo`
         """
 
+        headers = {'Accept': 'application/json', }
         json = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets'
-        )
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
+            headers=headers)
         return [SecretInfo.from_dict(v) for v in json.get('secrets', [])]
