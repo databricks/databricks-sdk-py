@@ -185,7 +185,7 @@ class {{.Name}}API:{{if .Description}}
         {{if .Request -}}
         {{template "method-serialize" .}}
         {{- end}}
-        {{template "method-headers" .}}
+        {{template "method-headers" . }}
         {{template "method-call" .}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
@@ -278,7 +278,7 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-call-default" -}}
-        {{if .Response}}
+        {{if .Response -}}
         res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
           {{- if .IsResponseByteStream -}}

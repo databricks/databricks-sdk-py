@@ -653,7 +653,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
                            headers=headers)
@@ -725,7 +724,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(res)
 
@@ -742,7 +740,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
                            headers=headers)
@@ -761,7 +758,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            headers=headers)
@@ -792,7 +788,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
                            headers=headers)
@@ -808,7 +803,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
         return QueryEndpointResponse.from_dict(res)
 
@@ -833,7 +827,6 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            body=body,
@@ -906,7 +899,6 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            body=body,

@@ -3596,7 +3596,6 @@ class ClusterPoliciesAPI:
             body['policy_family_definition_overrides'] = policy_family_definition_overrides
         if policy_family_id is not None: body['policy_family_id'] = policy_family_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/policies/clusters/create', body=body, headers=headers)
         return CreatePolicyResponse.from_dict(res)
 
@@ -3682,7 +3681,6 @@ class ClusterPoliciesAPI:
         query = {}
         if policy_id is not None: query['policy_id'] = policy_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query, headers=headers)
         return Policy.from_dict(res)
 
@@ -3699,7 +3697,6 @@ class ClusterPoliciesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels',
                            headers=headers)
@@ -3718,7 +3715,6 @@ class ClusterPoliciesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
                            headers=headers)
@@ -3770,7 +3766,6 @@ class ClusterPoliciesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
                            body=body,
@@ -3798,7 +3793,6 @@ class ClusterPoliciesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/cluster-policies/{cluster_policy_id}',
                            body=body,
@@ -4503,7 +4497,6 @@ class ClustersAPI:
         query = {}
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
         return ClusterDetails.from_dict(res)
 
@@ -4519,7 +4512,6 @@ class ClustersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/clusters/{cluster_id}/permissionLevels',
                            headers=headers)
@@ -4537,7 +4529,6 @@ class ClustersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
         return ClusterPermissions.from_dict(res)
 
@@ -4577,7 +4568,6 @@ class ClustersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/clusters/list-node-types', headers=headers)
         return ListNodeTypesResponse.from_dict(res)
 
@@ -4591,7 +4581,6 @@ class ClustersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/clusters/list-zones', headers=headers)
         return ListAvailableZonesResponse.from_dict(res)
 
@@ -4724,7 +4713,6 @@ class ClustersAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT', f'/api/2.0/permissions/clusters/{cluster_id}', body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
 
@@ -4737,7 +4725,6 @@ class ClustersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/clusters/spark-versions', headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
 
@@ -4803,7 +4790,6 @@ class ClustersAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', f'/api/2.0/permissions/clusters/{cluster_id}', body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
 
@@ -4973,7 +4959,6 @@ class CommandExecutionAPI:
         if command_id is not None: query['commandId'] = command_id
         if context_id is not None: query['contextId'] = context_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/1.2/commands/status', query=query, headers=headers)
         return CommandStatusResponse.from_dict(res)
 
@@ -4992,7 +4977,6 @@ class CommandExecutionAPI:
         if cluster_id is not None: query['clusterId'] = cluster_id
         if context_id is not None: query['contextId'] = context_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/1.2/contexts/status', query=query, headers=headers)
         return ContextStatusResponse.from_dict(res)
 
@@ -5144,7 +5128,6 @@ class GlobalInitScriptsAPI:
         if position is not None: body['position'] = position
         if script is not None: body['script'] = script
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/global-init-scripts', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -5174,7 +5157,6 @@ class GlobalInitScriptsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
         return GlobalInitScriptDetailsWithContent.from_dict(res)
 
@@ -5345,7 +5327,6 @@ class InstancePoolsAPI:
         if preloaded_spark_versions is not None:
             body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/instance-pools/create', body=body, headers=headers)
         return CreateInstancePoolResponse.from_dict(res)
 
@@ -5475,7 +5456,6 @@ class InstancePoolsAPI:
         query = {}
         if instance_pool_id is not None: query['instance_pool_id'] = instance_pool_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/instance-pools/get', query=query, headers=headers)
         return GetInstancePool.from_dict(res)
 
@@ -5492,7 +5472,6 @@ class InstancePoolsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels',
                            headers=headers)
@@ -5511,7 +5490,6 @@ class InstancePoolsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
@@ -5548,7 +5526,6 @@ class InstancePoolsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
                            body=body,
@@ -5576,7 +5553,6 @@ class InstancePoolsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/instance-pools/{instance_pool_id}',
                            body=body,
@@ -5748,7 +5724,6 @@ class LibrariesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
         return ListAllClusterLibraryStatusesResponse.from_dict(res)
 
@@ -5777,7 +5752,6 @@ class LibrariesAPI:
         query = {}
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
         return ClusterLibraryStatuses.from_dict(res)
 
@@ -5849,7 +5823,6 @@ class PolicyFamiliesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}', headers=headers)
         return PolicyFamily.from_dict(res)
 

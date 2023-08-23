@@ -471,7 +471,6 @@ class BudgetsAPI:
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/budget',
                            body=body,
@@ -507,7 +506,6 @@ class BudgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
                            headers=headers)
@@ -635,7 +633,6 @@ class LogDeliveryAPI:
         if log_delivery_configuration is not None:
             body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
                            body=body,
@@ -654,7 +651,6 @@ class LogDeliveryAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',

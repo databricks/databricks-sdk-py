@@ -205,7 +205,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2464,7 +2463,6 @@ class AlertsAPI:
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
         return Alert.from_dict(res)
 
@@ -2493,7 +2491,6 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
         return Alert.from_dict(res)
 
@@ -2506,7 +2503,6 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
         return [Alert.from_dict(v) for v in res]
 
@@ -2578,7 +2574,6 @@ class DashboardsAPI:
         if parent is not None: body['parent'] = parent
         if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
         return Dashboard.from_dict(res)
 
@@ -2607,7 +2602,6 @@ class DashboardsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
         return Dashboard.from_dict(res)
 
@@ -2692,7 +2686,6 @@ class DataSourcesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/preview/sql/data_sources', headers=headers)
         return [DataSource.from_dict(v) for v in res]
 
@@ -2727,7 +2720,6 @@ class DbsqlPermissionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
                            headers=headers)
@@ -2755,7 +2747,6 @@ class DbsqlPermissionsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
                            body=body,
@@ -2783,7 +2774,6 @@ class DbsqlPermissionsAPI:
         body = {}
         if new_owner is not None: body['new_owner'] = new_owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
                            body=body,
@@ -2843,7 +2833,6 @@ class QueriesAPI:
         if parent is not None: body['parent'] = parent
         if query is not None: body['query'] = query
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
         return Query.from_dict(res)
 
@@ -2873,7 +2862,6 @@ class QueriesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
         return Query.from_dict(res)
 
@@ -2984,7 +2972,6 @@ class QueriesAPI:
         if options is not None: body['options'] = options
         if query is not None: body['query'] = query
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
         return Query.from_dict(res)
 
@@ -3325,7 +3312,6 @@ class StatementExecutionAPI:
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
         return ExecuteStatementResponse.from_dict(res)
 
@@ -3346,7 +3332,6 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
         return GetStatementResponse.from_dict(res)
 
@@ -3366,7 +3351,6 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}',
                            headers=headers)
@@ -3736,7 +3720,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
         return GetWarehouseResponse.from_dict(res)
 
@@ -3752,7 +3735,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels',
                            headers=headers)
@@ -3771,7 +3753,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}', headers=headers)
         return WarehousePermissions.from_dict(res)
 
@@ -3784,7 +3765,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
@@ -3826,7 +3806,6 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
                            body=body,
@@ -3950,7 +3929,6 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
                            body=body,

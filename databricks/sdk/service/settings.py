@@ -635,7 +635,6 @@ class AccountIpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
                            body=body,
@@ -670,7 +669,6 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
@@ -820,7 +818,6 @@ class AccountNetworkPolicyAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
@@ -846,7 +843,6 @@ class AccountNetworkPolicyAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
@@ -873,7 +869,6 @@ class AccountNetworkPolicyAPI:
         if allow_missing is not None: body['allow_missing'] = allow_missing
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
@@ -912,7 +907,6 @@ class AccountSettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
@@ -938,7 +932,6 @@ class AccountSettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
@@ -965,7 +958,6 @@ class AccountSettingsAPI:
         if allow_missing is not None: body['allow_missing'] = allow_missing
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
@@ -1028,7 +1020,6 @@ class IpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/ip-access-lists', body=body, headers=headers)
         return CreateIpAccessListResponse.from_dict(res)
 
@@ -1058,7 +1049,6 @@ class IpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
         return FetchIpAccessListResponse.from_dict(res)
 
@@ -1200,7 +1190,6 @@ class TokenManagementAPI:
         if comment is not None: body['comment'] = comment
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            '/api/2.0/token-management/on-behalf-of/tokens',
                            body=body,
@@ -1233,7 +1222,6 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
         return TokenInfo.from_dict(res)
 
@@ -1246,7 +1234,6 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            '/api/2.0/permissions/authorization/tokens/permissionLevels',
                            headers=headers)
@@ -1261,7 +1248,6 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/permissions/authorization/tokens', headers=headers)
         return TokenPermissions.from_dict(res)
 
@@ -1305,7 +1291,6 @@ class TokenManagementAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
@@ -1325,7 +1310,6 @@ class TokenManagementAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
@@ -1360,7 +1344,6 @@ class TokensAPI:
         if comment is not None: body['comment'] = comment
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/token/create', body=body, headers=headers)
         return CreateTokenResponse.from_dict(res)
 
@@ -1414,7 +1397,6 @@ class WorkspaceConfAPI:
         query = {}
         if keys is not None: query['keys'] = keys
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/workspace-conf', query=query, headers=headers)
         return WorkspaceConf.from_dict(res)
 
