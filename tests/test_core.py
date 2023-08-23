@@ -273,8 +273,14 @@ class DummyResponse:
     def isClosed(self):
         return self._closed
 
+
 def test_api_client_do_custom_headers(config, requests_mock):
     client = ApiClient(config)
-    requests_mock.get("/test", json={"well": "done"}, request_headers={"test": "test", "User-Agent": config.user_agent})
+    requests_mock.get("/test",
+                      json={"well": "done"},
+                      request_headers={
+                          "test": "test",
+                          "User-Agent": config.user_agent
+                      })
     res = client.do("GET", "/test", headers={"test": "test"})
     assert res == {"well": "done"}
