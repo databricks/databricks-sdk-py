@@ -282,7 +282,7 @@ class {{.Name}}API:{{if .Description}}
         res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
           {{- if .IsResponseByteStream -}}
-            return {{.Response.PascalName}}(contents=res)
+            return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=res)
           {{- else if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else -}}

@@ -15,13 +15,8 @@ import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
 from types import TracebackType
-<<<<<<< HEAD
-from typing import (Any, AnyStr, BinaryIO, Callable, Dict, Iterable, Iterator,
-                    List, Optional, Type, Union)
-=======
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
                     Optional, Type, Union)
->>>>>>> propagate-headers-to-apiclient
 
 import requests
 import requests.auth
