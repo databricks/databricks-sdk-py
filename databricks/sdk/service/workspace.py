@@ -1035,7 +1035,6 @@ class GitCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
         return [CredentialInfo.from_dict(v) for v in json.get('credentials', [])]
 
@@ -1463,7 +1462,6 @@ class SecretsAPI:
         query = {}
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query, headers=headers)
         return [AclItem.from_dict(v) for v in json.get('items', [])]
 
@@ -1478,7 +1476,6 @@ class SecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list', headers=headers)
         return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
 
@@ -1501,7 +1498,6 @@ class SecretsAPI:
         query = {}
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query, headers=headers)
         return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
 
@@ -1788,7 +1784,6 @@ class WorkspaceAPI:
         if notebooks_modified_after is not None: query['notebooks_modified_after'] = notebooks_modified_after
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query, headers=headers)
         return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
 

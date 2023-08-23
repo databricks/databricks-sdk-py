@@ -770,7 +770,6 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
         return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
 

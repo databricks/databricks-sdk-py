@@ -684,7 +684,6 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
                             headers=headers)
@@ -1061,7 +1060,6 @@ class IpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/ip-access-lists', headers=headers)
         return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
 
@@ -1271,7 +1269,6 @@ class TokenManagementAPI:
         if created_by_id is not None: query['created_by_id'] = created_by_id
         if created_by_username is not None: query['created_by_username'] = created_by_username
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query, headers=headers)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
 
@@ -1373,7 +1370,6 @@ class TokensAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
 

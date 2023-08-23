@@ -521,7 +521,6 @@ class BudgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget', headers=headers)
         return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
 
@@ -681,7 +680,6 @@ class LogDeliveryAPI:
         if status is not None: query['status'] = status.value
         if storage_configuration_id is not None: query['storage_configuration_id'] = storage_configuration_id
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
                             query=query,

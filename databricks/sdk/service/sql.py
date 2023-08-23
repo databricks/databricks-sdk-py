@@ -3783,7 +3783,6 @@ class WarehousesAPI:
         query = {}
         if run_as_user_id is not None: query['run_as_user_id'] = run_as_user_id
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
         return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
 

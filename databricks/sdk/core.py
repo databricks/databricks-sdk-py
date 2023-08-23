@@ -990,7 +990,7 @@ class ApiClient:
            data=None) -> Union[dict, BinaryIO]:
         if headers is None:
             headers = {}
-        headers = {**headers, 'User-Agent': self._user_agent_base}
+        headers['User-Agent'] = self._user_agent_base
         # Replace // with / in path (for Files API where users specify filenames beginning with /)
         path = re.sub(r'//', '/', path)
         response = self._session.request(method,

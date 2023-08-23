@@ -271,7 +271,7 @@ class {{.Name}}API:{{if .Description}}
           {{- else -}}
           query['{{.Pagination.Offset.Name}}'] += len(json['{{.Pagination.Results.Name}}'])
           {{- end}}
-        {{else}}
+        {{else -}}
         json = {{template "method-do" .}}
         return [{{.Pagination.Entity.PascalName}}.from_dict(v) for v in json{{if .Pagination.Results}}.get('{{.Pagination.Results.Name}}', []){{end}}]
         {{end}}

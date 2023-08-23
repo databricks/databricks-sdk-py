@@ -332,7 +332,6 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
         return [FileInfo.from_dict(v) for v in json.get('files', [])]
 

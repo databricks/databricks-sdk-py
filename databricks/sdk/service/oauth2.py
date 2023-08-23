@@ -417,7 +417,6 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                             headers=headers)
@@ -589,7 +588,6 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                             headers=headers)
@@ -684,7 +682,6 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
