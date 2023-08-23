@@ -3014,7 +3014,6 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore',
                             headers=headers)
@@ -3032,7 +3031,6 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
                             headers=headers)
@@ -3085,7 +3083,6 @@ class AccountMetastoresAPI:
         body = {}
         if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores',
                             body=body,
@@ -3125,7 +3122,6 @@ class AccountMetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                             headers=headers)
@@ -3140,7 +3136,6 @@ class AccountMetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
         return ListMetastoresResponse.from_dict(json)
 
@@ -3161,7 +3156,6 @@ class AccountMetastoresAPI:
         body = {}
         if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PUT',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                             body=body,
@@ -3198,7 +3192,6 @@ class AccountStorageCredentialsAPI:
         body = {}
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
@@ -3246,7 +3239,6 @@ class AccountStorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
@@ -3265,7 +3257,6 @@ class AccountStorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
@@ -3293,7 +3284,6 @@ class AccountStorageCredentialsAPI:
         body = {}
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
@@ -3321,7 +3311,6 @@ class ArtifactAllowlistsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
                             headers=headers)
@@ -3343,7 +3332,6 @@ class ArtifactAllowlistsAPI:
         body = {}
         if artifact_matchers is not None: body['artifact_matchers'] = artifact_matchers.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PUT',
                             f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
                             body=body,
@@ -3404,7 +3392,6 @@ class CatalogsAPI:
         if share_name is not None: body['share_name'] = share_name
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body, headers=headers)
         return CatalogInfo.from_dict(json)
 
@@ -3440,7 +3427,6 @@ class CatalogsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}', headers=headers)
         return CatalogInfo.from_dict(json)
 
@@ -3491,7 +3477,6 @@ class CatalogsAPI:
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{name}', body=body, headers=headers)
         return CatalogInfo.from_dict(json)
 
@@ -3551,7 +3536,6 @@ class ConnectionsAPI:
         if properties is not None: body['properties'] = properties
         if read_only is not None: body['read_only'] = read_only
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body, headers=headers)
         return ConnectionInfo.from_dict(json)
 
@@ -3581,7 +3565,6 @@ class ConnectionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
         return ConnectionInfo.from_dict(json)
 
@@ -3616,7 +3599,6 @@ class ConnectionsAPI:
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/connections/{name_arg}',
                             body=body,
@@ -3684,7 +3666,6 @@ class ExternalLocationsAPI:
         if skip_validation is not None: body['skip_validation'] = skip_validation
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body, headers=headers)
         return ExternalLocationInfo.from_dict(json)
 
@@ -3723,7 +3704,6 @@ class ExternalLocationsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
         return ExternalLocationInfo.from_dict(json)
 
@@ -3790,7 +3770,6 @@ class ExternalLocationsAPI:
         if read_only is not None: body['read_only'] = read_only
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/external-locations/{name}',
                             body=body,
@@ -3911,7 +3890,6 @@ class FunctionsAPI:
         if sql_data_access is not None: body['sql_data_access'] = sql_data_access.value
         if sql_path is not None: body['sql_path'] = sql_path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body, headers=headers)
         return FunctionInfo.from_dict(json)
 
@@ -3956,7 +3934,6 @@ class FunctionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
         return FunctionInfo.from_dict(json)
 
@@ -4006,7 +3983,6 @@ class FunctionsAPI:
         body = {}
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{name}', body=body, headers=headers)
         return FunctionInfo.from_dict(json)
 
@@ -4047,7 +4023,6 @@ class GrantsAPI:
         query = {}
         if principal is not None: query['principal'] = principal
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
                             query=query,
@@ -4077,7 +4052,6 @@ class GrantsAPI:
         query = {}
         if principal is not None: query['principal'] = principal
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.1/unity-catalog/effective-permissions/{securable_type.value}/{full_name}',
@@ -4106,7 +4080,6 @@ class GrantsAPI:
         body = {}
         if changes is not None: body['changes'] = [v.as_dict() for v in changes]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
                             body=body,
@@ -4175,7 +4148,6 @@ class MetastoresAPI:
         if region is not None: body['region'] = region
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/metastores', body=body, headers=headers)
         return MetastoreInfo.from_dict(json)
 
@@ -4188,7 +4160,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment', headers=headers)
         return MetastoreAssignment.from_dict(json)
 
@@ -4226,7 +4197,6 @@ class MetastoresAPI:
         if enable is not None: body['enable'] = enable
         if metastore_id is not None: body['metastore_id'] = metastore_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body, headers=headers)
         return UpdatePredictiveOptimizationResponse.from_dict(json)
 
@@ -4243,7 +4213,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{id}', headers=headers)
         return MetastoreInfo.from_dict(json)
 
@@ -4271,7 +4240,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastore_summary', headers=headers)
         return GetMetastoreSummaryResponse.from_dict(json)
 
@@ -4343,7 +4311,6 @@ class MetastoresAPI:
         if storage_root_credential_id is not None:
             body['storage_root_credential_id'] = storage_root_credential_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{id}', body=body, headers=headers)
         return MetastoreInfo.from_dict(json)
 
@@ -4419,7 +4386,6 @@ class SchemasAPI:
         if properties is not None: body['properties'] = properties
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body, headers=headers)
         return SchemaInfo.from_dict(json)
 
@@ -4451,7 +4417,6 @@ class SchemasAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
         return SchemaInfo.from_dict(json)
 
@@ -4509,7 +4474,6 @@ class SchemasAPI:
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/schemas/{full_name}',
                             body=body,
@@ -4565,7 +4529,6 @@ class SecurableTagsAPI:
         body = {}
         if changes is not None: body['changes'] = changes.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
                             body=body,
@@ -4641,7 +4604,6 @@ class StorageCredentialsAPI:
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body, headers=headers)
         return StorageCredentialInfo.from_dict(json)
 
@@ -4680,7 +4642,6 @@ class StorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
         return StorageCredentialInfo.from_dict(json)
 
@@ -4755,7 +4716,6 @@ class StorageCredentialsAPI:
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/storage-credentials/{name}',
                             body=body,
@@ -4816,7 +4776,6 @@ class StorageCredentialsAPI:
         if storage_credential_name is not None: body['storage_credential_name'] = storage_credential_name
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST',
                             '/api/2.1/unity-catalog/validate-storage-credentials',
                             body=body,
@@ -4880,7 +4839,6 @@ class SubentityTagsAPI:
         body = {}
         if changes is not None: body['changes'] = changes.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do(
             'PATCH',
             f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
@@ -4993,7 +4951,6 @@ class TableConstraintsAPI:
         if constraint is not None: body['constraint'] = constraint.as_dict()
         if full_name_arg is not None: body['full_name_arg'] = full_name_arg
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body, headers=headers)
         return TableConstraint.from_dict(json)
 
@@ -5079,7 +5036,6 @@ class TablesAPI:
         query = {}
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
         return TableInfo.from_dict(json)
 
@@ -5265,7 +5221,6 @@ class VolumesAPI:
         if storage_location is not None: body['storage_location'] = storage_location
         if volume_type is not None: body['volume_type'] = volume_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body, headers=headers)
         return VolumeInfo.from_dict(json)
 
@@ -5332,7 +5287,6 @@ class VolumesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
         return VolumeInfo.from_dict(json)
 
@@ -5368,7 +5322,6 @@ class VolumesAPI:
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/volumes/{full_name_arg}',
                             body=body,
@@ -5398,7 +5351,6 @@ class WorkspaceBindingsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
                             headers=headers)
@@ -5427,7 +5379,6 @@ class WorkspaceBindingsAPI:
         if assign_workspaces is not None: body['assign_workspaces'] = [v for v in assign_workspaces]
         if unassign_workspaces is not None: body['unassign_workspaces'] = [v for v in unassign_workspaces]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('PATCH',
                             f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
                             body=body,
