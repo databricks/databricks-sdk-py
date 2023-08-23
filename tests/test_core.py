@@ -3,12 +3,13 @@ import pathlib
 import platform
 import random
 import string
+from typing import Iterator, List
 
 import pytest
 
 from databricks.sdk.core import (Config, CredentialsProvider,
                                  DatabricksCliTokenSource, HeaderFactory,
-                                 databricks_cli)
+                                 StreamingResponse, databricks_cli)
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -47,6 +48,32 @@ def write_small_dummy_executable(path: pathlib.Path):
     cli.chmod(0o755)
     assert cli.stat().st_size < 1024
     return cli
+
+
+def test_streaming_response_read(config):
+    content = b"some initial binary data: \x00\x01"
+    response = StreamingResponse(DummyResponse([content]))
+    assert response.read() == content
+
+
+def test_streaming_response_read_partial(config):
+    content = b"some initial binary data: \x00\x01"
+    response = StreamingResponse(DummyResponse([content]))
+    assert response.read(8) == b"some ini"
+
+
+def test_streaming_response_read_partial(config):
+    content = b"some initial binary data: \x00\x01"
+    response = StreamingResponse(DummyResponse([content, content]))
+    assert response.read() == content + content
+
+
+def test_streaming_response_read_closes(config):
+    content = b"some initial binary data: \x00\x01"
+    dummy_response = DummyResponse([content])
+    with StreamingResponse(dummy_response) as response:
+        assert response.read() == content
+    assert dummy_response.isClosed()
 
 
 def write_large_dummy_executable(path: pathlib.Path):
@@ -228,3 +255,20 @@ def test_config_parsing_non_string_env_vars(monkeypatch):
     monkeypatch.setenv('DATABRICKS_DEBUG_TRUNCATE_BYTES', '100')
     c = Config(host='http://localhost', credentials_provider=noop_credentials)
     assert c.debug_truncate_bytes == 100
+
+
+class DummyResponse:
+    _content: Iterator[bytes]
+    _closed: bool = False
+
+    def __init__(self, content: List[bytes]) -> None:
+        self._content = iter(content)
+
+    def iter_content(self) -> Iterator[bytes]:
+        return self._content
+
+    def close(self):
+        self._closed = True
+
+    def isClosed(self):
+        return self._closed
