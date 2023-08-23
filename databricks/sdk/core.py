@@ -990,7 +990,7 @@ class ApiClient:
            data=None) -> Union[dict, BinaryIO]:
         if headers is None:
             headers = {}
-        headers = {**headers, 'User-Agent': self._user_agent_base}
+        headers['User-Agent'] = self._user_agent_base
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),
