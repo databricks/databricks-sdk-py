@@ -1135,18 +1135,12 @@ class ApiClient:
 class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
-<<<<<<< HEAD
-=======
     _content: Iterator[bytes]
->>>>>>> propagate-headers-to-apiclient
 
     def __init__(self, response: requests.Response):
         self._response = response
         self._buffer = b''
-<<<<<<< HEAD
-=======
         self._content = None
->>>>>>> propagate-headers-to-apiclient
 
     def __enter__(self) -> BinaryIO:
         self._content = self._response.iter_content()
@@ -1158,13 +1152,9 @@ class StreamingResponse(BinaryIO):
     def isatty(self) -> bool:
         return False
 
-<<<<<<< HEAD
-    def read(self, n: int = -1) -> AnyStr:
-=======
     def read(self, n: int = -1) -> bytes:
         if self._content is None:
             self._content = self._response.iter_content()
->>>>>>> propagate-headers-to-apiclient
         read_everything = n < 0
         remaining_bytes = n
         res = b''
@@ -1184,17 +1174,10 @@ class StreamingResponse(BinaryIO):
     def readable(self) -> bool:
         return self._content is not None
 
-<<<<<<< HEAD
-    def readline(self, __limit: int = ...) -> AnyStr:
-        raise NotImplementedError()
-
-    def readlines(self, __hint: int = ...) -> List[AnyStr]:
-=======
     def readline(self, __limit: int = ...) -> bytes:
         raise NotImplementedError()
 
     def readlines(self, __hint: int = ...) -> List[bytes]:
->>>>>>> propagate-headers-to-apiclient
         raise NotImplementedError()
 
     def seek(self, __offset: int, __whence: int = ...) -> int:
@@ -1204,11 +1187,7 @@ class StreamingResponse(BinaryIO):
         return False
 
     def tell(self) -> int:
-<<<<<<< HEAD
-        pass
-=======
         raise NotImplementedError()
->>>>>>> propagate-headers-to-apiclient
 
     def truncate(self, __size: Union[int, None] = ...) -> int:
         raise NotImplementedError()
@@ -1216,18 +1195,6 @@ class StreamingResponse(BinaryIO):
     def writable(self) -> bool:
         return False
 
-<<<<<<< HEAD
-    def write(self, s: AnyStr) -> int:
-        raise NotImplementedError()
-
-    def writelines(self, lines: Iterable[AnyStr]) -> None:
-        raise NotImplementedError()
-
-    def __next__(self) -> AnyStr:
-        pass
-
-    def __iter__(self) -> Iterator[AnyStr]:
-=======
     def write(self, s: bytes) -> int:
         raise NotImplementedError()
 
@@ -1238,7 +1205,6 @@ class StreamingResponse(BinaryIO):
         return self.read(1)
 
     def __iter__(self) -> Iterator[bytes]:
->>>>>>> propagate-headers-to-apiclient
         return self._content
 
     def __exit__(self, t: Union[Type[BaseException], None], value: Union[BaseException, None],
