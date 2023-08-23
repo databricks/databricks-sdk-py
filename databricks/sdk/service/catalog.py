@@ -3442,7 +3442,6 @@ class CatalogsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', headers=headers)
         return [CatalogInfo.from_dict(v) for v in json.get('catalogs', [])]
 
@@ -3577,7 +3576,6 @@ class ConnectionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections', headers=headers)
         return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
 
@@ -3718,7 +3716,6 @@ class ExternalLocationsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
         return [ExternalLocationInfo.from_dict(v) for v in json.get('external_locations', [])]
 
@@ -3958,7 +3955,6 @@ class FunctionsAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
         return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
 
@@ -4226,7 +4222,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores', headers=headers)
         return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
 
@@ -4437,7 +4432,6 @@ class SchemasAPI:
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
         return [SchemaInfo.from_dict(v) for v in json.get('schemas', [])]
 
@@ -4504,7 +4498,6 @@ class SecurableTagsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
                             headers=headers)
@@ -4657,7 +4650,6 @@ class StorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
         return [StorageCredentialInfo.from_dict(v) for v in json.get('storage_credentials', [])]
 
@@ -4810,7 +4802,6 @@ class SubentityTagsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
@@ -4905,7 +4896,6 @@ class SystemSchemasAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
                             headers=headers)
@@ -5267,7 +5257,6 @@ class VolumesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
         return [VolumeInfo.from_dict(v) for v in json.get('volumes', [])]
 

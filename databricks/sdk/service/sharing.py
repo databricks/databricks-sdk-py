@@ -1176,7 +1176,6 @@ class CleanRoomsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/clean-rooms', headers=headers)
         return [CleanRoomInfo.from_dict(v) for v in json.get('clean_rooms', [])]
 
@@ -1316,7 +1315,6 @@ class ProvidersAPI:
         if data_provider_global_metastore_id is not None:
             query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
         return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
 
@@ -1334,7 +1332,6 @@ class ProvidersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares', headers=headers)
         return [ProviderShare.from_dict(v) for v in json.get('shares', [])]
 
@@ -1535,7 +1532,6 @@ class RecipientsAPI:
         if data_recipient_global_metastore_id is not None:
             query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
         return [RecipientInfo.from_dict(v) for v in json.get('recipients', [])]
 
@@ -1692,7 +1688,6 @@ class SharesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares', headers=headers)
         return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
 

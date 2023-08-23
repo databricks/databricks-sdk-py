@@ -1126,7 +1126,6 @@ class AccountGroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                             query=query,
@@ -1335,7 +1334,6 @@ class AccountServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query,
@@ -1561,7 +1559,6 @@ class AccountUsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                             query=query,
@@ -1790,7 +1787,6 @@ class GroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
@@ -2127,7 +2123,6 @@ class ServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
@@ -2363,7 +2358,6 @@ class UsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
@@ -2536,7 +2530,6 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments',

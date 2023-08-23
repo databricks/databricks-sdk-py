@@ -3742,7 +3742,6 @@ class ClusterPoliciesAPI:
         if sort_column is not None: query['sort_column'] = sort_column.value
         if sort_order is not None: query['sort_order'] = sort_order.value
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query, headers=headers)
         return [Policy.from_dict(v) for v in json.get('policies', [])]
 
@@ -4555,7 +4554,6 @@ class ClustersAPI:
         query = {}
         if can_use_client is not None: query['can_use_client'] = can_use_client
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query, headers=headers)
         return [ClusterDetails.from_dict(v) for v in json.get('clusters', [])]
 
@@ -5174,7 +5172,6 @@ class GlobalInitScriptsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/global-init-scripts', headers=headers)
         return [GlobalInitScriptDetails.from_dict(v) for v in json.get('scripts', [])]
 
@@ -5505,7 +5502,6 @@ class InstancePoolsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/instance-pools/list', headers=headers)
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
 
@@ -5672,7 +5668,6 @@ class InstanceProfilesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/instance-profiles/list', headers=headers)
         return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
 

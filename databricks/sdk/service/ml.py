@@ -3684,7 +3684,6 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if stages is not None: body['stages'] = [v for v in stages]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         json = self._api.do('POST',
                             '/api/2.0/mlflow/registered-models/get-latest-versions',
                             body=body,
@@ -3842,7 +3841,6 @@ class ModelRegistryAPI:
         if name is not None: query['name'] = name
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query, headers=headers)
         return [Activity.from_dict(v) for v in json.get('requests', [])]
 
