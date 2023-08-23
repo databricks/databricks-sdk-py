@@ -471,11 +471,11 @@ class BudgetsAPI:
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/budget',
-                            body=body,
-                            headers=headers)
-        return WrappedBudgetWithStatus.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/budget',
+                           body=body,
+                           headers=headers)
+        return WrappedBudgetWithStatus.from_dict(res)
 
     def delete(self, budget_id: str):
         """Delete budget.
@@ -506,10 +506,10 @@ class BudgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
-                            headers=headers)
-        return WrappedBudgetWithStatus.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
+                           headers=headers)
+        return WrappedBudgetWithStatus.from_dict(res)
 
     def list(self) -> Iterator[BudgetWithStatus]:
         """Get all budgets.
@@ -632,11 +632,11 @@ class LogDeliveryAPI:
         if log_delivery_configuration is not None:
             body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST',
-                            f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
-                            body=body,
-                            headers=headers)
-        return WrappedLogDeliveryConfiguration.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
+                           body=body,
+                           headers=headers)
+        return WrappedLogDeliveryConfiguration.from_dict(res)
 
     def get(self, log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration:
         """Get log delivery configuration.
@@ -650,11 +650,11 @@ class LogDeliveryAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do(
+        res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
             headers=headers)
-        return WrappedLogDeliveryConfiguration.from_dict(json)
+        return WrappedLogDeliveryConfiguration.from_dict(res)
 
     def list(self,
              *,

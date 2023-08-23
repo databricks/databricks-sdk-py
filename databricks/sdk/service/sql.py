@@ -205,6 +205,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2463,8 +2464,8 @@ class AlertsAPI:
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
-        return Alert.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
+        return Alert.from_dict(res)
 
     def delete(self, alert_id: str):
         """Delete an alert.
@@ -2491,8 +2492,8 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
-        return Alert.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
+        return Alert.from_dict(res)
 
     def list(self) -> Iterator[Alert]:
         """Get alerts.
@@ -2503,8 +2504,8 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
-        return [Alert.from_dict(v) for v in json]
+        res = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
+        return [Alert.from_dict(v) for v in res]
 
     def update(self,
                name: str,
@@ -2574,8 +2575,8 @@ class DashboardsAPI:
         if parent is not None: body['parent'] = parent
         if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
-        return Dashboard.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
+        return Dashboard.from_dict(res)
 
     def delete(self, dashboard_id: str):
         """Remove a dashboard.
@@ -2602,8 +2603,8 @@ class DashboardsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
-        return Dashboard.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
+        return Dashboard.from_dict(res)
 
     def list(self,
              *,
@@ -2686,8 +2687,8 @@ class DataSourcesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/sql/data_sources', headers=headers)
-        return [DataSource.from_dict(v) for v in json]
+        res = self._api.do('GET', '/api/2.0/preview/sql/data_sources', headers=headers)
+        return [DataSource.from_dict(v) for v in res]
 
 
 class DbsqlPermissionsAPI:
@@ -2720,10 +2721,10 @@ class DbsqlPermissionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
-                            headers=headers)
-        return GetResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
+                           headers=headers)
+        return GetResponse.from_dict(res)
 
     def set(self,
             object_type: ObjectTypePlural,
@@ -2747,11 +2748,11 @@ class DbsqlPermissionsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST',
-                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
-                            body=body,
-                            headers=headers)
-        return SetResponse.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
+                           body=body,
+                           headers=headers)
+        return SetResponse.from_dict(res)
 
     def transfer_ownership(self,
                            object_type: OwnableObjectType,
@@ -2774,11 +2775,11 @@ class DbsqlPermissionsAPI:
         body = {}
         if new_owner is not None: body['new_owner'] = new_owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST',
-                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
-                            body=body,
-                            headers=headers)
-        return Success.from_dict(json)
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
+                           body=body,
+                           headers=headers)
+        return Success.from_dict(res)
 
 
 class QueriesAPI:
@@ -2833,8 +2834,8 @@ class QueriesAPI:
         if parent is not None: body['parent'] = parent
         if query is not None: body['query'] = query
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
-        return Query.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
+        return Query.from_dict(res)
 
     def delete(self, query_id: str):
         """Delete a query.
@@ -2862,8 +2863,8 @@ class QueriesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
-        return Query.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
+        return Query.from_dict(res)
 
     def list(self,
              *,
@@ -2972,8 +2973,8 @@ class QueriesAPI:
         if options is not None: body['options'] = options
         if query is not None: body['query'] = query
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
-        return Query.from_dict(json)
+        res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
+        return Query.from_dict(res)
 
 
 class QueryHistoryAPI:
@@ -3312,8 +3313,8 @@ class StatementExecutionAPI:
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
-        return ExecuteStatementResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
+        return ExecuteStatementResponse.from_dict(res)
 
     def get_statement(self, statement_id: str) -> GetStatementResponse:
         """Get status, manifest, and result first chunk.
@@ -3332,8 +3333,8 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
-        return GetStatementResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
+        return GetStatementResponse.from_dict(res)
 
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
         """Get result chunk by index.
@@ -3351,10 +3352,10 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}',
-                            headers=headers)
-        return ResultData.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}',
+                           headers=headers)
+        return ResultData.from_dict(res)
 
 
 class WarehousesAPI:
@@ -3720,8 +3721,8 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
-        return GetWarehouseResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
+        return GetWarehouseResponse.from_dict(res)
 
     def get_warehouse_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
         """Get SQL warehouse permission levels.
@@ -3735,10 +3736,10 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels',
-                            headers=headers)
-        return GetWarehousePermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels',
+                           headers=headers)
+        return GetWarehousePermissionLevelsResponse.from_dict(res)
 
     def get_warehouse_permissions(self, warehouse_id: str) -> WarehousePermissions:
         """Get SQL warehouse permissions.
@@ -3753,8 +3754,8 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}', headers=headers)
-        return WarehousePermissions.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}', headers=headers)
+        return WarehousePermissions.from_dict(res)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
         """Get the workspace configuration.
@@ -3765,8 +3766,8 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
-        return GetWorkspaceWarehouseConfigResponse.from_dict(json)
+        res = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
+        return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
     def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
         """List warehouses.
@@ -3805,11 +3806,11 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
-                            body=body,
-                            headers=headers)
-        return WarehousePermissions.from_dict(json)
+        res = self._api.do('PUT',
+                           f'/api/2.0/permissions/warehouses/{warehouse_id}',
+                           body=body,
+                           headers=headers)
+        return WarehousePermissions.from_dict(res)
 
     def set_workspace_warehouse_config(
             self,
@@ -3928,8 +3929,8 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
-                            body=body,
-                            headers=headers)
-        return WarehousePermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/warehouses/{warehouse_id}',
+                           body=body,
+                           headers=headers)
+        return WarehousePermissions.from_dict(res)

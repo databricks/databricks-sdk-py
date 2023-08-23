@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Type, Callable, Optional
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
 import time
 import random
 import logging
@@ -78,6 +78,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
+	{{- else if .IsByteStream}}BinaryIO
 	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
@@ -95,6 +96,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
+	{{- else if .IsByteStream}}BinaryIO
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
 	{{- else if .IsExternal }}:class:`{{.PascalName}}`
@@ -274,12 +276,14 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-call-default" -}}
         {{if .Response -}}
-        json = {{end}}{{template "method-do" .}}
+        res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
-          {{if .Response.ArrayValue -}}
-            return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in json]
+          {{- if .IsResponseByteStream -}}
+            return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=res)
+          {{- else if .Response.ArrayValue -}}
+            return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else -}}
-            return {{.Response.PascalName}}.from_dict(json)
+            return {{.Response.PascalName}}.from_dict(res)
           {{- end}}
         {{- end}}
 {{- end}}
@@ -293,7 +297,9 @@ self._api.do('{{.Verb}}',
       {{- if .Request.HasQueryField}}, query=query{{end}}
       {{- if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
-  , headers=headers)
+  , headers=headers
+  {{- if and .IsRequestByteStream .RequestBodyField }}, data={{.RequestBodyField.SnakeName}}{{ end }}
+  {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}
 
 {{define "method-return-type" -}}

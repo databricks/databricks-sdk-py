@@ -1237,8 +1237,8 @@ class PipelinesAPI:
         if target is not None: body['target'] = target
         if trigger is not None: body['trigger'] = trigger.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', '/api/2.0/pipelines', body=body, headers=headers)
-        return CreatePipelineResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.0/pipelines', body=body, headers=headers)
+        return CreatePipelineResponse.from_dict(res)
 
     def delete(self, pipeline_id: str):
         """Delete a pipeline.
@@ -1262,8 +1262,8 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}', headers=headers)
-        return GetPipelineResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}', headers=headers)
+        return GetPipelineResponse.from_dict(res)
 
     def get_pipeline_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
         """Get pipeline permission levels.
@@ -1277,10 +1277,10 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels',
-                            headers=headers)
-        return GetPipelinePermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels',
+                           headers=headers)
+        return GetPipelinePermissionLevelsResponse.from_dict(res)
 
     def get_pipeline_permissions(self, pipeline_id: str) -> PipelinePermissions:
         """Get pipeline permissions.
@@ -1294,8 +1294,8 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/permissions/pipelines/{pipeline_id}', headers=headers)
-        return PipelinePermissions.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/permissions/pipelines/{pipeline_id}', headers=headers)
+        return PipelinePermissions.from_dict(res)
 
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
         """Get a pipeline update.
@@ -1311,8 +1311,8 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates/{update_id}', headers=headers)
-        return GetUpdateResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates/{update_id}', headers=headers)
+        return GetUpdateResponse.from_dict(res)
 
     def list_pipeline_events(self,
                              pipeline_id: str,
@@ -1444,8 +1444,8 @@ class PipelinesAPI:
         if page_token is not None: query['page_token'] = page_token
         if until_update_id is not None: query['until_update_id'] = until_update_id
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query, headers=headers)
-        return ListUpdatesResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query, headers=headers)
+        return ListUpdatesResponse.from_dict(res)
 
     def reset(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
         """Reset a pipeline.
@@ -1485,11 +1485,8 @@ class PipelinesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('PUT',
-                            f'/api/2.0/permissions/pipelines/{pipeline_id}',
-                            body=body,
-                            headers=headers)
-        return PipelinePermissions.from_dict(json)
+        res = self._api.do('PUT', f'/api/2.0/permissions/pipelines/{pipeline_id}', body=body, headers=headers)
+        return PipelinePermissions.from_dict(res)
 
     def start_update(self,
                      pipeline_id: str,
@@ -1524,8 +1521,8 @@ class PipelinesAPI:
             body['full_refresh_selection'] = [v for v in full_refresh_selection]
         if refresh_selection is not None: body['refresh_selection'] = [v for v in refresh_selection]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body, headers=headers)
-        return StartUpdateResponse.from_dict(json)
+        res = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body, headers=headers)
+        return StartUpdateResponse.from_dict(res)
 
     def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
         """Stop a pipeline.
@@ -1657,8 +1654,8 @@ class PipelinesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('PATCH',
-                            f'/api/2.0/permissions/pipelines/{pipeline_id}',
-                            body=body,
-                            headers=headers)
-        return PipelinePermissions.from_dict(json)
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/pipelines/{pipeline_id}',
+                           body=body,
+                           headers=headers)
+        return PipelinePermissions.from_dict(res)

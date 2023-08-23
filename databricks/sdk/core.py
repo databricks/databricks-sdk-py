@@ -991,6 +991,8 @@ class ApiClient:
         if headers is None:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
+        # Replace // with / in path (for Files API where users specify filenames beginning with /)
+        path = re.sub(r'//', '/', path)
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),
@@ -998,7 +1000,7 @@ class ApiClient:
                                          headers=headers,
                                          files=files,
                                          data=data,
-                                         stream=True if raw else False)
+                                         stream=raw)
         try:
             self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok:

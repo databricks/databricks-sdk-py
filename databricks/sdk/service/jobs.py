@@ -2899,8 +2899,8 @@ class JobsAPI:
         if trigger is not None: body['trigger'] = trigger.as_dict()
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
-        return CreateResponse.from_dict(json)
+        res = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
+        return CreateResponse.from_dict(res)
 
     def delete(self, job_id: int):
         """Delete a job.
@@ -2949,8 +2949,8 @@ class JobsAPI:
         if run_id is not None: query['run_id'] = run_id
         if views_to_export is not None: query['views_to_export'] = views_to_export.value
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/jobs/runs/export', query=query, headers=headers)
-        return ExportRunOutput.from_dict(json)
+        res = self._api.do('GET', '/api/2.1/jobs/runs/export', query=query, headers=headers)
+        return ExportRunOutput.from_dict(res)
 
     def get(self, job_id: int) -> Job:
         """Get a single job.
@@ -2966,8 +2966,8 @@ class JobsAPI:
         query = {}
         if job_id is not None: query['job_id'] = job_id
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
-        return Job.from_dict(json)
+        res = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
+        return Job.from_dict(res)
 
     def get_job_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
         """Get job permission levels.
@@ -2981,8 +2981,8 @@ class JobsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels', headers=headers)
-        return GetJobPermissionLevelsResponse.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels', headers=headers)
+        return GetJobPermissionLevelsResponse.from_dict(res)
 
     def get_job_permissions(self, job_id: str) -> JobPermissions:
         """Get job permissions.
@@ -2996,8 +2996,8 @@ class JobsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
-        return JobPermissions.from_dict(json)
+        res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
+        return JobPermissions.from_dict(res)
 
     def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
         """Get a single job run.
@@ -3016,8 +3016,8 @@ class JobsAPI:
         if include_history is not None: query['include_history'] = include_history
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)
-        return Run.from_dict(json)
+        res = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)
+        return Run.from_dict(res)
 
     def get_run_output(self, run_id: int) -> RunOutput:
         """Get the output for a single run.
@@ -3040,8 +3040,8 @@ class JobsAPI:
         query = {}
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/jobs/runs/get-output', query=query, headers=headers)
-        return RunOutput.from_dict(json)
+        res = self._api.do('GET', '/api/2.1/jobs/runs/get-output', query=query, headers=headers)
+        return RunOutput.from_dict(res)
 
     def list(self,
              *,
@@ -3506,8 +3506,8 @@ class JobsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('PUT', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
-        return JobPermissions.from_dict(json)
+        res = self._api.do('PUT', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
+        return JobPermissions.from_dict(res)
 
     def submit(self,
                *,
@@ -3669,5 +3669,5 @@ class JobsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        json = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
-        return JobPermissions.from_dict(json)
+        res = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
+        return JobPermissions.from_dict(res)
