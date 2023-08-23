@@ -42,7 +42,7 @@ def fresh_wheel_file(tmp_path) -> Path:
 @pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
 def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
     instance_pool_id = env_or_skip('TEST_INSTANCE_POOL_ID')
-    latest = ucws.clusters.select_spark_version(latest=True, beta=True)
+    latest = ucws.clusters.select_spark_version(latest=True)
 
     my_user = ucws.current_user.me().user_name
 
