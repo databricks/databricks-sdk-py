@@ -7,7 +7,7 @@ from typing import Iterator, List
 
 import pytest
 
-from databricks.sdk.core import (Config, CredentialsProvider,
+from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  DatabricksCliTokenSource, HeaderFactory,
                                  StreamingResponse, databricks_cli)
 from databricks.sdk.version import __version__
@@ -272,3 +272,9 @@ class DummyResponse:
 
     def isClosed(self):
         return self._closed
+
+def test_api_client_do_custom_headers(config, requests_mock):
+    client = ApiClient(config)
+    requests_mock.get("/test", json={"well": "done"}, request_headers={"test": "test", "User-Agent": config.user_agent})
+    res = client.do("GET", "/test", headers={"test": "test"})
+    assert res == {"well": "done"}
