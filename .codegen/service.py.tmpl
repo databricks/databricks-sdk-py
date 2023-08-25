@@ -5,7 +5,6 @@ from datetime import timedelta
 from enum import Enum
 from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
 import time
-import io
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
@@ -198,13 +197,11 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-serialize" -}}
-        {{if .Request.HasJsonField -}}
-        body = {}{{ end }}{{if .Request.HasQueryField}}
-        query = {}{{ end }}{{ range .Request.Fields }}{{ if not .IsPath -}}
-        {{ if .IsJson }}
-        if {{.SnakeName}} is not None: body['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{ if .IsQuery }}
-        if {{.SnakeName}} is not None: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
-        {{- end}}
+        {{if or .Request.HasJsonField .Request.HasQueryField -}}
+        {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
+        query = {}{{end}}
+        {{- range .Request.Fields}}{{if not .IsPath}}
+        if {{.SnakeName}} is not None: {{if .IsQuery}}query{{else}}body{{end}}['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}{{end}}
         {{- end}}
 {{- end}}
 

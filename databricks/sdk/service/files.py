@@ -507,6 +507,7 @@ class FilesAPI:
         """
 
         query = {}
+        if contents is not None: body['contents'] = contents
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
         self._api.do('PUT', f'/api/2.0/fs/files/{file_path}', query=query, headers=headers, data=contents)
