@@ -15,8 +15,8 @@ import urllib.parse
 from datetime import datetime
 from json import JSONDecodeError
 from types import TracebackType
-from typing import (Any, AnyStr, BinaryIO, Callable, Dict, Iterable, Iterator,
-                    List, Optional, Type, Union)
+from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
+                    Optional, Type, Union)
 
 import requests
 import requests.auth
@@ -988,10 +988,9 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None) -> Union[dict, BinaryIO]:
-        headers |= {'User-Agent': self._user_agent_base}
-        # Replace multiple / in a row with a single / in path (for Files API where users specify filenames beginning
-        # with /)
-        path = re.sub(r'/{2,}', '/', path)
+        if headers is None:
+            headers = {}
+        headers['User-Agent'] = self._user_agent_base
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),
@@ -1129,10 +1128,12 @@ class ApiClient:
 class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
+    _content: Iterator[bytes]
 
     def __init__(self, response: requests.Response):
         self._response = response
         self._buffer = b''
+        self._content = None
 
     def __enter__(self) -> BinaryIO:
         self._content = self._response.iter_content()
@@ -1144,7 +1145,9 @@ class StreamingResponse(BinaryIO):
     def isatty(self) -> bool:
         return False
 
-    def read(self, n: int = -1) -> AnyStr:
+    def read(self, n: int = -1) -> bytes:
+        if self._content is None:
+            self._content = self._response.iter_content()
         read_everything = n < 0
         remaining_bytes = n
         res = b''
@@ -1164,10 +1167,10 @@ class StreamingResponse(BinaryIO):
     def readable(self) -> bool:
         return self._content is not None
 
-    def readline(self, __limit: int = ...) -> AnyStr:
+    def readline(self, __limit: int = ...) -> bytes:
         raise NotImplementedError()
 
-    def readlines(self, __hint: int = ...) -> List[AnyStr]:
+    def readlines(self, __hint: int = ...) -> List[bytes]:
         raise NotImplementedError()
 
     def seek(self, __offset: int, __whence: int = ...) -> int:
@@ -1177,7 +1180,7 @@ class StreamingResponse(BinaryIO):
         return False
 
     def tell(self) -> int:
-        pass
+        raise NotImplementedError()
 
     def truncate(self, __size: Union[int, None] = ...) -> int:
         raise NotImplementedError()
@@ -1185,16 +1188,16 @@ class StreamingResponse(BinaryIO):
     def writable(self) -> bool:
         return False
 
-    def write(self, s: AnyStr) -> int:
+    def write(self, s: bytes) -> int:
         raise NotImplementedError()
 
-    def writelines(self, lines: Iterable[AnyStr]) -> None:
+    def writelines(self, lines: Iterable[bytes]) -> None:
         raise NotImplementedError()
 
-    def __next__(self) -> AnyStr:
-        pass
+    def __next__(self) -> bytes:
+        return self.read(1)
 
-    def __iter__(self) -> Iterator[AnyStr]:
+    def __iter__(self) -> Iterator[bytes]:
         return self._content
 
     def __exit__(self, t: Union[Type[BaseException], None], value: Union[BaseException, None],

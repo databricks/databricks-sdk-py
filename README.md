@@ -15,6 +15,7 @@ We are keen to hear feedback from you on these SDKs. Please [file issues](https:
 | See also cloud-specific docs ([AWS](https://docs.databricks.com/dev-tools/sdk-python.html), 
    [Azure](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/sdk-python), 
    [GCP](https://docs.gcp.databricks.com/dev-tools/sdk-python.html)) 
+| See also the [API reference on readthedocs](https://databricks-sdk-py.readthedocs.io/en/latest/)
 
 The Databricks SDK for Python includes functionality to accelerate development with [Python](https://www.python.org/) for the Databricks Lakehouse.
 It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations.

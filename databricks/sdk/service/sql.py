@@ -799,6 +799,8 @@ class ExecuteStatementRequest:
     disposition: Optional['Disposition'] = None
     format: Optional['Format'] = None
     on_wait_timeout: Optional['TimeoutAction'] = None
+    parameters: Optional['List[StatementParameterListItem]'] = None
+    row_limit: Optional[int] = None
     schema: Optional[str] = None
     statement: Optional[str] = None
     wait_timeout: Optional[str] = None
@@ -811,6 +813,8 @@ class ExecuteStatementRequest:
         if self.disposition is not None: body['disposition'] = self.disposition.value
         if self.format is not None: body['format'] = self.format.value
         if self.on_wait_timeout is not None: body['on_wait_timeout'] = self.on_wait_timeout.value
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.row_limit is not None: body['row_limit'] = self.row_limit
         if self.schema is not None: body['schema'] = self.schema
         if self.statement is not None: body['statement'] = self.statement
         if self.wait_timeout is not None: body['wait_timeout'] = self.wait_timeout
@@ -824,6 +828,8 @@ class ExecuteStatementRequest:
                    disposition=_enum(d, 'disposition', Disposition),
                    format=_enum(d, 'format', Format),
                    on_wait_timeout=_enum(d, 'on_wait_timeout', TimeoutAction),
+                   parameters=_repeated(d, 'parameters', StatementParameterListItem),
+                   row_limit=d.get('row_limit', None),
                    schema=d.get('schema', None),
                    statement=d.get('statement', None),
                    wait_timeout=d.get('wait_timeout', None),
@@ -1933,6 +1939,24 @@ class State(Enum):
     STOPPING = 'STOPPING'
 
 
+@dataclass
+class StatementParameterListItem:
+    name: str
+    type: Optional[str] = None
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.type is not None: body['type'] = self.type
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'StatementParameterListItem':
+        return cls(name=d.get('name', None), type=d.get('type', None), value=d.get('value', None))
+
+
 class StatementState(Enum):
     """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
     `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
@@ -2463,7 +2487,6 @@ class AlertsAPI:
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
         return Alert.from_dict(res)
 
@@ -2492,7 +2515,6 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
         return Alert.from_dict(res)
 
@@ -2505,7 +2527,6 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
         return [Alert.from_dict(v) for v in res]
 
@@ -2577,7 +2598,6 @@ class DashboardsAPI:
         if parent is not None: body['parent'] = parent
         if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
         return Dashboard.from_dict(res)
 
@@ -2606,7 +2626,6 @@ class DashboardsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
         return Dashboard.from_dict(res)
 
@@ -2691,7 +2710,6 @@ class DataSourcesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/preview/sql/data_sources', headers=headers)
         return [DataSource.from_dict(v) for v in res]
 
@@ -2726,7 +2744,6 @@ class DbsqlPermissionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
                            headers=headers)
@@ -2754,7 +2771,6 @@ class DbsqlPermissionsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
                            body=body,
@@ -2782,7 +2798,6 @@ class DbsqlPermissionsAPI:
         body = {}
         if new_owner is not None: body['new_owner'] = new_owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
                            body=body,
@@ -2842,7 +2857,6 @@ class QueriesAPI:
         if parent is not None: body['parent'] = parent
         if query is not None: body['query'] = query
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
         return Query.from_dict(res)
 
@@ -2872,7 +2886,6 @@ class QueriesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
         return Query.from_dict(res)
 
@@ -2983,7 +2996,6 @@ class QueriesAPI:
         if options is not None: body['options'] = options
         if query is not None: body['query'] = query
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
         return Query.from_dict(res)
 
@@ -3217,6 +3229,8 @@ class StatementExecutionAPI:
                           disposition: Optional[Disposition] = None,
                           format: Optional[Format] = None,
                           on_wait_timeout: Optional[TimeoutAction] = None,
+                          parameters: Optional[List[StatementParameterListItem]] = None,
+                          row_limit: Optional[int] = None,
                           schema: Optional[str] = None,
                           statement: Optional[str] = None,
                           wait_timeout: Optional[str] = None,
@@ -3297,6 +3311,36 @@ class StatementExecutionAPI:
           
           `CANCEL` → the statement execution is canceled and the call returns immediately with a `CANCELED`
           state.
+        :param parameters: List[:class:`StatementParameterListItem`] (optional)
+          A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists
+          of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be
+          omitted. If the `type` field is omitted, the value is interpreted as a string.
+          
+          If the type is given, parameters will be checked for type correctness according to the given type. A
+          value is correct if the provided string can be converted to the requested type using the `cast`
+          function. The exact semantics are described in the section [`cast` function] of the SQL language
+          reference.
+          
+          For example, the following statement contains two parameters, `my_id` and `my_date`:
+          
+          SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+          
+          The parameters can be passed in the request body as follows:
+          
+          { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+          "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
+          "2020-01-01", "type": "DATE" } ] }
+          
+          Currently, positional parameters denoted by a `?` marker are not supported by the SQL Statement
+          Execution API.
+          
+          Also see the section [Parameter markers] of the SQL language reference.
+          
+          [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
+          [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+        :param row_limit: int (optional)
+          Applies the given row limit to the statement's result set with identical semantics as the SQL
+          `LIMIT` clause.
         :param schema: str (optional)
           Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
           
@@ -3319,12 +3363,13 @@ class StatementExecutionAPI:
         if disposition is not None: body['disposition'] = disposition.value
         if format is not None: body['format'] = format.value
         if on_wait_timeout is not None: body['on_wait_timeout'] = on_wait_timeout.value
+        if parameters is not None: body['parameters'] = [v.as_dict() for v in parameters]
+        if row_limit is not None: body['row_limit'] = row_limit
         if schema is not None: body['schema'] = schema
         if statement is not None: body['statement'] = statement
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
         return ExecuteStatementResponse.from_dict(res)
 
@@ -3345,7 +3390,6 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
         return GetStatementResponse.from_dict(res)
 
@@ -3365,7 +3409,6 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}',
                            headers=headers)
@@ -3735,7 +3778,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
         return GetWarehouseResponse.from_dict(res)
 
@@ -3751,7 +3793,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels',
                            headers=headers)
@@ -3770,7 +3811,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}', headers=headers)
         return WarehousePermissions.from_dict(res)
 
@@ -3783,7 +3823,6 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
@@ -3802,7 +3841,6 @@ class WarehousesAPI:
         query = {}
         if run_as_user_id is not None: query['run_as_user_id'] = run_as_user_id
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
         return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
 
@@ -3825,7 +3863,6 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
                            body=body,
@@ -3949,7 +3986,6 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
                            body=body,

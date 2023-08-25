@@ -50,7 +50,7 @@ ManagedLibraries
         :param cluster_id: str
           Unique identifier of the cluster whose status should be retrieved.
         
-        :returns: :class:`ClusterLibraryStatuses`
+        :returns: Iterator over :class:`LibraryFullStatus`
         
 
     .. py:method:: install(cluster_id, libraries)

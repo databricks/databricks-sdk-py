@@ -71,6 +71,24 @@ Registered Models
         
         
 
+    .. py:method:: delete_alias(full_name, alias)
+
+        Delete a Registered Model Alias.
+        
+        Deletes a registered model alias.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param alias: str
+          The name of the alias
+        
+        
+        
+
     .. py:method:: get(full_name)
 
         Get a Registered Model.
@@ -116,6 +134,26 @@ Registered Models
           be specified.
         
         :returns: Iterator over :class:`RegisteredModelInfo`
+        
+
+    .. py:method:: set_alias(full_name, alias, version_num)
+
+        Set a Registered Model Alias.
+        
+        Set an alias on the specified registered model.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the registered model
+        :param alias: str
+          The name of the alias
+        :param version_num: int
+          The version number of the model version to which the alias points
+        
+        :returns: :class:`RegisteredModelAlias`
         
 
     .. py:method:: update(full_name [, comment, name, owner])

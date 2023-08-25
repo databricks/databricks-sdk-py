@@ -853,7 +853,6 @@ class AccountAccessControlAPI:
         query = {}
         if resource is not None: query['resource'] = resource
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/assignable-roles',
@@ -884,7 +883,6 @@ class AccountAccessControlAPI:
         if etag is not None: query['etag'] = etag
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
                            query=query,
@@ -907,7 +905,6 @@ class AccountAccessControlAPI:
         if name is not None: body['name'] = name
         if rule_set is not None: body['rule_set'] = rule_set.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets',
                            body=body,
@@ -938,7 +935,6 @@ class AccountAccessControlProxyAPI:
         query = {}
         if resource is not None: query['resource'] = resource
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            '/api/2.0/preview/accounts/access-control/assignable-roles',
                            query=query,
@@ -968,7 +964,6 @@ class AccountAccessControlProxyAPI:
         if etag is not None: query['etag'] = etag
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            '/api/2.0/preview/accounts/access-control/rule-sets',
                            query=query,
@@ -991,7 +986,6 @@ class AccountAccessControlProxyAPI:
         if name is not None: body['name'] = name
         if rule_set is not None: body['rule_set'] = rule_set.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            '/api/2.0/preview/accounts/access-control/rule-sets',
                            body=body,
@@ -1048,7 +1042,6 @@ class AccountGroupsAPI:
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                            body=body,
@@ -1083,7 +1076,6 @@ class AccountGroupsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}',
                            headers=headers)
@@ -1134,7 +1126,6 @@ class AccountGroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                             query=query,
@@ -1259,7 +1250,6 @@ class AccountServicePrincipalsAPI:
         if id is not None: body['id'] = id
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                            body=body,
@@ -1294,7 +1284,6 @@ class AccountServicePrincipalsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
                            headers=headers)
@@ -1345,7 +1334,6 @@ class AccountServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query,
@@ -1485,7 +1473,6 @@ class AccountUsersAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                            body=body,
@@ -1521,7 +1508,6 @@ class AccountUsersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
                            headers=headers)
@@ -1573,7 +1559,6 @@ class AccountUsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                             query=query,
@@ -1672,7 +1657,6 @@ class CurrentUserAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/preview/scim/v2/Me', headers=headers)
         return User.from_dict(res)
 
@@ -1726,7 +1710,6 @@ class GroupsAPI:
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/Groups', body=body, headers=headers)
         return Group.from_dict(res)
 
@@ -1756,7 +1739,6 @@ class GroupsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Groups/{id}', headers=headers)
         return Group.from_dict(res)
 
@@ -1805,7 +1787,6 @@ class GroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
         return [Group.from_dict(v) for v in json.get('Resources', [])]
 
@@ -1935,7 +1916,6 @@ class PermissionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
                            headers=headers)
@@ -1956,7 +1936,6 @@ class PermissionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels',
                            headers=headers)
@@ -1983,7 +1962,6 @@ class PermissionsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
                            body=body,
@@ -2011,7 +1989,6 @@ class PermissionsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/{request_object_type}/{request_object_id}',
                            body=body,
@@ -2068,7 +2045,6 @@ class ServicePrincipalsAPI:
         if id is not None: body['id'] = id
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
 
@@ -2098,7 +2074,6 @@ class ServicePrincipalsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', headers=headers)
         return ServicePrincipal.from_dict(res)
 
@@ -2147,7 +2122,6 @@ class ServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
         return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
 
@@ -2278,7 +2252,6 @@ class UsersAPI:
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body, headers=headers)
         return User.from_dict(res)
 
@@ -2309,7 +2282,6 @@ class UsersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
         return User.from_dict(res)
 
@@ -2322,7 +2294,6 @@ class UsersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            '/api/2.0/permissions/authorization/passwords/permissionLevels',
                            headers=headers)
@@ -2337,7 +2308,6 @@ class UsersAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/permissions/authorization/passwords', headers=headers)
         return PasswordPermissions.from_dict(res)
 
@@ -2387,7 +2357,6 @@ class UsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
         return [User.from_dict(v) for v in json.get('Resources', [])]
 
@@ -2430,7 +2399,6 @@ class UsersAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT', '/api/2.0/permissions/authorization/passwords', body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
 
@@ -2497,7 +2465,6 @@ class UsersAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            '/api/2.0/permissions/authorization/passwords',
                            body=body,
@@ -2544,7 +2511,6 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/permissions',
@@ -2563,7 +2529,6 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments',

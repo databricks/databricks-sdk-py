@@ -271,6 +271,7 @@ class AzureServicePrincipal:
 
 @dataclass
 class CatalogInfo:
+    browse_only: Optional[bool] = None
     catalog_type: Optional['CatalogType'] = None
     comment: Optional[str] = None
     connection_name: Optional[str] = None
@@ -278,6 +279,7 @@ class CatalogInfo:
     created_by: Optional[str] = None
     effective_predictive_optimization_flag: Optional['EffectivePredictiveOptimizationFlag'] = None
     enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
+    full_name: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -285,6 +287,9 @@ class CatalogInfo:
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
     provider_name: Optional[str] = None
+    provisioning_info: Optional['ProvisioningInfo'] = None
+    securable_kind: Optional['CatalogInfoSecurableKind'] = None
+    securable_type: Optional[str] = None
     share_name: Optional[str] = None
     storage_location: Optional[str] = None
     storage_root: Optional[str] = None
@@ -293,6 +298,7 @@ class CatalogInfo:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.browse_only is not None: body['browse_only'] = self.browse_only
         if self.catalog_type is not None: body['catalog_type'] = self.catalog_type.value
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_name is not None: body['connection_name'] = self.connection_name
@@ -304,6 +310,7 @@ class CatalogInfo:
                 )
         if self.enable_predictive_optimization is not None:
             body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
+        if self.full_name is not None: body['full_name'] = self.full_name
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -311,6 +318,9 @@ class CatalogInfo:
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
+        if self.provisioning_info is not None: body['provisioning_info'] = self.provisioning_info.value
+        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
+        if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.share_name is not None: body['share_name'] = self.share_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
         if self.storage_root is not None: body['storage_root'] = self.storage_root
@@ -320,7 +330,8 @@ class CatalogInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
-        return cls(catalog_type=_enum(d, 'catalog_type', CatalogType),
+        return cls(browse_only=d.get('browse_only', None),
+                   catalog_type=_enum(d, 'catalog_type', CatalogType),
                    comment=d.get('comment', None),
                    connection_name=d.get('connection_name', None),
                    created_at=d.get('created_at', None),
@@ -329,6 +340,7 @@ class CatalogInfo:
                        d, 'effective_predictive_optimization_flag', EffectivePredictiveOptimizationFlag),
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
                                                         EnablePredictiveOptimization),
+                   full_name=d.get('full_name', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -336,11 +348,34 @@ class CatalogInfo:
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
+                   provisioning_info=_enum(d, 'provisioning_info', ProvisioningInfo),
+                   securable_kind=_enum(d, 'securable_kind', CatalogInfoSecurableKind),
+                   securable_type=d.get('securable_type', None),
                    share_name=d.get('share_name', None),
                    storage_location=d.get('storage_location', None),
                    storage_root=d.get('storage_root', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
+
+
+class CatalogInfoSecurableKind(Enum):
+    """Kind of catalog securable."""
+
+    CATALOG_DELTASHARING = 'CATALOG_DELTASHARING'
+    CATALOG_FOREIGN_BIGQUERY = 'CATALOG_FOREIGN_BIGQUERY'
+    CATALOG_FOREIGN_DATABRICKS = 'CATALOG_FOREIGN_DATABRICKS'
+    CATALOG_FOREIGN_MYSQL = 'CATALOG_FOREIGN_MYSQL'
+    CATALOG_FOREIGN_POSTGRESQL = 'CATALOG_FOREIGN_POSTGRESQL'
+    CATALOG_FOREIGN_REDSHIFT = 'CATALOG_FOREIGN_REDSHIFT'
+    CATALOG_FOREIGN_SNOWFLAKE = 'CATALOG_FOREIGN_SNOWFLAKE'
+    CATALOG_FOREIGN_SQLDW = 'CATALOG_FOREIGN_SQLDW'
+    CATALOG_FOREIGN_SQLSERVER = 'CATALOG_FOREIGN_SQLSERVER'
+    CATALOG_INTERNAL = 'CATALOG_INTERNAL'
+    CATALOG_ONLINE = 'CATALOG_ONLINE'
+    CATALOG_ONLINE_INDEX = 'CATALOG_ONLINE_INDEX'
+    CATALOG_STANDARD = 'CATALOG_STANDARD'
+    CATALOG_SYSTEM = 'CATALOG_SYSTEM'
+    CATALOG_SYSTEM_DELTASHARING = 'CATALOG_SYSTEM_DELTASHARING'
 
 
 class CatalogType(Enum):
@@ -455,7 +490,7 @@ class ConnectionInfo:
     options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
-    provisioning_state: Optional['ProvisioningState'] = None
+    provisioning_info: Optional['ProvisioningInfo'] = None
     read_only: Optional[bool] = None
     securable_kind: Optional['ConnectionInfoSecurableKind'] = None
     securable_type: Optional[str] = None
@@ -477,7 +512,7 @@ class ConnectionInfo:
         if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
-        if self.provisioning_state is not None: body['provisioning_state'] = self.provisioning_state.value
+        if self.provisioning_info is not None: body['provisioning_info'] = self.provisioning_info.value
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
         if self.securable_type is not None: body['securable_type'] = self.securable_type
@@ -500,7 +535,7 @@ class ConnectionInfo:
                    options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
-                   provisioning_state=_enum(d, 'provisioning_state', ProvisioningState),
+                   provisioning_info=_enum(d, 'provisioning_info', ProvisioningInfo),
                    read_only=d.get('read_only', None),
                    securable_kind=_enum(d, 'securable_kind', ConnectionInfoSecurableKind),
                    securable_type=d.get('securable_type', None),
@@ -540,6 +575,7 @@ class CreateCatalog:
     name: str
     comment: Optional[str] = None
     connection_name: Optional[str] = None
+    options: Optional['Dict[str,str]'] = None
     properties: Optional['Dict[str,str]'] = None
     provider_name: Optional[str] = None
     share_name: Optional[str] = None
@@ -550,6 +586,7 @@ class CreateCatalog:
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
         if self.share_name is not None: body['share_name'] = self.share_name
@@ -561,6 +598,7 @@ class CreateCatalog:
         return cls(comment=d.get('comment', None),
                    connection_name=d.get('connection_name', None),
                    name=d.get('name', None),
+                   options=d.get('options', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
                    share_name=d.get('share_name', None),
@@ -964,6 +1002,14 @@ class DatabricksGcpServiceAccountResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DatabricksGcpServiceAccountResponse':
         return cls(credential_id=d.get('credential_id', None), email=d.get('email', None))
+
+
+@dataclass
+class DeleteModelVersionRequest:
+    """Delete a Model Version"""
+
+    full_name: str
+    version: int
 
 
 @dataclass
@@ -1406,6 +1452,14 @@ class FunctionParameterType(Enum):
 
 
 @dataclass
+class GetByAliasRequest:
+    """Get Model Version By Alias"""
+
+    full_name: str
+    alias: str
+
+
+@dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
     created_at: Optional[int] = None
@@ -1484,6 +1538,14 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
 
     INTERNAL = 'INTERNAL'
     INTERNAL_AND_EXTERNAL = 'INTERNAL_AND_EXTERNAL'
+
+
+@dataclass
+class GetModelVersionRequest:
+    """Get a Model Version"""
+
+    full_name: str
+    version: int
 
 
 class IsolationMode(Enum):
@@ -1565,6 +1627,15 @@ class ListMetastoresResponse:
 
 
 @dataclass
+class ListModelVersionsRequest:
+    """List Model Versions"""
+
+    full_name: str
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
+
+
+@dataclass
 class ListModelVersionsResponse:
     model_versions: Optional['List[ModelVersionInfo]'] = None
     next_page_token: Optional[str] = None
@@ -1610,13 +1681,6 @@ class ListSchemasResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSchemasResponse':
         return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
-
-
-class ListSecurableType(Enum):
-
-    CATALOG = 'catalog'
-    SCHEMA = 'schema'
-    TABLE = 'table'
 
 
 @dataclass
@@ -1996,7 +2060,7 @@ class PrivilegeAssignment:
 PropertiesKvPairs = Dict[str, str]
 
 
-class ProvisioningState(Enum):
+class ProvisioningInfo(Enum):
     """Status of an asynchronously provisioned resource."""
 
     ACTIVE = 'ACTIVE'
@@ -2176,6 +2240,26 @@ class SetArtifactAllowlist:
     def from_dict(cls, d: Dict[str, any]) -> 'SetArtifactAllowlist':
         return cls(artifact_matchers=_from_dict(d, 'artifact_matchers', ArtifactMatcher),
                    artifact_type=_enum(d, 'artifact_type', ArtifactType))
+
+
+@dataclass
+class SetRegisteredModelAliasRequest:
+    full_name: str
+    alias: str
+    version_num: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.alias is not None: body['alias'] = self.alias
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.version_num is not None: body['version_num'] = self.version_num
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SetRegisteredModelAliasRequest':
+        return cls(alias=d.get('alias', None),
+                   full_name=d.get('full_name', None),
+                   version_num=d.get('version_num', None))
 
 
 @dataclass
@@ -2497,145 +2581,11 @@ class TableType(Enum):
 
 
 @dataclass
-class TagChanges:
-    add_tags: Optional['List[TagKeyValuePair]'] = None
-    remove: Optional['List[str]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.add_tags: body['add_tags'] = [v.as_dict() for v in self.add_tags]
-        if self.remove: body['remove'] = [v for v in self.remove]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagChanges':
-        return cls(add_tags=_repeated(d, 'add_tags', TagKeyValuePair), remove=d.get('remove', None))
-
-
-@dataclass
-class TagKeyValuePair:
-    key: str
-    value: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagKeyValuePair':
-        return cls(key=d.get('key', None), value=d.get('value', None))
-
-
-@dataclass
-class TagSecurable:
-    type: str
-    full_name: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.type is not None: body['type'] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurable':
-        return cls(full_name=d.get('full_name', None), type=d.get('type', None))
-
-
-@dataclass
-class TagSecurableAssignment:
-    securable: 'TagSecurable'
-    tag_key_value_pairs: 'List[TagKeyValuePair]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.securable: body['securable'] = self.securable.as_dict()
-        if self.tag_key_value_pairs:
-            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignment':
-        return cls(securable=_from_dict(d, 'securable', TagSecurable),
-                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
-
-
-@dataclass
-class TagSecurableAssignmentsList:
-    tag_assignments: 'List[TagSecurableAssignment]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignmentsList':
-        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagSecurableAssignment))
-
-
-@dataclass
-class TagSubentity:
-    type: str
-    full_name: str
-    subentity: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.subentity is not None: body['subentity'] = self.subentity
-        if self.type is not None: body['type'] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentity':
-        return cls(full_name=d.get('full_name', None),
-                   subentity=d.get('subentity', None),
-                   type=d.get('type', None))
-
-
-@dataclass
-class TagSubentityAssignmentsList:
-    tag_assignments: 'List[TagsSubentityAssignment]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentityAssignmentsList':
-        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagsSubentityAssignment))
-
-
-@dataclass
-class TagsSubentityAssignment:
-    securable: 'TagSubentity'
-    subentity: str
-    tag_key_value_pairs: 'List[TagKeyValuePair]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.securable: body['securable'] = self.securable.as_dict()
-        if self.subentity is not None: body['subentity'] = self.subentity
-        if self.tag_key_value_pairs:
-            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagsSubentityAssignment':
-        return cls(securable=_from_dict(d, 'securable', TagSubentity),
-                   subentity=d.get('subentity', None),
-                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
-
-
-@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
     name: Optional[str] = None
+    options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
 
@@ -2644,6 +2594,7 @@ class UpdateCatalog:
         if self.comment is not None: body['comment'] = self.comment
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -2653,6 +2604,7 @@ class UpdateCatalog:
         return cls(comment=d.get('comment', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
@@ -2922,13 +2874,6 @@ class UpdateSchema:
                    properties=d.get('properties', None))
 
 
-class UpdateSecurableType(Enum):
-
-    CATALOG = 'catalog'
-    SCHEMA = 'schema'
-    TABLE = 'table'
-
-
 @dataclass
 class UpdateStorageCredential:
     aws_iam_role: Optional['AwsIamRole'] = None
@@ -2970,29 +2915,6 @@ class UpdateStorageCredential:
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
-
-
-@dataclass
-class UpdateTags:
-    changes: 'TagChanges'
-    full_name: Optional[str] = None
-    securable_type: Optional['UpdateSecurableType'] = None
-    subentity_name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.changes: body['changes'] = self.changes.as_dict()
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
-        if self.subentity_name is not None: body['subentity_name'] = self.subentity_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateTags':
-        return cls(changes=_from_dict(d, 'changes', TagChanges),
-                   full_name=d.get('full_name', None),
-                   securable_type=_enum(d, 'securable_type', UpdateSecurableType),
-                   subentity_name=d.get('subentity_name', None))
 
 
 @dataclass
@@ -3259,7 +3181,6 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore',
                            headers=headers)
@@ -3277,7 +3198,6 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
                            headers=headers)
@@ -3330,7 +3250,6 @@ class AccountMetastoresAPI:
         body = {}
         if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/metastores',
                            body=body,
@@ -3370,24 +3289,22 @@ class AccountMetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                            headers=headers)
         return AccountsMetastoreInfo.from_dict(res)
 
-    def list(self) -> ListMetastoresResponse:
+    def list(self) -> Iterator[MetastoreInfo]:
         """Get all metastores associated with an account.
         
         Gets all Unity Catalog metastores associated with an account specified by ID.
         
-        :returns: :class:`ListMetastoresResponse`
+        :returns: Iterator over :class:`MetastoreInfo`
         """
 
         headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
-        return ListMetastoresResponse.from_dict(res)
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
+        return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
 
     def update(self,
                metastore_id: str,
@@ -3406,7 +3323,6 @@ class AccountMetastoresAPI:
         body = {}
         if metastore_info is not None: body['metastore_info'] = metastore_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}',
                            body=body,
@@ -3443,7 +3359,6 @@ class AccountStorageCredentialsAPI:
         body = {}
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
@@ -3491,14 +3406,13 @@ class AccountStorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
             headers=headers)
         return AccountsStorageCredentialInfo.from_dict(res)
 
-    def list(self, metastore_id: str) -> ListStorageCredentialsResponse:
+    def list(self, metastore_id: str) -> Iterator[StorageCredentialInfo]:
         """Get all storage credentials assigned to a metastore.
         
         Gets a list of all storage credentials that have been assigned to given metastore.
@@ -3506,16 +3420,15 @@ class AccountStorageCredentialsAPI:
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        :returns: :class:`ListStorageCredentialsResponse`
+        :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             headers=headers)
-        return ListStorageCredentialsResponse.from_dict(res)
+        return [StorageCredentialInfo.from_dict(v) for v in res]
 
     def update(self,
                metastore_id: str,
@@ -3538,7 +3451,6 @@ class AccountStorageCredentialsAPI:
         body = {}
         if credential_info is not None: body['credential_info'] = credential_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
@@ -3566,7 +3478,6 @@ class ArtifactAllowlistsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
                            headers=headers)
@@ -3588,7 +3499,6 @@ class ArtifactAllowlistsAPI:
         body = {}
         if artifact_matchers is not None: body['artifact_matchers'] = artifact_matchers.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT',
                            f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',
                            body=body,
@@ -3612,6 +3522,7 @@ class CatalogsAPI:
                *,
                comment: Optional[str] = None,
                connection_name: Optional[str] = None,
+               options: Optional[Dict[str, str]] = None,
                properties: Optional[Dict[str, str]] = None,
                provider_name: Optional[str] = None,
                share_name: Optional[str] = None,
@@ -3627,6 +3538,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
@@ -3644,12 +3557,12 @@ class CatalogsAPI:
         if comment is not None: body['comment'] = comment
         if connection_name is not None: body['connection_name'] = connection_name
         if name is not None: body['name'] = name
+        if options is not None: body['options'] = options
         if properties is not None: body['properties'] = properties
         if provider_name is not None: body['provider_name'] = provider_name
         if share_name is not None: body['share_name'] = share_name
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/catalogs', body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
@@ -3685,7 +3598,6 @@ class CatalogsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}', headers=headers)
         return CatalogInfo.from_dict(res)
 
@@ -3701,7 +3613,6 @@ class CatalogsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', headers=headers)
         return [CatalogInfo.from_dict(v) for v in json.get('catalogs', [])]
 
@@ -3710,6 +3621,7 @@ class CatalogsAPI:
                *,
                comment: Optional[str] = None,
                isolation_mode: Optional[IsolationMode] = None,
+               options: Optional[Dict[str, str]] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
@@ -3723,6 +3635,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
@@ -3733,10 +3647,10 @@ class CatalogsAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
+        if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/catalogs/{name}', body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
@@ -3796,7 +3710,6 @@ class ConnectionsAPI:
         if properties is not None: body['properties'] = properties
         if read_only is not None: body['read_only'] = read_only
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
 
@@ -3826,7 +3739,6 @@ class ConnectionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
         return ConnectionInfo.from_dict(res)
 
@@ -3839,7 +3751,6 @@ class ConnectionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections', headers=headers)
         return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
 
@@ -3861,7 +3772,6 @@ class ConnectionsAPI:
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/connections/{name_arg}',
                            body=body,
@@ -3929,7 +3839,6 @@ class ExternalLocationsAPI:
         if skip_validation is not None: body['skip_validation'] = skip_validation
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/external-locations', body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
@@ -3968,7 +3877,6 @@ class ExternalLocationsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
@@ -3983,7 +3891,6 @@ class ExternalLocationsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
         return [ExternalLocationInfo.from_dict(v) for v in json.get('external_locations', [])]
 
@@ -4035,7 +3942,6 @@ class ExternalLocationsAPI:
         if read_only is not None: body['read_only'] = read_only
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/external-locations/{name}',
                            body=body,
@@ -4156,7 +4062,6 @@ class FunctionsAPI:
         if sql_data_access is not None: body['sql_data_access'] = sql_data_access.value
         if sql_path is not None: body['sql_path'] = sql_path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body, headers=headers)
         return FunctionInfo.from_dict(res)
 
@@ -4201,7 +4106,6 @@ class FunctionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
         return FunctionInfo.from_dict(res)
 
@@ -4226,7 +4130,6 @@ class FunctionsAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
         return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
 
@@ -4251,7 +4154,6 @@ class FunctionsAPI:
         body = {}
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/functions/{name}', body=body, headers=headers)
         return FunctionInfo.from_dict(res)
 
@@ -4292,7 +4194,6 @@ class GrantsAPI:
         query = {}
         if principal is not None: query['principal'] = principal
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
                            query=query,
@@ -4322,7 +4223,6 @@ class GrantsAPI:
         query = {}
         if principal is not None: query['principal'] = principal
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/effective-permissions/{securable_type.value}/{full_name}',
                            query=query,
@@ -4350,7 +4250,6 @@ class GrantsAPI:
         body = {}
         if changes is not None: body['changes'] = [v.as_dict() for v in changes]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}',
                            body=body,
@@ -4419,7 +4318,6 @@ class MetastoresAPI:
         if region is not None: body['region'] = region
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/metastores', body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
 
@@ -4432,7 +4330,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.1/unity-catalog/current-metastore-assignment', headers=headers)
         return MetastoreAssignment.from_dict(res)
 
@@ -4470,7 +4367,6 @@ class MetastoresAPI:
         if enable is not None: body['enable'] = enable
         if metastore_id is not None: body['metastore_id'] = metastore_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body, headers=headers)
         return UpdatePredictiveOptimizationResponse.from_dict(res)
 
@@ -4487,7 +4383,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{id}', headers=headers)
         return MetastoreInfo.from_dict(res)
 
@@ -4501,7 +4396,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores', headers=headers)
         return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
 
@@ -4515,7 +4409,6 @@ class MetastoresAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.1/unity-catalog/metastore_summary', headers=headers)
         return GetMetastoreSummaryResponse.from_dict(res)
 
@@ -4587,7 +4480,6 @@ class MetastoresAPI:
         if storage_root_credential_id is not None:
             body['storage_root_credential_id'] = storage_root_credential_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/metastores/{id}', body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
 
@@ -4674,11 +4566,33 @@ class ModelVersionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
                            headers=headers)
         return RegisteredModelInfo.from_dict(res)
+
+    def get_by_alias(self, full_name: str, alias: str) -> ModelVersionInfo:
+        """Get Model Version By Alias.
+        
+        Get a model version by alias.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param alias: str
+          The name of the alias
+        
+        :returns: :class:`ModelVersionInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}',
+                           headers=headers)
+        return ModelVersionInfo.from_dict(res)
 
     def list(self,
              full_name: str,
@@ -4749,7 +4663,6 @@ class ModelVersionsAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
                            body=body,
@@ -4825,7 +4738,6 @@ class RegisteredModelsAPI:
         if schema_name is not None: body['schema_name'] = schema_name
         if storage_location is not None: body['storage_location'] = storage_location
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/models', body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
@@ -4847,6 +4759,26 @@ class RegisteredModelsAPI:
         headers = {}
         self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}', headers=headers)
 
+    def delete_alias(self, full_name: str, alias: str):
+        """Delete a Registered Model Alias.
+        
+        Deletes a registered model alias.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param alias: str
+          The name of the alias
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}', headers=headers)
+
     def get(self, full_name: str) -> RegisteredModelInfo:
         """Get a Registered Model.
         
@@ -4863,7 +4795,6 @@ class RegisteredModelsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/models/{full_name}', headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
@@ -4919,6 +4850,33 @@ class RegisteredModelsAPI:
                 return
             query['page_token'] = json['next_page_token']
 
+    def set_alias(self, full_name: str, alias: str, version_num: int) -> RegisteredModelAlias:
+        """Set a Registered Model Alias.
+        
+        Set an alias on the specified registered model.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the registered model
+        :param alias: str
+          The name of the alias
+        :param version_num: int
+          The version number of the model version to which the alias points
+        
+        :returns: :class:`RegisteredModelAlias`
+        """
+        body = {}
+        if version_num is not None: body['version_num'] = version_num
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PUT',
+                           f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}',
+                           body=body,
+                           headers=headers)
+        return RegisteredModelAlias.from_dict(res)
+
     def update(self,
                full_name: str,
                *,
@@ -4951,7 +4909,6 @@ class RegisteredModelsAPI:
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/models/{full_name}', body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
@@ -4997,7 +4954,6 @@ class SchemasAPI:
         if properties is not None: body['properties'] = properties
         if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
@@ -5029,7 +4985,6 @@ class SchemasAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
         return SchemaInfo.from_dict(res)
 
@@ -5050,7 +5005,6 @@ class SchemasAPI:
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
         return [SchemaInfo.from_dict(v) for v in json.get('schemas', [])]
 
@@ -5087,65 +5041,8 @@ class SchemasAPI:
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/schemas/{full_name}', body=body, headers=headers)
         return SchemaInfo.from_dict(res)
-
-
-class SecurableTagsAPI:
-    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
-    Tags are useful for organizing and categorizing different entities within a metastore. SecurableTags are
-    attached to Unity Catalog securable entities."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def list(self, securable_type: ListSecurableType, full_name: str) -> Iterator[TagSecurableAssignment]:
-        """Get tags for a securable.
-        
-        Gets tag assignments for an entity. The caller must be either the owner of the securable, or a
-        metastore admin, or have at least USE / SELECT privilege on the associated securable.
-        
-        :param securable_type: :class:`ListSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        
-        :returns: Iterator over :class:`TagSecurableAssignment`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
-                            headers=headers)
-        return [TagSecurableAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
-
-    def update(self, changes: TagChanges, securable_type: UpdateSecurableType,
-               full_name: str) -> TagSecurableAssignmentsList:
-        """Update tags for a securable.
-        
-        Update tag assignments for an entity The caller must be either the owner of the securable, or a
-        metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on the associated securable.
-        
-        :param changes: :class:`TagChanges`
-          Desired changes to be made to the tag assignments on the entity
-        :param securable_type: :class:`UpdateSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        
-        :returns: :class:`TagSecurableAssignmentsList`
-        """
-        body = {}
-        if changes is not None: body['changes'] = changes.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
-                           body=body,
-                           headers=headers)
-        return TagSecurableAssignmentsList.from_dict(res)
 
 
 class StorageCredentialsAPI:
@@ -5216,7 +5113,6 @@ class StorageCredentialsAPI:
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/storage-credentials', body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
@@ -5255,7 +5151,6 @@ class StorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
@@ -5271,7 +5166,6 @@ class StorageCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
         return [StorageCredentialInfo.from_dict(v) for v in json.get('storage_credentials', [])]
 
@@ -5330,7 +5224,6 @@ class StorageCredentialsAPI:
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/storage-credentials/{name}',
                            body=body,
@@ -5391,77 +5284,11 @@ class StorageCredentialsAPI:
         if storage_credential_name is not None: body['storage_credential_name'] = storage_credential_name
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST',
                            '/api/2.1/unity-catalog/validate-storage-credentials',
                            body=body,
                            headers=headers)
         return ValidateStorageCredentialResponse.from_dict(res)
-
-
-class SubentityTagsAPI:
-    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
-    Tags are useful for organizing and categorizing different entities within a metastore. SubentityTags are
-    attached to Unity Catalog subentities."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def list(self, securable_type: ListSecurableType, full_name: str,
-             subentity_name: str) -> Iterator[TagsSubentityAssignment]:
-        """Get tags for a subentity.
-        
-        Gets tag assignments for a subentity associated with a securable entity. Eg. column of a table The
-        caller must be either the owner of the securable, or a metastore admin, or have at least USE / SELECT
-        privilege on the associated securable.
-        
-        :param securable_type: :class:`ListSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        :param subentity_name: str
-          The name of subentity associated with the securable entity
-        
-        :returns: Iterator over :class:`TagsSubentityAssignment`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        json = self._api.do(
-            'GET',
-            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
-            headers=headers)
-        return [TagsSubentityAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
-
-    def update(self, changes: TagChanges, securable_type: UpdateSecurableType, full_name: str,
-               subentity_name: str) -> TagSubentityAssignmentsList:
-        """Update tags for a subentity.
-        
-        Update tag assignments for a subentity associated with a securable entity. The caller must be either
-        the owner of the securable, or a metastore admin, or have at least USE / SELECT and APPLY_TAG
-        privilege on the associated securable.
-        
-        :param changes: :class:`TagChanges`
-          Desired changes to be made to the tag assignments on the entity
-        :param securable_type: :class:`UpdateSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        :param subentity_name: str
-          The name of subentity associated with the securable entity
-        
-        :returns: :class:`TagSubentityAssignmentsList`
-        """
-        body = {}
-        if changes is not None: body['changes'] = changes.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
-            body=body,
-            headers=headers)
-        return TagSubentityAssignmentsList.from_dict(res)
 
 
 class SystemSchemasAPI:
@@ -5522,7 +5349,6 @@ class SystemSchemasAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
                             headers=headers)
@@ -5568,7 +5394,6 @@ class TableConstraintsAPI:
         if constraint is not None: body['constraint'] = constraint.as_dict()
         if full_name_arg is not None: body['full_name_arg'] = full_name_arg
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/constraints', body=body, headers=headers)
         return TableConstraint.from_dict(res)
 
@@ -5654,7 +5479,6 @@ class TablesAPI:
         query = {}
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
         return TableInfo.from_dict(res)
 
@@ -5840,7 +5664,6 @@ class VolumesAPI:
         if storage_location is not None: body['storage_location'] = storage_location
         if volume_type is not None: body['volume_type'] = volume_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
@@ -5887,7 +5710,6 @@ class VolumesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
         return [VolumeInfo.from_dict(v) for v in json.get('volumes', [])]
 
@@ -5907,7 +5729,6 @@ class VolumesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
         return VolumeInfo.from_dict(res)
 
@@ -5943,7 +5764,6 @@ class VolumesAPI:
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/volumes/{full_name_arg}',
                            body=body,
@@ -5973,7 +5793,6 @@ class WorkspaceBindingsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
                            headers=headers)
@@ -6002,7 +5821,6 @@ class WorkspaceBindingsAPI:
         if assign_workspaces is not None: body['assign_workspaces'] = [v for v in assign_workspaces]
         if unassign_workspaces is not None: body['unassign_workspaces'] = [v for v in unassign_workspaces]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
                            body=body,

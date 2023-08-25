@@ -9,7 +9,7 @@ Catalogs
     the workspaces in a Databricks account. Users in different workspaces can share access to the same data,
     depending on privileges granted centrally in Unity Catalog.
 
-    .. py:method:: create(name [, comment, connection_name, properties, provider_name, share_name, storage_root])
+    .. py:method:: create(name [, comment, connection_name, options, properties, provider_name, share_name, storage_root])
 
         Usage:
 
@@ -37,6 +37,8 @@ Catalogs
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
@@ -118,7 +120,7 @@ Catalogs
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name [, comment, isolation_mode, owner, properties])
+    .. py:method:: update(name [, comment, isolation_mode, options, owner, properties])
 
         Usage:
 
@@ -148,6 +150,8 @@ Catalogs
           User-provided free-form text description.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)

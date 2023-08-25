@@ -114,7 +114,7 @@ Account Storage Credentials
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        :returns: :class:`ListStorageCredentialsResponse`
+        :returns: Iterator over :class:`StorageCredentialInfo`
         
 
     .. py:method:: update(metastore_id, name [, credential_info])

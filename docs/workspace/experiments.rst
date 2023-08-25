@@ -163,7 +163,7 @@ Experiments
         :param experiment_name: str
           Name of the associated experiment.
         
-        :returns: :class:`GetExperimentByNameResponse`
+        :returns: :class:`GetExperimentResponse`
         
 
     .. py:method:: get_experiment(experiment_id)
@@ -192,7 +192,7 @@ Experiments
         :param experiment_id: str
           ID of the associated experiment.
         
-        :returns: :class:`Experiment`
+        :returns: :class:`GetExperimentResponse`
         
 
     .. py:method:: get_experiment_permission_levels(experiment_id)
@@ -238,7 +238,7 @@ Experiments
           [Deprecated, use run_id instead] ID of the run from which to fetch metric values. This field will be
           removed in a future MLflow version.
         
-        :returns: :class:`GetMetricHistoryResponse`
+        :returns: Iterator over :class:`Metric`
         
 
     .. py:method:: get_run(run_id [, run_uuid])

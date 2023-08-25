@@ -88,7 +88,7 @@ class Delete:
 
 
 @dataclass
-class DownloadFileResponse:
+class DownloadResponse:
     contents: Optional[BinaryIO] = None
 
 
@@ -262,7 +262,6 @@ class DbfsAPI:
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/dbfs/create', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -313,7 +312,6 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
@@ -339,7 +337,6 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
         return [FileInfo.from_dict(v) for v in json.get('files', [])]
 
@@ -439,7 +436,6 @@ class DbfsAPI:
         if offset is not None: query['offset'] = offset
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
         return ReadResponse.from_dict(res)
 
@@ -450,7 +446,7 @@ class FilesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_file(self, file_path: str):
+    def delete(self, file_path: str):
         """Delete a file or directory.
         
         Deletes a file or directory.
@@ -464,7 +460,7 @@ class FilesAPI:
         headers = {}
         self._api.do('DELETE', f'/api/2.0/fs/files/{file_path}', headers=headers)
 
-    def download_file(self, file_path: str) -> DownloadFileResponse:
+    def download(self, file_path: str) -> DownloadResponse:
         """Download a file.
         
         Downloads a file of up to 2 GiB.
@@ -472,21 +468,20 @@ class FilesAPI:
         :param file_path: str
           The absolute path of the file or directory in DBFS.
         
-        :returns: :class:`DownloadFileResponse`
+        :returns: :class:`DownloadResponse`
         """
 
         headers = {'Accept': 'application/octet-stream', }
-
         res = self._api.do('GET', f'/api/2.0/fs/files/{file_path}', headers=headers, raw=True)
-        return DownloadFileResponse(contents=res)
+        return DownloadResponse(contents=res)
 
     def get_status(self, path: str) -> FileInfo:
-        """Get the status of a file or directory.
+        """Get file or directory status.
         
         Returns the status of a file or directory.
         
         :param path: str
-          The absolute path of the file or directory in the Files API.
+          The absolute path of the file or directory in the Files API, omitting the initial slash.
         
         :returns: :class:`FileInfo`
         """
@@ -494,11 +489,10 @@ class FilesAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', '/api/2.0/fs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
-    def upload_file(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
+    def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         """Upload a file.
         
         Uploads a file of up to 2 GiB.
@@ -507,7 +501,7 @@ class FilesAPI:
           The absolute path of the file or directory in DBFS.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
-          The flag that specifies whether to overwrite existing file/files.
+          If true, an existing file will be overwritten.
         
         
         """

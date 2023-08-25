@@ -46,6 +46,24 @@ Model Versions
         :returns: :class:`RegisteredModelInfo`
         
 
+    .. py:method:: get_by_alias(full_name, alias)
+
+        Get Model Version By Alias.
+        
+        Get a model version by alias.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param alias: str
+          The name of the alias
+        
+        :returns: :class:`ModelVersionInfo`
+        
+
     .. py:method:: list(full_name [, max_results, page_token])
 
         List Model Versions.

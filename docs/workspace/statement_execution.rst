@@ -170,7 +170,7 @@ Statement Execution
         
         
 
-    .. py:method:: execute_statement( [, byte_limit, catalog, disposition, format, on_wait_timeout, schema, statement, wait_timeout, warehouse_id])
+    .. py:method:: execute_statement( [, byte_limit, catalog, disposition, format, on_wait_timeout, parameters, row_limit, schema, statement, wait_timeout, warehouse_id])
 
         Execute a SQL statement.
         
@@ -248,6 +248,36 @@ Statement Execution
           
           `CANCEL` → the statement execution is canceled and the call returns immediately with a `CANCELED`
           state.
+        :param parameters: List[:class:`StatementParameterListItem`] (optional)
+          A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists
+          of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be
+          omitted. If the `type` field is omitted, the value is interpreted as a string.
+          
+          If the type is given, parameters will be checked for type correctness according to the given type. A
+          value is correct if the provided string can be converted to the requested type using the `cast`
+          function. The exact semantics are described in the section [`cast` function] of the SQL language
+          reference.
+          
+          For example, the following statement contains two parameters, `my_id` and `my_date`:
+          
+          SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+          
+          The parameters can be passed in the request body as follows:
+          
+          { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+          "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
+          "2020-01-01", "type": "DATE" } ] }
+          
+          Currently, positional parameters denoted by a `?` marker are not supported by the SQL Statement
+          Execution API.
+          
+          Also see the section [Parameter markers] of the SQL language reference.
+          
+          [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
+          [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+        :param row_limit: int (optional)
+          Applies the given row limit to the statement's result set with identical semantics as the SQL
+          `LIMIT` clause.
         :param schema: str (optional)
           Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
           

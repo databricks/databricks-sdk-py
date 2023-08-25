@@ -1237,7 +1237,6 @@ class PipelinesAPI:
         if target is not None: body['target'] = target
         if trigger is not None: body['trigger'] = trigger.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', '/api/2.0/pipelines', body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
 
@@ -1263,7 +1262,6 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}', headers=headers)
         return GetPipelineResponse.from_dict(res)
 
@@ -1279,7 +1277,6 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET',
                            f'/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels',
                            headers=headers)
@@ -1297,7 +1294,6 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/permissions/pipelines/{pipeline_id}', headers=headers)
         return PipelinePermissions.from_dict(res)
 
@@ -1315,7 +1311,6 @@ class PipelinesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates/{update_id}', headers=headers)
         return GetUpdateResponse.from_dict(res)
 
@@ -1449,7 +1444,6 @@ class PipelinesAPI:
         if page_token is not None: query['page_token'] = page_token
         if until_update_id is not None: query['until_update_id'] = until_update_id
         headers = {'Accept': 'application/json', }
-
         res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
 
@@ -1491,7 +1485,6 @@ class PipelinesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PUT', f'/api/2.0/permissions/pipelines/{pipeline_id}', body=body, headers=headers)
         return PipelinePermissions.from_dict(res)
 
@@ -1528,7 +1521,6 @@ class PipelinesAPI:
             body['full_refresh_selection'] = [v for v in full_refresh_selection]
         if refresh_selection is not None: body['refresh_selection'] = [v for v in refresh_selection]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
 
@@ -1662,7 +1654,6 @@ class PipelinesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/pipelines/{pipeline_id}',
                            body=body,
