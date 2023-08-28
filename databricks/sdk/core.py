@@ -990,7 +990,7 @@ class ApiClient:
            data=None) -> Union[dict, BinaryIO]:
         # Remove extra `/` from path for Files API
         # Once we've fixed the OpenAPI spec, we can remove this
-        path = path.replace('/api/2.0/fs/files//', '/api/2.0/fs/files/')
+        path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
         if headers is None:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
