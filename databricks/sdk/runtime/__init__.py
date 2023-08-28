@@ -33,6 +33,9 @@ def init_runtime_repl_auth():
         if ctx is None:
             logger.debug('Empty REPL context returned, skipping runtime auth')
             return None, None
+        if ctx.workspaceUrl is None:
+            logger.debug('Workspace URL is not available, skipping runtime auth')
+            return None, None
         host = f'https://{ctx.workspaceUrl}'
 
         def inner() -> Dict[str, str]:
