@@ -247,6 +247,7 @@ class CreateWorkspaceRequest:
     cloud: Optional[str] = None
     cloud_resource_container: Optional['CloudResourceContainer'] = None
     credentials_id: Optional[str] = None
+    custom_tags: Optional['Dict[str,str]'] = None
     deployment_name: Optional[str] = None
     gcp_managed_network_config: Optional['GcpManagedNetworkConfig'] = None
     gke_config: Optional['GkeConfig'] = None
@@ -265,6 +266,7 @@ class CreateWorkspaceRequest:
         if self.cloud_resource_container:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
@@ -289,6 +291,7 @@ class CreateWorkspaceRequest:
                    cloud=d.get('cloud', None),
                    cloud_resource_container=_from_dict(d, 'cloud_resource_container', CloudResourceContainer),
                    credentials_id=d.get('credentials_id', None),
+                   custom_tags=d.get('custom_tags', None),
                    deployment_name=d.get('deployment_name', None),
                    gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
                                                          GcpManagedNetworkConfig),
@@ -328,6 +331,9 @@ class Credential:
                    creation_time=d.get('creation_time', None),
                    credentials_id=d.get('credentials_id', None),
                    credentials_name=d.get('credentials_name', None))
+
+
+CustomTags = Dict[str, str]
 
 
 @dataclass
@@ -779,6 +785,7 @@ class StsRole:
 class UpdateWorkspaceRequest:
     aws_region: Optional[str] = None
     credentials_id: Optional[str] = None
+    custom_tags: Optional['Dict[str,str]'] = None
     managed_services_customer_managed_key_id: Optional[str] = None
     network_id: Optional[str] = None
     storage_configuration_id: Optional[str] = None
@@ -789,6 +796,7 @@ class UpdateWorkspaceRequest:
         body = {}
         if self.aws_region is not None: body['aws_region'] = self.aws_region
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
         if self.network_id is not None: body['network_id'] = self.network_id
@@ -803,6 +811,7 @@ class UpdateWorkspaceRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceRequest':
         return cls(aws_region=d.get('aws_region', None),
                    credentials_id=d.get('credentials_id', None),
+                   custom_tags=d.get('custom_tags', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
                    network_id=d.get('network_id', None),
@@ -910,6 +919,7 @@ class Workspace:
     cloud_resource_container: Optional['CloudResourceContainer'] = None
     creation_time: Optional[int] = None
     credentials_id: Optional[str] = None
+    custom_tags: Optional['Dict[str,str]'] = None
     deployment_name: Optional[str] = None
     gcp_managed_network_config: Optional['GcpManagedNetworkConfig'] = None
     gke_config: Optional['GkeConfig'] = None
@@ -934,6 +944,7 @@ class Workspace:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
         if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
@@ -964,6 +975,7 @@ class Workspace:
                    cloud_resource_container=_from_dict(d, 'cloud_resource_container', CloudResourceContainer),
                    creation_time=d.get('creation_time', None),
                    credentials_id=d.get('credentials_id', None),
+                   custom_tags=d.get('custom_tags', None),
                    deployment_name=d.get('deployment_name', None),
                    gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
                                                          GcpManagedNetworkConfig),
@@ -1778,6 +1790,7 @@ class WorkspacesAPI:
                cloud: Optional[str] = None,
                cloud_resource_container: Optional[CloudResourceContainer] = None,
                credentials_id: Optional[str] = None,
+               custom_tags: Optional[Dict[str, str]] = None,
                deployment_name: Optional[str] = None,
                gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
                gke_config: Optional[GkeConfig] = None,
@@ -1810,6 +1823,10 @@ class WorkspacesAPI:
           The general workspace configurations that are specific to cloud providers.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
+        :param custom_tags: Dict[str,str] (optional)
+          The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string
+          of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The
+          key can be of maximum length of 127 characters, and cannot be empty.
         :param deployment_name: str (optional)
           The deployment name defines part of the subdomain for the workspace. The workspace URL for web
           application and REST APIs is `<workspace-deployment-name>.cloud.databricks.com`. For example, if the
@@ -1894,6 +1911,7 @@ class WorkspacesAPI:
         if cloud_resource_container is not None:
             body['cloud_resource_container'] = cloud_resource_container.as_dict()
         if credentials_id is not None: body['credentials_id'] = credentials_id
+        if custom_tags is not None: body['custom_tags'] = custom_tags
         if deployment_name is not None: body['deployment_name'] = deployment_name
         if gcp_managed_network_config is not None:
             body['gcp_managed_network_config'] = gcp_managed_network_config.as_dict()
@@ -1926,6 +1944,7 @@ class WorkspacesAPI:
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         credentials_id: Optional[str] = None,
+        custom_tags: Optional[Dict[str, str]] = None,
         deployment_name: Optional[str] = None,
         gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
         gke_config: Optional[GkeConfig] = None,
@@ -1941,6 +1960,7 @@ class WorkspacesAPI:
                            cloud=cloud,
                            cloud_resource_container=cloud_resource_container,
                            credentials_id=credentials_id,
+                           custom_tags=custom_tags,
                            deployment_name=deployment_name,
                            gcp_managed_network_config=gcp_managed_network_config,
                            gke_config=gke_config,
@@ -2022,6 +2042,7 @@ class WorkspacesAPI:
                *,
                aws_region: Optional[str] = None,
                credentials_id: Optional[str] = None,
+               custom_tags: Optional[Dict[str, str]] = None,
                managed_services_customer_managed_key_id: Optional[str] = None,
                network_id: Optional[str] = None,
                storage_configuration_id: Optional[str] = None,
@@ -2047,7 +2068,8 @@ class WorkspacesAPI:
         for workspace storage. - Private access settings ID to add PrivateLink support. You can add or update
         the private access settings ID to upgrade a workspace to add support for front-end, back-end, or both
         types of connectivity. You cannot remove (downgrade) any existing front-end or back-end PrivateLink
-        support on a workspace.
+        support on a workspace. - Custom tags. Given you provide an empty custom tags, the update would not be
+        applied.
         
         After calling the `PATCH` operation to update the workspace configuration, make repeated `GET`
         requests with the workspace ID and check the workspace status. The workspace is successful if the
@@ -2079,7 +2101,7 @@ class WorkspacesAPI:
         storage. - Private access settings ID to add PrivateLink support. You can add or update the private
         access settings ID to upgrade a workspace to add support for front-end, back-end, or both types of
         connectivity. You cannot remove (downgrade) any existing front-end or back-end PrivateLink support on
-        a workspace.
+        a workspace. - Custom tags. Given you provide an empty custom tags, the update would not be applied.
         
         **Important**: To update a running workspace, your workspace must have no running compute resources
         that run in your workspace's VPC in the Classic data plane. For example, stop all all-purpose
@@ -2127,6 +2149,10 @@ class WorkspacesAPI:
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object. This parameter is available for updating both
           failed and running workspaces.
+        :param custom_tags: Dict[str,str] (optional)
+          The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string
+          of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The
+          key can be of maximum length of 127 characters, and cannot be empty.
         :param managed_services_customer_managed_key_id: str (optional)
           The ID of the workspace's managed services encryption key configuration object. This parameter is
           available only for updating failed workspaces.
@@ -2148,6 +2174,7 @@ class WorkspacesAPI:
         body = {}
         if aws_region is not None: body['aws_region'] = aws_region
         if credentials_id is not None: body['credentials_id'] = credentials_id
+        if custom_tags is not None: body['custom_tags'] = custom_tags
         if managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
         if network_id is not None: body['network_id'] = network_id
@@ -2167,6 +2194,7 @@ class WorkspacesAPI:
         *,
         aws_region: Optional[str] = None,
         credentials_id: Optional[str] = None,
+        custom_tags: Optional[Dict[str, str]] = None,
         managed_services_customer_managed_key_id: Optional[str] = None,
         network_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
@@ -2174,6 +2202,7 @@ class WorkspacesAPI:
         timeout=timedelta(minutes=20)) -> Workspace:
         return self.update(aws_region=aws_region,
                            credentials_id=credentials_id,
+                           custom_tags=custom_tags,
                            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
                            network_id=network_id,
                            storage_configuration_id=storage_configuration_id,

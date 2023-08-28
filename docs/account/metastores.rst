@@ -96,7 +96,7 @@ Account Metastores
         
         Gets all Unity Catalog metastores associated with an account specified by ID.
         
-        :returns: :class:`ListMetastoresResponse`
+        :returns: Iterator over :class:`MetastoreInfo`
         
 
     .. py:method:: update(metastore_id [, metastore_info])

@@ -746,20 +746,6 @@ class FileInfo:
 
 
 @dataclass
-class GetExperimentByNameResponse:
-    experiment: Optional['Experiment'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.experiment: body['experiment'] = self.experiment.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentByNameResponse':
-        return cls(experiment=_from_dict(d, 'experiment', Experiment))
-
-
-@dataclass
 class GetExperimentPermissionLevelsResponse:
     permission_levels: Optional['List[ExperimentPermissionsDescription]'] = None
 
@@ -771,6 +757,20 @@ class GetExperimentPermissionLevelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentPermissionLevelsResponse':
         return cls(permission_levels=_repeated(d, 'permission_levels', ExperimentPermissionsDescription))
+
+
+@dataclass
+class GetExperimentResponse:
+    experiment: Optional['Experiment'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.experiment: body['experiment'] = self.experiment.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentResponse':
+        return cls(experiment=_from_dict(d, 'experiment', Experiment))
 
 
 @dataclass
@@ -2563,7 +2563,7 @@ class ExperimentsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/mlflow/runs/delete-tag', body=body, headers=headers)
 
-    def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
+    def get_by_name(self, experiment_name: str) -> GetExperimentResponse:
         """Get metadata.
         
         Gets metadata for an experiment.
@@ -2577,16 +2577,16 @@ class ExperimentsAPI:
         :param experiment_name: str
           Name of the associated experiment.
         
-        :returns: :class:`GetExperimentByNameResponse`
+        :returns: :class:`GetExperimentResponse`
         """
 
         query = {}
         if experiment_name is not None: query['experiment_name'] = experiment_name
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', '/api/2.0/mlflow/experiments/get-by-name', query=query, headers=headers)
-        return GetExperimentByNameResponse.from_dict(res)
+        return GetExperimentResponse.from_dict(res)
 
-    def get_experiment(self, experiment_id: str) -> Experiment:
+    def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
         """Get an experiment.
         
         Gets metadata for an experiment. This method works on deleted experiments.
@@ -2594,14 +2594,14 @@ class ExperimentsAPI:
         :param experiment_id: str
           ID of the associated experiment.
         
-        :returns: :class:`Experiment`
+        :returns: :class:`GetExperimentResponse`
         """
 
         query = {}
         if experiment_id is not None: query['experiment_id'] = experiment_id
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query, headers=headers)
-        return Experiment.from_dict(res)
+        return GetExperimentResponse.from_dict(res)
 
     def get_experiment_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Get experiment permission levels.
@@ -2641,7 +2641,7 @@ class ExperimentsAPI:
                     max_results: Optional[int] = None,
                     page_token: Optional[str] = None,
                     run_id: Optional[str] = None,
-                    run_uuid: Optional[str] = None) -> GetMetricHistoryResponse:
+                    run_uuid: Optional[str] = None) -> Iterator[Metric]:
         """Get history of a given metric within a run.
         
         Gets a list of all values for the specified metric for a given run.
@@ -2659,7 +2659,7 @@ class ExperimentsAPI:
           [Deprecated, use run_id instead] ID of the run from which to fetch metric values. This field will be
           removed in a future MLflow version.
         
-        :returns: :class:`GetMetricHistoryResponse`
+        :returns: Iterator over :class:`Metric`
         """
 
         query = {}
@@ -2669,8 +2669,16 @@ class ExperimentsAPI:
         if run_id is not None: query['run_id'] = run_id
         if run_uuid is not None: query['run_uuid'] = run_uuid
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query, headers=headers)
-        return GetMetricHistoryResponse.from_dict(res)
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query, headers=headers)
+            if 'metrics' not in json or not json['metrics']:
+                return
+            for v in json['metrics']:
+                yield Metric.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
         """Get a run.

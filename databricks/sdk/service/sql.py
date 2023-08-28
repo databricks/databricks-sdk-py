@@ -800,6 +800,8 @@ class ExecuteStatementRequest:
     disposition: Optional['Disposition'] = None
     format: Optional['Format'] = None
     on_wait_timeout: Optional['TimeoutAction'] = None
+    parameters: Optional['List[StatementParameterListItem]'] = None
+    row_limit: Optional[int] = None
     schema: Optional[str] = None
     statement: Optional[str] = None
     wait_timeout: Optional[str] = None
@@ -812,6 +814,8 @@ class ExecuteStatementRequest:
         if self.disposition is not None: body['disposition'] = self.disposition.value
         if self.format is not None: body['format'] = self.format.value
         if self.on_wait_timeout is not None: body['on_wait_timeout'] = self.on_wait_timeout.value
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.row_limit is not None: body['row_limit'] = self.row_limit
         if self.schema is not None: body['schema'] = self.schema
         if self.statement is not None: body['statement'] = self.statement
         if self.wait_timeout is not None: body['wait_timeout'] = self.wait_timeout
@@ -825,6 +829,8 @@ class ExecuteStatementRequest:
                    disposition=_enum(d, 'disposition', Disposition),
                    format=_enum(d, 'format', Format),
                    on_wait_timeout=_enum(d, 'on_wait_timeout', TimeoutAction),
+                   parameters=_repeated(d, 'parameters', StatementParameterListItem),
+                   row_limit=d.get('row_limit', None),
                    schema=d.get('schema', None),
                    statement=d.get('statement', None),
                    wait_timeout=d.get('wait_timeout', None),
@@ -1932,6 +1938,24 @@ class State(Enum):
     STARTING = 'STARTING'
     STOPPED = 'STOPPED'
     STOPPING = 'STOPPING'
+
+
+@dataclass
+class StatementParameterListItem:
+    name: str
+    type: Optional[str] = None
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.type is not None: body['type'] = self.type
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'StatementParameterListItem':
+        return cls(name=d.get('name', None), type=d.get('type', None), value=d.get('value', None))
 
 
 class StatementState(Enum):
@@ -3206,6 +3230,8 @@ class StatementExecutionAPI:
                           disposition: Optional[Disposition] = None,
                           format: Optional[Format] = None,
                           on_wait_timeout: Optional[TimeoutAction] = None,
+                          parameters: Optional[List[StatementParameterListItem]] = None,
+                          row_limit: Optional[int] = None,
                           schema: Optional[str] = None,
                           statement: Optional[str] = None,
                           wait_timeout: Optional[str] = None,
@@ -3286,6 +3312,36 @@ class StatementExecutionAPI:
           
           `CANCEL` → the statement execution is canceled and the call returns immediately with a `CANCELED`
           state.
+        :param parameters: List[:class:`StatementParameterListItem`] (optional)
+          A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists
+          of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be
+          omitted. If the `type` field is omitted, the value is interpreted as a string.
+          
+          If the type is given, parameters will be checked for type correctness according to the given type. A
+          value is correct if the provided string can be converted to the requested type using the `cast`
+          function. The exact semantics are described in the section [`cast` function] of the SQL language
+          reference.
+          
+          For example, the following statement contains two parameters, `my_id` and `my_date`:
+          
+          SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+          
+          The parameters can be passed in the request body as follows:
+          
+          { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+          "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
+          "2020-01-01", "type": "DATE" } ] }
+          
+          Currently, positional parameters denoted by a `?` marker are not supported by the SQL Statement
+          Execution API.
+          
+          Also see the section [Parameter markers] of the SQL language reference.
+          
+          [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
+          [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+        :param row_limit: int (optional)
+          Applies the given row limit to the statement's result set with identical semantics as the SQL
+          `LIMIT` clause.
         :param schema: str (optional)
           Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
           
@@ -3308,6 +3364,8 @@ class StatementExecutionAPI:
         if disposition is not None: body['disposition'] = disposition.value
         if format is not None: body['format'] = format.value
         if on_wait_timeout is not None: body['on_wait_timeout'] = on_wait_timeout.value
+        if parameters is not None: body['parameters'] = [v.as_dict() for v in parameters]
+        if row_limit is not None: body['row_limit'] = row_limit
         if schema is not None: body['schema'] = schema
         if statement is not None: body['statement'] = statement
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout

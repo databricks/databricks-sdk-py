@@ -271,6 +271,7 @@ class AzureServicePrincipal:
 
 @dataclass
 class CatalogInfo:
+    browse_only: Optional[bool] = None
     catalog_type: Optional['CatalogType'] = None
     comment: Optional[str] = None
     connection_name: Optional[str] = None
@@ -278,6 +279,7 @@ class CatalogInfo:
     created_by: Optional[str] = None
     effective_predictive_optimization_flag: Optional['EffectivePredictiveOptimizationFlag'] = None
     enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
+    full_name: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -285,6 +287,9 @@ class CatalogInfo:
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
     provider_name: Optional[str] = None
+    provisioning_info: Optional['ProvisioningInfo'] = None
+    securable_kind: Optional['CatalogInfoSecurableKind'] = None
+    securable_type: Optional[str] = None
     share_name: Optional[str] = None
     storage_location: Optional[str] = None
     storage_root: Optional[str] = None
@@ -293,6 +298,7 @@ class CatalogInfo:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.browse_only is not None: body['browse_only'] = self.browse_only
         if self.catalog_type is not None: body['catalog_type'] = self.catalog_type.value
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_name is not None: body['connection_name'] = self.connection_name
@@ -304,6 +310,7 @@ class CatalogInfo:
                 )
         if self.enable_predictive_optimization is not None:
             body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
+        if self.full_name is not None: body['full_name'] = self.full_name
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -311,6 +318,9 @@ class CatalogInfo:
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
+        if self.provisioning_info is not None: body['provisioning_info'] = self.provisioning_info.value
+        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
+        if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.share_name is not None: body['share_name'] = self.share_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
         if self.storage_root is not None: body['storage_root'] = self.storage_root
@@ -320,7 +330,8 @@ class CatalogInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CatalogInfo':
-        return cls(catalog_type=_enum(d, 'catalog_type', CatalogType),
+        return cls(browse_only=d.get('browse_only', None),
+                   catalog_type=_enum(d, 'catalog_type', CatalogType),
                    comment=d.get('comment', None),
                    connection_name=d.get('connection_name', None),
                    created_at=d.get('created_at', None),
@@ -329,6 +340,7 @@ class CatalogInfo:
                        d, 'effective_predictive_optimization_flag', EffectivePredictiveOptimizationFlag),
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
                                                         EnablePredictiveOptimization),
+                   full_name=d.get('full_name', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -336,11 +348,34 @@ class CatalogInfo:
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
+                   provisioning_info=_enum(d, 'provisioning_info', ProvisioningInfo),
+                   securable_kind=_enum(d, 'securable_kind', CatalogInfoSecurableKind),
+                   securable_type=d.get('securable_type', None),
                    share_name=d.get('share_name', None),
                    storage_location=d.get('storage_location', None),
                    storage_root=d.get('storage_root', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
+
+
+class CatalogInfoSecurableKind(Enum):
+    """Kind of catalog securable."""
+
+    CATALOG_DELTASHARING = 'CATALOG_DELTASHARING'
+    CATALOG_FOREIGN_BIGQUERY = 'CATALOG_FOREIGN_BIGQUERY'
+    CATALOG_FOREIGN_DATABRICKS = 'CATALOG_FOREIGN_DATABRICKS'
+    CATALOG_FOREIGN_MYSQL = 'CATALOG_FOREIGN_MYSQL'
+    CATALOG_FOREIGN_POSTGRESQL = 'CATALOG_FOREIGN_POSTGRESQL'
+    CATALOG_FOREIGN_REDSHIFT = 'CATALOG_FOREIGN_REDSHIFT'
+    CATALOG_FOREIGN_SNOWFLAKE = 'CATALOG_FOREIGN_SNOWFLAKE'
+    CATALOG_FOREIGN_SQLDW = 'CATALOG_FOREIGN_SQLDW'
+    CATALOG_FOREIGN_SQLSERVER = 'CATALOG_FOREIGN_SQLSERVER'
+    CATALOG_INTERNAL = 'CATALOG_INTERNAL'
+    CATALOG_ONLINE = 'CATALOG_ONLINE'
+    CATALOG_ONLINE_INDEX = 'CATALOG_ONLINE_INDEX'
+    CATALOG_STANDARD = 'CATALOG_STANDARD'
+    CATALOG_SYSTEM = 'CATALOG_SYSTEM'
+    CATALOG_SYSTEM_DELTASHARING = 'CATALOG_SYSTEM_DELTASHARING'
 
 
 class CatalogType(Enum):
@@ -455,7 +490,7 @@ class ConnectionInfo:
     options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
-    provisioning_state: Optional['ProvisioningState'] = None
+    provisioning_info: Optional['ProvisioningInfo'] = None
     read_only: Optional[bool] = None
     securable_kind: Optional['ConnectionInfoSecurableKind'] = None
     securable_type: Optional[str] = None
@@ -477,7 +512,7 @@ class ConnectionInfo:
         if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
-        if self.provisioning_state is not None: body['provisioning_state'] = self.provisioning_state.value
+        if self.provisioning_info is not None: body['provisioning_info'] = self.provisioning_info.value
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
         if self.securable_type is not None: body['securable_type'] = self.securable_type
@@ -500,7 +535,7 @@ class ConnectionInfo:
                    options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
-                   provisioning_state=_enum(d, 'provisioning_state', ProvisioningState),
+                   provisioning_info=_enum(d, 'provisioning_info', ProvisioningInfo),
                    read_only=d.get('read_only', None),
                    securable_kind=_enum(d, 'securable_kind', ConnectionInfoSecurableKind),
                    securable_type=d.get('securable_type', None),
@@ -540,6 +575,7 @@ class CreateCatalog:
     name: str
     comment: Optional[str] = None
     connection_name: Optional[str] = None
+    options: Optional['Dict[str,str]'] = None
     properties: Optional['Dict[str,str]'] = None
     provider_name: Optional[str] = None
     share_name: Optional[str] = None
@@ -550,6 +586,7 @@ class CreateCatalog:
         if self.comment is not None: body['comment'] = self.comment
         if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
         if self.share_name is not None: body['share_name'] = self.share_name
@@ -561,6 +598,7 @@ class CreateCatalog:
         return cls(comment=d.get('comment', None),
                    connection_name=d.get('connection_name', None),
                    name=d.get('name', None),
+                   options=d.get('options', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
                    share_name=d.get('share_name', None),
@@ -780,6 +818,32 @@ class CreateMetastoreAssignment:
 
 
 @dataclass
+class CreateRegisteredModelRequest:
+    catalog_name: str
+    schema_name: str
+    name: str
+    comment: Optional[str] = None
+    storage_location: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateRegisteredModelRequest':
+        return cls(catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   name=d.get('name', None),
+                   schema_name=d.get('schema_name', None),
+                   storage_location=d.get('storage_location', None))
+
+
+@dataclass
 class CreateSchema:
     name: str
     catalog_name: str
@@ -938,6 +1002,14 @@ class DatabricksGcpServiceAccountResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DatabricksGcpServiceAccountResponse':
         return cls(credential_id=d.get('credential_id', None), email=d.get('email', None))
+
+
+@dataclass
+class DeleteModelVersionRequest:
+    """Delete a Model Version"""
+
+    full_name: str
+    version: int
 
 
 @dataclass
@@ -1380,6 +1452,14 @@ class FunctionParameterType(Enum):
 
 
 @dataclass
+class GetByAliasRequest:
+    """Get Model Version By Alias"""
+
+    full_name: str
+    alias: str
+
+
+@dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
     created_at: Optional[int] = None
@@ -1458,6 +1538,14 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
 
     INTERNAL = 'INTERNAL'
     INTERNAL_AND_EXTERNAL = 'INTERNAL_AND_EXTERNAL'
+
+
+@dataclass
+class GetModelVersionRequest:
+    """Get a Model Version"""
+
+    full_name: str
+    version: int
 
 
 class IsolationMode(Enum):
@@ -1539,6 +1627,49 @@ class ListMetastoresResponse:
 
 
 @dataclass
+class ListModelVersionsRequest:
+    """List Model Versions"""
+
+    full_name: str
+    max_results: Optional[int] = None
+    page_token: Optional[str] = None
+
+
+@dataclass
+class ListModelVersionsResponse:
+    model_versions: Optional['List[ModelVersionInfo]'] = None
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListModelVersionsResponse':
+        return cls(model_versions=_repeated(d, 'model_versions', ModelVersionInfo),
+                   next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListRegisteredModelsResponse:
+    next_page_token: Optional[str] = None
+    registered_models: Optional['List[RegisteredModelInfo]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
+        return cls(next_page_token=d.get('next_page_token', None),
+                   registered_models=_repeated(d, 'registered_models', RegisteredModelInfo))
+
+
+@dataclass
 class ListSchemasResponse:
     schemas: Optional['List[SchemaInfo]'] = None
 
@@ -1550,13 +1681,6 @@ class ListSchemasResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSchemasResponse':
         return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
-
-
-class ListSecurableType(Enum):
-
-    CATALOG = 'catalog'
-    SCHEMA = 'schema'
-    TABLE = 'table'
 
 
 @dataclass
@@ -1742,6 +1866,79 @@ class MetastoreInfoDeltaSharingScope(Enum):
 
 
 @dataclass
+class ModelVersionInfo:
+    catalog_name: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    id: Optional[str] = None
+    metastore_id: Optional[str] = None
+    model_name: Optional[str] = None
+    model_version_dependencies: Optional['List[Dependency]'] = None
+    run_id: Optional[str] = None
+    run_workspace_id: Optional[int] = None
+    schema_name: Optional[str] = None
+    source: Optional[str] = None
+    status: Optional['ModelVersionInfoStatus'] = None
+    storage_location: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+    version: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.id is not None: body['id'] = self.id
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version_dependencies:
+            body['model_version_dependencies'] = [v.as_dict() for v in self.model_version_dependencies]
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_workspace_id is not None: body['run_workspace_id'] = self.run_workspace_id
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.source is not None: body['source'] = self.source
+        if self.status is not None: body['status'] = self.status.value
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ModelVersionInfo':
+        return cls(catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   id=d.get('id', None),
+                   metastore_id=d.get('metastore_id', None),
+                   model_name=d.get('model_name', None),
+                   model_version_dependencies=_repeated(d, 'model_version_dependencies', Dependency),
+                   run_id=d.get('run_id', None),
+                   run_workspace_id=d.get('run_workspace_id', None),
+                   schema_name=d.get('schema_name', None),
+                   source=d.get('source', None),
+                   status=_enum(d, 'status', ModelVersionInfoStatus),
+                   storage_location=d.get('storage_location', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None),
+                   version=d.get('version', None))
+
+
+class ModelVersionInfoStatus(Enum):
+    """Current status of the model version. Newly created model versions start in PENDING_REGISTRATION
+    status, then move to READY status once the model version files are uploaded and the model
+    version is finalized. Only model versions in READY status can be loaded for inference or served."""
+
+    FAILED_REGISTRATION = 'FAILED_REGISTRATION'
+    PENDING_REGISTRATION = 'PENDING_REGISTRATION'
+    READY = 'READY'
+
+
+@dataclass
 class NamedTableConstraint:
     name: str
 
@@ -1817,6 +2014,7 @@ class Privilege(Enum):
     CREATE_FUNCTION = 'CREATE_FUNCTION'
     CREATE_MANAGED_STORAGE = 'CREATE_MANAGED_STORAGE'
     CREATE_MATERIALIZED_VIEW = 'CREATE_MATERIALIZED_VIEW'
+    CREATE_MODEL = 'CREATE_MODEL'
     CREATE_PROVIDER = 'CREATE_PROVIDER'
     CREATE_RECIPIENT = 'CREATE_RECIPIENT'
     CREATE_SCHEMA = 'CREATE_SCHEMA'
@@ -1862,7 +2060,7 @@ class PrivilegeAssignment:
 PropertiesKvPairs = Dict[str, str]
 
 
-class ProvisioningState(Enum):
+class ProvisioningInfo(Enum):
     """Status of an asynchronously provisioned resource."""
 
     ACTIVE = 'ACTIVE'
@@ -1870,6 +2068,74 @@ class ProvisioningState(Enum):
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+
+
+@dataclass
+class RegisteredModelAlias:
+    """Registered model alias."""
+
+    alias_name: Optional[str] = None
+    version_num: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.alias_name is not None: body['alias_name'] = self.alias_name
+        if self.version_num is not None: body['version_num'] = self.version_num
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAlias':
+        return cls(alias_name=d.get('alias_name', None), version_num=d.get('version_num', None))
+
+
+@dataclass
+class RegisteredModelInfo:
+    aliases: Optional['List[RegisteredModelAlias]'] = None
+    catalog_name: Optional[str] = None
+    comment: Optional[str] = None
+    created_at: Optional[int] = None
+    created_by: Optional[str] = None
+    full_name: Optional[str] = None
+    metastore_id: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+    schema_name: Optional[str] = None
+    storage_location: Optional[str] = None
+    updated_at: Optional[int] = None
+    updated_by: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.aliases: body['aliases'] = [v.as_dict() for v in self.aliases]
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelInfo':
+        return cls(aliases=_repeated(d, 'aliases', RegisteredModelAlias),
+                   catalog_name=d.get('catalog_name', None),
+                   comment=d.get('comment', None),
+                   created_at=d.get('created_at', None),
+                   created_by=d.get('created_by', None),
+                   full_name=d.get('full_name', None),
+                   metastore_id=d.get('metastore_id', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None),
+                   schema_name=d.get('schema_name', None),
+                   storage_location=d.get('storage_location', None),
+                   updated_at=d.get('updated_at', None),
+                   updated_by=d.get('updated_by', None))
 
 
 @dataclass
@@ -1974,6 +2240,26 @@ class SetArtifactAllowlist:
     def from_dict(cls, d: Dict[str, any]) -> 'SetArtifactAllowlist':
         return cls(artifact_matchers=_from_dict(d, 'artifact_matchers', ArtifactMatcher),
                    artifact_type=_enum(d, 'artifact_type', ArtifactType))
+
+
+@dataclass
+class SetRegisteredModelAliasRequest:
+    full_name: str
+    alias: str
+    version_num: int
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.alias is not None: body['alias'] = self.alias
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.version_num is not None: body['version_num'] = self.version_num
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'SetRegisteredModelAliasRequest':
+        return cls(alias=d.get('alias', None),
+                   full_name=d.get('full_name', None),
+                   version_num=d.get('version_num', None))
 
 
 @dataclass
@@ -2295,145 +2581,11 @@ class TableType(Enum):
 
 
 @dataclass
-class TagChanges:
-    add_tags: Optional['List[TagKeyValuePair]'] = None
-    remove: Optional['List[str]'] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.add_tags: body['add_tags'] = [v.as_dict() for v in self.add_tags]
-        if self.remove: body['remove'] = [v for v in self.remove]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagChanges':
-        return cls(add_tags=_repeated(d, 'add_tags', TagKeyValuePair), remove=d.get('remove', None))
-
-
-@dataclass
-class TagKeyValuePair:
-    key: str
-    value: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value is not None: body['value'] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagKeyValuePair':
-        return cls(key=d.get('key', None), value=d.get('value', None))
-
-
-@dataclass
-class TagSecurable:
-    type: str
-    full_name: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.type is not None: body['type'] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurable':
-        return cls(full_name=d.get('full_name', None), type=d.get('type', None))
-
-
-@dataclass
-class TagSecurableAssignment:
-    securable: 'TagSecurable'
-    tag_key_value_pairs: 'List[TagKeyValuePair]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.securable: body['securable'] = self.securable.as_dict()
-        if self.tag_key_value_pairs:
-            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignment':
-        return cls(securable=_from_dict(d, 'securable', TagSecurable),
-                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
-
-
-@dataclass
-class TagSecurableAssignmentsList:
-    tag_assignments: 'List[TagSecurableAssignment]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSecurableAssignmentsList':
-        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagSecurableAssignment))
-
-
-@dataclass
-class TagSubentity:
-    type: str
-    full_name: str
-    subentity: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.subentity is not None: body['subentity'] = self.subentity
-        if self.type is not None: body['type'] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentity':
-        return cls(full_name=d.get('full_name', None),
-                   subentity=d.get('subentity', None),
-                   type=d.get('type', None))
-
-
-@dataclass
-class TagSubentityAssignmentsList:
-    tag_assignments: 'List[TagsSubentityAssignment]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.tag_assignments: body['tag_assignments'] = [v.as_dict() for v in self.tag_assignments]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagSubentityAssignmentsList':
-        return cls(tag_assignments=_repeated(d, 'tag_assignments', TagsSubentityAssignment))
-
-
-@dataclass
-class TagsSubentityAssignment:
-    securable: 'TagSubentity'
-    subentity: str
-    tag_key_value_pairs: 'List[TagKeyValuePair]'
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.securable: body['securable'] = self.securable.as_dict()
-        if self.subentity is not None: body['subentity'] = self.subentity
-        if self.tag_key_value_pairs:
-            body['tag_key_value_pairs'] = [v.as_dict() for v in self.tag_key_value_pairs]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TagsSubentityAssignment':
-        return cls(securable=_from_dict(d, 'securable', TagSubentity),
-                   subentity=d.get('subentity', None),
-                   tag_key_value_pairs=_repeated(d, 'tag_key_value_pairs', TagKeyValuePair))
-
-
-@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
     name: Optional[str] = None
+    options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
 
@@ -2442,6 +2594,7 @@ class UpdateCatalog:
         if self.comment is not None: body['comment'] = self.comment
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -2451,6 +2604,7 @@ class UpdateCatalog:
         return cls(comment=d.get('comment', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
@@ -2596,6 +2750,26 @@ class UpdateMetastoreDeltaSharingScope(Enum):
 
 
 @dataclass
+class UpdateModelVersionRequest:
+    comment: Optional[str] = None
+    full_name: Optional[str] = None
+    version: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateModelVersionRequest':
+        return cls(comment=d.get('comment', None),
+                   full_name=d.get('full_name', None),
+                   version=d.get('version', None))
+
+
+@dataclass
 class UpdatePermissions:
     changes: Optional['List[PermissionsChange]'] = None
     full_name: Optional[str] = None
@@ -2652,6 +2826,29 @@ class UpdatePredictiveOptimizationResponse:
 
 
 @dataclass
+class UpdateRegisteredModelRequest:
+    comment: Optional[str] = None
+    full_name: Optional[str] = None
+    name: Optional[str] = None
+    owner: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.name is not None: body['name'] = self.name
+        if self.owner is not None: body['owner'] = self.owner
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegisteredModelRequest':
+        return cls(comment=d.get('comment', None),
+                   full_name=d.get('full_name', None),
+                   name=d.get('name', None),
+                   owner=d.get('owner', None))
+
+
+@dataclass
 class UpdateSchema:
     comment: Optional[str] = None
     full_name: Optional[str] = None
@@ -2675,13 +2872,6 @@ class UpdateSchema:
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
-
-
-class UpdateSecurableType(Enum):
-
-    CATALOG = 'catalog'
-    SCHEMA = 'schema'
-    TABLE = 'table'
 
 
 @dataclass
@@ -2725,29 +2915,6 @@ class UpdateStorageCredential:
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
-
-
-@dataclass
-class UpdateTags:
-    changes: 'TagChanges'
-    full_name: Optional[str] = None
-    securable_type: Optional['UpdateSecurableType'] = None
-    subentity_name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.changes: body['changes'] = self.changes.as_dict()
-        if self.full_name is not None: body['full_name'] = self.full_name
-        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
-        if self.subentity_name is not None: body['subentity_name'] = self.subentity_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateTags':
-        return cls(changes=_from_dict(d, 'changes', TagChanges),
-                   full_name=d.get('full_name', None),
-                   securable_type=_enum(d, 'securable_type', UpdateSecurableType),
-                   subentity_name=d.get('subentity_name', None))
 
 
 @dataclass
@@ -3127,17 +3294,17 @@ class AccountMetastoresAPI:
                            headers=headers)
         return AccountsMetastoreInfo.from_dict(res)
 
-    def list(self) -> ListMetastoresResponse:
+    def list(self) -> Iterator[MetastoreInfo]:
         """Get all metastores associated with an account.
         
         Gets all Unity Catalog metastores associated with an account specified by ID.
         
-        :returns: :class:`ListMetastoresResponse`
+        :returns: Iterator over :class:`MetastoreInfo`
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
-        return ListMetastoresResponse.from_dict(res)
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
+        return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
 
     def update(self,
                metastore_id: str,
@@ -3245,7 +3412,7 @@ class AccountStorageCredentialsAPI:
             headers=headers)
         return AccountsStorageCredentialInfo.from_dict(res)
 
-    def list(self, metastore_id: str) -> ListStorageCredentialsResponse:
+    def list(self, metastore_id: str) -> Iterator[StorageCredentialInfo]:
         """Get all storage credentials assigned to a metastore.
         
         Gets a list of all storage credentials that have been assigned to given metastore.
@@ -3253,7 +3420,7 @@ class AccountStorageCredentialsAPI:
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        :returns: :class:`ListStorageCredentialsResponse`
+        :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
         headers = {'Accept': 'application/json', }
@@ -3261,7 +3428,7 @@ class AccountStorageCredentialsAPI:
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             headers=headers)
-        return ListStorageCredentialsResponse.from_dict(res)
+        return [StorageCredentialInfo.from_dict(v) for v in res]
 
     def update(self,
                metastore_id: str,
@@ -3355,6 +3522,7 @@ class CatalogsAPI:
                *,
                comment: Optional[str] = None,
                connection_name: Optional[str] = None,
+               options: Optional[Dict[str, str]] = None,
                properties: Optional[Dict[str, str]] = None,
                provider_name: Optional[str] = None,
                share_name: Optional[str] = None,
@@ -3370,6 +3538,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
@@ -3387,6 +3557,7 @@ class CatalogsAPI:
         if comment is not None: body['comment'] = comment
         if connection_name is not None: body['connection_name'] = connection_name
         if name is not None: body['name'] = name
+        if options is not None: body['options'] = options
         if properties is not None: body['properties'] = properties
         if provider_name is not None: body['provider_name'] = provider_name
         if share_name is not None: body['share_name'] = share_name
@@ -3450,6 +3621,7 @@ class CatalogsAPI:
                *,
                comment: Optional[str] = None,
                isolation_mode: Optional[IsolationMode] = None,
+               options: Optional[Dict[str, str]] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
@@ -3463,6 +3635,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
@@ -3473,6 +3647,7 @@ class CatalogsAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
+        if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -4339,6 +4514,405 @@ class MetastoresAPI:
                      headers=headers)
 
 
+class ModelVersionsAPI:
+    """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
+    provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
+    workspaces.
+    
+    This API reference documents the REST endpoints for managing model versions in Unity Catalog. For more
+    details, see the [registered models API docs](/api/workspace/registeredmodels)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, full_name: str, version: int):
+        """Delete a Model Version.
+        
+        Deletes a model version from the specified registered model. Any aliases assigned to the model version
+        will also be deleted.
+        
+        The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
+        the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the model version
+        :param version: int
+          The integer version number of the model version
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE',
+                     f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
+                     headers=headers)
+
+    def get(self, full_name: str, version: int) -> RegisteredModelInfo:
+        """Get a Model Version.
+        
+        Get a model version.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the parent
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the model version
+        :param version: int
+          The integer version number of the model version
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
+                           headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+    def get_by_alias(self, full_name: str, alias: str) -> ModelVersionInfo:
+        """Get Model Version By Alias.
+        
+        Get a model version by alias.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param alias: str
+          The name of the alias
+        
+        :returns: :class:`ModelVersionInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}',
+                           headers=headers)
+        return ModelVersionInfo.from_dict(res)
+
+    def list(self,
+             full_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ModelVersionInfo]:
+        """List Model Versions.
+        
+        List model versions. You can list model versions under a particular schema, or list all model versions
+        in the current metastore.
+        
+        The returned models are filtered based on the privileges of the calling user. For example, the
+        metastore admin is able to list all the model versions. A regular user needs to be the owner or have
+        the **EXECUTE** privilege on the parent registered model to recieve the model versions in the
+        response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
+        on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        There is no guarantee of a specific ordering of the elements in the response.
+        
+        :param full_name: str
+          The full three-level name of the registered model under which to list model versions
+        :param max_results: int (optional)
+          Max number of model versions to return
+        :param page_token: str (optional)
+          Opaque token to send for the next page of results (pagination).
+        
+        :returns: Iterator over :class:`ModelVersionInfo`
+        """
+
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/models/{full_name}/versions',
+                                query=query,
+                                headers=headers)
+            if 'model_versions' not in json or not json['model_versions']:
+                return
+            for v in json['model_versions']:
+                yield ModelVersionInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self, full_name: str, version: int, *, comment: Optional[str] = None) -> ModelVersionInfo:
+        """Update a Model Version.
+        
+        Updates the specified model version.
+        
+        The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
+        the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        Currently only the comment of the model version can be updated.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the model version
+        :param version: int
+          The integer version number of the model version
+        :param comment: str (optional)
+          The comment attached to the model version
+        
+        :returns: :class:`ModelVersionInfo`
+        """
+        body = {}
+        if comment is not None: body['comment'] = comment
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
+                           body=body,
+                           headers=headers)
+        return ModelVersionInfo.from_dict(res)
+
+
+class RegisteredModelsAPI:
+    """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
+    provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
+    workspaces.
+    
+    An MLflow registered model resides in the third layer of Unity Catalog’s three-level namespace.
+    Registered models contain model versions, which correspond to actual ML models (MLflow models). Creating
+    new model versions currently requires use of the MLflow Python client. Once model versions are created,
+    you can load them for batch inference using MLflow Python client APIs, or deploy them for real-time
+    serving using Databricks Model Serving.
+    
+    All operations on registered models and model versions require USE_CATALOG permissions on the enclosing
+    catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
+    privileges are required for various operations:
+    
+    * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
+    schema. * To view registered model or model version metadata, model version data files, or invoke a model
+    version, users must additionally have the EXECUTE permission on the registered model * To update
+    registered model or model version tags, users must additionally have APPLY TAG permissions on the
+    registered model * To update other registered model or model version metadata (comments, aliases) create a
+    new model version, or update permissions on the registered model, users must be owners of the registered
+    model.
+    
+    Note: The securable type for models is "FUNCTION". When using REST APIs (e.g. tagging, grants) that
+    specify a securable type, use "FUNCTION" as the securable type."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               catalog_name: str,
+               schema_name: str,
+               name: str,
+               *,
+               comment: Optional[str] = None,
+               storage_location: Optional[str] = None) -> RegisteredModelInfo:
+        """Create a Registered Model.
+        
+        Creates a new registered model in Unity Catalog.
+        
+        File storage for model versions in the registered model will be located in the default location which
+        is specified by the parent schema, or the parent catalog, or the Metastore.
+        
+        For registered model creation to succeed, the user must satisfy the following conditions: - The caller
+        must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
+        
+        :param catalog_name: str
+          The name of the catalog where the schema and the registered model reside
+        :param schema_name: str
+          The name of the schema where the registered model resides
+        :param name: str
+          The name of the registered model
+        :param comment: str (optional)
+          The comment attached to the registered model
+        :param storage_location: str (optional)
+          The storage location on the cloud under which model version data files are stored
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+        body = {}
+        if catalog_name is not None: body['catalog_name'] = catalog_name
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if schema_name is not None: body['schema_name'] = schema_name
+        if storage_location is not None: body['storage_location'] = storage_location
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', '/api/2.1/unity-catalog/models', body=body, headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+    def delete(self, full_name: str):
+        """Delete a Registered Model.
+        
+        Deletes a registered model and all its model versions from the specified parent catalog and schema.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}', headers=headers)
+
+    def delete_alias(self, full_name: str, alias: str):
+        """Delete a Registered Model Alias.
+        
+        Deletes a registered model alias.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param alias: str
+          The name of the alias
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}', headers=headers)
+
+    def get(self, full_name: str) -> RegisteredModelInfo:
+        """Get a Registered Model.
+        
+        Get a registered model.
+        
+        The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
+        registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/models/{full_name}', headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+    def list(self,
+             *,
+             catalog_name: Optional[str] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None,
+             schema_name: Optional[str] = None) -> Iterator[RegisteredModelInfo]:
+        """List Registered Models.
+        
+        List registered models. You can list registered models under a particular schema, or list all
+        registered models in the current metastore.
+        
+        The returned models are filtered based on the privileges of the calling user. For example, the
+        metastore admin is able to list all the registered models. A regular user needs to be the owner or
+        have the **EXECUTE** privilege on the registered model to recieve the registered models in the
+        response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
+        on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        
+        There is no guarantee of a specific ordering of the elements in the response.
+        
+        :param catalog_name: str (optional)
+          The identifier of the catalog under which to list registered models. If specified, schema_name must
+          be specified.
+        :param max_results: int (optional)
+          Max number of registered models to return. If catalog and schema are unspecified, max_results must
+          be specified. If max_results is unspecified, we return all results, starting from the page specified
+          by page_token.
+        :param page_token: str (optional)
+          Opaque token to send for the next page of results (pagination).
+        :param schema_name: str (optional)
+          The identifier of the schema under which to list registered models. If specified, catalog_name must
+          be specified.
+        
+        :returns: Iterator over :class:`RegisteredModelInfo`
+        """
+
+        query = {}
+        if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        if schema_name is not None: query['schema_name'] = schema_name
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/models', query=query, headers=headers)
+            if 'registered_models' not in json or not json['registered_models']:
+                return
+            for v in json['registered_models']:
+                yield RegisteredModelInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def set_alias(self, full_name: str, alias: str, version_num: int) -> RegisteredModelAlias:
+        """Set a Registered Model Alias.
+        
+        Set an alias on the specified registered model.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the registered model
+        :param alias: str
+          The name of the alias
+        :param version_num: int
+          The version number of the model version to which the alias points
+        
+        :returns: :class:`RegisteredModelAlias`
+        """
+        body = {}
+        if version_num is not None: body['version_num'] = version_num
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PUT',
+                           f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}',
+                           body=body,
+                           headers=headers)
+        return RegisteredModelAlias.from_dict(res)
+
+    def update(self,
+               full_name: str,
+               *,
+               comment: Optional[str] = None,
+               name: Optional[str] = None,
+               owner: Optional[str] = None) -> RegisteredModelInfo:
+        """Update a Registered Model.
+        
+        Updates the specified registered model.
+        
+        The caller must be a metastore admin or an owner of the registered model. For the latter case, the
+        caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
+        **USE_SCHEMA** privilege on the parent schema.
+        
+        Currently only the name, the owner or the comment of the registered model can be updated.
+        
+        :param full_name: str
+          The three-level (fully qualified) name of the registered model
+        :param comment: str (optional)
+          The comment attached to the registered model
+        :param name: str (optional)
+          The name of the registered model
+        :param owner: str (optional)
+          The identifier of the user who owns the registered model
+        
+        :returns: :class:`RegisteredModelInfo`
+        """
+        body = {}
+        if comment is not None: body['comment'] = comment
+        if name is not None: body['name'] = name
+        if owner is not None: body['owner'] = owner
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/models/{full_name}', body=body, headers=headers)
+        return RegisteredModelInfo.from_dict(res)
+
+
 class SchemasAPI:
     """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
     organizes tables, views and functions. To access (or list) a table or view in a schema, users must have
@@ -4469,60 +5043,6 @@ class SchemasAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/schemas/{full_name}', body=body, headers=headers)
         return SchemaInfo.from_dict(res)
-
-
-class SecurableTagsAPI:
-    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
-    Tags are useful for organizing and categorizing different entities within a metastore. SecurableTags are
-    attached to Unity Catalog securable entities."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def list(self, securable_type: ListSecurableType, full_name: str) -> Iterator[TagSecurableAssignment]:
-        """Get tags for a securable.
-        
-        Gets tag assignments for an entity. The caller must be either the owner of the securable, or a
-        metastore admin, or have at least USE / SELECT privilege on the associated securable.
-        
-        :param securable_type: :class:`ListSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        
-        :returns: Iterator over :class:`TagSecurableAssignment`
-        """
-
-        headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
-                            headers=headers)
-        return [TagSecurableAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
-
-    def update(self, changes: TagChanges, securable_type: UpdateSecurableType,
-               full_name: str) -> TagSecurableAssignmentsList:
-        """Update tags for a securable.
-        
-        Update tag assignments for an entity The caller must be either the owner of the securable, or a
-        metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on the associated securable.
-        
-        :param changes: :class:`TagChanges`
-          Desired changes to be made to the tag assignments on the entity
-        :param securable_type: :class:`UpdateSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        
-        :returns: :class:`TagSecurableAssignmentsList`
-        """
-        body = {}
-        if changes is not None: body['changes'] = changes.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/securable-tags/{securable_type.value}/{full_name}',
-                           body=body,
-                           headers=headers)
-        return TagSecurableAssignmentsList.from_dict(res)
 
 
 class StorageCredentialsAPI:
@@ -4769,69 +5289,6 @@ class StorageCredentialsAPI:
                            body=body,
                            headers=headers)
         return ValidateStorageCredentialResponse.from_dict(res)
-
-
-class SubentityTagsAPI:
-    """Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
-    Tags are useful for organizing and categorizing different entities within a metastore. SubentityTags are
-    attached to Unity Catalog subentities."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def list(self, securable_type: ListSecurableType, full_name: str,
-             subentity_name: str) -> Iterator[TagsSubentityAssignment]:
-        """Get tags for a subentity.
-        
-        Gets tag assignments for a subentity associated with a securable entity. Eg. column of a table The
-        caller must be either the owner of the securable, or a metastore admin, or have at least USE / SELECT
-        privilege on the associated securable.
-        
-        :param securable_type: :class:`ListSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        :param subentity_name: str
-          The name of subentity associated with the securable entity
-        
-        :returns: Iterator over :class:`TagsSubentityAssignment`
-        """
-
-        headers = {'Accept': 'application/json', }
-        json = self._api.do(
-            'GET',
-            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
-            headers=headers)
-        return [TagsSubentityAssignment.from_dict(v) for v in json.get('tag_assignments', [])]
-
-    def update(self, changes: TagChanges, securable_type: UpdateSecurableType, full_name: str,
-               subentity_name: str) -> TagSubentityAssignmentsList:
-        """Update tags for a subentity.
-        
-        Update tag assignments for a subentity associated with a securable entity. The caller must be either
-        the owner of the securable, or a metastore admin, or have at least USE / SELECT and APPLY_TAG
-        privilege on the associated securable.
-        
-        :param changes: :class:`TagChanges`
-          Desired changes to be made to the tag assignments on the entity
-        :param securable_type: :class:`UpdateSecurableType`
-          The type of the unity catalog securable entity.
-        :param full_name: str
-          The fully qualified name of the unity catalog securable entity.
-        :param subentity_name: str
-          The name of subentity associated with the securable entity
-        
-        :returns: :class:`TagSubentityAssignmentsList`
-        """
-        body = {}
-        if changes is not None: body['changes'] = changes.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.1/unity-catalog/subentity-tags/{securable_type.value}/{full_name}/{subentity_name}',
-            body=body,
-            headers=headers)
-        return TagSubentityAssignmentsList.from_dict(res)
 
 
 class SystemSchemasAPI:

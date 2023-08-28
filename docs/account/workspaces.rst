@@ -9,7 +9,7 @@ Workspaces
     These endpoints are available if your account is on the E2 version of the platform or on a select custom
     plan that allows multiple workspaces per account.
 
-    .. py:method:: create(workspace_name [, aws_region, cloud, cloud_resource_container, credentials_id, deployment_name, gcp_managed_network_config, gke_config, location, managed_services_customer_managed_key_id, network_id, pricing_tier, private_access_settings_id, storage_configuration_id, storage_customer_managed_key_id])
+    .. py:method:: create(workspace_name [, aws_region, cloud, cloud_resource_container, credentials_id, custom_tags, deployment_name, gcp_managed_network_config, gke_config, location, managed_services_customer_managed_key_id, network_id, pricing_tier, private_access_settings_id, storage_configuration_id, storage_customer_managed_key_id])
 
         Usage:
 
@@ -64,6 +64,10 @@ Workspaces
           The general workspace configurations that are specific to cloud providers.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
+        :param custom_tags: Dict[str,str] (optional)
+          The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string
+          of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The
+          key can be of maximum length of 127 characters, and cannot be empty.
         :param deployment_name: str (optional)
           The deployment name defines part of the subdomain for the workspace. The workspace URL for web
           application and REST APIs is `<workspace-deployment-name>.cloud.databricks.com`. For example, if the
@@ -238,7 +242,7 @@ Workspaces
         :returns: Iterator over :class:`Workspace`
         
 
-    .. py:method:: update(workspace_id [, aws_region, credentials_id, managed_services_customer_managed_key_id, network_id, storage_configuration_id, storage_customer_managed_key_id])
+    .. py:method:: update(workspace_id [, aws_region, credentials_id, custom_tags, managed_services_customer_managed_key_id, network_id, storage_configuration_id, storage_customer_managed_key_id])
 
         Usage:
 
@@ -300,7 +304,8 @@ Workspaces
         for workspace storage. - Private access settings ID to add PrivateLink support. You can add or update
         the private access settings ID to upgrade a workspace to add support for front-end, back-end, or both
         types of connectivity. You cannot remove (downgrade) any existing front-end or back-end PrivateLink
-        support on a workspace.
+        support on a workspace. - Custom tags. Given you provide an empty custom tags, the update would not be
+        applied.
         
         After calling the `PATCH` operation to update the workspace configuration, make repeated `GET`
         requests with the workspace ID and check the workspace status. The workspace is successful if the
@@ -332,7 +337,7 @@ Workspaces
         storage. - Private access settings ID to add PrivateLink support. You can add or update the private
         access settings ID to upgrade a workspace to add support for front-end, back-end, or both types of
         connectivity. You cannot remove (downgrade) any existing front-end or back-end PrivateLink support on
-        a workspace.
+        a workspace. - Custom tags. Given you provide an empty custom tags, the update would not be applied.
         
         **Important**: To update a running workspace, your workspace must have no running compute resources
         that run in your workspace's VPC in the Classic data plane. For example, stop all all-purpose
@@ -380,6 +385,10 @@ Workspaces
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object. This parameter is available for updating both
           failed and running workspaces.
+        :param custom_tags: Dict[str,str] (optional)
+          The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string
+          of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The
+          key can be of maximum length of 127 characters, and cannot be empty.
         :param managed_services_customer_managed_key_id: str (optional)
           The ID of the workspace's managed services encryption key configuration object. This parameter is
           available only for updating failed workspaces.
