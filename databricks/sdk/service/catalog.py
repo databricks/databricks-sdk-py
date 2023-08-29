@@ -318,7 +318,7 @@ class CatalogInfo:
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
-        if self.provisioning_info is not None: body['provisioning_info'] = self.provisioning_info.value
+        if self.provisioning_info: body['provisioning_info'] = self.provisioning_info.as_dict()
         if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
         if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.share_name is not None: body['share_name'] = self.share_name
@@ -348,7 +348,7 @@ class CatalogInfo:
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
-                   provisioning_info=_enum(d, 'provisioning_info', ProvisioningInfo),
+                   provisioning_info=_from_dict(d, 'provisioning_info', ProvisioningInfo),
                    securable_kind=_enum(d, 'securable_kind', CatalogInfoSecurableKind),
                    securable_type=d.get('securable_type', None),
                    share_name=d.get('share_name', None),
@@ -512,7 +512,7 @@ class ConnectionInfo:
         if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
-        if self.provisioning_info is not None: body['provisioning_info'] = self.provisioning_info.value
+        if self.provisioning_info: body['provisioning_info'] = self.provisioning_info.as_dict()
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
         if self.securable_type is not None: body['securable_type'] = self.securable_type
@@ -535,7 +535,7 @@ class ConnectionInfo:
                    options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
-                   provisioning_info=_enum(d, 'provisioning_info', ProvisioningInfo),
+                   provisioning_info=_from_dict(d, 'provisioning_info', ProvisioningInfo),
                    read_only=d.get('read_only', None),
                    securable_kind=_enum(d, 'securable_kind', ConnectionInfoSecurableKind),
                    securable_type=d.get('securable_type', None),
@@ -2060,8 +2060,23 @@ class PrivilegeAssignment:
 PropertiesKvPairs = Dict[str, str]
 
 
-class ProvisioningInfo(Enum):
+@dataclass
+class ProvisioningInfo:
     """Status of an asynchronously provisioned resource."""
+
+    state: Optional['ProvisioningInfoState'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ProvisioningInfo':
+        return cls(state=_enum(d, 'state', ProvisioningInfoState))
+
+
+class ProvisioningInfoState(Enum):
 
     ACTIVE = 'ACTIVE'
     DELETING = 'DELETING'

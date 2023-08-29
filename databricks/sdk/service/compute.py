@@ -2114,12 +2114,14 @@ class GlobalInitScriptUpdateRequest:
 class InitScriptInfo:
     dbfs: Optional['DbfsStorageInfo'] = None
     s3: Optional['S3StorageInfo'] = None
+    volumes: Optional['VolumesStorageInfo'] = None
     workspace: Optional['WorkspaceStorageInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.dbfs: body['dbfs'] = self.dbfs.as_dict()
         if self.s3: body['s3'] = self.s3.as_dict()
+        if self.volumes: body['volumes'] = self.volumes.as_dict()
         if self.workspace: body['workspace'] = self.workspace.as_dict()
         return body
 
@@ -2127,6 +2129,7 @@ class InitScriptInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'InitScriptInfo':
         return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
                    s3=_from_dict(d, 's3', S3StorageInfo),
+                   volumes=_from_dict(d, 'volumes', VolumesStorageInfo),
                    workspace=_from_dict(d, 'workspace', WorkspaceStorageInfo))
 
 
@@ -3372,6 +3375,20 @@ class UnpinCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UnpinCluster':
         return cls(cluster_id=d.get('cluster_id', None))
+
+
+@dataclass
+class VolumesStorageInfo:
+    destination: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'VolumesStorageInfo':
+        return cls(destination=d.get('destination', None))
 
 
 @dataclass
