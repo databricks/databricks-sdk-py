@@ -1,5 +1,87 @@
 # Version changelog
 
+## 0.7.0
+
+* Added support for GZIP'ed streaming responses ([#306](https://github.com/databricks/databricks-sdk-py/pull/306)).
+* Added support for per-method request headers to ApiClient ([#302](https://github.com/databricks/databricks-sdk-py/pull/302)).
+* Added support for BinaryIO for streaming request and response bodies ([#303](https://github.com/databricks/databricks-sdk-py/pull/303)).
+* Added a link to the API reference ([#311](https://github.com/databricks/databricks-sdk-py/pull/311)).
+* Check workspaceUrl explicitly in runtime repl auth ([#312](https://github.com/databricks/databricks-sdk-py/pull/312)).
+
+Breaking Changes:
+ * Added support for the Files API (using application/octet-stream) in OpenAPI. The names of parameters have changed from `src` to `contents`, and `w.files.download()` now returns a `files.DownloadResponse`, whose `contents` field is a `BinaryIO` object. When reading a download, the user must explicitly close this object to allow the connection to return to the connection pool.
+
+Breaking API Changes:
+ * Changed `list()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service to return `databricks.sdk.service.catalog.StorageCredentialInfoList` dataclass.
+ * Removed [w.securable_tags](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/securable_tags.html) workspace-level service and all associated classes.
+ * Removed [w.subentity_tags](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/subentity_tags.html) workspace-level service and all associated classes.
+ * Removed `instance_pool_fleet_attributes` field for `databricks.sdk.service.compute.CreateInstancePool`.
+ * Removed `instance_pool_fleet_attributes` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `databricks.sdk.service.compute.FleetLaunchTemplateOverride` dataclass.
+ * Removed `databricks.sdk.service.compute.FleetOnDemandOption` dataclass.
+ * Removed `databricks.sdk.service.compute.FleetOnDemandOptionAllocationStrategy` dataclass.
+ * Removed `databricks.sdk.service.compute.FleetSpotOption` dataclass.
+ * Removed `databricks.sdk.service.compute.FleetSpotOptionAllocationStrategy` dataclass.
+ * Removed `instance_pool_fleet_attributes` field for `databricks.sdk.service.compute.GetInstancePool`.
+ * Removed `instance_pool_fleet_attributes` field for `databricks.sdk.service.compute.InstancePoolAndStats`.
+ * Removed `databricks.sdk.service.compute.InstancePoolFleetAttributes` dataclass.
+ * Changed `get_by_name()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service to return `databricks.sdk.service.ml.GetExperimentResponse` dataclass.
+ * Changed `get_experiment()` method for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/experiments.html) workspace-level service to return `databricks.sdk.service.ml.GetExperimentResponse` dataclass.
+ * Renamed `databricks.sdk.service.ml.GetExperimentByNameResponse` dataclass to `databricks.sdk.service.ml.GetExperimentResponse`.
+ * Renamed `databricks.sdk.service.catalog.ProvisioningState` to `databricks.sdk.service.catalog.ProvisioningInfoState` dataclass.
+
+API Changes:
+ * Added [w.model_versions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/model_versions.html) workspace-level service.
+ * Added [w.registered_models](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/registered_models.html) workspace-level service.
+ * Added `browse_only` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `full_name` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `provisioning_info` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `securable_kind` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `securable_type` field for `databricks.sdk.service.catalog.CatalogInfo`.
+ * Added `provisioning_info` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+ * Added `options` field for `databricks.sdk.service.catalog.CreateCatalog`.
+ * Added `options` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+ * Added `databricks.sdk.service.catalog.CatalogInfoSecurableKind` dataclass.
+ * Added `databricks.sdk.service.catalog.CreateRegisteredModelRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.DeleteAliasRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.DeleteModelVersionRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.DeleteRegisteredModelRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.GetByAliasRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.GetModelVersionRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.GetRegisteredModelRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListModelVersionsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListModelVersionsResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.ListRegisteredModelsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListRegisteredModelsResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.ModelVersionInfo` dataclass.
+ * Added `databricks.sdk.service.catalog.ModelVersionInfoStatus` dataclass.
+ * Added `databricks.sdk.service.catalog.ProvisioningInfo` dataclass.
+ * Added `databricks.sdk.service.catalog.RegisteredModelAlias` dataclass.
+ * Added `databricks.sdk.service.catalog.RegisteredModelInfo` dataclass.
+ * Added `databricks.sdk.service.catalog.SetRegisteredModelAliasRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdateModelVersionRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdateRegisteredModelRequest` dataclass.
+ * Added `volumes` field for `databricks.sdk.service.compute.InitScriptInfo`.
+ * Added `databricks.sdk.service.compute.VolumesStorageInfo` dataclass.
+ * Added [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+ * Added `databricks.sdk.service.files.DeleteFileRequest` dataclass.
+ * Added `databricks.sdk.service.files.DownloadRequest` dataclass.
+ * Added `databricks.sdk.service.files.DownloadResponse` dataclass.
+ * Added `databricks.sdk.service.files.UploadRequest` dataclass.
+ * Added `custom_tags` field for `databricks.sdk.service.provisioning.CreateWorkspaceRequest`.
+ * Added `custom_tags` field for `databricks.sdk.service.provisioning.UpdateWorkspaceRequest`.
+ * Added `custom_tags` field for `databricks.sdk.service.provisioning.Workspace`.
+ * Added `databricks.sdk.service.provisioning.CustomTags` dataclass.
+ * Added `parameters` field for `databricks.sdk.service.sql.ExecuteStatementRequest`.
+ * Added `row_limit` field for `databricks.sdk.service.sql.ExecuteStatementRequest`.
+ * Added `databricks.sdk.service.sql.StatementParameterListItem` dataclass.
+
+SDK Internal Changes:
+ * Skip Graviton runtimes for testing notebook native auth ([#294](https://github.com/databricks/databricks-sdk-py/pull/294)).
+ * Fixed integration tests to not use beta DBR ([#309](https://github.com/databricks/databricks-sdk-py/pull/309)).
+
+OpenAPI SHA: 5d0ccbb790d341eae8e85321a685a9e9e2d5bf24, Date: 2023-08-29
+
 ## 0.6.0
 
 * Added collection of Databricks Runtime versions used together with Python SDK ([#287](https://github.com/databricks/databricks-sdk-py/pull/287)).
