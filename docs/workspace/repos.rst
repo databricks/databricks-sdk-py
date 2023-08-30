@@ -129,7 +129,7 @@ Repos
             
             w = WorkspaceClient()
             
-            all = w.repos.list(workspace.ListReposRequest())
+            all = w.repos.list()
 
         Get repos.
         
