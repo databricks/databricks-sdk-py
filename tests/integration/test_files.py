@@ -250,6 +250,7 @@ def test_files_api_read_twice_from_one_download(ucws, random):
                     res.read()
 
 
+@pytest.mark.benchmark
 def test_files_api_download_benchmark(ucws, random):
     w = ucws
     schema = 'filesit-' + random()

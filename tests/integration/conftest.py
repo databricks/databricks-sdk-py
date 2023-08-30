@@ -33,9 +33,7 @@ def pytest_collection_modifyitems(items):
     for item in items:
         current_fixtures = getattr(item, 'fixturenames', ())
         for requires_client in client_fixtures:
-            if 'benchmark' in item.name:
-                item.add_marker('benchmark')
-            elif requires_client in current_fixtures:
+            if requires_client in current_fixtures:
                 item.add_marker('integration')
 
 
