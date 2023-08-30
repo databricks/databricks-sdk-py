@@ -1131,26 +1131,34 @@ class ApiClient:
 class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
-    _content: Iterator[bytes]
-    DEFAULT_CHUNK_SIZE = 100 * 1024
+    _content: Union[Iterator[bytes], None]
+    _chunk_size: int = 100 * 1024
+    _closed: bool = False
 
-    def __init__(self, response: requests.Response, chunk_size: int = DEFAULT_CHUNK_SIZE):
+    def __init__(self, response: requests.Response):
         self._response = response
         self._buffer = b''
-        self._content = self._response.iter_content(chunk_size=chunk_size)
+        self._content = None
 
     def __enter__(self) -> BinaryIO:
+        self._content = self._response.iter_content(chunk_size=self._chunk_size)
         return self
+
+    def set_chunk_size(self, chunk_size: int) -> None:
+        self._chunk_size = chunk_size
 
     def close(self) -> None:
         self._response.close()
+        self._closed = True
 
     def isatty(self) -> bool:
         return False
 
     def read(self, n: int = -1) -> bytes:
-        if self._content is None:
+        if self._closed is None:
             raise ValueError("I/O operation on closed file")
+        if not self._content:
+            self._content = self._response.iter_content(chunk_size=self._chunk_size)
         read_everything = n < 0
         remaining_bytes = n
         res = b''

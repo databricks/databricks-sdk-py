@@ -1,10 +1,11 @@
 import io
 import pathlib
+import time
 from typing import Callable, List
 
 import pytest
 
-from databricks.sdk.core import DatabricksError
+from databricks.sdk.core import DatabricksError, StreamingResponse
 from databricks.sdk.service.catalog import VolumeType
 
 
@@ -247,3 +248,35 @@ def test_files_api_read_twice_from_one_download(ucws, random):
             with pytest.raises(ValueError):
                 with res:
                     res.read()
+
+
+def test_files_api_download_benchmark(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            # Create a 50 MB file
+            f = io.BytesIO(bytes(range(256)) * 200000)
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-benchmark-{random()}.txt'
+            w.files.upload(target_file, f)
+
+            totals = {}
+            for chunk_size_kb in [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000]:
+                # Hack to set the chunk size
+                total = 0
+                for i in range(10):
+                    start = time.time()
+                    f = w.files.download(target_file).contents
+                    f.set_chunk_size(chunk_size_kb * 1024)
+                    with f as vf:
+                        x = vf.read()
+                    end = time.time()
+                    total += end - start
+                avg_time = total / 10
+                print(f"[chunk size {chunk_size_kb}kb] Average time to download: {avg_time}")
+                totals[chunk_size_kb] = avg_time
+            print(totals)
+            fastest_chunk_size = min(totals, key=totals.get)
+            print("Fastest chunk size: ", fastest_chunk_size, "kb, ", totals[fastest_chunk_size], "seconds")
+
