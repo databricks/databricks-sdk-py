@@ -1135,6 +1135,12 @@ class StreamingResponse(BinaryIO):
     _chunk_size: Union[int, None]
     _closed: bool = False
 
+    def fileno(self) -> int:
+        pass
+
+    def flush(self) -> int:
+        pass
+
     def __init__(self, response: requests.Response, chunk_size: Union[int, None] = None):
         self._response = response
         self._buffer = b''
@@ -1200,7 +1206,7 @@ class StreamingResponse(BinaryIO):
     def writable(self) -> bool:
         return False
 
-    def write(self, s: bytes) -> int:
+    def write(self, s: Union[bytes, bytearray]) -> int:
         raise NotImplementedError()
 
     def writelines(self, lines: Iterable[bytes]) -> None:
