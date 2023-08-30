@@ -27,7 +27,7 @@ integration:
 	pytest -n auto -m 'integration and not benchmark' --cov=databricks --cov-report html tests
 
 benchmark:
-	pytest -m 'benchmark' --cov=databricks --cov-report html tests
+	pytest -m 'benchmark' tests
 
 coverage: test
 	open htmlcov/index.html
