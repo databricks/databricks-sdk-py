@@ -2,7 +2,7 @@ import io
 import logging
 import pathlib
 import time
-from typing import Callable, List
+from typing import Callable, List, Tuple, Union
 
 import pytest
 
@@ -267,7 +267,8 @@ def test_files_api_download_benchmark(ucws, random):
             for chunk_size_kb in [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, None]:
                 chunk_size = chunk_size_kb * 1024 if chunk_size_kb else None
                 total = 0
-                for i in range(10):
+                count = 10
+                for i in range(count):
                     start = time.time()
                     f = w.files.download(target_file).contents
                     f.set_chunk_size(chunk_size)
@@ -275,10 +276,16 @@ def test_files_api_download_benchmark(ucws, random):
                         vf.read()
                     end = time.time()
                     total += end - start
-                avg_time = total / 10
-                logging.info(f"[chunk size {chunk_size_kb}kb] Average time to download: {avg_time}")
+                avg_time = total / count
+                logging.info(f"[chunk_size=%s] Average time to download: %f seconds",
+                             str(chunk_size_kb) + 'kb' if chunk_size_kb else 'None', avg_time)
                 totals[chunk_size_kb] = avg_time
-            logging.info(totals)
-            fastest_chunk_size = min(totals, key=totals.get)
-            logging.info("Fastest chunk size: ", str(fastest_chunk_size) + "kb" if fastest_chunk_size else "None", ", ", totals[fastest_chunk_size],
-                         "seconds")
+            logging.info("Benchmark results:")
+            best: Tuple[Union[int, None], Union[float, None]] = (None, None)
+            for k, v in totals.items():
+                if best[1] is None or v < best[1]:
+                    best = (k, v)
+                logging.info(f"[chunk_size=%s] Average time to download: %f seconds",
+                             str(k) + 'kb' if k else 'None', v)
+            min_str = str(best[0]) + "kb" if best[0] else "None"
+            logging.info("Fastest chunk size: %s in %f seconds", min_str, best[1])
