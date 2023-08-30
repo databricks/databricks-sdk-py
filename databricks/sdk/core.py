@@ -1132,19 +1132,20 @@ class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
     _content: Union[Iterator[bytes], None]
-    _chunk_size: int = 100 * 1024
+    _chunk_size: Union[int, None]
     _closed: bool = False
 
-    def __init__(self, response: requests.Response):
+    def __init__(self, response: requests.Response, chunk_size: Union[int, None] = None):
         self._response = response
         self._buffer = b''
         self._content = None
+        self._chunk_size = chunk_size
 
     def __enter__(self) -> BinaryIO:
         self._content = self._response.iter_content(chunk_size=self._chunk_size)
         return self
 
-    def set_chunk_size(self, chunk_size: int) -> None:
+    def set_chunk_size(self, chunk_size: Union[int, None]) -> None:
         self._chunk_size = chunk_size
 
     def close(self) -> None:
