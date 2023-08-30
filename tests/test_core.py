@@ -264,7 +264,7 @@ class DummyResponse:
     def __init__(self, content: List[bytes]) -> None:
         self._content = iter(content)
 
-    def iter_content(self) -> Iterator[bytes]:
+    def iter_content(self, chunk_size: int = 1) -> Iterator[bytes]:
         return self._content
 
     def close(self):

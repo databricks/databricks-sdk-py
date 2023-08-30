@@ -23,6 +23,8 @@ def pytest_configure(config):
 
     config.addinivalue_line('markers',
                             'integration: marks tests as those requiring a real Databricks backend')
+    config.addinivalue_line('markers',
+                            'benchmark: marks tests as benchmarks which should not be run by default')
 
 
 def pytest_collection_modifyitems(items):

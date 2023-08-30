@@ -1131,26 +1131,41 @@ class ApiClient:
 class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
-    _content: Iterator[bytes]
+    _content: Union[Iterator[bytes], None]
+    _chunk_size: Union[int, None]
+    _closed: bool = False
 
-    def __init__(self, response: requests.Response):
+    def fileno(self) -> int:
+        pass
+
+    def flush(self) -> int:
+        pass
+
+    def __init__(self, response: requests.Response, chunk_size: Union[int, None] = None):
         self._response = response
         self._buffer = b''
         self._content = None
+        self._chunk_size = chunk_size
 
     def __enter__(self) -> BinaryIO:
-        self._content = self._response.iter_content()
+        self._content = self._response.iter_content(chunk_size=self._chunk_size)
         return self
+
+    def set_chunk_size(self, chunk_size: Union[int, None]) -> None:
+        self._chunk_size = chunk_size
 
     def close(self) -> None:
         self._response.close()
+        self._closed = True
 
     def isatty(self) -> bool:
         return False
 
     def read(self, n: int = -1) -> bytes:
-        if self._content is None:
-            self._content = self._response.iter_content()
+        if self._closed is None:
+            raise ValueError("I/O operation on closed file")
+        if not self._content:
+            self._content = self._response.iter_content(chunk_size=self._chunk_size)
         read_everything = n < 0
         remaining_bytes = n
         res = b''
@@ -1191,7 +1206,7 @@ class StreamingResponse(BinaryIO):
     def writable(self) -> bool:
         return False
 
-    def write(self, s: bytes) -> int:
+    def write(self, s: Union[bytes, bytearray]) -> int:
         raise NotImplementedError()
 
     def writelines(self, lines: Iterable[bytes]) -> None:

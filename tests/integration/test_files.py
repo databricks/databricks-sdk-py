@@ -1,6 +1,8 @@
 import io
+import logging
 import pathlib
-from typing import Callable, List
+import time
+from typing import Callable, List, Tuple, Union
 
 import pytest
 
@@ -227,3 +229,63 @@ def test_files_api_upload_download(ucws, random):
                 assert f.read() == b"some text data"
 
             w.files.delete(target_file)
+
+
+def test_files_api_read_twice_from_one_download(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            f = io.BytesIO(b"some text data")
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            w.files.upload(target_file, f)
+
+            res = w.files.download(target_file).contents
+
+            with res:
+                assert res.read() == b"some text data"
+
+            with pytest.raises(ValueError):
+                with res:
+                    res.read()
+
+
+@pytest.mark.benchmark
+def test_files_api_download_benchmark(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            # Create a 50 MB file
+            f = io.BytesIO(bytes(range(256)) * 200000)
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-benchmark-{random()}.txt'
+            w.files.upload(target_file, f)
+
+            totals = {}
+            for chunk_size_kb in [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, None]:
+                chunk_size = chunk_size_kb * 1024 if chunk_size_kb else None
+                total = 0
+                count = 10
+                for i in range(count):
+                    start = time.time()
+                    f = w.files.download(target_file).contents
+                    f.set_chunk_size(chunk_size)
+                    with f as vf:
+                        vf.read()
+                    end = time.time()
+                    total += end - start
+                avg_time = total / count
+                logging.info(f"[chunk_size=%s] Average time to download: %f seconds",
+                             str(chunk_size_kb) + 'kb' if chunk_size_kb else 'None', avg_time)
+                totals[chunk_size_kb] = avg_time
+            logging.info("Benchmark results:")
+            best: Tuple[Union[int, None], Union[float, None]] = (None, None)
+            for k, v in totals.items():
+                if best[1] is None or v < best[1]:
+                    best = (k, v)
+                logging.info(f"[chunk_size=%s] Average time to download: %f seconds",
+                             str(k) + 'kb' if k else 'None', v)
+            min_str = str(best[0]) + "kb" if best[0] else "None"
+            logging.info("Fastest chunk size: %s in %f seconds", min_str, best[1])
