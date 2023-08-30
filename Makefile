@@ -21,10 +21,13 @@ lint:
 	autoflake --check-diff --quiet --recursive databricks
 
 test:
-	pytest -m 'not integration' --cov=databricks --cov-report html tests
+	pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 integration:
-	pytest -n auto -m 'integration' --cov=databricks --cov-report html tests
+	pytest -n auto -m 'integration and not benchmark' --cov=databricks --cov-report html tests
+
+benchmark:
+	pytest -m 'benchmark' --cov=databricks --cov-report html tests
 
 coverage: test
 	open htmlcov/index.html
