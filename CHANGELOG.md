@@ -1,5 +1,10 @@
 # Version changelog
 
+## 0.7.1
+
+* Improve file download performance ([#319](https://github.com/databricks/databricks-sdk-py/pull/319)).
+
+
 ## 0.7.0
 
 * Added support for GZIP'ed streaming responses ([#306](https://github.com/databricks/databricks-sdk-py/pull/306)).
