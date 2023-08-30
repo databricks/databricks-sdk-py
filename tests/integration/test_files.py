@@ -5,7 +5,7 @@ from typing import Callable, List
 
 import pytest
 
-from databricks.sdk.core import DatabricksError, StreamingResponse
+from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.catalog import VolumeType
 
 
@@ -270,7 +270,7 @@ def test_files_api_download_benchmark(ucws, random):
                     f = w.files.download(target_file).contents
                     f.set_chunk_size(chunk_size_kb * 1024)
                     with f as vf:
-                        x = vf.read()
+                        vf.read()
                     end = time.time()
                     total += end - start
                 avg_time = total / 10
@@ -279,4 +279,3 @@ def test_files_api_download_benchmark(ucws, random):
             print(totals)
             fastest_chunk_size = min(totals, key=totals.get)
             print("Fastest chunk size: ", fastest_chunk_size, "kb, ", totals[fastest_chunk_size], "seconds")
-
