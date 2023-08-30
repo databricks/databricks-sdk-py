@@ -1,6 +1,7 @@
 import io
 import pathlib
 import time
+import logging
 from typing import Callable, List
 
 import pytest
@@ -275,8 +276,8 @@ def test_files_api_download_benchmark(ucws, random):
                     end = time.time()
                     total += end - start
                 avg_time = total / 10
-                print(f"[chunk size {chunk_size_kb}kb] Average time to download: {avg_time}")
+                logging.info(f"[chunk size {chunk_size_kb}kb] Average time to download: {avg_time}")
                 totals[chunk_size_kb] = avg_time
-            print(totals)
+            logging.info(totals)
             fastest_chunk_size = min(totals, key=totals.get)
-            print("Fastest chunk size: ", fastest_chunk_size, "kb, ", totals[fastest_chunk_size], "seconds")
+            logging.info("Fastest chunk size: ", fastest_chunk_size, "kb, ", totals[fastest_chunk_size], "seconds")
