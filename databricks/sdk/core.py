@@ -1147,8 +1147,14 @@ class StreamingResponse(BinaryIO):
         self._content = None
         self._chunk_size = chunk_size
 
+    def _open(self) -> None:
+        if self._closed:
+            raise ValueError("I/O operation on closed file")
+        if not self._content:
+            self._content = self._response.iter_content(chunk_size=self._chunk_size)
+
     def __enter__(self) -> BinaryIO:
-        self._content = self._response.iter_content(chunk_size=self._chunk_size)
+        self._open()
         return self
 
     def set_chunk_size(self, chunk_size: Union[int, None]) -> None:
@@ -1162,10 +1168,7 @@ class StreamingResponse(BinaryIO):
         return False
 
     def read(self, n: int = -1) -> bytes:
-        if self._closed is None:
-            raise ValueError("I/O operation on closed file")
-        if not self._content:
-            self._content = self._response.iter_content(chunk_size=self._chunk_size)
+        self._open()
         read_everything = n < 0
         remaining_bytes = n
         res = b''
