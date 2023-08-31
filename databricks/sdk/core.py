@@ -94,11 +94,15 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
+    if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
+        return None
+    
+    # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check 
+    # above, so that we are not throwing import errors when not in 
+    # runtime and no config variables are set.
     from databricks.sdk.runtime import (init_runtime_legacy_auth,
                                         init_runtime_native_auth,
                                         init_runtime_repl_auth)
-    if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
-        return None
     for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
         if init is None:
             continue
