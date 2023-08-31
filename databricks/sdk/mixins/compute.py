@@ -3,6 +3,7 @@ import datetime
 import html
 import json
 import logging
+import platform
 import re
 import sys
 import threading
@@ -297,6 +298,16 @@ class _ReturnToPrintJson(ast.NodeTransformer):
 
     @staticmethod
     def transform(code: str) -> (str, bool):
+        unsupported_version = platform.python_version_tuple() < ('3', '9', '0')
+        has_return_in_last_line = code.splitlines()[-1].startswith('return ')
+
+        if unsupported_version and not has_return_in_last_line:
+            return code, False
+
+        if unsupported_version and has_return_in_last_line:
+            raise ValueError(f'dynamic conversion of return .. to print(json.dumps(..)) '
+                             f'is only possible starting from Python 3.8')
+
         # perform AST transformations for very repetitive tasks, like JSON serialization
         code_tree = ast.parse(code)
         transform = _ReturnToPrintJson()
@@ -354,12 +365,11 @@ class CommandExecutor:
         self._lock = threading.Lock()
         self._ctx = None
 
-    def run(self, code: str) -> Any:
+    def run(self, code: str, *, result_as_json=False, detect_return=True) -> Any:
         code = self._trim_leading_whitespace(code)
 
-        parse_results_data_as_json = False
-        if self._language == compute.Language.PYTHON:
-            code, parse_results_data_as_json = _ReturnToPrintJson.transform(code)
+        if self._language == compute.Language.PYTHON and detect_return and not result_as_json:
+            code, result_as_json = _ReturnToPrintJson.transform(code)
 
         ctx = self._running_command_context()
         cluster_id = self._cluster_id_provider()
@@ -371,7 +381,7 @@ class CommandExecutor:
         results = command_status_response.results
         if command_status_response.status == compute.CommandStatus.FINISHED:
             self._raise_if_failed(results)
-            if results.result_type == compute.ResultType.TEXT and parse_results_data_as_json:
+            if results.result_type == compute.ResultType.TEXT and result_as_json:
                 try:
                     # parse json from converted return statement
                     return json.loads(results.data)
@@ -465,4 +475,4 @@ class CommandExecutor:
                 new_command += line + "\n"
             else:
                 new_command += line[leading_whitespace:] + "\n"
-        return new_command
+        return new_command.strip()

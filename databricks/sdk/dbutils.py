@@ -223,9 +223,10 @@ class _ProxyCall:
 
     def __call__(self, *args, **kwargs):
         raw = json.dumps((args, kwargs))
-        return self._executor.run(f'''
+        code = f'''
         import json
         (args, kwargs) = json.loads('{raw}')
         result = dbutils.{self._util}.{self._method}(*args, **kwargs)
-        return result
-        ''')
+        print(json.dumps(result))
+        '''
+        return self._executor.run(code, result_as_json=True, detect_return=False)
