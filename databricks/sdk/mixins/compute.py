@@ -8,9 +8,9 @@ import sys
 import threading
 import time
 from dataclasses import dataclass
-from typing import Any, Optional, Callable
+from typing import Any, Callable, Optional
 
-from databricks.sdk.core import Config, DatabricksError
+from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import OperationFailed
 from databricks.sdk.service import compute
 
@@ -252,7 +252,8 @@ class ClustersExt(compute.ClustersAPI):
                 _LOG.debug('Operation failed, retrying', exc_info=e)
         raise TimeoutError(f'timed out after {timeout}')
 
-    def commands(self, *,
+    def commands(self,
+                 *,
                  cluster_id: Optional[str] = None,
                  language: compute.Language = compute.Language.PYTHON) -> 'CommandExecutor':
         """Create command executor for a cluster.
@@ -344,7 +345,8 @@ class CommandExecutor:
                  clusters: ClustersExt,
                  command_execution: compute.CommandExecutionAPI,
                  cluster_id_provider: Callable[[], str],
-                 *, language: compute.Language = compute.Language.PYTHON):
+                 *,
+                 language: compute.Language = compute.Language.PYTHON):
         self._cluster_id_provider = cluster_id_provider
         self._language = language
         self._clusters = clusters

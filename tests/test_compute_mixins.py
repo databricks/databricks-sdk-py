@@ -1,9 +1,6 @@
 import pytest
 
-from databricks.sdk.core import ApiClient, Config
-from databricks.sdk.mixins.compute import (ClustersExt, CommandExecutor,
-                                           SemVer, _ReturnToPrintJson)
-from databricks.sdk.service.compute import CommandExecutionAPI
+from databricks.sdk.mixins.compute import SemVer, _ReturnToPrintJson
 
 
 @pytest.mark.parametrize("given,expected", [('v0.0.4', SemVer(0, 0, 4)), ('v1.2.3', SemVer(1, 2, 3)),
@@ -55,4 +52,3 @@ def test_parse_results_data_as_json_with_json_without_return():
 def test_parse_results_data_as_json_with_json_print_and_return():
     with pytest.raises(ValueError):
         _ReturnToPrintJson.transform("\n".join(["print(1)", "return 1"]))
-
