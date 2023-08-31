@@ -95,6 +95,7 @@ def pat_auth(cfg: 'Config') -> HeaderFactory:
 @credentials_provider('runtime', [])
 def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
+        logging.debug("Skipping runtime authentication, because DATABRICKS_RUNTIME_VERSION is not set")
         return None
 
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
