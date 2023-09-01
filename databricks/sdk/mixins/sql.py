@@ -1,3 +1,4 @@
+import base64
 import datetime
 import json
 import logging
@@ -7,10 +8,11 @@ from collections.abc import Iterator
 from datetime import timedelta
 from typing import Optional
 
+from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.sql import (ColumnInfoTypeName, Disposition,
                                         ExecuteStatementResponse, Format,
-                                        ResultData, StatementExecutionAPI,
-                                        StatementState, StatementStatus)
+                                        StatementExecutionAPI, StatementState,
+                                        StatementStatus)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -47,17 +49,15 @@ class StatementExecutionExt(StatementExecutionAPI):
 
     def __init__(self, api_client):
         super().__init__(api_client)
-        self.type_converters = {
+        self._type_converters = {
             ColumnInfoTypeName.ARRAY: json.loads,
-            # ColumnInfoTypeName.BINARY: not_supported(ColumnInfoTypeName.BINARY),
+            ColumnInfoTypeName.BINARY: base64.b64decode,
             ColumnInfoTypeName.BOOLEAN: bool,
-            # ColumnInfoTypeName.BYTE: not_supported(ColumnInfoTypeName.BYTE),
             ColumnInfoTypeName.CHAR: str,
-            # ColumnInfoTypeName.DATE: not_supported(ColumnInfoTypeName.DATE),
+            ColumnInfoTypeName.DATE: self._parse_date,
             ColumnInfoTypeName.DOUBLE: float,
             ColumnInfoTypeName.FLOAT: float,
             ColumnInfoTypeName.INT: int,
-            # ColumnInfoTypeName.INTERVAL: not_supported(ColumnInfoTypeName.INTERVAL),
             ColumnInfoTypeName.LONG: int,
             ColumnInfoTypeName.MAP: json.loads,
             ColumnInfoTypeName.NULL: lambda _: None,
@@ -65,8 +65,12 @@ class StatementExecutionExt(StatementExecutionAPI):
             ColumnInfoTypeName.STRING: str,
             ColumnInfoTypeName.STRUCT: json.loads,
             ColumnInfoTypeName.TIMESTAMP: self._parse_timestamp,
-            # ColumnInfoTypeName.USER_DEFINED_TYPE: not_supported(ColumnInfoTypeName.USER_DEFINED_TYPE),
         }
+
+    @staticmethod
+    def _parse_date(value: str):
+        year, month, day = value.split('-')
+        return datetime.date(int(year), int(month), int(day))
 
     @staticmethod
     def _parse_timestamp(value: str):
@@ -77,10 +81,12 @@ class StatementExecutionExt(StatementExecutionAPI):
     def _raise_if_needed(status: StatementStatus):
         if status.state not in [StatementState.FAILED, StatementState.CANCELED, StatementState.CLOSED]:
             return
-        msg = status.state.value
-        if status.error is not None:
-            msg = f"{msg}: {status.error.error_code.value} {status.error.message}"
-        raise RuntimeError(msg)
+        err = status.error
+        if err is not None:
+            message = err.message.strip()
+            error_code = err.error_code.value
+            raise DatabricksError(message, error_code=error_code)
+        raise DatabricksError(status.state.value)
 
     def execute(self,
                 warehouse_id: str,
@@ -129,13 +135,12 @@ class StatementExecutionExt(StatementExecutionAPI):
 
         _LOG.debug(f"Executing SQL statement: {statement}")
 
-        # technically, we can do Disposition.EXTERNAL_LINKS, but let's push it further away.
         # format is limited to Format.JSON_ARRAY, but other iterations may include ARROW_STREAM.
         immediate_response = self.execute_statement(warehouse_id=warehouse_id,
                                                     statement=statement,
                                                     catalog=catalog,
                                                     schema=schema,
-                                                    disposition=Disposition.INLINE,
+                                                    disposition=Disposition.EXTERNAL_LINKS,
                                                     format=Format.JSON_ARRAY,
                                                     byte_limit=byte_limit,
                                                     wait_timeout=wait_timeout)
@@ -207,18 +212,47 @@ class StatementExecutionExt(StatementExecutionAPI):
                                         catalog=catalog,
                                         schema=schema,
                                         timeout=timeout)
+        if execute_response.result.external_links is None:
+            return []
+        for row in self._iterate_external_disposition(execute_response):
+            yield row
+
+    def _result_schema(self, execute_response: ExecuteStatementResponse):
         col_names = []
         col_conv = []
         for col in execute_response.manifest.schema.columns:
             col_names.append(col.name)
-            conv = self.type_converters.get(col.type_name, None)
+            conv = self._type_converters.get(col.type_name, None)
             if conv is None:
                 msg = f"{col.name} has no {col.type_name.value} converter"
                 raise ValueError(msg)
             col_conv.append(conv)
         row_factory = type("Row", (Row, ), {"__columns__": col_names})
+        return row_factory, col_conv
+
+    def _iterate_external_disposition(self, execute_response: ExecuteStatementResponse):
+        # ensure that we close the HTTP session after fetching the external links
         result_data = execute_response.result
+        row_factory, col_conv = self._result_schema(execute_response)
+        with self._api._new_session() as http:
+            while True:
+                for external_link in result_data.external_links:
+                    response = http.get(external_link.external_link)
+                    response.raise_for_status()
+                    for data in response.json():
+                        yield row_factory(col_conv[i](value) for i, value in enumerate(data))
+
+                    if external_link.next_chunk_index is None:
+                        return
+
+                    result_data = self.get_statement_result_chunk_n(execute_response.statement_id,
+                                                                    external_link.next_chunk_index)
+
+    def _iterate_inline_disposition(self, execute_response: ExecuteStatementResponse):
+        result_data = execute_response.result
+        row_factory, col_conv = self._result_schema(execute_response)
         while True:
+            # case for Disposition.INLINE, where we get rows embedded into a response
             for data in result_data.data_array:
                 # enumerate() + iterator + tuple constructor makes it more performant
                 # on larger humber of records for Python, even though it's less
@@ -226,6 +260,5 @@ class StatementExecutionExt(StatementExecutionAPI):
                 yield row_factory(col_conv[i](value) for i, value in enumerate(data))
             if result_data.next_chunk_index is None:
                 return
-            # TODO: replace once ES-828324 is fixed
-            json_response = self._api.do("GET", result_data.next_chunk_internal_link)
-            result_data = ResultData.from_dict(json_response)
+            result_data = self.get_statement_result_chunk_n(execute_response.statement_id,
+                                                            result_data.next_chunk_index)

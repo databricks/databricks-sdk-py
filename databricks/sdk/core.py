@@ -892,37 +892,23 @@ class ApiClient:
         self._cfg = cfg
         self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
         self._user_agent_base = cfg.user_agent
-
-        # Since urllib3 v1.26.0, Retry.DEFAULT_METHOD_WHITELIST is deprecated in favor of
-        # Retry.DEFAULT_ALLOWED_METHODS. We need to support both versions.
-        if 'DEFAULT_ALLOWED_METHODS' in dir(Retry):
-            retry_kwargs = {'allowed_methods': {"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS)}
-        else:
-            retry_kwargs = {'method_whitelist': {"POST"} | set(Retry.DEFAULT_METHOD_WHITELIST)}
-
-        retry_strategy = Retry(
-            total=6,
-            backoff_factor=1,
-            status_forcelist=[429],
-            respect_retry_after_header=True,
-            raise_on_status=False, # return original response when retries have been exhausted
-            **retry_kwargs,
-        )
-
-        self._session = requests.Session()
+        self._session = self._new_session()
         self._session.auth = self._authenticate
+
+    def _new_session(self) -> requests.Session:
+        session = requests.Session()
 
         # Number of urllib3 connection pools to cache before discarding the least
         # recently used pool. Python requests default value is 10.
-        pool_connections = cfg.max_connection_pools
+        pool_connections = self._cfg.max_connection_pools
         if pool_connections is None:
             pool_connections = 20
 
         # The maximum number of connections to save in the pool. Improves performance
         # in multithreaded situations. For now, we're setting it to the same value
         # as connection_pool_size.
-        pool_maxsize = cfg.max_connections_per_pool
-        if cfg.max_connections_per_pool is None:
+        pool_maxsize = self._cfg.max_connections_per_pool
+        if self._cfg.max_connections_per_pool is None:
             pool_maxsize = pool_connections
 
         # If pool_block is False, then more connections will are created,
@@ -931,11 +917,28 @@ class ApiClient:
         # Prevents platform from flooding. By default, requests library doesn't block.
         pool_block = True
 
-        http_adapter = HTTPAdapter(max_retries=retry_strategy,
-                                   pool_connections=pool_connections,
-                                   pool_maxsize=pool_maxsize,
-                                   pool_block=pool_block)
-        self._session.mount("https://", http_adapter)
+        # Since urllib3 v1.26.0, Retry.DEFAULT_METHOD_WHITELIST is deprecated in favor of
+        # Retry.DEFAULT_ALLOWED_METHODS. We need to support both versions.
+        if 'DEFAULT_ALLOWED_METHODS' in dir(Retry):
+            retry_kwargs = {'allowed_methods': {"POST"} | set(Retry.DEFAULT_ALLOWED_METHODS)}
+        else:
+            retry_kwargs = {'method_whitelist': {"POST"} | set(Retry.DEFAULT_METHOD_WHITELIST)}
+
+        retry = Retry(total=6,
+                      backoff_factor=1,
+                      status_forcelist=[429],
+                      respect_retry_after_header=True,
+                      raise_on_status=False,
+                      **retry_kwargs)
+
+        adapter = HTTPAdapter(max_retries=retry,
+                              pool_connections=pool_connections,
+                              pool_maxsize=pool_maxsize,
+                              pool_block=pool_block)
+
+        session.mount("https://", adapter)
+
+        return session
 
     @property
     def account_id(self) -> str:
