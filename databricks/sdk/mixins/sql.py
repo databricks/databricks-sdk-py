@@ -7,7 +7,7 @@ import random
 import time
 from collections.abc import Iterator
 from datetime import timedelta
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Dict
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.sql import (ColumnInfoTypeName, Disposition,
@@ -37,7 +37,7 @@ class Row(tuple):
         return row
 
     # Python SDK convention
-    def as_dict(self) -> dict[str, any]:
+    def as_dict(self) -> Dict[str, any]:
         return dict(zip(self.__columns__, self))
 
     # PySpark convention
