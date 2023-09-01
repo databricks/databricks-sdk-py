@@ -6,7 +6,7 @@ import logging
 import random
 import time
 from datetime import timedelta
-from typing import Any, List, Optional, Dict, Iterator
+from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.sql import (ColumnInfoTypeName, Disposition,
