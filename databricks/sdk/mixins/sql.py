@@ -17,17 +17,6 @@ from databricks.sdk.service.sql import (ColumnInfoTypeName, Disposition,
 _LOG = logging.getLogger("databricks.sdk")
 
 
-class _RowCreator(tuple):
-
-    def __new__(cls, fields):
-        instance = super().__new__(cls, fields)
-        return instance
-
-    def __repr__(self):
-        field_values = ", ".join(f"{field}={getattr(self, field)}" for field in self)
-        return f"{self.__class__.__name__}({field_values})"
-
-
 class Row(tuple):
 
     def __new__(cls, columns: List[str], values: List[Any]) -> 'Row':
