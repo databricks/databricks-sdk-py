@@ -23,14 +23,16 @@ def test_sql_execution(w, env_or_skip):
         print(f'pickup_zip={pickup_zip}, dropoff_zip={dropoff_zip}')
 
 
-def test_sql_execution_partial(w):
-    all_warehouses = w.warehouses.list()
-    assert len(w.warehouses.list()) > 0, 'at least one SQL warehouse required'
-    warehouse_id = all_warehouses[0].id
-
+def test_sql_execution_partial(w, env_or_skip):
+    warehouse_id = env_or_skip('TEST_DEFAULT_WAREHOUSE_ID')
     run_sql = functools.partial(w.statement_execution.execute_fetch_all, warehouse_id, catalog='samples')
     for row in run_sql('SELECT * FROM nyctaxi.trips LIMIT 10'):
-        print(f'pickup_zip={row.pickup_zip}, dropoff_zip={row.dropoff_zip}')
+        pickup_zip = row.pickup_zip
+        dropoff_zip = row['dropoff_zip']
+        x = row.as_dict()
+        pickup_time, dropoff_time = row[0], row[1]
+        assert 'dropoff_zip' in row
+        print(f'{pickup_zip}@{pickup_time} -> {dropoff_zip}@{dropoff_time}: {x}')
 
 
 def test_query_history_list_with_filter(w):

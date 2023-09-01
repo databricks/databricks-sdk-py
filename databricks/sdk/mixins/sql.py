@@ -1,12 +1,13 @@
 import base64
 import datetime
+import functools
 import json
 import logging
 import random
 import time
 from collections.abc import Iterator
 from datetime import timedelta
-from typing import Optional
+from typing import Any, Optional
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.sql import (ColumnInfoTypeName, Disposition,
@@ -30,22 +31,45 @@ class _RowCreator(tuple):
 
 class Row(tuple):
 
+    def __new__(cls, columns: list[str], values: list[Any]) -> 'Row':
+        row = tuple.__new__(cls, values)
+        row.__columns__ = columns
+        return row
+
+    # Python SDK convention
     def as_dict(self) -> dict[str, any]:
         return dict(zip(self.__columns__, self))
 
-    def __getattr__(self, col):
-        idx = self.__columns__.index(col)
-        return self[idx]
+    # PySpark convention
+    asDict = as_dict
+
+    # PySpark convention
+    def __contains__(self, item):
+        return item in self.__columns__
 
     def __getitem__(self, col):
+        if isinstance(col, (int, slice)):
+            return super().__getitem__(col)
         # if columns are named `2 + 2`, for example
         return self.__getattr__(col)
+
+    def __getattr__(self, col):
+        try:
+            idx = self.__columns__.index(col)
+            return self[idx]
+        except IndexError:
+            raise AttributeError(col)
+        except ValueError:
+            raise AttributeError(col)
 
     def __repr__(self):
         return f"Row({', '.join(f'{k}={v}' for (k, v) in zip(self.__columns__, self))})"
 
 
 class StatementExecutionExt(StatementExecutionAPI):
+    """
+    Execute SQL statements in a stateless manner.
+    """
 
     def __init__(self, api_client):
         super().__init__(api_client)
@@ -68,12 +92,12 @@ class StatementExecutionExt(StatementExecutionAPI):
         }
 
     @staticmethod
-    def _parse_date(value: str):
+    def _parse_date(value: str) -> datetime.date:
         year, month, day = value.split('-')
         return datetime.date(int(year), int(month), int(day))
 
     @staticmethod
-    def _parse_timestamp(value: str):
+    def _parse_timestamp(value: str) -> datetime.datetime:
         # make it work with Python 3.7 to 3.10 as well
         return datetime.datetime.fromisoformat(value.replace('Z', '+00:00'))
 
@@ -227,10 +251,10 @@ class StatementExecutionExt(StatementExecutionAPI):
                 msg = f"{col.name} has no {col.type_name.value} converter"
                 raise ValueError(msg)
             col_conv.append(conv)
-        row_factory = type("Row", (Row, ), {"__columns__": col_names})
+        row_factory = functools.partial(Row, col_names)
         return row_factory, col_conv
 
-    def _iterate_external_disposition(self, execute_response: ExecuteStatementResponse):
+    def _iterate_external_disposition(self, execute_response: ExecuteStatementResponse) -> Iterator[Row]:
         # ensure that we close the HTTP session after fetching the external links
         result_data = execute_response.result
         row_factory, col_conv = self._result_schema(execute_response)
@@ -248,7 +272,7 @@ class StatementExecutionExt(StatementExecutionAPI):
                     result_data = self.get_statement_result_chunk_n(execute_response.statement_id,
                                                                     external_link.next_chunk_index)
 
-    def _iterate_inline_disposition(self, execute_response: ExecuteStatementResponse):
+    def _iterate_inline_disposition(self, execute_response: ExecuteStatementResponse) -> Iterator[Row]:
         result_data = execute_response.result
         row_factory, col_conv = self._result_schema(execute_response)
         while True:
@@ -258,7 +282,9 @@ class StatementExecutionExt(StatementExecutionAPI):
                 # on larger humber of records for Python, even though it's less
                 # readable code.
                 yield row_factory(col_conv[i](value) for i, value in enumerate(data))
+
             if result_data.next_chunk_index is None:
                 return
+
             result_data = self.get_statement_result_chunk_n(execute_response.statement_id,
                                                             result_data.next_chunk_index)
