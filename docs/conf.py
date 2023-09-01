@@ -36,7 +36,6 @@ html_theme_options = {
     'description': 'Databricks SDK for Python',
     'fixed_sidebar': 'true',
     'logo_text_align': 'center',
-    'github_banner': 'true',
     'github_button': 'true',
     'show_related': 'true',
     'sidebar_collapse': 'true',
