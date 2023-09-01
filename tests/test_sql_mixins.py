@@ -144,5 +144,5 @@ def test_fetch_all_two_chunks(config, mocker):
 
     assert len(rows) == 4
 
-    assert [c.args for c in http_get.call_args_list] == [('https://first', ), ('https://second', )]
+    assert http_get.call_args_list == [mocker.call('https://first'), mocker.call('https://second')]
     next_chunk.assert_called_with('bcd', 1)
