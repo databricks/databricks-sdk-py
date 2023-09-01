@@ -7,7 +7,7 @@ import random
 import time
 from collections.abc import Iterator
 from datetime import timedelta
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.sql import (ColumnInfoTypeName, Disposition,
@@ -31,7 +31,7 @@ class _RowCreator(tuple):
 
 class Row(tuple):
 
-    def __new__(cls, columns: list[str], values: list[Any]) -> 'Row':
+    def __new__(cls, columns: List[str], values: List[Any]) -> 'Row':
         row = tuple.__new__(cls, values)
         row.__columns__ = columns
         return row
@@ -69,6 +69,41 @@ class Row(tuple):
 class StatementExecutionExt(StatementExecutionAPI):
     """
     Execute SQL statements in a stateless manner.
+
+    Primary use-case of :py:meth:`iterate_rows` and :py:meth:`execute` methods is oriented at executing SQL queries in
+    a stateless manner straight away from Databricks SDK for Python, without requiring any external dependencies.
+    Results are fetched in JSON format through presigned external links. This is perfect for serverless applications
+    like AWS Lambda, Azure Functions, or any other containerised short-lived applications, where container startup
+    time is faster with the smaller dependency set.
+
+    .. code-block:
+
+        for (pickup_zip, dropoff_zip) in w.statement_execution.iterate_rows(warehouse_id,
+            'SELECT pickup_zip, dropoff_zip FROM nyctaxi.trips LIMIT 10', catalog='samples'):
+            print(f'pickup_zip={pickup_zip}, dropoff_zip={dropoff_zip}')
+
+    Method :py:meth:`iterate_rows` returns an iterator of objects, that resemble :class:`pyspark.sql.Row` APIs, but full
+    compatibility is not the goal of this implementation.
+
+    .. code-block::
+
+        iterate_rows = functools.partial(w.statement_execution.iterate_rows, warehouse_id, catalog='samples')
+        for row in iterate_rows('SELECT * FROM nyctaxi.trips LIMIT 10'):
+            pickup_time, dropoff_time = row[0], row[1]
+            pickup_zip = row.pickup_zip
+            dropoff_zip = row['dropoff_zip']
+            all_fields = row.as_dict()
+            print(f'{pickup_zip}@{pickup_time} -> {dropoff_zip}@{dropoff_time}: {all_fields}')
+
+    When you only need to execute the query and have no need to iterate over results, use the :py:meth:`execute`.
+
+    .. code-block::
+
+        w.statement_execution.execute(warehouse_id, 'CREATE TABLE foo AS SELECT * FROM range(10)')
+
+    Applications, that need to a more traditional SQL Python APIs with cursors, efficient data transfer of hundreds of
+    megabytes or gigabytes of data serialized in Apache Arrow format, and low result fetching latency, should use
+    the stateful Databricks SQL Connector for Python.
     """
 
     def __init__(self, api_client):
@@ -124,14 +159,17 @@ class StatementExecutionExt(StatementExecutionAPI):
         """(Experimental) Execute a SQL statement and block until results are ready,
         including starting the warehouse if needed.
 
-        This is a high-level implementation that works with INLINE result disposition,
-        fetching records in JSON format. It can be considered as a quick way to run SQL
-        queries that return up to a dozen megabytes of results by just depending on
-        Databricks SDK for Python without having to pull hundreds of megabytes of
-        library dependencies of Apache Arrow.
+        This is a high-level implementation that works with fetching records in JSON format.
+        It can be considered as a quick way to run SQL queries by just depending on
+        Databricks SDK for Python without the need of any other compiled library dependencies.
 
-        To seamlessly iterate over the rows from query results, please use `execute_fetch_all()`
-        method on this class.
+        This method is a higher-level wrapper over :py:meth:`execute_statement` and fetches results
+        in JSON format through the external link disposition, with client-side polling until
+        the statement succeeds in execution. Whenever the statement is failed, cancelled, or
+        closed, this method raises `DatabricksError` with the state message and the relevant
+        error code.
+
+        To seamlessly iterate over the rows from query results, please use :py:meth:`iterate_rows`.
 
         :param warehouse_id: str
           Warehouse upon which to execute a statement.
@@ -197,21 +235,31 @@ class StatementExecutionExt(StatementExecutionAPI):
         msg = f"timed out after {timeout}: {status_message}"
         raise TimeoutError(msg)
 
-    def execute_fetch_all(self,
-                          warehouse_id: str,
-                          statement: str,
-                          *,
-                          byte_limit: Optional[int] = None,
-                          catalog: Optional[str] = None,
-                          schema: Optional[str] = None,
-                          timeout: timedelta = timedelta(minutes=20),
-                          ) -> Iterator[Row]:
+    def iterate_rows(self,
+                     warehouse_id: str,
+                     statement: str,
+                     *,
+                     byte_limit: Optional[int] = None,
+                     catalog: Optional[str] = None,
+                     schema: Optional[str] = None,
+                     timeout: timedelta = timedelta(minutes=20),
+                     ) -> Iterator[Row]:
         """(Experimental) Execute a query and iterate over all available records.
 
-        This method internally calls `execute()` to handle async execution and timeouts.
+        This method is a wrapper over :py:meth:`execute` with the handling of chunked result
+        processing and deserialization of those into separate rows, which are yielded from
+        a returned iterator. Every row API resembles those of :class:`pyspark.sql.Row`,
+        but full compatibility is not the goal of this implementation.
 
-        Applications, that need to a more traditional SQL Python APIs with cursors and low result fetching latency,
-        should use Databricks SQL connector for Python.
+        .. code-block::
+
+            iterate_rows = functools.partial(w.statement_execution.iterate_rows, warehouse_id, catalog='samples')
+            for row in iterate_rows('SELECT * FROM nyctaxi.trips LIMIT 10'):
+                pickup_time, dropoff_time = row[0], row[1]
+                pickup_zip = row.pickup_zip
+                dropoff_zip = row['dropoff_zip']
+                all_fields = row.as_dict()
+                print(f'{pickup_zip}@{pickup_time} -> {dropoff_zip}@{dropoff_time}: {all_fields}')
 
         :param warehouse_id: str
           Warehouse upon which to execute a statement.

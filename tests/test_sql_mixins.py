@@ -110,7 +110,7 @@ def test_fetch_all_no_chunks(config, mocker):
 
     http_get = mocker.patch('requests.sessions.Session.get', return_value=raw_response)
 
-    rows = list(w.statement_execution.execute_fetch_all('abc', 'SELECT id, NOW() AS now FROM range(2)'))
+    rows = list(w.statement_execution.iterate_rows('abc', 'SELECT id, NOW() AS now FROM range(2)'))
 
     assert len(rows) == 2
 
@@ -140,7 +140,7 @@ def test_fetch_all_two_chunks(config, mocker):
     raw_response.json = lambda: [["1", "2023-09-01T13:21:53Z"], ["2", "2023-09-01T13:21:53Z"]]
     http_get = mocker.patch('requests.sessions.Session.get', return_value=raw_response)
 
-    rows = list(w.statement_execution.execute_fetch_all('abc', 'SELECT id, NOW() AS now FROM range(2)'))
+    rows = list(w.statement_execution.iterate_rows('abc', 'SELECT id, NOW() AS now FROM range(2)'))
 
     assert len(rows) == 4
 
