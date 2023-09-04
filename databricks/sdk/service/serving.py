@@ -727,8 +727,7 @@ class ServingEndpointsAPI:
         res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(res)
 
-    def get_serving_endpoint_permission_levels(
-            self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
+    def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
         """Get serving endpoint permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -745,7 +744,7 @@ class ServingEndpointsAPI:
                            headers=headers)
         return GetServingEndpointPermissionLevelsResponse.from_dict(res)
 
-    def get_serving_endpoint_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
+    def get_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
         """Get serving endpoint permissions.
         
         Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
@@ -805,7 +804,7 @@ class ServingEndpointsAPI:
         res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
         return QueryEndpointResponse.from_dict(res)
 
-    def set_serving_endpoint_permissions(
+    def set_permissions(
         self,
         serving_endpoint_id: str,
         *,
@@ -877,7 +876,7 @@ class ServingEndpointsAPI:
         return self.update_config(name=name, served_models=served_models,
                                   traffic_config=traffic_config).result(timeout=timeout)
 
-    def update_serving_endpoint_permissions(
+    def update_permissions(
         self,
         serving_endpoint_id: str,
         *,

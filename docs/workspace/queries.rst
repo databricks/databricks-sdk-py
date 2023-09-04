@@ -6,7 +6,7 @@ Queries / Results
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
-    .. py:method:: create( [, data_source_id, description, name, options, parent, query])
+    .. py:method:: create( [, data_source_id, description, name, options, parent, query, run_as_role])
 
         Usage:
 
@@ -53,6 +53,8 @@ Queries / Results
           The identifier of the workspace folder containing the object.
         :param query: str (optional)
           The text of the query to be run.
+        :param run_as_role: :class:`RunAsRole` (optional)
+          Run as role
         
         :returns: :class:`Query`
         

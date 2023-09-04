@@ -2969,7 +2969,7 @@ class JobsAPI:
         res = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
         return Job.from_dict(res)
 
-    def get_job_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
+    def get_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
         """Get job permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -2984,7 +2984,7 @@ class JobsAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels', headers=headers)
         return GetJobPermissionLevelsResponse.from_dict(res)
 
-    def get_job_permissions(self, job_id: str) -> JobPermissions:
+    def get_permissions(self, job_id: str) -> JobPermissions:
         """Get job permissions.
         
         Gets the permissions of a job. Jobs can inherit permissions from their root object.
@@ -3487,7 +3487,7 @@ class JobsAPI:
                             spark_submit_params=spark_submit_params,
                             sql_params=sql_params).result(timeout=timeout)
 
-    def set_job_permissions(
+    def set_permissions(
             self,
             job_id: str,
             *,
@@ -3650,7 +3650,7 @@ class JobsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.1/jobs/update', body=body, headers=headers)
 
-    def update_job_permissions(
+    def update_permissions(
             self,
             job_id: str,
             *,

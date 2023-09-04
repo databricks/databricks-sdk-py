@@ -416,7 +416,7 @@ Model Registry
         :returns: :class:`GetModelVersionDownloadUriResponse`
         
 
-    .. py:method:: get_registered_model_permission_levels(registered_model_id)
+    .. py:method:: get_permission_levels(registered_model_id)
 
         Get registered model permission levels.
         
@@ -428,7 +428,7 @@ Model Registry
         :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
         
 
-    .. py:method:: get_registered_model_permissions(registered_model_id)
+    .. py:method:: get_permissions(registered_model_id)
 
         Get registered model permissions.
         
@@ -634,7 +634,7 @@ Model Registry
         
         
 
-    .. py:method:: set_registered_model_permissions(registered_model_id [, access_control_list])
+    .. py:method:: set_permissions(registered_model_id [, access_control_list])
 
         Set registered model permissions.
         
@@ -799,7 +799,7 @@ Model Registry
         
         
 
-    .. py:method:: update_registered_model_permissions(registered_model_id [, access_control_list])
+    .. py:method:: update_permissions(registered_model_id [, access_control_list])
 
         Update registered model permissions.
         

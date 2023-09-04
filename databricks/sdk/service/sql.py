@@ -205,6 +205,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -401,6 +402,35 @@ class CreateWarehouseResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateWarehouseResponse':
         return cls(id=d.get('id', None))
+
+
+@dataclass
+class CreateWidget:
+    dashboard_id: str
+    options: 'WidgetOptions'
+    width: int
+    id: Optional[str] = None
+    text: Optional[str] = None
+    visualization_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.id is not None: body['id'] = self.id
+        if self.options: body['options'] = self.options.as_dict()
+        if self.text is not None: body['text'] = self.text
+        if self.visualization_id is not None: body['visualization_id'] = self.visualization_id
+        if self.width is not None: body['width'] = self.width
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateWidget':
+        return cls(dashboard_id=d.get('dashboard_id', None),
+                   id=d.get('id', None),
+                   options=_from_dict(d, 'options', WidgetOptions),
+                   text=d.get('text', None),
+                   visualization_id=d.get('visualization_id', None),
+                   width=d.get('width', None))
 
 
 @dataclass
@@ -1310,6 +1340,7 @@ class Query:
     permission_tier: Optional['PermissionLevel'] = None
     query: Optional[str] = None
     query_hash: Optional[str] = None
+    run_as_role: Optional['RunAsRole'] = None
     tags: Optional['List[str]'] = None
     updated_at: Optional[str] = None
     user: Optional['User'] = None
@@ -1336,6 +1367,7 @@ class Query:
         if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
         if self.query is not None: body['query'] = self.query
         if self.query_hash is not None: body['query_hash'] = self.query_hash
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
         if self.tags: body['tags'] = [v for v in self.tags]
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.user: body['user'] = self.user.as_dict()
@@ -1363,6 +1395,7 @@ class Query:
                    permission_tier=_enum(d, 'permission_tier', PermissionLevel),
                    query=d.get('query', None),
                    query_hash=d.get('query_hash', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
                    tags=d.get('tags', None),
                    updated_at=d.get('updated_at', None),
                    user=_from_dict(d, 'user', User),
@@ -1648,6 +1681,7 @@ class QueryPostContent:
     options: Optional[Any] = None
     parent: Optional[str] = None
     query: Optional[str] = None
+    run_as_role: Optional['RunAsRole'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1657,6 +1691,7 @@ class QueryPostContent:
         if self.options: body['options'] = self.options
         if self.parent is not None: body['parent'] = self.parent
         if self.query is not None: body['query'] = self.query
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
         return body
 
     @classmethod
@@ -1666,7 +1701,8 @@ class QueryPostContent:
                    name=d.get('name', None),
                    options=d.get('options', None),
                    parent=d.get('parent', None),
-                   query=d.get('query', None))
+                   query=d.get('query', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole))
 
 
 class QueryStatementType(Enum):
@@ -1811,6 +1847,13 @@ class ResultSchema:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResultSchema':
         return cls(column_count=d.get('column_count', None), columns=_repeated(d, 'columns', ColumnInfo))
+
+
+class RunAsRole(Enum):
+    """Run as role"""
+
+    OWNER = 'owner'
+    VIEWER = 'viewer'
 
 
 @dataclass
@@ -2416,33 +2459,62 @@ class Widget:
 @dataclass
 class WidgetOptions:
     created_at: Optional[str] = None
-    dashboard_id: Optional[str] = None
+    description: Optional[str] = None
     is_hidden: Optional[bool] = None
     parameter_mappings: Optional[Any] = None
-    position: Optional[Any] = None
-    text: Optional[str] = None
+    position: Optional['WidgetPosition'] = None
+    title: Optional[str] = None
     updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.created_at is not None: body['created_at'] = self.created_at
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.description is not None: body['description'] = self.description
         if self.is_hidden is not None: body['isHidden'] = self.is_hidden
         if self.parameter_mappings: body['parameterMappings'] = self.parameter_mappings
-        if self.position: body['position'] = self.position
-        if self.text is not None: body['text'] = self.text
+        if self.position: body['position'] = self.position.as_dict()
+        if self.title is not None: body['title'] = self.title
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WidgetOptions':
         return cls(created_at=d.get('created_at', None),
-                   dashboard_id=d.get('dashboard_id', None),
+                   description=d.get('description', None),
                    is_hidden=d.get('isHidden', None),
                    parameter_mappings=d.get('parameterMappings', None),
-                   position=d.get('position', None),
-                   text=d.get('text', None),
+                   position=_from_dict(d, 'position', WidgetPosition),
+                   title=d.get('title', None),
                    updated_at=d.get('updated_at', None))
+
+
+@dataclass
+class WidgetPosition:
+    """Coordinates of this widget on a dashboard. This portion of the API changes frequently and is
+    unsupported."""
+
+    auto_height: Optional[bool] = None
+    col: Optional[int] = None
+    row: Optional[int] = None
+    size_x: Optional[int] = None
+    size_y: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.auto_height is not None: body['autoHeight'] = self.auto_height
+        if self.col is not None: body['col'] = self.col
+        if self.row is not None: body['row'] = self.row
+        if self.size_x is not None: body['sizeX'] = self.size_x
+        if self.size_y is not None: body['sizeY'] = self.size_y
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WidgetPosition':
+        return cls(auto_height=d.get('autoHeight', None),
+                   col=d.get('col', None),
+                   row=d.get('row', None),
+                   size_x=d.get('sizeX', None),
+                   size_y=d.get('sizeY', None))
 
 
 class AlertsAPI:
@@ -2563,6 +2635,91 @@ class AlertsAPI:
         self._api.do('PUT', f'/api/2.0/preview/sql/alerts/{alert_id}', body=body, headers=headers)
 
 
+class DashboardWidgetsAPI:
+    """This is an evolving API that facilitates the addition and removal of widgets from existing dashboards
+    within the Databricks Workspace. Data structures may change over time."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               dashboard_id: str,
+               options: WidgetOptions,
+               width: int,
+               *,
+               text: Optional[str] = None,
+               visualization_id: Optional[str] = None) -> Widget:
+        """Add widget to a dashboard.
+        
+        :param dashboard_id: str
+          Dashboard ID returned by :method:dashboards/create.
+        :param options: :class:`WidgetOptions`
+        :param width: int
+          Width of a widget
+        :param text: str (optional)
+          If this is a textbox widget, the application displays this text. This field is ignored if the widget
+          contains a visualization in the `visualization` field.
+        :param visualization_id: str (optional)
+          Query Vizualization ID returned by :method:queryvisualizations/create.
+        
+        :returns: :class:`Widget`
+        """
+        body = {}
+        if dashboard_id is not None: body['dashboard_id'] = dashboard_id
+        if options is not None: body['options'] = options.as_dict()
+        if text is not None: body['text'] = text
+        if visualization_id is not None: body['visualization_id'] = visualization_id
+        if width is not None: body['width'] = width
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', '/api/2.0/preview/sql/widgets', body=body, headers=headers)
+        return Widget.from_dict(res)
+
+    def delete(self, id: str):
+        """Remove widget.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.0/preview/sql/widgets/{id}', headers=headers)
+
+    def update(self,
+               dashboard_id: str,
+               options: WidgetOptions,
+               width: int,
+               id: str,
+               *,
+               text: Optional[str] = None,
+               visualization_id: Optional[str] = None) -> Widget:
+        """Update existing widget.
+        
+        :param dashboard_id: str
+          Dashboard ID returned by :method:dashboards/create.
+        :param options: :class:`WidgetOptions`
+        :param width: int
+          Width of a widget
+        :param id: str
+        :param text: str (optional)
+          If this is a textbox widget, the application displays this text. This field is ignored if the widget
+          contains a visualization in the `visualization` field.
+        :param visualization_id: str (optional)
+          Query Vizualization ID returned by :method:queryvisualizations/create.
+        
+        :returns: :class:`Widget`
+        """
+        body = {}
+        if dashboard_id is not None: body['dashboard_id'] = dashboard_id
+        if options is not None: body['options'] = options.as_dict()
+        if text is not None: body['text'] = text
+        if visualization_id is not None: body['visualization_id'] = visualization_id
+        if width is not None: body['width'] = width
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', f'/api/2.0/preview/sql/widgets/{id}', body=body, headers=headers)
+        return Widget.from_dict(res)
+
+
 class DashboardsAPI:
     """In general, there is little need to modify dashboards using the API. However, it can be useful to use
     dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
@@ -2574,28 +2731,37 @@ class DashboardsAPI:
         self._api = api_client
 
     def create(self,
+               name: str,
                *,
+               dashboard_filters_enabled: Optional[bool] = None,
                is_favorite: Optional[bool] = None,
-               name: Optional[str] = None,
                parent: Optional[str] = None,
+               run_as_role: Optional[RunAsRole] = None,
                tags: Optional[List[str]] = None) -> Dashboard:
         """Create a dashboard object.
         
+        :param name: str
+          The title of this dashboard that appears in list views and at the top of the dashboard page.
+        :param dashboard_filters_enabled: bool (optional)
+          Indicates whether the dashboard filters are enabled
         :param is_favorite: bool (optional)
           Indicates whether this query object should appear in the current user's favorites list. The
           application uses this flag to determine whether or not the "favorite star " should selected.
-        :param name: str (optional)
-          The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param parent: str (optional)
           The identifier of the workspace folder containing the object.
+        :param run_as_role: :class:`RunAsRole` (optional)
+          Run as role
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
         """
         body = {}
+        if dashboard_filters_enabled is not None:
+            body['dashboard_filters_enabled'] = dashboard_filters_enabled
         if is_favorite is not None: body['is_favorite'] = is_favorite
         if name is not None: body['name'] = name
         if parent is not None: body['parent'] = parent
+        if run_as_role is not None: body['run_as_role'] = run_as_role.value
         if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
@@ -2820,7 +2986,8 @@ class QueriesAPI:
                name: Optional[str] = None,
                options: Optional[Any] = None,
                parent: Optional[str] = None,
-               query: Optional[str] = None) -> Query:
+               query: Optional[str] = None,
+               run_as_role: Optional[RunAsRole] = None) -> Query:
         """Create a new query definition.
         
         Creates a new query definition. Queries created with this endpoint belong to the authenticated user
@@ -2846,6 +3013,8 @@ class QueriesAPI:
           The identifier of the workspace folder containing the object.
         :param query: str (optional)
           The text of the query to be run.
+        :param run_as_role: :class:`RunAsRole` (optional)
+          Run as role
         
         :returns: :class:`Query`
         """
@@ -2856,6 +3025,7 @@ class QueriesAPI:
         if options is not None: body['options'] = options
         if parent is not None: body['parent'] = parent
         if query is not None: body['query'] = query
+        if run_as_role is not None: body['run_as_role'] = run_as_role.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
         return Query.from_dict(res)
@@ -3046,6 +3216,96 @@ class QueryHistoryAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+
+class QueryVisualizationsAPI:
+    """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
+    within the Databricks Workspace. Data structures may change over time."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               query_id: str,
+               type: str,
+               options: Any,
+               *,
+               description: Optional[str] = None,
+               name: Optional[str] = None) -> Visualization:
+        """Add visualization to a query.
+        
+        :param query_id: str
+          The identifier returned by :method:queries/create
+        :param type: str
+          The type of visualization: chart, table, pivot table, and so on.
+        :param options: Any
+          The options object varies widely from one visualization type to the next and is unsupported.
+          Databricks does not recommend modifying visualization settings in JSON.
+        :param description: str (optional)
+          A short description of this visualization. This is not displayed in the UI.
+        :param name: str (optional)
+          The name of the visualization that appears on dashboards and the query screen.
+        
+        :returns: :class:`Visualization`
+        """
+        body = {}
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if options is not None: body['options'] = options
+        if query_id is not None: body['query_id'] = query_id
+        if type is not None: body['type'] = type
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', '/api/2.0/preview/sql/visualizations', body=body, headers=headers)
+        return Visualization.from_dict(res)
+
+    def delete(self, id: str):
+        """Remove visualization.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.0/preview/sql/visualizations/{id}', headers=headers)
+
+    def update(self,
+               id: str,
+               *,
+               created_at: Optional[str] = None,
+               description: Optional[str] = None,
+               name: Optional[str] = None,
+               options: Optional[Any] = None,
+               type: Optional[str] = None,
+               updated_at: Optional[str] = None) -> Visualization:
+        """Edit existing visualization.
+        
+        :param id: str
+          The UUID for this visualization.
+        :param created_at: str (optional)
+        :param description: str (optional)
+          A short description of this visualization. This is not displayed in the UI.
+        :param name: str (optional)
+          The name of the visualization that appears on dashboards and the query screen.
+        :param options: Any (optional)
+          The options object varies widely from one visualization type to the next and is unsupported.
+          Databricks does not recommend modifying visualization settings in JSON.
+        :param type: str (optional)
+          The type of visualization: chart, table, pivot table, and so on.
+        :param updated_at: str (optional)
+        
+        :returns: :class:`Visualization`
+        """
+        body = {}
+        if created_at is not None: body['created_at'] = created_at
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
+        if options is not None: body['options'] = options
+        if type is not None: body['type'] = type
+        if updated_at is not None: body['updated_at'] = updated_at
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', f'/api/2.0/preview/sql/visualizations/{id}', body=body, headers=headers)
+        return Visualization.from_dict(res)
 
 
 class StatementExecutionAPI:
@@ -3781,7 +4041,7 @@ class WarehousesAPI:
         res = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
         return GetWarehouseResponse.from_dict(res)
 
-    def get_warehouse_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
+    def get_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
         """Get SQL warehouse permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3798,7 +4058,7 @@ class WarehousesAPI:
                            headers=headers)
         return GetWarehousePermissionLevelsResponse.from_dict(res)
 
-    def get_warehouse_permissions(self, warehouse_id: str) -> WarehousePermissions:
+    def get_permissions(self, warehouse_id: str) -> WarehousePermissions:
         """Get SQL warehouse permissions.
         
         Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
@@ -3844,11 +4104,11 @@ class WarehousesAPI:
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
         return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
 
-    def set_warehouse_permissions(self,
-                                  warehouse_id: str,
-                                  *,
-                                  access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
-                                  ) -> WarehousePermissions:
+    def set_permissions(self,
+                        warehouse_id: str,
+                        *,
+                        access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
+                        ) -> WarehousePermissions:
         """Set SQL warehouse permissions.
         
         Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root object.
@@ -3966,11 +4226,11 @@ class WarehousesAPI:
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
 
-    def update_warehouse_permissions(self,
-                                     warehouse_id: str,
-                                     *,
-                                     access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
-                                     ) -> WarehousePermissions:
+    def update_permissions(self,
+                           warehouse_id: str,
+                           *,
+                           access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
+                           ) -> WarehousePermissions:
         """Update SQL warehouse permissions.
         
         Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root

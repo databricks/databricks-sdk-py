@@ -2812,6 +2812,7 @@ class NodeType:
     support_cluster_tags: Optional[bool] = None
     support_ebs_volumes: Optional[bool] = None
     support_port_forwarding: Optional[bool] = None
+    supports_elastic_disk: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2837,6 +2838,7 @@ class NodeType:
         if self.support_ebs_volumes is not None: body['support_ebs_volumes'] = self.support_ebs_volumes
         if self.support_port_forwarding is not None:
             body['support_port_forwarding'] = self.support_port_forwarding
+        if self.supports_elastic_disk is not None: body['supports_elastic_disk'] = self.supports_elastic_disk
         return body
 
     @classmethod
@@ -2860,7 +2862,8 @@ class NodeType:
                    photon_worker_capable=d.get('photon_worker_capable', None),
                    support_cluster_tags=d.get('support_cluster_tags', None),
                    support_ebs_volumes=d.get('support_ebs_volumes', None),
-                   support_port_forwarding=d.get('support_port_forwarding', None))
+                   support_port_forwarding=d.get('support_port_forwarding', None),
+                   supports_elastic_disk=d.get('supports_elastic_disk', None))
 
 
 @dataclass
@@ -3560,7 +3563,7 @@ class ClusterPoliciesAPI:
         self._api.do('POST', '/api/2.0/policies/clusters/edit', body=body, headers=headers)
 
     def get(self, policy_id: str) -> Policy:
-        """Get entity.
+        """Get a cluster policy.
         
         Get a cluster policy entity. Creation and editing is available to admins only.
         
@@ -3576,8 +3579,7 @@ class ClusterPoliciesAPI:
         res = self._api.do('GET', '/api/2.0/policies/clusters/get', query=query, headers=headers)
         return Policy.from_dict(res)
 
-    def get_cluster_policy_permission_levels(
-            self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
+    def get_permission_levels(self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
         """Get cluster policy permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3594,7 +3596,7 @@ class ClusterPoliciesAPI:
                            headers=headers)
         return GetClusterPolicyPermissionLevelsResponse.from_dict(res)
 
-    def get_cluster_policy_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
+    def get_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
         """Get cluster policy permissions.
         
         Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
@@ -3616,7 +3618,7 @@ class ClusterPoliciesAPI:
              *,
              sort_column: Optional[ListSortColumn] = None,
              sort_order: Optional[ListSortOrder] = None) -> Iterator[Policy]:
-        """Get a cluster policy.
+        """List cluster policies.
         
         Returns a list of policies accessible by the requesting user.
         
@@ -3637,7 +3639,7 @@ class ClusterPoliciesAPI:
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query, headers=headers)
         return [Policy.from_dict(v) for v in json.get('policies', [])]
 
-    def set_cluster_policy_permissions(
+    def set_permissions(
         self,
         cluster_policy_id: str,
         *,
@@ -3663,7 +3665,7 @@ class ClusterPoliciesAPI:
                            headers=headers)
         return ClusterPolicyPermissions.from_dict(res)
 
-    def update_cluster_policy_permissions(
+    def update_permissions(
         self,
         cluster_policy_id: str,
         *,
@@ -4391,7 +4393,7 @@ class ClustersAPI:
         res = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
         return ClusterDetails.from_dict(res)
 
-    def get_cluster_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
+    def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
         """Get cluster permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -4408,7 +4410,7 @@ class ClustersAPI:
                            headers=headers)
         return GetClusterPermissionLevelsResponse.from_dict(res)
 
-    def get_cluster_permissions(self, cluster_id: str) -> ClusterPermissions:
+    def get_permissions(self, cluster_id: str) -> ClusterPermissions:
         """Get cluster permissions.
         
         Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
@@ -4584,7 +4586,7 @@ class ClustersAPI:
                          timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
-    def set_cluster_permissions(
+    def set_permissions(
             self,
             cluster_id: str,
             *,
@@ -4661,7 +4663,7 @@ class ClustersAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/clusters/unpin', body=body, headers=headers)
 
-    def update_cluster_permissions(
+    def update_permissions(
             self,
             cluster_id: str,
             *,
@@ -5338,8 +5340,7 @@ class InstancePoolsAPI:
         res = self._api.do('GET', '/api/2.0/instance-pools/get', query=query, headers=headers)
         return GetInstancePool.from_dict(res)
 
-    def get_instance_pool_permission_levels(self,
-                                            instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
+    def get_permission_levels(self, instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
         """Get instance pool permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -5356,7 +5357,7 @@ class InstancePoolsAPI:
                            headers=headers)
         return GetInstancePoolPermissionLevelsResponse.from_dict(res)
 
-    def get_instance_pool_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
+    def get_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
         """Get instance pool permissions.
         
         Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
@@ -5384,7 +5385,7 @@ class InstancePoolsAPI:
         json = self._api.do('GET', '/api/2.0/instance-pools/list', headers=headers)
         return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
 
-    def set_instance_pool_permissions(
+    def set_permissions(
         self,
         instance_pool_id: str,
         *,
@@ -5410,7 +5411,7 @@ class InstancePoolsAPI:
                            headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
-    def update_instance_pool_permissions(
+    def update_permissions(
         self,
         instance_pool_id: str,
         *,

@@ -1146,7 +1146,7 @@ class ReposAPI:
         res = self._api.do('GET', f'/api/2.0/repos/{repo_id}', headers=headers)
         return RepoInfo.from_dict(res)
 
-    def get_repo_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
+    def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
         """Get repo permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1161,7 +1161,7 @@ class ReposAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}/permissionLevels', headers=headers)
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
-    def get_repo_permissions(self, repo_id: str) -> RepoPermissions:
+    def get_permissions(self, repo_id: str) -> RepoPermissions:
         """Get repo permissions.
         
         Gets the permissions of a repo. Repos can inherit permissions from their root object.
@@ -1209,7 +1209,7 @@ class ReposAPI:
                 return
             query['next_page_token'] = json['next_page_token']
 
-    def set_repo_permissions(
+    def set_permissions(
             self,
             repo_id: str,
             *,
@@ -1263,7 +1263,7 @@ class ReposAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body, headers=headers)
 
-    def update_repo_permissions(
+    def update_permissions(
             self,
             repo_id: str,
             *,
@@ -1656,27 +1656,8 @@ class WorkspaceAPI:
         res = self._api.do('GET', '/api/2.0/workspace/export', query=query, headers=headers)
         return ExportResponse.from_dict(res)
 
-    def get_status(self, path: str) -> ObjectInfo:
-        """Get status.
-        
-        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
-        `RESOURCE_DOES_NOT_EXIST`.
-        
-        :param path: str
-          The absolute path of the notebook or directory.
-        
-        :returns: :class:`ObjectInfo`
-        """
-
-        query = {}
-        if path is not None: query['path'] = path
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/workspace/get-status', query=query, headers=headers)
-        return ObjectInfo.from_dict(res)
-
-    def get_workspace_object_permission_levels(
-            self, workspace_object_type: str,
-            workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse:
+    def get_permission_levels(self, workspace_object_type: str,
+                              workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Get workspace object permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1696,8 +1677,8 @@ class WorkspaceAPI:
             headers=headers)
         return GetWorkspaceObjectPermissionLevelsResponse.from_dict(res)
 
-    def get_workspace_object_permissions(self, workspace_object_type: str,
-                                         workspace_object_id: str) -> WorkspaceObjectPermissions:
+    def get_permissions(self, workspace_object_type: str,
+                        workspace_object_id: str) -> WorkspaceObjectPermissions:
         """Get workspace object permissions.
         
         Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
@@ -1716,6 +1697,24 @@ class WorkspaceAPI:
                            f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
                            headers=headers)
         return WorkspaceObjectPermissions.from_dict(res)
+
+    def get_status(self, path: str) -> ObjectInfo:
+        """Get status.
+        
+        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
+        `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param path: str
+          The absolute path of the notebook or directory.
+        
+        :returns: :class:`ObjectInfo`
+        """
+
+        query = {}
+        if path is not None: query['path'] = path
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', '/api/2.0/workspace/get-status', query=query, headers=headers)
+        return ObjectInfo.from_dict(res)
 
     def import_(self,
                 path: str,
@@ -1808,7 +1807,7 @@ class WorkspaceAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body, headers=headers)
 
-    def set_workspace_object_permissions(
+    def set_permissions(
         self,
         workspace_object_type: str,
         workspace_object_id: str,
@@ -1838,7 +1837,7 @@ class WorkspaceAPI:
                            headers=headers)
         return WorkspaceObjectPermissions.from_dict(res)
 
-    def update_workspace_object_permissions(
+    def update_permissions(
         self,
         workspace_object_type: str,
         workspace_object_id: str,

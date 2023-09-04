@@ -91,7 +91,7 @@ Token management
         :returns: :class:`TokenInfo`
         
 
-    .. py:method:: get_token_permission_levels()
+    .. py:method:: get_permission_levels()
 
         Get token permission levels.
         
@@ -100,7 +100,7 @@ Token management
         :returns: :class:`GetTokenPermissionLevelsResponse`
         
 
-    .. py:method:: get_token_permissions()
+    .. py:method:: get_permissions()
 
         Get token permissions.
         
@@ -134,7 +134,7 @@ Token management
         :returns: Iterator over :class:`TokenInfo`
         
 
-    .. py:method:: set_token_permissions( [, access_control_list])
+    .. py:method:: set_permissions( [, access_control_list])
 
         Set token permissions.
         
@@ -145,7 +145,7 @@ Token management
         :returns: :class:`TokenPermissions`
         
 
-    .. py:method:: update_token_permissions( [, access_control_list])
+    .. py:method:: update_permissions( [, access_control_list])
 
         Update token permissions.
         

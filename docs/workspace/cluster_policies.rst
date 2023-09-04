@@ -182,7 +182,7 @@ Cluster Policies
             # cleanup
             w.cluster_policies.delete(policy_id=created.policy_id)
 
-        Get entity.
+        Get a cluster policy.
         
         Get a cluster policy entity. Creation and editing is available to admins only.
         
@@ -192,7 +192,7 @@ Cluster Policies
         :returns: :class:`Policy`
         
 
-    .. py:method:: get_cluster_policy_permission_levels(cluster_policy_id)
+    .. py:method:: get_permission_levels(cluster_policy_id)
 
         Get cluster policy permission levels.
         
@@ -204,7 +204,7 @@ Cluster Policies
         :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
         
 
-    .. py:method:: get_cluster_policy_permissions(cluster_policy_id)
+    .. py:method:: get_permissions(cluster_policy_id)
 
         Get cluster policy permissions.
         
@@ -230,7 +230,7 @@ Cluster Policies
             
             all = w.cluster_policies.list(compute.ListClusterPoliciesRequest())
 
-        Get a cluster policy.
+        List cluster policies.
         
         Returns a list of policies accessible by the requesting user.
         
@@ -244,7 +244,7 @@ Cluster Policies
         :returns: Iterator over :class:`Policy`
         
 
-    .. py:method:: set_cluster_policy_permissions(cluster_policy_id [, access_control_list])
+    .. py:method:: set_permissions(cluster_policy_id [, access_control_list])
 
         Set cluster policy permissions.
         
@@ -257,7 +257,7 @@ Cluster Policies
         :returns: :class:`ClusterPolicyPermissions`
         
 
-    .. py:method:: update_cluster_policy_permissions(cluster_policy_id [, access_control_list])
+    .. py:method:: update_permissions(cluster_policy_id [, access_control_list])
 
         Update cluster policy permissions.
         

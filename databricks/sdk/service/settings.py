@@ -1223,7 +1223,7 @@ class TokenManagementAPI:
         res = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
         return TokenInfo.from_dict(res)
 
-    def get_token_permission_levels(self) -> GetTokenPermissionLevelsResponse:
+    def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
         """Get token permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1237,7 +1237,7 @@ class TokenManagementAPI:
                            headers=headers)
         return GetTokenPermissionLevelsResponse.from_dict(res)
 
-    def get_token_permissions(self) -> TokenPermissions:
+    def get_permissions(self) -> TokenPermissions:
         """Get token permissions.
         
         Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
@@ -1272,7 +1272,7 @@ class TokenManagementAPI:
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query, headers=headers)
         return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
 
-    def set_token_permissions(
+    def set_permissions(
             self,
             *,
             access_control_list: Optional[List[TokenAccessControlRequest]] = None) -> TokenPermissions:
@@ -1291,7 +1291,7 @@ class TokenManagementAPI:
         res = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
-    def update_token_permissions(
+    def update_permissions(
             self,
             *,
             access_control_list: Optional[List[TokenAccessControlRequest]] = None) -> TokenPermissions:

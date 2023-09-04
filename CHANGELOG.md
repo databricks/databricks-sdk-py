@@ -1,5 +1,41 @@
 # Version changelog
 
+## 0.8.0
+
+* Fixed redeclared `test_streaming_response_read_partial` test ([#335](https://github.com/databricks/databricks-sdk-py/pull/335)).
+* Fixed `Incorrect type` warning ([#336](https://github.com/databricks/databricks-sdk-py/pull/336)).
+* Add notebook installation instructions ([#334](https://github.com/databricks/databricks-sdk-py/pull/334)).
+
+API Changes:
+
+* Renamed permissions APIs to no longer include the service name, for example:
+  * `get_job_permission_levels` -> `get_permission_levels`
+  * `get_job_permissions` -> `get_permissions`
+  * `set_job_permissions` -> `set_permissions`
+  * `update_job_permissions` -> `update_permissions`
+* Changed `create()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
+* Added `supports_elastic_disk` field for `databricks.sdk.service.compute.NodeType`.
+* Changed `create()` method for [w.dashboards](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards.html) workspace-level service with new required argument order.
+* Added [w.dashboard_widgets](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboard_widgets.html) workspace-level service.
+* Added [w.query_visualizations](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/query_visualizations.html) workspace-level service.
+* Changed `name` field for `databricks.sdk.service.sql.CreateDashboardRequest` to be required.
+* Added `dashboard_filters_enabled` field for `databricks.sdk.service.sql.CreateDashboardRequest`.
+* Added `run_as_role` field for `databricks.sdk.service.sql.CreateDashboardRequest`.
+* Added `run_as_role` field for `databricks.sdk.service.sql.Query`.
+* Added `run_as_role` field for `databricks.sdk.service.sql.QueryPostContent`.
+* Removed `dashboard_id` field for `databricks.sdk.service.sql.WidgetOptions`.
+* Changed `position` field for `databricks.sdk.service.sql.WidgetOptions` to `databricks.sdk.service.sql.WidgetPosition` dataclass.
+* Removed `text` field for `databricks.sdk.service.sql.WidgetOptions`.
+* Added `description` field for `databricks.sdk.service.sql.WidgetOptions`.
+* Added `title` field for `databricks.sdk.service.sql.WidgetOptions`.
+* Added `databricks.sdk.service.sql.CreateQueryVisualizationRequest` dataclass.
+* Added `databricks.sdk.service.sql.CreateWidget` dataclass.
+* Added `databricks.sdk.service.sql.DeleteDashboardWidgetRequest` dataclass.
+* Added `databricks.sdk.service.sql.DeleteQueryVisualizationRequest` dataclass.
+* Added `databricks.sdk.service.sql.RunAsRole` dataclass.
+* Added `databricks.sdk.service.sql.WidgetPosition` dataclass.
+
+OpenAPI SHA: 09a7fa63d9ae243e5407941f200960ca14d48b07, Date: 2023-09-04
 ## 0.7.1
 
 * Improve file download performance ([#319](https://github.com/databricks/databricks-sdk-py/pull/319)).

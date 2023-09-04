@@ -9,7 +9,7 @@ Volumes
     arbitrary formats such as .whl or .txt centrally and providing secure access across workspaces to it, or
     transforming and querying non-tabular data files in ETL.
 
-    .. py:method:: create(catalog_name, name, schema_name, volume_type [, comment, storage_location])
+    .. py:method:: create(catalog_name, schema_name, name, volume_type [, comment, storage_location])
 
         Usage:
 
@@ -69,10 +69,10 @@ Volumes
         
         :param catalog_name: str
           The name of the catalog where the schema and the volume are
-        :param name: str
-          The name of the volume
         :param schema_name: str
           The name of the schema where the volume is
+        :param name: str
+          The name of the volume
         :param volume_type: :class:`VolumeType`
         :param comment: str (optional)
           The comment attached to the volume
