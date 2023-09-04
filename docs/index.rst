@@ -10,7 +10,7 @@ performing intelligent retries. Install it via
 
   $ pip install databricks-sdk
 
-To install Databricks SDK for Python from a Databricks Notebook as a `notebook-scoped library <https://docs.databricks.com/en/libraries/notebooks-python-libraries.html>`_, please run:
+To install the Databricks SDK for Python from a Databricks Notebook as a `notebook-scoped library <https://docs.databricks.com/en/libraries/notebooks-python-libraries.html>`_, please run:
 
 .. code-block::
 
