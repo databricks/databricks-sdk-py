@@ -1,8 +1,12 @@
+import contextlib
+import functools
 import os
 import pathlib
 import platform
 import random
 import string
+import typing
+from http.server import BaseHTTPRequestHandler
 from typing import Iterator, List
 
 import pytest
@@ -327,3 +331,152 @@ def test_error_with_scimType():
     args = {"detail": "detail", "scimType": "scim type"}
     error = DatabricksError(**args)
     assert str(error) == f"scim type detail"
+
+
+@contextlib.contextmanager
+def http_fixture_server(handler: typing.Callable[[BaseHTTPRequestHandler], None]):
+    from http.server import HTTPServer
+    from threading import Thread
+
+    class _handler(BaseHTTPRequestHandler):
+
+        def __init__(self, handler: typing.Callable[[BaseHTTPRequestHandler], None], *args):
+            self._handler = handler
+            super().__init__(*args)
+
+        def __getattr__(self, item):
+            if 'do_' != item[0:3]:
+                raise AttributeError(f'method {item} not found')
+            return functools.partial(self._handler, self)
+
+    handler_factory = functools.partial(_handler, handler)
+    srv = HTTPServer(('localhost', 0), handler_factory)
+    t = Thread(target=srv.serve_forever)
+    try:
+        t.daemon = True
+        t.start()
+        yield 'http://{0}:{1}'.format(*srv.server_address)
+    finally:
+        srv.shutdown()
+
+
+def test_http_retry_after_handling():
+    requests = []
+
+    def inner(h: BaseHTTPRequestHandler):
+        if len(requests) == 0:
+            h.send_response(429)
+            h.send_header('Retry-After', '1')
+            h.send_header('Content-Type', 'application/json')
+            h.end_headers()
+        else:
+            h.send_response(200)
+            h.send_header('Content-Type', 'application/json')
+            h.end_headers()
+            h.wfile.write(b'{"foo": 1}')
+        requests.append(h.requestline)
+
+    with http_fixture_server(inner) as host:
+        api_client = ApiClient(Config(host=host, token='_'))
+        res = api_client.do('GET', '/foo')
+        assert 'foo' in res
+
+    assert len(requests) == 2
+
+
+def test_http_retry_after_wrong_format():
+    requests = []
+
+    def inner(h: BaseHTTPRequestHandler):
+        if len(requests) == 0:
+            h.send_response(429)
+            h.send_header('Retry-After', '1.58')
+            h.end_headers()
+        else:
+            h.send_response(200)
+            h.send_header('Content-Type', 'application/json')
+            h.end_headers()
+            h.wfile.write(b'{"foo": 1}')
+        requests.append(h.requestline)
+
+    with http_fixture_server(inner) as host:
+        api_client = ApiClient(Config(host=host, token='_'))
+        res = api_client.do('GET', '/foo')
+        assert 'foo' in res
+
+    assert len(requests) == 2
+
+
+def test_http_retried_exceed_limit():
+    requests = []
+
+    def inner(h: BaseHTTPRequestHandler):
+        h.send_response(429)
+        h.send_header('Retry-After', '1')
+        h.end_headers()
+        requests.append(h.requestline)
+
+    with http_fixture_server(inner) as host:
+        api_client = ApiClient(Config(host=host, token='_', retry_timeout_seconds=1))
+        with pytest.raises(TimeoutError):
+            api_client.do('GET', '/foo')
+
+    assert len(requests) == 1
+
+
+def test_http_retried_on_match():
+    requests = []
+
+    def inner(h: BaseHTTPRequestHandler):
+        if len(requests) == 0:
+            h.send_response(400)
+            h.end_headers()
+            h.wfile.write(b'{"error_code": "abc", "message": "... ClusterNotReadyException ..."}')
+        else:
+            h.send_response(200)
+            h.end_headers()
+            h.wfile.write(b'{"foo": 1}')
+        requests.append(h.requestline)
+
+    with http_fixture_server(inner) as host:
+        api_client = ApiClient(Config(host=host, token='_'))
+        res = api_client.do('GET', '/foo')
+        assert 'foo' in res
+
+    assert len(requests) == 2
+
+
+def test_http_not_retried_on_normal_errors():
+    requests = []
+
+    def inner(h: BaseHTTPRequestHandler):
+        if len(requests) == 0:
+            h.send_response(400)
+            h.end_headers()
+            h.wfile.write(b'{"error_code": "abc", "message": "something not found"}')
+        requests.append(h.requestline)
+
+    with http_fixture_server(inner) as host:
+        api_client = ApiClient(Config(host=host, token='_'))
+        with pytest.raises(DatabricksError):
+            api_client.do('GET', '/foo')
+
+    assert len(requests) == 1
+
+
+def test_http_retried_on_connection_error():
+    requests = []
+
+    def inner(h: BaseHTTPRequestHandler):
+        if len(requests) > 0:
+            h.send_response(200)
+            h.end_headers()
+            h.wfile.write(b'{"foo": 1}')
+        requests.append(h.requestline)
+
+    with http_fixture_server(inner) as host:
+        api_client = ApiClient(Config(host=host, token='_'))
+        res = api_client.do('GET', '/foo')
+        assert 'foo' in res
+
+    assert len(requests) == 2
