@@ -56,8 +56,10 @@ from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
 from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
-                                        DataSourcesAPI, DbsqlPermissionsAPI,
-                                        QueriesAPI, QueryHistoryAPI,
+                                        DashboardWidgetsAPI, DataSourcesAPI,
+                                        DbsqlPermissionsAPI, QueriesAPI,
+                                        QueryHistoryAPI,
+                                        QueryVisualizationsAPI,
                                         StatementExecutionAPI, WarehousesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
@@ -140,6 +142,7 @@ class WorkspaceClient:
         self.command_execution = CommandExecutionAPI(self.api_client)
         self.connections = ConnectionsAPI(self.api_client)
         self.current_user = CurrentUserAPI(self.api_client)
+        self.dashboard_widgets = DashboardWidgetsAPI(self.api_client)
         self.dashboards = DashboardsAPI(self.api_client)
         self.data_sources = DataSourcesAPI(self.api_client)
         self.dbfs = DbfsExt(self.api_client)
@@ -166,6 +169,7 @@ class WorkspaceClient:
         self.providers = ProvidersAPI(self.api_client)
         self.queries = QueriesAPI(self.api_client)
         self.query_history = QueryHistoryAPI(self.api_client)
+        self.query_visualizations = QueryVisualizationsAPI(self.api_client)
         self.recipient_activation = RecipientActivationAPI(self.api_client)
         self.recipients = RecipientsAPI(self.api_client)
         self.registered_models = RegisteredModelsAPI(self.api_client)

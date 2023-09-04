@@ -144,7 +144,7 @@ Pipelines
         :returns: :class:`GetPipelineResponse`
         
 
-    .. py:method:: get_pipeline_permission_levels(pipeline_id)
+    .. py:method:: get_permission_levels(pipeline_id)
 
         Get pipeline permission levels.
         
@@ -156,7 +156,7 @@ Pipelines
         :returns: :class:`GetPipelinePermissionLevelsResponse`
         
 
-    .. py:method:: get_pipeline_permissions(pipeline_id)
+    .. py:method:: get_permissions(pipeline_id)
 
         Get pipeline permissions.
         
@@ -313,7 +313,7 @@ Pipelines
           See :method:wait_get_pipeline_running for more details.
         
 
-    .. py:method:: set_pipeline_permissions(pipeline_id [, access_control_list])
+    .. py:method:: set_permissions(pipeline_id [, access_control_list])
 
         Set pipeline permissions.
         
@@ -456,7 +456,7 @@ Pipelines
         
         
 
-    .. py:method:: update_pipeline_permissions(pipeline_id [, access_control_list])
+    .. py:method:: update_permissions(pipeline_id [, access_control_list])
 
         Update pipeline permissions.
         

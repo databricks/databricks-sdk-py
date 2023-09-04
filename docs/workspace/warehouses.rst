@@ -225,7 +225,7 @@ SQL Warehouses
         :returns: :class:`GetWarehouseResponse`
         
 
-    .. py:method:: get_warehouse_permission_levels(warehouse_id)
+    .. py:method:: get_permission_levels(warehouse_id)
 
         Get SQL warehouse permission levels.
         
@@ -237,7 +237,7 @@ SQL Warehouses
         :returns: :class:`GetWarehousePermissionLevelsResponse`
         
 
-    .. py:method:: get_warehouse_permissions(warehouse_id)
+    .. py:method:: get_permissions(warehouse_id)
 
         Get SQL warehouse permissions.
         
@@ -283,7 +283,7 @@ SQL Warehouses
         :returns: Iterator over :class:`EndpointInfo`
         
 
-    .. py:method:: set_warehouse_permissions(warehouse_id [, access_control_list])
+    .. py:method:: set_permissions(warehouse_id [, access_control_list])
 
         Set SQL warehouse permissions.
         
@@ -356,7 +356,7 @@ SQL Warehouses
           See :method:wait_get_warehouse_stopped for more details.
         
 
-    .. py:method:: update_warehouse_permissions(warehouse_id [, access_control_list])
+    .. py:method:: update_permissions(warehouse_id [, access_control_list])
 
         Update SQL warehouse permissions.
         

@@ -195,30 +195,6 @@ Experiments
         :returns: :class:`GetExperimentResponse`
         
 
-    .. py:method:: get_experiment_permission_levels(experiment_id)
-
-        Get experiment permission levels.
-        
-        Gets the permission levels that a user can have on an object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        
-        :returns: :class:`GetExperimentPermissionLevelsResponse`
-        
-
-    .. py:method:: get_experiment_permissions(experiment_id)
-
-        Get experiment permissions.
-        
-        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        
-        :returns: :class:`ExperimentPermissions`
-        
-
     .. py:method:: get_history(metric_key [, max_results, page_token, run_id, run_uuid])
 
         Get history of a given metric within a run.
@@ -239,6 +215,30 @@ Experiments
           removed in a future MLflow version.
         
         :returns: Iterator over :class:`Metric`
+        
+
+    .. py:method:: get_permission_levels(experiment_id)
+
+        Get experiment permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`GetExperimentPermissionLevelsResponse`
+        
+
+    .. py:method:: get_permissions(experiment_id)
+
+        Get experiment permissions.
+        
+        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`ExperimentPermissions`
         
 
     .. py:method:: get_run(run_id [, run_uuid])
@@ -542,19 +542,6 @@ Experiments
         :returns: Iterator over :class:`Run`
         
 
-    .. py:method:: set_experiment_permissions(experiment_id [, access_control_list])
-
-        Set experiment permissions.
-        
-        Sets permissions on an experiment. Experiments can inherit permissions from their root object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
-        
-        :returns: :class:`ExperimentPermissions`
-        
-
     .. py:method:: set_experiment_tag(experiment_id, key, value)
 
         Set a tag.
@@ -571,6 +558,19 @@ Experiments
           are guaranteed to support key values up to 5000 bytes in size.
         
         
+        
+
+    .. py:method:: set_permissions(experiment_id [, access_control_list])
+
+        Set experiment permissions.
+        
+        Sets permissions on an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
+        
+        :returns: :class:`ExperimentPermissions`
         
 
     .. py:method:: set_tag(key, value [, run_id, run_uuid])
@@ -625,7 +625,7 @@ Experiments
         
         
 
-    .. py:method:: update_experiment_permissions(experiment_id [, access_control_list])
+    .. py:method:: update_permissions(experiment_id [, access_control_list])
 
         Update experiment permissions.
         

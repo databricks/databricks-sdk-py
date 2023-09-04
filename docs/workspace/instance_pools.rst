@@ -212,7 +212,7 @@ Instance Pools
         :returns: :class:`GetInstancePool`
         
 
-    .. py:method:: get_instance_pool_permission_levels(instance_pool_id)
+    .. py:method:: get_permission_levels(instance_pool_id)
 
         Get instance pool permission levels.
         
@@ -224,7 +224,7 @@ Instance Pools
         :returns: :class:`GetInstancePoolPermissionLevelsResponse`
         
 
-    .. py:method:: get_instance_pool_permissions(instance_pool_id)
+    .. py:method:: get_permissions(instance_pool_id)
 
         Get instance pool permissions.
         
@@ -256,7 +256,7 @@ Instance Pools
         :returns: Iterator over :class:`InstancePoolAndStats`
         
 
-    .. py:method:: set_instance_pool_permissions(instance_pool_id [, access_control_list])
+    .. py:method:: set_permissions(instance_pool_id [, access_control_list])
 
         Set instance pool permissions.
         
@@ -269,7 +269,7 @@ Instance Pools
         :returns: :class:`InstancePoolPermissions`
         
 
-    .. py:method:: update_instance_pool_permissions(instance_pool_id [, access_control_list])
+    .. py:method:: update_permissions(instance_pool_id [, access_control_list])
 
         Update instance pool permissions.
         

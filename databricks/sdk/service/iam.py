@@ -2285,7 +2285,7 @@ class UsersAPI:
         res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
         return User.from_dict(res)
 
-    def get_password_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
+    def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
         """Get password permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -2299,7 +2299,7 @@ class UsersAPI:
                            headers=headers)
         return GetPasswordPermissionLevelsResponse.from_dict(res)
 
-    def get_password_permissions(self) -> PasswordPermissions:
+    def get_permissions(self) -> PasswordPermissions:
         """Get password permissions.
         
         Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
@@ -2383,7 +2383,7 @@ class UsersAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{id}', body=body, headers=headers)
 
-    def set_password_permissions(
+    def set_permissions(
             self,
             *,
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
@@ -2449,7 +2449,7 @@ class UsersAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body, headers=headers)
 
-    def update_password_permissions(
+    def update_permissions(
             self,
             *,
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:

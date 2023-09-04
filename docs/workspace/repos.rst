@@ -94,7 +94,7 @@ Repos
         :returns: :class:`RepoInfo`
         
 
-    .. py:method:: get_repo_permission_levels(repo_id)
+    .. py:method:: get_permission_levels(repo_id)
 
         Get repo permission levels.
         
@@ -106,7 +106,7 @@ Repos
         :returns: :class:`GetRepoPermissionLevelsResponse`
         
 
-    .. py:method:: get_repo_permissions(repo_id)
+    .. py:method:: get_permissions(repo_id)
 
         Get repo permissions.
         
@@ -145,7 +145,7 @@ Repos
         :returns: Iterator over :class:`RepoInfo`
         
 
-    .. py:method:: set_repo_permissions(repo_id [, access_control_list])
+    .. py:method:: set_permissions(repo_id [, access_control_list])
 
         Set repo permissions.
         
@@ -199,7 +199,7 @@ Repos
         
         
 
-    .. py:method:: update_repo_permissions(repo_id [, access_control_list])
+    .. py:method:: update_permissions(repo_id [, access_control_list])
 
         Update repo permissions.
         

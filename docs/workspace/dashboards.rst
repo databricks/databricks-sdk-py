@@ -8,7 +8,7 @@ Dashboards
     to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
     :method:jobs/create.
 
-    .. py:method:: create( [, is_favorite, name, parent, tags])
+    .. py:method:: create(name [, dashboard_filters_enabled, is_favorite, parent, run_as_role, tags])
 
         Usage:
 
@@ -27,13 +27,17 @@ Dashboards
 
         Create a dashboard object.
         
+        :param name: str
+          The title of this dashboard that appears in list views and at the top of the dashboard page.
+        :param dashboard_filters_enabled: bool (optional)
+          Indicates whether the dashboard filters are enabled
         :param is_favorite: bool (optional)
           Indicates whether this query object should appear in the current user's favorites list. The
           application uses this flag to determine whether or not the "favorite star " should selected.
-        :param name: str (optional)
-          The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param parent: str (optional)
           The identifier of the workspace folder containing the object.
+        :param run_as_role: :class:`RunAsRole` (optional)
+          Run as role
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`

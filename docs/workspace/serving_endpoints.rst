@@ -77,7 +77,7 @@ Serving endpoints
         :returns: :class:`ServingEndpointDetailed`
         
 
-    .. py:method:: get_serving_endpoint_permission_levels(serving_endpoint_id)
+    .. py:method:: get_permission_levels(serving_endpoint_id)
 
         Get serving endpoint permission levels.
         
@@ -89,7 +89,7 @@ Serving endpoints
         :returns: :class:`GetServingEndpointPermissionLevelsResponse`
         
 
-    .. py:method:: get_serving_endpoint_permissions(serving_endpoint_id)
+    .. py:method:: get_permissions(serving_endpoint_id)
 
         Get serving endpoint permissions.
         
@@ -133,7 +133,7 @@ Serving endpoints
         :returns: :class:`QueryEndpointResponse`
         
 
-    .. py:method:: set_serving_endpoint_permissions(serving_endpoint_id [, access_control_list])
+    .. py:method:: set_permissions(serving_endpoint_id [, access_control_list])
 
         Set serving endpoint permissions.
         
@@ -168,7 +168,7 @@ Serving endpoints
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: update_serving_endpoint_permissions(serving_endpoint_id [, access_control_list])
+    .. py:method:: update_permissions(serving_endpoint_id [, access_control_list])
 
         Update serving endpoint permissions.
         

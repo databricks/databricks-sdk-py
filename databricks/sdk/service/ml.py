@@ -2603,38 +2603,6 @@ class ExperimentsAPI:
         res = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
 
-    def get_experiment_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
-        """Get experiment permission levels.
-        
-        Gets the permission levels that a user can have on an object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        
-        :returns: :class:`GetExperimentPermissionLevelsResponse`
-        """
-
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET',
-                           f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels',
-                           headers=headers)
-        return GetExperimentPermissionLevelsResponse.from_dict(res)
-
-    def get_experiment_permissions(self, experiment_id: str) -> ExperimentPermissions:
-        """Get experiment permissions.
-        
-        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        
-        :returns: :class:`ExperimentPermissions`
-        """
-
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}', headers=headers)
-        return ExperimentPermissions.from_dict(res)
-
     def get_history(self,
                     metric_key: str,
                     *,
@@ -2679,6 +2647,38 @@ class ExperimentsAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+    def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
+        """Get experiment permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`GetExperimentPermissionLevelsResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels',
+                           headers=headers)
+        return GetExperimentPermissionLevelsResponse.from_dict(res)
+
+    def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
+        """Get experiment permissions.
+        
+        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`ExperimentPermissions`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}', headers=headers)
+        return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
         """Get a run.
@@ -3123,7 +3123,30 @@ class ExperimentsAPI:
                 return
             body['page_token'] = json['next_page_token']
 
-    def set_experiment_permissions(
+    def set_experiment_tag(self, experiment_id: str, key: str, value: str):
+        """Set a tag.
+        
+        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
+        
+        :param experiment_id: str
+          ID of the experiment under which to log the tag. Must be provided.
+        :param key: str
+          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
+          support key values up to 250 bytes in size.
+        :param value: str
+          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
+          are guaranteed to support key values up to 5000 bytes in size.
+        
+        
+        """
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if key is not None: body['key'] = key
+        if value is not None: body['value'] = value
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body, headers=headers)
+
+    def set_permissions(
             self,
             experiment_id: str,
             *,
@@ -3148,29 +3171,6 @@ class ExperimentsAPI:
                            body=body,
                            headers=headers)
         return ExperimentPermissions.from_dict(res)
-
-    def set_experiment_tag(self, experiment_id: str, key: str, value: str):
-        """Set a tag.
-        
-        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
-        
-        :param experiment_id: str
-          ID of the experiment under which to log the tag. Must be provided.
-        :param key: str
-          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
-          support key values up to 250 bytes in size.
-        :param value: str
-          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
-          are guaranteed to support key values up to 5000 bytes in size.
-        
-        
-        """
-        body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
-        if key is not None: body['key'] = key
-        if value is not None: body['value'] = value
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body, headers=headers)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Set a tag.
@@ -3217,7 +3217,7 @@ class ExperimentsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body, headers=headers)
 
-    def update_experiment_permissions(
+    def update_permissions(
             self,
             experiment_id: str,
             *,
@@ -3762,8 +3762,7 @@ class ModelRegistryAPI:
                            headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
-    def get_registered_model_permission_levels(
-            self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
+    def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
         """Get registered model permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3780,7 +3779,7 @@ class ModelRegistryAPI:
                            headers=headers)
         return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
 
-    def get_registered_model_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
+    def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
         """Get registered model permissions.
         
         Gets the permissions of a registered model. Registered models can inherit permissions from their root
@@ -4084,7 +4083,7 @@ class ModelRegistryAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body, headers=headers)
 
-    def set_registered_model_permissions(
+    def set_permissions(
         self,
         registered_model_id: str,
         *,
@@ -4243,7 +4242,7 @@ class ModelRegistryAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body, headers=headers)
 
-    def update_registered_model_permissions(
+    def update_permissions(
         self,
         registered_model_id: str,
         *,

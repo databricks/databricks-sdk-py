@@ -1265,7 +1265,7 @@ class PipelinesAPI:
         res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}', headers=headers)
         return GetPipelineResponse.from_dict(res)
 
-    def get_pipeline_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
+    def get_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
         """Get pipeline permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1282,7 +1282,7 @@ class PipelinesAPI:
                            headers=headers)
         return GetPipelinePermissionLevelsResponse.from_dict(res)
 
-    def get_pipeline_permissions(self, pipeline_id: str) -> PipelinePermissions:
+    def get_permissions(self, pipeline_id: str) -> PipelinePermissions:
         """Get pipeline permissions.
         
         Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
@@ -1466,7 +1466,7 @@ class PipelinesAPI:
     def reset_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.reset(pipeline_id=pipeline_id).result(timeout=timeout)
 
-    def set_pipeline_permissions(
+    def set_permissions(
             self,
             pipeline_id: str,
             *,
@@ -1635,7 +1635,7 @@ class PipelinesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/pipelines/{pipeline_id}', body=body, headers=headers)
 
-    def update_pipeline_permissions(
+    def update_permissions(
             self,
             pipeline_id: str,
             *,
