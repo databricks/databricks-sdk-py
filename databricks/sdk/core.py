@@ -305,7 +305,7 @@ def get_token(cfg: 'Config', resource: str) -> AzureCliTokenSource:
             # In such case, we fall back to not using the subscription.
             token.token()
             return token
-        except OSError as e:
+        except OSError:
             logger.warning("Failed to get token for subscription. Using resource only token.")
     else:
         logger.warning(
