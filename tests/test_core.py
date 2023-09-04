@@ -62,7 +62,7 @@ def test_streaming_response_read_partial(config):
     assert response.read(8) == b"some ini"
 
 
-def test_streaming_response_read_partial(config):
+def test_streaming_response_read_full(config):
     content = b"some initial binary data: \x00\x01"
     response = StreamingResponse(DummyResponse([content, content]))
     assert response.read() == content + content
