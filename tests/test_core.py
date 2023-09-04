@@ -6,6 +6,7 @@ import string
 from typing import Iterator, List
 
 import pytest
+import requests
 
 from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  DatabricksCliTokenSource, HeaderFactory,
@@ -257,7 +258,7 @@ def test_config_parsing_non_string_env_vars(monkeypatch):
     assert c.debug_truncate_bytes == 100
 
 
-class DummyResponse:
+class DummyResponse(requests.Response):
     _content: Iterator[bytes]
     _closed: bool = False
 
