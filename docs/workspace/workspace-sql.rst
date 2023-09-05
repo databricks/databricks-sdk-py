@@ -8,10 +8,12 @@ Manage Databricks SQL assets, including warehouses, dashboards, queries and quer
   :maxdepth: 1
 
   alerts
+  dashboard_widgets
   dashboards
   data_sources
   dbsql_permissions
   queries
   query_history
+  query_visualizations
   statement_execution
   warehouses

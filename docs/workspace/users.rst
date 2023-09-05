@@ -109,7 +109,7 @@ Users
         :returns: :class:`User`
         
 
-    .. py:method:: get_password_permission_levels()
+    .. py:method:: get_permission_levels()
 
         Get password permission levels.
         
@@ -118,7 +118,7 @@ Users
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         
 
-    .. py:method:: get_password_permissions()
+    .. py:method:: get_permissions()
 
         Get password permissions.
         
@@ -208,7 +208,7 @@ Users
         
         
 
-    .. py:method:: set_password_permissions( [, access_control_list])
+    .. py:method:: set_permissions( [, access_control_list])
 
         Set password permissions.
         
@@ -244,7 +244,7 @@ Users
         
         
 
-    .. py:method:: update_password_permissions( [, access_control_list])
+    .. py:method:: update_permissions( [, access_control_list])
 
         Update password permissions.
         

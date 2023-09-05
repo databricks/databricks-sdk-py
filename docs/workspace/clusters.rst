@@ -528,7 +528,7 @@ Clusters
         :returns: :class:`ClusterDetails`
         
 
-    .. py:method:: get_cluster_permission_levels(cluster_id)
+    .. py:method:: get_permission_levels(cluster_id)
 
         Get cluster permission levels.
         
@@ -540,7 +540,7 @@ Clusters
         :returns: :class:`GetClusterPermissionLevelsResponse`
         
 
-    .. py:method:: get_cluster_permissions(cluster_id)
+    .. py:method:: get_permissions(cluster_id)
 
         Get cluster permissions.
         
@@ -820,7 +820,7 @@ Clusters
         :returns: `spark_version` compatible string
         
 
-    .. py:method:: set_cluster_permissions(cluster_id [, access_control_list])
+    .. py:method:: set_permissions(cluster_id [, access_control_list])
 
         Set cluster permissions.
         
@@ -927,7 +927,7 @@ Clusters
         
         
 
-    .. py:method:: update_cluster_permissions(cluster_id [, access_control_list])
+    .. py:method:: update_permissions(cluster_id [, access_control_list])
 
         Update cluster permissions.
         

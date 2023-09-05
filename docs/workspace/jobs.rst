@@ -334,7 +334,7 @@ Jobs
         :returns: :class:`Job`
         
 
-    .. py:method:: get_job_permission_levels(job_id)
+    .. py:method:: get_permission_levels(job_id)
 
         Get job permission levels.
         
@@ -346,7 +346,7 @@ Jobs
         :returns: :class:`GetJobPermissionLevelsResponse`
         
 
-    .. py:method:: get_job_permissions(job_id)
+    .. py:method:: get_permissions(job_id)
 
         Get job permissions.
         
@@ -828,7 +828,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: set_job_permissions(job_id [, access_control_list])
+    .. py:method:: set_permissions(job_id [, access_control_list])
 
         Set job permissions.
         
@@ -982,7 +982,7 @@ Jobs
         
         
 
-    .. py:method:: update_job_permissions(job_id [, access_control_list])
+    .. py:method:: update_permissions(job_id [, access_control_list])
 
         Update job permissions.
         

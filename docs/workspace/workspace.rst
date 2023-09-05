@@ -104,6 +104,35 @@ Workspace
         :returns: :class:`ExportResponse`
         
 
+    .. py:method:: get_permission_levels(workspace_object_type, workspace_object_id)
+
+        Get workspace object permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        
+        :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
+        
+
+    .. py:method:: get_permissions(workspace_object_type, workspace_object_id)
+
+        Get workspace object permissions.
+        
+        Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
+        parent objects or root object.
+        
+        :param workspace_object_type: str
+          The workspace object type for which to get or manage permissions.
+        :param workspace_object_id: str
+          The workspace object for which to get or manage permissions.
+        
+        :returns: :class:`WorkspaceObjectPermissions`
+        
+
     .. py:method:: get_status(path)
 
         Usage:
@@ -129,35 +158,6 @@ Workspace
           The absolute path of the notebook or directory.
         
         :returns: :class:`ObjectInfo`
-        
-
-    .. py:method:: get_workspace_object_permission_levels(workspace_object_type, workspace_object_id)
-
-        Get workspace object permission levels.
-        
-        Gets the permission levels that a user can have on an object.
-        
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
-        
-        :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
-        
-
-    .. py:method:: get_workspace_object_permissions(workspace_object_type, workspace_object_id)
-
-        Get workspace object permissions.
-        
-        Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
-        parent objects or root object.
-        
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
-        
-        :returns: :class:`WorkspaceObjectPermissions`
         
 
     .. py:method:: import_(path [, content, format, language, overwrite])
@@ -257,7 +257,7 @@ Workspace
         
         
 
-    .. py:method:: set_workspace_object_permissions(workspace_object_type, workspace_object_id [, access_control_list])
+    .. py:method:: set_permissions(workspace_object_type, workspace_object_id [, access_control_list])
 
         Set workspace object permissions.
         
@@ -273,7 +273,7 @@ Workspace
         :returns: :class:`WorkspaceObjectPermissions`
         
 
-    .. py:method:: update_workspace_object_permissions(workspace_object_type, workspace_object_id [, access_control_list])
+    .. py:method:: update_permissions(workspace_object_type, workspace_object_id [, access_control_list])
 
         Update workspace object permissions.
         
