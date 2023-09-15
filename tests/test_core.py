@@ -294,17 +294,17 @@ def test_error(config, requests_mock):
         "errorMessage",
         "details": [{
             "type": DatabricksError._error_info_type,
-            "reason": "errorReason",
-            "domain": "errorDomain",
+            "reason": "error reason",
+            "domain": "error domain",
             "metadata": {
-                "etag": "errorEtag"
+                "etag": "error etag"
             },
         }, {
-            "type": "wrongType",
-            "reason": "wrongReason",
-            "domain": "wrongDomain",
+            "type": "wrong type",
+            "reason": "wrong reason",
+            "domain": "wrong domain",
             "metadata": {
-                "etag": "wrongEtag"
+                "etag": "wrong etag"
             }
         }],
     }
@@ -317,7 +317,17 @@ def test_error(config, requests_mock):
     error_infos = raised.value.get_error_info()
     assert len(error_infos) == 1
     error_info = error_infos[0]
-    assert error_info.reason == "errorReason"
-    assert error_info.domain == "errorDomain"
-    assert error_info.metadata["etag"] == "errorEtag"
+    assert error_info.reason == "error reason"
+    assert error_info.domain == "error domain"
+    assert error_info.metadata["etag"] == "error etag"
     assert error_info.type == DatabricksError._error_info_type
+
+
+def test_error_with_scimType(config):
+    args = {
+        "detail": "detail",
+        "scimType": "scim type"
+    }
+    error = DatabricksError(**args)
+    assert str(error) == f"scim type detail"
+

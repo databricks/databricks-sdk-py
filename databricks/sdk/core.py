@@ -914,7 +914,6 @@ class ErrorDetail:
 
 class DatabricksError(IOError):
     """ Generic error from Databricks REST API """
-
     # Known ErrorDetail types
     _error_info_type = "type.googleapis.com/google.rpc.ErrorInfo"
 
@@ -924,7 +923,7 @@ class DatabricksError(IOError):
                  error_code: str = None,
                  detail: str = None,
                  status: str = None,
-                 scim_type: str = None,
+                 scimType: str = None,
                  error: str = None,
                  details: List[ErrorDetail] = [],
                  **kwargs):
@@ -939,7 +938,7 @@ class DatabricksError(IOError):
             else:
                 message = detail
             # add more context from SCIM responses
-            message = f"{scim_type} {message}".strip(" ")
+            message = f"{scimType} {message}".strip(" ")
             error_code = f"SCIM_{status}"
         super().__init__(message if message else error)
         self.error_code = error_code
