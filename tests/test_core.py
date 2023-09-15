@@ -11,7 +11,7 @@ import requests
 from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  DatabricksCliTokenSource, DatabricksError,
                                  HeaderFactory, StreamingResponse,
-                                 databricks_cli, errorInfoType)
+                                 databricks_cli)
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -293,7 +293,7 @@ def test_error(config, requests_mock):
         "message":
         "errorMessage",
         "details": [{
-            "type": errorInfoType,
+            "type": DatabricksError._error_info_type,
             "reason": "errorReason",
             "domain": "errorDomain",
             "metadata": {
@@ -314,10 +314,10 @@ def test_error(config, requests_mock):
     with pytest.raises(DatabricksError) as raised:
         client.do("GET", "/test", headers={"test": "test"})
 
-    errorInfos = raised.value.get_error_info()
-    assert len(errorInfos) == 1
-    errorInfo = errorInfos[0]
-    assert errorInfo.reason == "errorReason"
-    assert errorInfo.domain == "errorDomain"
-    assert errorInfo.metadata["etag"] == "errorEtag"
-    assert errorInfo.type == errorInfoType
+    error_infos = raised.value.get_error_info()
+    assert len(error_infos) == 1
+    error_info = error_infos[0]
+    assert error_info.reason == "errorReason"
+    assert error_info.domain == "errorDomain"
+    assert error_info.metadata["etag"] == "errorEtag"
+    assert error_info.type == DatabricksError._error_info_type
