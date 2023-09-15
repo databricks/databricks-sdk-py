@@ -314,9 +314,10 @@ def test_error(config, requests_mock):
     with pytest.raises(DatabricksError) as raised:
         client.do("GET", "/test", headers={"test": "test"})
 
-    error = raised.value
-    detail = error.GetErrorInfo()[0]
-    assert detail.reason == "errorReason"
-    assert detail.domain == "errorDomain"
-    assert detail.metadata["etag"] == "errorEtag"
-    assert detail.type == errorInfoType
+    errorInfos = raised.value.GetErrorInfo()
+    assert len(errorInfos) == 1
+    errorInfo = errorInfos[0]
+    assert errorInfo.reason == "errorReason"
+    assert errorInfo.domain == "errorDomain"
+    assert errorInfo.metadata["etag"] == "errorEtag"
+    assert errorInfo.type == errorInfoType
