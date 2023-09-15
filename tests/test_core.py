@@ -314,7 +314,7 @@ def test_error(config, requests_mock):
     with pytest.raises(DatabricksError) as raised:
         client.do("GET", "/test", headers={"test": "test"})
 
-    errorInfos = raised.value.GetErrorInfo()
+    errorInfos = raised.value.get_error_info()
     assert len(errorInfos) == 1
     errorInfo = errorInfos[0]
     assert errorInfo.reason == "errorReason"

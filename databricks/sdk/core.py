@@ -947,10 +947,10 @@ class DatabricksError(IOError):
         self.details = [ErrorDetail.from_dict(detail) for detail in details]
         self.kwargs = kwargs
 
-    def GetErrorInfo(self) -> List[ErrorDetail]:
-        return self.getDetailsByType(errorInfoType)
+    def get_error_info(self) -> List[ErrorDetail]:
+        return self._get_details_by_type(errorInfoType)
 
-    def getDetailsByType(self, errorType) -> List[ErrorDetail]:
+    def _get_details_by_type(self, errorType) -> List[ErrorDetail]:
         if self.details == None:
             return []
         return [detail for detail in self.details if detail.type == errorType]
