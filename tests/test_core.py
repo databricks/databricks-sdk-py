@@ -323,11 +323,7 @@ def test_error(config, requests_mock):
     assert error_info.type == DatabricksError._error_info_type
 
 
-def test_error_with_scimType(config):
-    args = {
-        "detail": "detail",
-        "scimType": "scim type"
-    }
+def test_error_with_scimType():
+    args = {"detail": "detail", "scimType": "scim type"}
     error = DatabricksError(**args)
     assert str(error) == f"scim type detail"
-
