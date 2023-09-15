@@ -9,8 +9,9 @@ import pytest
 import requests
 
 from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
-                                 DatabricksCliTokenSource, HeaderFactory,
-                                 StreamingResponse, databricks_cli)
+                                 DatabricksCliTokenSource, DatabricksError,
+                                 HeaderFactory, StreamingResponse,
+                                 databricks_cli, errorInfoType)
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -285,3 +286,37 @@ def test_api_client_do_custom_headers(config, requests_mock):
                       })
     res = client.do("GET", "/test", headers={"test": "test"})
     assert res == {"well": "done"}
+
+
+def test_error(config, requests_mock):
+    errorJson = {
+        "message":
+        "errorMessage",
+        "details": [{
+            "type": errorInfoType,
+            "reason": "errorReason",
+            "domain": "errorDomain",
+            "metadata": {
+                "etag": "errorEtag"
+            },
+        }, {
+            "type": "wrongType",
+            "reason": "wrongReason",
+            "domain": "wrongDomain",
+            "metadata": {
+                "etag": "wrongEtag"
+            }
+        }],
+    }
+
+    client = ApiClient(config)
+    requests_mock.get("/test", json=errorJson, status_code=400, )
+    with pytest.raises(DatabricksError) as raised:
+        client.do("GET", "/test", headers={"test": "test"})
+
+    error = raised.value
+    detail = error.GetErrorInfo()[0]
+    assert detail.reason == "errorReason"
+    assert detail.domain == "errorDomain"
+    assert detail.metadata["etag"] == "errorEtag"
+    assert detail.type == errorInfoType
