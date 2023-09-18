@@ -925,7 +925,7 @@ class DatabricksError(IOError):
                  status: str = None,
                  scimType: str = None,
                  error: str = None,
-                 details: List[dict] = [],
+                 details: List[dict[str, any]] = [],
                  **kwargs):
         if error:
             # API 1.2 has different response format, let's adapt
