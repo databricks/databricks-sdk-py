@@ -892,8 +892,30 @@ class Config:
         return cpy
 
 
+class ErrorDetail:
+
+    def __init__(self,
+                 type: str = None,
+                 reason: str = None,
+                 domain: str = None,
+                 metadata: dict = None,
+                 **kwargs):
+        self.type = type
+        self.reason = reason
+        self.domain = domain
+        self.metadata = metadata
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
+        if '@type' in d:
+            d['type'] = d['@type']
+        return cls(**d)
+
+
 class DatabricksError(IOError):
     """ Generic error from Databricks REST API """
+    # Known ErrorDetail types
+    _error_info_type = "type.googleapis.com/google.rpc.ErrorInfo"
 
     def __init__(self,
                  message: str = None,
@@ -903,6 +925,7 @@ class DatabricksError(IOError):
                  status: str = None,
                  scimType: str = None,
                  error: str = None,
+                 details: List[Dict[str, any]] = [],
                  **kwargs):
         if error:
             # API 1.2 has different response format, let's adapt
@@ -919,7 +942,16 @@ class DatabricksError(IOError):
             error_code = f"SCIM_{status}"
         super().__init__(message if message else error)
         self.error_code = error_code
+        self.details = [ErrorDetail.from_dict(detail) for detail in details]
         self.kwargs = kwargs
+
+    def get_error_info(self) -> List[ErrorDetail]:
+        return self._get_details_by_type(DatabricksError._error_info_type)
+
+    def _get_details_by_type(self, error_type) -> List[ErrorDetail]:
+        if self.details == None:
+            return []
+        return [detail for detail in self.details if detail.type == error_type]
 
 
 class ApiClient:

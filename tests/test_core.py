@@ -9,8 +9,9 @@ import pytest
 import requests
 
 from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
-                                 DatabricksCliTokenSource, HeaderFactory,
-                                 StreamingResponse, databricks_cli)
+                                 DatabricksCliTokenSource, DatabricksError,
+                                 HeaderFactory, StreamingResponse,
+                                 databricks_cli)
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -285,3 +286,44 @@ def test_api_client_do_custom_headers(config, requests_mock):
                       })
     res = client.do("GET", "/test", headers={"test": "test"})
     assert res == {"well": "done"}
+
+
+def test_error(config, requests_mock):
+    errorJson = {
+        "message":
+        "errorMessage",
+        "details": [{
+            "type": DatabricksError._error_info_type,
+            "reason": "error reason",
+            "domain": "error domain",
+            "metadata": {
+                "etag": "error etag"
+            },
+        }, {
+            "type": "wrong type",
+            "reason": "wrong reason",
+            "domain": "wrong domain",
+            "metadata": {
+                "etag": "wrong etag"
+            }
+        }],
+    }
+
+    client = ApiClient(config)
+    requests_mock.get("/test", json=errorJson, status_code=400, )
+    with pytest.raises(DatabricksError) as raised:
+        client.do("GET", "/test", headers={"test": "test"})
+
+    error_infos = raised.value.get_error_info()
+    assert len(error_infos) == 1
+    error_info = error_infos[0]
+    assert error_info.reason == "error reason"
+    assert error_info.domain == "error domain"
+    assert error_info.metadata["etag"] == "error etag"
+    assert error_info.type == DatabricksError._error_info_type
+
+
+def test_error_with_scimType():
+    args = {"detail": "detail", "scimType": "scim type"}
+    error = DatabricksError(**args)
+    assert str(error) == f"scim type detail"
