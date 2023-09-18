@@ -2,6 +2,7 @@ import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.sql import StatementExecutionExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
                                             LogDeliveryAPI)
@@ -179,7 +180,7 @@ class WorkspaceClient:
         self.service_principals = ServicePrincipalsAPI(self.api_client)
         self.serving_endpoints = ServingEndpointsAPI(self.api_client)
         self.shares = SharesAPI(self.api_client)
-        self.statement_execution = StatementExecutionAPI(self.api_client)
+        self.statement_execution = StatementExecutionExt(self.api_client)
         self.storage_credentials = StorageCredentialsAPI(self.api_client)
         self.system_schemas = SystemSchemasAPI(self.api_client)
         self.table_constraints = TableConstraintsAPI(self.api_client)
