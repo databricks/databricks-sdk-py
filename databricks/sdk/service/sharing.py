@@ -558,6 +558,7 @@ class Privilege(Enum):
     CREATE_TABLE = 'CREATE_TABLE'
     CREATE_VIEW = 'CREATE_VIEW'
     EXECUTE = 'EXECUTE'
+    MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
     MODIFY = 'MODIFY'
     READ_FILES = 'READ_FILES'
     READ_PRIVATE_FILES = 'READ_PRIVATE_FILES'
@@ -669,7 +670,7 @@ class RecipientInfo:
     comment: Optional[str] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
-    data_recipient_global_metastore_id: Optional[Any] = None
+    data_recipient_global_metastore_id: Optional[str] = None
     ip_access_list: Optional['IpAccessList'] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
@@ -690,7 +691,7 @@ class RecipientInfo:
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
-        if self.data_recipient_global_metastore_id:
+        if self.data_recipient_global_metastore_id is not None:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id

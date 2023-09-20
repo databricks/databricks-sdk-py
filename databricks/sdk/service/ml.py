@@ -54,7 +54,12 @@ class Activity:
 
 
 class ActivityAction(Enum):
-    """This describes an enum"""
+    """An action that a user (with sufficient permissions) could take on an activity. Valid values are:
+    * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    
+    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+    
+    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request"""
 
     APPROVE_TRANSITION_REQUEST = 'APPROVE_TRANSITION_REQUEST'
     CANCEL_TRANSITION_REQUEST = 'CANCEL_TRANSITION_REQUEST'
@@ -62,7 +67,19 @@ class ActivityAction(Enum):
 
 
 class ActivityType(Enum):
-    """This describes an enum"""
+    """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
+    transition.
+    
+    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
+    
+    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
+    
+    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
+    
+    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
+    
+    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
+    versions in a stage."""
 
     APPLIED_TRANSITION = 'APPLIED_TRANSITION'
     APPROVED_REQUEST = 'APPROVED_REQUEST'
@@ -115,7 +132,10 @@ class ApproveTransitionRequestResponse:
 
 
 class CommentActivityAction(Enum):
-    """This describes an enum"""
+    """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
+    `EDIT_COMMENT`: Edit the comment
+    
+    * `DELETE_COMMENT`: Delete the comment"""
 
     DELETE_COMMENT = 'DELETE_COMMENT'
     EDIT_COMMENT = 'EDIT_COMMENT'
@@ -1637,7 +1657,13 @@ class RegistryWebhookEvent(Enum):
 
 
 class RegistryWebhookStatus(Enum):
-    """This describes an enum"""
+    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    
+    * `DISABLED`: Webhook is not triggered.
+    
+    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
+    real event."""
 
     ACTIVE = 'ACTIVE'
     DISABLED = 'DISABLED'
@@ -2115,7 +2141,15 @@ class SetTag:
 
 
 class Stage(Enum):
-    """This describes an enum"""
+    """Stage of the model version. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
 
     ARCHIVED = 'Archived'
     NONE = 'None'
@@ -2124,7 +2158,12 @@ class Stage(Enum):
 
 
 class Status(Enum):
-    """This describes an enum"""
+    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
+    a new model version is pending as server performs background tasks.
+    
+    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+    
+    * `READY`: Model version is ready for use."""
 
     FAILED_REGISTRATION = 'FAILED_REGISTRATION'
     PENDING_REGISTRATION = 'PENDING_REGISTRATION'
@@ -3504,7 +3543,13 @@ class ModelRegistryAPI:
         :param model_name: str (optional)
           Name of the model whose events would trigger this webhook.
         :param status: :class:`RegistryWebhookStatus` (optional)
-          This describes an enum
+          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          
+          * `DISABLED`: Webhook is not triggered.
+          
+          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
+          event.
         
         :returns: :class:`CreateWebhookResponse`
         """
@@ -4319,7 +4364,13 @@ class ModelRegistryAPI:
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
-          This describes an enum
+          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          
+          * `DISABLED`: Webhook is not triggered.
+          
+          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
+          event.
         
         
         """

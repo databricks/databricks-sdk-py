@@ -213,6 +213,23 @@ class GetPublishedAppIntegrationsOutput:
 
 
 @dataclass
+class GetPublishedAppsOutput:
+    apps: Optional['List[PublishedAppOutput]'] = None
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetPublishedAppsOutput':
+        return cls(apps=_repeated(d, 'apps', PublishedAppOutput),
+                   next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
 class ListServicePrincipalSecretsResponse:
     secrets: Optional['List[SecretInfo]'] = None
 
@@ -238,6 +255,39 @@ class OAuthEnrollmentStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'OAuthEnrollmentStatus':
         return cls(is_enabled=d.get('is_enabled', None))
+
+
+@dataclass
+class PublishedAppOutput:
+    app_id: Optional[str] = None
+    client_id: Optional[str] = None
+    description: Optional[str] = None
+    is_confidential_client: Optional[bool] = None
+    name: Optional[str] = None
+    redirect_urls: Optional['List[str]'] = None
+    scopes: Optional['List[str]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.app_id is not None: body['app_id'] = self.app_id
+        if self.client_id is not None: body['client_id'] = self.client_id
+        if self.description is not None: body['description'] = self.description
+        if self.is_confidential_client is not None:
+            body['is_confidential_client'] = self.is_confidential_client
+        if self.name is not None: body['name'] = self.name
+        if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
+        if self.scopes: body['scopes'] = [v for v in self.scopes]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PublishedAppOutput':
+        return cls(app_id=d.get('app_id', None),
+                   client_id=d.get('client_id', None),
+                   description=d.get('description', None),
+                   is_confidential_client=d.get('is_confidential_client', None),
+                   name=d.get('name', None),
+                   redirect_urls=d.get('redirect_urls', None),
+                   scopes=d.get('scopes', None))
 
 
 @dataclass
@@ -324,10 +374,7 @@ class UpdatePublishedAppIntegration:
 
 class CustomAppIntegrationAPI:
     """These APIs enable administrators to manage custom oauth app integrations, which is required for
-    adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
-    
-    **Note:** You can only add/use the OAuth custom application integrations when OAuth enrollment status is
-    enabled. For more details see :method:OAuthEnrollment/create"""
+    adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -505,12 +552,52 @@ class OAuthEnrollmentAPI:
         return OAuthEnrollmentStatus.from_dict(res)
 
 
+class OAuthPublishedAppsAPI:
+    """These APIs enable administrators to view all the available published OAuth applications in Databricks.
+    Administrators can add the published OAuth applications to their account through the OAuth Published App
+    Integration APIs."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[PublishedAppOutput]:
+        """Get all the published OAuth apps.
+        
+        Get all the available published OAuth apps in Databricks.
+        
+        :param page_size: int (optional)
+          The max number of OAuth published apps to return.
+        :param page_token: str (optional)
+          A token that can be used to get the next page of results.
+        
+        :returns: Iterator over :class:`PublishedAppOutput`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-apps/',
+                                query=query,
+                                headers=headers)
+            if 'apps' not in json or not json['apps']:
+                return
+            for v in json['apps']:
+                yield PublishedAppOutput.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+
 class PublishedAppIntegrationAPI:
     """These APIs enable administrators to manage published oauth app integrations, which is required for
-    adding/using Published OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
-    
-    **Note:** You can only add/use the OAuth published application integrations when OAuth enrollment status
-    is enabled. For more details see :method:OAuthEnrollment/create"""
+    adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
 
     def __init__(self, api_client):
         self._api = api_client

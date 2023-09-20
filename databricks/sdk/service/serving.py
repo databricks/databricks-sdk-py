@@ -34,16 +34,20 @@ class BuildLogsResponse:
 class CreateServingEndpoint:
     name: str
     config: 'EndpointCoreConfigInput'
+    tags: Optional['List[EndpointTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.config: body['config'] = self.config.as_dict()
         if self.name is not None: body['name'] = self.name
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
-        return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput), name=d.get('name', None))
+        return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
+                   name=d.get('name', None),
+                   tags=_repeated(d, 'tags', EndpointTag))
 
 
 @dataclass
@@ -161,6 +165,22 @@ class EndpointStateReady(Enum):
 
 
 @dataclass
+class EndpointTag:
+    key: str
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'EndpointTag':
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
 class GetServingEndpointPermissionLevelsResponse:
     permission_levels: Optional['List[ServingEndpointPermissionsDescription]'] = None
 
@@ -186,6 +206,26 @@ class ListEndpointsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListEndpointsResponse':
         return cls(endpoints=_repeated(d, 'endpoints', ServingEndpoint))
+
+
+@dataclass
+class PatchServingEndpointTags:
+    add_tags: Optional['List[EndpointTag]'] = None
+    delete_tags: Optional['List[str]'] = None
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.add_tags: body['add_tags'] = [v.as_dict() for v in self.add_tags]
+        if self.delete_tags: body['delete_tags'] = [v for v in self.delete_tags]
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PatchServingEndpointTags':
+        return cls(add_tags=_repeated(d, 'add_tags', EndpointTag),
+                   delete_tags=d.get('delete_tags', None),
+                   name=d.get('name', None))
 
 
 @dataclass
@@ -371,6 +411,7 @@ class ServingEndpoint:
     last_updated_timestamp: Optional[int] = None
     name: Optional[str] = None
     state: Optional['EndpointState'] = None
+    tags: Optional['List[EndpointTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -382,6 +423,7 @@ class ServingEndpoint:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.name is not None: body['name'] = self.name
         if self.state: body['state'] = self.state.as_dict()
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
     @classmethod
@@ -392,7 +434,8 @@ class ServingEndpoint:
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    name=d.get('name', None),
-                   state=_from_dict(d, 'state', EndpointState))
+                   state=_from_dict(d, 'state', EndpointState),
+                   tags=_repeated(d, 'tags', EndpointTag))
 
 
 @dataclass
@@ -457,6 +500,7 @@ class ServingEndpointDetailed:
     pending_config: Optional['EndpointPendingConfig'] = None
     permission_level: Optional['ServingEndpointDetailedPermissionLevel'] = None
     state: Optional['EndpointState'] = None
+    tags: Optional['List[EndpointTag]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -470,6 +514,7 @@ class ServingEndpointDetailed:
         if self.pending_config: body['pending_config'] = self.pending_config.as_dict()
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         if self.state: body['state'] = self.state.as_dict()
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
     @classmethod
@@ -482,7 +527,8 @@ class ServingEndpointDetailed:
                    name=d.get('name', None),
                    pending_config=_from_dict(d, 'pending_config', EndpointPendingConfig),
                    permission_level=_enum(d, 'permission_level', ServingEndpointDetailedPermissionLevel),
-                   state=_from_dict(d, 'state', EndpointState))
+                   state=_from_dict(d, 'state', EndpointState),
+                   tags=_repeated(d, 'tags', EndpointTag))
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
@@ -658,7 +704,11 @@ class ServingEndpointsAPI:
                            headers=headers)
         return BuildLogsResponse.from_dict(res)
 
-    def create(self, name: str, config: EndpointCoreConfigInput) -> Wait[ServingEndpointDetailed]:
+    def create(self,
+               name: str,
+               config: EndpointCoreConfigInput,
+               *,
+               tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
         
         :param name: str
@@ -666,6 +716,8 @@ class ServingEndpointsAPI:
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
         :param config: :class:`EndpointCoreConfigInput`
           The core config of the serving endpoint.
+        :param tags: List[:class:`EndpointTag`] (optional)
+          Tags to be attached to the serving endpoint and automatically propagated to billing logs.
         
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
@@ -674,6 +726,7 @@ class ServingEndpointsAPI:
         body = {}
         if config is not None: body['config'] = config.as_dict()
         if name is not None: body['name'] = name
+        if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body, headers=headers)
         return Wait(self.wait_get_serving_endpoint_not_updating,
@@ -681,9 +734,13 @@ class ServingEndpointsAPI:
                     name=op_response['name'])
 
     def create_and_wait(
-        self, name: str, config: EndpointCoreConfigInput,
+        self,
+        name: str,
+        config: EndpointCoreConfigInput,
+        *,
+        tags: Optional[List[EndpointTag]] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
-        return self.create(config=config, name=name).result(timeout=timeout)
+        return self.create(config=config, name=name, tags=tags).result(timeout=timeout)
 
     def delete(self, name: str):
         """Delete a serving endpoint.
@@ -790,6 +847,31 @@ class ServingEndpointsAPI:
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
                            headers=headers)
         return ServerLogsResponse.from_dict(res)
+
+    def patch(self,
+              name: str,
+              *,
+              add_tags: Optional[List[EndpointTag]] = None,
+              delete_tags: Optional[List[str]] = None) -> Iterator['EndpointTag']:
+        """Patch the tags of a serving endpoint.
+        
+        Used to batch add and delete tags from a serving endpoint with a single API call.
+        
+        :param name: str
+          The name of the serving endpoint who's tags to patch. This field is required.
+        :param add_tags: List[:class:`EndpointTag`] (optional)
+          List of endpoint tags to add
+        :param delete_tags: List[str] (optional)
+          List of tag keys to delete
+        
+        :returns: Iterator over :class:`EndpointTag`
+        """
+        body = {}
+        if add_tags is not None: body['add_tags'] = [v.as_dict() for v in add_tags]
+        if delete_tags is not None: body['delete_tags'] = [v for v in delete_tags]
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PATCH', f'/api/2.0/serving-endpoints/{name}/tags', body=body, headers=headers)
+        return [EndpointTag.from_dict(v) for v in res]
 
     def query(self, name: str) -> QueryEndpointResponse:
         """Query a serving endpoint with provided model input.
