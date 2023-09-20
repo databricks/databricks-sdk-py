@@ -30,7 +30,14 @@ def retried(*,
                 except Exception as err:
                     last_err = err
                     retry_reason = None
-                    if is_retryable is not None:
+                    # sleep 10s max per attempt, unless it's HTTP 429 or 503
+                    sleep = min(10, attempt)
+                    retry_after_secs = getattr(err, 'retry_after_secs', None)
+                    if retry_after_secs is not None:
+                        # cannot depend on DatabricksError directly because of circular dependency
+                        sleep = retry_after_secs
+                        retry_reason = 'throttled by platform'
+                    elif is_retryable is not None:
                         retry_reason = is_retryable(err)
                     elif type(err) in on:
                         retry_reason = f'{type(err).__name__} is allowed to retry'
@@ -39,8 +46,6 @@ def retried(*,
                         # raise if exception is not retryable
                         raise err
 
-                    # sleep 10s max per attempt
-                    sleep = min(10, attempt)
                     logger.debug(f'Retrying: {retry_reason} (sleeping ~{sleep}s)')
                     time.sleep(sleep + random())
                     attempt += 1

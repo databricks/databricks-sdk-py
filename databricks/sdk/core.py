@@ -11,7 +11,6 @@ import platform
 import re
 import subprocess
 import sys
-import time
 import urllib.parse
 from datetime import datetime, timedelta
 from json import JSONDecodeError
@@ -1093,10 +1092,6 @@ class ApiClient:
             # will bubble up the original exception in case we reach max retries.
             return f'timeout'
         if isinstance(err, DatabricksError):
-            if err.retry_after_secs is not None:
-                time.sleep(err.retry_after_secs)
-                return f'throttled by platform for {err.retry_after_secs} second(s)'
-
             message = str(err)
             transient_error_string_matches = [
                 "com.databricks.backend.manager.util.UnknownWorkerEnvironmentException",
