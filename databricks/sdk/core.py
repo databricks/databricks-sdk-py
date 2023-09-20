@@ -925,7 +925,7 @@ class DatabricksError(IOError):
                  status: str = None,
                  scimType: str = None,
                  error: str = None,
-                 details: List[Dict[str, any]] = [],
+                 details: List[Dict[str, any]] = None,
                  **kwargs):
         if error:
             # API 1.2 has different response format, let's adapt
@@ -942,7 +942,7 @@ class DatabricksError(IOError):
             error_code = f"SCIM_{status}"
         super().__init__(message if message else error)
         self.error_code = error_code
-        self.details = [ErrorDetail.from_dict(detail) for detail in details]
+        self.details = [ErrorDetail.from_dict(detail) for detail in details] if details else []
         self.kwargs = kwargs
 
     def get_error_info(self) -> List[ErrorDetail]:
