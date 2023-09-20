@@ -3201,7 +3201,7 @@ class AccountMetastoreAssignmentsAPI:
                            headers=headers)
         return AccountsMetastoreAssignment.from_dict(res)
 
-    def list(self, metastore_id: str) -> Iterator[MetastoreAssignment]:
+    def list(self, metastore_id: str) -> Iterator['MetastoreAssignment']:
         """Get all workspaces assigned to a metastore.
         
         Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
@@ -3427,7 +3427,7 @@ class AccountStorageCredentialsAPI:
             headers=headers)
         return AccountsStorageCredentialInfo.from_dict(res)
 
-    def list(self, metastore_id: str) -> Iterator[StorageCredentialInfo]:
+    def list(self, metastore_id: str) -> Iterator['StorageCredentialInfo']:
         """Get all storage credentials assigned to a metastore.
         
         Gets a list of all storage credentials that have been assigned to given metastore.

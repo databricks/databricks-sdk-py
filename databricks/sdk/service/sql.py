@@ -205,7 +205,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2590,7 +2589,7 @@ class AlertsAPI:
         res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
         return Alert.from_dict(res)
 
-    def list(self) -> Iterator[Alert]:
+    def list(self) -> Iterator['Alert']:
         """Get alerts.
         
         Gets a list of alerts.
@@ -2865,7 +2864,7 @@ class DataSourcesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def list(self) -> Iterator[DataSource]:
+    def list(self) -> Iterator['DataSource']:
         """Get a list of SQL warehouses.
         
         Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
