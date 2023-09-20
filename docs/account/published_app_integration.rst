@@ -3,10 +3,7 @@ OAuth Published App Integration
 .. py:class:: PublishedAppIntegrationAPI
 
     These APIs enable administrators to manage published oauth app integrations, which is required for
-    adding/using Published OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
-    
-    **Note:** You can only add/use the OAuth published application integrations when OAuth enrollment status
-    is enabled. For more details see :method:OAuthEnrollment/create
+    adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 
     .. py:method:: create( [, app_id, token_access_policy])
 

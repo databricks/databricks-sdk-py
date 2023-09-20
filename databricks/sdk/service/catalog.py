@@ -164,14 +164,14 @@ class AccountsUpdateStorageCredential:
 
 @dataclass
 class ArtifactAllowlistInfo:
-    artifact_matchers: Optional['ArtifactMatcher'] = None
+    artifact_matchers: Optional['List[ArtifactMatcher]'] = None
     created_at: Optional[int] = None
     created_by: Optional[str] = None
     metastore_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_matchers: body['artifact_matchers'] = self.artifact_matchers.as_dict()
+        if self.artifact_matchers: body['artifact_matchers'] = [v.as_dict() for v in self.artifact_matchers]
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
@@ -179,7 +179,7 @@ class ArtifactAllowlistInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ArtifactAllowlistInfo':
-        return cls(artifact_matchers=_from_dict(d, 'artifact_matchers', ArtifactMatcher),
+        return cls(artifact_matchers=_repeated(d, 'artifact_matchers', ArtifactMatcher),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    metastore_id=d.get('metastore_id', None))
@@ -1005,14 +1005,6 @@ class DatabricksGcpServiceAccountResponse:
 
 
 @dataclass
-class DeleteModelVersionRequest:
-    """Delete a Model Version"""
-
-    full_name: str
-    version: int
-
-
-@dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
     This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
@@ -1452,14 +1444,6 @@ class FunctionParameterType(Enum):
 
 
 @dataclass
-class GetByAliasRequest:
-    """Get Model Version By Alias"""
-
-    full_name: str
-    alias: str
-
-
-@dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
     created_at: Optional[int] = None
@@ -1540,14 +1524,6 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
     INTERNAL_AND_EXTERNAL = 'INTERNAL_AND_EXTERNAL'
 
 
-@dataclass
-class GetModelVersionRequest:
-    """Get a Model Version"""
-
-    full_name: str
-    version: int
-
-
 class IsolationMode(Enum):
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
@@ -1624,15 +1600,6 @@ class ListMetastoresResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListMetastoresResponse':
         return cls(metastores=_repeated(d, 'metastores', MetastoreInfo))
-
-
-@dataclass
-class ListModelVersionsRequest:
-    """List Model Versions"""
-
-    full_name: str
-    max_results: Optional[int] = None
-    page_token: Optional[str] = None
 
 
 @dataclass
@@ -2023,6 +1990,7 @@ class Privilege(Enum):
     CREATE_TABLE = 'CREATE_TABLE'
     CREATE_VIEW = 'CREATE_VIEW'
     EXECUTE = 'EXECUTE'
+    MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
     MODIFY = 'MODIFY'
     READ_FILES = 'READ_FILES'
     READ_PRIVATE_FILES = 'READ_PRIVATE_FILES'
@@ -2238,22 +2206,23 @@ class SecurableType(Enum):
     SHARE = 'share'
     STORAGE_CREDENTIAL = 'storage_credential'
     TABLE = 'table'
+    VOLUME = 'volume'
 
 
 @dataclass
 class SetArtifactAllowlist:
-    artifact_matchers: 'ArtifactMatcher'
+    artifact_matchers: 'List[ArtifactMatcher]'
     artifact_type: Optional['ArtifactType'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.artifact_matchers: body['artifact_matchers'] = self.artifact_matchers.as_dict()
+        if self.artifact_matchers: body['artifact_matchers'] = [v.as_dict() for v in self.artifact_matchers]
         if self.artifact_type is not None: body['artifact_type'] = self.artifact_type.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetArtifactAllowlist':
-        return cls(artifact_matchers=_from_dict(d, 'artifact_matchers', ArtifactMatcher),
+        return cls(artifact_matchers=_repeated(d, 'artifact_matchers', ArtifactMatcher),
                    artifact_type=_enum(d, 'artifact_type', ArtifactType))
 
 
@@ -3201,7 +3170,7 @@ class AccountMetastoreAssignmentsAPI:
                            headers=headers)
         return AccountsMetastoreAssignment.from_dict(res)
 
-    def list(self, metastore_id: str) -> Iterator['MetastoreAssignment']:
+    def list(self, metastore_id: str) -> Iterator[int]:
         """Get all workspaces assigned to a metastore.
         
         Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
@@ -3209,14 +3178,14 @@ class AccountMetastoreAssignmentsAPI:
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        :returns: Iterator over :class:`MetastoreAssignment`
+        :returns: Iterator over int
         """
 
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
                            headers=headers)
-        return [MetastoreAssignment.from_dict(v) for v in res]
+        return [WorkspaceId.from_dict(v) for v in res]
 
     def update(self,
                workspace_id: int,
@@ -3484,7 +3453,8 @@ class ArtifactAllowlistsAPI:
     def get(self, artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
         """Get an artifact allowlist.
         
-        Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin.
+        Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
+        the **MANAGE ALLOWLIST** privilege on the metastore.
         
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
@@ -3498,21 +3468,23 @@ class ArtifactAllowlistsAPI:
                            headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
 
-    def update(self, artifact_matchers: ArtifactMatcher,
+    def update(self, artifact_matchers: List[ArtifactMatcher],
                artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
         """Set an artifact allowlist.
         
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
-        the new allowlist. The caller must be a metastore admin.
+        the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
+        the metastore.
         
-        :param artifact_matchers: :class:`ArtifactMatcher`
+        :param artifact_matchers: List[:class:`ArtifactMatcher`]
+          A list of allowed artifact match patterns.
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
         
         :returns: :class:`ArtifactAllowlistInfo`
         """
         body = {}
-        if artifact_matchers is not None: body['artifact_matchers'] = artifact_matchers.as_dict()
+        if artifact_matchers is not None: body['artifact_matchers'] = [v.as_dict() for v in artifact_matchers]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PUT',
                            f'/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}',

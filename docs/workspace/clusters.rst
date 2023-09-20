@@ -140,7 +140,18 @@ Clusters
           
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
-          This describes an enum
+          Data security mode decides what data governance model to use when accessing data from a cluster.
+          
+          * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are
+          not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a
+          single user specified in `single_user_name`. Most programming languages, cluster features and data
+          governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
+          shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
+          and credentials. Most data governance features are supported in this mode. But programming languages
+          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
+          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
+          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
+          from legacy Passthrough on standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -340,7 +351,18 @@ Clusters
           
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
-          This describes an enum
+          Data security mode decides what data governance model to use when accessing data from a cluster.
+          
+          * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are
+          not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a
+          single user specified in `single_user_name`. Most programming languages, cluster features and data
+          governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
+          shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
+          and credentials. Most data governance features are supported in this mode. But programming languages
+          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
+          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
+          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
+          from legacy Passthrough on standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses

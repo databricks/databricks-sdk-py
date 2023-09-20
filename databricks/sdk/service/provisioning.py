@@ -551,7 +551,9 @@ class GkeConfigConnectivityType(Enum):
 
 
 class KeyUseCase(Enum):
-    """This describes an enum"""
+    """Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the control
+    plane * `STORAGE`: Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
+    optionally, cluster EBS volumes."""
 
     MANAGED_SERVICES = 'MANAGED_SERVICES'
     STORAGE = 'STORAGE'
@@ -896,7 +898,8 @@ class VpcEndpoint:
 
 
 class VpcStatus(Enum):
-    """This describes an enum"""
+    """The status of this network configuration object in terms of its use in a workspace: *
+    `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned."""
 
     BROKEN = 'BROKEN'
     UNATTACHED = 'UNATTACHED'

@@ -37,6 +37,7 @@ from databricks.sdk.service.jobs import JobsAPI
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
 from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
                                            OAuthEnrollmentAPI,
+                                           OAuthPublishedAppsAPI,
                                            PublishedAppIntegrationAPI,
                                            ServicePrincipalSecretsAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
@@ -49,6 +50,7 @@ from databricks.sdk.service.serving import ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountNetworkPolicyAPI,
                                              AccountSettingsAPI,
+                                             CredentialsManagerAPI,
                                              IpAccessListsAPI,
                                              TokenManagementAPI, TokensAPI,
                                              WorkspaceConfAPI)
@@ -141,6 +143,7 @@ class WorkspaceClient:
         self.clusters = ClustersExt(self.api_client)
         self.command_execution = CommandExecutionAPI(self.api_client)
         self.connections = ConnectionsAPI(self.api_client)
+        self.credentials_manager = CredentialsManagerAPI(self.api_client)
         self.current_user = CurrentUserAPI(self.api_client)
         self.dashboard_widgets = DashboardWidgetsAPI(self.api_client)
         self.dashboards = DashboardsAPI(self.api_client)
@@ -258,6 +261,7 @@ class AccountClient:
         self.network_policy = AccountNetworkPolicyAPI(self.api_client)
         self.networks = NetworksAPI(self.api_client)
         self.o_auth_enrollment = OAuthEnrollmentAPI(self.api_client)
+        self.o_auth_published_apps = OAuthPublishedAppsAPI(self.api_client)
         self.private_access = PrivateAccessAPI(self.api_client)
         self.published_app_integration = PublishedAppIntegrationAPI(self.api_client)
         self.service_principal_secrets = ServicePrincipalSecretsAPI(self.api_client)

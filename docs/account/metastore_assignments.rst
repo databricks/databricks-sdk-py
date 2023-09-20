@@ -56,7 +56,7 @@ Account Metastore Assignments
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        :returns: Iterator over :class:`MetastoreAssignment`
+        :returns: Iterator over int
         
 
     .. py:method:: update(workspace_id, metastore_id [, metastore_assignment])

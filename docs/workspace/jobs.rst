@@ -18,7 +18,7 @@ Jobs
     [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
     [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 
-    .. py:method:: cancel_all_runs(job_id)
+    .. py:method:: cancel_all_runs( [, all_queued_runs, job_id])
 
         Usage:
 
@@ -56,8 +56,11 @@ Jobs
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started.
         
-        :param job_id: int
-          The canonical identifier of the job to cancel all runs of. This field is required.
+        :param all_queued_runs: bool (optional)
+          Optional boolean parameter to cancel all queued runs. If no job_id is provided, all queued runs in
+          the workspace are canceled.
+        :param job_id: int (optional)
+          The canonical identifier of the job to cancel all runs of.
         
         
         
@@ -110,7 +113,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: create( [, access_control_list, compute, continuous, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
+    .. py:method:: create( [, access_control_list, compute, continuous, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
 
         Usage:
 
@@ -193,6 +196,8 @@ Jobs
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
           Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
           service principal that the job runs as. If not specified, the job runs as the user who created the
@@ -491,8 +496,8 @@ Jobs
         
         :param active_only: bool (optional)
           If active_only is `true`, only active runs are included in the results; otherwise, lists both active
-          and completed runs. An active run is a run in the `PENDING`, `RUNNING`, or `TERMINATING`. This field
-          cannot be `true` when completed_only is `true`.
+          and completed runs. An active run is a run in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`.
+          This field cannot be `true` when completed_only is `true`.
         :param completed_only: bool (optional)
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
@@ -571,10 +576,10 @@ Jobs
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
           deps", "dbt seed", "dbt run"]`
         :param jar_params: List[str] (optional)
-          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
-          "35"]`. The parameters are used to invoke the main function of the main class specified in the
-          Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be
-          specified in conjunction with notebook_params. The JSON representation of this field (for example
+          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
+          The parameters are used to invoke the main function of the main class specified in the Spark JAR
+          task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
+          in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
@@ -603,10 +608,10 @@ Jobs
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
           {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
-          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
-          "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
-          `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of
-          this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
+          The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
+          would overwrite the parameters specified in job setting. The JSON representation of this field (for
+          example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
@@ -626,10 +631,10 @@ Jobs
           The task keys of the task runs to repair.
         :param spark_submit_params: List[str] (optional)
           A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
-          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit
-          script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters
-          specified in job setting. The JSON representation of this field (for example
-          `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit script
+          as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
+          in job setting. The JSON representation of this field (for example `{"python_params":["john
+          doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs
           
@@ -702,7 +707,7 @@ Jobs
         
         
 
-    .. py:method:: run_now(job_id [, dbt_commands, idempotency_token, jar_params, job_parameters, notebook_params, pipeline_params, python_named_params, python_params, spark_submit_params, sql_params])
+    .. py:method:: run_now(job_id [, dbt_commands, idempotency_token, jar_params, job_parameters, notebook_params, pipeline_params, python_named_params, python_params, queue, spark_submit_params, sql_params])
 
         Usage:
 
@@ -758,10 +763,10 @@ Jobs
           
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param jar_params: List[str] (optional)
-          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
-          "35"]`. The parameters are used to invoke the main function of the main class specified in the
-          Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be
-          specified in conjunction with notebook_params. The JSON representation of this field (for example
+          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
+          The parameters are used to invoke the main function of the main class specified in the Spark JAR
+          task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
+          in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
@@ -789,10 +794,10 @@ Jobs
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
           {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
-          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
-          "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
-          `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of
-          this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
+          The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
+          would overwrite the parameters specified in job setting. The JSON representation of this field (for
+          example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
@@ -803,12 +808,14 @@ Jobs
           emojis.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
           A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
-          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit
-          script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters
-          specified in job setting. The JSON representation of this field (for example
-          `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit script
+          as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
+          in job setting. The JSON representation of this field (for example `{"python_params":["john
+          doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs
           
@@ -841,7 +848,7 @@ Jobs
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list, email_notifications, git_source, health, idempotency_token, notification_settings, run_name, tasks, timeout_seconds, webhook_notifications])
+    .. py:method:: submit( [, access_control_list, email_notifications, git_source, health, idempotency_token, notification_settings, queue, run_name, tasks, timeout_seconds, webhook_notifications])
 
         Usage:
 
@@ -908,6 +915,8 @@ Jobs
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           `webhook_notifications` for this run.
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the one-time run.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
         :param tasks: List[:class:`SubmitTask`] (optional)
