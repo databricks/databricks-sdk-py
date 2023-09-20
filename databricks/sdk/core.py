@@ -927,7 +927,7 @@ class DatabricksError(IOError):
                  scimType: str = None,
                  error: str = None,
                  details: List[Dict[str, any]] = [],
-                 retry_after: int = None,
+                 retry_after_secs: int = None,
                  **kwargs):
         if error:
             # API 1.2 has different response format, let's adapt
@@ -945,7 +945,7 @@ class DatabricksError(IOError):
         super().__init__(message if message else error)
         self.error_code = error_code
         self.details = [ErrorDetail.from_dict(detail) for detail in details]
-        self.retry_after = retry_after
+        self.retry_after_secs = retry_after_secs
         self.kwargs = kwargs
 
     def get_error_info(self) -> List[ErrorDetail]:
@@ -1093,9 +1093,9 @@ class ApiClient:
             # will bubble up the original exception in case we reach max retries.
             return f'timeout'
         if isinstance(err, DatabricksError):
-            if err.retry_after is not None:
-                time.sleep(err.retry_after)
-                return f'throttled by platform for {err.retry_after} second(s)'
+            if err.retry_after_secs is not None:
+                time.sleep(err.retry_after_secs)
+                return f'throttled by platform for {err.retry_after_secs} second(s)'
 
             message = str(err)
             transient_error_string_matches = [
@@ -1182,7 +1182,7 @@ class ApiClient:
         if is_http_unauthorized_or_forbidden:
             message = self._cfg.wrap_debug_info(message)
         if is_too_many_requests_or_unavailable:
-            kwargs['retry_after'] = self._parse_retry_after(response)
+            kwargs['retry_after_secs'] = self._parse_retry_after(response)
         kwargs['message'] = message
         return DatabricksError(**kwargs)
 
