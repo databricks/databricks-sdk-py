@@ -992,6 +992,9 @@ class ApiClient:
         # Prevents platform from flooding. By default, requests library doesn't block.
         pool_block = True
 
+        # We don't use `max_retries` from HTTPAdapter to align with a more production-ready
+        # retry strategy established in the Databricks SDK for Go. See _is_retryable and
+        # @retried for more details.
         http_adapter = HTTPAdapter(pool_connections=pool_connections,
                                    pool_maxsize=pool_maxsize,
                                    pool_block=pool_block)
@@ -1079,9 +1082,15 @@ class ApiClient:
             # which are generally related to the temporary glitches in the networking stack,
             # also caused by endpoint protection software, like ZScaler, to drop connections while
             # not yet authenticated.
+            #
+            # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
+            # will bubble up the original exception in case we reach max retries.
             return f'cannot connect'
         if isinstance(err, requests.Timeout):
             # corresponds to `TLS handshake timeout` and `i/o timeout` in Go.
+            #
+            # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
+            # will bubble up the original exception in case we reach max retries.
             return f'timeout'
         if isinstance(err, DatabricksError):
             if err.retry_after is not None:
