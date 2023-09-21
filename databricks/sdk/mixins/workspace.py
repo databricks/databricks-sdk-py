@@ -30,8 +30,12 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
         self._notebooks_modified_after = notebooks_modified_after
         self._scans = 0
         self._in_progress = 0
-        self._work = Queue()
-        self._results = Queue()
+        # work queue is seeded from main thread and written/consumed from worker threads
+        self._work = Queue(self._threads)
+        # results queue is written from worker threads and consumed from the main thread
+        self._results = Queue(1)
+        # running condition guards self._in_progress, read from main/worker/reporter threads
+        # and modified by worker threads
         self._cond = Condition()
         self._reporter_interval = 60
         self._reporter_cond = Condition()
@@ -83,14 +87,14 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
                 for object_info in sorted(listing, key=lambda _: _.path):
                     if object_info.object_type == ObjectType.DIRECTORY:
                         if self._yield_folders:
-                            self._results.put_nowait(object_info)
+                            self._results.put(object_info)
                         if self._max_depth is not None and len(object_info.path.split('/')) > self._max_depth:
                             msg = f"Folder is too deep (max depth {self._max_depth}): {object_info.path}. Skipping"
                             _LOG.warning(msg)
                             continue
                         self._enter_folder(object_info.path)
                         continue
-                    self._results.put_nowait(object_info)
+                    self._results.put(object_info)
             except DatabricksError as err:
                 # See https://github.com/databrickslabs/ucx/issues/230
                 if err.error_code != "RESOURCE_DOES_NOT_EXIST":
@@ -110,6 +114,7 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
                 pool.submit(self._worker, num)
             while self._is_running():
                 get = self._results.get()
+                self._results.task_done()
                 yield get
         took = datetime.now() - self._started
         _LOG.debug(f"Finished iterating over {self._path}. Took {took}")
