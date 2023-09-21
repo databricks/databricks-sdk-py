@@ -33,7 +33,7 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
         self._work = Queue()
         self._results = Queue()
         self._cond = Condition()
-        self._reporter_interval = 5
+        self._reporter_interval = 60
         self._reporter_cond = Condition()
 
     def _enter_folder(self, path: str):
@@ -53,6 +53,8 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
             _LOG.debug("Sending poison pills to other workers")
             for _ in range(0, self._threads - 1):
                 self._work.put(None)
+            with self._reporter_cond:
+                self._reporter_cond.notify()
 
     def _is_running(self):
         with self._cond:
