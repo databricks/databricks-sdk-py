@@ -1,62 +1,116 @@
 import logging
-from typing import BinaryIO, Iterator, Optional
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from queue import Queue
+from threading import Condition
+from typing import BinaryIO, Iterable, Iterator, Optional
 
 from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, ImportFormat, Language,
                                  ObjectInfo, ObjectType, WorkspaceAPI)
 
+_PARALLEL_RECURSIVE_LISTING_HINT_THRESHOLD = 100
+
 
 def _fqcn(x: any) -> str:
     return f'{x.__module__}.{x.__name__}'
 
-_LOG = logging.getLogger('databricks.sdk')
 
-class _ParallelRecursiveListing:
-    def __init__(self, path, listing, threads, notebooks_modified_after):
-        self.path = path
-        self.listing = listing
-        self.threads = threads
-        self.notebooks_modified_after = notebooks_modified_after
-        self.directories = Queue()
-        self.results = Queue()
-        self.directories.put_nowait(path)
-        self._start()
+_LOG = logging.getLogger(__name__)
 
-    def _worker(self):
-        while True:
-            path = self.directories.get()
+
+class _ParallelRecursiveListing(Iterable[ObjectInfo]):
+
+    def __init__(self, path, listing, threads, yield_folders, notebooks_modified_after, max_depth):
+        self._path = path
+        self._listing = listing
+        self._threads = threads
+        self._max_depth = max_depth
+        self._yield_folders = yield_folders
+        self._notebooks_modified_after = notebooks_modified_after
+        self._scans = 0
+        self._in_progress = 0
+        self._work = Queue()
+        self._results = Queue()
+        self._cond = Condition()
+        self._reporter_interval = 5
+        self._reporter_cond = Condition()
+
+    def _enter_folder(self, path: str):
+        with self._cond:
+            _LOG.debug(f"Entering folder: {path}")
+            self._in_progress += 1
+        self._work.put_nowait(path)
+
+    def _leave_folder(self, path: str):
+        with self._cond:
+            self._in_progress -= 1
+            self._scans += 1
+            _LOG.debug(f"Leaving folder: {path}")
+            if self._in_progress != 0:
+                return
+            self._cond.notify_all()
+            _LOG.debug("Sending poison pills to other workers")
+            for _ in range(0, self._threads - 1):
+                self._work.put(None)
+
+    def _is_running(self):
+        with self._cond:
+            return self._in_progress > 0
+
+    def _reporter(self):
+        _LOG.debug("Starting workspace listing reporter")
+        while self._is_running():
+            with self._reporter_cond:
+                self._reporter_cond.wait(self._reporter_interval)
+            scans = self._scans
+            took = datetime.now() - self._started
+            rps = int(scans / took.total_seconds())
+            _LOG.info(f"Scanned {scans} workspace folders at {rps}rps")
+        _LOG.debug("Finished workspace listing reporter")
+
+    def _worker(self, num):
+        _LOG.debug(f"Starting workspace listing worker {num}")
+        while self._is_running():
+            path = self._work.get()
             if path is None:
-                _LOG.debug('stopping thread')
+                self._work.task_done()
                 break # poison pill
-            for object_info in self.listing(
-                    path, notebooks_modified_after=self.notebooks_modified_after):
-                if object_info.object_type == ObjectType.DIRECTORY:
-                    self.directories.put(object_info.path)
-                    continue
-                _LOG.debug(f'found: {object_info.path}')
-                self.results.put_nowait(object_info)
-            self.directories.task_done()
-            if path == self.path:
-                _LOG.debug('done iterating')
-                for _ in range(self.threads-1):
-                    self.directories.put(None)
+            try:
+                listing = self._listing(path, notebooks_modified_after=self._notebooks_modified_after)
+                for object_info in sorted(listing, key=lambda _: _.path):
+                    if object_info.object_type == ObjectType.DIRECTORY:
+                        if self._yield_folders:
+                            self._results.put_nowait(object_info)
+                        if self._max_depth is not None and len(object_info.path.split('/')) > self._max_depth:
+                            msg = f"Folder is too deep (max depth {self._max_depth}): {object_info.path}. Skipping"
+                            _LOG.warning(msg)
+                            continue
+                        self._enter_folder(object_info.path)
+                        continue
+                    self._results.put_nowait(object_info)
+            except DatabricksError as err:
+                # See https://github.com/databrickslabs/ucx/issues/230
+                if err.error_code != "RESOURCE_DOES_NOT_EXIST":
+                    raise err
+                _LOG.warning(f"{path} is not listable. Ignoring")
+            finally:
+                self._work.task_done()
+                self._leave_folder(path)
+        _LOG.debug(f"Finished workspace listing worker {num}")
 
-    def _start(self):
-        import concurrent.futures
-        with concurrent.futures.ThreadPoolExecutor(max_workers=self.threads) as pool:
-            tasks = []
-            for _ in range(self.threads):
-                tasks.append(pool.submit(self._worker))
-            concurrent.futures.wait(tasks)
-
-    def __iter__(self) -> Iterator[ObjectInfo]:
-
-        while self.results.not_empty:
-            yield self.__next__()
-
-    def __next__(self) -> bytes:
-        yield self.results.get()
+    def __iter__(self):
+        self._started = datetime.now()
+        with ThreadPoolExecutor(max_workers=self._threads) as pool:
+            self._enter_folder(self._path)
+            pool.submit(self._reporter)
+            for num in range(self._threads):
+                pool.submit(self._worker, num)
+            while self._is_running():
+                get = self._results.get()
+                yield get
+        took = datetime.now() - self._started
+        _LOG.debug(f"Finished iterating over {self._path}. Took {took}")
 
 
 class WorkspaceExt(WorkspaceAPI):
@@ -67,24 +121,47 @@ class WorkspaceExt(WorkspaceAPI):
              *,
              notebooks_modified_after: Optional[int] = None,
              recursive: Optional[bool] = False,
+             yield_folders: Optional[bool] = False,
              threads: Optional[int] = None,
+             max_depth: Optional[int] = None,
              **kwargs) -> Iterator[ObjectInfo]:
         """List workspace objects
 
-        :param recursive: bool
-            Optionally invoke recursive traversal
+        :param path: str
+            The absolute path of the workspace directory.
+        :param notebooks_modified_after: int (optional)
+            UTC timestamp in milliseconds
+        :param recursive: bool (optional)
+            Optionally invoke recursive traversal. Increase performance by adding `threads` argument.
+        :param yield_folders: bool (optional)
+            Also get the names of folders within a path in addition to non-folder objects,
+            like notebooks or files.
+        :param threads: int (optional)
+            Opt-in for the  high-performance parallel listing implementation, where Databricks SDK
+            for Python makes workspace listing calls in parallel, yet still preserving the Iterator
+            interface of this method.
+        :param max_depth: int (optional)
+            If threads and max_depth are specified, stop iterating after reaching the specified folder depth,
+            so that this method finishes execution earlier on large workspaces with more than 10K notebooks.
 
-        :returns: Iterator of workspaceObjectInfo
+        :returns: Iterator of ObjectInfo
         """
         parent_list = super().list
-        if threads is not None:
-            return _ParallelRecursiveListing(path, parent_list,threads, notebooks_modified_after)
+        if recursive and threads is not None:
+            return _ParallelRecursiveListing(path, parent_list, threads, yield_folders,
+                                             notebooks_modified_after, max_depth)
         queue = [path]
+        folders_listed = 0
         while queue:
             path, queue = queue[0], queue[1:]
             for object_info in parent_list(path, notebooks_modified_after=notebooks_modified_after):
                 if recursive and object_info.object_type == ObjectType.DIRECTORY:
                     queue.append(object_info.path)
+                    if yield_folders:
+                        yield object_info
+                    if folders_listed == _PARALLEL_RECURSIVE_LISTING_HINT_THRESHOLD:
+                        _LOG.warning(f'Scanned more than {_PARALLEL_RECURSIVE_LISTING_HINT_THRESHOLD} with '
+                                     f'`recursive=True`. Consider adding `threads=10` for some parallelism')
                     continue
                 yield object_info
 
