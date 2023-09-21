@@ -44,9 +44,10 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
         with self._cond:
             _LOG.debug(f"Entering folder: {path}")
             self._in_progress += 1
-        self._work.put_nowait(path)
+        self._work.put(path)
 
     def _leave_folder(self, path: str):
+        self._work.task_done()
         with self._cond:
             self._in_progress -= 1
             self._scans += 1
@@ -83,27 +84,29 @@ class _ParallelRecursiveListing(Iterable[ObjectInfo]):
                 self._work.task_done()
                 break # poison pill
             try:
-                listing = self._listing(path, notebooks_modified_after=self._notebooks_modified_after)
-                for object_info in sorted(listing, key=lambda _: _.path):
-                    if object_info.object_type == ObjectType.DIRECTORY:
-                        if self._yield_folders:
-                            self._results.put(object_info)
-                        if self._max_depth is not None and len(object_info.path.split('/')) > self._max_depth:
-                            msg = f"Folder is too deep (max depth {self._max_depth}): {object_info.path}. Skipping"
-                            _LOG.warning(msg)
-                            continue
-                        self._enter_folder(object_info.path)
-                        continue
-                    self._results.put(object_info)
+                self._list(path)
             except DatabricksError as err:
                 # See https://github.com/databrickslabs/ucx/issues/230
                 if err.error_code != "RESOURCE_DOES_NOT_EXIST":
                     raise err
                 _LOG.warning(f"{path} is not listable. Ignoring")
             finally:
-                self._work.task_done()
                 self._leave_folder(path)
         _LOG.debug(f"Finished workspace listing worker {num}")
+
+    def _list(self, path):
+        listing = self._listing(path, notebooks_modified_after=self._notebooks_modified_after)
+        for object_info in sorted(listing, key=lambda _: _.path):
+            if object_info.object_type != ObjectType.DIRECTORY:
+                if self._yield_folders:
+                    self._results.put(object_info)
+                if self._max_depth is not None and len(object_info.path.split('/')) > self._max_depth:
+                    msg = f"Folder is too deep (max depth {self._max_depth}): {object_info.path}. Skipping"
+                    _LOG.warning(msg)
+                    continue
+                self._enter_folder(object_info.path)
+                continue
+            self._results.put(object_info)
 
     def __iter__(self):
         self._started = datetime.now()
