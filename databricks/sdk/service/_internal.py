@@ -10,7 +10,7 @@ def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
 
 def _repeated(d: Dict[str, any], field: str, cls: Type) -> any:
     if field not in d or not d[field]:
-        return None
+        return []
     from_dict = getattr(cls, 'from_dict')
     return [from_dict(v) for v in d[field]]
 
