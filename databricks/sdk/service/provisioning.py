@@ -551,7 +551,9 @@ class GkeConfigConnectivityType(Enum):
 
 
 class KeyUseCase(Enum):
-    """This describes an enum"""
+    """Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the control
+    plane * `STORAGE`: Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
+    optionally, cluster EBS volumes."""
 
     MANAGED_SERVICES = 'MANAGED_SERVICES'
     STORAGE = 'STORAGE'
@@ -896,7 +898,8 @@ class VpcEndpoint:
 
 
 class VpcStatus(Enum):
-    """This describes an enum"""
+    """The status of this network configuration object in terms of its use in a workspace: *
+    `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned."""
 
     BROKEN = 'BROKEN'
     UNATTACHED = 'UNATTACHED'
@@ -1081,7 +1084,7 @@ class CredentialsAPI:
                            headers=headers)
         return Credential.from_dict(res)
 
-    def list(self) -> Iterator[Credential]:
+    def list(self) -> Iterator['Credential']:
         """Get all credential configurations.
         
         Gets all Databricks credential configurations associated with an account specified by ID.
@@ -1198,7 +1201,7 @@ class EncryptionKeysAPI:
             headers=headers)
         return CustomerManagedKey.from_dict(res)
 
-    def list(self) -> Iterator[CustomerManagedKey]:
+    def list(self) -> Iterator['CustomerManagedKey']:
         """Get all encryption key configurations.
         
         Gets all customer-managed key configuration objects for an account. If the key is specified as a
@@ -1314,7 +1317,7 @@ class NetworksAPI:
                            headers=headers)
         return Network.from_dict(res)
 
-    def list(self) -> Iterator[Network]:
+    def list(self) -> Iterator['Network']:
         """Get all network configurations.
         
         Gets a list of all Databricks network configurations for an account, specified by ID.
@@ -1449,7 +1452,7 @@ class PrivateAccessAPI:
             headers=headers)
         return PrivateAccessSettings.from_dict(res)
 
-    def list(self) -> Iterator[PrivateAccessSettings]:
+    def list(self) -> Iterator['PrivateAccessSettings']:
         """Get all private access settings objects.
         
         Gets a list of all private access settings objects for an account, specified by ID.
@@ -1616,7 +1619,7 @@ class StorageAPI:
             headers=headers)
         return StorageConfiguration.from_dict(res)
 
-    def list(self) -> Iterator[StorageConfiguration]:
+    def list(self) -> Iterator['StorageConfiguration']:
         """Get all storage configurations.
         
         Gets a list of all Databricks storage configurations for your account, specified by ID.
@@ -1725,7 +1728,7 @@ class VpcEndpointsAPI:
                            headers=headers)
         return VpcEndpoint.from_dict(res)
 
-    def list(self) -> Iterator[VpcEndpoint]:
+    def list(self) -> Iterator['VpcEndpoint']:
         """Get all VPC endpoint configurations.
         
         Gets a list of all VPC endpoints for an account, specified by ID.
@@ -2022,7 +2025,7 @@ class WorkspacesAPI:
                            headers=headers)
         return Workspace.from_dict(res)
 
-    def list(self) -> Iterator[Workspace]:
+    def list(self) -> Iterator['Workspace']:
         """Get all workspaces.
         
         Gets a list of all workspaces associated with an account, specified by ID.

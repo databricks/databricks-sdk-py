@@ -27,7 +27,7 @@ Serving endpoints
         :returns: :class:`BuildLogsResponse`
         
 
-    .. py:method:: create(name, config)
+    .. py:method:: create(name, config [, tags])
 
         Create a new serving endpoint.
         
@@ -36,6 +36,8 @@ Serving endpoints
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
         :param config: :class:`EndpointCoreConfigInput`
           The core config of the serving endpoint.
+        :param tags: List[:class:`EndpointTag`] (optional)
+          Tags to be attached to the serving endpoint and automatically propagated to billing logs.
         
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
@@ -121,6 +123,22 @@ Serving endpoints
           The name of the served model that logs will be retrieved for. This field is required.
         
         :returns: :class:`ServerLogsResponse`
+        
+
+    .. py:method:: patch(name [, add_tags, delete_tags])
+
+        Patch the tags of a serving endpoint.
+        
+        Used to batch add and delete tags from a serving endpoint with a single API call.
+        
+        :param name: str
+          The name of the serving endpoint who's tags to patch. This field is required.
+        :param add_tags: List[:class:`EndpointTag`] (optional)
+          List of endpoint tags to add
+        :param delete_tags: List[str] (optional)
+          List of tag keys to delete
+        
+        :returns: Iterator over :class:`EndpointTag`
         
 
     .. py:method:: query(name)

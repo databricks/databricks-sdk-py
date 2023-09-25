@@ -310,7 +310,7 @@ self._api.do('{{.Verb}}',
 {{define "method-return-type" -}}
   {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }} -> Wait[{{.Wait.Poll.Response.PascalName}}]
   {{- else if .Response}} -> {{if .Response.ArrayValue -}}
-    Iterator[{{.Response.ArrayValue.PascalName}}]
+    Iterator[{{template "type" .Response.ArrayValue}}]
   {{- else if .Pagination -}}
     Iterator[{{.Pagination.Entity.PascalName}}]
   {{- else -}}

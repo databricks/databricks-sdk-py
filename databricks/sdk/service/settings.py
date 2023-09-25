@@ -159,6 +159,66 @@ class DeletePersonalComputeSettingResponse:
 
 
 @dataclass
+class ExchangeToken:
+    credential: Optional[str] = None
+    credential_eol_time: Optional[int] = None
+    owner_id: Optional[int] = None
+    scopes: Optional['List[str]'] = None
+    token_type: Optional['TokenType'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.credential is not None: body['credential'] = self.credential
+        if self.credential_eol_time is not None: body['credentialEolTime'] = self.credential_eol_time
+        if self.owner_id is not None: body['ownerId'] = self.owner_id
+        if self.scopes: body['scopes'] = [v for v in self.scopes]
+        if self.token_type is not None: body['tokenType'] = self.token_type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExchangeToken':
+        return cls(credential=d.get('credential', None),
+                   credential_eol_time=d.get('credentialEolTime', None),
+                   owner_id=d.get('ownerId', None),
+                   scopes=d.get('scopes', None),
+                   token_type=_enum(d, 'tokenType', TokenType))
+
+
+@dataclass
+class ExchangeTokenRequest:
+    partition_id: 'PartitionId'
+    token_type: 'List[TokenType]'
+    scopes: 'List[str]'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.partition_id: body['partitionId'] = self.partition_id.as_dict()
+        if self.scopes: body['scopes'] = [v for v in self.scopes]
+        if self.token_type: body['tokenType'] = [v.value for v in self.token_type]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExchangeTokenRequest':
+        return cls(partition_id=_from_dict(d, 'partitionId', PartitionId),
+                   scopes=d.get('scopes', None),
+                   token_type=d.get('tokenType', None))
+
+
+@dataclass
+class ExchangeTokenResponse:
+    values: Optional['List[ExchangeToken]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.values: body['values'] = [v.as_dict() for v in self.values]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExchangeTokenResponse':
+        return cls(values=_repeated(d, 'values', ExchangeToken))
+
+
+@dataclass
 class FetchIpAccessListResponse:
     ip_access_list: Optional['IpAccessListInfo'] = None
 
@@ -270,10 +330,27 @@ class ListTokensResponse:
 
 
 class ListType(Enum):
-    """This describes an enum"""
+    """Type of IP access list. Valid values are as follows and are case-sensitive:
+    
+    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     ALLOW = 'ALLOW'
     BLOCK = 'BLOCK'
+
+
+@dataclass
+class PartitionId:
+    workspace_id: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.workspace_id is not None: body['workspaceId'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'PartitionId':
+        return cls(workspace_id=d.get('workspaceId', None))
 
 
 @dataclass
@@ -549,6 +626,12 @@ class TokenPermissionsRequest:
         return cls(access_control_list=_repeated(d, 'access_control_list', TokenAccessControlRequest))
 
 
+class TokenType(Enum):
+    """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
+
+    AZURE_ACTIVE_DIRECTORY_TOKEN = 'AZURE_ACTIVE_DIRECTORY_TOKEN'
+
+
 @dataclass
 class UpdateIpAccessList:
     label: str
@@ -624,7 +707,10 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         
@@ -712,7 +798,10 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
@@ -763,7 +852,10 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
@@ -965,6 +1057,39 @@ class AccountSettingsAPI:
         return PersonalComputeSetting.from_dict(res)
 
 
+class CredentialsManagerAPI:
+    """Credentials manager interacts with with Identity Providers to to perform token exchanges using stored
+    credentials and refresh tokens."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def exchange_token(self, partition_id: PartitionId, token_type: List[TokenType],
+                       scopes: List[str]) -> ExchangeTokenResponse:
+        """Exchange token.
+        
+        Exchange tokens with an Identity Provider to get a new access token. It allowes specifying scopes to
+        determine token permissions.
+        
+        :param partition_id: :class:`PartitionId`
+        :param token_type: List[:class:`TokenType`]
+        :param scopes: List[str]
+          Array of scopes for the token request.
+        
+        :returns: :class:`ExchangeTokenResponse`
+        """
+        body = {}
+        if partition_id is not None: body['partitionId'] = partition_id.as_dict()
+        if scopes is not None: body['scopes'] = [v for v in scopes]
+        if token_type is not None: body['tokenType'] = [v.value for v in token_type]
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST',
+                           '/api/2.0/credentials-manager/exchange-tokens/token',
+                           body=body,
+                           headers=headers)
+        return ExchangeTokenResponse.from_dict(res)
+
+
 class IpAccessListsAPI:
     """IP Access List enables admins to configure IP access lists.
     
@@ -1008,7 +1133,10 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         
@@ -1087,7 +1215,10 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
@@ -1136,7 +1267,10 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool

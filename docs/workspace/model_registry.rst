@@ -227,7 +227,13 @@ Model Registry
         :param model_name: str (optional)
           Name of the model whose events would trigger this webhook.
         :param status: :class:`RegistryWebhookStatus` (optional)
-          This describes an enum
+          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          
+          * `DISABLED`: Webhook is not triggered.
+          
+          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
+          event.
         
         :returns: :class:`CreateWebhookResponse`
         
@@ -877,7 +883,13 @@ Model Registry
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
-          This describes an enum
+          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          
+          * `DISABLED`: Webhook is not triggered.
+          
+          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
+          event.
         
         
         

@@ -60,7 +60,10 @@ IP Access Lists
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         
@@ -172,7 +175,10 @@ IP Access Lists
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
@@ -207,7 +213,10 @@ IP Access Lists
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          This describes an enum
+          Type of IP access list. Valid values are as follows and are case-sensitive:
+          
+          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
+          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str]
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool

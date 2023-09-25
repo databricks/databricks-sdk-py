@@ -89,6 +89,7 @@ class AlertOptions:
     value: Any
     custom_body: Optional[str] = None
     custom_subject: Optional[str] = None
+    empty_result_state: Optional['AlertOptionsEmptyResultState'] = None
     muted: Optional[bool] = None
 
     def as_dict(self) -> dict:
@@ -96,6 +97,7 @@ class AlertOptions:
         if self.column is not None: body['column'] = self.column
         if self.custom_body is not None: body['custom_body'] = self.custom_body
         if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.empty_result_state is not None: body['empty_result_state'] = self.empty_result_state.value
         if self.muted is not None: body['muted'] = self.muted
         if self.op is not None: body['op'] = self.op
         if self.value: body['value'] = self.value
@@ -106,9 +108,18 @@ class AlertOptions:
         return cls(column=d.get('column', None),
                    custom_body=d.get('custom_body', None),
                    custom_subject=d.get('custom_subject', None),
+                   empty_result_state=_enum(d, 'empty_result_state', AlertOptionsEmptyResultState),
                    muted=d.get('muted', None),
                    op=d.get('op', None),
                    value=d.get('value', None))
+
+
+class AlertOptionsEmptyResultState(Enum):
+    """State that alert evaluates to when query result is empty."""
+
+    OK = 'ok'
+    TRIGGERED = 'triggered'
+    UNKNOWN = 'unknown'
 
 
 @dataclass
@@ -171,6 +182,32 @@ class AlertState(Enum):
 
 
 @dataclass
+class BaseChunkInfo:
+    """Describes metadata for a particular chunk, within a result set; this structure is used both
+    within a manifest, and when fetching individual chunk data or links."""
+
+    byte_count: Optional[int] = None
+    chunk_index: Optional[int] = None
+    row_count: Optional[int] = None
+    row_offset: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.byte_count is not None: body['byte_count'] = self.byte_count
+        if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
+        if self.row_count is not None: body['row_count'] = self.row_count
+        if self.row_offset is not None: body['row_offset'] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'BaseChunkInfo':
+        return cls(byte_count=d.get('byte_count', None),
+                   chunk_index=d.get('chunk_index', None),
+                   row_count=d.get('row_count', None),
+                   row_offset=d.get('row_offset', None))
+
+
+@dataclass
 class Channel:
     dbsql_version: Optional[str] = None
     name: Optional['ChannelName'] = None
@@ -205,46 +242,12 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
     CHANNEL_NAME_PREVIEW = 'CHANNEL_NAME_PREVIEW'
     CHANNEL_NAME_PREVIOUS = 'CHANNEL_NAME_PREVIOUS'
     CHANNEL_NAME_UNSPECIFIED = 'CHANNEL_NAME_UNSPECIFIED'
-
-
-@dataclass
-class ChunkInfo:
-    """Describes metadata for a particular chunk, within a result set; this structure is used both
-    within a manifest, and when fetching individual chunk data or links."""
-
-    byte_count: Optional[int] = None
-    chunk_index: Optional[int] = None
-    next_chunk_index: Optional[int] = None
-    next_chunk_internal_link: Optional[str] = None
-    row_count: Optional[int] = None
-    row_offset: Optional[int] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.byte_count is not None: body['byte_count'] = self.byte_count
-        if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
-        if self.next_chunk_index is not None: body['next_chunk_index'] = self.next_chunk_index
-        if self.next_chunk_internal_link is not None:
-            body['next_chunk_internal_link'] = self.next_chunk_internal_link
-        if self.row_count is not None: body['row_count'] = self.row_count
-        if self.row_offset is not None: body['row_offset'] = self.row_offset
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ChunkInfo':
-        return cls(byte_count=d.get('byte_count', None),
-                   chunk_index=d.get('chunk_index', None),
-                   next_chunk_index=d.get('next_chunk_index', None),
-                   next_chunk_internal_link=d.get('next_chunk_internal_link', None),
-                   row_count=d.get('row_count', None),
-                   row_offset=d.get('row_offset', None))
 
 
 @dataclass
@@ -280,7 +283,8 @@ class ColumnInfo:
 
 
 class ColumnInfoTypeName(Enum):
-    """Name of type (INT, STRUCT, MAP, and so on)"""
+    """The name of the base data type. This doesn't include details for complex types such as STRUCT,
+    MAP or ARRAY."""
 
     ARRAY = 'ARRAY'
     BINARY = 'BINARY'
@@ -557,10 +561,10 @@ class Disposition(Enum):
     
     Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
     format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 16 MiB, that statement execution is aborted, and no result set will be available.
+    than 25 MiB, that statement execution is aborted, and no result set will be available.
     
     **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and may not match the sizes visible in JSON responses.
+    and might not match the sizes visible in JSON responses.
     
     Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
     URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
@@ -824,17 +828,17 @@ class EndpointTags:
 
 @dataclass
 class ExecuteStatementRequest:
+    statement: str
+    warehouse_id: str
     byte_limit: Optional[int] = None
     catalog: Optional[str] = None
     disposition: Optional['Disposition'] = None
     format: Optional['Format'] = None
-    on_wait_timeout: Optional['TimeoutAction'] = None
+    on_wait_timeout: Optional['ExecuteStatementRequestOnWaitTimeout'] = None
     parameters: Optional['List[StatementParameterListItem]'] = None
     row_limit: Optional[int] = None
     schema: Optional[str] = None
-    statement: Optional[str] = None
     wait_timeout: Optional[str] = None
-    warehouse_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -857,13 +861,25 @@ class ExecuteStatementRequest:
                    catalog=d.get('catalog', None),
                    disposition=_enum(d, 'disposition', Disposition),
                    format=_enum(d, 'format', Format),
-                   on_wait_timeout=_enum(d, 'on_wait_timeout', TimeoutAction),
+                   on_wait_timeout=_enum(d, 'on_wait_timeout', ExecuteStatementRequestOnWaitTimeout),
                    parameters=_repeated(d, 'parameters', StatementParameterListItem),
                    row_limit=d.get('row_limit', None),
                    schema=d.get('schema', None),
                    statement=d.get('statement', None),
                    wait_timeout=d.get('wait_timeout', None),
                    warehouse_id=d.get('warehouse_id', None))
+
+
+class ExecuteStatementRequestOnWaitTimeout(Enum):
+    """When `wait_timeout > 0s`, the call will block up to the specified time. If the statement
+    execution doesn't finish within this time, `on_wait_timeout` determines whether the execution
+    should continue or be canceled. When set to `CONTINUE`, the statement execution continues
+    asynchronously and the call returns a statement ID which can be used for polling with
+    :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is
+    canceled and the call returns with a `CANCELED` state."""
+
+    CANCEL = 'CANCEL'
+    CONTINUE = 'CONTINUE'
 
 
 @dataclass
@@ -926,40 +942,6 @@ class ExternalLink:
 
 
 class Format(Enum):
-    """Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
-    `CSV`.
-    
-    When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of
-    values, where each value is either the *string representation* of a value, or `null`. For
-    example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM
-    range(3)` would look like this:
-    
-    ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
-    
-    `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
-    
-    `INLINE` `JSON_ARRAY` data can be found at the path `StatementResponse.result.data_array`.
-    
-    For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud storage that
-    contains compact JSON with no indentation or extra whitespace.
-    
-    When specifying `format=ARROW_STREAM`, each chunk in the result will be formatted as Apache
-    Arrow Stream. See the [Apache Arrow streaming format].
-    
-    IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS` disposition.
-    
-    When specifying `format=CSV`, each chunk in the result will be a CSV according to [RFC 4180]
-    standard. All the columns values will have *string representation* similar to the `JSON_ARRAY`
-    format, and `null` values will be encoded as “null”. Only the first chunk in the result
-    would contain a header row with column names. For example, the output of `SELECT concat('id-',
-    id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
-    
-    ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-    
-    IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS` disposition.
-    
-    [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-    [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180"""
 
     ARROW_STREAM = 'ARROW_STREAM'
     CSV = 'CSV'
@@ -1302,7 +1284,8 @@ class ParameterType(Enum):
 
 
 class PermissionLevel(Enum):
-    """This describes an enum"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
+    query"""
 
     CAN_MANAGE = 'CAN_MANAGE'
     CAN_RUN = 'CAN_RUN'
@@ -1733,7 +1716,9 @@ class QueryStatementType(Enum):
 
 
 class QueryStatus(Enum):
-    """This describes an enum"""
+    """Query status with one the following values: * `QUEUED`: Query has been received and queued. *
+    `RUNNING`: Query has started. * `CANCELED`: Query has been cancelled by the user. * `FAILED`:
+    Query has failed. * `FINISHED`: Query has completed."""
 
     CANCELED = 'CANCELED'
     FAILED = 'FAILED'
@@ -1762,9 +1747,11 @@ class RepeatedEndpointConfPairs:
 
 @dataclass
 class ResultData:
-    """Result data chunks are delivered in either the `chunk` field when using `INLINE` disposition, or
-    in the `external_link` field when using `EXTERNAL_LINKS` disposition. Exactly one of these will
-    be set."""
+    """Contains the result data of a single chunk when using `INLINE` disposition. When using
+    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
+    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
+    `external_links` array prepares the API to return multiple links in a single response. Currently
+    only a single link is returned.)"""
 
     byte_count: Optional[int] = None
     chunk_index: Optional[int] = None
@@ -1804,12 +1791,13 @@ class ResultData:
 class ResultManifest:
     """The result manifest provides schema and metadata for the result set."""
 
-    chunks: Optional['List[ChunkInfo]'] = None
+    chunks: Optional['List[BaseChunkInfo]'] = None
     format: Optional['Format'] = None
     schema: Optional['ResultSchema'] = None
     total_byte_count: Optional[int] = None
     total_chunk_count: Optional[int] = None
     total_row_count: Optional[int] = None
+    truncated: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1819,21 +1807,23 @@ class ResultManifest:
         if self.total_byte_count is not None: body['total_byte_count'] = self.total_byte_count
         if self.total_chunk_count is not None: body['total_chunk_count'] = self.total_chunk_count
         if self.total_row_count is not None: body['total_row_count'] = self.total_row_count
+        if self.truncated is not None: body['truncated'] = self.truncated
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResultManifest':
-        return cls(chunks=_repeated(d, 'chunks', ChunkInfo),
+        return cls(chunks=_repeated(d, 'chunks', BaseChunkInfo),
                    format=_enum(d, 'format', Format),
                    schema=_from_dict(d, 'schema', ResultSchema),
                    total_byte_count=d.get('total_byte_count', None),
                    total_chunk_count=d.get('total_chunk_count', None),
-                   total_row_count=d.get('total_row_count', None))
+                   total_row_count=d.get('total_row_count', None),
+                   truncated=d.get('truncated', None))
 
 
 @dataclass
 class ResultSchema:
-    """Schema is an ordered list of column descriptions."""
+    """The schema is an ordered list of column descriptions."""
 
     column_count: Optional[int] = None
     columns: Optional['List[ColumnInfo]'] = None
@@ -2017,7 +2007,7 @@ class StatementState(Enum):
 
 @dataclass
 class StatementStatus:
-    """Status response includes execution state and if relevant, error information."""
+    """The status response includes execution state and if relevant, error information."""
 
     error: Optional['ServiceError'] = None
     state: Optional['StatementState'] = None
@@ -2188,20 +2178,6 @@ class TimeRange:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TimeRange':
         return cls(end_time_ms=d.get('end_time_ms', None), start_time_ms=d.get('start_time_ms', None))
-
-
-class TimeoutAction(Enum):
-    """When in synchronous mode with `wait_timeout > 0s` it determines the action taken when the
-    timeout is reached:
-    
-    `CONTINUE` → the statement execution continues asynchronously and the call returns a statement
-    ID immediately.
-    
-    `CANCEL` → the statement execution is canceled and the call returns immediately with a
-    `CANCELED` state."""
-
-    CANCEL = 'CANCEL'
-    CONTINUE = 'CONTINUE'
 
 
 @dataclass
@@ -2590,7 +2566,7 @@ class AlertsAPI:
         res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
         return Alert.from_dict(res)
 
-    def list(self) -> Iterator[Alert]:
+    def list(self) -> Iterator['Alert']:
         """Get alerts.
         
         Gets a list of alerts.
@@ -2865,7 +2841,7 @@ class DataSourcesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def list(self) -> Iterator[DataSource]:
+    def list(self) -> Iterator['DataSource']:
         """Get a list of SQL warehouses.
         
         Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
@@ -3309,161 +3285,88 @@ class QueryVisualizationsAPI:
 
 
 class StatementExecutionAPI:
-    """The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of
-    result data.
-    
-    **Release status**
-    
-    This feature is in [Public Preview].
+    """The Databricks SQL Statement Execution API can be used to execute SQL statements on a SQL warehouse and
+    fetch the result.
     
     **Getting started**
     
-    We suggest beginning with the [SQL Statement Execution API tutorial].
+    We suggest beginning with the [Databricks SQL Statement Execution API tutorial].
     
     **Overview of statement execution and result fetching**
     
     Statement execution begins by issuing a :method:statementexecution/executeStatement request with a valid
     SQL statement and warehouse ID, along with optional parameters such as the data catalog and output format.
+    If no other parameters are specified, the server will wait for up to 10s before returning a response. If
+    the statement has completed within this timespan, the response will include the result data as a JSON
+    array and metadata. Otherwise, if no result is available after the 10s timeout expired, the response will
+    provide the statement ID that can be used to poll for results by using a
+    :method:statementexecution/getStatement request.
     
-    When submitting the statement, the call can behave synchronously or asynchronously, based on the
-    `wait_timeout` setting. When set between 5-50 seconds (default: 10) the call behaves synchronously and
-    waits for results up to the specified timeout; when set to `0s`, the call is asynchronous and responds
-    immediately with a statement ID that can be used to poll for status or fetch the results in a separate
-    call.
+    You can specify whether the call should behave synchronously, asynchronously or start synchronously with a
+    fallback to asynchronous execution. This is controlled with the `wait_timeout` and `on_wait_timeout`
+    settings. If `wait_timeout` is set between 5-50 seconds (default: 10s), the call waits for results up to
+    the specified timeout; when set to `0s`, the call is asynchronous and responds immediately with a
+    statement ID. The `on_wait_timeout` setting specifies what should happen when the timeout is reached while
+    the statement execution has not yet finished. This can be set to either `CONTINUE`, to fallback to
+    asynchronous mode, or it can be set to `CANCEL`, which cancels the statement.
     
-    **Call mode: synchronous**
+    In summary: - Synchronous mode - `wait_timeout=30s` and `on_wait_timeout=CANCEL` - The call waits up to 30
+    seconds; if the statement execution finishes within this time, the result data is returned directly in the
+    response. If the execution takes longer than 30 seconds, the execution is canceled and the call returns
+    with a `CANCELED` state. - Asynchronous mode - `wait_timeout=0s` (`on_wait_timeout` is ignored) - The call
+    doesn't wait for the statement to finish but returns directly with a statement ID. The status of the
+    statement execution can be polled by issuing :method:statementexecution/getStatement with the statement
+    ID. Once the execution has succeeded, this call also returns the result and metadata in the response. -
+    Hybrid mode (default) - `wait_timeout=10s` and `on_wait_timeout=CONTINUE` - The call waits for up to 10
+    seconds; if the statement execution finishes within this time, the result data is returned directly in the
+    response. If the execution takes longer than 10 seconds, a statement ID is returned. The statement ID can
+    be used to fetch status and results in the same way as in the asynchronous mode.
     
-    In synchronous mode, when statement execution completes within the `wait timeout`, the result data is
-    returned directly in the response. This response will contain `statement_id`, `status`, `manifest`, and
-    `result` fields. The `status` field confirms success whereas the `manifest` field contains the result data
-    column schema and metadata about the result set. The `result` field contains the first chunk of result
-    data according to the specified `disposition`, and links to fetch any remaining chunks.
+    Depending on the size, the result can be split into multiple chunks. If the statement execution is
+    successful, the statement response contains a manifest and the first chunk of the result. The manifest
+    contains schema information and provides metadata for each chunk in the result. Result chunks can be
+    retrieved by index with :method:statementexecution/getStatementResultChunkN which may be called in any
+    order and in parallel. For sequential fetching, each chunk, apart from the last, also contains a
+    `next_chunk_index` and `next_chunk_internal_link` that point to the next chunk.
     
-    If the execution does not complete before `wait_timeout`, the setting `on_wait_timeout` determines how the
-    system responds.
-    
-    By default, `on_wait_timeout=CONTINUE`, and after reaching `wait_timeout`, a response is returned and
-    statement execution continues asynchronously. The response will contain only `statement_id` and `status`
-    fields, and the caller must now follow the flow described for asynchronous call mode to poll and fetch the
-    result.
-    
-    Alternatively, `on_wait_timeout` can also be set to `CANCEL`; in this case if the timeout is reached
-    before execution completes, the underlying statement execution is canceled, and a `CANCELED` status is
-    returned in the response.
-    
-    **Call mode: asynchronous**
-    
-    In asynchronous mode, or after a timed-out synchronous request continues, a `statement_id` and `status`
-    will be returned. In this case polling :method:statementexecution/getStatement calls are required to fetch
-    the result and metadata.
-    
-    Next, a caller must poll until execution completes (`SUCCEEDED`, `FAILED`, etc.) by issuing
-    :method:statementexecution/getStatement requests for the given `statement_id`.
-    
-    When execution has succeeded, the response will contain `status`, `manifest`, and `result` fields. These
-    fields and the structure are identical to those in the response to a successful synchronous submission.
-    The `result` field will contain the first chunk of result data, either `INLINE` or as `EXTERNAL_LINKS`
-    depending on `disposition`. Additional chunks of result data can be fetched by checking for the presence
-    of the `next_chunk_internal_link` field, and iteratively `GET` those paths until that field is unset: `GET
-    https://$DATABRICKS_HOST/{next_chunk_internal_link}`.
+    A statement can be canceled with :method:statementexecution/cancelExecution.
     
     **Fetching result data: format and disposition**
     
-    To specify the result data format, set the `format` field to `JSON_ARRAY` (JSON), `ARROW_STREAM` ([Apache
-    Arrow Columnar]), or `CSV`.
+    To specify the format of the result data, use the `format` field, which can be set to one of the following
+    options: `JSON_ARRAY` (JSON), `ARROW_STREAM` ([Apache Arrow Columnar]), or `CSV`.
     
-    You can also configure how to fetch the result data in two different modes by setting the `disposition`
-    field to `INLINE` or `EXTERNAL_LINKS`.
+    There are two ways to receive statement results, controlled by the `disposition` setting, which can be
+    either `INLINE` or `EXTERNAL_LINKS`:
     
-    The `INLINE` disposition can only be used with the `JSON_ARRAY` format and allows results up to 16 MiB.
-    When a statement executed with `INLINE` disposition exceeds this limit, the execution is aborted, and no
-    result can be fetched.
+    - `INLINE`: In this mode, the result data is directly included in the response. It's best suited for
+    smaller results. This mode can only be used with the `JSON_ARRAY` format.
     
-    The `EXTERNAL_LINKS` disposition allows fetching large result sets in `JSON_ARRAY`, `ARROW_STREAM` and
-    `CSV` formats, and with higher throughput.
+    - `EXTERNAL_LINKS`: In this mode, the response provides links that can be used to download the result data
+    in chunks separately. This approach is ideal for larger results and offers higher throughput. This mode
+    can be used with all the formats: `JSON_ARRAY`, `ARROW_STREAM`, and `CSV`.
     
-    The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`. Databricks recommends that you
-    explicit setting the format and the disposition for all production use cases.
-    
-    **Statement response: statement_id, status, manifest, and result**
-    
-    The base call :method:statementexecution/getStatement returns a single response combining `statement_id`,
-    `status`, a result `manifest`, and a `result` data chunk or link, depending on the `disposition`. The
-    `manifest` contains the result schema definition and the result summary metadata. When using
-    `disposition=EXTERNAL_LINKS`, it also contains a full listing of all chunks and their summary metadata.
-    
-    **Use case: small result sets with INLINE + JSON_ARRAY**
-    
-    For flows that generate small and predictable result sets (<= 16 MiB), `INLINE` downloads of `JSON_ARRAY`
-    result data are typically the simplest way to execute and fetch result data.
-    
-    When the result set with `disposition=INLINE` is larger, the result can be transferred in chunks. After
-    receiving the initial chunk with :method:statementexecution/executeStatement or
-    :method:statementexecution/getStatement subsequent calls are required to iteratively fetch each chunk.
-    Each result response contains a link to the next chunk, when there are additional chunks to fetch; it can
-    be found in the field `.next_chunk_internal_link`. This link is an absolute `path` to be joined with your
-    `$DATABRICKS_HOST`, and of the form `/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}`.
-    The next chunk can be fetched by issuing a :method:statementexecution/getStatementResultChunkN request.
-    
-    When using this mode, each chunk may be fetched once, and in order. A chunk without a field
-    `next_chunk_internal_link` indicates the last chunk was reached and all chunks have been fetched from the
-    result set.
-    
-    **Use case: large result sets with EXTERNAL_LINKS + ARROW_STREAM**
-    
-    Using `EXTERNAL_LINKS` to fetch result data in Arrow format allows you to fetch large result sets
-    efficiently. The primary difference from using `INLINE` disposition is that fetched result chunks contain
-    resolved `external_links` URLs, which can be fetched with standard HTTP.
-    
-    **Presigned URLs**
-    
-    External links point to data stored within your workspace's internal DBFS, in the form of a presigned URL.
-    The URLs are valid for only a short period, <= 15 minutes. Alongside each `external_link` is an expiration
-    field indicating the time at which the URL is no longer valid. In `EXTERNAL_LINKS` mode, chunks can be
-    resolved and fetched multiple times and in parallel.
-    
-    ----
-    
-    ### **Warning: We recommend you protect the URLs in the EXTERNAL_LINKS.**
-    
-    When using the EXTERNAL_LINKS disposition, a short-lived pre-signed URL is generated, which the client can
-    use to download the result chunk directly from cloud storage. As the short-lived credential is embedded in
-    a pre-signed URL, this URL should be protected.
-    
-    Since pre-signed URLs are generated with embedded temporary credentials, you need to remove the
-    authorization header from the fetch requests.
-    
-    ----
-    
-    Similar to `INLINE` mode, callers can iterate through the result set, by using the
-    `next_chunk_internal_link` field. Each internal link response will contain an external link to the raw
-    chunk data, and additionally contain the `next_chunk_internal_link` if there are more chunks.
-    
-    Unlike `INLINE` mode, when using `EXTERNAL_LINKS`, chunks may be fetched out of order, and in parallel to
-    achieve higher throughput.
+    By default, the API uses `format=JSON_ARRAY` and `disposition=INLINE`.
     
     **Limits and limitations**
     
-    Note: All byte limits are calculated based on internal storage metrics and will not match byte counts of
-    actual payloads.
+    Note: The byte limit for INLINE disposition is based on internal storage metrics and will not exactly
+    match the byte count of the actual payload.
     
-    - Statements with `disposition=INLINE` are limited to 16 MiB and will abort when this limit is exceeded. -
-    Statements with `disposition=EXTERNAL_LINKS` are limited to 100 GiB. - The maximum query text size is 16
-    MiB. - Cancelation may silently fail. A successful response from a cancel request indicates that the
-    cancel request was successfully received and sent to the processing engine. However, for example, an
-    outstanding statement may complete execution during signal delivery, with the cancel signal arriving too
-    late to be meaningful. Polling for status until a terminal state is reached is a reliable way to determine
-    the final state. - Wait timeouts are approximate, occur server-side, and cannot account for caller delays,
-    network latency from caller to service, and similarly. - After a statement has been submitted and a
-    statement_id is returned, that statement's status and result will automatically close after either of 2
-    conditions: - The last result chunk is fetched (or resolved to an external link). - One hour passes with
-    no calls to get the status or fetch the result. Best practice: in asynchronous clients, poll for status
-    regularly (and with backoff) to keep the statement open and alive. - After fetching the last result chunk
-    (including chunk_index=0) the statement is automatically closed.
+    - Statements with `disposition=INLINE` are limited to 25 MiB and will fail when this limit is exceeded. -
+    Statements with `disposition=EXTERNAL_LINKS` are limited to 100 GiB. Result sets larger than this limit
+    will be truncated. Truncation is indicated by the `truncated` field in the result manifest. - The maximum
+    query text size is 16 MiB. - Cancelation might silently fail. A successful response from a cancel request
+    indicates that the cancel request was successfully received and sent to the processing engine. However, an
+    outstanding statement might have already completed execution when the cancel request arrives. Polling for
+    status until a terminal state is reached is a reliable way to determine the final state. - Wait timeouts
+    are approximate, occur server-side, and cannot account for things such as caller delays and network
+    latency from caller to service. - The system will auto-close a statement after one hour if the client
+    stops polling and thus you must poll at least once an hour. - The results are only available for one hour
+    after success; polling does not extend this.
     
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
-    [Public Preview]: https://docs.databricks.com/release-notes/release-types.html
-    [SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
+    [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3483,25 +3386,31 @@ class StatementExecutionAPI:
         self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel', headers=headers)
 
     def execute_statement(self,
+                          statement: str,
+                          warehouse_id: str,
                           *,
                           byte_limit: Optional[int] = None,
                           catalog: Optional[str] = None,
                           disposition: Optional[Disposition] = None,
                           format: Optional[Format] = None,
-                          on_wait_timeout: Optional[TimeoutAction] = None,
+                          on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout] = None,
                           parameters: Optional[List[StatementParameterListItem]] = None,
                           row_limit: Optional[int] = None,
                           schema: Optional[str] = None,
-                          statement: Optional[str] = None,
-                          wait_timeout: Optional[str] = None,
-                          warehouse_id: Optional[str] = None) -> ExecuteStatementResponse:
+                          wait_timeout: Optional[str] = None) -> ExecuteStatementResponse:
         """Execute a SQL statement.
         
-        Execute a SQL statement, and if flagged as such, await its result for a specified time.
-        
+        :param statement: str
+          The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
+        :param warehouse_id: str
+          Warehouse upon which to execute a statement. See also [What are SQL
+          warehouses?](/sql/admin/warehouse-type.html)
         :param byte_limit: int (optional)
-          Applies the given byte limit to the statement's result size. Byte counts are based on internal
-          representations and may not match measurable sizes in the requested `format`.
+          Applies the given byte limit to the statement's result size. Byte counts are based on internal data
+          representations and might not match the final size in the requested `format`. If the result was
+          truncated due to the byte limit, then `truncated` in the response is set to `true`. When using
+          `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit` is not
+          explcitly set.
         :param catalog: str (optional)
           Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL.
           
@@ -3510,11 +3419,11 @@ class StatementExecutionAPI:
           The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
           
           Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-          format, in a series of chunks. If a given statement produces a result set with a size larger than 16
+          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
           MiB, that statement execution is aborted, and no result set will be available.
           
           **NOTE** Byte limits are computed based upon internal representations of the result set data, and
-          may not match the sizes visible in JSON responses.
+          might not match the sizes visible in JSON responses.
           
           Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
           URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
@@ -3531,6 +3440,9 @@ class StatementExecutionAPI:
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.
           
+          Important: The formats `ARROW_STREAM` and `CSV` are supported only with `EXTERNAL_LINKS`
+          disposition. `JSON_ARRAY` is supported in `INLINE` and `EXTERNAL_LINKS` disposition.
+          
           When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of values,
           where each value is either the *string representation* of a value, or `null`. For example, the
           output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)` would
@@ -3538,50 +3450,41 @@ class StatementExecutionAPI:
           
           ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
           
-          `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
+          When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`, each chunk in the result
+          contains compact JSON with no indentation or extra whitespace.
           
-          `INLINE` `JSON_ARRAY` data can be found at the path `StatementResponse.result.data_array`.
+          When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`, each chunk in the result
+          will be formatted as Apache Arrow Stream. See the [Apache Arrow streaming format].
           
-          For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud storage that contains
-          compact JSON with no indentation or extra whitespace.
-          
-          When specifying `format=ARROW_STREAM`, each chunk in the result will be formatted as Apache Arrow
-          Stream. See the [Apache Arrow streaming format].
-          
-          IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS` disposition.
-          
-          When specifying `format=CSV`, each chunk in the result will be a CSV according to [RFC 4180]
-          standard. All the columns values will have *string representation* similar to the `JSON_ARRAY`
-          format, and `null` values will be encoded as “null”. Only the first chunk in the result would
-          contain a header row with column names. For example, the output of `SELECT concat('id-', id) AS
-          strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
+          When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be a
+          CSV according to [RFC 4180] standard. All the columns values will have *string representation*
+          similar to the `JSON_ARRAY` format, and `null` values will be encoded as “null”. Only the first
+          chunk in the result would contain a header row with column names. For example, the output of `SELECT
+          concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
           
           ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
           
-          IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS` disposition.
-          
           [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
           [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
-        :param on_wait_timeout: :class:`TimeoutAction` (optional)
-          When in synchronous mode with `wait_timeout > 0s` it determines the action taken when the timeout is
-          reached:
-          
-          `CONTINUE` → the statement execution continues asynchronously and the call returns a statement ID
-          immediately.
-          
-          `CANCEL` → the statement execution is canceled and the call returns immediately with a `CANCELED`
-          state.
+        :param on_wait_timeout: :class:`ExecuteStatementRequestOnWaitTimeout` (optional)
+          When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution
+          doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue
+          or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the
+          call returns a statement ID which can be used for polling with
+          :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled
+          and the call returns with a `CANCELED` state.
         :param parameters: List[:class:`StatementParameterListItem`] (optional)
           A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists
           of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be
-          omitted. If the `type` field is omitted, the value is interpreted as a string.
+          omitted or set to `null` explicitly. If the `type` field is omitted, the value is interpreted as a
+          string.
           
           If the type is given, parameters will be checked for type correctness according to the given type. A
           value is correct if the provided string can be converted to the requested type using the `cast`
           function. The exact semantics are described in the section [`cast` function] of the SQL language
           reference.
           
-          For example, the following statement contains two parameters, `my_id` and `my_date`:
+          For example, the following statement contains two parameters, `my_name` and `my_date`:
           
           SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
           
@@ -3591,29 +3494,34 @@ class StatementExecutionAPI:
           "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
           "2020-01-01", "type": "DATE" } ] }
           
-          Currently, positional parameters denoted by a `?` marker are not supported by the SQL Statement
-          Execution API.
+          Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL
+          Statement Execution API.
           
           Also see the section [Parameter markers] of the SQL language reference.
           
           [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
           [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
         :param row_limit: int (optional)
-          Applies the given row limit to the statement's result set with identical semantics as the SQL
-          `LIMIT` clause.
+          Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it
+          also sets the `truncated` field in the response to indicate whether the result was trimmed due to
+          the limit or not.
         :param schema: str (optional)
           Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
           
           [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
-        :param statement: str (optional)
-          SQL statement to execute
         :param wait_timeout: str (optional)
-          The time in seconds the API service will wait for the statement's result set as `Ns`, where `N` can
-          be set to 0 or to a value between 5 and 50. When set to '0s' the statement will execute in
-          asynchronous mode.
-        :param warehouse_id: str (optional)
-          Warehouse upon which to execute a statement. See also [What are SQL
-          warehouses?](/sql/admin/warehouse-type.html)
+          The time in seconds the call will wait for the statement's result set as `Ns`, where `N` can be set
+          to 0 or to a value between 5 and 50.
+          
+          When set to `0s`, the statement will execute in asynchronous mode and the call will not wait for the
+          execution to finish. In this case, the call returns directly with `PENDING` state and a statement ID
+          which can be used for polling with :method:statementexecution/getStatement.
+          
+          When set between 5 and 50 seconds, the call will behave synchronously up to this timeout and wait
+          for the statement execution to finish. If the execution finishes within this time, the call returns
+          immediately with a manifest and result data (or a `FAILED` state in case of an execution error). If
+          the statement takes longer to execute, `on_wait_timeout` determines what should happen after the
+          timeout is reached.
         
         :returns: :class:`ExecuteStatementResponse`
         """
@@ -3642,7 +3550,7 @@ class StatementExecutionAPI:
         state set. After at least 12 hours in terminal state, the statement is removed from the warehouse and
         further calls will receive an HTTP 404 response.
         
-        **NOTE** This call currently may take up to 5 seconds to get the latest status and result.
+        **NOTE** This call currently might take up to 5 seconds to get the latest status and result.
         
         :param statement_id: str
         
@@ -3656,11 +3564,12 @@ class StatementExecutionAPI:
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
         """Get result chunk by index.
         
-        After the statement execution has `SUCCEEDED`, the result data can be fetched by chunks. Whereas the
-        first chuck with `chunk_index=0` is typically fetched through a `get status` request, subsequent
-        chunks can be fetched using a `get result` request. The response structure is identical to the nested
-        `result` element described in the `get status` request, and similarly includes the `next_chunk_index`
-        and `next_chunk_internal_link` fields for simple iteration through the result set.
+        After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.
+        Whereas the first chunk with `chunk_index=0` is typically fetched with
+        :method:statementexecution/executeStatement or :method:statementexecution/getStatement, this request
+        can be used to fetch subsequent chunks. The response structure is identical to the nested `result`
+        element described in the :method:statementexecution/getStatement request, and similarly includes the
+        `next_chunk_index` and `next_chunk_internal_link` fields for simple iteration through the result set.
         
         :param statement_id: str
         :param chunk_index: int

@@ -1,5 +1,61 @@
 # Version changelog
 
+## 0.9.0
+
+* Don't try to import runtime_auth when not in runtime ([#327](https://github.com/databricks/databricks-sdk-py/pull/327)).
+* Handled Azure authentication when WorkspaceResourceID is provided ([#328](https://github.com/databricks/databricks-sdk-py/pull/328)).
+* Added ErrorInfo to API errors ([#347](https://github.com/databricks/databricks-sdk-py/pull/347)).
+* Fixed eager default argument evaluation in `DatabricksError` ([#353](https://github.com/databricks/databricks-sdk-py/pull/353)).
+* Fixed code generation of primitive types ([#354](https://github.com/databricks/databricks-sdk-py/pull/354)).
+* Updated SDK to changes in OpenAPI specification ([#355](https://github.com/databricks/databricks-sdk-py/pull/355)).
+
+API Changes:
+
+ * Changed `list()` method for [a.account_metastore_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_metastore_assignments.html) account-level service to return `databricks.sdk.service.catalog.WorkspaceIdList` dataclass.
+ * Changed `artifact_matchers` field for `databricks.sdk.service.catalog.ArtifactAllowlistInfo` to `databricks.sdk.service.catalog.ArtifactMatcherList` dataclass.
+ * Changed `artifact_matchers` field for `databricks.sdk.service.catalog.SetArtifactAllowlist` to `databricks.sdk.service.catalog.ArtifactMatcherList` dataclass.
+ * Added `databricks.sdk.service.catalog.WorkspaceId` dataclass.
+ * Changed `cancel_all_runs()` method for [w.jobs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/jobs.html) workspace-level service with new required argument order.
+ * Changed `job_id` field for `databricks.sdk.service.jobs.CancelAllRuns` to no longer be required.
+ * Added `all_queued_runs` field for `databricks.sdk.service.jobs.CancelAllRuns`.
+ * Added `queue` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Added `queue` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Added `queue` field for `databricks.sdk.service.jobs.RunNow`.
+ * Added `queue_reason` field for `databricks.sdk.service.jobs.RunState`.
+ * Added `queue_duration` field for `databricks.sdk.service.jobs.RunTask`.
+ * Added `queue` field for `databricks.sdk.service.jobs.SubmitRun`.
+ * Added `databricks.sdk.service.jobs.QueueSettings` dataclass.
+ * Added [a.o_auth_published_apps](https://databricks-sdk-py.readthedocs.io/en/latest/account/o_auth_published_apps.html) account-level service.
+ * Added `databricks.sdk.service.oauth2.GetPublishedAppsOutput` dataclass.
+ * Added `databricks.sdk.service.oauth2.ListOAuthPublishedAppsRequest` dataclass.
+ * Added `databricks.sdk.service.oauth2.PublishedAppOutput` dataclass.
+ * Added `patch()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Added `tags` field for `databricks.sdk.service.serving.CreateServingEndpoint`.
+ * Added `tags` field for `databricks.sdk.service.serving.ServingEndpoint`.
+ * Added `tags` field for `databricks.sdk.service.serving.ServingEndpointDetailed`.
+ * Added `databricks.sdk.service.serving.EndpointTag` dataclass.
+ * Added `databricks.sdk.service.serving.PatchServingEndpointTags` dataclass.
+ * Added [w.credentials_manager](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/credentials_manager.html) workspace-level service.
+ * Added `databricks.sdk.service.settings.ExchangeToken` dataclass.
+ * Added `databricks.sdk.service.settings.ExchangeTokenRequest` dataclass.
+ * Added `databricks.sdk.service.settings.ExchangeTokenResponse` dataclass.
+ * Added `databricks.sdk.service.settings.PartitionId` dataclass.
+ * Added `databricks.sdk.service.settings.TokenType` dataclass.
+ * Changed `execute_statement()` method for [w.statement_execution](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/statement_execution.html) workspace-level service with new required argument order.
+ * Added `empty_result_state` field for `databricks.sdk.service.sql.AlertOptions`.
+ * Removed `databricks.sdk.service.sql.ChunkInfo` dataclass.
+ * Changed `on_wait_timeout` field for `databricks.sdk.service.sql.ExecuteStatementRequest` to `databricks.sdk.service.sql.ExecuteStatementRequestOnWaitTimeout` dataclass.
+ * Changed `statement` field for `databricks.sdk.service.sql.ExecuteStatementRequest` to be required.
+ * Changed `warehouse_id` field for `databricks.sdk.service.sql.ExecuteStatementRequest` to be required.
+ * Changed `chunks` field for `databricks.sdk.service.sql.ResultManifest` to `databricks.sdk.service.sql.BaseChunkInfoList` dataclass.
+ * Added `truncated` field for `databricks.sdk.service.sql.ResultManifest`.
+ * Removed `databricks.sdk.service.sql.TimeoutAction` dataclass.
+ * Added `databricks.sdk.service.sql.AlertOptionsEmptyResultState` dataclass.
+ * Added `databricks.sdk.service.sql.BaseChunkInfo` dataclass.
+ * Added `databricks.sdk.service.sql.ExecuteStatementRequestOnWaitTimeout` dataclass.
+
+OpenAPI SHA: b52a3b410976501f08f76ca0b355fb2dca876953, Date: 2023-09-15
+
 ## 0.8.0
 
 * Fixed redeclared `test_streaming_response_read_partial` test ([#335](https://github.com/databricks/databricks-sdk-py/pull/335)).

@@ -136,16 +136,18 @@ class BaseRun:
 
 @dataclass
 class CancelAllRuns:
-    job_id: int
+    all_queued_runs: Optional[bool] = None
+    job_id: Optional[int] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.all_queued_runs is not None: body['all_queued_runs'] = self.all_queued_runs
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CancelAllRuns':
-        return cls(job_id=d.get('job_id', None))
+        return cls(all_queued_runs=d.get('all_queued_runs', None), job_id=d.get('job_id', None))
 
 
 @dataclass
@@ -263,6 +265,7 @@ class CreateJob:
     name: Optional[str] = None
     notification_settings: Optional['JobNotificationSettings'] = None
     parameters: Optional['List[JobParameterDefinition]'] = None
+    queue: Optional['QueueSettings'] = None
     run_as: Optional['JobRunAs'] = None
     schedule: Optional['CronSchedule'] = None
     tags: Optional['Dict[str,str]'] = None
@@ -286,6 +289,7 @@ class CreateJob:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
@@ -309,6 +313,7 @@ class CreateJob:
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    parameters=_repeated(d, 'parameters', JobParameterDefinition),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
@@ -873,6 +878,7 @@ class JobSettings:
     name: Optional[str] = None
     notification_settings: Optional['JobNotificationSettings'] = None
     parameters: Optional['List[JobParameterDefinition]'] = None
+    queue: Optional['QueueSettings'] = None
     run_as: Optional['JobRunAs'] = None
     schedule: Optional['CronSchedule'] = None
     tags: Optional['Dict[str,str]'] = None
@@ -894,6 +900,7 @@ class JobSettings:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
@@ -916,6 +923,7 @@ class JobSettings:
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    parameters=_repeated(d, 'parameters', JobParameterDefinition),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
@@ -949,7 +957,14 @@ class JobSource:
 
 
 class JobSourceDirtyState(Enum):
-    """This describes an enum"""
+    """Dirty state indicates the job is not fully synced with the job specification in the remote
+    repository.
+    
+    Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job
+    specification. Import the remote job specification from UI to make the job fully synced. *
+    `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is
+    allowed for live edit. Import the remote job specification again from UI to make the job fully
+    synced."""
 
     DISCONNECTED = 'DISCONNECTED'
     NOT_SYNCED = 'NOT_SYNCED'
@@ -1050,7 +1065,11 @@ class ListRunsResponse:
 
 
 class ListRunsRunType(Enum):
-    """This describes an enum"""
+    """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
+    run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
+    :method:jobs/submit.
+    
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = 'JOB_RUN'
     SUBMIT_RUN = 'SUBMIT_RUN'
@@ -1153,6 +1172,20 @@ class PythonWheelTask:
                    named_parameters=d.get('named_parameters', None),
                    package_name=d.get('package_name', None),
                    parameters=d.get('parameters', None))
+
+
+@dataclass
+class QueueSettings:
+    enabled: bool
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'QueueSettings':
+        return cls(enabled=d.get('enabled', None))
 
 
 @dataclass
@@ -1548,7 +1581,14 @@ class RunConditionTaskOp(Enum):
 
 
 class RunIf(Enum):
-    """This describes an enum"""
+    """An optional value indicating the condition that determines whether the task should be run once
+    its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`.
+    
+    Possible values are: * `ALL_SUCCESS`: All dependencies have executed and succeeded *
+    `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the
+    dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been
+    completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
+    dependencies have failed"""
 
     ALL_DONE = 'ALL_DONE'
     ALL_FAILED = 'ALL_FAILED'
@@ -1589,11 +1629,22 @@ class RunJobTask:
 
 
 class RunLifeCycleState(Enum):
-    """This describes an enum"""
+    """A value indicating the run's lifecycle state. The possible values are: * `QUEUED`: The run is
+    queued. * `PENDING`: The run is waiting to be executed while the cluster and execution context
+    are being prepared. * `RUNNING`: The task of this run is being executed. * `TERMINATING`: The
+    task of this run has completed, and the cluster and execution context are being cleaned up. *
+    `TERMINATED`: The task of this run has completed, and the cluster and execution context have
+    been cleaned up. This state is terminal. * `SKIPPED`: This run was aborted because a previous
+    run of the same job was already active. This state is terminal. * `INTERNAL_ERROR`: An
+    exceptional state that indicates a failure in the Jobs service, such as network failure over a
+    long period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the Jobs service
+    terminates the cluster as soon as possible. This state is terminal. * `BLOCKED`: The run is
+    blocked on an upstream dependency. * `WAITING_FOR_RETRY`: The run is waiting for a retry."""
 
     BLOCKED = 'BLOCKED'
     INTERNAL_ERROR = 'INTERNAL_ERROR'
     PENDING = 'PENDING'
+    QUEUED = 'QUEUED'
     RUNNING = 'RUNNING'
     SKIPPED = 'SKIPPED'
     TERMINATED = 'TERMINATED'
@@ -1612,6 +1663,7 @@ class RunNow:
     pipeline_params: Optional['PipelineParams'] = None
     python_named_params: Optional['Dict[str,str]'] = None
     python_params: Optional['List[str]'] = None
+    queue: Optional['QueueSettings'] = None
     spark_submit_params: Optional['List[str]'] = None
     sql_params: Optional['Dict[str,str]'] = None
 
@@ -1626,6 +1678,7 @@ class RunNow:
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
@@ -1641,6 +1694,7 @@ class RunNow:
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    spark_submit_params=d.get('spark_submit_params', None),
                    sql_params=d.get('sql_params', None))
 
@@ -1738,7 +1792,14 @@ class RunParameters:
 
 
 class RunResultState(Enum):
-    """This describes an enum"""
+    """A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed
+    successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped
+    after reaching the timeout. * `CANCELED`: The run was canceled at user request. *
+    `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were
+    reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. *
+    `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were
+    successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
+    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled."""
 
     CANCELED = 'CANCELED'
     EXCLUDED = 'EXCLUDED'
@@ -1756,6 +1817,7 @@ class RunState:
     """The current state of the run."""
 
     life_cycle_state: Optional['RunLifeCycleState'] = None
+    queue_reason: Optional[str] = None
     result_state: Optional['RunResultState'] = None
     state_message: Optional[str] = None
     user_cancelled_or_timedout: Optional[bool] = None
@@ -1763,6 +1825,7 @@ class RunState:
     def as_dict(self) -> dict:
         body = {}
         if self.life_cycle_state is not None: body['life_cycle_state'] = self.life_cycle_state.value
+        if self.queue_reason is not None: body['queue_reason'] = self.queue_reason
         if self.result_state is not None: body['result_state'] = self.result_state.value
         if self.state_message is not None: body['state_message'] = self.state_message
         if self.user_cancelled_or_timedout is not None:
@@ -1772,6 +1835,7 @@ class RunState:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunState':
         return cls(life_cycle_state=_enum(d, 'life_cycle_state', RunLifeCycleState),
+                   queue_reason=d.get('queue_reason', None),
                    result_state=_enum(d, 'result_state', RunResultState),
                    state_message=d.get('state_message', None),
                    user_cancelled_or_timedout=d.get('user_cancelled_or_timedout', None))
@@ -1795,6 +1859,7 @@ class RunTask:
     notebook_task: Optional['NotebookTask'] = None
     pipeline_task: Optional['PipelineTask'] = None
     python_wheel_task: Optional['PythonWheelTask'] = None
+    queue_duration: Optional[int] = None
     resolved_values: Optional['ResolvedValues'] = None
     run_id: Optional[int] = None
     run_if: Optional['RunIf'] = None
@@ -1826,6 +1891,7 @@ class RunTask:
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
+        if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.resolved_values: body['resolved_values'] = self.resolved_values.as_dict()
         if self.run_id is not None: body['run_id'] = self.run_id
         if self.run_if is not None: body['run_if'] = self.run_if.value
@@ -1858,6 +1924,7 @@ class RunTask:
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
+                   queue_duration=d.get('queue_duration', None),
                    resolved_values=_from_dict(d, 'resolved_values', ResolvedValues),
                    run_id=d.get('run_id', None),
                    run_if=_enum(d, 'run_if', RunIf),
@@ -1873,7 +1940,11 @@ class RunTask:
 
 
 class RunType(Enum):
-    """This describes an enum"""
+    """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
+    run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
+    :method:jobs/submit.
+    
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = 'JOB_RUN'
     SUBMIT_RUN = 'SUBMIT_RUN'
@@ -2231,6 +2302,7 @@ class SubmitRun:
     health: Optional['JobsHealthRules'] = None
     idempotency_token: Optional[str] = None
     notification_settings: Optional['JobNotificationSettings'] = None
+    queue: Optional['QueueSettings'] = None
     run_name: Optional[str] = None
     tasks: Optional['List[SubmitTask]'] = None
     timeout_seconds: Optional[int] = None
@@ -2245,6 +2317,7 @@ class SubmitRun:
         if self.health: body['health'] = self.health.as_dict()
         if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_name is not None: body['run_name'] = self.run_name
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
@@ -2259,6 +2332,7 @@ class SubmitRun:
                    health=_from_dict(d, 'health', JobsHealthRules),
                    idempotency_token=d.get('idempotency_token', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    run_name=d.get('run_name', None),
                    tasks=_repeated(d, 'tasks', SubmitTask),
                    timeout_seconds=d.get('timeout_seconds', None),
@@ -2568,7 +2642,15 @@ class TriggerSettings:
 
 
 class TriggerType(Enum):
-    """This describes an enum"""
+    """The type of trigger that fired this run.
+    
+    * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
+    One time triggers that fire a single run. This occurs you triggered a single run on demand
+    through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
+    previously failed run. This occurs when you request to re-run the job in case of failures. *
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+    
+    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
 
     FILE_ARRIVAL = 'FILE_ARRIVAL'
     ONE_TIME = 'ONE_TIME'
@@ -2616,14 +2698,15 @@ class ViewItem:
 
 
 class ViewType(Enum):
-    """This describes an enum"""
+    """* `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item."""
 
     DASHBOARD = 'DASHBOARD'
     NOTEBOOK = 'NOTEBOOK'
 
 
 class ViewsToExport(Enum):
-    """This describes an enum"""
+    """* `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of the notebook. *
+    `ALL`: All views of the notebook."""
 
     ALL = 'ALL'
     CODE = 'CODE'
@@ -2739,18 +2822,22 @@ class JobsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def cancel_all_runs(self, job_id: int):
+    def cancel_all_runs(self, *, all_queued_runs: Optional[bool] = None, job_id: Optional[int] = None):
         """Cancel all runs of a job.
         
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started.
         
-        :param job_id: int
-          The canonical identifier of the job to cancel all runs of. This field is required.
+        :param all_queued_runs: bool (optional)
+          Optional boolean parameter to cancel all queued runs. If no job_id is provided, all queued runs in
+          the workspace are canceled.
+        :param job_id: int (optional)
+          The canonical identifier of the job to cancel all runs of.
         
         
         """
         body = {}
+        if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
         if job_id is not None: body['job_id'] = job_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body, headers=headers)
@@ -2791,6 +2878,7 @@ class JobsAPI:
                name: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
                parameters: Optional[List[JobParameterDefinition]] = None,
+               queue: Optional[QueueSettings] = None,
                run_as: Optional[JobRunAs] = None,
                schedule: Optional[CronSchedule] = None,
                tags: Optional[Dict[str, str]] = None,
@@ -2850,6 +2938,8 @@ class JobsAPI:
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
           Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
           service principal that the job runs as. If not specified, the job runs as the user who created the
@@ -2891,6 +2981,7 @@ class JobsAPI:
         if name is not None: body['name'] = name
         if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
         if parameters is not None: body['parameters'] = [v.as_dict() for v in parameters]
+        if queue is not None: body['queue'] = queue.as_dict()
         if run_as is not None: body['run_as'] = run_as.as_dict()
         if schedule is not None: body['schedule'] = schedule.as_dict()
         if tags is not None: body['tags'] = tags
@@ -3108,8 +3199,8 @@ class JobsAPI:
         
         :param active_only: bool (optional)
           If active_only is `true`, only active runs are included in the results; otherwise, lists both active
-          and completed runs. An active run is a run in the `PENDING`, `RUNNING`, or `TERMINATING`. This field
-          cannot be `true` when completed_only is `true`.
+          and completed runs. An active run is a run in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`.
+          This field cannot be `true` when completed_only is `true`.
         :param completed_only: bool (optional)
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
@@ -3188,11 +3279,11 @@ class JobsAPI:
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
           deps", "dbt seed", "dbt run"]`
         :param jar_params: List[str] (optional)
-          A list of parameters for jobs with Spark JAR tasks, for example `\"jar_params\": [\"john doe\",
-          \"35\"]`. The parameters are used to invoke the main function of the main class specified in the
-          Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be
-          specified in conjunction with notebook_params. The JSON representation of this field (for example
-          `{\"jar_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
+          The parameters are used to invoke the main function of the main class specified in the Spark JAR
+          task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
+          in conjunction with notebook_params. The JSON representation of this field (for example
+          `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
@@ -3200,8 +3291,8 @@ class JobsAPI:
           The ID of the latest repair. This parameter is not required when repairing a run for the first time,
           but must be provided on subsequent requests to repair the same run.
         :param notebook_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with notebook task, for example `\"notebook_params\": {\"name\":
-          \"john doe\", \"age\": \"35\"}`. The map is passed to the notebook and is accessible through the
+          A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+          "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
           [dbutils.widgets.get] function.
           
           If not specified upon `run-now`, the triggered run uses the job’s base parameters.
@@ -3210,8 +3301,8 @@ class JobsAPI:
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
-          The JSON representation of this field (for example `{\"notebook_params\":{\"name\":\"john
-          doe\",\"age\":\"35\"}}`) cannot exceed 10,000 bytes.
+          The JSON representation of this field (for example `{"notebook_params":{"name":"john
+          doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -3220,10 +3311,10 @@ class JobsAPI:
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
           {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
-          A list of parameters for jobs with Python tasks, for example `\"python_params\": [\"john doe\",
-          \"35\"]`. The parameters are passed to Python file as command-line parameters. If specified upon
-          `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of
-          this field (for example `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
+          The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
+          would overwrite the parameters specified in job setting. The JSON representation of this field (for
+          example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
@@ -3242,11 +3333,11 @@ class JobsAPI:
         :param rerun_tasks: List[str] (optional)
           The task keys of the task runs to repair.
         :param spark_submit_params: List[str] (optional)
-          A list of parameters for jobs with spark submit task, for example `\"spark_submit_params\":
-          [\"--class\", \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to spark-submit
-          script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters
-          specified in job setting. The JSON representation of this field (for example
-          `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit script
+          as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
+          in job setting. The JSON representation of this field (for example `{"python_params":["john
+          doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs
           
@@ -3349,6 +3440,7 @@ class JobsAPI:
                 pipeline_params: Optional[PipelineParams] = None,
                 python_named_params: Optional[Dict[str, str]] = None,
                 python_params: Optional[List[str]] = None,
+                queue: Optional[QueueSettings] = None,
                 spark_submit_params: Optional[List[str]] = None,
                 sql_params: Optional[Dict[str, str]] = None) -> Wait[Run]:
         """Trigger a new job run.
@@ -3374,19 +3466,19 @@ class JobsAPI:
           
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param jar_params: List[str] (optional)
-          A list of parameters for jobs with Spark JAR tasks, for example `\"jar_params\": [\"john doe\",
-          \"35\"]`. The parameters are used to invoke the main function of the main class specified in the
-          Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be
-          specified in conjunction with notebook_params. The JSON representation of this field (for example
-          `{\"jar_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
+          The parameters are used to invoke the main function of the main class specified in the Spark JAR
+          task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
+          in conjunction with notebook_params. The JSON representation of this field (for example
+          `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
         :param job_parameters: List[Dict[str,str]] (optional)
           Job-level parameters used in the run
         :param notebook_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with notebook task, for example `\"notebook_params\": {\"name\":
-          \"john doe\", \"age\": \"35\"}`. The map is passed to the notebook and is accessible through the
+          A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+          "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
           [dbutils.widgets.get] function.
           
           If not specified upon `run-now`, the triggered run uses the job’s base parameters.
@@ -3395,8 +3487,8 @@ class JobsAPI:
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
-          The JSON representation of this field (for example `{\"notebook_params\":{\"name\":\"john
-          doe\",\"age\":\"35\"}}`) cannot exceed 10,000 bytes.
+          The JSON representation of this field (for example `{"notebook_params":{"name":"john
+          doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -3405,10 +3497,10 @@ class JobsAPI:
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
           {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
-          A list of parameters for jobs with Python tasks, for example `\"python_params\": [\"john doe\",
-          \"35\"]`. The parameters are passed to Python file as command-line parameters. If specified upon
-          `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of
-          this field (for example `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
+          The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
+          would overwrite the parameters specified in job setting. The JSON representation of this field (for
+          example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
@@ -3419,12 +3511,14 @@ class JobsAPI:
           emojis.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
-          A list of parameters for jobs with spark submit task, for example `\"spark_submit_params\":
-          [\"--class\", \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to spark-submit
-          script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters
-          specified in job setting. The JSON representation of this field (for example
-          `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit script
+          as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
+          in job setting. The JSON representation of this field (for example `{"python_params":["john
+          doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs
           
@@ -3453,6 +3547,7 @@ class JobsAPI:
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
         if python_named_params is not None: body['python_named_params'] = python_named_params
         if python_params is not None: body['python_params'] = [v for v in python_params]
+        if queue is not None: body['queue'] = queue.as_dict()
         if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
         if sql_params is not None: body['sql_params'] = sql_params
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -3472,6 +3567,7 @@ class JobsAPI:
                          pipeline_params: Optional[PipelineParams] = None,
                          python_named_params: Optional[Dict[str, str]] = None,
                          python_params: Optional[List[str]] = None,
+                         queue: Optional[QueueSettings] = None,
                          spark_submit_params: Optional[List[str]] = None,
                          sql_params: Optional[Dict[str, str]] = None,
                          timeout=timedelta(minutes=20)) -> Run:
@@ -3484,6 +3580,7 @@ class JobsAPI:
                             pipeline_params=pipeline_params,
                             python_named_params=python_named_params,
                             python_params=python_params,
+                            queue=queue,
                             spark_submit_params=spark_submit_params,
                             sql_params=sql_params).result(timeout=timeout)
 
@@ -3517,6 +3614,7 @@ class JobsAPI:
                health: Optional[JobsHealthRules] = None,
                idempotency_token: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
+               queue: Optional[QueueSettings] = None,
                run_name: Optional[str] = None,
                tasks: Optional[List[SubmitTask]] = None,
                timeout_seconds: Optional[int] = None,
@@ -3559,6 +3657,8 @@ class JobsAPI:
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           `webhook_notifications` for this run.
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the one-time run.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
         :param tasks: List[:class:`SubmitTask`] (optional)
@@ -3579,6 +3679,7 @@ class JobsAPI:
         if health is not None: body['health'] = health.as_dict()
         if idempotency_token is not None: body['idempotency_token'] = idempotency_token
         if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
+        if queue is not None: body['queue'] = queue.as_dict()
         if run_name is not None: body['run_name'] = run_name
         if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
@@ -3598,6 +3699,7 @@ class JobsAPI:
         health: Optional[JobsHealthRules] = None,
         idempotency_token: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
+        queue: Optional[QueueSettings] = None,
         run_name: Optional[str] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
@@ -3609,6 +3711,7 @@ class JobsAPI:
                            health=health,
                            idempotency_token=idempotency_token,
                            notification_settings=notification_settings,
+                           queue=queue,
                            run_name=run_name,
                            tasks=tasks,
                            timeout_seconds=timeout_seconds,
