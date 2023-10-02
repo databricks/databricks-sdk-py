@@ -2648,7 +2648,7 @@ class ExperimentsAPI:
                     max_results: Optional[int] = None,
                     page_token: Optional[str] = None,
                     run_id: Optional[str] = None,
-                    run_uuid: Optional[str] = None) -> Iterator[Metric]:
+                    run_uuid: Optional[str] = None) -> Iterator['Metric']:
         """Get history of a given metric within a run.
         
         Gets a list of all values for the specified metric for a given run.
@@ -2748,7 +2748,7 @@ class ExperimentsAPI:
                        page_token: Optional[str] = None,
                        path: Optional[str] = None,
                        run_id: Optional[str] = None,
-                       run_uuid: Optional[str] = None) -> Iterator[FileInfo]:
+                       run_uuid: Optional[str] = None) -> Iterator['FileInfo']:
         """Get all artifacts.
         
         List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
@@ -2788,7 +2788,7 @@ class ExperimentsAPI:
                          *,
                          max_results: Optional[int] = None,
                          page_token: Optional[str] = None,
-                         view_type: Optional[str] = None) -> Iterator[Experiment]:
+                         view_type: Optional[str] = None) -> Iterator['Experiment']:
         """List experiments.
         
         Gets a list of all experiments.
@@ -3063,7 +3063,7 @@ class ExperimentsAPI:
                            max_results: Optional[int] = None,
                            order_by: Optional[List[str]] = None,
                            page_token: Optional[str] = None,
-                           view_type: Optional[SearchExperimentsViewType] = None) -> Iterator[Experiment]:
+                           view_type: Optional[SearchExperimentsViewType] = None) -> Iterator['Experiment']:
         """Search experiments.
         
         Searches for experiments that satisfy specified search criteria.
@@ -3108,7 +3108,7 @@ class ExperimentsAPI:
                     max_results: Optional[int] = None,
                     order_by: Optional[List[str]] = None,
                     page_token: Optional[str] = None,
-                    run_view_type: Optional[SearchRunsRunViewType] = None) -> Iterator[Run]:
+                    run_view_type: Optional[SearchRunsRunViewType] = None) -> Iterator['Run']:
         """Search for runs.
         
         Searches for runs that satisfy expressions.
@@ -3718,7 +3718,10 @@ class ModelRegistryAPI:
         headers = {'Accept': 'application/json', }
         self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query, headers=headers)
 
-    def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
+    def get_latest_versions(self,
+                            name: str,
+                            *,
+                            stages: Optional[List[str]] = None) -> Iterator['ModelVersion']:
         """Get the latest version.
         
         Gets the latest version of a registered model.
@@ -3738,7 +3741,8 @@ class ModelRegistryAPI:
                             '/api/2.0/mlflow/registered-models/get-latest-versions',
                             body=body,
                             headers=headers)
-        return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
+        parsed = GetLatestVersionsResponse.from_dict(json).model_versions
+        return parsed if parsed else []
 
     def get_model(self, name: str) -> GetModelResponse:
         """Get model.
@@ -3845,7 +3849,7 @@ class ModelRegistryAPI:
     def list_models(self,
                     *,
                     max_results: Optional[int] = None,
-                    page_token: Optional[str] = None) -> Iterator[Model]:
+                    page_token: Optional[str] = None) -> Iterator['Model']:
         """List models.
         
         Lists all available registered models, up to the limit specified in __max_results__.
@@ -3873,7 +3877,7 @@ class ModelRegistryAPI:
                 return
             query['page_token'] = json['next_page_token']
 
-    def list_transition_requests(self, name: str, version: str) -> Iterator[Activity]:
+    def list_transition_requests(self, name: str, version: str) -> Iterator['Activity']:
         """List transition requests.
         
         Gets a list of all open stage transition requests for the model version.
@@ -3891,13 +3895,14 @@ class ModelRegistryAPI:
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query, headers=headers)
-        return [Activity.from_dict(v) for v in json.get('requests', [])]
+        parsed = ListTransitionRequestsResponse.from_dict(json).requests
+        return parsed if parsed else []
 
     def list_webhooks(self,
                       *,
                       events: Optional[List[RegistryWebhookEvent]] = None,
                       model_name: Optional[str] = None,
-                      page_token: Optional[str] = None) -> Iterator[RegistryWebhook]:
+                      page_token: Optional[str] = None) -> Iterator['RegistryWebhook']:
         """List registry webhooks.
         
         **NOTE:** This endpoint is in Public Preview.
@@ -3994,7 +3999,7 @@ class ModelRegistryAPI:
                               filter: Optional[str] = None,
                               max_results: Optional[int] = None,
                               order_by: Optional[List[str]] = None,
-                              page_token: Optional[str] = None) -> Iterator[ModelVersion]:
+                              page_token: Optional[str] = None) -> Iterator['ModelVersion']:
         """Searches model versions.
         
         Searches for specific model versions based on the supplied __filter__.
@@ -4036,7 +4041,7 @@ class ModelRegistryAPI:
                       filter: Optional[str] = None,
                       max_results: Optional[int] = None,
                       order_by: Optional[List[str]] = None,
-                      page_token: Optional[str] = None) -> Iterator[Model]:
+                      page_token: Optional[str] = None) -> Iterator['Model']:
         """Search models.
         
         Search for registered models based on the specified __filter__.

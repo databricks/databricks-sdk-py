@@ -13,7 +13,7 @@ Pipelines
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
     data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: create( [, allow_duplicate_names, catalog, channel, clusters, configuration, continuous, development, dry_run, edition, filters, id, libraries, name, photon, serverless, storage, target, trigger])
+    .. py:method:: create( [, allow_duplicate_names, catalog, channel, clusters, configuration, continuous, development, dry_run, edition, filters, id, libraries, name, notifications, photon, serverless, storage, target, trigger])
 
         Usage:
 
@@ -77,6 +77,8 @@ Pipelines
           Libraries or code needed by this deployment.
         :param name: str (optional)
           Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param serverless: bool (optional)
@@ -361,7 +363,7 @@ Pipelines
           See :method:wait_get_pipeline_idle for more details.
         
 
-    .. py:method:: update(pipeline_id [, allow_duplicate_names, catalog, channel, clusters, configuration, continuous, development, edition, expected_last_modified, filters, id, libraries, name, photon, serverless, storage, target, trigger])
+    .. py:method:: update(pipeline_id [, allow_duplicate_names, catalog, channel, clusters, configuration, continuous, development, edition, expected_last_modified, filters, id, libraries, name, notifications, photon, serverless, storage, target, trigger])
 
         Usage:
 
@@ -441,6 +443,8 @@ Pipelines
           Libraries or code needed by this deployment.
         :param name: str (optional)
           Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param serverless: bool (optional)

@@ -51,7 +51,7 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountNetworkPolicyAPI,
                                              AccountSettingsAPI,
                                              CredentialsManagerAPI,
-                                             IpAccessListsAPI,
+                                             IpAccessListsAPI, SettingsAPI,
                                              TokenManagementAPI, TokensAPI,
                                              WorkspaceConfAPI)
 from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
@@ -181,6 +181,7 @@ class WorkspaceClient:
         self.secrets = SecretsAPI(self.api_client)
         self.service_principals = ServicePrincipalsAPI(self.api_client)
         self.serving_endpoints = ServingEndpointsAPI(self.api_client)
+        self.settings = SettingsAPI(self.api_client)
         self.shares = SharesAPI(self.api_client)
         self.statement_execution = StatementExecutionAPI(self.api_client)
         self.storage_credentials = StorageCredentialsAPI(self.api_client)

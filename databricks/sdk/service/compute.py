@@ -2308,7 +2308,6 @@ class InstancePoolAwsAttributesAvailability(Enum):
 
     ON_DEMAND = 'ON_DEMAND'
     SPOT = 'SPOT'
-    SPOT_WITH_FALLBACK = 'SPOT_WITH_FALLBACK'
 
 
 @dataclass
@@ -2335,7 +2334,6 @@ class InstancePoolAzureAttributesAvailability(Enum):
 
     ON_DEMAND_AZURE = 'ON_DEMAND_AZURE'
     SPOT_AZURE = 'SPOT_AZURE'
-    SPOT_WITH_FALLBACK_AZURE = 'SPOT_WITH_FALLBACK_AZURE'
 
 
 @dataclass
@@ -3629,7 +3627,7 @@ class ClusterPoliciesAPI:
     def list(self,
              *,
              sort_column: Optional[ListSortColumn] = None,
-             sort_order: Optional[ListSortOrder] = None) -> Iterator[Policy]:
+             sort_order: Optional[ListSortOrder] = None) -> Iterator['Policy']:
         """List cluster policies.
         
         Returns a list of policies accessible by the requesting user.
@@ -3649,7 +3647,8 @@ class ClusterPoliciesAPI:
         if sort_order is not None: query['sort_order'] = sort_order.value
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query, headers=headers)
-        return [Policy.from_dict(v) for v in json.get('policies', [])]
+        parsed = ListPoliciesResponse.from_dict(json).policies
+        return parsed if parsed else []
 
     def set_permissions(
         self,
@@ -4363,7 +4362,7 @@ class ClustersAPI:
                limit: Optional[int] = None,
                offset: Optional[int] = None,
                order: Optional[GetEventsOrder] = None,
-               start_time: Optional[int] = None) -> Iterator[ClusterEvent]:
+               start_time: Optional[int] = None) -> Iterator['ClusterEvent']:
         """List cluster activity events.
         
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
@@ -4459,7 +4458,7 @@ class ClustersAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
         return ClusterPermissions.from_dict(res)
 
-    def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
+    def list(self, *, can_use_client: Optional[str] = None) -> Iterator['ClusterDetails']:
         """List all clusters.
         
         Return information about all pinned clusters, active clusters, up to 200 of the most recently
@@ -4483,7 +4482,8 @@ class ClustersAPI:
         if can_use_client is not None: query['can_use_client'] = can_use_client
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query, headers=headers)
-        return [ClusterDetails.from_dict(v) for v in json.get('clusters', [])]
+        parsed = ListClustersResponse.from_dict(json).clusters
+        return parsed if parsed else []
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -5086,7 +5086,7 @@ class GlobalInitScriptsAPI:
         res = self._api.do('GET', f'/api/2.0/global-init-scripts/{script_id}', headers=headers)
         return GlobalInitScriptDetailsWithContent.from_dict(res)
 
-    def list(self) -> Iterator[GlobalInitScriptDetails]:
+    def list(self) -> Iterator['GlobalInitScriptDetails']:
         """Get init scripts.
         
         Get a list of all global init scripts for this workspace. This returns all properties for each script
@@ -5098,7 +5098,8 @@ class GlobalInitScriptsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/global-init-scripts', headers=headers)
-        return [GlobalInitScriptDetails.from_dict(v) for v in json.get('scripts', [])]
+        parsed = ListGlobalInitScriptsResponse.from_dict(json).scripts
+        return parsed if parsed else []
 
     def update(self,
                name: str,
@@ -5407,7 +5408,7 @@ class InstancePoolsAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/instance-pools/{instance_pool_id}', headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
-    def list(self) -> Iterator[InstancePoolAndStats]:
+    def list(self) -> Iterator['InstancePoolAndStats']:
         """List instance pool info.
         
         Gets a list of instance pools with their statistics.
@@ -5417,7 +5418,8 @@ class InstancePoolsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/instance-pools/list', headers=headers)
-        return [InstancePoolAndStats.from_dict(v) for v in json.get('instance_pools', [])]
+        parsed = ListInstancePools.from_dict(json).instance_pools
+        return parsed if parsed else []
 
     def set_permissions(
         self,
@@ -5571,7 +5573,7 @@ class InstanceProfilesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/instance-profiles/edit', body=body, headers=headers)
 
-    def list(self) -> Iterator[InstanceProfile]:
+    def list(self) -> Iterator['InstanceProfile']:
         """List available instance profiles.
         
         List the instance profiles that the calling user can use to launch a cluster.
@@ -5583,7 +5585,8 @@ class InstanceProfilesAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/instance-profiles/list', headers=headers)
-        return [InstanceProfile.from_dict(v) for v in json.get('instance_profiles', [])]
+        parsed = ListInstanceProfilesResponse.from_dict(json).instance_profiles
+        return parsed if parsed else []
 
     def remove(self, instance_profile_arn: str):
         """Remove the instance profile.
@@ -5639,7 +5642,7 @@ class LibrariesAPI:
         res = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
         return ListAllClusterLibraryStatusesResponse.from_dict(res)
 
-    def cluster_status(self, cluster_id: str) -> Iterator[LibraryFullStatus]:
+    def cluster_status(self, cluster_id: str) -> Iterator['LibraryFullStatus']:
         """Get status.
         
         Get the status of libraries on a cluster. A status will be available for all libraries installed on
@@ -5665,7 +5668,8 @@ class LibrariesAPI:
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
-        return [LibraryFullStatus.from_dict(v) for v in json.get('library_statuses', [])]
+        parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
+        return parsed if parsed else []
 
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add a library.
@@ -5741,7 +5745,7 @@ class PolicyFamiliesAPI:
     def list(self,
              *,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
+             page_token: Optional[str] = None) -> Iterator['PolicyFamily']:
         """List policy families.
         
         Retrieve a list of policy families. This API is paginated.

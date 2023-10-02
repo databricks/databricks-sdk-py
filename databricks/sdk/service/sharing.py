@@ -424,15 +424,18 @@ class IpAccessList:
 @dataclass
 class ListCleanRoomsResponse:
     clean_rooms: Optional['List[CleanRoomInfo]'] = None
+    next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.clean_rooms: body['clean_rooms'] = [v.as_dict() for v in self.clean_rooms]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListCleanRoomsResponse':
-        return cls(clean_rooms=_repeated(d, 'clean_rooms', CleanRoomInfo))
+        return cls(clean_rooms=_repeated(d, 'clean_rooms', CleanRoomInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -1167,19 +1170,38 @@ class CleanRoomsAPI:
                            headers=headers)
         return CleanRoomInfo.from_dict(res)
 
-    def list(self) -> Iterator[CleanRoomInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator['CleanRoomInfo']:
         """List clean rooms.
         
         Gets an array of data object clean rooms from the metastore. The caller must be a metastore admin or
         the owner of the clean room. There is no guarantee of a specific ordering of the elements in the
         array.
         
+        :param max_results: int (optional)
+          Maximum number of clean rooms to return.
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+        
         :returns: Iterator over :class:`CleanRoomInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/clean-rooms', headers=headers)
-        return [CleanRoomInfo.from_dict(v) for v in json.get('clean_rooms', [])]
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/clean-rooms', query=query, headers=headers)
+            if 'clean_rooms' not in json or not json['clean_rooms']:
+                return
+            for v in json['clean_rooms']:
+                yield CleanRoomInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name_arg: str,
@@ -1299,7 +1321,7 @@ class ProvidersAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
         return ProviderInfo.from_dict(res)
 
-    def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator[ProviderInfo]:
+    def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator['ProviderInfo']:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a metastore admin or
@@ -1318,9 +1340,10 @@ class ProvidersAPI:
             query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
-        return [ProviderInfo.from_dict(v) for v in json.get('providers', [])]
+        parsed = ListProvidersResponse.from_dict(json).providers
+        return parsed if parsed else []
 
-    def list_shares(self, name: str) -> Iterator[ProviderShare]:
+    def list_shares(self, name: str) -> Iterator['ProviderShare']:
         """List shares by Provider.
         
         Gets an array of a specified provider's shares within the metastore where:
@@ -1335,7 +1358,8 @@ class ProvidersAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares', headers=headers)
-        return [ProviderShare.from_dict(v) for v in json.get('shares', [])]
+        parsed = ListProviderSharesResponse.from_dict(json).shares
+        return parsed if parsed else []
 
     def update(self,
                name: str,
@@ -1515,7 +1539,7 @@ class RecipientsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
         return RecipientInfo.from_dict(res)
 
-    def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator[RecipientInfo]:
+    def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator['RecipientInfo']:
         """List share recipients.
         
         Gets an array of all share recipients within the current metastore where:
@@ -1535,7 +1559,8 @@ class RecipientsAPI:
             query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
-        return [RecipientInfo.from_dict(v) for v in json.get('recipients', [])]
+        parsed = ListRecipientsResponse.from_dict(json).recipients
+        return parsed if parsed else []
 
     def rotate_token(self, existing_token_expire_in_seconds: int, name: str) -> RecipientInfo:
         """Rotate a token.
@@ -1680,7 +1705,7 @@ class SharesAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list(self) -> Iterator[ShareInfo]:
+    def list(self) -> Iterator['ShareInfo']:
         """List shares.
         
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
@@ -1691,7 +1716,8 @@ class SharesAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares', headers=headers)
-        return [ShareInfo.from_dict(v) for v in json.get('shares', [])]
+        parsed = ListSharesResponse.from_dict(json).shares
+        return parsed if parsed else []
 
     def share_permissions(self, name: str) -> catalog.PermissionsList:
         """Get permissions.

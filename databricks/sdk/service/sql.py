@@ -2776,7 +2776,7 @@ class DashboardsAPI:
              order: Optional[ListOrder] = None,
              page: Optional[int] = None,
              page_size: Optional[int] = None,
-             q: Optional[str] = None) -> Iterator[Dashboard]:
+             q: Optional[str] = None) -> Iterator['Dashboard']:
         """Get dashboard objects.
         
         Fetch a paginated list of dashboard objects.
@@ -3040,7 +3040,7 @@ class QueriesAPI:
              order: Optional[str] = None,
              page: Optional[int] = None,
              page_size: Optional[int] = None,
-             q: Optional[str] = None) -> Iterator[Query]:
+             q: Optional[str] = None) -> Iterator['Query']:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
@@ -3157,7 +3157,7 @@ class QueryHistoryAPI:
              filter_by: Optional[QueryFilter] = None,
              include_metrics: Optional[bool] = None,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[QueryInfo]:
+             page_token: Optional[str] = None) -> Iterator['QueryInfo']:
         """List Queries.
         
         List the history of queries through SQL warehouses.
@@ -3995,7 +3995,7 @@ class WarehousesAPI:
         res = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
-    def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
+    def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator['EndpointInfo']:
         """List warehouses.
         
         Lists all SQL warehouses that a user has manager permissions on.
@@ -4011,7 +4011,8 @@ class WarehousesAPI:
         if run_as_user_id is not None: query['run_as_user_id'] = run_as_user_id
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
-        return [EndpointInfo.from_dict(v) for v in json.get('warehouses', [])]
+        parsed = ListWarehousesResponse.from_dict(json).warehouses
+        return parsed if parsed else []
 
     def set_permissions(self,
                         warehouse_id: str,

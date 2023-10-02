@@ -131,6 +131,28 @@ class CreateTokenResponse:
 
 
 @dataclass
+class DefaultNamespaceSetting:
+    """Default namespace setting."""
+
+    namespace: 'StringMessage'
+    etag: Optional[str] = None
+    setting_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.namespace: body['namespace'] = self.namespace.as_dict()
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DefaultNamespaceSetting':
+        return cls(etag=d.get('etag', None),
+                   namespace=_from_dict(d, 'namespace', StringMessage),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
 class DeleteAccountNetworkPolicyResponse:
     etag: str
 
@@ -141,6 +163,20 @@ class DeleteAccountNetworkPolicyResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DeleteAccountNetworkPolicyResponse':
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteDefaultWorkspaceNamespaceResponse:
+    etag: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeleteDefaultWorkspaceNamespaceResponse':
         return cls(etag=d.get('etag', None))
 
 
@@ -465,6 +501,20 @@ class RevokeTokenRequest:
 
 
 @dataclass
+class StringMessage:
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'StringMessage':
+        return cls(value=d.get('value', None))
+
+
+@dataclass
 class TokenAccessControlRequest:
     group_name: Optional[str] = None
     permission_level: Optional['TokenPermissionLevel'] = None
@@ -761,7 +811,7 @@ class AccountIpAccessListsAPI:
             headers=headers)
         return GetIpAccessListResponse.from_dict(res)
 
-    def list(self) -> Iterator[IpAccessListInfo]:
+    def list(self) -> Iterator['IpAccessListInfo']:
         """Get access lists.
         
         Gets all IP access lists for the specified account.
@@ -773,7 +823,8 @@ class AccountIpAccessListsAPI:
         json = self._api.do('GET',
                             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
                             headers=headers)
-        return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
+        parsed = GetIpAccessListsResponse.from_dict(json).ip_access_lists
+        return parsed if parsed else []
 
     def replace(self,
                 label: str,
@@ -1179,7 +1230,7 @@ class IpAccessListsAPI:
         res = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
         return FetchIpAccessListResponse.from_dict(res)
 
-    def list(self) -> Iterator[IpAccessListInfo]:
+    def list(self) -> Iterator['IpAccessListInfo']:
         """Get access lists.
         
         Gets all IP access lists for the specified workspace.
@@ -1189,7 +1240,8 @@ class IpAccessListsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/ip-access-lists', headers=headers)
-        return [IpAccessListInfo.from_dict(v) for v in json.get('ip_access_lists', [])]
+        parsed = GetIpAccessListResponse.from_dict(json).ip_access_lists
+        return parsed if parsed else []
 
     def replace(self,
                 label: str,
@@ -1292,6 +1344,99 @@ class IpAccessListsAPI:
         self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
 
 
+class SettingsAPI:
+    """// TODO(yuyuan.tang) to add the description for the setting"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete_default_workspace_namespace(self, etag: str) -> DeleteDefaultWorkspaceNamespaceResponse:
+        """Delete the default namespace.
+        
+        Deletes the default namespace.
+        
+        :param etag: str
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDefaultWorkspaceNamespaceResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDefaultWorkspaceNamespaceResponse.from_dict(res)
+
+    def read_default_workspace_namespace(self, etag: str) -> DefaultNamespaceSetting:
+        """Get the default namespace.
+        
+        Gets the default namespace.
+        
+        :param etag: str
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DefaultNamespaceSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           query=query,
+                           headers=headers)
+        return DefaultNamespaceSetting.from_dict(res)
+
+    def update_default_workspace_namespace(
+            self,
+            *,
+            allow_missing: Optional[bool] = None,
+            field_mask: Optional[str] = None,
+            setting: Optional[DefaultNamespaceSetting] = None) -> DefaultNamespaceSetting:
+        """Updates the default namespace setting.
+        
+        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
+        requests (as part the setting field). The etag can be retrieved by making a GET request before the
+        PATCH request. Note that if the setting does not exist, GET will return a NOT_FOUND error and the etag
+        will be present in the error response, which should be set in the PATCH request.
+        
+        :param allow_missing: bool (optional)
+          This should always be set to true for Settings RPCs. Added for AIP compliance.
+        :param field_mask: str (optional)
+          Field mask required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. For example, for Default Namespace setting, the field mask is
+          supposed to contain fields from the DefaultNamespaceSetting.namespace schema.
+          
+          The field mask needs to supplied as single string. To specify multiple fields in the field mask, use
+          comma as the seperator (no space).
+        :param setting: :class:`DefaultNamespaceSetting` (optional)
+          Default namespace setting.
+        
+        :returns: :class:`DefaultNamespaceSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           body=body,
+                           headers=headers)
+        return DefaultNamespaceSetting.from_dict(res)
+
+
 class TokenManagementAPI:
     """Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
     token, get a specific token by ID, or get all tokens for a particular user."""
@@ -1386,7 +1531,7 @@ class TokenManagementAPI:
     def list(self,
              *,
              created_by_id: Optional[str] = None,
-             created_by_username: Optional[str] = None) -> Iterator[TokenInfo]:
+             created_by_username: Optional[str] = None) -> Iterator['TokenInfo']:
         """List all tokens.
         
         Lists all tokens associated with the specified workspace or user.
@@ -1404,7 +1549,8 @@ class TokenManagementAPI:
         if created_by_username is not None: query['created_by_username'] = created_by_username
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query, headers=headers)
-        return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
+        parsed = ListTokensResponse.from_dict(json).token_infos
+        return parsed if parsed else []
 
     def set_permissions(
             self,
@@ -1495,7 +1641,7 @@ class TokensAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/token/delete', body=body, headers=headers)
 
-    def list(self) -> Iterator[TokenInfo]:
+    def list(self) -> Iterator['TokenInfo']:
         """List tokens.
         
         Lists all the valid tokens for a user-workspace pair.
@@ -1505,7 +1651,8 @@ class TokensAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
-        return [TokenInfo.from_dict(v) for v in json.get('token_infos', [])]
+        parsed = ListTokensResponse.from_dict(json).token_infos
+        return parsed if parsed else []
 
 
 class WorkspaceConfAPI:

@@ -275,7 +275,8 @@ class {{.Name}}API:{{if .Description}}
           {{- end}}
         {{else -}}
         json = {{template "method-do" .}}
-        return [{{.Pagination.Entity.PascalName}}.from_dict(v) for v in json{{if .Pagination.Results}}.get('{{.Pagination.Results.Name}}', []){{end}}]
+        parsed = {{.Response.PascalName}}.from_dict(json).{{.Pagination.Results.SnakeName}}
+        return parsed if parsed is not None else []
         {{end}}
 {{- end}}
 
@@ -312,7 +313,7 @@ self._api.do('{{.Verb}}',
   {{- else if .Response}} -> {{if .Response.ArrayValue -}}
     Iterator[{{template "type" .Response.ArrayValue}}]
   {{- else if .Pagination -}}
-    Iterator[{{.Pagination.Entity.PascalName}}]
+    Iterator[{{template "type" .Pagination.Entity}}]
   {{- else -}}
     {{- if .Response.IsExternal -}}
       {{.Response.Package.Name}}.{{.Response.PascalName}}
@@ -321,4 +322,3 @@ self._api.do('{{.Verb}}',
     {{- end -}}
   {{- end}}{{end}}
 {{- end}}
-

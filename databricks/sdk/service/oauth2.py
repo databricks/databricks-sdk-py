@@ -455,7 +455,7 @@ class CustomAppIntegrationAPI:
             headers=headers)
         return GetCustomAppIntegrationOutput.from_dict(res)
 
-    def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
+    def list(self) -> Iterator['GetCustomAppIntegrationOutput']:
         """Get custom oauth app integrations.
         
         Get the list of custom oauth app integrations for the specified Databricks account
@@ -467,7 +467,8 @@ class CustomAppIntegrationAPI:
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                             headers=headers)
-        return [GetCustomAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
+        parsed = GetCustomAppIntegrationsOutput.from_dict(json).apps
+        return parsed if parsed else []
 
     def update(self,
                integration_id: str,
@@ -563,7 +564,7 @@ class OAuthPublishedAppsAPI:
     def list(self,
              *,
              page_size: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[PublishedAppOutput]:
+             page_token: Optional[str] = None) -> Iterator['PublishedAppOutput']:
         """Get all the published OAuth apps.
         
         Get all the available published OAuth apps in Databricks.
@@ -666,7 +667,7 @@ class PublishedAppIntegrationAPI:
             headers=headers)
         return GetPublishedAppIntegrationOutput.from_dict(res)
 
-    def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
+    def list(self) -> Iterator['GetPublishedAppIntegrationOutput']:
         """Get published oauth app integrations.
         
         Get the list of published oauth app integrations for the specified Databricks account
@@ -678,7 +679,8 @@ class PublishedAppIntegrationAPI:
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                             headers=headers)
-        return [GetPublishedAppIntegrationOutput.from_dict(v) for v in json.get('apps', [])]
+        parsed = GetPublishedAppIntegrationsOutput.from_dict(json).apps
+        return parsed if parsed else []
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
@@ -753,10 +755,10 @@ class ServicePrincipalSecretsAPI:
         headers = {}
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id},',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}',
             headers=headers)
 
-    def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
+    def list(self, service_principal_id: int) -> Iterator['SecretInfo']:
         """List service principal secrets.
         
         List all secrets associated with the given service principal. This operation only returns information
@@ -773,4 +775,5 @@ class ServicePrincipalSecretsAPI:
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
             headers=headers)
-        return [SecretInfo.from_dict(v) for v in json.get('secrets', [])]
+        parsed = ListServicePrincipalSecretsResponse.from_dict(json).secrets
+        return parsed if parsed else []

@@ -33,6 +33,7 @@ class CreatePipeline:
     id: Optional[str] = None
     libraries: Optional['List[PipelineLibrary]'] = None
     name: Optional[str] = None
+    notifications: Optional['List[Notifications]'] = None
     photon: Optional[bool] = None
     serverless: Optional[bool] = None
     storage: Optional[str] = None
@@ -54,6 +55,7 @@ class CreatePipeline:
         if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.name is not None: body['name'] = self.name
+        if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -76,6 +78,7 @@ class CreatePipeline:
                    id=d.get('id', None),
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
+                   notifications=_repeated(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -148,6 +151,7 @@ class EditPipeline:
     id: Optional[str] = None
     libraries: Optional['List[PipelineLibrary]'] = None
     name: Optional[str] = None
+    notifications: Optional['List[Notifications]'] = None
     photon: Optional[bool] = None
     pipeline_id: Optional[str] = None
     serverless: Optional[bool] = None
@@ -171,6 +175,7 @@ class EditPipeline:
         if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.name is not None: body['name'] = self.name
+        if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.serverless is not None: body['serverless'] = self.serverless
@@ -194,6 +199,7 @@ class EditPipeline:
                    id=d.get('id', None),
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
+                   notifications=_repeated(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
                    serverless=d.get('serverless', None),
@@ -413,6 +419,22 @@ class NotebookLibrary:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NotebookLibrary':
         return cls(path=d.get('path', None))
+
+
+@dataclass
+class Notifications:
+    alerts: Optional['List[str]'] = None
+    email_recipients: Optional['List[str]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.alerts: body['alerts'] = [v for v in self.alerts]
+        if self.email_recipients: body['email_recipients'] = [v for v in self.email_recipients]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'Notifications':
+        return cls(alerts=d.get('alerts', None), email_recipients=d.get('email_recipients', None))
 
 
 @dataclass
@@ -751,6 +773,7 @@ class PipelineSpec:
     id: Optional[str] = None
     libraries: Optional['List[PipelineLibrary]'] = None
     name: Optional[str] = None
+    notifications: Optional['List[Notifications]'] = None
     photon: Optional[bool] = None
     serverless: Optional[bool] = None
     storage: Optional[str] = None
@@ -770,6 +793,7 @@ class PipelineSpec:
         if self.id is not None: body['id'] = self.id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.name is not None: body['name'] = self.name
+        if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -790,6 +814,7 @@ class PipelineSpec:
                    id=d.get('id', None),
                    libraries=_repeated(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
+                   notifications=_repeated(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -1166,6 +1191,7 @@ class PipelinesAPI:
                id: Optional[str] = None,
                libraries: Optional[List[PipelineLibrary]] = None,
                name: Optional[str] = None,
+               notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
@@ -1203,6 +1229,8 @@ class PipelinesAPI:
           Libraries or code needed by this deployment.
         :param name: str (optional)
           Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param serverless: bool (optional)
@@ -1231,6 +1259,7 @@ class PipelinesAPI:
         if id is not None: body['id'] = id
         if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
         if name is not None: body['name'] = name
+        if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
@@ -1320,7 +1349,7 @@ class PipelinesAPI:
                              filter: Optional[str] = None,
                              max_results: Optional[int] = None,
                              order_by: Optional[List[str]] = None,
-                             page_token: Optional[str] = None) -> Iterator[PipelineEvent]:
+                             page_token: Optional[str] = None) -> Iterator['PipelineEvent']:
         """List pipeline events.
         
         Retrieves events for a pipeline.
@@ -1373,7 +1402,7 @@ class PipelinesAPI:
                        filter: Optional[str] = None,
                        max_results: Optional[int] = None,
                        order_by: Optional[List[str]] = None,
-                       page_token: Optional[str] = None) -> Iterator[PipelineStateInfo]:
+                       page_token: Optional[str] = None) -> Iterator['PipelineStateInfo']:
         """List pipelines.
         
         Lists pipelines defined in the Delta Live Tables system.
@@ -1559,6 +1588,7 @@ class PipelinesAPI:
                id: Optional[str] = None,
                libraries: Optional[List[PipelineLibrary]] = None,
                name: Optional[str] = None,
+               notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
@@ -1599,6 +1629,8 @@ class PipelinesAPI:
           Libraries or code needed by this deployment.
         :param name: str (optional)
           Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param serverless: bool (optional)
@@ -1627,6 +1659,7 @@ class PipelinesAPI:
         if id is not None: body['id'] = id
         if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
         if name is not None: body['name'] = name
+        if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage

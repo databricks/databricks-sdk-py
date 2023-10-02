@@ -315,7 +315,7 @@ class DbfsAPI:
         res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
-    def list(self, path: str) -> Iterator[FileInfo]:
+    def list(self, path: str) -> Iterator['FileInfo']:
         """List directory contents or file details.
         
         List the contents of a directory, or details of the file. If the file or directory does not exist,
@@ -338,7 +338,8 @@ class DbfsAPI:
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
-        return [FileInfo.from_dict(v) for v in json.get('files', [])]
+        parsed = ListStatusResponse.from_dict(json).files
+        return parsed if parsed else []
 
     def mkdirs(self, path: str):
         """Create a directory.
