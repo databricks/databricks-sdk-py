@@ -1130,7 +1130,8 @@ class AccountGroupsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                             query=query,
                             headers=headers)
-        return ListGroupsResponse.from_dict(json).Resources
+        parsed = ListGroupsResponse.from_dict(json).Resources
+        return parsed if parsed else []
 
     def patch(self,
               id: str,
@@ -1338,7 +1339,8 @@ class AccountServicePrincipalsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query,
                             headers=headers)
-        return ListServicePrincipalResponse.from_dict(json).Resources
+        parsed = ListServicePrincipalResponse.from_dict(json).Resources
+        return parsed if parsed else []
 
     def patch(self,
               id: str,
@@ -1563,7 +1565,8 @@ class AccountUsersAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                             query=query,
                             headers=headers)
-        return ListUsersResponse.from_dict(json).Resources
+        parsed = ListUsersResponse.from_dict(json).Resources
+        return parsed if parsed else []
 
     def patch(self,
               id: str,
@@ -1788,7 +1791,8 @@ class GroupsAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
-        return ListGroupsResponse.from_dict(json).Resources
+        parsed = ListGroupsResponse.from_dict(json).Resources
+        return parsed if parsed else []
 
     def patch(self,
               id: str,
@@ -2123,7 +2127,8 @@ class ServicePrincipalsAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
-        return ListServicePrincipalResponse.from_dict(json).Resources
+        parsed = ListServicePrincipalResponse.from_dict(json).Resources
+        return parsed if parsed else []
 
     def patch(self,
               id: str,
@@ -2358,7 +2363,8 @@ class UsersAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
-        return ListUsersResponse.from_dict(json).Resources
+        parsed = ListUsersResponse.from_dict(json).Resources
+        return parsed if parsed else []
 
     def patch(self,
               id: str,
@@ -2533,7 +2539,8 @@ class WorkspaceAssignmentAPI:
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments',
             headers=headers)
-        return PermissionAssignments.from_dict(json).permission_assignments
+        parsed = PermissionAssignments.from_dict(json).permission_assignments
+        return parsed if parsed else []
 
     def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
         """Create or update permissions assignment.

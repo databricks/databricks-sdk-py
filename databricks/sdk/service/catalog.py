@@ -3195,7 +3195,8 @@ class AccountMetastoreAssignmentsAPI:
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
                             headers=headers)
-        return ListAccountMetastoreAssignmentsResponse.from_dict(json).workspace_ids
+        parsed = ListAccountMetastoreAssignmentsResponse.from_dict(json).workspace_ids
+        return parsed if parsed else []
 
     def update(self,
                workspace_id: int,
@@ -3298,7 +3299,8 @@ class AccountMetastoresAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
-        return ListMetastoresResponse.from_dict(json).metastores
+        parsed = ListMetastoresResponse.from_dict(json).metastores
+        return parsed if parsed else []
 
     def update(self,
                metastore_id: str,
@@ -3611,7 +3613,8 @@ class CatalogsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', headers=headers)
-        return ListCatalogsResponse.from_dict(json).catalogs
+        parsed = ListCatalogsResponse.from_dict(json).catalogs
+        return parsed if parsed else []
 
     def update(self,
                name: str,
@@ -3741,7 +3744,8 @@ class ConnectionsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections', headers=headers)
-        return ListConnectionsResponse.from_dict(json).connections
+        parsed = ListConnectionsResponse.from_dict(json).connections
+        return parsed if parsed else []
 
     def update(self, name: str, options: Dict[str, str], name_arg: str) -> ConnectionInfo:
         """Update a connection.
@@ -3881,7 +3885,8 @@ class ExternalLocationsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
-        return ListExternalLocationsResponse.from_dict(json).external_locations
+        parsed = ListExternalLocationsResponse.from_dict(json).external_locations
+        return parsed if parsed else []
 
     def update(self,
                name: str,
@@ -4120,7 +4125,8 @@ class FunctionsAPI:
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
-        return ListFunctionsResponse.from_dict(json).functions
+        parsed = ListFunctionsResponse.from_dict(json).functions
+        return parsed if parsed else []
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
@@ -4386,7 +4392,8 @@ class MetastoresAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores', headers=headers)
-        return ListMetastoresResponse.from_dict(json).metastores
+        parsed = ListMetastoresResponse.from_dict(json).metastores
+        return parsed if parsed else []
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.
@@ -4995,7 +5002,8 @@ class SchemasAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
-        return ListSchemasResponse.from_dict(json).schemas
+        parsed = ListSchemasResponse.from_dict(json).schemas
+        return parsed if parsed else []
 
     def update(self,
                full_name: str,
@@ -5156,7 +5164,8 @@ class StorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
-        return ListStorageCredentialsResponse.from_dict(json).storage_credentials
+        parsed = ListStorageCredentialsResponse.from_dict(json).storage_credentials
+        return parsed if parsed else []
 
     def update(self,
                name: str,
@@ -5341,7 +5350,8 @@ class SystemSchemasAPI:
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
                             headers=headers)
-        return ListSystemSchemasResponse.from_dict(json).schemas
+        parsed = ListSystemSchemasResponse.from_dict(json).schemas
+        return parsed if parsed else []
 
 
 class TableConstraintsAPI:
@@ -5700,7 +5710,8 @@ class VolumesAPI:
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
-        return ListVolumesResponseContent.from_dict(json).volumes
+        parsed = ListVolumesResponseContent.from_dict(json).volumes
+        return parsed if parsed else []
 
     def read(self, full_name_arg: str) -> VolumeInfo:
         """Get a Volume.

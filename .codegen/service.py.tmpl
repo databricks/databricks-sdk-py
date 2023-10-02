@@ -275,7 +275,8 @@ class {{.Name}}API:{{if .Description}}
           {{- end}}
         {{else -}}
         json = {{template "method-do" .}}
-        return {{.Response.PascalName}}.from_dict(json).{{.Pagination.Results.Name}}
+        parsed = {{.Response.PascalName}}.from_dict(json).{{.Pagination.Results.Name}}
+        return parsed if parsed else []
         {{end}}
 {{- end}}
 

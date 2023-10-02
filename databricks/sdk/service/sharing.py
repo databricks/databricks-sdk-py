@@ -1340,7 +1340,8 @@ class ProvidersAPI:
             query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
-        return ListProvidersResponse.from_dict(json).providers
+        parsed = ListProvidersResponse.from_dict(json).providers
+        return parsed if parsed else []
 
     def list_shares(self, name: str) -> Iterator['ProviderShare']:
         """List shares by Provider.
@@ -1357,7 +1358,8 @@ class ProvidersAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares', headers=headers)
-        return ListProviderSharesResponse.from_dict(json).shares
+        parsed = ListProviderSharesResponse.from_dict(json).shares
+        return parsed if parsed else []
 
     def update(self,
                name: str,
@@ -1557,7 +1559,8 @@ class RecipientsAPI:
             query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
-        return ListRecipientsResponse.from_dict(json).recipients
+        parsed = ListRecipientsResponse.from_dict(json).recipients
+        return parsed if parsed else []
 
     def rotate_token(self, existing_token_expire_in_seconds: int, name: str) -> RecipientInfo:
         """Rotate a token.
@@ -1713,7 +1716,8 @@ class SharesAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/shares', headers=headers)
-        return ListSharesResponse.from_dict(json).shares
+        parsed = ListSharesResponse.from_dict(json).shares
+        return parsed if parsed else []
 
     def share_permissions(self, name: str) -> catalog.PermissionsList:
         """Get permissions.

@@ -528,7 +528,8 @@ class BudgetsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget', headers=headers)
-        return BudgetList.from_dict(json).budgets
+        parsed = BudgetList.from_dict(json).budgets
+        return parsed if parsed else []
 
     def update(self, budget: Budget, budget_id: str):
         """Modify budget.
@@ -690,7 +691,8 @@ class LogDeliveryAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
                             query=query,
                             headers=headers)
-        return WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
+        parsed = WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
+        return parsed if parsed else []
 
     def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str):
         """Enable or disable log delivery configuration.

@@ -1036,7 +1036,8 @@ class GitCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
-        return GetCredentialsResponse.from_dict(json).credentials
+        parsed = GetCredentialsResponse.from_dict(json).credentials
+        return parsed if parsed else []
 
     def update(self,
                credential_id: int,
@@ -1463,7 +1464,8 @@ class SecretsAPI:
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query, headers=headers)
-        return ListAclsResponse.from_dict(json).items
+        parsed = ListAclsResponse.from_dict(json).items
+        return parsed if parsed else []
 
     def list_scopes(self) -> Iterator['SecretScope']:
         """List all scopes.
@@ -1477,7 +1479,8 @@ class SecretsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list', headers=headers)
-        return ListScopesResponse.from_dict(json).scopes
+        parsed = ListScopesResponse.from_dict(json).scopes
+        return parsed if parsed else []
 
     def list_secrets(self, scope: str) -> Iterator['SecretMetadata']:
         """List secret keys.
@@ -1499,7 +1502,8 @@ class SecretsAPI:
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query, headers=headers)
-        return ListSecretsResponse.from_dict(json).secrets
+        parsed = ListSecretsResponse.from_dict(json).secrets
+        return parsed if parsed else []
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
         """Create/update an ACL.
@@ -1784,7 +1788,8 @@ class WorkspaceAPI:
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query, headers=headers)
-        return ListResponse.from_dict(json).objects
+        parsed = ListResponse.from_dict(json).objects
+        return parsed if parsed else []
 
     def mkdirs(self, path: str):
         """Create a directory.
