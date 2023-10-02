@@ -1096,7 +1096,8 @@ class ApiClient:
             transient_error_string_matches = [
                 "com.databricks.backend.manager.util.UnknownWorkerEnvironmentException",
                 "does not have any associated worker environments", "There is no worker environment with id",
-                "Unknown worker environment", "ClusterNotReadyException", "Unexpected error"
+                "Unknown worker environment", "ClusterNotReadyException", "Unexpected error",
+                "Please try again later or try a faster operation."
             ]
             for substring in transient_error_string_matches:
                 if substring not in message:
