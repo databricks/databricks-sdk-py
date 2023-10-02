@@ -1130,7 +1130,7 @@ class AccountGroupsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                             query=query,
                             headers=headers)
-        parsed = ListGroupsResponse.from_dict(json).Resources
+        parsed = ListGroupsResponse.from_dict(json).resources
         return parsed if parsed else []
 
     def patch(self,
@@ -1339,7 +1339,7 @@ class AccountServicePrincipalsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query,
                             headers=headers)
-        parsed = ListServicePrincipalResponse.from_dict(json).Resources
+        parsed = ListServicePrincipalResponse.from_dict(json).resources
         return parsed if parsed else []
 
     def patch(self,
@@ -1565,7 +1565,7 @@ class AccountUsersAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                             query=query,
                             headers=headers)
-        parsed = ListUsersResponse.from_dict(json).Resources
+        parsed = ListUsersResponse.from_dict(json).resources
         return parsed if parsed else []
 
     def patch(self,
@@ -1791,7 +1791,7 @@ class GroupsAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
-        parsed = ListGroupsResponse.from_dict(json).Resources
+        parsed = ListGroupsResponse.from_dict(json).resources
         return parsed if parsed else []
 
     def patch(self,
@@ -2127,7 +2127,7 @@ class ServicePrincipalsAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
-        parsed = ListServicePrincipalResponse.from_dict(json).Resources
+        parsed = ListServicePrincipalResponse.from_dict(json).resources
         return parsed if parsed else []
 
     def patch(self,
@@ -2363,7 +2363,7 @@ class UsersAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
-        parsed = ListUsersResponse.from_dict(json).Resources
+        parsed = ListUsersResponse.from_dict(json).resources
         return parsed if parsed else []
 
     def patch(self,
