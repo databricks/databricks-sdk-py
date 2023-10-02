@@ -51,6 +51,24 @@ class CreateServingEndpoint:
 
 
 @dataclass
+class DataframeSplitInput:
+    columns: Optional['List[Any]'] = None
+    data: Optional['List[Any]'] = None
+    index: Optional['List[int]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.columns: body['columns'] = [v for v in self.columns]
+        if self.data: body['data'] = [v for v in self.data]
+        if self.index: body['index'] = [v for v in self.index]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DataframeSplitInput':
+        return cls(columns=d.get('columns', None), data=d.get('data', None), index=d.get('index', None))
+
+
+@dataclass
 class EndpointCoreConfigInput:
     served_models: 'List[ServedModelInput]'
     name: Optional[str] = None
@@ -225,6 +243,32 @@ class PatchServingEndpointTags:
     def from_dict(cls, d: Dict[str, any]) -> 'PatchServingEndpointTags':
         return cls(add_tags=_repeated(d, 'add_tags', EndpointTag),
                    delete_tags=d.get('delete_tags', None),
+                   name=d.get('name', None))
+
+
+@dataclass
+class QueryEndpointInput:
+    dataframe_records: Optional['List[Any]'] = None
+    dataframe_split: Optional['DataframeSplitInput'] = None
+    inputs: Optional[Any] = None
+    instances: Optional['List[Any]'] = None
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dataframe_records: body['dataframe_records'] = [v for v in self.dataframe_records]
+        if self.dataframe_split: body['dataframe_split'] = self.dataframe_split.as_dict()
+        if self.inputs: body['inputs'] = self.inputs
+        if self.instances: body['instances'] = [v for v in self.instances]
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'QueryEndpointInput':
+        return cls(dataframe_records=d.get('dataframe_records', None),
+                   dataframe_split=_from_dict(d, 'dataframe_split', DataframeSplitInput),
+                   inputs=d.get('inputs', None),
+                   instances=d.get('instances', None),
                    name=d.get('name', None))
 
 
@@ -819,7 +863,7 @@ class ServingEndpointsAPI:
                            headers=headers)
         return ServingEndpointPermissions.from_dict(res)
 
-    def list(self) -> Iterator[ServingEndpoint]:
+    def list(self) -> Iterator['ServingEndpoint']:
         """Retrieve all serving endpoints.
         
         :returns: Iterator over :class:`ServingEndpoint`
@@ -827,7 +871,7 @@ class ServingEndpointsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
-        return [ServingEndpoint.from_dict(v) for v in json.get('endpoints', [])]
+        return ListEndpointsResponse.from_dict(json).endpoints
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.
@@ -873,17 +917,35 @@ class ServingEndpointsAPI:
         res = self._api.do('PATCH', f'/api/2.0/serving-endpoints/{name}/tags', body=body, headers=headers)
         return [EndpointTag.from_dict(v) for v in res]
 
-    def query(self, name: str) -> QueryEndpointResponse:
+    def query(self,
+              name: str,
+              *,
+              dataframe_records: Optional[List[Any]] = None,
+              dataframe_split: Optional[DataframeSplitInput] = None,
+              inputs: Optional[Any] = None,
+              instances: Optional[List[Any]] = None) -> QueryEndpointResponse:
         """Query a serving endpoint with provided model input.
         
         :param name: str
           The name of the serving endpoint. This field is required.
+        :param dataframe_records: List[Any] (optional)
+          Pandas Dataframe input in the records orientation.
+        :param dataframe_split: :class:`DataframeSplitInput` (optional)
+          Pandas Dataframe input in the split orientation.
+        :param inputs: Any (optional)
+          Tensor-based input in columnar format.
+        :param instances: List[Any] (optional)
+          Tensor-based input in row format.
         
         :returns: :class:`QueryEndpointResponse`
         """
-
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', headers=headers)
+        body = {}
+        if dataframe_records is not None: body['dataframe_records'] = [v for v in dataframe_records]
+        if dataframe_split is not None: body['dataframe_split'] = dataframe_split.as_dict()
+        if inputs is not None: body['inputs'] = inputs
+        if instances is not None: body['instances'] = [v for v in instances]
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', body=body, headers=headers)
         return QueryEndpointResponse.from_dict(res)
 
     def set_permissions(

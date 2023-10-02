@@ -141,12 +141,20 @@ Serving endpoints
         :returns: Iterator over :class:`EndpointTag`
         
 
-    .. py:method:: query(name)
+    .. py:method:: query(name [, dataframe_records, dataframe_split, inputs, instances])
 
         Query a serving endpoint with provided model input.
         
         :param name: str
           The name of the serving endpoint. This field is required.
+        :param dataframe_records: List[Any] (optional)
+          Pandas Dataframe input in the records orientation.
+        :param dataframe_split: :class:`DataframeSplitInput` (optional)
+          Pandas Dataframe input in the split orientation.
+        :param inputs: Any (optional)
+          Tensor-based input in columnar format.
+        :param instances: List[Any] (optional)
+          Tensor-based input in row format.
         
         :returns: :class:`QueryEndpointResponse`
         

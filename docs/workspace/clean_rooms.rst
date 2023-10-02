@@ -51,13 +51,18 @@ Clean Rooms
         :returns: :class:`CleanRoomInfo`
         
 
-    .. py:method:: list()
+    .. py:method:: list( [, max_results, page_token])
 
         List clean rooms.
         
         Gets an array of data object clean rooms from the metastore. The caller must be a metastore admin or
         the owner of the clean room. There is no guarantee of a specific ordering of the elements in the
         array.
+        
+        :param max_results: int (optional)
+          Maximum number of clean rooms to return.
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CleanRoomInfo`
         

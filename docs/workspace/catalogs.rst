@@ -120,7 +120,7 @@ Catalogs
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name [, comment, isolation_mode, options, owner, properties])
+    .. py:method:: update(name [, comment, isolation_mode, owner, properties])
 
         Usage:
 
@@ -150,8 +150,6 @@ Catalogs
           User-provided free-form text description.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
-        :param options: Dict[str,str] (optional)
-          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)

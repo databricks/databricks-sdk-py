@@ -1229,6 +1229,7 @@ class RepairRun:
     run_id: int
     dbt_commands: Optional['List[str]'] = None
     jar_params: Optional['List[str]'] = None
+    job_parameters: Optional['Dict[str,str]'] = None
     latest_repair_id: Optional[int] = None
     notebook_params: Optional['Dict[str,str]'] = None
     pipeline_params: Optional['PipelineParams'] = None
@@ -1244,6 +1245,7 @@ class RepairRun:
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.latest_repair_id is not None: body['latest_repair_id'] = self.latest_repair_id
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
@@ -1262,6 +1264,7 @@ class RepairRun:
     def from_dict(cls, d: Dict[str, any]) -> 'RepairRun':
         return cls(dbt_commands=d.get('dbt_commands', None),
                    jar_params=d.get('jar_params', None),
+                   job_parameters=d.get('job_parameters', None),
                    latest_repair_id=d.get('latest_repair_id', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
@@ -1658,7 +1661,7 @@ class RunNow:
     dbt_commands: Optional['List[str]'] = None
     idempotency_token: Optional[str] = None
     jar_params: Optional['List[str]'] = None
-    job_parameters: Optional['List[Dict[str,str]]'] = None
+    job_parameters: Optional['Dict[str,str]'] = None
     notebook_params: Optional['Dict[str,str]'] = None
     pipeline_params: Optional['PipelineParams'] = None
     python_named_params: Optional['Dict[str,str]'] = None
@@ -1673,7 +1676,7 @@ class RunNow:
         if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
         if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_parameters: body['job_parameters'] = [v for v in self.job_parameters]
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
@@ -1760,6 +1763,7 @@ class RunOutput:
 class RunParameters:
     dbt_commands: Optional['List[str]'] = None
     jar_params: Optional['List[str]'] = None
+    job_parameters: Optional['Dict[str,str]'] = None
     notebook_params: Optional['Dict[str,str]'] = None
     pipeline_params: Optional['PipelineParams'] = None
     python_named_params: Optional['Dict[str,str]'] = None
@@ -1771,6 +1775,7 @@ class RunParameters:
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
@@ -1783,6 +1788,7 @@ class RunParameters:
     def from_dict(cls, d: Dict[str, any]) -> 'RunParameters':
         return cls(dbt_commands=d.get('dbt_commands', None),
                    jar_params=d.get('jar_params', None),
+                   job_parameters=d.get('job_parameters', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
@@ -2843,10 +2849,10 @@ class JobsAPI:
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
-        """Cancel a job run.
+        """Cancel a run.
         
-        Cancels a job run. The run is canceled asynchronously, so it may still be running when this request
-        completes.
+        Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
+        this request completes.
         
         :param run_id: int
           This field is required.
@@ -3140,7 +3146,7 @@ class JobsAPI:
              limit: Optional[int] = None,
              name: Optional[str] = None,
              offset: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[BaseJob]:
+             page_token: Optional[str] = None) -> Iterator['BaseJob']:
         """List jobs.
         
         Retrieves a list of jobs.
@@ -3192,7 +3198,7 @@ class JobsAPI:
                   page_token: Optional[str] = None,
                   run_type: Optional[ListRunsRunType] = None,
                   start_time_from: Optional[int] = None,
-                  start_time_to: Optional[int] = None) -> Iterator[BaseRun]:
+                  start_time_to: Optional[int] = None) -> Iterator['BaseRun']:
         """List job runs.
         
         List runs in descending order by start time.
@@ -3258,6 +3264,7 @@ class JobsAPI:
                    *,
                    dbt_commands: Optional[List[str]] = None,
                    jar_params: Optional[List[str]] = None,
+                   job_parameters: Optional[Dict[str, str]] = None,
                    latest_repair_id: Optional[int] = None,
                    notebook_params: Optional[Dict[str, str]] = None,
                    pipeline_params: Optional[PipelineParams] = None,
@@ -3287,6 +3294,8 @@ class JobsAPI:
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
+        :param job_parameters: Dict[str,str] (optional)
+          Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
           The ID of the latest repair. This parameter is not required when repairing a run for the first time,
           but must be provided on subsequent requests to repair the same run.
@@ -3359,6 +3368,7 @@ class JobsAPI:
         body = {}
         if dbt_commands is not None: body['dbt_commands'] = [v for v in dbt_commands]
         if jar_params is not None: body['jar_params'] = [v for v in jar_params]
+        if job_parameters is not None: body['job_parameters'] = job_parameters
         if latest_repair_id is not None: body['latest_repair_id'] = latest_repair_id
         if notebook_params is not None: body['notebook_params'] = notebook_params
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
@@ -3382,6 +3392,7 @@ class JobsAPI:
         *,
         dbt_commands: Optional[List[str]] = None,
         jar_params: Optional[List[str]] = None,
+        job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
         notebook_params: Optional[Dict[str, str]] = None,
         pipeline_params: Optional[PipelineParams] = None,
@@ -3395,6 +3406,7 @@ class JobsAPI:
         timeout=timedelta(minutes=20)) -> Run:
         return self.repair_run(dbt_commands=dbt_commands,
                                jar_params=jar_params,
+                               job_parameters=job_parameters,
                                latest_repair_id=latest_repair_id,
                                notebook_params=notebook_params,
                                pipeline_params=pipeline_params,
@@ -3435,7 +3447,7 @@ class JobsAPI:
                 dbt_commands: Optional[List[str]] = None,
                 idempotency_token: Optional[str] = None,
                 jar_params: Optional[List[str]] = None,
-                job_parameters: Optional[List[Dict[str, str]]] = None,
+                job_parameters: Optional[Dict[str, str]] = None,
                 notebook_params: Optional[Dict[str, str]] = None,
                 pipeline_params: Optional[PipelineParams] = None,
                 python_named_params: Optional[Dict[str, str]] = None,
@@ -3474,8 +3486,8 @@ class JobsAPI:
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
-        :param job_parameters: List[Dict[str,str]] (optional)
-          Job-level parameters used in the run
+        :param job_parameters: Dict[str,str] (optional)
+          Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
           "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
@@ -3542,7 +3554,7 @@ class JobsAPI:
         if idempotency_token is not None: body['idempotency_token'] = idempotency_token
         if jar_params is not None: body['jar_params'] = [v for v in jar_params]
         if job_id is not None: body['job_id'] = job_id
-        if job_parameters is not None: body['job_parameters'] = [v for v in job_parameters]
+        if job_parameters is not None: body['job_parameters'] = job_parameters
         if notebook_params is not None: body['notebook_params'] = notebook_params
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
         if python_named_params is not None: body['python_named_params'] = python_named_params
@@ -3562,7 +3574,7 @@ class JobsAPI:
                          dbt_commands: Optional[List[str]] = None,
                          idempotency_token: Optional[str] = None,
                          jar_params: Optional[List[str]] = None,
-                         job_parameters: Optional[List[Dict[str, str]]] = None,
+                         job_parameters: Optional[Dict[str, str]] = None,
                          notebook_params: Optional[Dict[str, str]] = None,
                          pipeline_params: Optional[PipelineParams] = None,
                          python_named_params: Optional[Dict[str, str]] = None,

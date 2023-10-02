@@ -1089,7 +1089,7 @@ class AccountGroupsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None) -> Iterator[Group]:
+             start_index: Optional[int] = None) -> Iterator['Group']:
         """List group details.
         
         Gets all details of the groups associated with the Databricks account.
@@ -1130,7 +1130,7 @@ class AccountGroupsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                             query=query,
                             headers=headers)
-        return [Group.from_dict(v) for v in json.get('Resources', [])]
+        return ListGroupsResponse.from_dict(json).Resources
 
     def patch(self,
               id: str,
@@ -1297,7 +1297,7 @@ class AccountServicePrincipalsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None) -> Iterator[ServicePrincipal]:
+             start_index: Optional[int] = None) -> Iterator['ServicePrincipal']:
         """List service principals.
         
         Gets the set of service principals associated with a Databricks account.
@@ -1338,7 +1338,7 @@ class AccountServicePrincipalsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                             query=query,
                             headers=headers)
-        return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
+        return ListServicePrincipalResponse.from_dict(json).Resources
 
     def patch(self,
               id: str,
@@ -1521,7 +1521,7 @@ class AccountUsersAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None) -> Iterator[User]:
+             start_index: Optional[int] = None) -> Iterator['User']:
         """List users.
         
         Gets details for all the users associated with a Databricks account.
@@ -1563,7 +1563,7 @@ class AccountUsersAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                             query=query,
                             headers=headers)
-        return [User.from_dict(v) for v in json.get('Resources', [])]
+        return ListUsersResponse.from_dict(json).Resources
 
     def patch(self,
               id: str,
@@ -1750,7 +1750,7 @@ class GroupsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None) -> Iterator[Group]:
+             start_index: Optional[int] = None) -> Iterator['Group']:
         """List group details.
         
         Gets all details of the groups associated with the Databricks workspace.
@@ -1788,7 +1788,7 @@ class GroupsAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
-        return [Group.from_dict(v) for v in json.get('Resources', [])]
+        return ListGroupsResponse.from_dict(json).Resources
 
     def patch(self,
               id: str,
@@ -2085,7 +2085,7 @@ class ServicePrincipalsAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None) -> Iterator[ServicePrincipal]:
+             start_index: Optional[int] = None) -> Iterator['ServicePrincipal']:
         """List service principals.
         
         Gets the set of service principals associated with a Databricks workspace.
@@ -2123,7 +2123,7 @@ class ServicePrincipalsAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
-        return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
+        return ListServicePrincipalResponse.from_dict(json).Resources
 
     def patch(self,
               id: str,
@@ -2319,7 +2319,7 @@ class UsersAPI:
              filter: Optional[str] = None,
              sort_by: Optional[str] = None,
              sort_order: Optional[ListSortOrder] = None,
-             start_index: Optional[int] = None) -> Iterator[User]:
+             start_index: Optional[int] = None) -> Iterator['User']:
         """List users.
         
         Gets details for all the users associated with a Databricks workspace.
@@ -2358,7 +2358,7 @@ class UsersAPI:
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
-        return [User.from_dict(v) for v in json.get('Resources', [])]
+        return ListUsersResponse.from_dict(json).Resources
 
     def patch(self,
               id: str,
@@ -2517,7 +2517,7 @@ class WorkspaceAssignmentAPI:
             headers=headers)
         return WorkspacePermissions.from_dict(res)
 
-    def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
+    def list(self, workspace_id: int) -> Iterator['PermissionAssignment']:
         """Get permission assignments.
         
         Get the permission assignments for the specified Databricks account and Databricks workspace.
@@ -2533,7 +2533,7 @@ class WorkspaceAssignmentAPI:
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments',
             headers=headers)
-        return [PermissionAssignment.from_dict(v) for v in json.get('permission_assignments', [])]
+        return PermissionAssignments.from_dict(json).permission_assignments
 
     def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
         """Create or update permissions assignment.

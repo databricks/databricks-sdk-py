@@ -517,7 +517,7 @@ class BudgetsAPI:
                            headers=headers)
         return WrappedBudgetWithStatus.from_dict(res)
 
-    def list(self) -> Iterator[BudgetWithStatus]:
+    def list(self) -> Iterator['BudgetWithStatus']:
         """Get all budgets.
         
         Gets all budgets associated with this account, including noncumulative status for each day that the
@@ -528,7 +528,7 @@ class BudgetsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget', headers=headers)
-        return [BudgetWithStatus.from_dict(v) for v in json.get('budgets', [])]
+        return BudgetList.from_dict(json).budgets
 
     def update(self, budget: Budget, budget_id: str):
         """Modify budget.
@@ -666,7 +666,7 @@ class LogDeliveryAPI:
              *,
              credentials_id: Optional[str] = None,
              status: Optional[LogDeliveryConfigStatus] = None,
-             storage_configuration_id: Optional[str] = None) -> Iterator[LogDeliveryConfiguration]:
+             storage_configuration_id: Optional[str] = None) -> Iterator['LogDeliveryConfiguration']:
         """Get all log delivery configurations.
         
         Gets all Databricks log delivery configurations associated with an account specified by ID.
@@ -690,7 +690,7 @@ class LogDeliveryAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
                             query=query,
                             headers=headers)
-        return [LogDeliveryConfiguration.from_dict(v) for v in json.get('log_delivery_configurations', [])]
+        return WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
 
     def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str):
         """Enable or disable log delivery configuration.

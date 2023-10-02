@@ -1026,7 +1026,7 @@ class GitCredentialsAPI:
         res = self._api.do('GET', f'/api/2.0/git-credentials/{credential_id}', headers=headers)
         return CredentialInfo.from_dict(res)
 
-    def list(self) -> Iterator[CredentialInfo]:
+    def list(self) -> Iterator['CredentialInfo']:
         """Get Git credentials.
         
         Lists the calling user's Git credentials. One credential per user is supported.
@@ -1036,7 +1036,7 @@ class GitCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
-        return [CredentialInfo.from_dict(v) for v in json.get('credentials', [])]
+        return GetCredentialsResponse.from_dict(json).credentials
 
     def update(self,
                credential_id: int,
@@ -1179,7 +1179,7 @@ class ReposAPI:
     def list(self,
              *,
              next_page_token: Optional[str] = None,
-             path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
+             path_prefix: Optional[str] = None) -> Iterator['RepoInfo']:
         """Get repos.
         
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
@@ -1445,7 +1445,7 @@ class SecretsAPI:
         res = self._api.do('GET', '/api/2.0/secrets/get', query=query, headers=headers)
         return GetSecretResponse.from_dict(res)
 
-    def list_acls(self, scope: str) -> Iterator[AclItem]:
+    def list_acls(self, scope: str) -> Iterator['AclItem']:
         """Lists ACLs.
         
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
@@ -1463,9 +1463,9 @@ class SecretsAPI:
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query, headers=headers)
-        return [AclItem.from_dict(v) for v in json.get('items', [])]
+        return ListAclsResponse.from_dict(json).items
 
-    def list_scopes(self) -> Iterator[SecretScope]:
+    def list_scopes(self) -> Iterator['SecretScope']:
         """List all scopes.
         
         Lists all secret scopes available in the workspace.
@@ -1477,9 +1477,9 @@ class SecretsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list', headers=headers)
-        return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
+        return ListScopesResponse.from_dict(json).scopes
 
-    def list_secrets(self, scope: str) -> Iterator[SecretMetadata]:
+    def list_secrets(self, scope: str) -> Iterator['SecretMetadata']:
         """List secret keys.
         
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
@@ -1499,7 +1499,7 @@ class SecretsAPI:
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query, headers=headers)
-        return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
+        return ListSecretsResponse.from_dict(json).secrets
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
         """Create/update an ACL.
@@ -1765,7 +1765,7 @@ class WorkspaceAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/workspace/import', body=body, headers=headers)
 
-    def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
+    def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator['ObjectInfo']:
         """List contents.
         
         Lists the contents of a directory, or the object if it is not a directory. If the input path does not
@@ -1784,7 +1784,7 @@ class WorkspaceAPI:
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query, headers=headers)
-        return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
+        return ListResponse.from_dict(json).objects
 
     def mkdirs(self, path: str):
         """Create a directory.

@@ -9,6 +9,7 @@ Manage security settings for Accounts and Workspaces
 
   credentials_manager
   ip_access_lists
+  settings
   token_management
   tokens
   workspace_conf

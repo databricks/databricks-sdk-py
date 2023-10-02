@@ -611,7 +611,6 @@ class CreateConnection:
     connection_type: 'ConnectionType'
     options: 'Dict[str,str]'
     comment: Optional[str] = None
-    owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
     read_only: Optional[bool] = None
 
@@ -621,7 +620,6 @@ class CreateConnection:
         if self.connection_type is not None: body['connection_type'] = self.connection_type.value
         if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
-        if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         if self.read_only is not None: body['read_only'] = self.read_only
         return body
@@ -632,7 +630,6 @@ class CreateConnection:
                    connection_type=_enum(d, 'connection_type', ConnectionType),
                    name=d.get('name', None),
                    options=d.get('options', None),
-                   owner=d.get('owner', None),
                    properties=d.get('properties', None),
                    read_only=d.get('read_only', None))
 
@@ -1529,6 +1526,22 @@ class IsolationMode(Enum):
 
     ISOLATED = 'ISOLATED'
     OPEN = 'OPEN'
+
+
+@dataclass
+class ListAccountMetastoreAssignmentsResponse:
+    """The list of workspaces to which the given metastore is assigned."""
+
+    workspace_ids: Optional['List[int]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.workspace_ids: body['workspace_ids'] = [v for v in self.workspace_ids]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListAccountMetastoreAssignmentsResponse':
+        return cls(workspace_ids=d.get('workspace_ids', None))
 
 
 @dataclass
@@ -2569,7 +2582,6 @@ class UpdateCatalog:
     comment: Optional[str] = None
     isolation_mode: Optional['IsolationMode'] = None
     name: Optional[str] = None
-    options: Optional['Dict[str,str]'] = None
     owner: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
 
@@ -2578,7 +2590,6 @@ class UpdateCatalog:
         if self.comment is not None: body['comment'] = self.comment
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -2588,7 +2599,6 @@ class UpdateCatalog:
         return cls(comment=d.get('comment', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
-                   options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
@@ -3182,10 +3192,10 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET',
-                           f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
-                           headers=headers)
-        return [WorkspaceId.from_dict(v) for v in res]
+        json = self._api.do('GET',
+                            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
+                            headers=headers)
+        return ListAccountMetastoreAssignmentsResponse.from_dict(json).workspace_ids
 
     def update(self,
                workspace_id: int,
@@ -3278,7 +3288,7 @@ class AccountMetastoresAPI:
                            headers=headers)
         return AccountsMetastoreInfo.from_dict(res)
 
-    def list(self) -> Iterator[MetastoreInfo]:
+    def list(self) -> Iterator['MetastoreInfo']:
         """Get all metastores associated with an account.
         
         Gets all Unity Catalog metastores associated with an account specified by ID.
@@ -3288,7 +3298,7 @@ class AccountMetastoresAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
-        return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
+        return ListMetastoresResponse.from_dict(json).metastores
 
     def update(self,
                metastore_id: str,
@@ -3588,7 +3598,7 @@ class CatalogsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}', headers=headers)
         return CatalogInfo.from_dict(res)
 
-    def list(self) -> Iterator[CatalogInfo]:
+    def list(self) -> Iterator['CatalogInfo']:
         """List catalogs.
         
         Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
@@ -3601,14 +3611,13 @@ class CatalogsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', headers=headers)
-        return [CatalogInfo.from_dict(v) for v in json.get('catalogs', [])]
+        return ListCatalogsResponse.from_dict(json).catalogs
 
     def update(self,
                name: str,
                *,
                comment: Optional[str] = None,
                isolation_mode: Optional[IsolationMode] = None,
-               options: Optional[Dict[str, str]] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
@@ -3622,8 +3631,6 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
-        :param options: Dict[str,str] (optional)
-          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
@@ -3634,7 +3641,6 @@ class CatalogsAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
-        if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -3661,7 +3667,6 @@ class ConnectionsAPI:
                options: Dict[str, str],
                *,
                comment: Optional[str] = None,
-               owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None,
                read_only: Optional[bool] = None) -> ConnectionInfo:
         """Create a connection.
@@ -3679,8 +3684,6 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param owner: str (optional)
-          Username of current owner of the connection.
         :param properties: Dict[str,str] (optional)
           An object containing map of key-value properties attached to the connection.
         :param read_only: bool (optional)
@@ -3693,7 +3696,6 @@ class ConnectionsAPI:
         if connection_type is not None: body['connection_type'] = connection_type.value
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
-        if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         if read_only is not None: body['read_only'] = read_only
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -3729,7 +3731,7 @@ class ConnectionsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def list(self) -> Iterator[ConnectionInfo]:
+    def list(self) -> Iterator['ConnectionInfo']:
         """List connections.
         
         List all connections.
@@ -3739,7 +3741,7 @@ class ConnectionsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections', headers=headers)
-        return [ConnectionInfo.from_dict(v) for v in json.get('connections', [])]
+        return ListConnectionsResponse.from_dict(json).connections
 
     def update(self, name: str, options: Dict[str, str], name_arg: str) -> ConnectionInfo:
         """Update a connection.
@@ -3867,7 +3869,7 @@ class ExternalLocationsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
-    def list(self) -> Iterator[ExternalLocationInfo]:
+    def list(self) -> Iterator['ExternalLocationInfo']:
         """List external locations.
         
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
@@ -3879,7 +3881,7 @@ class ExternalLocationsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
-        return [ExternalLocationInfo.from_dict(v) for v in json.get('external_locations', [])]
+        return ListExternalLocationsResponse.from_dict(json).external_locations
 
     def update(self,
                name: str,
@@ -4096,7 +4098,7 @@ class FunctionsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
         return FunctionInfo.from_dict(res)
 
-    def list(self, catalog_name: str, schema_name: str) -> Iterator[FunctionInfo]:
+    def list(self, catalog_name: str, schema_name: str) -> Iterator['FunctionInfo']:
         """List functions.
         
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
@@ -4118,7 +4120,7 @@ class FunctionsAPI:
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
-        return [FunctionInfo.from_dict(v) for v in json.get('functions', [])]
+        return ListFunctionsResponse.from_dict(json).functions
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
@@ -4373,7 +4375,7 @@ class MetastoresAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/metastores/{id}', headers=headers)
         return MetastoreInfo.from_dict(res)
 
-    def list(self) -> Iterator[MetastoreInfo]:
+    def list(self) -> Iterator['MetastoreInfo']:
         """List metastores.
         
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
@@ -4384,7 +4386,7 @@ class MetastoresAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores', headers=headers)
-        return [MetastoreInfo.from_dict(v) for v in json.get('metastores', [])]
+        return ListMetastoresResponse.from_dict(json).metastores
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.
@@ -4585,7 +4587,7 @@ class ModelVersionsAPI:
              full_name: str,
              *,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[ModelVersionInfo]:
+             page_token: Optional[str] = None) -> Iterator['ModelVersionInfo']:
         """List Model Versions.
         
         List model versions. You can list model versions under a particular schema, or list all model versions
@@ -4790,7 +4792,7 @@ class RegisteredModelsAPI:
              catalog_name: Optional[str] = None,
              max_results: Optional[int] = None,
              page_token: Optional[str] = None,
-             schema_name: Optional[str] = None) -> Iterator[RegisteredModelInfo]:
+             schema_name: Optional[str] = None) -> Iterator['RegisteredModelInfo']:
         """List Registered Models.
         
         List registered models. You can list registered models under a particular schema, or list all
@@ -4975,7 +4977,7 @@ class SchemasAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
         return SchemaInfo.from_dict(res)
 
-    def list(self, catalog_name: str) -> Iterator[SchemaInfo]:
+    def list(self, catalog_name: str) -> Iterator['SchemaInfo']:
         """List schemas.
         
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
@@ -4993,7 +4995,7 @@ class SchemasAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
-        return [SchemaInfo.from_dict(v) for v in json.get('schemas', [])]
+        return ListSchemasResponse.from_dict(json).schemas
 
     def update(self,
                full_name: str,
@@ -5141,7 +5143,7 @@ class StorageCredentialsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
-    def list(self) -> Iterator[StorageCredentialInfo]:
+    def list(self) -> Iterator['StorageCredentialInfo']:
         """List credentials.
         
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
@@ -5154,7 +5156,7 @@ class StorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
-        return [StorageCredentialInfo.from_dict(v) for v in json.get('storage_credentials', [])]
+        return ListStorageCredentialsResponse.from_dict(json).storage_credentials
 
     def update(self,
                name: str,
@@ -5323,7 +5325,7 @@ class SystemSchemasAPI:
                      f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name.value}',
                      headers=headers)
 
-    def list(self, metastore_id: str) -> Iterator[SystemSchemaInfo]:
+    def list(self, metastore_id: str) -> Iterator['SystemSchemaInfo']:
         """List system schemas.
         
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
@@ -5339,7 +5341,7 @@ class SystemSchemasAPI:
         json = self._api.do('GET',
                             f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
                             headers=headers)
-        return [SystemSchemaInfo.from_dict(v) for v in json.get('schemas', [])]
+        return ListSystemSchemasResponse.from_dict(json).schemas
 
 
 class TableConstraintsAPI:
@@ -5475,7 +5477,7 @@ class TablesAPI:
              *,
              include_delta_metadata: Optional[bool] = None,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[TableInfo]:
+             page_token: Optional[str] = None) -> Iterator['TableInfo']:
         """List tables.
         
         Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
@@ -5526,7 +5528,7 @@ class TablesAPI:
                        max_results: Optional[int] = None,
                        page_token: Optional[str] = None,
                        schema_name_pattern: Optional[str] = None,
-                       table_name_pattern: Optional[str] = None) -> Iterator[TableSummary]:
+                       table_name_pattern: Optional[str] = None) -> Iterator['TableSummary']:
         """List table summaries.
         
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
@@ -5672,7 +5674,7 @@ class VolumesAPI:
         headers = {}
         self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
 
-    def list(self, catalog_name: str, schema_name: str) -> Iterator[VolumeInfo]:
+    def list(self, catalog_name: str, schema_name: str) -> Iterator['VolumeInfo']:
         """List Volumes.
         
         Gets an array of all volumes for the current metastore under the parent catalog and schema.
@@ -5698,7 +5700,7 @@ class VolumesAPI:
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
-        return [VolumeInfo.from_dict(v) for v in json.get('volumes', [])]
+        return ListVolumesResponseContent.from_dict(json).volumes
 
     def read(self, full_name_arg: str) -> VolumeInfo:
         """Get a Volume.

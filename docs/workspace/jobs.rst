@@ -100,10 +100,10 @@ Jobs
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Cancel a job run.
+        Cancel a run.
         
-        Cancels a job run. The run is canceled asynchronously, so it may still be running when this request
-        completes.
+        Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
+        this request completes.
         
         :param run_id: int
           This field is required.
@@ -527,7 +527,7 @@ Jobs
         :returns: Iterator over :class:`BaseRun`
         
 
-    .. py:method:: repair_run(run_id [, dbt_commands, jar_params, latest_repair_id, notebook_params, pipeline_params, python_named_params, python_params, rerun_all_failed_tasks, rerun_dependent_tasks, rerun_tasks, spark_submit_params, sql_params])
+    .. py:method:: repair_run(run_id [, dbt_commands, jar_params, job_parameters, latest_repair_id, notebook_params, pipeline_params, python_named_params, python_params, rerun_all_failed_tasks, rerun_dependent_tasks, rerun_tasks, spark_submit_params, sql_params])
 
         Usage:
 
@@ -584,6 +584,8 @@ Jobs
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
+        :param job_parameters: Dict[str,str] (optional)
+          Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
           The ID of the latest repair. This parameter is not required when repairing a run for the first time,
           but must be provided on subsequent requests to repair the same run.
@@ -771,8 +773,8 @@ Jobs
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
-        :param job_parameters: List[Dict[str,str]] (optional)
-          Job-level parameters used in the run
+        :param job_parameters: Dict[str,str] (optional)
+          Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
           A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
           "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the

@@ -11,7 +11,7 @@ Connections
     objects based on cloud storage. Users may create different types of connections with each connection
     having a unique set of configuration options to support credential management and other settings.
 
-    .. py:method:: create(name, connection_type, options [, comment, owner, properties, read_only])
+    .. py:method:: create(name, connection_type, options [, comment, properties, read_only])
 
         Create a connection.
         
@@ -28,8 +28,6 @@ Connections
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param owner: str (optional)
-          Username of current owner of the connection.
         :param properties: Dict[str,str] (optional)
           An object containing map of key-value properties attached to the connection.
         :param read_only: bool (optional)
