@@ -276,7 +276,7 @@ class {{.Name}}API:{{if .Description}}
         {{else -}}
         json = {{template "method-do" .}}
         parsed = {{.Response.PascalName}}.from_dict(json).{{.Pagination.Results.SnakeName}}
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
         {{end}}
 {{- end}}
 
