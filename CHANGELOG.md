@@ -1,5 +1,41 @@
 # Version changelog
 
+## 0.10.0
+
+* Respect `retry_timeout_seconds` config setting and align retry implementation with Go SDK ([#337](https://github.com/databricks/databricks-sdk-py/pull/337)).
+
+Breaking API Changes:
+
+ * Changed `list()` method for [a.account_metastore_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_metastore_assignments.html) account-level service to return `databricks.sdk.service.catalog.ListAccountMetastoreAssignmentsResponse` dataclass.
+ * Removed `owner` field for `databricks.sdk.service.catalog.CreateConnection`. Instead, use the `owner` field of `UpdateConnection`.
+ * Removed `options` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+ * Changed `job_parameters` field for `databricks.sdk.service.jobs.RunNow` to `databricks.sdk.service.jobs.ParamPairs` dataclass.
+ * Changed `query()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service . New request type is `databricks.sdk.service.serving.QueryEndpointInput` dataclass.
+ * Renamed `databricks.sdk.service.serving.QueryRequest` dataclass to `QueryEndpointInput`.
+ * Changed `list()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service to require request of `databricks.sdk.service.sharing.ListCleanRoomsRequest` dataclass.
+
+API Changes:
+
+ * Added `databricks.sdk.service.catalog.ListAccountMetastoreAssignmentsResponse` dataclass.
+ * Added `job_parameters` field for `databricks.sdk.service.jobs.RepairRun`.
+ * Added `job_parameters` field for `databricks.sdk.service.jobs.RunParameters`.
+ * Added `notifications` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `notifications` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `notifications` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+ * Added `databricks.sdk.service.pipelines.Notifications` dataclass.
+ * Added `databricks.sdk.service.serving.DataframeSplitInput` dataclass.
+ * Added [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+ * Added `databricks.sdk.service.settings.DefaultNamespaceSetting` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteDefaultWorkspaceNamespaceRequest` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteDefaultWorkspaceNamespaceResponse` dataclass.
+ * Added `databricks.sdk.service.settings.ReadDefaultWorkspaceNamespaceRequest` dataclass.
+ * Added `databricks.sdk.service.settings.StringMessage` dataclass.
+ * Added `databricks.sdk.service.settings.UpdateDefaultWorkspaceNamespaceRequest` dataclass.
+ * Added `next_page_token` field for `databricks.sdk.service.sharing.ListCleanRoomsResponse`.
+ * Added `databricks.sdk.service.sharing.ListCleanRoomsRequest` dataclass.
+
+OpenAPI SHA: bcbf6e851e3d82fd910940910dd31c10c059746c, Date: 2023-10-02
+
 ## 0.9.0
 
 * Don't try to import runtime_auth when not in runtime ([#327](https://github.com/databricks/databricks-sdk-py/pull/327)).
