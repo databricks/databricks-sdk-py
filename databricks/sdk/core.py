@@ -15,17 +15,16 @@ import urllib.parse
 from datetime import datetime, timedelta
 from json import JSONDecodeError
 from types import TracebackType
-from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
-                    Optional, Type, Union)
+from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List, Optional, Type, Union)
 
 import requests
 import requests.auth
 from requests.adapters import HTTPAdapter
 
-from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
-                    add_sp_management_token, add_workspace_id_header)
-from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
-                    Token, TokenCache, TokenSource)
+from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment, add_sp_management_token,
+                    add_workspace_id_header)
+from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable, Token, TokenCache,
+                    TokenSource)
 from .retries import retried
 from .version import __version__
 
@@ -100,8 +99,7 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth,
-                                        init_runtime_native_auth,
+    from databricks.sdk.runtime import (init_runtime_legacy_auth, init_runtime_native_auth,
                                         init_runtime_repl_auth)
     for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
         if init is None:
@@ -213,6 +211,47 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
         add_workspace_id_header(cfg, headers)
         add_sp_management_token(cloud, headers)
         return headers
+
+    return refreshed_headers
+
+
+@credentials_provider('github-oidc-azure', ['host', 'azure_client_id'])
+def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
+    if 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' not in os.environ:
+        # not in GitHub actions
+        return None
+
+    # Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
+    # identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
+    if not cfg.is_azure:
+        return None
+
+    # See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
+    headers = {'Authorization': f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
+    endpoint = f"{os.environ['ACTIONS_ID_TOKEN_REQUEST_URL']}&audience=api://AzureADTokenExchange"
+    response = requests.get(endpoint, headers=headers)
+
+    # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
+    client_assertion = response.json()['value']
+
+    logger.info("Configured AAD token for GitHub Actions OIDC (%s)", cfg.azure_client_id)
+    params = {
+        'client_assertion_type': 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+        'resource': cfg.effective_azure_login_app_id,
+        'client_assertion': client_assertion,
+    }
+    aad_endpoint = cfg.arm_environment.active_directory_endpoint
+    if not cfg.azure_tenant_id:
+        # detect Azure AD Tenant ID if it's not specified directly
+        cfg.azure_tenant_id = cfg.oidc_endpoints.token_endpoint.replace(aad_endpoint, '').split('/')[0]
+    inner = ClientCredentials(client_id=cfg.azure_client_id,
+                              client_secret=cfg.azure_client_secret,
+                              token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
+                              endpoint_params=params,
+                              use_params=True)
+
+    def refreshed_headers() -> Dict[str, str]:
+        return {'Authorization': f"Bearer {inner.token().access_token}", }
 
     return refreshed_headers
 
@@ -462,7 +501,7 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            azure_cli, external_browser, databricks_cli, runtime_native_auth
+            azure_cli, github_oidc_azure, external_browser, databricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
