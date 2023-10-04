@@ -15,16 +15,17 @@ import urllib.parse
 from datetime import datetime, timedelta
 from json import JSONDecodeError
 from types import TracebackType
-from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List, Optional, Type, Union)
+from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
+                    Optional, Type, Union)
 
 import requests
 import requests.auth
 from requests.adapters import HTTPAdapter
 
-from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment, add_sp_management_token,
-                    add_workspace_id_header)
-from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable, Token, TokenCache,
-                    TokenSource)
+from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
+                    add_sp_management_token, add_workspace_id_header)
+from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
+                    Token, TokenCache, TokenSource)
 from .retries import retried
 from .version import __version__
 
@@ -99,7 +100,8 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth, init_runtime_native_auth,
+    from databricks.sdk.runtime import (init_runtime_legacy_auth,
+                                        init_runtime_native_auth,
                                         init_runtime_repl_auth)
     for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
         if init is None:
