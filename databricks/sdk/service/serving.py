@@ -308,6 +308,7 @@ class ServedModelInput:
     model_name: str
     model_version: str
     workload_size: str
+    workload_type: str
     scale_to_zero_enabled: bool
     environment_vars: Optional['Dict[str,str]'] = None
     instance_profile_arn: Optional[str] = None
@@ -322,6 +323,7 @@ class ServedModelInput:
         if self.name is not None: body['name'] = self.name
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_type is not None: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -332,7 +334,8 @@ class ServedModelInput:
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
-                   workload_size=d.get('workload_size', None))
+                   workload_size=d.get('workload_size', None),
+                   workload_type=d.get('workload_type', None))
 
 
 @dataclass
@@ -347,6 +350,7 @@ class ServedModelOutput:
     scale_to_zero_enabled: Optional[bool] = None
     state: Optional['ServedModelState'] = None
     workload_size: Optional[str] = None
+    workload_type: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -360,6 +364,7 @@ class ServedModelOutput:
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
         if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_type is not None: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -373,7 +378,8 @@ class ServedModelOutput:
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
                    state=_from_dict(d, 'state', ServedModelState),
-                   workload_size=d.get('workload_size', None))
+                   workload_size=d.get('workload_size', None),
+                   workload_type=d.get('workload_type', None))
 
 
 @dataclass
