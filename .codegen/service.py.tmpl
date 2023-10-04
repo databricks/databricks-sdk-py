@@ -219,7 +219,7 @@ class {{.Name}}API:{{if .Description}}
 {{- define "method-param-bind" -}}
       {{- if not .Entity }}None # ERROR: No Type
       {{- else if .Entity.ArrayValue }}[
-        {{- if .Entity.ArrayValue.IsObject -}}v.as_dict()
+        {{- if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal -}}v.as_dict()
         {{- else if .Entity.ArrayValue.Enum -}}v.value
         {{- else}}v{{end}} for v in {{.SnakeName}}]
       {{- else if .Entity.IsObject }}{{.SnakeName}}.as_dict()

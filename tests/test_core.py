@@ -12,10 +12,13 @@ from typing import Iterator, List
 import pytest
 import requests
 
+from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  DatabricksCliTokenSource, DatabricksError,
                                  HeaderFactory, StreamingResponse,
                                  databricks_cli)
+from databricks.sdk.service.catalog import PermissionsChange
+from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -290,6 +293,43 @@ def test_api_client_do_custom_headers(config, requests_mock):
                       })
     res = client.do("GET", "/test", headers={"test": "test"})
     assert res == {"well": "done"}
+
+
+def test_api_client_do_custom_headers(config, requests_mock):
+    client = ApiClient(config)
+    requests_mock.get("/test",
+                      json={"well": "done"},
+                      request_headers={
+                          "test": "test",
+                          "User-Agent": config.user_agent
+                      })
+
+    res = client.do("GET", "/test", headers={"test": "test"})
+    assert res == {"well": "done"}
+
+
+def test_access_control_list(config, requests_mock):
+    requests_mock.post("http://localhost/api/2.1/jobs/create",
+                       request_headers={"User-Agent": config.user_agent})
+
+    w = WorkspaceClient(config=config)
+    res = w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
+
+    assert requests_mock.call_count == 1
+    assert requests_mock.called
+    assert requests_mock.last_request.json() == {'access_control_list': [{'group_name': 'group'}]}
+
+
+def test_shares(config, requests_mock):
+    requests_mock.patch("http://localhost/api/2.1/unity-catalog/shares/jobId/permissions",
+                        request_headers={"User-Agent": config.user_agent})
+
+    w = WorkspaceClient(config=config)
+    res = w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
+
+    assert requests_mock.call_count == 1
+    assert requests_mock.called
+    assert requests_mock.last_request.json() == {'changes': [{'principal': 'principal'}]}
 
 
 def test_error(config, requests_mock):

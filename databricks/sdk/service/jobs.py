@@ -2975,7 +2975,8 @@ class JobsAPI:
         :returns: :class:`CreateResponse`
         """
         body = {}
-        if access_control_list is not None: body['access_control_list'] = [v for v in access_control_list]
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
         if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
@@ -3685,7 +3686,8 @@ class JobsAPI:
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
         body = {}
-        if access_control_list is not None: body['access_control_list'] = [v for v in access_control_list]
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if git_source is not None: body['git_source'] = git_source.as_dict()
         if health is not None: body['health'] = health.as_dict()
