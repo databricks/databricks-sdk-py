@@ -297,19 +297,6 @@ def test_api_client_do_custom_headers(config, requests_mock):
     assert res == {"well": "done"}
 
 
-def test_api_client_do_custom_headers(config, requests_mock):
-    client = ApiClient(config)
-    requests_mock.get("/test",
-                      json={"well": "done"},
-                      request_headers={
-                          "test": "test",
-                          "User-Agent": config.user_agent
-                      })
-
-    res = client.do("GET", "/test", headers={"test": "test"})
-    assert res == {"well": "done"}
-
-
 def test_access_control_list(config, requests_mock):
     requests_mock.post("http://localhost/api/2.1/jobs/create",
                        request_headers={"User-Agent": config.user_agent})
