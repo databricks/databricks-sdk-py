@@ -30,6 +30,7 @@ from .retries import retried
 from .version import __version__
 
 __all__ = ['Config', 'DatabricksError']
+_ARM_CLIENT_ID_FOR_UNIT_TESTS = 'unit-test'
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -232,6 +233,8 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
     headers = {'Authorization': f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
     endpoint = f"{os.environ['ACTIONS_ID_TOKEN_REQUEST_URL']}&audience=api://AzureADTokenExchange"
     response = requests.get(endpoint, headers=headers)
+    if not response.ok:
+        return None
 
     # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
     client_assertion = response.json()['value']
@@ -245,15 +248,17 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
         # detect Azure AD Tenant ID if it's not specified directly
-        cfg.azure_tenant_id = cfg.oidc_endpoints.token_endpoint.replace(aad_endpoint, '').split('/')[0]
+        token_endpoint = cfg.oidc_endpoints.token_endpoint
+        cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, '').split('/')[0]
     inner = ClientCredentials(client_id=cfg.azure_client_id,
-                              client_secret=cfg.azure_client_secret,
+                              client_secret="", # we have no (rotatable) secrets in OIDC flow
                               token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
                               endpoint_params=params,
                               use_params=True)
 
     def refreshed_headers() -> Dict[str, str]:
-        return {'Authorization': f"Bearer {inner.token().access_token}", }
+        token = inner.token()
+        return {'Authorization': f'{token.token_type} {token.access_token}'}
 
     return refreshed_headers
 
@@ -503,7 +508,7 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            azure_cli, github_oidc_azure, external_browser, databricks_cli, runtime_native_auth
+            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -636,6 +641,8 @@ class Config:
 
     @property
     def is_azure(self) -> bool:
+        if self.azure_client_id == _ARM_CLIENT_ID_FOR_UNIT_TESTS:
+            return True
         has_resource_id = self.azure_workspace_resource_id is not None
         has_host = self.host is not None
         is_public_cloud = has_host and ".azuredatabricks.net" in self.host
