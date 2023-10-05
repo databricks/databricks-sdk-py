@@ -21,17 +21,12 @@ class SemVer:
     build: Optional[str] = None
 
     # official https://semver.org/ recommendation: https://regex101.com/r/Ly7O1x/
-    # with addition of "x" wildcards for minor/patch versions
+    # with addition of "x" wildcards for minor/patch versions. Also, patch version may be omitted.
     _pattern = re.compile(r"^"
-                          r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)\.(?P<patch>x|0|[1-9x]\d*)"
+                          r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)(\.(?P<patch>x|0|[1-9x]\d*))?"
                           r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
                           r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
                           r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
-    _pattern_no_patch = re.compile(r"^"
-                                   r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)"
-                                   r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
-                                   r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
-                                   r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
 
     @classmethod
     def parse(cls, v: str) -> 'SemVer':
@@ -41,8 +36,6 @@ class SemVer:
             v = f'v{v}'
         # Try regular SemVer, then fall back to the version without patch.
         m = cls._pattern.match(v[1:])
-        if not m:
-            m = cls._pattern_no_patch.match(v[1:])
         if not m:
             raise ValueError(f'Not a valid SemVer: {v}')
         # patch and/or minor versions may be wildcards.
