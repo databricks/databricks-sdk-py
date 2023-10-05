@@ -28,10 +28,10 @@ class SemVer:
                           r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
                           r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
     _pattern_no_patch = re.compile(r"^"
-                          r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)"
-                          r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
-                          r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
-                          r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
+                                   r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)"
+                                   r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+                                   r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+                                   r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
 
     @classmethod
     def parse(cls, v: str) -> 'SemVer':
