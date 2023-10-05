@@ -237,13 +237,15 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
         return None
 
     # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
-    client_assertion = response.json()['value']
+    response_json = response.json()
+    if 'value' not in response_json:
+        return None
 
     logger.info("Configured AAD token for GitHub Actions OIDC (%s)", cfg.azure_client_id)
     params = {
         'client_assertion_type': 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
         'resource': cfg.effective_azure_login_app_id,
-        'client_assertion': client_assertion,
+        'client_assertion': response_json['value'],
     }
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
