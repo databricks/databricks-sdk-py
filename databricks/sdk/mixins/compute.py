@@ -27,6 +27,11 @@ class SemVer:
                           r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
                           r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
                           r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
+    _pattern_no_patch = re.compile(r"^"
+                          r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)"
+                          r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+                          r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+                          r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
 
     @classmethod
     def parse(cls, v: str) -> 'SemVer':
@@ -34,16 +39,22 @@ class SemVer:
             raise ValueError(f'Not a valid SemVer: {v}')
         if v[0] != 'v':
             v = f'v{v}'
+        # Try regular SemVer, then fall back to the version without patch.
         m = cls._pattern.match(v[1:])
+        if not m:
+            m = cls._pattern_no_patch.match(v[1:])
         if not m:
             raise ValueError(f'Not a valid SemVer: {v}')
         # patch and/or minor versions may be wildcards.
         # for now, we're converting wildcards to zeroes.
         minor = m.group('minor')
-        patch = m.group('patch')
+        try:
+            patch = m.group('patch')
+        except IndexError:
+            patch = None
         return SemVer(major=int(m.group('major')),
                       minor=0 if minor == 'x' else int(minor),
-                      patch=0 if patch == 'x' else int(patch),
+                      patch=0 if patch == 'x' or patch is None else int(patch),
                       pre_release=m.group('pre_release'),
                       build=m.group('build'))
 
@@ -58,7 +69,9 @@ class SemVer:
             return self.patch < other.patch
         if self.pre_release != other.pre_release:
             return self.pre_release < other.pre_release
-        return self.build < other.build
+        if self.build != other.build:
+            return self.build < other.build
+        return False
 
 
 class ClustersExt(compute.ClustersAPI):
