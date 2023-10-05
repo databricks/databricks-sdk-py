@@ -34,7 +34,6 @@ class SemVer:
             raise ValueError(f'Not a valid SemVer: {v}')
         if v[0] != 'v':
             v = f'v{v}'
-        # Try regular SemVer, then fall back to the version without patch.
         m = cls._pattern.match(v[1:])
         if not m:
             raise ValueError(f'Not a valid SemVer: {v}')
@@ -44,10 +43,10 @@ class SemVer:
         try:
             patch = m.group('patch')
         except IndexError:
-            patch = None
+            patch = 0
         return SemVer(major=int(m.group('major')),
                       minor=0 if minor == 'x' else int(minor),
-                      patch=0 if patch == 'x' or patch is None else int(patch),
+                      patch=0 if patch == 'x' else int(patch),
                       pre_release=m.group('pre_release'),
                       build=m.group('build'))
 
