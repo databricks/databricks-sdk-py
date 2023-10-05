@@ -21,3 +21,5 @@ jobs:
         name: Publish package distributions to TestPyPI
         with:
           repository-url: https://test.pypi.org/legacy/
+          # See https://github.com/pypa/gh-action-pypi-publish#tolerating-release-package-file-duplicates
+          skip-existing: true
