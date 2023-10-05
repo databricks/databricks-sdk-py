@@ -46,7 +46,7 @@ class SemVer:
             patch = 0
         return SemVer(major=int(m.group('major')),
                       minor=0 if minor == 'x' else int(minor),
-                      patch=0 if patch == 'x' else int(patch),
+                      patch=0 if patch == 'x' or patch is None else int(patch),
                       pre_release=m.group('pre_release'),
                       build=m.group('build'))
 
