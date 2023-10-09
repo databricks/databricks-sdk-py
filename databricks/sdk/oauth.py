@@ -57,7 +57,9 @@ class Token:
     def expired(self):
         if not self.expiry:
             return False
-        potentially_expired = self.expiry - timedelta(seconds=10)
+        # Azure Databricks rejects tokens that expire in 30 seconds or less,
+        # so we refresh the token 40 seconds before it expires.
+        potentially_expired = self.expiry - timedelta(seconds=40)
         now = datetime.now(tz=potentially_expired.tzinfo)
         is_expired = potentially_expired < now
         return is_expired
