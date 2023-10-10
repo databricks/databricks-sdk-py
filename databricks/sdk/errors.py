@@ -183,11 +183,7 @@ _ERROR_CODE_MAPPING = {
 
 
 def _error_mapper(status_code: int, raw: dict) -> DatabricksError:
-    if 'error_code' not in raw and status_code not in _STATUS_CODE_MAPPING:
-        # strange errors, like from API v1.2 or SCIM
-        return DatabricksError(**raw)
-
-    error_code = raw['error_code']
+    error_code = raw.get('error_code', None)
     if error_code in _ERROR_CODE_MAPPING:
         # more specific error codes override more generic HTTP status codes
         return _ERROR_CODE_MAPPING[error_code](**raw)
