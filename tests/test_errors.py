@@ -41,6 +41,8 @@ def test_missing_error_code():
                           (429, 'RESOURCE_EXHAUSTED', errors.ResourceExhausted), (429, ..., ResourceWarning),
                           (417, 'REQUEST_LIMIT_EXCEEDED', ResourceWarning), (429, ..., IOError),
                           (499, ..., errors.Cancelled), (499, ..., IOError), (500, ..., errors.InternalError),
+                          (500, 'UNKNOWN', errors.InternalError), (500, 'UNKNOWN', errors.Unknown),
+                          (500, 'DATA_LOSS', errors.InternalError), (500, 'DATA_LOSS', errors.DataLoss),
                           (500, ..., IOError), (501, ..., errors.OperationNotImplemented),
                           (501, ..., NotImplementedError), (501, ..., IOError),
                           (503, ..., errors.TemporarilyUnavailable), (503, ..., IOError),

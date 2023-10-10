@@ -78,6 +78,15 @@ class InternalError(DatabricksError):
     This error generally cannot be resolved by the user."""
 
 
+class DataLoss(InternalError):
+    """Unrecoverable data loss or corruption."""
+
+
+class Unknown(InternalError):
+    """This error is used as a fallback if the platform-side mapping is missing some reason, also it can be used
+    to indicate an unknown error between the client library and the server."""
+
+
 class TemporarilyUnavailable(DatabricksError):
     """The service is currently unavailable. This is most likely a transient condition, which can be
     corrected by retrying with a backoff. Note that it is not always safe to retry-on-idempotent
@@ -179,6 +188,10 @@ _ERROR_CODE_MAPPING = {
     # HTTP 429 variants
     'RESOURCE_EXHAUSTED': ResourceExhausted,
     'REQUEST_LIMIT_EXCEEDED': RequestLimitExceeded,
+
+    # HTTP 500 variants
+    'UNKNOWN': Unknown,
+    'DATA_LOSS': DataLoss,
 }
 
 
