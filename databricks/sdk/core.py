@@ -1117,7 +1117,7 @@ class ApiClient:
         if is_too_many_requests_or_unavailable:
             kwargs['retry_after_secs'] = self._parse_retry_after(response)
         kwargs['message'] = message
-        return _error_mapper(kwargs)
+        return _error_mapper(status_code, kwargs)
 
     def _record_request_log(self, response: requests.Response, raw=False):
         if not logger.isEnabledFor(logging.DEBUG):
