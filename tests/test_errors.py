@@ -18,6 +18,11 @@ def test_other_errors_also_map_fine():
     assert errors.DatabricksError == type(err)
 
 
+def test_missing_error_code():
+    err = errors._error_mapper(522, {'message': 'nope'})
+    assert errors.DatabricksError == type(err)
+
+
 @pytest.mark.parametrize('status_code, error_code, klass',
                          [(400, ..., errors.BadRequest), (400, 'INVALID_PARAMETER_VALUE', errors.BadRequest),
                           (400, 'INVALID_PARAMETER_VALUE', errors.InvalidParameterValue),
