@@ -872,7 +872,7 @@ class ServingEndpointsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
         parsed = ListEndpointsResponse.from_dict(json).endpoints
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.

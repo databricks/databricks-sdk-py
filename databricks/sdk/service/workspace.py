@@ -1037,7 +1037,7 @@ class GitCredentialsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
         parsed = GetCredentialsResponse.from_dict(json).credentials
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                credential_id: int,
@@ -1465,7 +1465,7 @@ class SecretsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query, headers=headers)
         parsed = ListAclsResponse.from_dict(json).items
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def list_scopes(self) -> Iterator['SecretScope']:
         """List all scopes.
@@ -1480,7 +1480,7 @@ class SecretsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list', headers=headers)
         parsed = ListScopesResponse.from_dict(json).scopes
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def list_secrets(self, scope: str) -> Iterator['SecretMetadata']:
         """List secret keys.
@@ -1503,7 +1503,7 @@ class SecretsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query, headers=headers)
         parsed = ListSecretsResponse.from_dict(json).secrets
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
         """Create/update an ACL.
@@ -1789,7 +1789,7 @@ class WorkspaceAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query, headers=headers)
         parsed = ListResponse.from_dict(json).objects
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def mkdirs(self, path: str):
         """Create a directory.

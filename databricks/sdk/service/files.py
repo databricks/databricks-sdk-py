@@ -339,7 +339,7 @@ class DbfsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
         parsed = ListStatusResponse.from_dict(json).files
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def mkdirs(self, path: str):
         """Create a directory.

@@ -3196,7 +3196,7 @@ class AccountMetastoreAssignmentsAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces',
                             headers=headers)
         parsed = ListAccountMetastoreAssignmentsResponse.from_dict(json).workspace_ids
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                workspace_id: int,
@@ -3300,7 +3300,7 @@ class AccountMetastoresAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/metastores', headers=headers)
         parsed = ListMetastoresResponse.from_dict(json).metastores
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                metastore_id: str,
@@ -3614,7 +3614,7 @@ class CatalogsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', headers=headers)
         parsed = ListCatalogsResponse.from_dict(json).catalogs
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                name: str,
@@ -3745,7 +3745,7 @@ class ConnectionsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/connections', headers=headers)
         parsed = ListConnectionsResponse.from_dict(json).connections
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self, name: str, options: Dict[str, str], name_arg: str) -> ConnectionInfo:
         """Update a connection.
@@ -3886,7 +3886,7 @@ class ExternalLocationsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
         parsed = ListExternalLocationsResponse.from_dict(json).external_locations
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                name: str,
@@ -4126,7 +4126,7 @@ class FunctionsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
         parsed = ListFunctionsResponse.from_dict(json).functions
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
@@ -4393,7 +4393,7 @@ class MetastoresAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/metastores', headers=headers)
         parsed = ListMetastoresResponse.from_dict(json).metastores
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.
@@ -5003,7 +5003,7 @@ class SchemasAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
         parsed = ListSchemasResponse.from_dict(json).schemas
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                full_name: str,
@@ -5165,7 +5165,7 @@ class StorageCredentialsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
         parsed = ListStorageCredentialsResponse.from_dict(json).storage_credentials
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                name: str,
@@ -5351,7 +5351,7 @@ class SystemSchemasAPI:
                             f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
                             headers=headers)
         parsed = ListSystemSchemasResponse.from_dict(json).schemas
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
 
 class TableConstraintsAPI:
@@ -5711,7 +5711,7 @@ class VolumesAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
         parsed = ListVolumesResponseContent.from_dict(json).volumes
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def read(self, full_name_arg: str) -> VolumeInfo:
         """Get a Volume.

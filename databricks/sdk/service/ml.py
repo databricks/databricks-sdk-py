@@ -3742,7 +3742,7 @@ class ModelRegistryAPI:
                             body=body,
                             headers=headers)
         parsed = GetLatestVersionsResponse.from_dict(json).model_versions
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
         """Get model.
@@ -3896,7 +3896,7 @@ class ModelRegistryAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query, headers=headers)
         parsed = ListTransitionRequestsResponse.from_dict(json).requests
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def list_webhooks(self,
                       *,

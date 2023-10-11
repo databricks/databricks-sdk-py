@@ -468,7 +468,7 @@ class CustomAppIntegrationAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                             headers=headers)
         parsed = GetCustomAppIntegrationsOutput.from_dict(json).apps
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                integration_id: str,
@@ -680,7 +680,7 @@ class PublishedAppIntegrationAPI:
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                             headers=headers)
         parsed = GetPublishedAppIntegrationsOutput.from_dict(json).apps
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
@@ -776,4 +776,4 @@ class ServicePrincipalSecretsAPI:
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
             headers=headers)
         parsed = ListServicePrincipalSecretsResponse.from_dict(json).secrets
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
