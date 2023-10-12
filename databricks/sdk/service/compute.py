@@ -392,6 +392,7 @@ class ClusterDetails:
     spark_context_id: Optional[int] = None
     spark_env_vars: Optional['Dict[str,str]'] = None
     spark_version: Optional[str] = None
+    spec: Optional['CreateCluster'] = None
     ssh_public_keys: Optional['List[str]'] = None
     start_time: Optional[int] = None
     state: Optional['State'] = None
@@ -442,6 +443,7 @@ class ClusterDetails:
         if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.spec: body['spec'] = self.spec.as_dict()
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state is not None: body['state'] = self.state.value
@@ -490,6 +492,7 @@ class ClusterDetails:
                    spark_context_id=d.get('spark_context_id', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
+                   spec=_from_dict(d, 'spec', CreateCluster),
                    ssh_public_keys=d.get('ssh_public_keys', None),
                    start_time=d.get('start_time', None),
                    state=_enum(d, 'state', State),
@@ -808,6 +811,7 @@ class ClusterSource(Enum):
 
 @dataclass
 class ClusterSpec:
+    apply_policy_default_values: Optional[bool] = None
     autoscale: Optional['AutoScale'] = None
     autotermination_minutes: Optional[int] = None
     aws_attributes: Optional['AwsAttributes'] = None
@@ -838,6 +842,8 @@ class ClusterSpec:
 
     def as_dict(self) -> dict:
         body = {}
+        if self.apply_policy_default_values is not None:
+            body['apply_policy_default_values'] = self.apply_policy_default_values
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
             body['autotermination_minutes'] = self.autotermination_minutes
@@ -872,7 +878,8 @@ class ClusterSpec:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
-        return cls(autoscale=_from_dict(d, 'autoscale', AutoScale),
+        return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
+                   autoscale=_from_dict(d, 'autoscale', AutoScale),
                    autotermination_minutes=d.get('autotermination_minutes', None),
                    aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
@@ -1592,26 +1599,14 @@ class EditInstancePool:
     instance_pool_id: str
     instance_pool_name: str
     node_type_id: str
-    aws_attributes: Optional['InstancePoolAwsAttributes'] = None
-    azure_attributes: Optional['InstancePoolAzureAttributes'] = None
     custom_tags: Optional['Dict[str,str]'] = None
-    disk_spec: Optional['DiskSpec'] = None
-    enable_elastic_disk: Optional[bool] = None
-    gcp_attributes: Optional['InstancePoolGcpAttributes'] = None
     idle_instance_autotermination_minutes: Optional[int] = None
     max_capacity: Optional[int] = None
     min_idle_instances: Optional[int] = None
-    preloaded_docker_images: Optional['List[DockerImage]'] = None
-    preloaded_spark_versions: Optional['List[str]'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
-        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.disk_spec: body['disk_spec'] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
-        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
@@ -1619,28 +1614,17 @@ class EditInstancePool:
         if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
         if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
-        if self.preloaded_docker_images:
-            body['preloaded_docker_images'] = [v.as_dict() for v in self.preloaded_docker_images]
-        if self.preloaded_spark_versions:
-            body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EditInstancePool':
-        return cls(aws_attributes=_from_dict(d, 'aws_attributes', InstancePoolAwsAttributes),
-                   azure_attributes=_from_dict(d, 'azure_attributes', InstancePoolAzureAttributes),
-                   custom_tags=d.get('custom_tags', None),
-                   disk_spec=_from_dict(d, 'disk_spec', DiskSpec),
-                   enable_elastic_disk=d.get('enable_elastic_disk', None),
-                   gcp_attributes=_from_dict(d, 'gcp_attributes', InstancePoolGcpAttributes),
+        return cls(custom_tags=d.get('custom_tags', None),
                    idle_instance_autotermination_minutes=d.get('idle_instance_autotermination_minutes', None),
                    instance_pool_id=d.get('instance_pool_id', None),
                    instance_pool_name=d.get('instance_pool_name', None),
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
-                   node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
-                   preloaded_spark_versions=d.get('preloaded_spark_versions', None))
+                   node_type_id=d.get('node_type_id', None))
 
 
 @dataclass
@@ -3853,7 +3837,6 @@ class ClustersAPI:
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
-          Note: This field won't be true for webapp requests. Only API users will check this field.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -4140,7 +4123,6 @@ class ClustersAPI:
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
-          Note: This field won't be true for webapp requests. Only API users will check this field.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -5271,17 +5253,10 @@ class InstancePoolsAPI:
              instance_pool_name: str,
              node_type_id: str,
              *,
-             aws_attributes: Optional[InstancePoolAwsAttributes] = None,
-             azure_attributes: Optional[InstancePoolAzureAttributes] = None,
              custom_tags: Optional[Dict[str, str]] = None,
-             disk_spec: Optional[DiskSpec] = None,
-             enable_elastic_disk: Optional[bool] = None,
-             gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
              idle_instance_autotermination_minutes: Optional[int] = None,
              max_capacity: Optional[int] = None,
-             min_idle_instances: Optional[int] = None,
-             preloaded_docker_images: Optional[List[DockerImage]] = None,
-             preloaded_spark_versions: Optional[List[str]] = None):
+             min_idle_instances: Optional[int] = None):
         """Edit an existing instance pool.
         
         Modifies the configuration of an existing instance pool.
@@ -5296,26 +5271,11 @@ class InstancePoolsAPI:
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
           :method:clusters/listNodeTypes API call.
-        :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
-          Attributes related to instance pools running on Amazon Web Services. If not specified at pool
-          creation, a set of default values will be used.
-        :param azure_attributes: :class:`InstancePoolAzureAttributes` (optional)
-          Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
-          default values will be used.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
           EBS volumes) with these tags in addition to `default_tags`. Notes:
           
           - Currently, Databricks allows at most 45 custom tags
-        :param disk_spec: :class:`DiskSpec` (optional)
-          Defines the specification of the disks that will be attached to all spark containers.
-        :param enable_elastic_disk: bool (optional)
-          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
-        :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
-          Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
-          creation, a set of default values will be used.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -5328,22 +5288,11 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
-          Custom Docker Image BYOC
-        :param preloaded_spark_versions: List[str] (optional)
-          A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
-          started with the preloaded Spark version will start faster. A list of available Spark versions can
-          be retrieved by using the :method:clusters/sparkVersions API call.
         
         
         """
         body = {}
-        if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
-        if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
         if custom_tags is not None: body['custom_tags'] = custom_tags
-        if disk_spec is not None: body['disk_spec'] = disk_spec.as_dict()
-        if enable_elastic_disk is not None: body['enable_elastic_disk'] = enable_elastic_disk
-        if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if idle_instance_autotermination_minutes is not None:
             body['idle_instance_autotermination_minutes'] = idle_instance_autotermination_minutes
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
@@ -5351,10 +5300,6 @@ class InstancePoolsAPI:
         if max_capacity is not None: body['max_capacity'] = max_capacity
         if min_idle_instances is not None: body['min_idle_instances'] = min_idle_instances
         if node_type_id is not None: body['node_type_id'] = node_type_id
-        if preloaded_docker_images is not None:
-            body['preloaded_docker_images'] = [v.as_dict() for v in preloaded_docker_images]
-        if preloaded_spark_versions is not None:
-            body['preloaded_spark_versions'] = [v for v in preloaded_spark_versions]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/instance-pools/edit', body=body, headers=headers)
 

@@ -146,20 +146,21 @@ class AccountsUpdateMetastoreAssignment:
 class AccountsUpdateStorageCredential:
     credential_info: Optional['UpdateStorageCredential'] = None
     metastore_id: Optional[str] = None
-    name: Optional[str] = None
+    storage_credential_name: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.credential_info: body['credential_info'] = self.credential_info.as_dict()
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
+        if self.storage_credential_name is not None:
+            body['storage_credential_name'] = self.storage_credential_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccountsUpdateStorageCredential':
         return cls(credential_info=_from_dict(d, 'credential_info', UpdateStorageCredential),
                    metastore_id=d.get('metastore_id', None),
-                   name=d.get('name', None))
+                   storage_credential_name=d.get('storage_credential_name', None))
 
 
 @dataclass
@@ -2608,17 +2609,22 @@ class UpdateConnection:
     name: str
     options: 'Dict[str,str]'
     name_arg: Optional[str] = None
+    owner: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.name_arg is not None: body['name_arg'] = self.name_arg
         if self.options: body['options'] = self.options
+        if self.owner is not None: body['owner'] = self.owner
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateConnection':
-        return cls(name=d.get('name', None), name_arg=d.get('name_arg', None), options=d.get('options', None))
+        return cls(name=d.get('name', None),
+                   name_arg=d.get('name_arg', None),
+                   options=d.get('options', None),
+                   owner=d.get('owner', None))
 
 
 @dataclass
@@ -2955,6 +2961,29 @@ class UpdateWorkspaceBindings:
 
 
 @dataclass
+class UpdateWorkspaceBindingsParameters:
+    add: Optional['List[WorkspaceBinding]'] = None
+    remove: Optional['List[WorkspaceBinding]'] = None
+    securable_name: Optional[str] = None
+    securable_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.add: body['add'] = [v.as_dict() for v in self.add]
+        if self.remove: body['remove'] = [v.as_dict() for v in self.remove]
+        if self.securable_name is not None: body['securable_name'] = self.securable_name
+        if self.securable_type is not None: body['securable_type'] = self.securable_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceBindingsParameters':
+        return cls(add=_repeated(d, 'add', WorkspaceBinding),
+                   remove=_repeated(d, 'remove', WorkspaceBinding),
+                   securable_name=d.get('securable_name', None),
+                   securable_type=d.get('securable_type', None))
+
+
+@dataclass
 class ValidateStorageCredential:
     aws_iam_role: Optional['AwsIamRole'] = None
     azure_managed_identity: Optional['AzureManagedIdentity'] = None
@@ -3108,6 +3137,45 @@ class VolumeType(Enum):
 
     EXTERNAL = 'EXTERNAL'
     MANAGED = 'MANAGED'
+
+
+@dataclass
+class WorkspaceBinding:
+    binding_type: Optional['WorkspaceBindingBindingType'] = None
+    workspace_id: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.binding_type is not None: body['binding_type'] = self.binding_type.value
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceBinding':
+        return cls(binding_type=_enum(d, 'binding_type', WorkspaceBindingBindingType),
+                   workspace_id=d.get('workspace_id', None))
+
+
+class WorkspaceBindingBindingType(Enum):
+
+    BINDING_TYPE_READ_ONLY = 'BINDING_TYPE_READ_ONLY'
+    BINDING_TYPE_READ_WRITE = 'BINDING_TYPE_READ_WRITE'
+
+
+@dataclass
+class WorkspaceBindingsResponse:
+    """Currently assigned workspace bindings"""
+
+    bindings: Optional['List[WorkspaceBinding]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.bindings: body['bindings'] = [v.as_dict() for v in self.bindings]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceBindingsResponse':
+        return cls(bindings=_repeated(d, 'bindings', WorkspaceBinding))
 
 
 class AccountMetastoreAssignmentsAPI:
@@ -3362,7 +3430,7 @@ class AccountStorageCredentialsAPI:
             headers=headers)
         return AccountsStorageCredentialInfo.from_dict(res)
 
-    def delete(self, metastore_id: str, name: str, *, force: Optional[bool] = None):
+    def delete(self, metastore_id: str, storage_credential_name: str, *, force: Optional[bool] = None):
         """Delete a storage credential.
         
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
@@ -3370,7 +3438,7 @@ class AccountStorageCredentialsAPI:
         
         :param metastore_id: str
           Unity Catalog metastore ID
-        :param name: str
+        :param storage_credential_name: str
           Name of the storage credential.
         :param force: bool (optional)
           Force deletion even if the Storage Credential is not empty. Default is false.
@@ -3383,11 +3451,11 @@ class AccountStorageCredentialsAPI:
         headers = {'Accept': 'application/json', }
         self._api.do(
             'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}',
             query=query,
             headers=headers)
 
-    def get(self, metastore_id: str, name: str) -> AccountsStorageCredentialInfo:
+    def get(self, metastore_id: str, storage_credential_name: str) -> AccountsStorageCredentialInfo:
         """Gets the named storage credential.
         
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
@@ -3395,7 +3463,7 @@ class AccountStorageCredentialsAPI:
         
         :param metastore_id: str
           Unity Catalog metastore ID
-        :param name: str
+        :param storage_credential_name: str
           Name of the storage credential.
         
         :returns: :class:`AccountsStorageCredentialInfo`
@@ -3404,7 +3472,7 @@ class AccountStorageCredentialsAPI:
         headers = {'Accept': 'application/json', }
         res = self._api.do(
             'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}',
             headers=headers)
         return AccountsStorageCredentialInfo.from_dict(res)
 
@@ -3428,7 +3496,7 @@ class AccountStorageCredentialsAPI:
 
     def update(self,
                metastore_id: str,
-               name: str,
+               storage_credential_name: str,
                *,
                credential_info: Optional[UpdateStorageCredential] = None) -> AccountsStorageCredentialInfo:
         """Updates a storage credential.
@@ -3438,7 +3506,7 @@ class AccountStorageCredentialsAPI:
         
         :param metastore_id: str
           Unity Catalog metastore ID
-        :param name: str
+        :param storage_credential_name: str
           Name of the storage credential.
         :param credential_info: :class:`UpdateStorageCredential` (optional)
         
@@ -3449,7 +3517,7 @@ class AccountStorageCredentialsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do(
             'PUT',
-            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/',
+            f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}',
             body=body,
             headers=headers)
         return AccountsStorageCredentialInfo.from_dict(res)
@@ -3747,7 +3815,12 @@ class ConnectionsAPI:
         parsed = ListConnectionsResponse.from_dict(json).connections
         return parsed if parsed is not None else []
 
-    def update(self, name: str, options: Dict[str, str], name_arg: str) -> ConnectionInfo:
+    def update(self,
+               name: str,
+               options: Dict[str, str],
+               name_arg: str,
+               *,
+               owner: Optional[str] = None) -> ConnectionInfo:
         """Update a connection.
         
         Updates the connection that matches the supplied name.
@@ -3758,12 +3831,15 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param name_arg: str
           Name of the connection.
+        :param owner: str (optional)
+          Username of current owner of the connection.
         
         :returns: :class:`ConnectionInfo`
         """
         body = {}
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
+        if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PATCH',
                            f'/api/2.1/unity-catalog/connections/{name_arg}',
@@ -5069,14 +5145,7 @@ class StorageCredentialsAPI:
                skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Create a storage credential.
         
-        Creates a new storage credential. The request object is specific to the cloud:
-        
-        * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for Azure credentials. *
-        **AzureManagedIdentity** for Azure managed credentials. * **DatabricksGcpServiceAccount** for GCP
-        managed credentials.
-        
-        The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
-        metastore.
+        Creates a new storage credential.
         
         :param name: str
           The credential name. The name must be unique within the metastore.
@@ -5181,9 +5250,7 @@ class StorageCredentialsAPI:
                skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Update a credential.
         
-        Updates a storage credential on the metastore. The caller must be the owner of the storage credential
-        or a metastore admin. If the caller is a metastore admin, only the __owner__ credential can be
-        changed.
+        Updates a storage credential on the metastore.
         
         :param name: str
           The credential name. The name must be unique within the metastore.
@@ -5772,10 +5839,20 @@ class VolumesAPI:
 
 
 class WorkspaceBindingsAPI:
-    """A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ catalog can be accessed
-    from any workspace, while an __ISOLATED__ catalog can only be access from a configured list of workspaces.
+    """A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ securable can be
+    accessed from any workspace, while an __ISOLATED__ securable can only be accessed from a configured list
+    of workspaces. This API allows you to configure (bind) securables to workspaces.
     
-    A catalog's workspace bindings can be configured by a metastore admin or the owner of the catalog."""
+    NOTE: The __isolation_mode__ is configured for the securable itself (using its Update method) and the
+    workspace bindings are only consulted when the securable's __isolation_mode__ is set to __ISOLATED__.
+    
+    A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
+    
+    The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Please use
+    the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
+    ability to bind a securable in READ_ONLY mode (catalogs only).
+    
+    Securables that support binding: - catalog"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -5797,6 +5874,26 @@ class WorkspaceBindingsAPI:
                            f'/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}',
                            headers=headers)
         return CurrentWorkspaceBindings.from_dict(res)
+
+    def get_bindings(self, securable_type: str, securable_name: str) -> WorkspaceBindingsResponse:
+        """Get securable workspace bindings.
+        
+        Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
+        securable.
+        
+        :param securable_type: str
+          The type of the securable.
+        :param securable_name: str
+          The name of the securable.
+        
+        :returns: :class:`WorkspaceBindingsResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}',
+                           headers=headers)
+        return WorkspaceBindingsResponse.from_dict(res)
 
     def update(self,
                name: str,
@@ -5826,3 +5923,35 @@ class WorkspaceBindingsAPI:
                            body=body,
                            headers=headers)
         return CurrentWorkspaceBindings.from_dict(res)
+
+    def update_bindings(self,
+                        securable_type: str,
+                        securable_name: str,
+                        *,
+                        add: Optional[List[WorkspaceBinding]] = None,
+                        remove: Optional[List[WorkspaceBinding]] = None) -> WorkspaceBindingsResponse:
+        """Update securable workspace bindings.
+        
+        Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
+        securable.
+        
+        :param securable_type: str
+          The type of the securable.
+        :param securable_name: str
+          The name of the securable.
+        :param add: List[:class:`WorkspaceBinding`] (optional)
+          List of workspace bindings
+        :param remove: List[:class:`WorkspaceBinding`] (optional)
+          List of workspace bindings
+        
+        :returns: :class:`WorkspaceBindingsResponse`
+        """
+        body = {}
+        if add is not None: body['add'] = [v.as_dict() for v in add]
+        if remove is not None: body['remove'] = [v.as_dict() for v in remove]
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PATCH',
+                           f'/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}',
+                           body=body,
+                           headers=headers)
+        return WorkspaceBindingsResponse.from_dict(res)

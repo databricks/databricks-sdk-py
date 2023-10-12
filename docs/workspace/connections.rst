@@ -69,7 +69,7 @@ Connections
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name, options, name_arg)
+    .. py:method:: update(name, options, name_arg [, owner])
 
         Update a connection.
         
@@ -81,6 +81,8 @@ Connections
           A map of key-value properties attached to the securable.
         :param name_arg: str
           Name of the connection.
+        :param owner: str (optional)
+          Username of current owner of the connection.
         
         :returns: :class:`ConnectionInfo`
         

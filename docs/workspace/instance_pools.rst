@@ -102,7 +102,7 @@ Instance Pools
         
         
 
-    .. py:method:: edit(instance_pool_id, instance_pool_name, node_type_id [, aws_attributes, azure_attributes, custom_tags, disk_spec, enable_elastic_disk, gcp_attributes, idle_instance_autotermination_minutes, max_capacity, min_idle_instances, preloaded_docker_images, preloaded_spark_versions])
+    .. py:method:: edit(instance_pool_id, instance_pool_name, node_type_id [, custom_tags, idle_instance_autotermination_minutes, max_capacity, min_idle_instances])
 
         Usage:
 
@@ -139,26 +139,11 @@ Instance Pools
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
           :method:clusters/listNodeTypes API call.
-        :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
-          Attributes related to instance pools running on Amazon Web Services. If not specified at pool
-          creation, a set of default values will be used.
-        :param azure_attributes: :class:`InstancePoolAzureAttributes` (optional)
-          Attributes related to instance pools running on Azure. If not specified at pool creation, a set of
-          default values will be used.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
           EBS volumes) with these tags in addition to `default_tags`. Notes:
           
           - Currently, Databricks allows at most 45 custom tags
-        :param disk_spec: :class:`DiskSpec` (optional)
-          Defines the specification of the disks that will be attached to all spark containers.
-        :param enable_elastic_disk: bool (optional)
-          Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-          additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-          requires specific AWS permissions to function correctly - refer to the User Guide for more details.
-        :param gcp_attributes: :class:`InstancePoolGcpAttributes` (optional)
-          Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
-          creation, a set of default values will be used.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -171,12 +156,6 @@ Instance Pools
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
-          Custom Docker Image BYOC
-        :param preloaded_spark_versions: List[str] (optional)
-          A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
-          started with the preloaded Spark version will start faster. A list of available Spark versions can
-          be retrieved by using the :method:clusters/sparkVersions API call.
         
         
         

@@ -256,6 +256,7 @@ class CreateJob:
     access_control_list: Optional['List[iam.AccessControlRequest]'] = None
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
+    deployment: Optional['JobDeployment'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
@@ -272,6 +273,7 @@ class CreateJob:
     tasks: Optional['List[Task]'] = None
     timeout_seconds: Optional[int] = None
     trigger: Optional['TriggerSettings'] = None
+    ui_state: Optional['CreateJobUiState'] = None
     webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
@@ -280,6 +282,7 @@ class CreateJob:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -296,6 +299,7 @@ class CreateJob:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
+        if self.ui_state is not None: body['ui_state'] = self.ui_state.value
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
@@ -304,6 +308,7 @@ class CreateJob:
         return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
                    compute=_repeated(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
+                   deployment=_from_dict(d, 'deployment', JobDeployment),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -320,7 +325,18 @@ class CreateJob:
                    tasks=_repeated(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
+                   ui_state=_enum(d, 'ui_state', CreateJobUiState),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
+
+
+class CreateJobUiState(Enum):
+    """State of the job in UI.
+    
+    * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
+    editable state and can be modified."""
+
+    EDITABLE = 'EDITABLE'
+    LOCKED = 'LOCKED'
 
 
 @dataclass
@@ -672,6 +688,31 @@ class JobCompute:
 
 
 @dataclass
+class JobDeployment:
+    kind: 'JobDeploymentKind'
+    metadata_file_path: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.kind is not None: body['kind'] = self.kind.value
+        if self.metadata_file_path is not None: body['metadata_file_path'] = self.metadata_file_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'JobDeployment':
+        return cls(kind=_enum(d, 'kind', JobDeploymentKind),
+                   metadata_file_path=d.get('metadata_file_path', None))
+
+
+class JobDeploymentKind(Enum):
+    """The kind of deployment that manages the job.
+    
+    * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+
+    BUNDLE = 'BUNDLE'
+
+
+@dataclass
 class JobEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
     on_duration_warning_threshold_exceeded: Optional['List[str]'] = None
@@ -869,6 +910,7 @@ class JobRunAs:
 class JobSettings:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
+    deployment: Optional['JobDeployment'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
@@ -885,12 +927,14 @@ class JobSettings:
     tasks: Optional['List[Task]'] = None
     timeout_seconds: Optional[int] = None
     trigger: Optional['TriggerSettings'] = None
+    ui_state: Optional['JobSettingsUiState'] = None
     webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -907,6 +951,7 @@ class JobSettings:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
+        if self.ui_state is not None: body['ui_state'] = self.ui_state.value
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
@@ -914,6 +959,7 @@ class JobSettings:
     def from_dict(cls, d: Dict[str, any]) -> 'JobSettings':
         return cls(compute=_repeated(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
+                   deployment=_from_dict(d, 'deployment', JobDeployment),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -930,7 +976,18 @@ class JobSettings:
                    tasks=_repeated(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
+                   ui_state=_enum(d, 'ui_state', JobSettingsUiState),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
+
+
+class JobSettingsUiState(Enum):
+    """State of the job in UI.
+    
+    * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
+    editable state and can be modified."""
+
+    EDITABLE = 'EDITABLE'
+    LOCKED = 'LOCKED'
 
 
 @dataclass
@@ -1720,7 +1777,6 @@ class RunNowResponse:
 
 @dataclass
 class RunOutput:
-    condition_task: Optional[Any] = None
     dbt_output: Optional['DbtOutput'] = None
     error: Optional[str] = None
     error_trace: Optional[str] = None
@@ -1733,7 +1789,6 @@ class RunOutput:
 
     def as_dict(self) -> dict:
         body = {}
-        if self.condition_task: body['condition_task'] = self.condition_task
         if self.dbt_output: body['dbt_output'] = self.dbt_output.as_dict()
         if self.error is not None: body['error'] = self.error
         if self.error_trace is not None: body['error_trace'] = self.error_trace
@@ -1747,8 +1802,7 @@ class RunOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunOutput':
-        return cls(condition_task=d.get('condition_task', None),
-                   dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
+        return cls(dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
                    error=d.get('error', None),
                    error_trace=d.get('error_trace', None),
                    logs=d.get('logs', None),
@@ -2449,6 +2503,7 @@ class Task:
     spark_submit_task: Optional['SparkSubmitTask'] = None
     sql_task: Optional['SqlTask'] = None
     timeout_seconds: Optional[int] = None
+    webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2479,6 +2534,7 @@ class Task:
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.task_key is not None: body['task_key'] = self.task_key
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
@@ -2508,7 +2564,8 @@ class Task:
                    spark_submit_task=_from_dict(d, 'spark_submit_task', SparkSubmitTask),
                    sql_task=_from_dict(d, 'sql_task', SqlTask),
                    task_key=d.get('task_key', None),
-                   timeout_seconds=d.get('timeout_seconds', None))
+                   timeout_seconds=d.get('timeout_seconds', None),
+                   webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
 @dataclass
@@ -2875,6 +2932,7 @@ class JobsAPI:
                access_control_list: Optional[List[iam.AccessControlRequest]] = None,
                compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
+               deployment: Optional[JobDeployment] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                format: Optional[Format] = None,
                git_source: Optional[GitSource] = None,
@@ -2891,6 +2949,7 @@ class JobsAPI:
                tasks: Optional[List[Task]] = None,
                timeout_seconds: Optional[int] = None,
                trigger: Optional[TriggerSettings] = None,
+               ui_state: Optional[CreateJobUiState] = None,
                webhook_notifications: Optional[WebhookNotifications] = None) -> CreateResponse:
         """Create a new job.
         
@@ -2903,9 +2962,11 @@ class JobsAPI:
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
+        :param deployment: :class:`JobDeployment` (optional)
+          Deployment information for jobs managed by external sources.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
-          as when this job is deleted. The default behavior is to not send any emails.
+          as when this job is deleted.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -2935,8 +2996,7 @@ class JobsAPI:
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
           
-          This value cannot exceed 1000\. Setting this value to 0 causes all new runs to be skipped. The
-          default behavior is to allow only 1 concurrent run.
+          This value cannot exceed 1000\. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -2963,14 +3023,18 @@ class JobsAPI:
         :param tasks: List[:class:`Task`] (optional)
           A list of task specifications to be executed by this job.
         :param timeout_seconds: int (optional)
-          An optional timeout applied to each run of this job. The default behavior is to have no timeout.
+          An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
+        :param ui_state: :class:`CreateJobUiState` (optional)
+          State of the job in UI.
+          
+          * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
+          editable state and can be modified.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
-          A collection of system notification IDs to notify when the run begins or completes. The default
-          behavior is to not send any system notifications.
+          A collection of system notification IDs to notify when runs of this job begin or complete.
         
         :returns: :class:`CreateResponse`
         """
@@ -2979,6 +3043,7 @@ class JobsAPI:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
+        if deployment is not None: body['deployment'] = deployment.as_dict()
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if format is not None: body['format'] = format.value
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -2995,6 +3060,7 @@ class JobsAPI:
         if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
         if trigger is not None: body['trigger'] = trigger.as_dict()
+        if ui_state is not None: body['ui_state'] = ui_state.value
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
@@ -3421,10 +3487,9 @@ class JobsAPI:
                                sql_params=sql_params).result(timeout=timeout)
 
     def reset(self, job_id: int, new_settings: JobSettings):
-        """Overwrites all settings for a job.
+        """Overwrite all settings for a job.
         
-        Overwrites all the settings for a specific job. Use the Update endpoint to update job settings
-        partially.
+        Overwrite all settings for the given job. Use the Update endpoint to update job settings partially.
         
         :param job_id: int
           The canonical identifier of the job to reset. This field is required.
@@ -3641,8 +3706,7 @@ class JobsAPI:
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
-          An optional set of email addresses notified when the run begins or completes. The default behavior
-          is to not send any emails.
+          An optional set of email addresses notified when the run begins or completes.
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote Git repository containing the source code used by tasks.
           Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
@@ -3669,17 +3733,16 @@ class JobsAPI:
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
-          `webhook_notifications` for this run.
+          `email_notifications` and `webhook_notifications` for this run.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
-          An optional timeout applied to each run of this job. The default behavior is to have no timeout.
+          An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
-          A collection of system notification IDs to notify when the run begins or completes. The default
-          behavior is to not send any system notifications.
+          A collection of system notification IDs to notify when the run begins or completes.
         
         :returns:
           Long-running operation waiter for :class:`Run`.
