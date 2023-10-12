@@ -387,14 +387,19 @@ def http_fixture_server(handler: typing.Callable[[BaseHTTPRequestHandler], None]
         srv.shutdown()
 
 
-def test_http_429_without_retry_after():
+@pytest.mark.parametrize('status_code,include_retry_after', (
+    (429, False),
+    (429, True),
+    (503, False),
+    (503, True)))
+def test_http_retry_after(status_code, include_retry_after):
     requests = []
 
     def inner(h: BaseHTTPRequestHandler):
         if len(requests) == 0:
-            h.send_response(429)
-            # No Retry-After, but should still wait for 1 second
-            # h.send_header('Retry-After', '1')
+            h.send_response(status_code)
+            if include_retry_after:
+                h.send_header('Retry-After', '1')
             h.send_header('Content-Type', 'application/json')
             h.end_headers()
         else:
