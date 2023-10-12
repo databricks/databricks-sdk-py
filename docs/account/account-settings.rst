@@ -8,5 +8,4 @@ Manage security settings for Accounts and Workspaces
   :maxdepth: 1
 
   ip_access_lists
-  network_policy
   settings

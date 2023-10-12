@@ -113,7 +113,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: create( [, access_control_list, compute, continuous, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
+    .. py:method:: create( [, access_control_list, compute, continuous, deployment, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, ui_state, webhook_notifications])
 
         Usage:
 
@@ -155,9 +155,11 @@ Jobs
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
+        :param deployment: :class:`JobDeployment` (optional)
+          Deployment information for jobs managed by external sources.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
-          as when this job is deleted. The default behavior is to not send any emails.
+          as when this job is deleted.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -187,8 +189,7 @@ Jobs
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
           
-          This value cannot exceed 1000\. Setting this value to 0 causes all new runs to be skipped. The
-          default behavior is to allow only 1 concurrent run.
+          This value cannot exceed 1000\. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -215,14 +216,18 @@ Jobs
         :param tasks: List[:class:`Task`] (optional)
           A list of task specifications to be executed by this job.
         :param timeout_seconds: int (optional)
-          An optional timeout applied to each run of this job. The default behavior is to have no timeout.
+          An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
+        :param ui_state: :class:`CreateJobUiState` (optional)
+          State of the job in UI.
+          
+          * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
+          editable state and can be modified.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
-          A collection of system notification IDs to notify when the run begins or completes. The default
-          behavior is to not send any system notifications.
+          A collection of system notification IDs to notify when runs of this job begin or complete.
         
         :returns: :class:`CreateResponse`
         
@@ -693,10 +698,9 @@ Jobs
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Overwrites all settings for a job.
+        Overwrite all settings for a job.
         
-        Overwrites all the settings for a specific job. Use the Update endpoint to update job settings
-        partially.
+        Overwrite all settings for the given job. Use the Update endpoint to update job settings partially.
         
         :param job_id: int
           The canonical identifier of the job to reset. This field is required.
@@ -888,8 +892,7 @@ Jobs
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
-          An optional set of email addresses notified when the run begins or completes. The default behavior
-          is to not send any emails.
+          An optional set of email addresses notified when the run begins or completes.
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote Git repository containing the source code used by tasks.
           Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
@@ -916,17 +919,16 @@ Jobs
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
-          `webhook_notifications` for this run.
+          `email_notifications` and `webhook_notifications` for this run.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
-          An optional timeout applied to each run of this job. The default behavior is to have no timeout.
+          An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
-          A collection of system notification IDs to notify when the run begins or completes. The default
-          behavior is to not send any system notifications.
+          A collection of system notification IDs to notify when the run begins or completes.
         
         :returns:
           Long-running operation waiter for :class:`Run`.

@@ -1524,9 +1524,10 @@ class PipelinesAPI:
                      full_refresh: Optional[bool] = None,
                      full_refresh_selection: Optional[List[str]] = None,
                      refresh_selection: Optional[List[str]] = None) -> StartUpdateResponse:
-        """Queue a pipeline update.
+        """Start a pipeline.
         
-        Starts or queues a pipeline update.
+        Starts a new update for the pipeline. If there is already an active update for the pipeline, the
+        request will fail and the active update will remain running.
         
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
@@ -1556,7 +1557,8 @@ class PipelinesAPI:
     def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
         """Stop a pipeline.
         
-        Stops a pipeline.
+        Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
+        request is a no-op.
         
         :param pipeline_id: str
         

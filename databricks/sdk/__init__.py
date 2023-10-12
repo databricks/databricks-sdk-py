@@ -48,7 +48,6 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  WorkspacesAPI)
 from databricks.sdk.service.serving import ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
-                                             AccountNetworkPolicyAPI,
                                              AccountSettingsAPI,
                                              CredentialsManagerAPI,
                                              IpAccessListsAPI, SettingsAPI,
@@ -259,7 +258,6 @@ class AccountClient:
         self.log_delivery = LogDeliveryAPI(self.api_client)
         self.metastore_assignments = AccountMetastoreAssignmentsAPI(self.api_client)
         self.metastores = AccountMetastoresAPI(self.api_client)
-        self.network_policy = AccountNetworkPolicyAPI(self.api_client)
         self.networks = NetworksAPI(self.api_client)
         self.o_auth_enrollment = OAuthEnrollmentAPI(self.api_client)
         self.o_auth_published_apps = OAuthPublishedAppsAPI(self.api_client)

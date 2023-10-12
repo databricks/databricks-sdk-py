@@ -186,11 +186,13 @@ Workspace
         
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import a directory.
+        `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
+        format with the `language` field unset. To import a single file as `SOURCE`, you must set the
+        `language` field.
         
         :param path: str
           The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
-          format.
+          and `SOURCE` formats.
         :param content: str (optional)
           The base64-encoded content. This has a limit of 10 MB.
           
@@ -203,10 +205,10 @@ Workspace
           
           - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
           content provided in the request. If the item is imported as a notebook, then the item's extension is
-          automatically removed. - `SOURCE`: The notebook is imported as source code. - `HTML`: The notebook
-          is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook
-          file. - `DBC`: The notebook is imported in Databricks archive format. Required for directories. -
-          `R_MARKDOWN`: The notebook is imported from R Markdown format.
+          automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:
+          The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython
+          Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for
+          directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
           The language of the object. This value is set only if the object type is `NOTEBOOK`.
         :param overwrite: bool (optional)

@@ -36,14 +36,7 @@ Storage Credentials
 
         Create a storage credential.
         
-        Creates a new storage credential. The request object is specific to the cloud:
-        
-        * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for Azure credentials. *
-        **AzureManagedIdentity** for Azure managed credentials. * **DatabricksGcpServiceAccount** for GCP
-        managed credentials.
-        
-        The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
-        metastore.
+        Creates a new storage credential.
         
         :param name: str
           The credential name. The name must be unique within the metastore.
@@ -164,9 +157,7 @@ Storage Credentials
 
         Update a credential.
         
-        Updates a storage credential on the metastore. The caller must be the owner of the storage credential
-        or a metastore admin. If the caller is a metastore admin, only the __owner__ credential can be
-        changed.
+        Updates a storage credential on the metastore.
         
         :param name: str
           The credential name. The name must be unique within the metastore.

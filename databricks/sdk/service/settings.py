@@ -13,21 +13,6 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
-class AccountNetworkPolicyMessage:
-    serverless_internet_access_enabled: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.serverless_internet_access_enabled is not None:
-            body['serverless_internet_access_enabled'] = self.serverless_internet_access_enabled
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AccountNetworkPolicyMessage':
-        return cls(serverless_internet_access_enabled=d.get('serverless_internet_access_enabled', None))
-
-
-@dataclass
 class CreateIpAccessList:
     label: str
     list_type: 'ListType'
@@ -153,20 +138,6 @@ class DefaultNamespaceSetting:
 
 
 @dataclass
-class DeleteAccountNetworkPolicyResponse:
-    etag: str
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.etag is not None: body['etag'] = self.etag
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteAccountNetworkPolicyResponse':
-        return cls(etag=d.get('etag', None))
-
-
-@dataclass
 class DeleteDefaultWorkspaceNamespaceResponse:
     etag: str
 
@@ -270,16 +241,16 @@ class FetchIpAccessListResponse:
 
 @dataclass
 class GetIpAccessListResponse:
-    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
+    ip_access_list: Optional['IpAccessListInfo'] = None
 
     def as_dict(self) -> dict:
         body = {}
-        if self.ip_access_lists: body['ip_access_lists'] = [v.as_dict() for v in self.ip_access_lists]
+        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetIpAccessListResponse':
-        return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
+        return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
 
 @dataclass
@@ -349,6 +320,20 @@ class IpAccessListInfo:
                    list_type=_enum(d, 'list_type', ListType),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
+
+
+@dataclass
+class ListIpAccessListResponse:
+    ip_access_lists: Optional['List[IpAccessListInfo]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.ip_access_lists: body['ip_access_lists'] = [v.as_dict() for v in self.ip_access_lists]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListIpAccessListResponse':
+        return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
 
 
 @dataclass
@@ -772,7 +757,7 @@ class AccountIpAccessListsAPI:
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
-                           f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
+                           f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists',
                            body=body,
                            headers=headers)
         return CreateIpAccessListResponse.from_dict(res)
@@ -790,7 +775,7 @@ class AccountIpAccessListsAPI:
 
         headers = {}
         self._api.do('DELETE',
-                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      headers=headers)
 
     def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
@@ -805,10 +790,9 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
-            headers=headers)
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                           headers=headers)
         return GetIpAccessListResponse.from_dict(res)
 
     def list(self) -> Iterator['IpAccessListInfo']:
@@ -821,7 +805,7 @@ class AccountIpAccessListsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET',
-                            f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
+                            f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists',
                             headers=headers)
         parsed = GetIpAccessListsResponse.from_dict(json).ip_access_lists
         return parsed if parsed is not None else []
@@ -872,7 +856,7 @@ class AccountIpAccessListsAPI:
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
-                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
                      headers=headers)
 
@@ -926,97 +910,9 @@ class AccountIpAccessListsAPI:
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH',
-                     f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
+                     f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
                      headers=headers)
-
-
-class AccountNetworkPolicyAPI:
-    """Network policy is a set of rules that defines what can be accessed from your Databricks network. E.g.: You
-    can choose to block your SQL UDF to access internet from your Databricks serverless clusters.
-    
-    There is only one instance of this setting per account. Since this setting has a default value, this
-    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
-    value of the setting back to the default value."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def delete_account_network_policy(self, etag: str) -> DeleteAccountNetworkPolicyResponse:
-        """Delete Account Network Policy.
-        
-        Reverts back all the account network policies back to default.
-        
-        :param etag: str
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DeleteAccountNetworkPolicyResponse`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-        res = self._api.do(
-            'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
-            query=query,
-            headers=headers)
-        return DeleteAccountNetworkPolicyResponse.from_dict(res)
-
-    def read_account_network_policy(self, etag: str) -> AccountNetworkPolicyMessage:
-        """Get Account Network Policy.
-        
-        Gets the value of Account level Network Policy.
-        
-        :param etag: str
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`AccountNetworkPolicyMessage`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
-            query=query,
-            headers=headers)
-        return AccountNetworkPolicyMessage.from_dict(res)
-
-    def update_account_network_policy(
-            self,
-            *,
-            allow_missing: Optional[bool] = None,
-            setting: Optional[AccountNetworkPolicyMessage] = None) -> AccountNetworkPolicyMessage:
-        """Update Account Network Policy.
-        
-        Updates the policy content of Account level Network Policy.
-        
-        :param allow_missing: bool (optional)
-          This should always be set to true for Settings RPCs. Added for AIP compliance.
-        :param setting: :class:`AccountNetworkPolicyMessage` (optional)
-        
-        :returns: :class:`AccountNetworkPolicyMessage`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
-            body=body,
-            headers=headers)
-        return AccountNetworkPolicyMessage.from_dict(res)
 
 
 class AccountSettingsAPI:
@@ -1240,7 +1136,7 @@ class IpAccessListsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/ip-access-lists', headers=headers)
-        parsed = GetIpAccessListResponse.from_dict(json).ip_access_lists
+        parsed = ListIpAccessListResponse.from_dict(json).ip_access_lists
         return parsed if parsed is not None else []
 
     def replace(self,

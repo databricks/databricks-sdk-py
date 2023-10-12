@@ -106,7 +106,6 @@ Clusters
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
-          Note: This field won't be true for webapp requests. Only API users will check this field.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -317,7 +316,6 @@ Clusters
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
-          Note: This field won't be true for webapp requests. Only API users will check this field.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.

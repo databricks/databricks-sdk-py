@@ -330,9 +330,10 @@ Pipelines
 
     .. py:method:: start_update(pipeline_id [, cause, full_refresh, full_refresh_selection, refresh_selection])
 
-        Queue a pipeline update.
+        Start a pipeline.
         
-        Starts or queues a pipeline update.
+        Starts a new update for the pipeline. If there is already an active update for the pipeline, the
+        request will fail and the active update will remain running.
         
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
@@ -354,7 +355,8 @@ Pipelines
 
         Stop a pipeline.
         
-        Stops a pipeline.
+        Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
+        request is a no-op.
         
         :param pipeline_id: str
         

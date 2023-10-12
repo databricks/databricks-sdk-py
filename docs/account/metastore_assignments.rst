@@ -49,6 +49,18 @@ Account Metastore Assignments
 
     .. py:method:: list(metastore_id)
 
+        Usage:
+
+        .. code-block::
+
+            import os
+            
+            from databricks.sdk import AccountClient
+            
+            a = AccountClient()
+            
+            ws = a.metastore_assignments.list(metastore_id=os.environ["TEST_METASTORE_ID"])
+
         Get all workspaces assigned to a metastore.
         
         Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
