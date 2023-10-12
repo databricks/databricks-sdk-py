@@ -1,5 +1,75 @@
 # Version changelog
 
+## 0.11.0
+
+* Added Python 3.12 to project classifiers ([#381](https://github.com/databricks/databricks-sdk-py/pull/381)).
+* Fix serialization issues for generated resources ([#382](https://github.com/databricks/databricks-sdk-py/pull/382)).
+* Fix select spark version in staging ([#388](https://github.com/databricks/databricks-sdk-py/pull/388)).
+* Adjust token expiry window to 40 seconds because of Azure ([#392](https://github.com/databricks/databricks-sdk-py/pull/392)).
+* Add retries on `RPC token bucket limit has been exceeded` ([#395](https://github.com/databricks/databricks-sdk-py/pull/395)).
+* Regenerate to fix template drift ([#398](https://github.com/databricks/databricks-sdk-py/pull/398)).
+* Update OpenAPI spec to 12 Oct 2023 ([#399](https://github.com/databricks/databricks-sdk-py/pull/399)).
+
+Internal:
+
+* GitHub OIDC publishing ([#386](https://github.com/databricks/databricks-sdk-py/pull/386)).
+* Move Release Pipeline to OIDC ([#387](https://github.com/databricks/databricks-sdk-py/pull/387)).
+
+API Changes:
+
+ * Changed `download()` method for [a.billable_usage](https://databricks-sdk-py.readthedocs.io/en/latest/account/billable_usage.html) account-level service to start returning `databricks.sdk.service.billing.DownloadResponse` dataclass.
+ * Added `databricks.sdk.service.billing.DownloadResponse` dataclass.
+ * Changed `delete()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service with new required argument order.
+ * Changed `get()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service with new required argument order.
+ * Changed `update()` method for [a.account_storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_storage_credentials.html) account-level service with new required argument order.
+ * Added `get_bindings()` method for [w.workspace_bindings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/workspace_bindings.html) workspace-level service.
+ * Added `update_bindings()` method for [w.workspace_bindings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/workspace_bindings.html) workspace-level service.
+ * Removed `name` field for `databricks.sdk.service.catalog.AccountsUpdateStorageCredential`.
+ * Added `storage_credential_name` field for `databricks.sdk.service.catalog.AccountsUpdateStorageCredential`.
+ * Removed `name` field for `databricks.sdk.service.catalog.DeleteAccountStorageCredentialRequest`.
+ * Added `storage_credential_name` field for `databricks.sdk.service.catalog.DeleteAccountStorageCredentialRequest`.
+ * Removed `name` field for `databricks.sdk.service.catalog.GetAccountStorageCredentialRequest`.
+ * Added `storage_credential_name` field for `databricks.sdk.service.catalog.GetAccountStorageCredentialRequest`.
+ * Added `owner` field for `databricks.sdk.service.catalog.UpdateConnection`.
+ * Added `databricks.sdk.service.catalog.GetBindingsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.UpdateWorkspaceBindingsParameters` dataclass.
+ * Added `databricks.sdk.service.catalog.WorkspaceBinding` dataclass.
+ * Added `databricks.sdk.service.catalog.WorkspaceBindingBindingType` dataclass.
+ * Added `databricks.sdk.service.catalog.WorkspaceBindingsResponse` dataclass.
+ * Added `spec` field for `databricks.sdk.service.compute.ClusterDetails`.
+ * Added `apply_policy_default_values` field for `databricks.sdk.service.compute.ClusterSpec`.
+ * Removed `aws_attributes` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `azure_attributes` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `disk_spec` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `enable_elastic_disk` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `gcp_attributes` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `preloaded_docker_images` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Removed `preloaded_spark_versions` field for `databricks.sdk.service.compute.EditInstancePool`.
+ * Added `deployment` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Added `ui_state` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Added `deployment` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Added `ui_state` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Removed `condition_task` field for `databricks.sdk.service.jobs.RunOutput`.
+ * Added `webhook_notifications` field for `databricks.sdk.service.jobs.Task`.
+ * Added `databricks.sdk.service.jobs.CreateJobUiState` dataclass.
+ * Added `databricks.sdk.service.jobs.JobDeployment` dataclass.
+ * Added `databricks.sdk.service.jobs.JobDeploymentKind` dataclass.
+ * Added `databricks.sdk.service.jobs.JobSettingsUiState` dataclass.
+ * Added `workload_type` field for `databricks.sdk.service.serving.ServedModelInput`.
+ * Added `workload_type` field for `databricks.sdk.service.serving.ServedModelOutput`.
+ * Removed [a.account_network_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_network_policy.html) account-level service.
+ * Changed `list()` method for [w.ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ip_access_lists.html) workspace-level service to return `databricks.sdk.service.settings.ListIpAccessListResponse` dataclass.
+ * Removed `databricks.sdk.service.settings.AccountNetworkPolicyMessage` dataclass.
+ * Removed `databricks.sdk.service.settings.DeleteAccountNetworkPolicyRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.DeleteAccountNetworkPolicyResponse` dataclass.
+ * Removed `ip_access_lists` field for `databricks.sdk.service.settings.GetIpAccessListResponse`.
+ * Added `ip_access_list` field for `databricks.sdk.service.settings.GetIpAccessListResponse`.
+ * Removed `databricks.sdk.service.settings.ReadAccountNetworkPolicyRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.UpdateAccountNetworkPolicyRequest` dataclass.
+ * Added `databricks.sdk.service.settings.ListIpAccessListResponse` dataclass.
+
+OpenAPI SHA: 493a76554afd3afdd15dc858773d01643f80352a, Date: 2023-10-12
+
 ## 0.10.0
 
 * Respect `retry_timeout_seconds` config setting and align retry implementation with Go SDK ([#337](https://github.com/databricks/databricks-sdk-py/pull/337)).
