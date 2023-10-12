@@ -3648,7 +3648,7 @@ class ClusterPoliciesAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/policies/clusters/list', query=query, headers=headers)
         parsed = ListPoliciesResponse.from_dict(json).policies
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def set_permissions(
         self,
@@ -4483,7 +4483,7 @@ class ClustersAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/clusters/list', query=query, headers=headers)
         parsed = ListClustersResponse.from_dict(json).clusters
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -5099,7 +5099,7 @@ class GlobalInitScriptsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/global-init-scripts', headers=headers)
         parsed = ListGlobalInitScriptsResponse.from_dict(json).scripts
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self,
                name: str,
@@ -5419,7 +5419,7 @@ class InstancePoolsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/instance-pools/list', headers=headers)
         parsed = ListInstancePools.from_dict(json).instance_pools
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def set_permissions(
         self,
@@ -5586,7 +5586,7 @@ class InstanceProfilesAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/instance-profiles/list', headers=headers)
         parsed = ListInstanceProfilesResponse.from_dict(json).instance_profiles
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def remove(self, instance_profile_arn: str):
         """Remove the instance profile.
@@ -5669,7 +5669,7 @@ class LibrariesAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add a library.

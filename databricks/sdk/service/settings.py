@@ -824,7 +824,7 @@ class AccountIpAccessListsAPI:
                             f'/api/2.0/preview/accounts/{self._api.account_id}/ip-access-lists',
                             headers=headers)
         parsed = GetIpAccessListsResponse.from_dict(json).ip_access_lists
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def replace(self,
                 label: str,
@@ -1241,7 +1241,7 @@ class IpAccessListsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/ip-access-lists', headers=headers)
         parsed = GetIpAccessListResponse.from_dict(json).ip_access_lists
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def replace(self,
                 label: str,
@@ -1550,7 +1550,7 @@ class TokenManagementAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query, headers=headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def set_permissions(
             self,
@@ -1652,7 +1652,7 @@ class TokensAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
 
 class WorkspaceConfAPI:

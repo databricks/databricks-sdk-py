@@ -1131,7 +1131,7 @@ class AccountGroupsAPI:
                             query=query,
                             headers=headers)
         parsed = ListGroupsResponse.from_dict(json).resources
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def patch(self,
               id: str,
@@ -1340,7 +1340,7 @@ class AccountServicePrincipalsAPI:
                             query=query,
                             headers=headers)
         parsed = ListServicePrincipalResponse.from_dict(json).resources
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def patch(self,
               id: str,
@@ -1566,7 +1566,7 @@ class AccountUsersAPI:
                             query=query,
                             headers=headers)
         parsed = ListUsersResponse.from_dict(json).resources
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def patch(self,
               id: str,
@@ -1792,7 +1792,7 @@ class GroupsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
         parsed = ListGroupsResponse.from_dict(json).resources
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def patch(self,
               id: str,
@@ -2128,7 +2128,7 @@ class ServicePrincipalsAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
         parsed = ListServicePrincipalResponse.from_dict(json).resources
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def patch(self,
               id: str,
@@ -2364,7 +2364,7 @@ class UsersAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
         parsed = ListUsersResponse.from_dict(json).resources
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def patch(self,
               id: str,
@@ -2540,7 +2540,7 @@ class WorkspaceAssignmentAPI:
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments',
             headers=headers)
         parsed = PermissionAssignments.from_dict(json).permission_assignments
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
         """Create or update permissions assignment.

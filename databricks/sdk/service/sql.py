@@ -4012,7 +4012,7 @@ class WarehousesAPI:
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
         parsed = ListWarehousesResponse.from_dict(json).warehouses
-        return parsed if parsed else []
+        return parsed if parsed is not None else []
 
     def set_permissions(self,
                         warehouse_id: str,
