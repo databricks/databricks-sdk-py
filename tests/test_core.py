@@ -387,11 +387,8 @@ def http_fixture_server(handler: typing.Callable[[BaseHTTPRequestHandler], None]
         srv.shutdown()
 
 
-@pytest.mark.parametrize('status_code,include_retry_after', (
-    (429, False),
-    (429, True),
-    (503, False),
-    (503, True)))
+@pytest.mark.parametrize('status_code,include_retry_after',
+                         ((429, False), (429, True), (503, False), (503, True)))
 def test_http_retry_after(status_code, include_retry_after):
     requests = []
 
