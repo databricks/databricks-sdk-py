@@ -958,6 +958,7 @@ class DatabricksError(IOError):
 
 class ApiClient:
     _cfg: Config
+    _RETRY_AFTER_DEFAULT: int = 1
 
     def __init__(self, cfg: Config = None):
 
@@ -1106,11 +1107,13 @@ class ApiClient:
                 return f'matched {substring}'
         return None
 
-    @staticmethod
-    def _parse_retry_after(response: requests.Response) -> Optional[int]:
+    @classmethod
+    def _parse_retry_after(cls, response: requests.Response) -> Optional[int]:
         retry_after = response.headers.get("Retry-After")
         if retry_after is None:
-            return None
+            # 429 requests should include a `Retry-After` header, but if it's missing,
+            # we default to 1 second.
+            return cls._RETRY_AFTER_DEFAULT
         # If the request is throttled, try parse the `Retry-After` header and sleep
         # for the specified number of seconds. Note that this header can contain either
         # an integer or a RFC1123 datetime string.
@@ -1123,7 +1126,7 @@ class ApiClient:
         except ValueError:
             logger.debug(f'Invalid Retry-After header received: {retry_after}. Defaulting to 1')
             # defaulting to 1 sleep second to make self._is_retryable() simpler
-            return 1
+            return cls._RETRY_AFTER_DEFAULT
 
     def _perform(self,
                  method: str,
