@@ -163,6 +163,35 @@ class _SecretsUtil:
         return [SecretScope(v.name) for v in self._api.list_scopes()]
 
 
+class _JobsUtil:
+    """Remote equivalent of jobs util"""
+
+    class _TaskValuesUtil:
+        """Remote equivalent of task values util"""
+        values = {}
+
+        def get(self, taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
+            """
+            Returns the latest task value that belongs to the current job run
+            """
+            return debugValue
+
+        def set(self, key: str, value: any) -> None:
+            """
+            Sets a task value on the current task run
+            """
+            self.values[key] = value
+
+        def checkTaskValue(self, key: str, value: any) -> bool:
+            """
+            Check that the task value with given key is equal to the given value
+            """
+            return self.values.get(key) == value
+
+    def __init__(self) -> None:
+        self.taskValues = self._TaskValuesUtil()
+
+
 class RemoteDbUtils:
 
     def __init__(self, config: 'Config' = None):
@@ -175,6 +204,7 @@ class RemoteDbUtils:
 
         self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
+        self.jobs = _JobsUtil()
         self._widgets = None
 
     # When we import widget_impl, the init file checks whether user has the
