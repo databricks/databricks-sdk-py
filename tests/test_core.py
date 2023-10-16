@@ -14,8 +14,7 @@ import requests
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
-from databricks.sdk.core import (_ARM_CLIENT_ID_FOR_UNIT_TESTS, ApiClient,
-                                 Config, CredentialsProvider,
+from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  DatabricksCliTokenSource, DatabricksError,
                                  HeaderFactory, StreamingResponse,
                                  databricks_cli)
@@ -538,7 +537,10 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
                                               service_management_endpoint=host + '/',
                                               resource_manager_endpoint=host + '/',
                                               active_directory_endpoint=host + '/')
-        cfg = Config(host=host, azure_client_id=_ARM_CLIENT_ID_FOR_UNIT_TESTS, azure_environment=host)
+        cfg = Config(host=host,
+                     azure_workspace_resource_id=...,
+                     azure_client_id='test',
+                     azure_environment=host)
         headers = cfg.authenticate()
 
         assert {'Authorization': 'Taker this-is-it'} == headers

@@ -30,7 +30,6 @@ from .retries import retried
 from .version import __version__
 
 __all__ = ['Config', 'DatabricksError']
-_ARM_CLIENT_ID_FOR_UNIT_TESTS = 'unit-test'
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -643,8 +642,6 @@ class Config:
 
     @property
     def is_azure(self) -> bool:
-        if self.azure_client_id == _ARM_CLIENT_ID_FOR_UNIT_TESTS:
-            return True
         has_resource_id = self.azure_workspace_resource_id is not None
         has_host = self.host is not None
         is_public_cloud = has_host and ".azuredatabricks.net" in self.host
