@@ -280,7 +280,8 @@ class AzureCliTokenSource(CliTokenSource):
                 return token
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
-        else:
+        elif cfg.effective_azure_login_app_id != ARM_DATABRICKS_RESOURCE_ID:
+            # the proper fix has to be done on Databricks Platform side
             logger.warning(
                 "azure_workspace_resource_id field not provided. " +
                 "It is recommended to specify this field in the Databricks configuration to avoid authentication errors."
