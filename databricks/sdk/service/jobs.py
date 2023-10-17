@@ -1853,7 +1853,7 @@ class RunParameters:
 
 class RunResultState(Enum):
     """A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed
-    successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped
+    successfully. * `FAILED`: The task completed with an error. * `TIMEOUT`: The run was stopped
     after reaching the timeout. * `CANCELED`: The run was canceled at user request. *
     `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were
     reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. *
@@ -1867,7 +1867,7 @@ class RunResultState(Enum):
     MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
     SUCCESS = 'SUCCESS'
     SUCCESS_WITH_FAILURES = 'SUCCESS_WITH_FAILURES'
-    TIMEDOUT = 'TIMEDOUT'
+    TIMEOUT = 'TIMEOUT'
     UPSTREAM_CANCELED = 'UPSTREAM_CANCELED'
     UPSTREAM_FAILED = 'UPSTREAM_FAILED'
 
@@ -1880,7 +1880,7 @@ class RunState:
     queue_reason: Optional[str] = None
     result_state: Optional['RunResultState'] = None
     state_message: Optional[str] = None
-    user_cancelled_or_timedout: Optional[bool] = None
+    user_cancelled_or_timeout: Optional[bool] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1888,8 +1888,8 @@ class RunState:
         if self.queue_reason is not None: body['queue_reason'] = self.queue_reason
         if self.result_state is not None: body['result_state'] = self.result_state.value
         if self.state_message is not None: body['state_message'] = self.state_message
-        if self.user_cancelled_or_timedout is not None:
-            body['user_cancelled_or_timedout'] = self.user_cancelled_or_timedout
+        if self.user_cancelled_or_timeout is not None:
+            body['user_cancelled_or_timeout'] = self.user_cancelled_or_timeout
         return body
 
     @classmethod
@@ -1898,7 +1898,7 @@ class RunState:
                    queue_reason=d.get('queue_reason', None),
                    result_state=_enum(d, 'result_state', RunResultState),
                    state_message=d.get('state_message', None),
-                   user_cancelled_or_timedout=d.get('user_cancelled_or_timedout', None))
+                   user_cancelled_or_timeout=d.get('user_cancelled_or_timeout', None))
 
 
 @dataclass
