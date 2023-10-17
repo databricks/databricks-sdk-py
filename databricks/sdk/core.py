@@ -314,23 +314,42 @@ class AzureCliTokenSource(CliTokenSource):
                          access_token_field='accessToken',
                          expiry_field='expiresOn')
 
+    def is_human_user(self) -> bool:
+        """The UPN claim is the username of the user, but not the Service Principal.
+
+        Azure CLI can be authenticated by both human users (`az login`) and service principals. In case of service
+        principals, it can be either OIDC from GitHub or login with a password:
+
+            ~ $ az login --service-principal --user $clientID --password $clientSecret --tenant $tenantID
+
+        Human users get more claims:
+        - 'amr' - how the subject of the token was authenticated
+        - 'name', 'family_name', 'given_name' - human-readable values that identifies the subject of the token
+        - 'scp' with `user_impersonation` value, that shows the set of scopes exposed by your application for which
+              the client application has requested (and received) consent
+        - 'unique_name' - a human-readable value that identifies the subject of the token. This value is not
+              guaranteed to be unique within a tenant and should be used only for display purposes.
+        - 'upn' - The username of the user.
+        """
+        return 'upn' in self.token().jwt_claims()
+
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
         if subscription != "":
-            token = AzureCliTokenSource(resource, subscription)
+            token_source = AzureCliTokenSource(resource, subscription)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
                 # In such case, we fall back to not using the subscription.
-                token.token()
-                return token
+                token_source.token()
+                return token_source
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
 
-        token = AzureCliTokenSource(resource)
-        token.token()
-        return token
+        token_source = AzureCliTokenSource(resource)
+        token_source.token()
+        return token_source
 
     @staticmethod
     def get_subscription(cfg: 'Config') -> str:
@@ -355,12 +374,13 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
         logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
         return None
-    try:
-        mgmt_token_source = AzureCliTokenSource.for_resource(cfg,
-                                                             cfg.arm_environment.service_management_endpoint)
-    except Exception as e:
-        logger.debug(f'Not including service management token in headers', exc_info=e)
-        mgmt_token_source = None
+    if not token_source.is_human_user():
+        try:
+            management_endpoint = cfg.arm_environment.service_management_endpoint
+            mgmt_token_source = AzureCliTokenSource.for_resource(cfg, management_endpoint)
+        except Exception as e:
+            logger.debug(f'Not including service management token in headers', exc_info=e)
+            mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
