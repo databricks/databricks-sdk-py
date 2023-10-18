@@ -13,6 +13,7 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
 from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  DatabricksCliTokenSource, DatabricksError,
                                  HeaderFactory, StreamingResponse,
@@ -510,3 +511,39 @@ def test_http_retried_on_connection_error():
         assert 'foo' in res
 
     assert len(requests) == 2
+
+
+def test_github_oidc_flow_works_with_azure(monkeypatch):
+
+    def inner(h: BaseHTTPRequestHandler):
+        if 'audience=api://AzureADTokenExchange' in h.path:
+            auth = h.headers['Authorization']
+            assert 'Bearer gh-actions-token' == auth
+            h.send_response(200)
+            h.end_headers()
+            h.wfile.write(b'{"value": "this_is_jwt_token"}')
+            return
+        if '/oidc/oauth2/v2.0/authorize' == h.path:
+            h.send_response(301)
+            h.send_header('Location', f'http://{h.headers["Host"]}/mocked-tenant-id/irrelevant/part')
+            h.end_headers()
+            return
+        if '/mocked-tenant-id/oauth2/token' == h.path:
+            h.send_response(200)
+            h.end_headers()
+            h.wfile.write(b'{"expires_in": 100, "access_token": "this-is-it", "token_type": "Taker"}')
+
+    with http_fixture_server(inner) as host:
+        monkeypatch.setenv('ACTIONS_ID_TOKEN_REQUEST_URL', f'{host}/oidc')
+        monkeypatch.setenv('ACTIONS_ID_TOKEN_REQUEST_TOKEN', 'gh-actions-token')
+        ENVIRONMENTS[host] = AzureEnvironment(name=host,
+                                              service_management_endpoint=host + '/',
+                                              resource_manager_endpoint=host + '/',
+                                              active_directory_endpoint=host + '/')
+        cfg = Config(host=host,
+                     azure_workspace_resource_id=...,
+                     azure_client_id='test',
+                     azure_environment=host)
+        headers = cfg.authenticate()
+
+        assert {'Authorization': 'Taker this-is-it'} == headers

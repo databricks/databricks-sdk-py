@@ -217,6 +217,53 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     return refreshed_headers
 
 
+@credentials_provider('github-oidc-azure', ['host', 'azure_client_id'])
+def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
+    if 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' not in os.environ:
+        # not in GitHub actions
+        return None
+
+    # Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
+    # identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
+    if not cfg.is_azure:
+        return None
+
+    # See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
+    headers = {'Authorization': f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
+    endpoint = f"{os.environ['ACTIONS_ID_TOKEN_REQUEST_URL']}&audience=api://AzureADTokenExchange"
+    response = requests.get(endpoint, headers=headers)
+    if not response.ok:
+        return None
+
+    # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
+    response_json = response.json()
+    if 'value' not in response_json:
+        return None
+
+    logger.info("Configured AAD token for GitHub Actions OIDC (%s)", cfg.azure_client_id)
+    params = {
+        'client_assertion_type': 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+        'resource': cfg.effective_azure_login_app_id,
+        'client_assertion': response_json['value'],
+    }
+    aad_endpoint = cfg.arm_environment.active_directory_endpoint
+    if not cfg.azure_tenant_id:
+        # detect Azure AD Tenant ID if it's not specified directly
+        token_endpoint = cfg.oidc_endpoints.token_endpoint
+        cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, '').split('/')[0]
+    inner = ClientCredentials(client_id=cfg.azure_client_id,
+                              client_secret="", # we have no (rotatable) secrets in OIDC flow
+                              token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
+                              endpoint_params=params,
+                              use_params=True)
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = inner.token()
+        return {'Authorization': f'{token.token_type} {token.access_token}'}
+
+    return refreshed_headers
+
+
 class CliTokenSource(Refreshable):
 
     def __init__(self, cmd: List[str], token_type_field: str, access_token_field: str, expiry_field: str):
@@ -462,7 +509,7 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            azure_cli, external_browser, databricks_cli, runtime_native_auth
+            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
