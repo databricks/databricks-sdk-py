@@ -316,7 +316,7 @@ class AzureCliTokenSource(CliTokenSource):
 
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
-        subscription = AzureCliTokenSource._get_subscription(cfg)
+        subscription = AzureCliTokenSource.get_subscription(cfg)
         if subscription != "":
             token = AzureCliTokenSource(resource, subscription)
             try:
@@ -327,19 +327,15 @@ class AzureCliTokenSource(CliTokenSource):
                 return token
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
-        else:
-            logger.warning(
-                "azure_workspace_resource_id field not provided. " +
-                "It is recommended to specify this field in the Databricks configuration to avoid authentication errors."
-            )
+
         token = AzureCliTokenSource(resource)
         token.token()
         return token
 
     @staticmethod
-    def _get_subscription(cfg: 'Config') -> str:
+    def get_subscription(cfg: 'Config') -> str:
         resource = cfg.azure_workspace_resource_id
-        if resource == None or resource == "":
+        if resource is None or resource == "":
             return ""
         components = resource.split('/')
         if len(components) < 3:
@@ -368,6 +364,11 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
+    if not cfg.is_account_client and AzureCliTokenSource.get_subscription(cfg) == "":
+        logger.warning(
+            "azure_workspace_resource_id field not provided. "
+            "It is recommended to specify this field in the Databricks configuration to avoid authentication errors."
+        )
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
