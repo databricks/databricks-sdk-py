@@ -9,7 +9,7 @@ Groups
     instead of to users individually. All Databricks workspace identities can be assigned as members of
     groups, and members inherit permissions that are assigned to their group.
 
-    .. py:method:: create( [, display_name, entitlements, external_id, groups, id, members, meta, roles])
+    .. py:method:: create( [, display_name, entitlements, external_id, groups, id, members, meta, roles, schemas])
 
         Usage:
 
@@ -41,6 +41,9 @@ Groups
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         :returns: :class:`Group`
         
@@ -144,7 +147,7 @@ Groups
         
         
 
-    .. py:method:: update(id [, display_name, entitlements, external_id, groups, members, meta, roles])
+    .. py:method:: update(id [, display_name, entitlements, external_id, groups, members, meta, roles, schemas])
 
         Replace a group.
         
@@ -161,6 +164,9 @@ Groups
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         
         

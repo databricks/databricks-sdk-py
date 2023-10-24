@@ -465,11 +465,32 @@ Jobs
 
         .. code-block::
 
+            import os
+            import time
+            
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import jobs
             
             w = WorkspaceClient()
             
-            job_list = w.jobs.list(expand_tasks=False)
+            notebook_path = f'/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}'
+            
+            cluster_id = w.clusters.ensure_cluster_is_running(
+                os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
+            
+            created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
+                                        tasks=[
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
+                                        ])
+            
+            run_list = w.jobs.list_runs(job_id=created_job.job_id)
+            
+            # cleanup
+            w.jobs.delete(job_id=created_job.job_id)
 
         List jobs.
         
@@ -495,6 +516,37 @@ Jobs
 
     .. py:method:: list_runs( [, active_only, completed_only, expand_tasks, job_id, limit, offset, page_token, run_type, start_time_from, start_time_to])
 
+        Usage:
+
+        .. code-block::
+
+            import os
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import jobs
+            
+            w = WorkspaceClient()
+            
+            notebook_path = f'/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}'
+            
+            cluster_id = w.clusters.ensure_cluster_is_running(
+                os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
+            
+            created_job = w.jobs.create(name=f'sdk-{time.time_ns()}',
+                                        tasks=[
+                                            jobs.Task(description="test",
+                                                      existing_cluster_id=cluster_id,
+                                                      notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                                                      task_key="test",
+                                                      timeout_seconds=0)
+                                        ])
+            
+            run_list = w.jobs.list_runs(job_id=created_job.job_id)
+            
+            # cleanup
+            w.jobs.delete(job_id=created_job.job_id)
+
         List job runs.
         
         List runs in descending order by start time.
@@ -512,7 +564,7 @@ Jobs
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
           The number of runs to return. This value must be greater than 0 and less than 25. The default value
-          is 25. If a request specifies a limit of 0, the service instead uses the maximum limit.
+          is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
         :param offset: int (optional)
           The offset of the first run to return, relative to the most recent run.
           

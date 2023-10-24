@@ -17,6 +17,38 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
+class AppManifest:
+    dependencies: Optional['List[Any]'] = None
+    description: Optional[str] = None
+    ingress: Optional[Any] = None
+    name: Optional[str] = None
+    registry: Optional[Any] = None
+    services: Optional[Any] = None
+    version: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dependencies: body['dependencies'] = [v for v in self.dependencies]
+        if self.description is not None: body['description'] = self.description
+        if self.ingress: body['ingress'] = self.ingress
+        if self.name is not None: body['name'] = self.name
+        if self.registry: body['registry'] = self.registry
+        if self.services: body['services'] = self.services
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AppManifest':
+        return cls(dependencies=d.get('dependencies', None),
+                   description=d.get('description', None),
+                   ingress=d.get('ingress', None),
+                   name=d.get('name', None),
+                   registry=d.get('registry', None),
+                   services=d.get('services', None),
+                   version=d.get('version', None))
+
+
+@dataclass
 class BuildLogsResponse:
     logs: str
 
@@ -66,6 +98,47 @@ class DataframeSplitInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DataframeSplitInput':
         return cls(columns=d.get('columns', None), data=d.get('data', None), index=d.get('index', None))
+
+
+@dataclass
+class DeployAppRequest:
+    manifest: 'AppManifest'
+    resources: Optional[Any] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.manifest: body['manifest'] = self.manifest.as_dict()
+        if self.resources: body['resources'] = self.resources
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeployAppRequest':
+        return cls(manifest=_from_dict(d, 'manifest', AppManifest), resources=d.get('resources', None))
+
+
+@dataclass
+class DeploymentStatus:
+    deployment_id: Optional[str] = None
+    state: Optional['DeploymentStatusState'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeploymentStatus':
+        return cls(deployment_id=d.get('deployment_id', None), state=_enum(d, 'state', DeploymentStatusState))
+
+
+class DeploymentStatusState(Enum):
+    """State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED"""
+
+    DEPLOYING = 'DEPLOYING'
+    DEPLOYMENT_STATE_UNSPECIFIED = 'DEPLOYMENT_STATE_UNSPECIFIED'
+    FAILURE = 'FAILURE'
+    SUCCESS = 'SUCCESS'
 
 
 @dataclass
@@ -687,6 +760,61 @@ class TrafficConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TrafficConfig':
         return cls(routes=_repeated(d, 'routes', Route))
+
+
+class AppsAPI:
+    """Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and
+    extend Databricks services, and enable users to interact through single sign-on."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, manifest: AppManifest, *, resources: Optional[Any] = None) -> DeploymentStatus:
+        """Create and deploy an application.
+        
+        Creates and deploys an application.
+        
+        :param manifest: :class:`AppManifest`
+          Manifest that specifies the application requirements
+        :param resources: Any (optional)
+          Information passed at app deployment time to fulfill app dependencies
+        
+        :returns: :class:`DeploymentStatus`
+        """
+        body = {}
+        if manifest is not None: body['manifest'] = manifest.as_dict()
+        if resources is not None: body['resources'] = resources
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST', '/api/2.0/preview/apps/deployments', body=body, headers=headers)
+        return DeploymentStatus.from_dict(res)
+
+    def delete(self, name: str):
+        """Delete an application.
+        
+        Delete an application definition
+        
+        :param name: str
+          The name of an application. This field is required.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+        self._api.do('DELETE', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
+
+    def get(self, name: str):
+        """Get definition for an application.
+        
+        Get an application definition
+        
+        :param name: str
+          The name of an application. This field is required.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+        self._api.do('GET', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
 
 
 class ServingEndpointsAPI:

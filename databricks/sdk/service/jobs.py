@@ -2432,6 +2432,7 @@ class SubmitTask:
     spark_submit_task: Optional['SparkSubmitTask'] = None
     sql_task: Optional['SqlTask'] = None
     timeout_seconds: Optional[int] = None
+    webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2452,6 +2453,7 @@ class SubmitTask:
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.task_key is not None: body['task_key'] = self.task_key
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
@@ -2472,7 +2474,8 @@ class SubmitTask:
                    spark_submit_task=_from_dict(d, 'spark_submit_task', SparkSubmitTask),
                    sql_task=_from_dict(d, 'sql_task', SqlTask),
                    task_key=d.get('task_key', None),
-                   timeout_seconds=d.get('timeout_seconds', None))
+                   timeout_seconds=d.get('timeout_seconds', None),
+                   webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
 @dataclass
@@ -3283,7 +3286,7 @@ class JobsAPI:
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
           The number of runs to return. This value must be greater than 0 and less than 25. The default value
-          is 25. If a request specifies a limit of 0, the service instead uses the maximum limit.
+          is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
         :param offset: int (optional)
           The offset of the first run to return, relative to the most recent run.
           

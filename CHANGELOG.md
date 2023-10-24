@@ -1,5 +1,22 @@
 # Version changelog
 
+## 0.12.0
+
+* Retry on all 429 and 503, even when missing Retry-After header ([#402](https://github.com/databricks/databricks-sdk-py/pull/402)).
+* Add support for tokenless authentication for GitHub Actions configured with OpenID Connect with Azure User Managed Identity (or Service Principal) ([#385](https://github.com/databricks/databricks-sdk-py/pull/385)).
+* Reduce redundant warning messages in azure-cli credential provider ([#410](https://github.com/databricks/databricks-sdk-py/pull/410)).
+
+API Changes:
+
+ * Added `attributes`, `count`, `excluded_attributes`, `filter`, `sort_by`, `sort_order`, and `start_index` fields for `databricks.sdk.service.iam.GetAccountUserRequest` and `databricks.sdk.service.iam.GetUserRequest`.
+ * Added `schemas` field for `databricks.sdk.service.iam.Group`, `databricks.sdk.service.iam.ListGroupsResponse`, `databricks.sdk.service.iam.ListServicePrincipalResponse`, `databricks.sdk.service.iam.ListUsersResponse`, `databricks.sdk.service.iam.ServicePrincipal`, and `databricks.sdk.service.iam.User`.
+ * Added `databricks.sdk.service.iam.GetSortOrder`, `databricks.sdk.service.iam.GroupSchema`, `databricks.sdk.service.iam.ListResponseSchema`, `databricks.sdk.service.iam.ServicePrincipalSchema`, and `databricks.sdk.service.iam.UserSchema` dataclasses.
+ * Added `webhook_notifications` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service and related dataclasses
+ * Added [a.account_network_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_network_policy.html) account-level service and related dataclasses.
+
+OpenAPI SHA: 5903bb39137fd76ac384b2044e425f9c56840e00, Date: 2023-10-23
+
 ## 0.11.0
 
 * Added Python 3.12 to project classifiers ([#381](https://github.com/databricks/databricks-sdk-py/pull/381)).

@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -194,6 +194,11 @@ class DeliveryStatus(Enum):
     SUCCEEDED = 'SUCCEEDED'
     SYSTEM_FAILURE = 'SYSTEM_FAILURE'
     USER_FAILURE = 'USER_FAILURE'
+
+
+@dataclass
+class DownloadResponse:
+    contents: Optional[BinaryIO] = None
 
 
 class LogDeliveryConfigStatus(Enum):
@@ -422,7 +427,11 @@ class BillableUsageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None):
+    def download(self,
+                 start_month: str,
+                 end_month: str,
+                 *,
+                 personal_data: Optional[bool] = None) -> DownloadResponse:
         """Return billable usage logs.
         
         Returns billable usage logs in CSV format for the specified account and date range. For the data
@@ -443,18 +452,20 @@ class BillableUsageAPI:
           example the email addresses of cluster creators. Handle this information with care. Defaults to
           false.
         
-        
+        :returns: :class:`DownloadResponse`
         """
 
         query = {}
         if end_month is not None: query['end_month'] = end_month
         if personal_data is not None: query['personal_data'] = personal_data
         if start_month is not None: query['start_month'] = start_month
-        headers = {}
-        self._api.do('GET',
-                     f'/api/2.0/accounts/{self._api.account_id}/usage/download',
-                     query=query,
-                     headers=headers)
+        headers = {'Accept': 'text/plain', }
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/usage/download',
+                           query=query,
+                           headers=headers,
+                           raw=True)
+        return DownloadResponse(contents=res)
 
 
 class BudgetsAPI:

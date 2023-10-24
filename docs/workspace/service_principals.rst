@@ -8,7 +8,7 @@ Service Principals
     write, delete, or modify privileges in production. This eliminates the risk of a user overwriting
     production data by accident.
 
-    .. py:method:: create( [, active, application_id, display_name, entitlements, external_id, groups, id, roles])
+    .. py:method:: create( [, active, application_id, display_name, entitlements, external_id, groups, id, roles, schemas])
 
         Usage:
 
@@ -45,6 +45,9 @@ Service Principals
         :param id: str (optional)
           Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         :returns: :class:`ServicePrincipal`
         
@@ -175,7 +178,7 @@ Service Principals
         
         
 
-    .. py:method:: update(id [, active, application_id, display_name, entitlements, external_id, groups, roles])
+    .. py:method:: update(id [, active, application_id, display_name, entitlements, external_id, groups, roles, schemas])
 
         Usage:
 
@@ -215,6 +218,9 @@ Service Principals
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         
         

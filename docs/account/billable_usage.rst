@@ -15,7 +15,7 @@ Billable usage download
             
             a = AccountClient()
             
-            a.billable_usage.download(start_month="2022-01", end_month="2022-02")
+            resp = a.billable_usage.download(start_month="2023-01", end_month="2023-02")
 
         Return billable usage logs.
         
@@ -37,5 +37,5 @@ Billable usage download
           example the email addresses of cluster creators. Handle this information with care. Defaults to
           false.
         
-        
+        :returns: :class:`DownloadResponse`
         

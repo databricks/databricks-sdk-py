@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated
 
@@ -346,7 +346,7 @@ class CreateRecipient:
     name: str
     authentication_type: 'AuthenticationType'
     comment: Optional[str] = None
-    data_recipient_global_metastore_id: Optional[Any] = None
+    data_recipient_global_metastore_id: Optional[str] = None
     ip_access_list: Optional['IpAccessList'] = None
     owner: Optional[str] = None
     properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
@@ -356,7 +356,7 @@ class CreateRecipient:
         body = {}
         if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
         if self.comment is not None: body['comment'] = self.comment
-        if self.data_recipient_global_metastore_id:
+        if self.data_recipient_global_metastore_id is not None:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.name is not None: body['name'] = self.name
@@ -548,6 +548,7 @@ class Privilege(Enum):
     CREATE_CONNECTION = 'CREATE_CONNECTION'
     CREATE_EXTERNAL_LOCATION = 'CREATE_EXTERNAL_LOCATION'
     CREATE_EXTERNAL_TABLE = 'CREATE_EXTERNAL_TABLE'
+    CREATE_EXTERNAL_VOLUME = 'CREATE_EXTERNAL_VOLUME'
     CREATE_FOREIGN_CATALOG = 'CREATE_FOREIGN_CATALOG'
     CREATE_FUNCTION = 'CREATE_FUNCTION'
     CREATE_MANAGED_STORAGE = 'CREATE_MANAGED_STORAGE'
@@ -560,11 +561,13 @@ class Privilege(Enum):
     CREATE_STORAGE_CREDENTIAL = 'CREATE_STORAGE_CREDENTIAL'
     CREATE_TABLE = 'CREATE_TABLE'
     CREATE_VIEW = 'CREATE_VIEW'
+    CREATE_VOLUME = 'CREATE_VOLUME'
     EXECUTE = 'EXECUTE'
     MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
     MODIFY = 'MODIFY'
     READ_FILES = 'READ_FILES'
     READ_PRIVATE_FILES = 'READ_PRIVATE_FILES'
+    READ_VOLUME = 'READ_VOLUME'
     REFRESH = 'REFRESH'
     SELECT = 'SELECT'
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
@@ -578,6 +581,7 @@ class Privilege(Enum):
     USE_SHARE = 'USE_SHARE'
     WRITE_FILES = 'WRITE_FILES'
     WRITE_PRIVATE_FILES = 'WRITE_PRIVATE_FILES'
+    WRITE_VOLUME = 'WRITE_VOLUME'
 
 
 @dataclass
@@ -1462,7 +1466,7 @@ class RecipientsAPI:
                authentication_type: AuthenticationType,
                *,
                comment: Optional[str] = None,
-               data_recipient_global_metastore_id: Optional[Any] = None,
+               data_recipient_global_metastore_id: Optional[str] = None,
                ip_access_list: Optional[IpAccessList] = None,
                owner: Optional[str] = None,
                properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
@@ -1478,7 +1482,7 @@ class RecipientsAPI:
           The delta sharing authentication type.
         :param comment: str (optional)
           Description about the recipient.
-        :param data_recipient_global_metastore_id: Any (optional)
+        :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is required when
           the __authentication_type__ is **DATABRICKS**. The identifier is of format
           __cloud__:__region__:__metastore-uuid__.

@@ -12,7 +12,7 @@ Users
     Databricks workspace. This ensures a consistent offboarding process and prevents unauthorized users from
     accessing sensitive data.
 
-    .. py:method:: create( [, active, display_name, emails, entitlements, external_id, groups, id, name, roles, user_name])
+    .. py:method:: create( [, active, display_name, emails, entitlements, external_id, groups, id, name, roles, schemas, user_name])
 
         Usage:
 
@@ -47,6 +47,9 @@ Users
           Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -80,7 +83,7 @@ Users
         
         
 
-    .. py:method:: get(id)
+    .. py:method:: get(id [, attributes, count, excluded_attributes, filter, sort_by, sort_order, start_index])
 
         Usage:
 
@@ -105,6 +108,26 @@ Users
         
         :param id: str
           Unique ID for a user in the Databricks workspace.
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`GetSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
         
@@ -178,22 +201,16 @@ Users
 
             import time
             
-            from databricks.sdk import AccountClient
+            from databricks.sdk import WorkspaceClient
             from databricks.sdk.service import iam
             
-            a = AccountClient()
+            w = WorkspaceClient()
             
-            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
             
-            a.users.patch(id=user.id,
-                          schemas=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP],
-                          operations=[
-                              iam.Patch(op=iam.PatchOp.ADD,
-                                        value=iam.User(roles=[iam.ComplexValue(value="account_admin")]))
-                          ])
-            
-            # cleanup
-            a.users.delete(id=user.id)
+            w.users.patch(id=user.id,
+                          operations=[iam.Patch(op=iam.PatchOp.REPLACE, path="active", value="false")],
+                          schemas=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP])
 
         Update user details.
         
@@ -219,7 +236,21 @@ Users
         :returns: :class:`PasswordPermissions`
         
 
-    .. py:method:: update(id [, active, display_name, emails, entitlements, external_id, groups, name, roles, user_name])
+    .. py:method:: update(id [, active, display_name, emails, entitlements, external_id, groups, name, roles, schemas, user_name])
+
+        Usage:
+
+        .. code-block::
+
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            
+            w = WorkspaceClient()
+            
+            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            
+            w.users.update(id=user.id, user_name=user.user_name, active=True)
 
         Replace a user.
         
@@ -238,6 +269,9 @@ Users
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
