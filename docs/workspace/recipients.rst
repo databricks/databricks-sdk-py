@@ -44,7 +44,7 @@ Recipients
           The delta sharing authentication type.
         :param comment: str (optional)
           Description about the recipient.
-        :param data_recipient_global_metastore_id: Any (optional)
+        :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is required when
           the __authentication_type__ is **DATABRICKS**. The identifier is of format
           __cloud__:__region__:__metastore-uuid__.

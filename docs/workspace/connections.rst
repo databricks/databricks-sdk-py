@@ -13,6 +13,32 @@ Connections
 
     .. py:method:: create(name, connection_type, options [, comment, properties, read_only])
 
+        Usage:
+
+        .. code-block::
+
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
+            
+            w = WorkspaceClient()
+            
+            conn_create = w.connections.create(comment="Go SDK Acceptance Test Connection",
+                                               connection_type=catalog.ConnectionType.DATABRICKS,
+                                               name=f'sdk-{time.time_ns()}',
+                                               options={
+                                                   "host":
+                                                   "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
+                                                   "httpPath":
+                                                   "/sql/1.0/warehouses/%s" % (f'sdk-{time.time_ns()}'),
+                                                   "personalAccessToken":
+                                                   f'sdk-{time.time_ns()}',
+                                               })
+            
+            # cleanup
+            w.connections.delete(name_arg=conn_create.name)
+
         Create a connection.
         
         Creates a new connection
@@ -50,6 +76,45 @@ Connections
 
     .. py:method:: get(name_arg)
 
+        Usage:
+
+        .. code-block::
+
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
+            
+            w = WorkspaceClient()
+            
+            conn_create = w.connections.create(comment="Go SDK Acceptance Test Connection",
+                                               connection_type=catalog.ConnectionType.DATABRICKS,
+                                               name=f'sdk-{time.time_ns()}',
+                                               options={
+                                                   "host":
+                                                   "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
+                                                   "httpPath":
+                                                   "/sql/1.0/warehouses/%s" % (f'sdk-{time.time_ns()}'),
+                                                   "personalAccessToken":
+                                                   f'sdk-{time.time_ns()}',
+                                               })
+            
+            conn_update = w.connections.update(name=conn_create.name,
+                                               name_arg=conn_create.name,
+                                               options={
+                                                   "host":
+                                                   "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
+                                                   "httpPath":
+                                                   "/sql/1.0/warehouses/%s" % (f'sdk-{time.time_ns()}'),
+                                                   "personalAccessToken":
+                                                   f'sdk-{time.time_ns()}',
+                                               })
+            
+            conn = w.connections.get(name_arg=conn_update.name)
+            
+            # cleanup
+            w.connections.delete(name_arg=conn_create.name)
+
         Get a connection.
         
         Gets a connection from it's name.
@@ -62,6 +127,16 @@ Connections
 
     .. py:method:: list()
 
+        Usage:
+
+        .. code-block::
+
+            from databricks.sdk import WorkspaceClient
+            
+            w = WorkspaceClient()
+            
+            conn_list = w.connections.list()
+
         List connections.
         
         List all connections.
@@ -70,6 +145,43 @@ Connections
         
 
     .. py:method:: update(name, options, name_arg [, owner])
+
+        Usage:
+
+        .. code-block::
+
+            import time
+            
+            from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
+            
+            w = WorkspaceClient()
+            
+            conn_create = w.connections.create(comment="Go SDK Acceptance Test Connection",
+                                               connection_type=catalog.ConnectionType.DATABRICKS,
+                                               name=f'sdk-{time.time_ns()}',
+                                               options={
+                                                   "host":
+                                                   "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
+                                                   "httpPath":
+                                                   "/sql/1.0/warehouses/%s" % (f'sdk-{time.time_ns()}'),
+                                                   "personalAccessToken":
+                                                   f'sdk-{time.time_ns()}',
+                                               })
+            
+            conn_update = w.connections.update(name=conn_create.name,
+                                               name_arg=conn_create.name,
+                                               options={
+                                                   "host":
+                                                   "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
+                                                   "httpPath":
+                                                   "/sql/1.0/warehouses/%s" % (f'sdk-{time.time_ns()}'),
+                                                   "personalAccessToken":
+                                                   f'sdk-{time.time_ns()}',
+                                               })
+            
+            # cleanup
+            w.connections.delete(name_arg=conn_create.name)
 
         Update a connection.
         

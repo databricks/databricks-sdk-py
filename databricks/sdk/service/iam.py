@@ -128,6 +128,12 @@ class GetPermissionLevelsResponse:
         return cls(permission_levels=_repeated(d, 'permission_levels', PermissionsDescription))
 
 
+class GetSortOrder(Enum):
+
+    ASCENDING = 'ascending'
+    DESCENDING = 'descending'
+
+
 @dataclass
 class GrantRule:
     role: str
@@ -154,6 +160,7 @@ class Group:
     members: Optional['List[ComplexValue]'] = None
     meta: Optional['ResourceMeta'] = None
     roles: Optional['List[ComplexValue]'] = None
+    schemas: Optional['List[GroupSchema]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -165,6 +172,7 @@ class Group:
         if self.members: body['members'] = [v.as_dict() for v in self.members]
         if self.meta: body['meta'] = self.meta.as_dict()
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         return body
 
     @classmethod
@@ -176,13 +184,20 @@ class Group:
                    id=d.get('id', None),
                    members=_repeated(d, 'members', ComplexValue),
                    meta=_from_dict(d, 'meta', ResourceMeta),
-                   roles=_repeated(d, 'roles', ComplexValue))
+                   roles=_repeated(d, 'roles', ComplexValue),
+                   schemas=d.get('schemas', None))
+
+
+class GroupSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP = 'urn:ietf:params:scim:schemas:core:2.0:Group'
 
 
 @dataclass
 class ListGroupsResponse:
     items_per_page: Optional[int] = None
     resources: Optional['List[Group]'] = None
+    schemas: Optional['List[ListResponseSchema]'] = None
     start_index: Optional[int] = None
     total_results: Optional[int] = None
 
@@ -190,6 +205,7 @@ class ListGroupsResponse:
         body = {}
         if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.start_index is not None: body['startIndex'] = self.start_index
         if self.total_results is not None: body['totalResults'] = self.total_results
         return body
@@ -198,14 +214,21 @@ class ListGroupsResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListGroupsResponse':
         return cls(items_per_page=d.get('itemsPerPage', None),
                    resources=_repeated(d, 'Resources', Group),
+                   schemas=d.get('schemas', None),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
+
+
+class ListResponseSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_LIST_RESPONSE = 'urn:ietf:params:scim:api:messages:2.0:ListResponse'
 
 
 @dataclass
 class ListServicePrincipalResponse:
     items_per_page: Optional[int] = None
     resources: Optional['List[ServicePrincipal]'] = None
+    schemas: Optional['List[ListResponseSchema]'] = None
     start_index: Optional[int] = None
     total_results: Optional[int] = None
 
@@ -213,6 +236,7 @@ class ListServicePrincipalResponse:
         body = {}
         if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.start_index is not None: body['startIndex'] = self.start_index
         if self.total_results is not None: body['totalResults'] = self.total_results
         return body
@@ -221,6 +245,7 @@ class ListServicePrincipalResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalResponse':
         return cls(items_per_page=d.get('itemsPerPage', None),
                    resources=_repeated(d, 'Resources', ServicePrincipal),
+                   schemas=d.get('schemas', None),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -235,6 +260,7 @@ class ListSortOrder(Enum):
 class ListUsersResponse:
     items_per_page: Optional[int] = None
     resources: Optional['List[User]'] = None
+    schemas: Optional['List[ListResponseSchema]'] = None
     start_index: Optional[int] = None
     total_results: Optional[int] = None
 
@@ -242,6 +268,7 @@ class ListUsersResponse:
         body = {}
         if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.start_index is not None: body['startIndex'] = self.start_index
         if self.total_results is not None: body['totalResults'] = self.total_results
         return body
@@ -250,6 +277,7 @@ class ListUsersResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListUsersResponse':
         return cls(items_per_page=d.get('itemsPerPage', None),
                    resources=_repeated(d, 'Resources', User),
+                   schemas=d.get('schemas', None),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -707,6 +735,7 @@ class ServicePrincipal:
     groups: Optional['List[ComplexValue]'] = None
     id: Optional[str] = None
     roles: Optional['List[ComplexValue]'] = None
+    schemas: Optional['List[ServicePrincipalSchema]'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -718,6 +747,7 @@ class ServicePrincipal:
         if self.groups: body['groups'] = [v.as_dict() for v in self.groups]
         if self.id is not None: body['id'] = self.id
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         return body
 
     @classmethod
@@ -729,7 +759,13 @@ class ServicePrincipal:
                    external_id=d.get('externalId', None),
                    groups=_repeated(d, 'groups', ComplexValue),
                    id=d.get('id', None),
-                   roles=_repeated(d, 'roles', ComplexValue))
+                   roles=_repeated(d, 'roles', ComplexValue),
+                   schemas=d.get('schemas', None))
+
+
+class ServicePrincipalSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL = 'urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal'
 
 
 @dataclass
@@ -779,6 +815,7 @@ class User:
     id: Optional[str] = None
     name: Optional['Name'] = None
     roles: Optional['List[ComplexValue]'] = None
+    schemas: Optional['List[UserSchema]'] = None
     user_name: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -792,6 +829,7 @@ class User:
         if self.id is not None: body['id'] = self.id
         if self.name: body['name'] = self.name.as_dict()
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.user_name is not None: body['userName'] = self.user_name
         return body
 
@@ -806,7 +844,13 @@ class User:
                    id=d.get('id', None),
                    name=_from_dict(d, 'name', Name),
                    roles=_repeated(d, 'roles', ComplexValue),
+                   schemas=d.get('schemas', None),
                    user_name=d.get('userName', None))
+
+
+class UserSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
 
 
 class WorkspacePermission(Enum):
@@ -1013,7 +1057,8 @@ class AccountGroupsAPI:
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None) -> Group:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None) -> Group:
         """Create a new group.
         
         Creates a group in the Databricks account with a unique name, using the supplied group details.
@@ -1029,6 +1074,9 @@ class AccountGroupsAPI:
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         :returns: :class:`Group`
         """
@@ -1041,6 +1089,7 @@ class AccountGroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
@@ -1168,7 +1217,8 @@ class AccountGroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None):
         """Replace a group.
         
         Updates the details of a group by replacing the entire group entity.
@@ -1184,6 +1234,9 @@ class AccountGroupsAPI:
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         
         """
@@ -1195,6 +1248,7 @@ class AccountGroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}',
@@ -1221,7 +1275,8 @@ class AccountServicePrincipalsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
-               roles: Optional[List[ComplexValue]] = None) -> ServicePrincipal:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None) -> ServicePrincipal:
         """Create a service principal.
         
         Creates a new service principal in the Databricks account.
@@ -1238,6 +1293,9 @@ class AccountServicePrincipalsAPI:
         :param id: str (optional)
           Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         :returns: :class:`ServicePrincipal`
         """
@@ -1250,6 +1308,7 @@ class AccountServicePrincipalsAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if id is not None: body['id'] = id
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
@@ -1377,7 +1436,8 @@ class AccountServicePrincipalsAPI:
                entitlements: Optional[List[ComplexValue]] = None,
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None):
         """Replace service principal.
         
         Updates the details of a single service principal.
@@ -1396,6 +1456,9 @@ class AccountServicePrincipalsAPI:
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         
         """
@@ -1407,6 +1470,7 @@ class AccountServicePrincipalsAPI:
         if external_id is not None: body['externalId'] = external_id
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
@@ -1439,6 +1503,7 @@ class AccountUsersAPI:
                id: Optional[str] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None) -> User:
         """Create a new user.
         
@@ -1458,6 +1523,9 @@ class AccountUsersAPI:
           Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -1473,6 +1541,7 @@ class AccountUsersAPI:
         if id is not None: body['id'] = id
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
@@ -1498,20 +1567,58 @@ class AccountUsersAPI:
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
                      headers=headers)
 
-    def get(self, id: str) -> User:
+    def get(self,
+            id: str,
+            *,
+            attributes: Optional[str] = None,
+            count: Optional[int] = None,
+            excluded_attributes: Optional[str] = None,
+            filter: Optional[str] = None,
+            sort_by: Optional[str] = None,
+            sort_order: Optional[GetSortOrder] = None,
+            start_index: Optional[int] = None) -> User:
         """Get user details.
         
         Gets information for a specific user in Databricks account.
         
         :param id: str
           Unique ID for a user in the Databricks account.
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page. Default is 10000.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`GetSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
         """
 
+        query = {}
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
+                           query=query,
                            headers=headers)
         return User.from_dict(res)
 
@@ -1605,6 +1712,7 @@ class AccountUsersAPI:
                groups: Optional[List[ComplexValue]] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None):
         """Replace a user.
         
@@ -1623,6 +1731,9 @@ class AccountUsersAPI:
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -1637,6 +1748,7 @@ class AccountUsersAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
@@ -1684,7 +1796,8 @@ class GroupsAPI:
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None) -> Group:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None) -> Group:
         """Create a new group.
         
         Creates a group in the Databricks workspace with a unique name, using the supplied group details.
@@ -1700,6 +1813,9 @@ class GroupsAPI:
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         :returns: :class:`Group`
         """
@@ -1712,6 +1828,7 @@ class GroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/Groups', body=body, headers=headers)
         return Group.from_dict(res)
@@ -1826,7 +1943,8 @@ class GroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None):
         """Replace a group.
         
         Updates the details of a group by replacing the entire group entity.
@@ -1842,6 +1960,9 @@ class GroupsAPI:
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         
         """
@@ -1853,6 +1974,7 @@ class GroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body, headers=headers)
 
@@ -2019,7 +2141,8 @@ class ServicePrincipalsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
-               roles: Optional[List[ComplexValue]] = None) -> ServicePrincipal:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None) -> ServicePrincipal:
         """Create a service principal.
         
         Creates a new service principal in the Databricks workspace.
@@ -2036,6 +2159,9 @@ class ServicePrincipalsAPI:
         :param id: str (optional)
           Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         :returns: :class:`ServicePrincipal`
         """
@@ -2048,6 +2174,7 @@ class ServicePrincipalsAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if id is not None: body['id'] = id
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -2162,7 +2289,8 @@ class ServicePrincipalsAPI:
                entitlements: Optional[List[ComplexValue]] = None,
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None):
         """Replace service principal.
         
         Updates the details of a single service principal.
@@ -2181,6 +2309,9 @@ class ServicePrincipalsAPI:
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         
         """
@@ -2192,6 +2323,7 @@ class ServicePrincipalsAPI:
         if external_id is not None: body['externalId'] = external_id
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body, headers=headers)
 
@@ -2221,6 +2353,7 @@ class UsersAPI:
                id: Optional[str] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None) -> User:
         """Create a new user.
         
@@ -2240,6 +2373,9 @@ class UsersAPI:
           Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -2255,6 +2391,7 @@ class UsersAPI:
         if id is not None: body['id'] = id
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body, headers=headers)
@@ -2275,19 +2412,56 @@ class UsersAPI:
         headers = {}
         self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
 
-    def get(self, id: str) -> User:
+    def get(self,
+            id: str,
+            *,
+            attributes: Optional[str] = None,
+            count: Optional[int] = None,
+            excluded_attributes: Optional[str] = None,
+            filter: Optional[str] = None,
+            sort_by: Optional[str] = None,
+            sort_order: Optional[GetSortOrder] = None,
+            start_index: Optional[int] = None) -> User:
         """Get user details.
         
         Gets information for a specific user in Databricks workspace.
         
         :param id: str
           Unique ID for a user in the Databricks workspace.
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`GetSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
         """
 
+        query = {}
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', query=query, headers=headers)
         return User.from_dict(res)
 
     def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
@@ -2419,6 +2593,7 @@ class UsersAPI:
                groups: Optional[List[ComplexValue]] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None):
         """Replace a user.
         
@@ -2437,6 +2612,9 @@ class UsersAPI:
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -2451,6 +2629,7 @@ class UsersAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body, headers=headers)
