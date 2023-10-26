@@ -16,6 +16,9 @@ A minimal code sample demonstrating the bug.
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Is it a regression?**
+Did this work in a previous version of the SDK? If so, which versions did you try?
+
 **Debug Logs**
 The SDK logs helpful debugging information when debug logging is enabled. Set the log level to debug by adding `logging.basicConfig(level=logging.DEBUG)` to your program, and include the logs here.
 
