@@ -215,6 +215,7 @@ def test_jobs_task_values_get(dbutils):
 
     dbutils.jobs.taskValues.set('key', 'value')
 
+    # Expect `get` to always return the `debugValue`` when calling outside of a job context and not what was previously set using `set`
     assert dbutils.jobs.taskValues.get('taskKey', 'key', debugValue='debug') == 'debug'
 
 
@@ -222,5 +223,6 @@ def test_jobs_task_values_get_throws(dbutils):
     try:
         dbutils.jobs.taskValues.get('taskKey', 'key')
         assert False
-    except ValueError as e:
-        assert str(e) == 'No debug value set for task value, when outside of job run'
+    except TypeError as e:
+        assert str(
+            e) == 'Must pass debugValue when calling get outside of a job context. debugValue cannot be None.'

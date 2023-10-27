@@ -174,7 +174,9 @@ class _JobsUtil:
             Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
             """
             if debugValue is None:
-                raise ValueError('No debug value set for task value, when outside of job run')
+                raise TypeError(
+                    'Must pass debugValue when calling get outside of a job context. debugValue cannot be None.'
+                )
             return debugValue
 
         def set(self, key: str, value: any) -> None:
