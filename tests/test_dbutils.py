@@ -216,3 +216,11 @@ def test_jobs_task_values_get(dbutils):
     dbutils.jobs.taskValues.set('key', 'value')
 
     assert dbutils.jobs.taskValues.get('taskKey', 'key', debugValue='debug') == 'debug'
+
+
+def test_jobs_task_values_get_throws(dbutils):
+    try:
+        dbutils.jobs.taskValues.get('taskKey', 'key')
+        assert False
+    except ValueError as e:
+        assert str(e) == 'No debug value set for task value, when outside of job run'

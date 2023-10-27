@@ -171,8 +171,10 @@ class _JobsUtil:
 
         def get(self, taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
             """
-            Returns the latest task value that belongs to the current job run
+            Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
             """
+            if debugValue is None:
+                raise ValueError('No debug value set for task value, when outside of job run')
             return debugValue
 
         def set(self, key: str, value: any) -> None:
