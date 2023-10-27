@@ -206,14 +206,8 @@ def test_secrets_get_and_redacting_logs(dbutils, mocker):
     assert value == 'hello'
 
 
-def test_jobs_task_values_check_task_value(dbutils):
-    assert (dbutils.jobs.taskValues.checkTaskValue('key', 'value') == False)
-
-
 def test_jobs_task_values_set(dbutils):
     dbutils.jobs.taskValues.set('key', 'value')
-
-    assert dbutils.jobs.taskValues.checkTaskValue('key', 'value')
 
 
 def test_jobs_task_values_get(dbutils):

@@ -168,7 +168,6 @@ class _JobsUtil:
 
     class _TaskValuesUtil:
         """Remote equivalent of task values util"""
-        values = {}
 
         def get(self, taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
             """
@@ -180,13 +179,6 @@ class _JobsUtil:
             """
             Sets a task value on the current task run
             """
-            self.values[key] = value
-
-        def checkTaskValue(self, key: str, value: any) -> bool:
-            """
-            Check that the task value with given key is equal to the given value
-            """
-            return self.values.get(key) == value
 
     def __init__(self) -> None:
         self.taskValues = self._TaskValuesUtil()
