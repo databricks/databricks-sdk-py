@@ -163,6 +163,31 @@ class _SecretsUtil:
         return [SecretScope(v.name) for v in self._api.list_scopes()]
 
 
+class _JobsUtil:
+    """Remote equivalent of jobs util"""
+
+    class _TaskValuesUtil:
+        """Remote equivalent of task values util"""
+
+        def get(self, taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
+            """
+            Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
+            """
+            if debugValue is None:
+                raise TypeError(
+                    'Must pass debugValue when calling get outside of a job context. debugValue cannot be None.'
+                )
+            return debugValue
+
+        def set(self, key: str, value: any) -> None:
+            """
+            Sets a task value on the current task run
+            """
+
+    def __init__(self) -> None:
+        self.taskValues = self._TaskValuesUtil()
+
+
 class RemoteDbUtils:
 
     def __init__(self, config: 'Config' = None):
@@ -175,6 +200,7 @@ class RemoteDbUtils:
 
         self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
+        self.jobs = _JobsUtil()
         self._widgets = None
 
     # When we import widget_impl, the init file checks whether user has the
