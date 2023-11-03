@@ -527,7 +527,10 @@ class DefaultCredentials:
                 return header_factory
             except Exception as e:
                 raise ValueError(f'{auth_type}: {e}') from e
-        raise ValueError('cannot configure default credentials')
+        auth_flow_url = "https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
+        raise ValueError(
+            f'cannot configure default credentials, please check {auth_flow_url} to configure credentials for your preferred authentication method.'
+        )
 
 
 class ConfigAttribute:
