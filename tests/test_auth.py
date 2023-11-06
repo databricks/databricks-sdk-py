@@ -15,6 +15,8 @@ default_auth_base_error_message = \
 def test_config_no_params(fake_fs):
     Config()
 
+    
+
 
 @raises(f"{default_auth_base_error_message}. Config: host=https://x. Env: DATABRICKS_HOST")
 def test_config_host_env(monkeypatch):
