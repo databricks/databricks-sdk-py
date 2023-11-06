@@ -11,7 +11,7 @@ default_auth_base_error_message = \
 
 
 @raises(default_auth_base_error_message)
-def test_config_no_params():
+def test_config_no_params(fake_fs):
     Config()
 
 

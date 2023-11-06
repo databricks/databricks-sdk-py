@@ -250,7 +250,7 @@ def test_config_workspace_is_not_accounts_host(config):
     assert not config.is_account_client
 
 
-def test_config_can_be_subclassed():
+def test_config_can_be_subclassed(fake_fs):
 
     class DatabricksConfig(Config):
 
