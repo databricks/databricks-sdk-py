@@ -10,8 +10,9 @@ default_auth_base_error_message = \
     "to configure credentials for your preferred authentication method"
 
 
+# This test uses the fake file system to avoid interference from local default profile.
 @raises(default_auth_base_error_message)
-def test_config_no_params():
+def test_config_no_params(fake_fs):
     Config()
 
 

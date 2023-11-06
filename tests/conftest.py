@@ -2,6 +2,7 @@ import functools
 import os
 
 import pytest as pytest
+from pyfakefs.fake_filesystem_unittest import Patcher
 
 from databricks.sdk.core import Config, credentials_provider
 
@@ -40,3 +41,16 @@ def raises(msg):
         return wrapper
 
     return inner
+
+
+# When we apply this to a test, it'll use a fake file system instead of the local disk.
+# Example usage: test_config_no_params under test_auth.py
+@pytest.fixture
+def fake_fs():
+    with Patcher() as patcher:
+
+        # Include the tests directory in the fake filesystem
+        test_data_path = __tests__
+        patcher.fs.add_real_directory(test_data_path)
+
+        yield patcher.fs # This will return a fake file system
