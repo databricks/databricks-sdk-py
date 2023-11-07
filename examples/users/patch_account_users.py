@@ -11,7 +11,7 @@ a.users.patch(id=user.id,
               schemas=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP],
               operations=[
                   iam.Patch(op=iam.PatchOp.ADD,
-                            value=iam.User(roles=[iam.ComplexValue(value="account_admin")]))
+                            value=iam.User(roles=[iam.ComplexValue(value="account_admin")]).as_dict())
               ])
 
 # cleanup
