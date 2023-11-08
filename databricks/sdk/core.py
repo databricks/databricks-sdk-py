@@ -20,7 +20,6 @@ from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
 
 import google
 import google.auth
-import google.auth.transport.requests.Request
 import requests
 import requests.auth
 from google.auth import impersonated_credentials
@@ -280,7 +279,7 @@ def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
     credentials = service_account.IDTokenCredentials.from_service_account_file(
         filename=cfg.google_credentials, target_audience=cfg.host)
 
-    request = Request()
+    request = google.auth.transport.requests.Request()
 
     gcp_credentials = service_account.IDTokenCredentials.from_service_account_file(
         filename=cfg.google_credentials, scopes=GcpScopes)
@@ -316,7 +315,7 @@ def google_id(cfg: 'Config') -> Optional[HeaderFactory]:
     gcp_impersonated_credentials = impersonated_credentials.Credentials(
         source_credentials=credentials, target_principal=cfg.google_service_account, target_scopes=GcpScopes)
 
-    request = Request()
+    request = google.auth.transport.requests.Request()
 
     def refreshed_headers() -> Dict[str, str]:
         token = id_creds.refresh(request)
