@@ -18,8 +18,13 @@ from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
                     Optional, Type, Union)
 
+import google
+import google.auth
+import google.auth.transport.requests.Request
 import requests
 import requests.auth
+from google.auth import impersonated_credentials
+from google.oauth2 import service_account
 from requests.adapters import HTTPAdapter
 
 from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
@@ -34,6 +39,8 @@ __all__ = ['Config', 'DatabricksError']
 logger = logging.getLogger('databricks.sdk')
 
 HeaderFactory = Callable[[], Dict[str, str]]
+
+GcpScopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/compute", ]
 
 
 class CredentialsProvider(abc.ABC):
@@ -260,6 +267,64 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
     def refreshed_headers() -> Dict[str, str]:
         token = inner.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+
+    return refreshed_headers
+
+
+@credentials_provider('google-credentials', ['host', 'google_credentials'])
+def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
+    if not cfg.is_gcp:
+        return None
+    # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
+    # Obtain the id token by providing the json file path and target audience.
+    credentials = service_account.IDTokenCredentials.from_service_account_file(
+        filename=cfg.google_credentials, target_audience=cfg.host)
+
+    request = Request()
+
+    gcp_credentials = service_account.IDTokenCredentials.from_service_account_file(
+        filename=cfg.google_credentials, scopes=GcpScopes)
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = credentials.refresh(request)
+        headers = {'Authorization': f'{token.token_type} {token.token}'}
+        if cfg.is_account_client:
+            gcp_token = gcp_credentials.refresh(request)
+            headers["X-Databricks-GCP-SA-Access-Token"] = gcp_token.token
+        return headers
+
+    return refreshed_headers
+
+
+@credentials_provider('google-id', ['host', 'google_service_account'])
+def google_id(cfg: 'Config') -> Optional[HeaderFactory]:
+    if not cfg.is_gcp:
+        return None
+    credentials, _project_id = google.auth.default()
+
+    # Create the impersonated credential.
+    target_credentials = impersonated_credentials.Credentials(source_credentials=credentials,
+                                                              target_principal=cfg.google_service_account,
+                                                              target_scopes=[] # Not sure what to set here.
+                                                              )
+
+    # Set the impersonated credential, target audience and token options.
+    id_creds = impersonated_credentials.IDTokenCredentials(target_credentials,
+                                                           target_audience=cfg.host,
+                                                           include_email=True)
+
+    gcp_impersonated_credentials = impersonated_credentials.Credentials(
+        source_credentials=credentials, target_principal=cfg.google_service_account, target_scopes=GcpScopes)
+
+    request = Request()
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = id_creds.refresh(request)
+        headers = {'Authorization': f'{token.token_type} {token.token}'}
+        if cfg.is_account_client:
+            gcp_token = gcp_impersonated_credentials.refresh(request)
+            headers["X-Databricks-GCP-SA-Access-Token"] = gcp_token.token
+        return headers
 
     return refreshed_headers
 
