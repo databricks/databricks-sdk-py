@@ -1,11 +1,14 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
-
-from ._internal import _enum, _from_dict, _repeated
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -62,6 +65,22 @@ class CreateIpAccessListResponse:
 
 
 @dataclass
+class CreateNetworkConnectivityConfigRequest:
+    name: str
+    region: str
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.region is not None: body['region'] = self.region
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateNetworkConnectivityConfigRequest':
+        return cls(name=d.get('name', None), region=d.get('region', None))
+
+
+@dataclass
 class CreateOboTokenRequest:
     application_id: str
     lifetime_seconds: int
@@ -95,6 +114,37 @@ class CreateOboTokenResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateOboTokenResponse':
         return cls(token_info=_from_dict(d, 'token_info', TokenInfo), token_value=d.get('token_value', None))
+
+
+@dataclass
+class CreatePrivateEndpointRuleRequest:
+    resource_id: str
+    group_id: 'CreatePrivateEndpointRuleRequestGroupId'
+    network_connectivity_config_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.group_id is not None: body['group_id'] = self.group_id.value
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreatePrivateEndpointRuleRequest':
+        return cls(group_id=_enum(d, 'group_id', CreatePrivateEndpointRuleRequestGroupId),
+                   network_connectivity_config_id=d.get('network_connectivity_config_id', None),
+                   resource_id=d.get('resource_id', None))
+
+
+class CreatePrivateEndpointRuleRequestGroupId(Enum):
+    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
+
+    BLOB = 'blob'
+    DFS = 'dfs'
+    MYSQL_SERVER = 'mysqlServer'
+    SQL_SERVER = 'sqlServer'
 
 
 @dataclass
@@ -387,6 +437,192 @@ class ListType(Enum):
 
     ALLOW = 'ALLOW'
     BLOCK = 'BLOCK'
+
+
+@dataclass
+class NccAzurePrivateEndpointRule:
+    connection_state: Optional['NccAzurePrivateEndpointRuleConnectionState'] = None
+    creation_time: Optional[int] = None
+    deactivated: Optional[bool] = None
+    deactivated_at: Optional[int] = None
+    endpoint_name: Optional[str] = None
+    group_id: Optional['NccAzurePrivateEndpointRuleGroupId'] = None
+    network_connectivity_config_id: Optional[str] = None
+    resource_id: Optional[str] = None
+    rule_id: Optional[str] = None
+    updated_time: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.connection_state is not None: body['connection_state'] = self.connection_state.value
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.deactivated is not None: body['deactivated'] = self.deactivated
+        if self.deactivated_at is not None: body['deactivated_at'] = self.deactivated_at
+        if self.endpoint_name is not None: body['endpoint_name'] = self.endpoint_name
+        if self.group_id is not None: body['group_id'] = self.group_id.value
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
+        if self.rule_id is not None: body['rule_id'] = self.rule_id
+        if self.updated_time is not None: body['updated_time'] = self.updated_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'NccAzurePrivateEndpointRule':
+        return cls(connection_state=_enum(d, 'connection_state', NccAzurePrivateEndpointRuleConnectionState),
+                   creation_time=d.get('creation_time', None),
+                   deactivated=d.get('deactivated', None),
+                   deactivated_at=d.get('deactivated_at', None),
+                   endpoint_name=d.get('endpoint_name', None),
+                   group_id=_enum(d, 'group_id', NccAzurePrivateEndpointRuleGroupId),
+                   network_connectivity_config_id=d.get('network_connectivity_config_id', None),
+                   resource_id=d.get('resource_id', None),
+                   rule_id=d.get('rule_id', None),
+                   updated_time=d.get('updated_time', None))
+
+
+class NccAzurePrivateEndpointRuleConnectionState(Enum):
+    """The current status of this private endpoint. The private endpoint rules are effective only if
+    the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
+    resources in the Azure portal before they take effect.
+    
+    The possible values are: - INIT: (deprecated) The endpoint has been created and pending
+    approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
+    endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
+    Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was
+    removed by the private link resource owner, the private endpoint becomes informative and should
+    be deleted for clean-up."""
+
+    DISCONNECTED = 'DISCONNECTED'
+    ESTABLISHED = 'ESTABLISHED'
+    INIT = 'INIT'
+    PENDING = 'PENDING'
+    REJECTED = 'REJECTED'
+
+
+class NccAzurePrivateEndpointRuleGroupId(Enum):
+    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
+
+    BLOB = 'blob'
+    DFS = 'dfs'
+    MYSQL_SERVER = 'mysqlServer'
+    SQL_SERVER = 'sqlServer'
+
+
+@dataclass
+class NccAzureServiceEndpointRule:
+    """The stable Azure service endpoints. You can configure the firewall of your Azure resources to
+    allow traffic from your Databricks serverless compute resources."""
+
+    subnets: Optional['List[str]'] = None
+    target_region: Optional[str] = None
+    target_services: Optional['List[str]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.subnets: body['subnets'] = [v for v in self.subnets]
+        if self.target_region is not None: body['target_region'] = self.target_region
+        if self.target_services: body['target_services'] = [v for v in self.target_services]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'NccAzureServiceEndpointRule':
+        return cls(subnets=d.get('subnets', None),
+                   target_region=d.get('target_region', None),
+                   target_services=d.get('target_services', None))
+
+
+@dataclass
+class NccEgressConfig:
+    """The network connectivity rules that apply to network traffic from your serverless compute
+    resources."""
+
+    default_rules: Optional['NccEgressDefaultRules'] = None
+    target_rules: Optional['NccEgressTargetRules'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.default_rules: body['default_rules'] = self.default_rules.as_dict()
+        if self.target_rules: body['target_rules'] = self.target_rules.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'NccEgressConfig':
+        return cls(default_rules=_from_dict(d, 'default_rules', NccEgressDefaultRules),
+                   target_rules=_from_dict(d, 'target_rules', NccEgressTargetRules))
+
+
+@dataclass
+class NccEgressDefaultRules:
+    """The network connectivity rules that are applied by default without resource specific
+    configurations. You can find the stable network information of your serverless compute resources
+    here."""
+
+    azure_service_endpoint_rule: Optional['NccAzureServiceEndpointRule'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.azure_service_endpoint_rule:
+            body['azure_service_endpoint_rule'] = self.azure_service_endpoint_rule.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'NccEgressDefaultRules':
+        return cls(azure_service_endpoint_rule=_from_dict(d, 'azure_service_endpoint_rule',
+                                                          NccAzureServiceEndpointRule))
+
+
+@dataclass
+class NccEgressTargetRules:
+    """The network connectivity rules that configured for each destinations. These rules override
+    default rules."""
+
+    azure_private_endpoint_rules: Optional['List[NccAzurePrivateEndpointRule]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.azure_private_endpoint_rules:
+            body['azure_private_endpoint_rules'] = [v.as_dict() for v in self.azure_private_endpoint_rules]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'NccEgressTargetRules':
+        return cls(azure_private_endpoint_rules=_repeated(d, 'azure_private_endpoint_rules',
+                                                          NccAzurePrivateEndpointRule))
+
+
+@dataclass
+class NetworkConnectivityConfiguration:
+    account_id: Optional[str] = None
+    creation_time: Optional[int] = None
+    egress_config: Optional['NccEgressConfig'] = None
+    name: Optional[str] = None
+    network_connectivity_config_id: Optional[str] = None
+    region: Optional[str] = None
+    updated_time: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.egress_config: body['egress_config'] = self.egress_config.as_dict()
+        if self.name is not None: body['name'] = self.name
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.region is not None: body['region'] = self.region
+        if self.updated_time is not None: body['updated_time'] = self.updated_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'NetworkConnectivityConfiguration':
+        return cls(account_id=d.get('account_id', None),
+                   creation_time=d.get('creation_time', None),
+                   egress_config=_from_dict(d, 'egress_config', NccEgressConfig),
+                   name=d.get('name', None),
+                   network_connectivity_config_id=d.get('network_connectivity_config_id', None),
+                   region=d.get('region', None),
+                   updated_time=d.get('updated_time', None))
 
 
 @dataclass
@@ -840,11 +1076,11 @@ class AccountIpAccessListsAPI:
         return parsed if parsed is not None else []
 
     def replace(self,
+                ip_access_list_id: str,
                 label: str,
                 list_type: ListType,
                 ip_addresses: List[str],
                 enabled: bool,
-                ip_access_list_id: str,
                 *,
                 list_id: Optional[str] = None):
         """Replace access list.
@@ -859,6 +1095,8 @@ class AccountIpAccessListsAPI:
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -870,8 +1108,6 @@ class AccountIpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -890,11 +1126,11 @@ class AccountIpAccessListsAPI:
                      headers=headers)
 
     def update(self,
+               ip_access_list_id: str,
                label: str,
                list_type: ListType,
                ip_addresses: List[str],
                enabled: bool,
-               ip_access_list_id: str,
                *,
                list_id: Optional[str] = None):
         """Update access list.
@@ -913,6 +1149,8 @@ class AccountIpAccessListsAPI:
         
         It can take a few minutes for the changes to take effect.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -924,8 +1162,6 @@ class AccountIpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -1257,11 +1493,11 @@ class IpAccessListsAPI:
         return parsed if parsed is not None else []
 
     def replace(self,
+                ip_access_list_id: str,
                 label: str,
                 list_type: ListType,
                 ip_addresses: List[str],
                 enabled: bool,
-                ip_access_list_id: str,
                 *,
                 list_id: Optional[str] = None):
         """Replace access list.
@@ -1277,6 +1513,8 @@ class IpAccessListsAPI:
         effect. Note that your resulting IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1288,8 +1526,6 @@ class IpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -1305,11 +1541,11 @@ class IpAccessListsAPI:
         self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
 
     def update(self,
+               ip_access_list_id: str,
                label: str,
                list_type: ListType,
                ip_addresses: List[str],
                enabled: bool,
-               ip_access_list_id: str,
                *,
                list_id: Optional[str] = None):
         """Update access list.
@@ -1329,6 +1565,8 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. Note that your resulting IP access list has
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1340,8 +1578,6 @@ class IpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -1355,6 +1591,172 @@ class IpAccessListsAPI:
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
+
+
+class NetworkConnectivityAPI:
+    """These APIs provide configurations for the network connectivity of your workspaces for serverless compute
+    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
+    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
+    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
+    Azure Private Link. See [configure serverless secure connectivity].
+    
+    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_network_connectivity_configuration(self, name: str,
+                                                  region: str) -> NetworkConnectivityConfiguration:
+        """Create a network connectivity configuration.
+        
+        Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
+        accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
+        Databricks-managed private endpoints so that Databricks serverless compute resources privately access
+        your resources.
+        
+        **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
+        workspaces to the new network connectivity configuration. You can share one network connectivity
+        configuration with multiple workspaces from the same Azure region within the same Databricks account.
+        See [configure serverless secure connectivity].
+        
+        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+        
+        :param name: str
+          The name of the network connectivity configuration. The name can contain alphanumeric characters,
+          hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
+          regular expression `^[0-9a-zA-Z-_]{3,30}$`.
+        :param region: str
+          The Azure region for this network connectivity configuration. Only workspaces in the same Azure
+          region can be attached to this network connectivity configuration.
+        
+        :returns: :class:`NetworkConnectivityConfiguration`
+        """
+        body = {}
+        if name is not None: body['name'] = name
+        if region is not None: body['region'] = region
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs',
+                           body=body,
+                           headers=headers)
+        return NetworkConnectivityConfiguration.from_dict(res)
+
+    def create_private_endpoint_rule(
+            self, network_connectivity_config_id: str, resource_id: str,
+            group_id: CreatePrivateEndpointRuleRequestGroupId) -> NccAzurePrivateEndpointRule:
+        """Create a private endpoint rule.
+        
+        Create a private endpoint rule for the specified network connectivity config object. Once the object
+        is created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure
+        resource.
+        
+        **IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to
+        complete the connection. To get the information of the private endpoint created, make a `GET` request
+        on the new private endpoint rule. See [serverless private link].
+        
+        [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param resource_id: str
+          The Azure resource ID of the target resource.
+        :param group_id: :class:`CreatePrivateEndpointRuleRequestGroupId`
+          The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+          storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
+        
+        :returns: :class:`NccAzurePrivateEndpointRule`
+        """
+        body = {}
+        if group_id is not None: body['group_id'] = group_id.value
+        if resource_id is not None: body['resource_id'] = resource_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do(
+            'POST',
+            f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules',
+            body=body,
+            headers=headers)
+        return NccAzurePrivateEndpointRule.from_dict(res)
+
+    def delete_network_connectivity_configuration(self, network_connectivity_config_id: str):
+        """Delete a network connectivity configuration.
+        
+        Deletes a network connectivity configuration.
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+        self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}',
+            headers=headers)
+
+    def delete_private_endpoint_rule(self, network_connectivity_config_id: str,
+                                     private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
+        """Delete a private endpoint rule.
+        
+        Initiates deleting a private endpoint rule. The private endpoint will be deactivated and will be
+        purged after seven days of deactivation. When a private endpoint is in deactivated state,
+        `deactivated` field is set to `true` and the private endpoint is not available to your serverless
+        compute resources.
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+        
+        :returns: :class:`NccAzurePrivateEndpointRule`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}',
+            headers=headers)
+        return NccAzurePrivateEndpointRule.from_dict(res)
+
+    def get_network_connectivity_configuration(
+            self, network_connectivity_config_id: str) -> NetworkConnectivityConfiguration:
+        """Get a network connectivity configuration.
+        
+        Gets a network connectivity configuration.
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        
+        :returns: :class:`NetworkConnectivityConfiguration`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}',
+            headers=headers)
+        return NetworkConnectivityConfiguration.from_dict(res)
+
+    def get_private_endpoint_rule(self, network_connectivity_config_id: str,
+                                  private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
+        """Get a private endpoint rule.
+        
+        Gets the private endpoint rule.
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+        
+        :returns: :class:`NccAzurePrivateEndpointRule`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}',
+            headers=headers)
+        return NccAzurePrivateEndpointRule.from_dict(res)
 
 
 class SettingsAPI:

@@ -1,11 +1,14 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
-
-from ._internal import _enum, _from_dict, _repeated
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -1066,6 +1069,10 @@ class AccountGroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1228,6 +1235,10 @@ class AccountGroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
@@ -1288,6 +1299,10 @@ class AccountServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1453,6 +1468,10 @@ class AccountServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -1513,14 +1532,23 @@ class AccountUsersAPI:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -1719,15 +1747,24 @@ class AccountUsersAPI:
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -1805,6 +1842,10 @@ class GroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1954,6 +1995,10 @@ class GroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
@@ -2154,6 +2199,10 @@ class ServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -2306,6 +2355,10 @@ class ServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -2363,14 +2416,23 @@ class UsersAPI:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -2600,15 +2662,24 @@ class UsersAPI:
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -2721,18 +2792,18 @@ class WorkspaceAssignmentAPI:
         parsed = PermissionAssignments.from_dict(json).permission_assignments
         return parsed if parsed is not None else []
 
-    def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
+    def update(self, workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]):
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
         
-        :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace.
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
+        :param permissions: List[:class:`WorkspacePermission`]
+          Array of permissions assignments to update on the workspace.
         
         
         """

@@ -1,15 +1,14 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
-
-from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -242,6 +241,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2579,23 +2579,23 @@ class AlertsAPI:
         return [Alert.from_dict(v) for v in res]
 
     def update(self,
+               alert_id: str,
                name: str,
                options: AlertOptions,
                query_id: str,
-               alert_id: str,
                *,
                rearm: Optional[int] = None):
         """Update an alert.
         
         Updates an alert.
         
+        :param alert_id: str
         :param name: str
           Name of the alert.
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
           Query ID.
-        :param alert_id: str
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
@@ -2662,21 +2662,21 @@ class DashboardWidgetsAPI:
         self._api.do('DELETE', f'/api/2.0/preview/sql/widgets/{id}', headers=headers)
 
     def update(self,
+               id: str,
                dashboard_id: str,
                options: WidgetOptions,
                width: int,
-               id: str,
                *,
                text: Optional[str] = None,
                visualization_id: Optional[str] = None) -> Widget:
         """Update existing widget.
         
+        :param id: str
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
         :param options: :class:`WidgetOptions`
         :param width: int
           Width of a widget
-        :param id: str
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
           contains a visualization in the `visualization` field.

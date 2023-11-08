@@ -1,15 +1,14 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
-
-from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -789,6 +788,7 @@ class UpdateWorkspaceRequest:
     credentials_id: Optional[str] = None
     custom_tags: Optional['Dict[str,str]'] = None
     managed_services_customer_managed_key_id: Optional[str] = None
+    network_connectivity_config_id: Optional[str] = None
     network_id: Optional[str] = None
     storage_configuration_id: Optional[str] = None
     storage_customer_managed_key_id: Optional[str] = None
@@ -801,6 +801,8 @@ class UpdateWorkspaceRequest:
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
         if self.network_id is not None: body['network_id'] = self.network_id
         if self.storage_configuration_id is not None:
             body['storage_configuration_id'] = self.storage_configuration_id
@@ -816,6 +818,7 @@ class UpdateWorkspaceRequest:
                    custom_tags=d.get('custom_tags', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
+                   network_connectivity_config_id=d.get('network_connectivity_config_id', None),
                    network_id=d.get('network_id', None),
                    storage_configuration_id=d.get('storage_configuration_id', None),
                    storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
@@ -1467,9 +1470,9 @@ class PrivateAccessAPI:
         return [PrivateAccessSettings.from_dict(v) for v in res]
 
     def replace(self,
+                private_access_settings_id: str,
                 private_access_settings_name: str,
                 region: str,
-                private_access_settings_id: str,
                 *,
                 allowed_vpc_endpoint_ids: Optional[List[str]] = None,
                 private_access_level: Optional[PrivateAccessLevel] = None,
@@ -1494,12 +1497,12 @@ class PrivateAccessAPI:
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
         
+        :param private_access_settings_id: str
+          Databricks Account API private access settings ID.
         :param private_access_settings_name: str
           The human-readable name of the private access settings object.
         :param region: str
           The cloud region for workspaces associated with this private access settings object.
-        :param private_access_settings_id: str
-          Databricks Account API private access settings ID.
         :param allowed_vpc_endpoint_ids: List[str] (optional)
           An array of Databricks VPC endpoint IDs. This is the Databricks ID that is returned when registering
           the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in
@@ -2047,6 +2050,7 @@ class WorkspacesAPI:
                credentials_id: Optional[str] = None,
                custom_tags: Optional[Dict[str, str]] = None,
                managed_services_customer_managed_key_id: Optional[str] = None,
+               network_connectivity_config_id: Optional[str] = None,
                network_id: Optional[str] = None,
                storage_configuration_id: Optional[str] = None,
                storage_customer_managed_key_id: Optional[str] = None) -> Wait[Workspace]:
@@ -2159,6 +2163,9 @@ class WorkspacesAPI:
         :param managed_services_customer_managed_key_id: str (optional)
           The ID of the workspace's managed services encryption key configuration object. This parameter is
           available only for updating failed workspaces.
+        :param network_connectivity_config_id: str (optional)
+          The ID of the network connectivity configuration object, which is the parent resource of this
+          private endpoint rule object.
         :param network_id: str (optional)
           The ID of the workspace's network configuration object. Used only if you already use a
           customer-managed VPC. For failed workspaces only, you can switch from a Databricks-managed VPC to a
@@ -2180,6 +2187,8 @@ class WorkspacesAPI:
         if custom_tags is not None: body['custom_tags'] = custom_tags
         if managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
+        if network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = network_connectivity_config_id
         if network_id is not None: body['network_id'] = network_id
         if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
         if storage_customer_managed_key_id is not None:
@@ -2199,6 +2208,7 @@ class WorkspacesAPI:
         credentials_id: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         managed_services_customer_managed_key_id: Optional[str] = None,
+        network_connectivity_config_id: Optional[str] = None,
         network_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
@@ -2207,6 +2217,7 @@ class WorkspacesAPI:
                            credentials_id=credentials_id,
                            custom_tags=custom_tags,
                            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
+                           network_connectivity_config_id=network_connectivity_config_id,
                            network_id=network_id,
                            storage_configuration_id=storage_configuration_id,
                            storage_customer_managed_key_id=storage_customer_managed_key_id,
