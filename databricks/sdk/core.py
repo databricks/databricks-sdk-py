@@ -594,7 +594,8 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth
+            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
+            google_credentials, google_id
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
