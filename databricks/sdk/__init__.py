@@ -105,6 +105,8 @@ class WorkspaceClient:
                  cluster_id: str = None,
                  debug_truncate_bytes: int = None,
                  debug_headers: bool = None,
+                 google_service_account: str = None,
+                 google_credentials: str = None,
                  product="unknown",
                  product_version="0.0.0",
                  credentials_provider: client.CredentialsProvider = None,
@@ -129,6 +131,8 @@ class WorkspaceClient:
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
+                                   google_service_account=google_service_account,
+                                   google_credentials=google_credentials,
                                    product=product,
                                    product_version=product_version)
         self.config = config.copy()
