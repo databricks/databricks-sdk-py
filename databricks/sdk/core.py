@@ -589,8 +589,8 @@ class Cloud(Enum):
 class DatabricksEnvironment:
     cloud: Cloud
 
-    # domain suffixes are not very secret: https://crt.sh/?q=databricks
-    tld: str
+    # zones are not very secret: https://crt.sh/?q=databricks
+    dns_zone: str
 
     azure_environment: AzureEnvironment = None
 
@@ -599,7 +599,7 @@ class DatabricksEnvironment:
     azure_application_id: str = None
 
     def deployment(self, deployment_name: str) -> str:
-        return f'https://{deployment_name}{self.tld}'
+        return f'https://{deployment_name}{self.dns_zone}'
 
 
 _DATABRICKS_ENVIRONMENTS = [
@@ -757,7 +757,7 @@ class Config:
     def environment(self) -> DatabricksEnvironment:
         hostname = self.hostname
         for env in _DATABRICKS_ENVIRONMENTS:
-            if hostname.endswith(env.tld):
+            if hostname.endswith(env.dns_zone):
                 return env
         raise ValueError(f"Cannot find DatabricksEnvironment for {hostname}")
 
