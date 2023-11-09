@@ -580,6 +580,8 @@ class ConfigAttribute:
 
 
 class Cloud(Enum):
+    UNSPECIFIED = None
+
     AWS = 'aws'
     AZURE = 'azure'
     GCP = 'gcp'
@@ -592,7 +594,7 @@ class DatabricksEnvironment:
     # zones are not very secret: https://crt.sh/?q=databricks
     dns_zone: str
 
-    azure_environment: AzureEnvironment = None
+    azure_environment: Optional[AzureEnvironment] = None
 
     # The application (client) ID isn't a secret. See
     # https://learn.microsoft.com/en-us/entra/identity-platform/developer-glossary#application-client-id
@@ -603,6 +605,7 @@ class DatabricksEnvironment:
 
 
 _DATABRICKS_ENVIRONMENTS = [
+    DatabricksEnvironment(Cloud.UNSPECIFIED, 'localhost'),
     DatabricksEnvironment(Cloud.AWS, '.dev.databricks.com'),
     DatabricksEnvironment(Cloud.AWS, '.staging.cloud.databricks.com'),
     DatabricksEnvironment(Cloud.AWS, '.cloud.databricks.com'),
@@ -720,7 +723,7 @@ class Config:
     def is_azure(self) -> bool:
         has_resource_id = self.azure_workspace_resource_id is not None
         azure_environment = self.environment.azure_environment is not None
-        return has_resource_id or azure_environment is not None
+        return has_resource_id or azure_environment
 
     @property
     def is_gcp(self) -> bool:
@@ -756,6 +759,12 @@ class Config:
     @property
     def environment(self) -> DatabricksEnvironment:
         hostname = self.hostname
+        if ':' in hostname:
+            # special case for unit tests and OAuth U2M
+            hostname, _ = hostname.split(':')
+        if hostname == 'x' or hostname == '127.0.0.1':
+            # special case for unit tests
+            hostname = 'localhost'
         for env in _DATABRICKS_ENVIRONMENTS:
             if hostname.endswith(env.dns_zone):
                 return env
