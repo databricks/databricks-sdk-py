@@ -2,48 +2,21 @@
 
 from .base import DatabricksError
 
-__all__ = ['error_mapper'{{range .ExceptionTypes}}, '{{.PascalName}}'{{end}}]
+__all__ = [{{range $i, $v := .ExceptionTypes}}{{if $i}}, {{end}}'{{.PascalName}}'{{end}}]
 
-{{$builtinErrors := dict
-    "DEADLINE_EXCEEDED" "TimeoutError"
-    "NOT_FOUND" "LookupError"
-    "UNAUTHENTICATED" "PermissionError"
-    "PERMISSION_DENIED" "PermissionError"
-    "TOO_MANY_REQUESTS" "ResourceWarning"
-    "NOT_IMPLEMENTED" "NotImplementedError"
-}}
-
-{{range .ExceptionTypes}}{{- $builtin := getOrDefault $builtinErrors .Name "" -}}
-  class {{.PascalName}}({{if .Inherit -}}
+{{range .ExceptionTypes}}
+class {{.PascalName}}({{if .Inherit -}}
     {{.Inherit.PascalName}}
   {{- else -}}
     DatabricksError
-  {{- end -}}{{if ne "" $builtin -}}
-    , {{ $builtin }}
-  {{- end}}):
-    """{{.Comment "    " 100 | trimSuffix "\"" }}"""
+  {{- end -}}):
+  """{{.Comment "    " 100 | trimSuffix "\"" }}"""
 {{end}}
 
-_STATUS_CODE_MAPPING = { {{range .ErrorStatusCodeMapping}}
+STATUS_CODE_MAPPING = { {{range .ErrorStatusCodeMapping}}
    {{.StatusCode}}: {{.PascalName}},{{- end}}
 }
 
-_ERROR_CODE_MAPPING = { {{range .ErrorCodeMapping}}
+ERROR_CODE_MAPPING = { {{range .ErrorCodeMapping}}
     '{{.ErrorCode}}': {{.PascalName}},{{- end}}
 }
-
-def error_mapper(status_code: int, raw: dict) -> DatabricksError:
-    error_code = raw.get('error_code', None)
-    if error_code in _ERROR_CODE_MAPPING:
-        # more specific error codes override more generic HTTP status codes
-        return _ERROR_CODE_MAPPING[error_code](**raw)
-
-    if status_code in _STATUS_CODE_MAPPING:
-        # more generic HTTP status codes matched after more specific error codes,
-        # where there's a default exception class per HTTP status code, and we do
-        # rely on Databricks platform exception mapper to do the right thing.
-        return _STATUS_CODE_MAPPING[status_code](**raw)
-
-    # backwards-compatible error creation for cases like using older versions of
-    # the SDK on way never releases of the platform.
-    return DatabricksError(**raw)
