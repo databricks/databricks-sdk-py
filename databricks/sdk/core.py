@@ -24,7 +24,7 @@ from requests.adapters import HTTPAdapter
 
 from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
                     add_sp_management_token, add_workspace_id_header)
-from .errors import DatabricksError, _error_mapper
+from .errors import DatabricksError, error_mapper
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenCache, TokenSource)
 from .retries import retried
@@ -1117,7 +1117,7 @@ class ApiClient:
         if is_too_many_requests_or_unavailable:
             kwargs['retry_after_secs'] = self._parse_retry_after(response)
         kwargs['message'] = message
-        return _error_mapper(status_code, kwargs)
+        return error_mapper(status_code, kwargs)
 
     def _record_request_log(self, response: requests.Response, raw=False):
         if not logger.isEnabledFor(logging.DEBUG):
