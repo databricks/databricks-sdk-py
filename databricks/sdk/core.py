@@ -23,6 +23,7 @@ import google.auth
 import requests
 import requests.auth
 from google.auth import impersonated_credentials
+from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 from requests.adapters import HTTPAdapter
 
@@ -39,7 +40,7 @@ logger = logging.getLogger('databricks.sdk')
 
 HeaderFactory = Callable[[], Dict[str, str]]
 
-GcpScopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/compute", ]
+GcpScopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/compute"]
 
 
 class CredentialsProvider(abc.ABC):
@@ -279,14 +280,14 @@ def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
     credentials = service_account.IDTokenCredentials.from_service_account_file(
         filename=cfg.google_credentials, target_audience=cfg.host)
 
-    request = google.auth.transport.requests.Request()
+    request = Request()
 
     gcp_credentials = service_account.IDTokenCredentials.from_service_account_file(
         filename=cfg.google_credentials, scopes=GcpScopes)
 
     def refreshed_headers() -> Dict[str, str]:
-        token = credentials.refresh(request)
-        headers = {'Authorization': f'{token.token_type} {token.token}'}
+        credentials.refresh(request)
+        headers = {'Authorization': f'Bearer {credentials.token}'}
         if cfg.is_account_client:
             gcp_token = gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_token.token
@@ -315,11 +316,11 @@ def google_id(cfg: 'Config') -> Optional[HeaderFactory]:
     gcp_impersonated_credentials = impersonated_credentials.Credentials(
         source_credentials=credentials, target_principal=cfg.google_service_account, target_scopes=GcpScopes)
 
-    request = google.auth.transport.requests.Request()
+    request = Request()
 
     def refreshed_headers() -> Dict[str, str]:
-        token = id_creds.refresh(request)
-        headers = {'Authorization': f'{token.token_type} {token.token}'}
+        id_creds.refresh(request)
+        headers = {'Authorization': f'Bearer {id_creds.token}'}
         if cfg.is_account_client:
             gcp_token = gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_token.token
