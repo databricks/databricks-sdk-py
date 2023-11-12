@@ -5,6 +5,8 @@ from datetime import timedelta
 from random import random
 from typing import Callable, List, Optional, Type
 
+from databricks.sdk.errors import TemporarilyUnavailable, TooManyRequests
+
 logger = logging.getLogger('databricks.sdk')
 
 
@@ -30,12 +32,14 @@ def retried(*,
                 except Exception as err:
                     last_err = err
                     retry_reason = None
-                    # sleep 10s max per attempt, unless it's HTTP 429 or 503
+                    # sleep 10s max per attempt
                     sleep = min(10, attempt)
-                    retry_after_secs = getattr(err, 'retry_after_secs', None)
-                    if retry_after_secs is not None:
-                        # cannot depend on DatabricksError directly because of circular dependency
-                        sleep = retry_after_secs
+                    if isinstance(err, (TooManyRequests, TemporarilyUnavailable)):
+                        if err.retry_after_secs is not None:
+                            # unless a valid `Retry-After` header is present in
+                            # HTTP 429 or 503 responses, and it's greater than
+                            # current sleep interval.
+                            sleep = max(err.retry_after_secs, sleep)
                         retry_reason = 'throttled by platform'
                     elif is_retryable is not None:
                         retry_reason = is_retryable(err)
