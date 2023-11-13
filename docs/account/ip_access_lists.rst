@@ -133,7 +133,7 @@ Account IP Access Lists
         :returns: Iterator over :class:`IpAccessListInfo`
         
 
-    .. py:method:: replace(label, list_type, ip_addresses, enabled, ip_access_list_id [, list_id])
+    .. py:method:: replace(ip_access_list_id, label, list_type, ip_addresses, enabled [, list_id])
 
         Usage:
 
@@ -171,6 +171,8 @@ Account IP Access Lists
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -182,15 +184,13 @@ Account IP Access Lists
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
         
         
 
-    .. py:method:: update(label, list_type, ip_addresses, enabled, ip_access_list_id [, list_id])
+    .. py:method:: update(ip_access_list_id, label, list_type, ip_addresses, enabled [, list_id])
 
         Update access list.
         
@@ -208,6 +208,8 @@ Account IP Access Lists
         
         It can take a few minutes for the changes to take effect.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -219,8 +221,6 @@ Account IP Access Lists
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         

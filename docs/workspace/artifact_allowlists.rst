@@ -18,7 +18,7 @@ Artifact Allowlists
         :returns: :class:`ArtifactAllowlistInfo`
         
 
-    .. py:method:: update(artifact_matchers, artifact_type)
+    .. py:method:: update(artifact_type, artifact_matchers)
 
         Set an artifact allowlist.
         
@@ -26,10 +26,10 @@ Artifact Allowlists
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
         
-        :param artifact_matchers: List[:class:`ArtifactMatcher`]
-          A list of allowed artifact match patterns.
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
+        :param artifact_matchers: List[:class:`ArtifactMatcher`]
+          A list of allowed artifact match patterns.
         
         :returns: :class:`ArtifactAllowlistInfo`
         

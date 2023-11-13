@@ -1111,8 +1111,8 @@ class ServingEndpointsAPI:
         return ServingEndpointPermissions.from_dict(res)
 
     def update_config(self,
-                      served_models: List[ServedModelInput],
                       name: str,
+                      served_models: List[ServedModelInput],
                       *,
                       traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
@@ -1121,11 +1121,11 @@ class ServingEndpointsAPI:
         served models, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
         
+        :param name: str
+          The name of the serving endpoint to update. This field is required.
         :param served_models: List[:class:`ServedModelInput`]
           A list of served models for the endpoint to serve. A serving endpoint can have up to 10 served
           models.
-        :param name: str
-          The name of the serving endpoint to update. This field is required.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
         
@@ -1147,8 +1147,8 @@ class ServingEndpointsAPI:
 
     def update_config_and_wait(
         self,
-        served_models: List[ServedModelInput],
         name: str,
+        served_models: List[ServedModelInput],
         *,
         traffic_config: Optional[TrafficConfig] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:

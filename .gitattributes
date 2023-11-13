@@ -1,4 +1,5 @@
 databricks/sdk/__init__.py linguist-generated=true
+databricks/sdk/errors/mapping.py linguist-generated=true
 databricks/sdk/service/billing.py linguist-generated=true
 databricks/sdk/service/catalog.py linguist-generated=true
 databricks/sdk/service/compute.py linguist-generated=true

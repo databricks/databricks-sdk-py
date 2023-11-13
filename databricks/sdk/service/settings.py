@@ -840,11 +840,11 @@ class AccountIpAccessListsAPI:
         return parsed if parsed is not None else []
 
     def replace(self,
+                ip_access_list_id: str,
                 label: str,
                 list_type: ListType,
                 ip_addresses: List[str],
                 enabled: bool,
-                ip_access_list_id: str,
                 *,
                 list_id: Optional[str] = None):
         """Replace access list.
@@ -859,6 +859,8 @@ class AccountIpAccessListsAPI:
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -870,8 +872,6 @@ class AccountIpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -890,11 +890,11 @@ class AccountIpAccessListsAPI:
                      headers=headers)
 
     def update(self,
+               ip_access_list_id: str,
                label: str,
                list_type: ListType,
                ip_addresses: List[str],
                enabled: bool,
-               ip_access_list_id: str,
                *,
                list_id: Optional[str] = None):
         """Update access list.
@@ -913,6 +913,8 @@ class AccountIpAccessListsAPI:
         
         It can take a few minutes for the changes to take effect.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -924,8 +926,6 @@ class AccountIpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -1257,11 +1257,11 @@ class IpAccessListsAPI:
         return parsed if parsed is not None else []
 
     def replace(self,
+                ip_access_list_id: str,
                 label: str,
                 list_type: ListType,
                 ip_addresses: List[str],
                 enabled: bool,
-                ip_access_list_id: str,
                 *,
                 list_id: Optional[str] = None):
         """Replace access list.
@@ -1277,6 +1277,8 @@ class IpAccessListsAPI:
         effect. Note that your resulting IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1288,8 +1290,6 @@ class IpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
@@ -1305,11 +1305,11 @@ class IpAccessListsAPI:
         self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
 
     def update(self,
+               ip_access_list_id: str,
                label: str,
                list_type: ListType,
                ip_addresses: List[str],
                enabled: bool,
-               ip_access_list_id: str,
                *,
                list_id: Optional[str] = None):
         """Update access list.
@@ -1329,6 +1329,8 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. Note that your resulting IP access list has
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
         
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list to modify.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1340,8 +1342,6 @@ class IpAccessListsAPI:
           Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
         :param list_id: str (optional)
           Universally unique identifier (UUID) of the IP access list.
         
