@@ -125,7 +125,7 @@ Alerts
         :returns: Iterator over :class:`Alert`
         
 
-    .. py:method:: update(name, options, query_id, alert_id [, rearm])
+    .. py:method:: update(alert_id, name, options, query_id [, rearm])
 
         Usage:
 
@@ -162,13 +162,13 @@ Alerts
         
         Updates an alert.
         
+        :param alert_id: str
         :param name: str
           Name of the alert.
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
           Query ID.
-        :param alert_id: str
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.

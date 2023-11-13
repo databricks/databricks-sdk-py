@@ -186,7 +186,7 @@ Log delivery configurations
         :returns: Iterator over :class:`LogDeliveryConfiguration`
         
 
-    .. py:method:: patch_status(status, log_delivery_configuration_id)
+    .. py:method:: patch_status(log_delivery_configuration_id, status)
 
         Enable or disable log delivery configuration.
         
@@ -195,13 +195,13 @@ Log delivery configurations
         re-enable a delivery configuration if this would violate the delivery configuration limits described
         under [Create log delivery](:method:LogDelivery/Create).
         
+        :param log_delivery_configuration_id: str
+          Databricks log delivery configuration ID
         :param status: :class:`LogDeliveryConfigStatus`
           Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
           to `ENABLED`. You can [enable or disable the
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
-        :param log_delivery_configuration_id: str
-          Databricks log delivery configuration ID
         
         
         

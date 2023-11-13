@@ -3552,18 +3552,18 @@ class ArtifactAllowlistsAPI:
                            headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
 
-    def update(self, artifact_matchers: List[ArtifactMatcher],
-               artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
+    def update(self, artifact_type: ArtifactType,
+               artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo:
         """Set an artifact allowlist.
         
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
         
-        :param artifact_matchers: List[:class:`ArtifactMatcher`]
-          A list of allowed artifact match patterns.
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
+        :param artifact_matchers: List[:class:`ArtifactMatcher`]
+          A list of allowed artifact match patterns.
         
         :returns: :class:`ArtifactAllowlistInfo`
         """
@@ -3820,21 +3820,21 @@ class ConnectionsAPI:
         return parsed if parsed is not None else []
 
     def update(self,
+               name_arg: str,
                name: str,
                options: Dict[str, str],
-               name_arg: str,
                *,
                owner: Optional[str] = None) -> ConnectionInfo:
         """Update a connection.
         
         Updates the connection that matches the supplied name.
         
+        :param name_arg: str
+          Name of the connection.
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param name_arg: str
-          Name of the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
         
@@ -4348,19 +4348,19 @@ class MetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def assign(self, metastore_id: str, default_catalog_name: str, workspace_id: int):
+    def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
         """Create an assignment.
         
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
         
+        :param workspace_id: int
+          A workspace ID.
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
           The name of the default catalog in the metastore.
-        :param workspace_id: int
-          A workspace ID.
         
         
         """

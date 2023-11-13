@@ -108,7 +108,7 @@ Budgets
         :returns: Iterator over :class:`BudgetWithStatus`
         
 
-    .. py:method:: update(budget, budget_id)
+    .. py:method:: update(budget_id, budget)
 
         Usage:
 
@@ -147,10 +147,10 @@ Budgets
         
         Modifies a budget in this account. Budget properties are completely overwritten.
         
-        :param budget: :class:`Budget`
-          Budget configuration to be created.
         :param budget_id: str
           Budget ID
+        :param budget: :class:`Budget`
+          Budget configuration to be created.
         
         
         

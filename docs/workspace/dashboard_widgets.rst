@@ -32,16 +32,16 @@ Dashboard Widgets
         
         
 
-    .. py:method:: update(dashboard_id, options, width, id [, text, visualization_id])
+    .. py:method:: update(id, dashboard_id, options, width [, text, visualization_id])
 
         Update existing widget.
         
+        :param id: str
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
         :param options: :class:`WidgetOptions`
         :param width: int
           Width of a widget
-        :param id: str
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
           contains a visualization in the `visualization` field.

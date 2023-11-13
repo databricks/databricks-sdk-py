@@ -58,7 +58,7 @@ Workspace Assignment
         :returns: Iterator over :class:`PermissionAssignment`
         
 
-    .. py:method:: update(permissions, workspace_id, principal_id)
+    .. py:method:: update(workspace_id, principal_id, permissions)
 
         Usage:
 
@@ -76,7 +76,7 @@ Workspace Assignment
             
             spn_id = spn.id
             
-            workspace_id = os.environ["TEST_WORKSPACE_ID"]
+            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
             a.workspace_assignment.update(workspace_id=workspace_id,
                                           principal_id=spn_id,
@@ -87,12 +87,12 @@ Workspace Assignment
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
         
-        :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace.
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
+        :param permissions: List[:class:`WorkspacePermission`]
+          Array of permissions assignments to update on the workspace.
         
         
         

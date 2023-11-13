@@ -10,7 +10,7 @@ spn = a.service_principals.create(display_name=f'sdk-{time.time_ns()}')
 
 spn_id = spn.id
 
-workspace_id = os.environ["TEST_WORKSPACE_ID"]
+workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
 
 a.workspace_assignment.update(workspace_id=workspace_id,
                               principal_id=spn_id,

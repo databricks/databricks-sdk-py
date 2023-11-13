@@ -14,7 +14,7 @@ Metastores
     Catalog was released. If your workspace includes a legacy Hive metastore, the data in that metastore is
     available in a catalog named hive_metastore.
 
-    .. py:method:: assign(metastore_id, default_catalog_name, workspace_id)
+    .. py:method:: assign(workspace_id, metastore_id, default_catalog_name)
 
         Usage:
 
@@ -27,7 +27,7 @@ Metastores
             
             w = WorkspaceClient()
             
-            workspace_id = os.environ["TEST_WORKSPACE_ID"]
+            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
             created = w.metastores.create(name=f'sdk-{time.time_ns()}',
                                           storage_root="s3://%s/%s" %
@@ -44,12 +44,12 @@ Metastores
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
         
+        :param workspace_id: int
+          A workspace ID.
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
           The name of the default catalog in the metastore.
-        :param workspace_id: int
-          A workspace ID.
         
         
         
@@ -242,7 +242,7 @@ Metastores
             
             w = WorkspaceClient()
             
-            workspace_id = os.environ["TEST_WORKSPACE_ID"]
+            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
             created = w.metastores.create(name=f'sdk-{time.time_ns()}',
                                           storage_root="s3://%s/%s" %
