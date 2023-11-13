@@ -2,8 +2,6 @@
 
 from .base import DatabricksError
 
-__all__ = [{{range $i, $v := .ExceptionTypes}}{{if $i}}, {{end}}'{{.PascalName}}'{{end}}]
-
 {{range .ExceptionTypes}}
 class {{.PascalName}}({{if .Inherit -}}
     {{.Inherit.PascalName}}

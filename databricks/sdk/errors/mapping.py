@@ -2,13 +2,6 @@
 
 from .base import DatabricksError
 
-__all__ = [
-    'BadRequest', 'Unauthenticated', 'PermissionDenied', 'NotFound', 'ResourceConflict', 'TooManyRequests',
-    'Cancelled', 'InternalError', 'NotImplemented', 'TemporarilyUnavailable', 'DeadlineExceeded',
-    'InvalidParameterValue', 'Aborted', 'AlreadyExists', 'ResourceAlreadyExists', 'ResourceExhausted',
-    'RequestLimitExceeded', 'Unknown', 'DataLoss'
-]
-
 
 class BadRequest(DatabricksError):
     """the request is invalid"""
