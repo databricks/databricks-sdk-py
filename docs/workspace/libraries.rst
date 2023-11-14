@@ -1,5 +1,5 @@
-ManagedLibraries
-================
+Managed Libraries
+=================
 .. py:class:: LibrariesAPI
 
     The Libraries API allows you to install and uninstall libraries and get the status of libraries on a

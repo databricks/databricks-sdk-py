@@ -58,21 +58,6 @@ class CreateCustomAppIntegrationOutput:
 
 
 @dataclass
-class CreateOAuthEnrollment:
-    enable_all_published_apps: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.enable_all_published_apps is not None:
-            body['enable_all_published_apps'] = self.enable_all_published_apps
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateOAuthEnrollment':
-        return cls(enable_all_published_apps=d.get('enable_all_published_apps', None))
-
-
-@dataclass
 class CreatePublishedAppIntegration:
     app_id: Optional[str] = None
     token_access_policy: Optional['TokenAccessPolicy'] = None
@@ -241,20 +226,6 @@ class ListServicePrincipalSecretsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalSecretsResponse':
         return cls(secrets=_repeated(d, 'secrets', SecretInfo))
-
-
-@dataclass
-class OAuthEnrollmentStatus:
-    is_enabled: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'OAuthEnrollmentStatus':
-        return cls(is_enabled=d.get('is_enabled', None))
 
 
 @dataclass
@@ -498,59 +469,6 @@ class CustomAppIntegrationAPI:
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
             body=body,
             headers=headers)
-
-
-class OAuthEnrollmentAPI:
-    """These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using
-    any OAuth published/custom application integration.
-    
-    **Note:** Your account must be on the E2 version to use these APIs, this is because OAuth is only
-    supported on the E2 version."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self, *, enable_all_published_apps: Optional[bool] = None):
-        """Create OAuth Enrollment request.
-        
-        Create an OAuth Enrollment request to enroll OAuth for this account and optionally enable the OAuth
-        integration for all the partner applications in the account.
-        
-        The parter applications are: - Power BI - Tableau Desktop - Databricks CLI
-        
-        The enrollment is executed asynchronously, so the API will return 204 immediately. The actual
-        enrollment take a few minutes, you can check the status via API :method:OAuthEnrollment/get.
-        
-        :param enable_all_published_apps: bool (optional)
-          If true, enable OAuth for all the published applications in the account.
-        
-        
-        """
-        body = {}
-        if enable_all_published_apps is not None:
-            body['enable_all_published_apps'] = enable_all_published_apps
-        headers = {'Content-Type': 'application/json', }
-        self._api.do('POST',
-                     f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
-                     body=body,
-                     headers=headers)
-
-    def get(self) -> OAuthEnrollmentStatus:
-        """Get OAuth enrollment status.
-        
-        Gets the OAuth enrollment status for this Account.
-        
-        You can only add/use the OAuth published/custom application integrations when OAuth enrollment status
-        is enabled.
-        
-        :returns: :class:`OAuthEnrollmentStatus`
-        """
-
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET',
-                           f'/api/2.0/accounts/{self._api.account_id}/oauth2/enrollment',
-                           headers=headers)
-        return OAuthEnrollmentStatus.from_dict(res)
 
 
 class OAuthPublishedAppsAPI:

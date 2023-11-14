@@ -1205,6 +1205,7 @@ class CreatePolicy:
     name: str
     definition: Optional[str] = None
     description: Optional[str] = None
+    libraries: Optional['List[Library]'] = None
     max_clusters_per_user: Optional[int] = None
     policy_family_definition_overrides: Optional[str] = None
     policy_family_id: Optional[str] = None
@@ -1213,6 +1214,7 @@ class CreatePolicy:
         body = {}
         if self.definition is not None: body['definition'] = self.definition
         if self.description is not None: body['description'] = self.description
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
         if self.name is not None: body['name'] = self.name
         if self.policy_family_definition_overrides is not None:
@@ -1224,6 +1226,7 @@ class CreatePolicy:
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePolicy':
         return cls(definition=d.get('definition', None),
                    description=d.get('description', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
@@ -1633,6 +1636,7 @@ class EditPolicy:
     name: str
     definition: Optional[str] = None
     description: Optional[str] = None
+    libraries: Optional['List[Library]'] = None
     max_clusters_per_user: Optional[int] = None
     policy_family_definition_overrides: Optional[str] = None
     policy_family_id: Optional[str] = None
@@ -1641,6 +1645,7 @@ class EditPolicy:
         body = {}
         if self.definition is not None: body['definition'] = self.definition
         if self.description is not None: body['description'] = self.description
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
         if self.name is not None: body['name'] = self.name
         if self.policy_family_definition_overrides is not None:
@@ -1653,6 +1658,7 @@ class EditPolicy:
     def from_dict(cls, d: Dict[str, any]) -> 'EditPolicy':
         return cls(definition=d.get('definition', None),
                    description=d.get('description', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
@@ -1672,6 +1678,7 @@ class EventDetails:
     driver_state_message: Optional[str] = None
     enable_termination_for_node_blocklisted: Optional[bool] = None
     free_space: Optional[int] = None
+    init_scripts: Optional['InitScriptEventDetails'] = None
     instance_id: Optional[str] = None
     job_run_name: Optional[str] = None
     previous_attributes: Optional['ClusterAttributes'] = None
@@ -1695,6 +1702,7 @@ class EventDetails:
         if self.enable_termination_for_node_blocklisted is not None:
             body['enable_termination_for_node_blocklisted'] = self.enable_termination_for_node_blocklisted
         if self.free_space is not None: body['free_space'] = self.free_space
+        if self.init_scripts: body['init_scripts'] = self.init_scripts.as_dict()
         if self.instance_id is not None: body['instance_id'] = self.instance_id
         if self.job_run_name is not None: body['job_run_name'] = self.job_run_name
         if self.previous_attributes: body['previous_attributes'] = self.previous_attributes.as_dict()
@@ -1719,6 +1727,7 @@ class EventDetails:
                    enable_termination_for_node_blocklisted=d.get('enable_termination_for_node_blocklisted',
                                                                  None),
                    free_space=d.get('free_space', None),
+                   init_scripts=_from_dict(d, 'init_scripts', InitScriptEventDetails),
                    instance_id=d.get('instance_id', None),
                    job_run_name=d.get('job_run_name', None),
                    previous_attributes=_from_dict(d, 'previous_attributes', ClusterAttributes),
@@ -2107,8 +2116,61 @@ class GlobalInitScriptUpdateRequest:
 
 
 @dataclass
+class InitScriptEventDetails:
+    cluster: Optional['List[InitScriptInfoAndExecutionDetails]'] = None
+    global_: Optional['List[InitScriptInfoAndExecutionDetails]'] = None
+    reported_for_node: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.cluster: body['cluster'] = [v.as_dict() for v in self.cluster]
+        if self.global_: body['global'] = [v.as_dict() for v in self.global_]
+        if self.reported_for_node is not None: body['reported_for_node'] = self.reported_for_node
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InitScriptEventDetails':
+        return cls(cluster=_repeated(d, 'cluster', InitScriptInfoAndExecutionDetails),
+                   global_=_repeated(d, 'global', InitScriptInfoAndExecutionDetails),
+                   reported_for_node=d.get('reported_for_node', None))
+
+
+@dataclass
+class InitScriptExecutionDetails:
+    error_message: Optional[str] = None
+    execution_duration_seconds: Optional[int] = None
+    status: Optional['InitScriptExecutionDetailsStatus'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.execution_duration_seconds is not None:
+            body['execution_duration_seconds'] = self.execution_duration_seconds
+        if self.status is not None: body['status'] = self.status.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InitScriptExecutionDetails':
+        return cls(error_message=d.get('error_message', None),
+                   execution_duration_seconds=d.get('execution_duration_seconds', None),
+                   status=_enum(d, 'status', InitScriptExecutionDetailsStatus))
+
+
+class InitScriptExecutionDetailsStatus(Enum):
+    """The current status of the script"""
+
+    FAILED_EXECUTION = 'FAILED_EXECUTION'
+    FAILED_FETCH = 'FAILED_FETCH'
+    NOT_EXECUTED = 'NOT_EXECUTED'
+    SKIPPED = 'SKIPPED'
+    SUCCEEDED = 'SUCCEEDED'
+    UNKNOWN = 'UNKNOWN'
+
+
+@dataclass
 class InitScriptInfo:
     dbfs: Optional['DbfsStorageInfo'] = None
+    file: Optional['LocalFileInfo'] = None
     s3: Optional['S3StorageInfo'] = None
     volumes: Optional['VolumesStorageInfo'] = None
     workspace: Optional['WorkspaceStorageInfo'] = None
@@ -2116,6 +2178,7 @@ class InitScriptInfo:
     def as_dict(self) -> dict:
         body = {}
         if self.dbfs: body['dbfs'] = self.dbfs.as_dict()
+        if self.file: body['file'] = self.file.as_dict()
         if self.s3: body['s3'] = self.s3.as_dict()
         if self.volumes: body['volumes'] = self.volumes.as_dict()
         if self.workspace: body['workspace'] = self.workspace.as_dict()
@@ -2124,9 +2187,27 @@ class InitScriptInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InitScriptInfo':
         return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
+                   file=_from_dict(d, 'file', LocalFileInfo),
                    s3=_from_dict(d, 's3', S3StorageInfo),
                    volumes=_from_dict(d, 'volumes', VolumesStorageInfo),
                    workspace=_from_dict(d, 'workspace', WorkspaceStorageInfo))
+
+
+@dataclass
+class InitScriptInfoAndExecutionDetails:
+    execution_details: Optional['InitScriptExecutionDetails'] = None
+    script: Optional['InitScriptInfo'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.execution_details: body['execution_details'] = self.execution_details.as_dict()
+        if self.script: body['script'] = self.script.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'InitScriptInfoAndExecutionDetails':
+        return cls(execution_details=_from_dict(d, 'execution_details', InitScriptExecutionDetails),
+                   script=_from_dict(d, 'script', InitScriptInfo))
 
 
 @dataclass
@@ -2324,17 +2405,20 @@ class InstancePoolAzureAttributesAvailability(Enum):
 class InstancePoolGcpAttributes:
     gcp_availability: Optional['GcpAvailability'] = None
     local_ssd_count: Optional[int] = None
+    zone_id: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.gcp_availability is not None: body['gcp_availability'] = self.gcp_availability.value
         if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolGcpAttributes':
         return cls(gcp_availability=_enum(d, 'gcp_availability', GcpAvailability),
-                   local_ssd_count=d.get('local_ssd_count', None))
+                   local_ssd_count=d.get('local_ssd_count', None),
+                   zone_id=d.get('zone_id', None))
 
 
 @dataclass
@@ -2703,6 +2787,20 @@ class ListSortOrder(Enum):
 
 
 @dataclass
+class LocalFileInfo:
+    destination: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'LocalFileInfo':
+        return cls(destination=d.get('destination', None))
+
+
+@dataclass
 class LogAnalyticsInfo:
     log_analytics_primary_key: Optional[str] = None
     log_analytics_workspace_id: Optional[str] = None
@@ -2911,6 +3009,7 @@ class Policy:
     definition: Optional[str] = None
     description: Optional[str] = None
     is_default: Optional[bool] = None
+    libraries: Optional['List[Library]'] = None
     max_clusters_per_user: Optional[int] = None
     name: Optional[str] = None
     policy_family_definition_overrides: Optional[str] = None
@@ -2924,6 +3023,7 @@ class Policy:
         if self.definition is not None: body['definition'] = self.definition
         if self.description is not None: body['description'] = self.description
         if self.is_default is not None: body['is_default'] = self.is_default
+        if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
         if self.name is not None: body['name'] = self.name
         if self.policy_family_definition_overrides is not None:
@@ -2939,6 +3039,7 @@ class Policy:
                    definition=d.get('definition', None),
                    description=d.get('description', None),
                    is_default=d.get('is_default', None),
+                   libraries=_repeated(d, 'libraries', Library),
                    max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
@@ -3417,24 +3518,23 @@ class WorkspaceStorageInfo:
 
 
 class ClusterPoliciesAPI:
-    """Cluster policy limits the ability to configure clusters based on a set of rules. The policy rules limit
-    the attributes or attribute values available for cluster creation. Cluster policies have ACLs that limit
-    their use to specific users and groups.
+    """You can use cluster policies to control users' ability to configure clusters based on a set of rules.
+    These rules specify which attributes or attribute values can be used during cluster creation. Cluster
+    policies have ACLs that limit their use to specific users and groups.
     
-    Cluster policies let you limit users to create clusters with prescribed settings, simplify the user
-    interface and enable more users to create their own clusters (by fixing and hiding some values), control
-    cost by limiting per cluster maximum cost (by setting limits on attributes whose values contribute to
-    hourly price).
+    With cluster policies, you can: - Auto-install cluster libraries on the next restart by listing them in
+    the policy's "libraries" field. - Limit users to creating clusters with the prescribed settings. -
+    Simplify the user interface, enabling more users to create clusters, by fixing and hiding some fields. -
+    Manage costs by setting limits on attributes that impact the hourly rate.
     
     Cluster policy permissions limit which policies a user can select in the Policy drop-down when the user
-    creates a cluster: - A user who has cluster create permission can select the Unrestricted policy and
-    create fully-configurable clusters. - A user who has both cluster create permission and access to cluster
-    policies can select the Unrestricted policy and policies they have access to. - A user that has access to
-    only cluster policies, can select the policies they have access to.
+    creates a cluster: - A user who has unrestricted cluster create permission can select the Unrestricted
+    policy and create fully-configurable clusters. - A user who has both unrestricted cluster create
+    permission and access to cluster policies can select the Unrestricted policy and policies they have access
+    to. - A user that has access to only cluster policies, can select the policies they have access to.
     
-    If no policies have been created in the workspace, the Policy drop-down does not display.
-    
-    Only admin users can create, edit, and delete policies. Admin users also have access to all policies."""
+    If no policies exist in the workspace, the Policy drop-down doesn't appear. Only admin users can create,
+    edit, and delete policies. Admin users also have access to all policies."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3444,6 +3544,7 @@ class ClusterPoliciesAPI:
                *,
                definition: Optional[str] = None,
                description: Optional[str] = None,
+               libraries: Optional[List[Library]] = None,
                max_clusters_per_user: Optional[int] = None,
                policy_family_definition_overrides: Optional[str] = None,
                policy_family_id: Optional[str] = None) -> CreatePolicyResponse:
@@ -3455,18 +3556,24 @@ class ClusterPoliciesAPI:
           Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
           characters.
         :param definition: str (optional)
-          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+          Policy definition document expressed in [Databricks Cluster Policy Definition Language].
+          
+          [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
+        :param libraries: List[:class:`Library`] (optional)
+          A list of libraries to be installed on the next cluster restart that uses this policy.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
         :param policy_family_definition_overrides: str (optional)
-          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
           
           You can use this to customize the policy definition inherited from the policy family. Policy rules
           specified here are merged into the inherited policy definition.
+          
+          [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param policy_family_id: str (optional)
           ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
           definition.
@@ -3479,6 +3586,7 @@ class ClusterPoliciesAPI:
         body = {}
         if definition is not None: body['definition'] = definition
         if description is not None: body['description'] = description
+        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
         if max_clusters_per_user is not None: body['max_clusters_per_user'] = max_clusters_per_user
         if name is not None: body['name'] = name
         if policy_family_definition_overrides is not None:
@@ -3509,6 +3617,7 @@ class ClusterPoliciesAPI:
              *,
              definition: Optional[str] = None,
              description: Optional[str] = None,
+             libraries: Optional[List[Library]] = None,
              max_clusters_per_user: Optional[int] = None,
              policy_family_definition_overrides: Optional[str] = None,
              policy_family_id: Optional[str] = None):
@@ -3523,18 +3632,24 @@ class ClusterPoliciesAPI:
           Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
           characters.
         :param definition: str (optional)
-          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+          Policy definition document expressed in [Databricks Cluster Policy Definition Language].
+          
+          [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
+        :param libraries: List[:class:`Library`] (optional)
+          A list of libraries to be installed on the next cluster restart that uses this policy.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
         :param policy_family_definition_overrides: str (optional)
-          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
           
           You can use this to customize the policy definition inherited from the policy family. Policy rules
           specified here are merged into the inherited policy definition.
+          
+          [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param policy_family_id: str (optional)
           ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
           definition.
@@ -3547,6 +3662,7 @@ class ClusterPoliciesAPI:
         body = {}
         if definition is not None: body['definition'] = definition
         if description is not None: body['description'] = description
+        if libraries is not None: body['libraries'] = [v.as_dict() for v in libraries]
         if max_clusters_per_user is not None: body['max_clusters_per_user'] = max_clusters_per_user
         if name is not None: body['name'] = name
         if policy_family_definition_overrides is not None:

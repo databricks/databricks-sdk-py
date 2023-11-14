@@ -242,7 +242,7 @@ Workspaces
         :returns: Iterator over :class:`Workspace`
         
 
-    .. py:method:: update(workspace_id [, aws_region, credentials_id, custom_tags, managed_services_customer_managed_key_id, network_id, storage_configuration_id, storage_customer_managed_key_id])
+    .. py:method:: update(workspace_id [, aws_region, credentials_id, custom_tags, managed_services_customer_managed_key_id, network_connectivity_config_id, network_id, storage_configuration_id, storage_customer_managed_key_id])
 
         Usage:
 
@@ -392,6 +392,9 @@ Workspaces
         :param managed_services_customer_managed_key_id: str (optional)
           The ID of the workspace's managed services encryption key configuration object. This parameter is
           available only for updating failed workspaces.
+        :param network_connectivity_config_id: str (optional)
+          The ID of the network connectivity configuration object, which is the parent resource of this
+          private endpoint rule object.
         :param network_id: str (optional)
           The ID of the workspace's network configuration object. Used only if you already use a
           customer-managed VPC. For failed workspaces only, you can switch from a Databricks-managed VPC to a

@@ -40,6 +40,10 @@ Service Principals
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -215,6 +219,10 @@ Service Principals
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)

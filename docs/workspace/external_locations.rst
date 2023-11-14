@@ -139,7 +139,7 @@ External Locations
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name [, access_point, comment, credential_name, encryption_details, force, owner, read_only, url])
+    .. py:method:: update(name [, access_point, comment, credential_name, encryption_details, force, owner, read_only, skip_validation, url])
 
         Usage:
 
@@ -191,6 +191,8 @@ External Locations
           The owner of the external location.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
+        :param skip_validation: bool (optional)
+          Skips validation of the storage credential associated with the external location.
         :param url: str (optional)
           Path URL of the external location.
         

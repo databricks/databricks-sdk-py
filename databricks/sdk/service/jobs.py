@@ -257,6 +257,7 @@ class CreateJob:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     deployment: Optional['JobDeployment'] = None
+    edit_mode: Optional['CreateJobEditMode'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
@@ -273,7 +274,6 @@ class CreateJob:
     tasks: Optional['List[Task]'] = None
     timeout_seconds: Optional[int] = None
     trigger: Optional['TriggerSettings'] = None
-    ui_state: Optional['CreateJobUiState'] = None
     webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
@@ -283,6 +283,7 @@ class CreateJob:
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -299,7 +300,6 @@ class CreateJob:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
-        if self.ui_state is not None: body['ui_state'] = self.ui_state.value
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
@@ -309,6 +309,7 @@ class CreateJob:
                    compute=_repeated(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
+                   edit_mode=_enum(d, 'edit_mode', CreateJobEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -325,18 +326,17 @@ class CreateJob:
                    tasks=_repeated(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
-                   ui_state=_enum(d, 'ui_state', CreateJobUiState),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
-class CreateJobUiState(Enum):
-    """State of the job in UI.
+class CreateJobEditMode(Enum):
+    """Edit mode of the job.
     
-    * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-    editable state and can be modified."""
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
 
     EDITABLE = 'EDITABLE'
-    LOCKED = 'LOCKED'
+    UI_LOCKED = 'UI_LOCKED'
 
 
 @dataclass
@@ -911,6 +911,7 @@ class JobSettings:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     deployment: Optional['JobDeployment'] = None
+    edit_mode: Optional['JobSettingsEditMode'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
@@ -927,7 +928,6 @@ class JobSettings:
     tasks: Optional['List[Task]'] = None
     timeout_seconds: Optional[int] = None
     trigger: Optional['TriggerSettings'] = None
-    ui_state: Optional['JobSettingsUiState'] = None
     webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
@@ -935,6 +935,7 @@ class JobSettings:
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -951,7 +952,6 @@ class JobSettings:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
-        if self.ui_state is not None: body['ui_state'] = self.ui_state.value
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
@@ -960,6 +960,7 @@ class JobSettings:
         return cls(compute=_repeated(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
+                   edit_mode=_enum(d, 'edit_mode', JobSettingsEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -976,18 +977,17 @@ class JobSettings:
                    tasks=_repeated(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
-                   ui_state=_enum(d, 'ui_state', JobSettingsUiState),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
-class JobSettingsUiState(Enum):
-    """State of the job in UI.
+class JobSettingsEditMode(Enum):
+    """Edit mode of the job.
     
-    * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-    editable state and can be modified."""
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
 
     EDITABLE = 'EDITABLE'
-    LOCKED = 'LOCKED'
+    UI_LOCKED = 'UI_LOCKED'
 
 
 @dataclass
@@ -2936,6 +2936,7 @@ class JobsAPI:
                compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
+               edit_mode: Optional[CreateJobEditMode] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                format: Optional[Format] = None,
                git_source: Optional[GitSource] = None,
@@ -2952,7 +2953,6 @@ class JobsAPI:
                tasks: Optional[List[Task]] = None,
                timeout_seconds: Optional[int] = None,
                trigger: Optional[TriggerSettings] = None,
-               ui_state: Optional[CreateJobUiState] = None,
                webhook_notifications: Optional[WebhookNotifications] = None) -> CreateResponse:
         """Create a new job.
         
@@ -2967,6 +2967,11 @@ class JobsAPI:
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
+        :param edit_mode: :class:`CreateJobEditMode` (optional)
+          Edit mode of the job.
+          
+          * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in
+          an editable state and can be modified.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
@@ -2999,7 +3004,7 @@ class JobsAPI:
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
           
-          This value cannot exceed 1000\. Setting this value to `0` causes all new runs to be skipped.
+          This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -3031,11 +3036,6 @@ class JobsAPI:
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
-        :param ui_state: :class:`CreateJobUiState` (optional)
-          State of the job in UI.
-          
-          * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-          editable state and can be modified.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
         
@@ -3047,6 +3047,7 @@ class JobsAPI:
         if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
+        if edit_mode is not None: body['edit_mode'] = edit_mode.value
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if format is not None: body['format'] = format.value
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -3063,7 +3064,6 @@ class JobsAPI:
         if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
         if trigger is not None: body['trigger'] = trigger.as_dict()
-        if ui_state is not None: body['ui_state'] = ui_state.value
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
@@ -3166,7 +3166,11 @@ class JobsAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
         return JobPermissions.from_dict(res)
 
-    def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
+    def get_run(self,
+                run_id: int,
+                *,
+                include_history: Optional[bool] = None,
+                include_resolved_values: Optional[bool] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -3175,12 +3179,15 @@ class JobsAPI:
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
           Whether to include the repair history in the response.
+        :param include_resolved_values: bool (optional)
+          Whether to include resolved parameter values in the response.
         
         :returns: :class:`Run`
         """
 
         query = {}
         if include_history is not None: query['include_history'] = include_history
+        if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)
