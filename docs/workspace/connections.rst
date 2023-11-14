@@ -144,7 +144,7 @@ Connections
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name, options, name_arg [, owner])
+    .. py:method:: update(name_arg, name, options [, owner])
 
         Usage:
 
@@ -187,12 +187,12 @@ Connections
         
         Updates the connection that matches the supplied name.
         
+        :param name_arg: str
+          Name of the connection.
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param name_arg: str
-          Name of the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
         

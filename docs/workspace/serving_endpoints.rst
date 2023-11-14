@@ -173,7 +173,7 @@ Serving endpoints
         :returns: :class:`ServingEndpointPermissions`
         
 
-    .. py:method:: update_config(served_models, name [, traffic_config])
+    .. py:method:: update_config(name, served_models [, traffic_config])
 
         Update a serving endpoint with a new config.
         
@@ -181,11 +181,11 @@ Serving endpoints
         served models, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
         
+        :param name: str
+          The name of the serving endpoint to update. This field is required.
         :param served_models: List[:class:`ServedModelInput`]
           A list of served models for the endpoint to serve. A serving endpoint can have up to 10 served
           models.
-        :param name: str
-          The name of the serving endpoint to update. This field is required.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
         

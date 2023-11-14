@@ -1566,18 +1566,18 @@ class RecipientsAPI:
         parsed = ListRecipientsResponse.from_dict(json).recipients
         return parsed if parsed is not None else []
 
-    def rotate_token(self, existing_token_expire_in_seconds: int, name: str) -> RecipientInfo:
+    def rotate_token(self, name: str, existing_token_expire_in_seconds: int) -> RecipientInfo:
         """Rotate a token.
         
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
         
+        :param name: str
+          The name of the recipient.
         :param existing_token_expire_in_seconds: int
           The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
           existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
           the existing token immediately, negative number will return an error.
-        :param name: str
-          The name of the recipient.
         
         :returns: :class:`RecipientInfo`
         """

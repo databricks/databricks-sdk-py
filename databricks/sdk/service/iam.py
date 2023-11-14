@@ -2721,18 +2721,18 @@ class WorkspaceAssignmentAPI:
         parsed = PermissionAssignments.from_dict(json).permission_assignments
         return parsed if parsed is not None else []
 
-    def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
+    def update(self, workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]):
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
         
-        :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace.
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
+        :param permissions: List[:class:`WorkspacePermission`]
+          Array of permissions assignments to update on the workspace.
         
         
         """

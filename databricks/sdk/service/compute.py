@@ -5084,9 +5084,9 @@ class GlobalInitScriptsAPI:
         return parsed if parsed is not None else []
 
     def update(self,
+               script_id: str,
                name: str,
                script: str,
-               script_id: str,
                *,
                enabled: Optional[bool] = None,
                position: Optional[int] = None):
@@ -5095,12 +5095,12 @@ class GlobalInitScriptsAPI:
         Updates a global init script, specifying only the fields to change. All fields are optional.
         Unspecified fields retain their current value.
         
+        :param script_id: str
+          The ID of the global init script.
         :param name: str
           The name of the script
         :param script: str
           The Base64-encoded content of the script.
-        :param script_id: str
-          The ID of the global init script.
         :param enabled: bool (optional)
           Specifies whether the script is enabled. The script runs only if enabled.
         :param position: int (optional)

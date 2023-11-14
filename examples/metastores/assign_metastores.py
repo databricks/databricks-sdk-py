@@ -5,7 +5,7 @@ from databricks.sdk import WorkspaceClient
 
 w = WorkspaceClient()
 
-workspace_id = os.environ["TEST_WORKSPACE_ID"]
+workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
 
 created = w.metastores.create(name=f'sdk-{time.time_ns()}',
                               storage_root="s3://%s/%s" %
