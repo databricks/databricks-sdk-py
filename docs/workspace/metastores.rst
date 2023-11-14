@@ -54,7 +54,7 @@ Metastores
         
         
 
-    .. py:method:: create(name, storage_root [, region])
+    .. py:method:: create(name [, region, storage_root])
 
         Usage:
 
@@ -76,15 +76,18 @@ Metastores
 
         Create a metastore.
         
-        Creates a new metastore based on a provided name and storage root path.
+        Creates a new metastore based on a provided name and optional storage root path. By default (if the
+        __owner__ field is not set), the owner of the new metastore is the user calling the
+        __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
+        assigned to the System User instead.
         
         :param name: str
           The user-specified name of the metastore.
-        :param storage_root: str
-          The storage root URL for metastore
         :param region: str (optional)
           Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted, the
           region of the workspace receiving the request will be used.
+        :param storage_root: str (optional)
+          The storage root URL for metastore
         
         :returns: :class:`MetastoreInfo`
         
@@ -289,7 +292,8 @@ Metastores
 
         Update a metastore.
         
-        Updates information for a specific metastore. The caller must be a metastore admin.
+        Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        field is set to the empty string (**""**), the ownership is updated to the System User.
         
         :param id: str
           Unique ID of the metastore.
