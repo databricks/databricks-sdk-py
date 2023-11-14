@@ -15,11 +15,11 @@ def test_scim_error_unmarshall(w, random):
     assert 'Given filter operator is not supported' in str(exc_info.value)
 
 
-@pytest.mark.parametrize("path,call", [
-    ("/api/2.0/preview/scim/v2/Users", lambda w: w.users.list(count=10)),
-    ("/api/2.0/preview/scim/v2/Groups", lambda w: w.groups.list(count=4)),
-    ("/api/2.0/preview/scim/v2/ServicePrincipals", lambda w: w.service_principals.list(count=1)),
-])
+@pytest.mark.parametrize(
+    "path,call",
+    [("/api/2.0/preview/scim/v2/Users", lambda w: w.users.list(count=10)),
+     ("/api/2.0/preview/scim/v2/Groups", lambda w: w.groups.list(count=4)),
+     ("/api/2.0/preview/scim/v2/ServicePrincipals", lambda w: w.service_principals.list(count=1)), ])
 def test_workspace_users_list_pagination(w, path, call):
     raw = w.api_client.do('GET', path)
     total = raw['totalResults']
@@ -28,11 +28,11 @@ def test_workspace_users_list_pagination(w, path, call):
     assert found == total
 
 
-@pytest.mark.parametrize("path,call", [
-    ("/api/2.0/accounts/%s/scim/v2/Users", lambda a: a.users.list(count=3000)),
-    ("/api/2.0/accounts/%s/scim/v2/Groups", lambda a: a.groups.list(count=5)),
-    ("/api/2.0/accounts/%s/scim/v2/ServicePrincipals", lambda a: a.service_principals.list(count=1000)),
-])
+@pytest.mark.parametrize(
+    "path,call",
+    [("/api/2.0/accounts/%s/scim/v2/Users", lambda a: a.users.list(count=3000)),
+     ("/api/2.0/accounts/%s/scim/v2/Groups", lambda a: a.groups.list(count=5)),
+     ("/api/2.0/accounts/%s/scim/v2/ServicePrincipals", lambda a: a.service_principals.list(count=1000)), ])
 def test_account_users_list_pagination(a, path, call):
     raw = a.api_client.do('GET', path.replace("%s", a.config.account_id))
     total = raw['totalResults']
