@@ -11,7 +11,8 @@ def test_filtering_groups(w, random):
 
 def test_scim_error_unmarshall(w, random):
     with pytest.raises(DatabricksError) as exc_info:
-        w.groups.list(filter=random(12))
+        groups = w.groups.list(filter=random(12))
+        next(groups)
     assert 'Given filter operator is not supported' in str(exc_info.value)
 
 
