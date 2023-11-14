@@ -8,7 +8,7 @@ Functions
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
     can be referenced with the form __catalog_name__.__schema_name__.__function_name__.
 
-    .. py:method:: create(name, catalog_name, schema_name, input_params, data_type, full_data_type, return_params, routine_body, routine_definition, routine_dependencies, parameter_style, is_deterministic, sql_data_access, is_null_call, security_type, specific_name [, comment, external_language, external_name, properties, sql_path])
+    .. py:method:: create(function_info)
 
         Create a function.
         
@@ -18,51 +18,8 @@ Functions
         **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
         function's parent schema
         
-        :param name: str
-          Name of function, relative to parent schema.
-        :param catalog_name: str
-          Name of parent catalog.
-        :param schema_name: str
-          Name of parent schema relative to its parent catalog.
-        :param input_params: List[:class:`FunctionParameterInfo`]
-          The array of __FunctionParameterInfo__ definitions of the function's parameters.
-        :param data_type: :class:`ColumnTypeName`
-          Scalar function return data type.
-        :param full_data_type: str
-          Pretty printed function data type.
-        :param return_params: List[:class:`FunctionParameterInfo`]
-          Table function return parameters.
-        :param routine_body: :class:`CreateFunctionRoutineBody`
-          Function language. When **EXTERNAL** is used, the language of the routine function should be
-          specified in the __external_language__ field, and the __return_params__ of the function cannot be
-          used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
-          **NO_SQL**.
-        :param routine_definition: str
-          Function body.
-        :param routine_dependencies: List[:class:`Dependency`]
-          Function dependencies.
-        :param parameter_style: :class:`CreateFunctionParameterStyle`
-          Function parameter style. **S** is the value for SQL.
-        :param is_deterministic: bool
-          Whether the function is deterministic.
-        :param sql_data_access: :class:`CreateFunctionSqlDataAccess`
-          Function SQL data access.
-        :param is_null_call: bool
-          Function null call.
-        :param security_type: :class:`CreateFunctionSecurityType`
-          Function security type.
-        :param specific_name: str
-          Specific name of the function; Reserved for future use.
-        :param comment: str (optional)
-          User-provided free-form text description.
-        :param external_language: str (optional)
-          External function language.
-        :param external_name: str (optional)
-          External function name.
-        :param properties: Dict[str,str] (optional)
-          A map of key-value properties attached to the securable.
-        :param sql_path: str (optional)
-          List of schemes whose objects can be referenced without qualification.
+        :param function_info: :class:`CreateFunction`
+          Partial __FunctionInfo__ specifying the function to be created.
         
         :returns: :class:`FunctionInfo`
         

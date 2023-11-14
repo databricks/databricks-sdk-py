@@ -67,14 +67,14 @@ class AccessControlResponse:
 class ComplexValue:
     display: Optional[str] = None
     primary: Optional[bool] = None
-    type: Optional[str] = None
+    type_: Optional[str] = None
     value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.display is not None: body['display'] = self.display
         if self.primary is not None: body['primary'] = self.primary
-        if self.type is not None: body['type'] = self.type
+        if self.type_ is not None: body['type'] = self.type_
         if self.value is not None: body['value'] = self.value
         return body
 
@@ -82,7 +82,7 @@ class ComplexValue:
     def from_dict(cls, d: Dict[str, any]) -> 'ComplexValue':
         return cls(display=d.get('display', None),
                    primary=d.get('primary', None),
-                   type=d.get('type', None),
+                   type_=d.get('type', None),
                    value=d.get('value', None))
 
 
@@ -1066,6 +1066,10 @@ class AccountGroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1175,12 +1179,24 @@ class AccountGroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
-                            query=query,
-                            headers=headers)
-        parsed = ListGroupsResponse.from_dict(json).resources
-        return parsed if parsed is not None else []
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 0
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Group.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1228,6 +1244,10 @@ class AccountGroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
@@ -1288,6 +1308,10 @@ class AccountServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1394,12 +1418,24 @@ class AccountServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
-                            query=query,
-                            headers=headers)
-        parsed = ListServicePrincipalResponse.from_dict(json).resources
-        return parsed if parsed is not None else []
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 0
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield ServicePrincipal.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1453,6 +1489,10 @@ class AccountServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -1513,14 +1553,23 @@ class AccountUsersAPI:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -1668,12 +1717,24 @@ class AccountUsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
-                            query=query,
-                            headers=headers)
-        parsed = ListUsersResponse.from_dict(json).resources
-        return parsed if parsed is not None else []
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 0
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield User.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1719,15 +1780,24 @@ class AccountUsersAPI:
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -1805,6 +1875,10 @@ class GroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1907,9 +1981,21 @@ class GroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
-        parsed = ListGroupsResponse.from_dict(json).resources
-        return parsed if parsed is not None else []
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 0
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Group.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1954,6 +2040,10 @@ class GroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
@@ -2154,6 +2244,10 @@ class ServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -2253,9 +2347,24 @@ class ServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
-        parsed = ListServicePrincipalResponse.from_dict(json).resources
-        return parsed if parsed is not None else []
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 0
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.0/preview/scim/v2/ServicePrincipals',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield ServicePrincipal.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -2306,6 +2415,10 @@ class ServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -2363,14 +2476,23 @@ class UsersAPI:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -2536,9 +2658,21 @@ class UsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
-        parsed = ListUsersResponse.from_dict(json).resources
-        return parsed if parsed is not None else []
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 0
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield User.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -2600,15 +2734,24 @@ class UsersAPI:
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)

@@ -5,13 +5,13 @@ Query Visualizations
     This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
 
-    .. py:method:: create(query_id, type, options [, description, name])
+    .. py:method:: create(query_id, type_, options [, description, name])
 
         Add visualization to a query.
         
         :param query_id: str
           The identifier returned by :method:queries/create
-        :param type: str
+        :param type_: str
           The type of visualization: chart, table, pivot table, and so on.
         :param options: Any
           The options object varies widely from one visualization type to the next and is unsupported.
@@ -33,7 +33,7 @@ Query Visualizations
         
         
 
-    .. py:method:: update(id [, created_at, description, name, options, type, updated_at])
+    .. py:method:: update(id [, created_at, description, name, options, type_, updated_at])
 
         Edit existing visualization.
         
@@ -47,7 +47,7 @@ Query Visualizations
         :param options: Any (optional)
           The options object varies widely from one visualization type to the next and is unsupported.
           Databricks does not recommend modifying visualization settings in JSON.
-        :param type: str (optional)
+        :param type_: str (optional)
           The type of visualization: chart, table, pivot table, and so on.
         :param updated_at: str (optional)
         

@@ -36,7 +36,6 @@ from databricks.sdk.service.iam import (AccountAccessControlAPI,
 from databricks.sdk.service.jobs import JobsAPI
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
 from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
-                                           OAuthEnrollmentAPI,
                                            OAuthPublishedAppsAPI,
                                            PublishedAppIntegrationAPI,
                                            ServicePrincipalSecretsAPI)
@@ -51,9 +50,10 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountNetworkPolicyAPI,
                                              AccountSettingsAPI,
                                              CredentialsManagerAPI,
-                                             IpAccessListsAPI, SettingsAPI,
-                                             TokenManagementAPI, TokensAPI,
-                                             WorkspaceConfAPI)
+                                             IpAccessListsAPI,
+                                             NetworkConnectivityAPI,
+                                             SettingsAPI, TokenManagementAPI,
+                                             TokensAPI, WorkspaceConfAPI)
 from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
@@ -260,9 +260,9 @@ class AccountClient:
         self.log_delivery = LogDeliveryAPI(self.api_client)
         self.metastore_assignments = AccountMetastoreAssignmentsAPI(self.api_client)
         self.metastores = AccountMetastoresAPI(self.api_client)
+        self.network_connectivity = NetworkConnectivityAPI(self.api_client)
         self.network_policy = AccountNetworkPolicyAPI(self.api_client)
         self.networks = NetworksAPI(self.api_client)
-        self.o_auth_enrollment = OAuthEnrollmentAPI(self.api_client)
         self.o_auth_published_apps = OAuthPublishedAppsAPI(self.api_client)
         self.private_access = PrivateAccessAPI(self.api_client)
         self.published_app_integration = PublishedAppIntegrationAPI(self.api_client)

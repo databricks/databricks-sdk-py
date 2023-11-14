@@ -914,6 +914,7 @@ class SharedDataObject:
     shared_as: Optional[str] = None
     start_version: Optional[int] = None
     status: Optional['SharedDataObjectStatus'] = None
+    string_shared_as: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -929,6 +930,7 @@ class SharedDataObject:
         if self.shared_as is not None: body['shared_as'] = self.shared_as
         if self.start_version is not None: body['start_version'] = self.start_version
         if self.status is not None: body['status'] = self.status.value
+        if self.string_shared_as is not None: body['string_shared_as'] = self.string_shared_as
         return body
 
     @classmethod
@@ -944,7 +946,8 @@ class SharedDataObject:
                    partitions=_repeated(d, 'partitions', Partition),
                    shared_as=d.get('shared_as', None),
                    start_version=d.get('start_version', None),
-                   status=_enum(d, 'status', SharedDataObjectStatus))
+                   status=_enum(d, 'status', SharedDataObjectStatus),
+                   string_shared_as=d.get('string_shared_as', None))
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):

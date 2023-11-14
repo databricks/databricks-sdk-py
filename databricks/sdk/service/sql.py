@@ -242,7 +242,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -527,7 +526,7 @@ class DataSource:
     paused: Optional[int] = None
     supports_auto_limit: Optional[bool] = None
     syntax: Optional[str] = None
-    type: Optional[str] = None
+    type_: Optional[str] = None
     view_only: Optional[bool] = None
     warehouse_id: Optional[str] = None
 
@@ -539,7 +538,7 @@ class DataSource:
         if self.paused is not None: body['paused'] = self.paused
         if self.supports_auto_limit is not None: body['supports_auto_limit'] = self.supports_auto_limit
         if self.syntax is not None: body['syntax'] = self.syntax
-        if self.type is not None: body['type'] = self.type
+        if self.type_ is not None: body['type'] = self.type_
         if self.view_only is not None: body['view_only'] = self.view_only
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
@@ -552,7 +551,7 @@ class DataSource:
                    paused=d.get('paused', None),
                    supports_auto_limit=d.get('supports_auto_limit', None),
                    syntax=d.get('syntax', None),
-                   type=d.get('type', None),
+                   type_=d.get('type', None),
                    view_only=d.get('view_only', None),
                    warehouse_id=d.get('warehouse_id', None))
 
@@ -1257,14 +1256,14 @@ class OwnableObjectType(Enum):
 class Parameter:
     name: Optional[str] = None
     title: Optional[str] = None
-    type: Optional['ParameterType'] = None
+    type_: Optional['ParameterType'] = None
     value: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.title is not None: body['title'] = self.title
-        if self.type is not None: body['type'] = self.type.value
+        if self.type_ is not None: body['type'] = self.type_.value
         if self.value: body['value'] = self.value
         return body
 
@@ -1272,7 +1271,7 @@ class Parameter:
     def from_dict(cls, d: Dict[str, any]) -> 'Parameter':
         return cls(name=d.get('name', None),
                    title=d.get('title', None),
-                   type=_enum(d, 'type', ParameterType),
+                   type_=_enum(d, 'type', ParameterType),
                    value=d.get('value', None))
 
 
@@ -1976,19 +1975,19 @@ class State(Enum):
 @dataclass
 class StatementParameterListItem:
     name: str
-    type: Optional[str] = None
+    type_: Optional[str] = None
     value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.name is not None: body['name'] = self.name
-        if self.type is not None: body['type'] = self.type
+        if self.type_ is not None: body['type'] = self.type_
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'StatementParameterListItem':
-        return cls(name=d.get('name', None), type=d.get('type', None), value=d.get('value', None))
+        return cls(name=d.get('name', None), type_=d.get('type', None), value=d.get('value', None))
 
 
 class StatementState(Enum):
@@ -2056,20 +2055,20 @@ class SuccessMessage(Enum):
 class TerminationReason:
     code: Optional['TerminationReasonCode'] = None
     parameters: Optional['Dict[str,str]'] = None
-    type: Optional['TerminationReasonType'] = None
+    type_: Optional['TerminationReasonType'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.code is not None: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
-        if self.type is not None: body['type'] = self.type.value
+        if self.type_ is not None: body['type'] = self.type_.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TerminationReason':
         return cls(code=_enum(d, 'code', TerminationReasonCode),
                    parameters=d.get('parameters', None),
-                   type=_enum(d, 'type', TerminationReasonType))
+                   type_=_enum(d, 'type', TerminationReasonType))
 
 
 class TerminationReasonCode(Enum):
@@ -2225,7 +2224,7 @@ class Visualization:
     id: Optional[str] = None
     name: Optional[str] = None
     options: Optional[Any] = None
-    type: Optional[str] = None
+    type_: Optional[str] = None
     updated_at: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -2235,7 +2234,7 @@ class Visualization:
         if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
-        if self.type is not None: body['type'] = self.type
+        if self.type_ is not None: body['type'] = self.type_
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         return body
 
@@ -2246,7 +2245,7 @@ class Visualization:
                    id=d.get('id', None),
                    name=d.get('name', None),
                    options=d.get('options', None),
-                   type=d.get('type', None),
+                   type_=d.get('type', None),
                    updated_at=d.get('updated_at', None))
 
 
@@ -3204,7 +3203,7 @@ class QueryVisualizationsAPI:
 
     def create(self,
                query_id: str,
-               type: str,
+               type_: str,
                options: Any,
                *,
                description: Optional[str] = None,
@@ -3213,7 +3212,7 @@ class QueryVisualizationsAPI:
         
         :param query_id: str
           The identifier returned by :method:queries/create
-        :param type: str
+        :param type_: str
           The type of visualization: chart, table, pivot table, and so on.
         :param options: Any
           The options object varies widely from one visualization type to the next and is unsupported.
@@ -3230,7 +3229,7 @@ class QueryVisualizationsAPI:
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
         if query_id is not None: body['query_id'] = query_id
-        if type is not None: body['type'] = type
+        if type_ is not None: body['type'] = type_
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/sql/visualizations', body=body, headers=headers)
         return Visualization.from_dict(res)
@@ -3253,7 +3252,7 @@ class QueryVisualizationsAPI:
                description: Optional[str] = None,
                name: Optional[str] = None,
                options: Optional[Any] = None,
-               type: Optional[str] = None,
+               type_: Optional[str] = None,
                updated_at: Optional[str] = None) -> Visualization:
         """Edit existing visualization.
         
@@ -3267,7 +3266,7 @@ class QueryVisualizationsAPI:
         :param options: Any (optional)
           The options object varies widely from one visualization type to the next and is unsupported.
           Databricks does not recommend modifying visualization settings in JSON.
-        :param type: str (optional)
+        :param type_: str (optional)
           The type of visualization: chart, table, pivot table, and so on.
         :param updated_at: str (optional)
         
@@ -3278,7 +3277,7 @@ class QueryVisualizationsAPI:
         if description is not None: body['description'] = description
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
-        if type is not None: body['type'] = type
+        if type_ is not None: body['type'] = type_
         if updated_at is not None: body['updated_at'] = updated_at
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', f'/api/2.0/preview/sql/visualizations/{id}', body=body, headers=headers)
