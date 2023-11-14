@@ -254,8 +254,7 @@ class {{.Name}}API:{{if .Description}}
           1
         {{- else -}}
           0
-        {{- end}}{{end}}
-        {{if and .Pagination.Limit (contains .Path "/scim/v2/")}}
+        {{- end}}{{end}}{{if and .Pagination.Limit (contains .Path "/scim/v2/")}}
         if "{{.Pagination.Limit.Name}}" not in query: query['{{.Pagination.Limit.Name}}'] = 100
         {{- end}}
         while True:
