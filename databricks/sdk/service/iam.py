@@ -1182,7 +1182,8 @@ class AccountGroupsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['startIndex'] = 0
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET',
                                 f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
@@ -1421,7 +1422,8 @@ class AccountServicePrincipalsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['startIndex'] = 0
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET',
                                 f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
@@ -1720,7 +1722,8 @@ class AccountUsersAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['startIndex'] = 0
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET',
                                 f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
@@ -1984,7 +1987,8 @@ class GroupsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['startIndex'] = 0
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
             if 'Resources' not in json or not json['Resources']:
@@ -2350,7 +2354,8 @@ class ServicePrincipalsAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['startIndex'] = 0
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET',
                                 '/api/2.0/preview/scim/v2/ServicePrincipals',
@@ -2661,7 +2666,8 @@ class UsersAPI:
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query['startIndex'] = 0
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
             if 'Resources' not in json or not json['Resources']:

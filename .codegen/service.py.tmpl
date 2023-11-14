@@ -247,7 +247,16 @@ class {{.Name}}API:{{if .Description}}
         # deduplicate items that may have been added during iteration
         seen = set()
         {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.0/clusters/events")) }}
-        query['{{.Pagination.Offset.Name}}'] = {{if eq .Pagination.Increment 1}}1{{else}}0{{end}}{{end}}
+        query['{{.Pagination.Offset.Name}}'] =
+        {{- if eq .Pagination.Increment 1 -}}
+          1
+        {{- else if contains .Path "/scim/v2/" -}}
+          1
+        {{- else -}}
+          0
+        {{- end}}{{end}}{{if and .Pagination.Limit (contains .Path "/scim/v2/")}}
+        if "{{.Pagination.Limit.Name}}" not in query: query['{{.Pagination.Limit.Name}}'] = 100
+        {{- end}}
         while True:
           json = {{template "method-do" .}}
           if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
