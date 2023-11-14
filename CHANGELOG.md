@@ -1,5 +1,69 @@
 # Version changelog
 
+## 0.13.0
+
+* Introduce more specific exceptions, like `NotFound`, `AlreadyExists`, `BadRequest`, `PermissionDenied`, `InternalError`, and others ([#376](https://github.com/databricks/databricks-sdk-py/pull/376)). This makes it easier to handle errors thrown by the Databricks API. Instead of catching `DatabricksError` and checking the error_code field, you can catch one of these subtypes of `DatabricksError`, which is more ergonomic and removes the need to rethrow exceptions that you don't want to catch. For example:
+```python
+try:
+  return (self._ws
+    .permissions
+    .get(object_type, object_id))
+except DatabricksError as e:
+  if e.error_code in [
+    "RESOURCE_DOES_NOT_EXIST",
+    "RESOURCE_NOT_FOUND",
+    "PERMISSION_DENIED",
+    "FEATURE_DISABLED",
+    "BAD_REQUEST"]:
+    logger.warning(...)
+    return None
+  raise RetryableError(...) from e
+```
+can be replaced with
+```python
+try:
+  return (self._ws
+    .permissions
+    .get(object_type, object_id))
+except PermissionDenied, FeatureDisabled:
+  logger.warning(...)
+  return None
+except NotFound:
+  raise RetryableError(...)
+```
+* Paginate all SCIM list requests in the SDK ([#440](https://github.com/databricks/databricks-sdk-py/pull/440)). This change ensures that SCIM list() APIs use a default limit of 100 resources, leveraging SCIM's offset + limit pagination to batch requests to the Databricks API.
+* Added taskValues support in remoteDbUtils ([#406](https://github.com/databricks/databricks-sdk-py/pull/406)).
+* Added more detailed error message on default credentials not found error ([#419](https://github.com/databricks/databricks-sdk-py/pull/419)).
+* Request management token via Azure CLI only for Service Principals and not human users ([#408](https://github.com/databricks/databricks-sdk-py/pull/408)).
+
+API Changes:
+
+ * Fixed `create()` method for [w.functions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/functions.html) workspace-level service and corresponding `databricks.sdk.service.catalog.CreateFunction` and `databricks.sdk.service.catalog.FunctionInfo` dataclasses.
+ * Changed `create()` method for [w.metastores](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/metastores.html) workspace-level service with new required argument order.
+ * Changed `storage_root` field for `databricks.sdk.service.catalog.CreateMetastore` to be optional.
+ * Added `skip_validation` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+ * Added `libraries` field for `databricks.sdk.service.compute.CreatePolicy`, `databricks.sdk.service.compute.EditPolicy` and `databricks.sdk.service.compute.Policy`.
+ * Added `init_scripts` field for `databricks.sdk.service.compute.EventDetails`.
+ * Added `file` field for `databricks.sdk.service.compute.InitScriptInfo`.
+ * Added `zone_id` field for `databricks.sdk.service.compute.InstancePoolGcpAttributes`.
+ * Added several dataclasses related to init scripts.
+ * Added `databricks.sdk.service.compute.LocalFileInfo` dataclass.
+ * Replaced `ui_state` field with `edit_mode` for `databricks.sdk.service.jobs.CreateJob` and `databricks.sdk.service.jobs.JobSettings`.
+ * Replaced `databricks.sdk.service.jobs.CreateJobUiState` dataclass with `databricks.sdk.service.jobs.CreateJobEditMode`.
+ * Added `include_resolved_values` field for `databricks.sdk.service.jobs.GetRunRequest`.
+ * Replaced `databricks.sdk.service.jobs.JobSettingsUiState` dataclass with `databricks.sdk.service.jobs.JobSettingsEditMode`.
+ * Removed [a.o_auth_enrollment](https://databricks-sdk-py.readthedocs.io/en/latest/account/o_auth_enrollment.html) account-level service. This was only used to aid in OAuth enablement during the public preview of OAuth. OAuth is now enabled for all AWS E2 accounts, so usage of this API is no longer needed.
+ * Added `network_connectivity_config_id` field for `databricks.sdk.service.provisioning.UpdateWorkspaceRequest`.
+ * Added [a.network_connectivity](https://databricks-sdk-py.readthedocs.io/en/latest/account/network_connectivity.html) account-level service.
+ * Added `string_shared_as` field for `databricks.sdk.service.sharing.SharedDataObject`.
+
+Internal changes:
+
+* Added regression question to issue template ([#414](https://github.com/databricks/databricks-sdk-py/pull/414)).
+* Made test_auth no longer fail if you have a default profile setup ([#426](https://github.com/databricks/databricks-sdk-py/pull/426)).
+
+OpenAPI SHA: d136ad0541f036372601bad9a4382db06c3c912d, Date: 2023-11-14
+
 ## 0.12.0
 
 * Retry on all 429 and 503, even when missing Retry-After header ([#402](https://github.com/databricks/databricks-sdk-py/pull/402)).
