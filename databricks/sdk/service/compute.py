@@ -508,7 +508,7 @@ class ClusterEvent:
     data_plane_event_details: Optional['DataPlaneEventDetails'] = None
     details: Optional['EventDetails'] = None
     timestamp: Optional[int] = None
-    type_: Optional['EventType'] = None
+    type: Optional['EventType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -517,7 +517,7 @@ class ClusterEvent:
             body['data_plane_event_details'] = self.data_plane_event_details.as_dict()
         if self.details: body['details'] = self.details.as_dict()
         if self.timestamp is not None: body['timestamp'] = self.timestamp
-        if self.type_ is not None: body['type'] = self.type_.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -526,7 +526,7 @@ class ClusterEvent:
                    data_plane_event_details=_from_dict(d, 'data_plane_event_details', DataPlaneEventDetails),
                    details=_from_dict(d, 'details', EventDetails),
                    timestamp=d.get('timestamp', None),
-                   type_=_enum(d, 'type', EventType))
+                   type=_enum(d, 'type', EventType))
 
 
 @dataclass
@@ -3336,20 +3336,20 @@ class State(Enum):
 class TerminationReason:
     code: Optional['TerminationReasonCode'] = None
     parameters: Optional['Dict[str,str]'] = None
-    type_: Optional['TerminationReasonType'] = None
+    type: Optional['TerminationReasonType'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.code is not None: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
-        if self.type_ is not None: body['type'] = self.type_.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TerminationReason':
         return cls(code=_enum(d, 'code', TerminationReasonCode),
                    parameters=d.get('parameters', None),
-                   type_=_enum(d, 'type', TerminationReasonType))
+                   type=_enum(d, 'type', TerminationReasonType))
 
 
 class TerminationReasonCode(Enum):

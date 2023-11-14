@@ -1252,7 +1252,7 @@ class RepairHistoryItem:
     start_time: Optional[int] = None
     state: Optional['RunState'] = None
     task_run_ids: Optional['List[int]'] = None
-    type_: Optional['RepairHistoryItemType'] = None
+    type: Optional['RepairHistoryItemType'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1261,7 +1261,7 @@ class RepairHistoryItem:
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
         if self.task_run_ids: body['task_run_ids'] = [v for v in self.task_run_ids]
-        if self.type_ is not None: body['type'] = self.type_.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
@@ -1271,7 +1271,7 @@ class RepairHistoryItem:
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
                    task_run_ids=d.get('task_run_ids', None),
-                   type_=_enum(d, 'type', RepairHistoryItemType))
+                   type=_enum(d, 'type', RepairHistoryItemType))
 
 
 class RepairHistoryItemType(Enum):
@@ -2749,18 +2749,18 @@ class UpdateJob:
 class ViewItem:
     content: Optional[str] = None
     name: Optional[str] = None
-    type_: Optional['ViewType'] = None
+    type: Optional['ViewType'] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.content is not None: body['content'] = self.content
         if self.name is not None: body['name'] = self.name
-        if self.type_ is not None: body['type'] = self.type_.value
+        if self.type is not None: body['type'] = self.type.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ViewItem':
-        return cls(content=d.get('content', None), name=d.get('name', None), type_=_enum(d, 'type', ViewType))
+        return cls(content=d.get('content', None), name=d.get('name', None), type=_enum(d, 'type', ViewType))
 
 
 class ViewType(Enum):

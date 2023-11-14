@@ -67,14 +67,14 @@ class AccessControlResponse:
 class ComplexValue:
     display: Optional[str] = None
     primary: Optional[bool] = None
-    type_: Optional[str] = None
+    type: Optional[str] = None
     value: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
         if self.display is not None: body['display'] = self.display
         if self.primary is not None: body['primary'] = self.primary
-        if self.type_ is not None: body['type'] = self.type_
+        if self.type is not None: body['type'] = self.type
         if self.value is not None: body['value'] = self.value
         return body
 
@@ -82,7 +82,7 @@ class ComplexValue:
     def from_dict(cls, d: Dict[str, any]) -> 'ComplexValue':
         return cls(display=d.get('display', None),
                    primary=d.get('primary', None),
-                   type_=d.get('type', None),
+                   type=d.get('type', None),
                    value=d.get('value', None))
 
 
