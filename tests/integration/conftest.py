@@ -68,10 +68,11 @@ def w(env_or_skip) -> WorkspaceClient:
 
 
 @pytest.fixture(scope='session')
-def ucws(env_or_skip, skip_for_env) -> WorkspaceClient:
+def ucws(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('ucws')
     env_or_skip("CLOUD_ENV")
-    skip_for_env("DATABRICKS_ACCOUNT_ID")
+    if 'DATABRICKS_ACCOUNT_ID' in os.environ:
+        pytest.skip("Skipping workspace test on account level")
     if 'TEST_METASTORE_ID' not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
     return WorkspaceClient()
@@ -83,17 +84,6 @@ def env_or_skip():
     def inner(var) -> str:
         if var not in os.environ:
             pytest.skip(f'Environment variable {var} is missing')
-        return os.environ[var]
-
-    return inner
-
-
-@pytest.fixture(scope='session')
-def skip_for_env():
-
-    def inner(var) -> str:
-        if var in os.environ and os.environ[var] != "":
-            pytest.skip(f'Environment variable {var} is set')
         return os.environ[var]
 
     return inner
