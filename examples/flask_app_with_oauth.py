@@ -109,14 +109,9 @@ def register_custom_app(oauth_client: OAuthClient, args: argparse.Namespace) -> 
                                    password=getpass.getpass("Password: "),
                                    )
 
-    logging.info("Enrolling all published apps...")
-    account_client.o_auth_enrollment.create(enable_all_published_apps=True)
-
-    status = account_client.o_auth_enrollment.get()
-    logging.info(f"Enrolled all published apps: {status}")
-
     custom_app = account_client.custom_app_integration.create(
         name=APP_NAME, redirect_urls=[f"http://localhost:{args.port}/callback"], confidential=True,
+        scopes=["all-apis"],
     )
     logging.info(f"Created new custom app: "
                  f"--client_id {custom_app.client_id} "
@@ -131,7 +126,7 @@ def init_oauth_config(args) -> OAuthClient:
                                client_id=args.client_id,
                                client_secret=args.client_secret,
                                redirect_url=f"http://localhost:{args.port}/callback",
-                               scopes=["clusters"],
+                               scopes=["all-apis"],
                                )
     if not oauth_client.client_id:
         client_id, client_secret = register_custom_app(oauth_client, args)
