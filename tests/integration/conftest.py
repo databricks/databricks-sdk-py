@@ -87,6 +87,7 @@ def env_or_skip():
 
     return inner
 
+
 @pytest.fixture(scope='session')
 def skip_for_env():
 
@@ -96,7 +97,6 @@ def skip_for_env():
         return os.environ[var]
 
     return inner
-
 
 
 def _load_debug_env_if_runs_from_ide(key) -> bool:
