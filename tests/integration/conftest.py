@@ -68,7 +68,7 @@ def w(env_or_skip) -> WorkspaceClient:
 
 
 @pytest.fixture(scope='session')
-def ucws(env_or_skip) -> WorkspaceClient:
+def ucws(env_or_skip, skip_for_env) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('ucws')
     env_or_skip("CLOUD_ENV")
     skip_for_env("DATABRICKS_ACCOUNT_ID")
